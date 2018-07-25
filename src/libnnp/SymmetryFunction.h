@@ -1,0 +1,374 @@
+// Copyright 2018 Andreas Singraber (University of Vienna)
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#ifndef SYMMETRYFUNCTION_H
+#define SYMMETRYFUNCTION_H
+
+#include "CutoffFunction.h"
+#include "ElementMap.h"
+#include <cstddef> // std::size_t
+#include <map>     // std::map
+#include <set>     // std::set
+#include <string>  // std::string
+#include <utility> // std::pair
+#include <vector>  // std::vector
+
+namespace nnp
+{
+
+struct Atom;
+class SymmetryFunctionStatistics;
+
+/** Symmetry function base class.
+ *
+ * Actual symmetry functions derive from this class. Provides common
+ * functionality, e.g. scaling behavior.
+ */
+class SymmetryFunction
+{
+public:
+    /// List of available scaling types.
+    enum ScalingType
+    {
+        /** @f$G_\text{scaled} = G@f$
+         */
+        ST_NONE,
+        /** @f$G_\text{scaled} = S_\text{min} + \left(S_\text{max} -
+         * S_\text{min}\right) \cdot \frac{G - G_\text{min}}
+         * {G_\text{max} - G_\text{min}} @f$
+         */
+        ST_SCALE,
+        /** @f$G_\text{scaled} = G - \left<G\right>@f$
+         */
+        ST_CENTER,
+        /** @f$G_\text{scaled} = S_\text{min} + \left(S_\text{max} -
+         * S_\text{min}\right) \cdot \frac{G - \left<G\right>}
+         * {G_\text{max} - G_\text{min}} @f$
+         */
+        ST_SCALECENTER,
+        /** @f$G_\text{scaled} = S_\text{min} + \left(S_\text{max} -
+         * S_\text{min}\right) \cdot \frac{G - \left<G\right>}{\sigma_G} @f$
+         */
+        ST_SCALESIGMA
+    };
+
+    /** Virtual destructor
+     */
+    virtual             ~SymmetryFunction() {};
+    /** Overload == operator.
+     */
+    virtual bool        operator==(SymmetryFunction const& rhs) const = 0;
+    /** Overload != operator.
+     */
+    virtual bool        operator!=(SymmetryFunction const& rhs) const = 0;
+    /** Overload < operator.
+     */
+    virtual bool        operator<(SymmetryFunction const& rhs) const = 0;
+    /** Overload > operator.
+     */
+    virtual bool        operator>(SymmetryFunction const& rhs) const = 0;
+    /** Overload <= operator.
+     */
+    virtual bool        operator<=(SymmetryFunction const& rhs) const = 0;
+    /** Overload >= operator.
+     */
+    virtual bool        operator>=(SymmetryFunction const& rhs) const = 0;
+    /** Set parameters.
+     *
+     * @param[in] parameterString String containing all parameters for this
+     *                            symmetry function.
+     */
+    virtual void        setParameters(std::string const& parameterString) = 0;
+    /** Change length unit.
+     *
+     * @param[in] convLength Multiplicative length unit conversion factor.
+     */
+    virtual void        changeLengthUnit(double convLength) = 0;
+    /** Get settings file line from currently set parameters.
+     *
+     * @param[in] convLength Apply length conversion factor if requested.
+     *
+     * @return Settings file string ("symfunction_short ...").
+     */
+    virtual std::string getSettingsLine(double const convLength) const = 0;
+    /** Calculate symmetry function for one atom.
+     *
+     * @param[in,out] atom Atom for which the symmetry function is caluclated.
+     * @param[in] derivatives If also symmetry function derivatives will be
+     *                        calculated and saved.
+     * @param[in,out] statistics Gathers statistics and extrapolation warnings.
+     */
+    virtual void        calculate(Atom&                       atom,
+                                  bool const                  derivatives,
+                                  SymmetryFunctionStatistics& statistics
+                                 ) const = 0;
+    /** Give symmetry function parameters in one line.
+     *
+     * @return String containing symmetry function parameter values.
+     */
+    virtual std::string parameterLine() const = 0;
+    /** Get description with parameter names and values.
+     *
+     * @return Vector of parameter description strings.
+     */
+    virtual std::vector<std::string>
+                        parameterInfo() const;
+    /** Set cutoff function type and parameter.
+     *
+     * @param[in] cutoffType Desired cutoff function for this symmetry
+     *                       function.
+     * @param[in] cutoffAlpha Cutoff function parameter @f$\alpha@f$.
+     */
+    void                setCutoffFunction(CutoffFunction::
+                                          CutoffType cutoffType,
+                                          double     cutoffAlpha);
+    /** Set symmetry function scaling type.
+     *
+     * @param[in] scalingType Desired symmetry function scaling type.
+     * @param[in] statisticsLine String containing symmetry function statistics
+     *                           ("min max mean sigma").
+     * @param[in] Smin Minimum for scaling range @f$S_\text{min}@f$.
+     * @param[in] Smax Maximum for scaling range @f$S_\text{max}@f$.
+     */
+    void                setScalingType(ScalingType scalingType,
+                                       std::string statisticsLine,
+                                       double      Smin,
+                                       double      Smax);
+    /** Apply symmetry function scaling and/or centering.
+     *
+     * @param[in] value Raw symmetry function value.
+     * @return Scaled symmetry function value.
+     */
+    double              scale(double value) const;
+    /** Get private #type member variable.
+     */
+    std::size_t         getType() const;
+    /** Get private #index member variable.
+     */
+    std::size_t         getIndex() const;
+    /** Get private #lineNumber member variable.
+     */
+    std::size_t         getLineNumber() const;
+    /** Get private #ec member variable.
+     */
+    std::size_t         getEc() const;
+    /** Get private #minNeighbors member variable.
+     */
+    std::size_t         getMinNeighbors() const;
+    /** Get private #rc member variable.
+     */
+    double              getRc() const;
+    /** Get private #Gmin member variable.
+     */
+    double              getGmin() const;
+    /** Get private #Gmax member variable.
+     */
+    double              getGmax() const;
+    /** Get private #scalingFactor member variable.
+     */
+    double              getScalingFactor() const;
+    /** Get private #cutoffAlpha member variable.
+     */
+    double              getCutoffAlpha() const;
+    /** Get private #cutoffType member variable.
+     */
+    CutoffFunction::
+    CutoffType          getCutoffType() const;
+    /** Get private #parameters member variable.
+     */
+    std::set<
+    std::string>        getParameters() const;
+    /** Set private #index member variable.
+     *
+     * @param[in] index Symmetry function index.
+     */
+    void                setIndex(std::size_t index);
+    /** Set line number.
+     *
+     * @param[in] lineNumber Line number in settings file.
+     */
+    void                setLineNumber(std::size_t lineNumber);
+    /** Get string with scaling information.
+     *
+     * @return Scaling information string.
+     */
+    std::string         scalingLine() const;
+    /** Update statistics map with new value.
+     *
+     * @param[in] value Unscaled symmetry function value.
+     * @param[in] atom Atom this symmetry function value belongs to.
+     * @param[in,out] statistics Map containing statistics about symmetry
+     *                           functions.
+     */
+    void                updateStatisticsGeneric(
+                                 double                      value,
+                                 Atom const&                 atom,
+                                 SymmetryFunctionStatistics& statistics) const;
+    /** Calculate (partial) symmetry function value for one given distance.
+     *
+     * @param[in] distance Distance between two atoms.
+     * @return Symmetry function value.
+     *
+     * @note This function is not used for actual calculations but only for
+     * plotting symmetry functions. Derived classes should implement a
+     * meaningful symmetry function value for visualization.
+     */
+    virtual double      calculateRadialPart(double distance) const = 0;
+    /** Calculate (partial) symmetry function value for one given angle.
+     *
+     * @param[in] angle Angle between triplet of atoms (in radians).
+     * @return Symmetry function value.
+     *
+     * @note This function is not used for actual calculations but only for
+     * plotting symmetry functions. Derived classes should implement a
+     * meaningful symmetry function value for visualization.
+     */
+    virtual double      calculateAngularPart(double angle) const = 0;
+
+protected:
+    typedef std::map<std::string,
+                     std::pair<std::string, std::string> > PrintFormat;
+    typedef std::vector<std::string>                       PrintOrder;
+    /// Symmetry function type.
+    std::size_t                type;
+    /// Copy of element map.
+    ElementMap                 elementMap;
+    /// Symmetry function index (per element).
+    std::size_t                index;
+    /// Line number.
+    std::size_t                lineNumber;
+    /// Element index of center atom.
+    std::size_t                ec;
+    /// Minimum number of neighbors required.
+    std::size_t                minNeighbors;
+    /// Minimum for scaling range.
+    double                     Smin;
+    /// Maximum for scaling range.
+    double                     Smax;
+    /// Minimum unscaled symmetry function value.
+    double                     Gmin;
+    /// Maximum unscaled symmetry function value.
+    double                     Gmax;
+    /// Mean unscaled symmetry function value.
+    double                     Gmean;
+    /// Sigma of unscaled symmetry function values.
+    double                     Gsigma;
+    /// Cutoff radius @f$r_c@f$.
+    double                     rc;
+    /// Scaling factor.
+    double                     scalingFactor;
+    /// Cutoff parameter @f$\alpha@f$.
+    double                     cutoffAlpha;
+    /// Cutoff function used by this symmetry function.
+    CutoffFunction             fc;
+    /// Cutoff type used by this symmetry function.
+    CutoffFunction::CutoffType cutoffType;
+    /// Symmetry function scaling type used by this symmetry function.
+    ScalingType                scalingType;
+    /// Set with symmetry function parameter IDs (lookup for printing).
+    std::set<std::string>      parameters;
+    /// Width of the SFINFO parameter description field (see #parameterInfo()).
+    static std::size_t const   sfinfoWidth;
+    /// Map of parameter format strings and empty strings.
+    static PrintFormat const   printFormat;
+    /// Vector of parameters in order of printing.
+    static PrintOrder const    printOrder;
+
+    /** Constructor, initializes #type.
+     */
+    SymmetryFunction(std::size_t type, ElementMap const&);
+    /** Initialize static print format map for all possible parameters.
+     */
+    static PrintFormat const initializePrintFormat();
+    /** Initialize static print order vector for all possible parameters.
+     */
+    static PrintOrder const  initializePrintOrder();
+    /** Generate format string for symmetry function parameter printing.
+     *
+     * @return C-Style format string.
+     */
+    std::string              getPrintFormat() const;
+};
+
+//////////////////////////////////
+// Inlined function definitions //
+//////////////////////////////////
+
+inline std::size_t SymmetryFunction::getType() const
+{
+    return type;
+}
+
+inline std::size_t SymmetryFunction::getEc() const
+{
+    return ec;
+}
+
+inline std::size_t SymmetryFunction::getIndex() const
+{
+    return index;
+}
+
+inline std::size_t SymmetryFunction::getLineNumber() const
+{
+    return lineNumber;
+}
+
+inline std::size_t SymmetryFunction::getMinNeighbors() const
+{
+    return minNeighbors;
+}
+
+inline double SymmetryFunction::getRc() const
+{
+    return rc;
+}
+
+inline double SymmetryFunction::getGmin() const
+{
+    return Gmin;
+}
+
+inline double SymmetryFunction::getGmax() const
+{
+    return Gmax;
+}
+
+inline double SymmetryFunction::getScalingFactor() const
+{
+    return scalingFactor;
+}
+
+inline double SymmetryFunction::getCutoffAlpha() const
+{
+    return cutoffAlpha;
+}
+
+inline void SymmetryFunction::setIndex(std::size_t index)
+{
+    this->index = index;
+    return;
+}
+
+inline void SymmetryFunction::setLineNumber(std::size_t lineNumber)
+{
+    this->lineNumber = lineNumber;
+    return;
+}
+
+inline CutoffFunction::CutoffType SymmetryFunction::getCutoffType() const
+{
+    return cutoffType;
+}
+
+inline std::set<std::string> SymmetryFunction::getParameters() const
+{
+    return parameters;
+}
+
+}
+
+#endif

@@ -1,0 +1,247 @@
+// Copyright 2018 Andreas Singraber (University of Vienna)
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#ifndef STRUCTURE_H
+#define STRUCTURE_H
+
+#include "Atom.h"
+#include "ElementMap.h"
+#include "Vec3D.h"
+#include <cstddef> // std::size_t
+#include <fstream> // std::ofstream
+#include <string>  // std::string
+#include <vector>  // std::vector
+
+namespace nnp
+{
+
+/// Storage for one atomic configuration.
+struct Structure
+{
+    /** Enumerates different sample types (e.g. training or test set).
+     */
+    enum SampleType
+    {
+        /** Sample type not assigned yet.
+         */
+        ST_UNKNOWN,
+        /** Structure is part of the training set.
+         */
+        ST_TRAINING,
+        /** Structure is part of validation set (currently unused).
+         */
+        ST_VALIDATION,
+        /** Structure is part of the test set.
+         */
+        ST_TEST
+    };
+
+    /// Copy of element map provided as constructor argument.
+    ElementMap               elementMap;
+    /// If periodic boundary conditions apply.
+    bool                     isPeriodic;
+    /// If the simulation box is triclinic.
+    bool                     isTriclinic;
+    /// If the neighbor list has been calculated.
+    bool                     hasNeighborList;
+    /// If symmetry function values are saved for each atom.
+    bool                     hasSymmetryFunctions;
+    /// If symmetry function derivatives are saved for each atom.
+    bool                     hasSymmetryFunctionDerivatives;
+    /// Index number of this structure.
+    std::size_t              index;
+    /// Total number of atoms present in this structure.
+    std::size_t              numAtoms;
+    /// Global number of elements (all structures).
+    std::size_t              numElements;
+    /// Number of elements present in this structure.
+    std::size_t              numElementsPresent;
+    /// Number of PBC images necessary in each direction.
+    int                      pbc[3];
+    /// Potential energy determined by neural network.
+    double                   energy;
+    /// Reference potential energy.
+    double                   energyRef;
+    /// Reference charge.
+    double                   chargeRef;
+    /// Simulation box volume.
+    double                   volume;
+    /// Sample type (training or test set).
+    SampleType               sampleType;
+    /// Structure comment.
+    std::string              comment;
+    /// Simulation box vectors.
+    Vec3D                    box[3];
+    /// Inverse simulation box vectors.
+    Vec3D                    invbox[3];
+    /// Number of atoms of each element in this structure.
+    std::vector<std::size_t> numAtomsPerElement;
+    /// Vector of all atoms in this structure.
+    std::vector<Atom>        atoms;
+
+    /** Constructor, initializes to zero.
+     */
+    Structure();
+    /** Set element map of structure.
+     *
+     * @param[in] elementMap Reference to a map containing all possible
+     *                       (symbol, index)-pairs (see ElementMap).
+     */
+    void                     setElementMap(ElementMap const& elementMap);
+    /** Read configuration from file.
+     *
+     * @param[in] file Input file stream (already opened).
+     *
+     * Expects that a file with configurations is open, first keyword on first
+     * line should be `begin`. Reads until keyword is `end`.
+     */
+    void                     readFromFile(std::ifstream& file);
+    /** Calculate neighbor list for all atoms.
+     *
+     * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
+     *                         than the cutoff radius.
+     */
+    void                     calculateNeighborList(double cutoffRadius);
+    /** Calculate required PBC copies.
+     *
+     * @param[in] cutoffRadius Cutoff radius for neighbor list.
+     *
+     * Called by #calculateNeighborList().
+     */
+    void                     calculatePbcCopies(double cutoffRadius);
+    /** Calculate inverse box.
+     *
+     * Simulation box looks like this:
+     *
+     * @f[
+     * h =
+     * \begin{pmatrix}
+     * \phantom{a_x} & \phantom{b_x} & \phantom{c_x} \\
+     * \vec{\mathbf{a}} & \vec{\mathbf{b}} & \vec{\mathbf{c}} \\
+     * \phantom{a_z} & \phantom{b_z} & \phantom{c_z} \\
+     * \end{pmatrix} =
+     * \begin{pmatrix}
+     * a_x & b_x & c_x \\
+     * a_y & b_y & c_y \\
+     * a_z & b_z & c_z \\
+     * \end{pmatrix},
+     * @f]
+     *
+     * where @f$\vec{\mathbf{a}} = @f$ `box[0]`, @f$\vec{\mathbf{b}} = @f$
+     * `box[1]` and @f$\vec{\mathbf{c}} = @f$ `box[2]`. Thus, indices are
+     * column first, row second:
+     *
+     * @f[
+     * h =
+     * \begin{pmatrix}
+     * \texttt{box[0][0]} & \texttt{box[1][0]} & \texttt{box[2][0]} \\
+     * \texttt{box[0][1]} & \texttt{box[1][1]} & \texttt{box[2][1]} \\
+     * \texttt{box[0][2]} & \texttt{box[1][2]} & \texttt{box[2][2]} \\
+     * \end{pmatrix}.
+     * @f]
+     *
+     * The inverse box matrix (same scheme as above but with `invbox`) can be
+     * used to calculate fractional coordinates:
+     *
+     * @f[
+     * \begin{pmatrix}
+     * f_0 \\ f_1 \\ f_2
+     * \end{pmatrix} = h^{-1} \; \vec{\mathbf{r}}.
+     * @f]
+     */
+    void                     calculateInverseBox();
+    /** Calculate volume from box vectors.
+     */
+    void                     calculateVolume();
+    /** Translate atom back into box if outside.
+     *
+     * @param[in,out] atom Atom to be remapped.
+     */
+    void                     remap(Atom& atom);
+    /** Normalize structure, shift energy and change energy and length unit.
+     *
+     * @param[in] meanEnergy Mean energy per atom (in old units).
+     * @param[in] convEnergy Multiplicative energy unit conversion factor.
+     * @param[in] convLength Multiplicative length unit conversion factor.
+     */
+    void                     toNormalizedUnits(double meanEnergy,
+                                               double convEnergy,
+                                               double convLength);
+    /** Switch to physical units, shift energy and change energy and length unit.
+     *
+     * @param[in] meanEnergy Mean energy per atom (in old units).
+     * @param[in] convEnergy Multiplicative energy unit conversion factor.
+     * @param[in] convLength Multiplicative length unit conversion factor.
+     */
+    void                     toPhysicalUnits(double meanEnergy,
+                                             double convEnergy,
+                                             double convLength);
+    /** Find maximum number of neighbors.
+     *
+     * @return Maximum numbor of neighbors of all atoms in this structure.
+     */
+    std::size_t              getMaxNumNeighbors() const;
+    /** Free symmetry function memory for all atoms, see free() in Atom class.
+     *
+     * @param[in] all See description in Atom.
+     */
+    void                     freeAtoms(bool all);
+    /** Reset everything but #elementMap.
+     */
+    void                     reset();
+    /** Clear neighbor list of all atoms.
+     */
+    void                     clearNeighborList();
+    /** Update energy RMSE with this structure.
+     *
+     * @param[in,out] rmse Input RMSE to be updated.
+     * @param[in,out] count Input counter to be updated.
+     */
+    void                     updateRmseEnergy(double&      rmse,
+                                              std::size_t& count) const;
+    /** Update force RMSE with all atoms of this structure.
+     *
+     * @param[in,out] rmse Input RMSE to be updated.
+     * @param[in,out] count Input counter to be updated.
+     */
+    void                     updateRmseForces(double&      rmse,
+                                              std::size_t& count) const;
+    /** Get reference and NN energy.
+     *
+     * @return String with #index, #energyRef and #energy values.
+     */
+    std::string              getEnergyLine() const;
+    /** Get reference and NN forces for all atoms.
+     *
+     * @return Vector of strings with force comparison.
+     */
+    std::vector<std::string> getForcesLines() const;
+    /** Write configuration to file.
+     *
+     * @param[in,out] file Ouptut file.
+     */
+    void                     writeToFile(std::ofstream* const& file) const;
+    /** Write configuration to xyz file.
+     *
+     * @param[in,out] file xyz output file.
+     */
+    void                     writeToFileXyz(std::ofstream* const& file) const;
+    /** Write configuration to POSCAR file.
+     *
+     * @param[in,out] file POSCAR output file.
+     */
+    void                     writeToFilePoscar(
+                                             std::ofstream* const& file) const;
+    /** Get structure information as a vector of strings.
+     *
+     * @return Lines with structure information.
+     */
+    std::vector<std::string> info() const;
+};
+
+}
+
+#endif

@@ -1,0 +1,256 @@
+// Copyright 2018 Andreas Singraber (University of Vienna)
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#include "utility.h"
+#include <algorithm> // std::max
+#include <cstdio>    // vsprintf
+#include <cstdarg>   // va_list, va_start, va_end
+#include <iomanip>   // std::setw
+#include <sstream>   // std::istringstream
+#include <stdexcept> // std::runtime_error
+
+#define STRPR_MAXBUF 1024
+
+using namespace std;
+
+namespace nnp
+{
+
+vector<string> split(string const& input, char delimiter)
+{
+    vector<string> parts;
+    stringstream ss;
+
+    ss.str(input);
+    string item;
+    while (getline(ss, item, delimiter)) {
+        parts.push_back(item);
+    }
+
+    return parts;
+}
+
+string trim(string const& line, string const& whitespace)
+{
+    size_t const begin = line.find_first_not_of(whitespace);
+    if (begin == string::npos)
+    {
+        return "";
+    }
+    size_t const end = line.find_last_not_of(whitespace);
+    size_t const range = end - begin + 1;
+
+    return line.substr(begin, range);
+}
+
+string reduce(string const& line,
+              string const& whitespace,
+              string const& fill)
+{
+    string result = trim(line, whitespace);
+
+    size_t begin = result.find_first_of(whitespace);
+    while (begin != string::npos)
+    {
+        size_t const end = result.find_first_not_of(whitespace, begin);
+        size_t const range = end - begin;
+        result.replace(begin, range, fill);
+        size_t const newBegin = begin + fill.length();
+        begin = result.find_first_of(whitespace, newBegin);
+    }
+
+    return result;
+}
+
+string pad(string const& input, size_t num, char fill, bool right)
+{
+    string result = input;
+
+    if (input.size() >= num) return result;
+
+    string pad(num - input.size(), fill);
+    if (right) return result + pad;
+    else return pad + result;
+}
+
+string strpr(const char* format, ...)
+{
+    char buffer[STRPR_MAXBUF];
+
+    va_list args;
+    va_start(args, format);
+    vsprintf(buffer, format, args);
+    va_end(args);
+
+    string s(buffer);
+
+    return s;
+}
+
+vector<string> createFileHeader(vector<string> const& title,
+                                vector<size_t> const& colSize,
+                                vector<string> const& colName,
+                                vector<string> const& colInfo,
+                                char           const& commentChar)
+{
+    size_t const stdWidth = 80;
+    vector<string> h;
+    if (!(colSize.size() == colName.size() &&
+          colName.size() == colInfo.size()))
+    {
+        throw runtime_error("ERROR: Could not create file header, column sizes"
+                            " are not equal.\n");
+    }
+    size_t numCols = colSize.size();
+
+    // Separator line definition.
+    string sepLine(stdWidth, commentChar);
+    sepLine += '\n';
+    // Start string.
+    string startStr(1, commentChar);
+
+    // Add title lines.
+    h.push_back(sepLine);
+    for (vector<string>::const_iterator it = title.begin();
+         it != title.end(); ++it)
+    {
+        h.push_back(startStr + ' ' + (*it) + '\n');
+    }
+    h.push_back(sepLine);
+
+    // Determine maximum width of names.
+    size_t widthNames = 0;
+    for (vector<string>::const_iterator it = colName.begin();
+         it != colName.end(); ++it)
+    {
+        widthNames = max(widthNames, it->size());
+    }
+
+    // Column description section.
+    stringstream s;
+    s << startStr << ' '
+      << left << setw(4) << "Col" << ' '
+      << left << setw(widthNames) << "Name" << ' '
+      << left << "Description\n";
+    h.push_back(s.str());
+    h.push_back(sepLine);
+    for (size_t i = 0; i < numCols; ++i)
+    {
+        s.clear();
+        s.str(string());
+        s << startStr << ' '
+          << left << setw(4) << i + 1 << ' '
+          << left << setw(widthNames) << colName.at(i) << ' '
+          << colInfo.at(i) << '\n';
+        h.push_back(s.str());
+    }
+
+    // Determine total data width.
+    size_t widthData = 0;
+    for (vector<size_t>::const_iterator it = colSize.begin();
+         it != colSize.end(); ++it)
+    {
+        widthData += (*it) + 1;
+    }
+    widthData -= 1;
+
+    if (widthData > stdWidth)
+    {
+        // Long separator line.
+        h.push_back(string(widthData, commentChar) + "\n");
+    }
+    else
+    {
+        h.push_back(sepLine);
+    }
+
+    // Write column number.
+    s.clear();
+    s.str(string());
+    s << startStr;
+    for (size_t i = 0; i < numCols; ++i)
+    {
+        size_t n = colSize.at(i);
+        if (i == 0) n -= 2;
+        s << ' ' << right << setw(n) << i + 1;
+    }
+    s << '\n';
+    h.push_back(s.str());
+
+    // Write column name.
+    s.clear();
+    s.str(string());
+    s << startStr;
+    for (size_t i = 0; i < numCols; ++i)
+    {
+        size_t n = colSize.at(i);
+        if (i == 0) n -= 2;
+        string name = colName.at(i);
+        if (name.size() > n)
+        {
+            name.erase(n, string::npos);
+        }
+        s << ' ' << right << setw(n) << name;
+    }
+    s << '\n';
+    h.push_back(s.str());
+
+    // Long separator line.
+    h.push_back(string(widthData, commentChar) + "\n");
+
+    return h;
+}
+
+void appendLinesToFile(ofstream& file, vector<string> const lines)
+{
+    for (vector<string>::const_iterator it = lines.begin();
+         it != lines.end(); ++it)
+    {
+        file << (*it);
+    }
+
+    return;
+}
+
+void appendLinesToFile(FILE* const& file, vector<string> const lines)
+{
+    for (vector<string>::const_iterator it = lines.begin();
+         it != lines.end(); ++it)
+    {
+        fprintf(file, "%s", it->c_str());
+    }
+
+    return;
+}
+
+double pow_int(double x, int n)
+{
+    // Need an unsigned integer for bit-shift divison.
+    unsigned int m;
+
+    // If negative exponent, take the inverse of x and change sign of n.
+    if (n < 0)
+    {
+        x = 1.0 / x;
+        m = -n;
+    }
+    else m = n;
+
+    // Exponentiation by squaring, "fast exponentiation algorithm"
+    double result = 1.0;
+    do
+    {
+        if (m & 1) result *= x;
+        // Division by 2.
+        m >>= 1;
+        x *= x;
+    }
+    while (m);
+
+    return result;
+}
+
+}

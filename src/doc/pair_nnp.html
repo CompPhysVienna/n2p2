@@ -1,0 +1,170 @@
+<HTML>
+<CENTER>"NNP LAMMPS Interface" 
+</CENTER>
+<HR>
+
+<H3>pair_style nnp command 
+</H3>
+<P><B>Syntax:</B>
+</P>
+<PRE>pair_style nnp keyword value ... 
+</PRE>
+<UL><LI>zero or more keyword/value pairs may be appended 
+
+<LI>keyword = <I>dir</I> or <I>showew</I> or <I>showewsum</I> or <I>maxew</I> or <I>resetew</I> or <I>cflength</I> or <I>cfenergy</I> 
+
+<PRE>  <I>dir</I> value = directory
+    directory = Path to NNP configuration files
+  <I>showew</I> value = <I>yes</I> or <I>no</I>
+  <I>showewsum</I> value = summary
+    summary = Write EW summary every this many timesteps (<I>0</I> turns summary off)
+  <I>maxew</I> value = threshold
+    threshold = Maximum number of EWs allowed
+  <I>resetew</I> value = <I>yes</I> or <I>no</I>
+  <I>cflength</I> value = length
+    length = Length unit conversion factor
+  <I>cfenergy</I> value = energy
+    energy = Energy unit conversion factor 
+</PRE>
+
+</UL>
+<P><B>Examples:</B>
+</P>
+<PRE>pair_style nnp showew yes showewsum 100 maxew 1000 resetew yes cflength 1.8897261328 cfenergy 0.0367493254
+pair_style nnp dir "./" showewsum 10000
+pair_coeff * * 6.01 
+</PRE>
+<P><B>Description:</B>
+</P>
+<P>This pair style adds an interaction based on the high-dimensional neural network
+potential method <A HREF = "#Behler-Parrinello">(Behler-Parrinello)</A>. These potentials must
+be carefully trained to reproduce the potential energy surface in the desired
+phase-space region prior to their usage in an MD simulation. This pair style
+uses an interface to the <A HREF = "#NNP-Library">NNP library</A>
+<A HREF = "#Singraber-Behler-Dellago">(Singraber-Behler-Dellago)</A>, see the documentation
+there for more information.
+</P>
+<P>The maximum cutoff radius of all symmetry functions is the only argument of the
+<I>pair_coeff</I> command which should be invoked with asterisk wild-cards only:
+</P>
+<PRE>pair_coeff * * cutoff 
+</PRE>
+<P>NOTE: The cutoff must be given in LAMMPS length units, even if the neural network
+potential has been trained using a different unit system (see remarks about the
+<I>cflength</I> and <I>cfenergy</I> keywords below for details).
+</P>
+<P>The numeric value may be slightly larger than the actual maximum symmetry
+function cutoff radius (to account for rounding errors when converting units),
+but must not be smaller.
+</P>
+<P>IMPORTANT NOTE: The atom type specifications in configuration files used to
+start MD simulations must be consistent with the ordering of elements in the NNP
+library. Thus, atom types must be sorted in order of ascending atomic number,
+e.g. the only correct mapping for a configuration containing hydrogen, oxygen
+and zinc atoms is as follows:
+</P>
+<PRE> ---------------------------------------
+| Element | Atomic number | LAMMPS type |
+|---------------------------------------|
+|       H |             1 |           1 |
+|       O |            16 |           2 |
+|      Zn |            30 |           3 |
+ --------------------------------------- 
+</PRE>
+<HR>
+
+<P>Use the <I>dir</I> keyword to specify the directory containing the NNP configuration
+files. The directory must contain "input.nn" with neural network
+and symmetry function setup, "scaling.data" with symmetry function scaling data
+and "weights.???.data" with weight parameters for each element.
+</P>
+<P>The keyword <I>showew</I> can be used to turn on/off the display of extrapolation
+warnings (EWs) which are issued whenever a symmetry function value is out of
+bounds defined by minimum/maximum values in "scaling.data". An extrapolation
+warning may look like this:
+</P>
+<PRE>### NNP EXTRAPOLATION WARNING ### STRUCTURE:      2 ATOM:     36 SYMFUNC:   14 VALUE:  8.978E-02 MIN:  3.900E-08 MAX:  8.888E-02 
+</PRE>
+<P>stating that the value 8.978E-02 of symmetry function 14 was out of bounds
+(maximum in "scaling.data" is 8.888E-02) for atom 36. Here, the structure index
+refers to the MPI rank.
+</P>
+<P>NOTE: The <I>showew</I> keyword should only be set to <I>yes</I> for debugging purposes.
+Extrapolation warnings may add lots of overhead as they are communicated each
+timestep. Also, if the simulation is run in a phase-space region where the NNP
+was not correctly trained, lots of extrapolation warnings may clog log files and
+the console. In a production run use <I>showewsum</I> instead.
+</P>
+<P>The keyword <I>showewsum</I> can be used to get an overview of extrapolation warnings
+occurring during an MD simulation. The argument specifies the interval at which
+extrapolation warning summaries are displayed and logged. An EW summary may look
+like this:
+</P>
+<PRE>### NNP EW SUMMARY ### TS:        100 EW         11 EWPERSTEP  1.100E-01 
+</PRE>
+<P>Here, at timestep 100 the occurrence of 11 extrapolation warnings since the last
+summary is reported, which corresponds to an EW rate of 0.11 per timestep.
+Setting <I>showewsum</I> to 0 deactivates the EW summaries.
+</P>
+<P>A maximum number of allowed extrapolation warnings can be specified with the
+<I>maxew</I> keyword. If the number of EWs exceeds the <I>maxew</I> argument the
+simulation is stopped. Note however that this is merely an approximate threshold
+since the check is only performed at the end of each timestep and each MPI
+process counts individually to minimize communication overhead.
+</P>
+<P>The keyword <I>resetew</I> alters the behavior of the above mentioned <I>maxew</I>
+threshold. If <I>resetew</I> is set to <I>yes</I> the threshold is applied on a
+per-timestep basis and the internal EW counters are reset at the beginning of
+each timestep. With <I>resetew</I> set to <I>no</I> the counters accumulate EWs along the
+whole trajectory.
+</P>
+<P>If the training of a neural network potential has been performed with different
+physical units for length and energy than those set in LAMMPS, it is still
+possible to use the potential when the unit conversion factors are provided via
+the <I>cflength</I> and <I>cfenergy</I> keywords. If for example, the NNP was
+parameterized with Bohr and Hartree training data and symmetry function
+parameters (i.e. distances and energies in "input.nn" are given in Bohr and
+Hartree) but LAMMPS is set to use <I>metal</I> units (Angstrom and eV) the correct
+conversion factors are:
+</P>
+<PRE>cflength 1.8897261328
+cfenergy 0.0367493254 
+</PRE>
+<P>Thus, arguments of <I>cflength</I> and <I>cfenergy</I> are the multiplicative factors
+required to convert lengths and energies given in LAMMPS units to respective
+quantities in native NNP units (1 Angstrom = 1.8897261328 Bohr, 1 eV =
+0.0367493254 Hartree).
+</P>
+<HR>
+
+<P><B>Restrictions:</B>
+</P>
+<P>Currently it is unclear whether this pair style can work in conjunction with
+other interactions (pair_hybrid).
+</P>
+<P><B>Related commands:</B>
+</P>
+<P>pair_coeff
+</P>
+<P>units
+</P>
+<P><B>Default:</B>
+</P>
+<P>The default options are dir = "nnp/", showew = yes, showewsum = 0, maxew = 0, resetew = no,
+cflength = 1.0, cfenergy = 1.0.
+</P>
+<HR>
+
+<A NAME = "Behler-Parrinello"></A>
+
+<P><B>(Behler-Parrinello)</B> <A HREF = "https://doi.org/10.1103/PhysRevLett.98.146401">Behler and Parrinello, Phys. Rev. Lett. 98, 146401 (2007)</A>
+</P>
+<A NAME = "Singraber-Behler-Dellago"></A>
+
+<P><B>(Singraber-Behler-Dellago)</B> submitted.
+</P>
+<A NAME = "NNP-Library"></A>
+
+<P><B>(NNP-Library)</B> <A HREF = "https://github.com/CompPhysVienna">https://github.com/CompPhysVienna</A>
+</P>
+</HTML>
