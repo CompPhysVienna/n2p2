@@ -10,6 +10,7 @@ addons:
       # The doxygen version on "trusty" is too old (1.8.6).
       # - doxygen
       - graphviz
+      - texlive-base
 
 before_install:
   # Set doxygen environment variables.
