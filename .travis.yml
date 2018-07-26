@@ -12,13 +12,16 @@ addons:
       - graphviz
 
 before_install:
-  - export DOXYGEN_VER=doxygen-1.8.14
-  - export DOXYGEN_TAR=${DOXYGEN_VER}.linux.bin.tar.gz
-  - export DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/${DOXYGEN_TAR}"
+  # Set doxygen environment variables.
+  - export DOXYGEN_VER=1_8_14
+  - export DOXYGEN_TAR=https://github.com/doxygen/doxygen/archive/Release_${DOXYGEN_VER}.tar.gz
+  - export DOXYGEN_DIR=doxygen-Release_${DOXYGEN_VER}
 
 before_script:
-  - wget -O - "${DOXYGEN_URL}" | tar xz -C ${TMPDIR-/tmp} ${DOXYGEN_VER}/bin/doxygen
-  - export PATH="${TMPDIR-/tmp}/${DOXYGEN_VER}/bin:$PATH"
+  # Need to manually compile doxygen.
+  - wget -O - ${DOXYGEN_TAR} | tar -xz -C ${TMPDIR-/tmp}
+  - cd ${TMPDIR-/tmp}/${DOXYGEN_DIR} && mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
+  - export PATH="${TMPDIR-/tmp}/${DOXYGEN_DIR}/build/bin:$PATH"
 
 script:
   - cd src

@@ -32,7 +32,7 @@ neural network potentials with the provided training tools.
 In case you are a new user it might be a good idea to build the documentation
 first. This requires [doxygen](http://www.stack.nl/~dimitri/doxygen/) and
 [graphviz](https://www.graphviz.org/) to be installed on your system (tested
-with doxygen version 1.8.15 and graphviz version 2.38.0). If the requirements
+with doxygen version 1.8.14 and graphviz version 2.36.0). If the requirements
 are met change to the `src` directory and try to build the documentation:
 ```
 cd n2p2/src/
