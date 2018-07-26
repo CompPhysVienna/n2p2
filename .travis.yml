@@ -19,7 +19,7 @@ before_install:
 
 before_script:
   # Remember directory.
-  - export ${REPO_DIR}=$(pwd)
+  - export REPO_DIR=$(pwd)
   - echo ${REPO_DIR}
   # Need to manually compile doxygen.
   - wget -O - ${DOXYGEN_TAR} | tar -xz -C ${TMPDIR-/tmp}
