@@ -43,8 +43,13 @@ OPTIONS+=${PROJECT_OPTIONS}
 # COMPILER AND FLAGS
 ###############################################################################
 CC=${PROJECT_CC}
+ifneq (,$(findstring NOMPI,${OPTIONS}))
+MPICC=${PROJECT_CC}
+CFLAGS=${PROJECT_CFLAGS}
+else
 MPICC=${PROJECT_MPICC}
 CFLAGS=${PROJECT_CFLAGS} ${PROJECT_CFLAGS_MPI}
+endif
 DEBUG=${PROJECT_DEBUG}
 
 # Extra include paths for compiling.
