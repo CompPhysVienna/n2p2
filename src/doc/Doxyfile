@@ -774,7 +774,6 @@ WARN_LOGFILE           =
 INPUT                  = ./ \
                          ../libnnp \
                          ../libnnpif \
-                         ../libnnptrain \
                          ../interface
 
 # This tag can be used to specify the character encoding of the source files
