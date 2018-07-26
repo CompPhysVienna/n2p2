@@ -9,8 +9,12 @@ addons:
     packages:
       # The doxygen version on "trusty" is too old (1.8.6).
       # - doxygen
+      # Generating graphs with doxygen requires dot.
       - graphviz
-      - texlive-base
+      # Generating formulae with doxygen requires latex and dvips.
+      - texlive-latex-base
+      # Generating formulae with doxygen requires gs.
+      - ghostscript
 
 before_install:
   # Set doxygen environment variables.
