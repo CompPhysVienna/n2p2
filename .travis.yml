@@ -7,7 +7,18 @@ branches:
 addons:
   apt:
     packages:
-      - doxygen
+      # The doxygen version on "trusty" is too old (1.8.6).
+      # - doxygen
+      - graphviz
+
+before_install:
+  - export DOXYGEN_VER=doxygen-1.8.14
+  - export DOXYGEN_TAR=${DOXYGEN_VER}.linux.bin.tar.gz
+  - export DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/${DOXYGEN_TAR}"
+
+before_script:
+  - wget -O - "${DOXYGEN_URL}" | tar xz -C ${TMPDIR-/tmp} ${DOXYGEN_VER}/bin/doxygen
+  - export PATH="${TMPDIR-/tmp}/${DOXYGEN_VER}/bin:$PATH"
 
 script:
   - cd src
