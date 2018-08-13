@@ -1,6 +1,8 @@
 n2p2 - The neural network potential package
 ===========================================
 
+[![DOI](https://zenodo.org/badge/142296892.svg)](https://zenodo.org/badge/latestdoi/142296892)
+
 This repository provides ready-to-use software for high-dimensional neural
 network potentials in materials science.
 
