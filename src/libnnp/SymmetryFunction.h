@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef SYMMETRYFUNCTION_H
 #define SYMMETRYFUNCTION_H
@@ -85,26 +95,28 @@ public:
     /** Change length unit.
      *
      * @param[in] convLength Multiplicative length unit conversion factor.
+     *
+     * @note This will permanently change all symmetry function parameters with
+     * dimension length. For convenience, some member functions for printing
+     * (getSettingsLine(), parameterLine(), calculateRadialPart() and
+     * calculateAngularPart()) will temporarily undo this change. In contrast,
+     * the member getter functions, e.g. getRc(), will return the internally
+     * stored values.
      */
     virtual void        changeLengthUnit(double convLength) = 0;
     /** Get settings file line from currently set parameters.
      *
-     * @param[in] convLength Apply length conversion factor if requested.
-     *
      * @return Settings file string ("symfunction_short ...").
      */
-    virtual std::string getSettingsLine(double const convLength) const = 0;
+    virtual std::string getSettingsLine() const = 0;
     /** Calculate symmetry function for one atom.
      *
      * @param[in,out] atom Atom for which the symmetry function is caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
-     * @param[in,out] statistics Gathers statistics and extrapolation warnings.
      */
-    virtual void        calculate(Atom&                       atom,
-                                  bool const                  derivatives,
-                                  SymmetryFunctionStatistics& statistics
-                                 ) const = 0;
+    virtual void        calculate(Atom&      atom,
+                                  bool const derivatives) const = 0;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
@@ -143,6 +155,12 @@ public:
      * @return Scaled symmetry function value.
      */
     double              scale(double value) const;
+    /** Undo symmetry function scaling and/or centering.
+     *
+     * @param[in] value Scaled symmetry function value.
+     * @return Raw symmetry function value.
+     */
+    double              unscale(double value) const;
     /** Get private #type member variable.
      */
     std::size_t         getType() const;
@@ -173,6 +191,9 @@ public:
     /** Get private #cutoffAlpha member variable.
      */
     double              getCutoffAlpha() const;
+    /** Get private #convLength member variable.
+     */
+    double              getConvLength() const;
     /** Get private #cutoffType member variable.
      */
     CutoffFunction::
@@ -196,17 +217,6 @@ public:
      * @return Scaling information string.
      */
     std::string         scalingLine() const;
-    /** Update statistics map with new value.
-     *
-     * @param[in] value Unscaled symmetry function value.
-     * @param[in] atom Atom this symmetry function value belongs to.
-     * @param[in,out] statistics Map containing statistics about symmetry
-     *                           functions.
-     */
-    void                updateStatisticsGeneric(
-                                 double                      value,
-                                 Atom const&                 atom,
-                                 SymmetryFunctionStatistics& statistics) const;
     /** Calculate (partial) symmetry function value for one given distance.
      *
      * @param[in] distance Distance between two atoms.
@@ -262,6 +272,8 @@ protected:
     double                     scalingFactor;
     /// Cutoff parameter @f$\alpha@f$.
     double                     cutoffAlpha;
+    /// Data set normalization length conversion factor.
+    double                     convLength;
     /// Cutoff function used by this symmetry function.
     CutoffFunction             fc;
     /// Cutoff type used by this symmetry function.
@@ -345,6 +357,11 @@ inline double SymmetryFunction::getScalingFactor() const
 inline double SymmetryFunction::getCutoffAlpha() const
 {
     return cutoffAlpha;
+}
+
+inline double SymmetryFunction::getConvLength() const
+{
+    return convLength;
 }
 
 inline void SymmetryFunction::setIndex(std::size_t index)

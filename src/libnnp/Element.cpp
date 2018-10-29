@@ -1,9 +1,20 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include "Atom.h"
 #include "Element.h"
 #include "NeuralNetwork.h"
 #include "SymmetryFunction.h"
@@ -19,6 +30,7 @@
 #include "SymmetryFunctionGroupWeightedRadial.h"
 #include "SymmetryFunctionGroupWeightedAngular.h"
 #include "utility.h"
+#include <iostream>  // std::cerr
 #include <cstdlib>   // atoi
 #include <algorithm> // std::sort, std::min, std::max
 #include <limits>    // std::numeric_limits
@@ -323,26 +335,93 @@ double Element::getMaxCutoffRadius() const
 }
 
 void Element::calculateSymmetryFunctions(Atom&      atom,
-                                         bool const derivatives)
+                                         bool const derivatives) const
 {
     for (vector<SymmetryFunction*>::const_iterator
          it = symmetryFunctions.begin();
          it != symmetryFunctions.end(); ++it)
     {
-        (*it)->calculate(atom, derivatives, statistics);
+        (*it)->calculate(atom, derivatives);
     }
 
     return;
 }
 
 void Element::calculateSymmetryFunctionGroups(Atom&      atom,
-                                              bool const derivatives)
+                                              bool const derivatives) const
 {
     for (vector<SymmetryFunctionGroup*>::const_iterator
          it = symmetryFunctionGroups.begin();
          it != symmetryFunctionGroups.end(); ++it)
     {
-        (*it)->calculate(atom, derivatives, statistics);
+        (*it)->calculate(atom, derivatives);
+    }
+
+    return;
+}
+
+void Element::updateSymmetryFunctionStatistics(Atom const& atom)
+{
+    if (atom.element != index)
+    {
+        throw runtime_error("ERROR: Atom has a different element index.\n");
+    }
+
+    if (atom.numSymmetryFunctions != symmetryFunctions.size())
+    {
+        throw runtime_error("ERROR: Number of symmetry functions"
+                            " does not match.\n");
+    }
+
+    for (size_t i = 0; i < atom.G.size(); ++i)
+    {
+        double const Gmin = symmetryFunctions.at(i)->getGmin();
+        double const Gmax = symmetryFunctions.at(i)->getGmax();
+        double const value = symmetryFunctions.at(i)->unscale(atom.G.at(i));
+        size_t const index = symmetryFunctions.at(i)->getIndex();
+        if (statistics.collectStatistics)
+        {
+            statistics.addValue(index, value);
+        }
+
+        if (value < Gmin || value > Gmax)
+        {
+            if (statistics.collectExtrapolationWarnings)
+            {
+                statistics.addExtrapolationWarning(index,
+                                                   value,
+                                                   Gmin,
+                                                   Gmax,
+                                                   atom.indexStructure,
+                                                   atom.tag);
+            }
+            if (statistics.writeExtrapolationWarnings)
+            {
+                cerr << strpr("### NNP EXTRAPOLATION WARNING ### "
+                              "STRUCTURE: %6zu ATOM: %6zu SYMFUNC: %4zu "
+                              "VALUE: %10.3E MIN: %10.3E MAX: %10.3E\n",
+                              atom.indexStructure,
+                              atom.tag,
+                              index,
+                              value,
+                              Gmin,
+                              Gmax);
+            }
+            if (statistics.stopOnExtrapolationWarnings)
+            {
+                throw out_of_range(
+                        strpr("### NNP EXTRAPOLATION WARNING ### "
+                              "STRUCTURE: %6zu ATOM: %6zu SYMFUNC: %4zu "
+                              "VALUE: %10.3E MIN: %10.3E MAX: %10.3E\n"
+                              "ERROR: Symmetry function value out of range.\n",
+                              atom.indexStructure,
+                              atom.tag,
+                              index,
+                              value,
+                              Gmin,
+                              Gmax));
+            }
+        }
     }
 
     return;

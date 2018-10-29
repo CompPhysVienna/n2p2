@@ -1,6 +1,9 @@
 NNP configuration: keywords
 ===========================
 
+@warning
+Documentation under construction...
+
 The NNP settings file (usually named `input.nn`) contains the setup of neural
 networks and symmetry functions. Each line may contain a single keyword with no,
 one or multiple arguments. Keywords and arguments are separated by at least one

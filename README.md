@@ -37,4 +37,4 @@ documentation if you set the option `HAVE_DOT` in the file `src/doc/Doxyfile` to
 
 # License
 
-This software is licensed under the [Mozilla Public License Version 2.0 (MPL 2.0)](https://www.mozilla.org/en-US/MPL/2.0/).
+This software is licensed under the [GNU General Public License version 3 or any later version (GPL-3.0-or-later)](https://www.gnu.org/licenses/gpl.txt).

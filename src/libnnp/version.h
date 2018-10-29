@@ -1,15 +1,25 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef VERSION_H
 #define VERSION_H
 
-#define NNP_VERSION "1.0.0"
-#define NNP_GIT_REV "193a30b2e7321af967f52c588cd8e7443690c3eb"
-#define NNP_GIT_REV_SHORT "193a30b"
-#define NNP_GIT_BRANCH "master"
+#define NNP_VERSION "2.0.0"
+#define NNP_GIT_REV "46e082e7c51c870ec814ed1a6954a7fc6eaac455"
+#define NNP_GIT_REV_SHORT "46e082e"
+#define NNP_GIT_BRANCH "n2p2-release-v2"
 
 #endif

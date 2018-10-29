@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef SYMMETRYFUNCTIONANGULARWIDE_H
 #define SYMMETRYFUNCTIONANGULARWIDE_H
@@ -24,11 +34,12 @@ class SymmetryFunctionStatistics;
  * @f[
    G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
            \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-           \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 ) } f_c(r_{ij}) f_c(r_{ik}) 
+           \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
+           f_c(r_{ij}) f_c(r_{ik}) 
  * @f]
  * Parameter string:
  * ```
- * <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff>
+ * <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>>
  * ```
  * where
  * - `<element-central> .....` element symbol of central atom
@@ -38,6 +49,7 @@ class SymmetryFunctionStatistics;
  * - `<lambda> ..............` @f$\lambda@f$ 
  * - `<zeta> ................` @f$\zeta@f$ 
  * - `<rcutoff> .............` @f$r_c@f$
+ * - `<<rshift>> ............` @f$r_s@f$ (optional, default @f$r_s = 0@f$)
  */
 class SymmetryFunctionAngularWide : public SymmetryFunction
 {
@@ -76,21 +88,16 @@ public:
     void         changeLengthUnit(double convLength);
     /** Get settings file line from currently set parameters.
      *
-     * @param[in] convLength Apply length conversion factor if requested.
-     *
      * @return Settings file string ("symfunction_short ...").
      */
-    std::string  getSettingsLine(double const convLength = 1.0) const;
+    std::string  getSettingsLine() const;
     /** Calculate symmetry function for one atom.
      *
      * @param[in,out] atom Atom for which the symmetry function is caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
-     * @param[in,out] statistics Gathers statistics and extrapolation warnings.
      */
-    void         calculate(Atom&                       atom,
-                           bool const                  derivatives,
-                           SymmetryFunctionStatistics& statistics) const;
+    void         calculate(Atom& atom, bool const derivatives) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
@@ -123,6 +130,9 @@ public:
     /** Get private #zeta member variable.
      */
     double       getZeta() const;
+    /** Get private #rs member variable.
+     */
+    double       getRs() const;
     /** Calculate (partial) symmetry function value for one given distance.
      *
      * @param[in] distance Distance between two atoms.
@@ -151,6 +161,8 @@ private:
     double      eta;
     /// Exponent @f$\zeta@f$ of cosine term.
     double      zeta;
+    /// Shift @f$r_s@f$ of gaussian.
+    double      rs;
 };
 
 //////////////////////////////////
@@ -214,6 +226,11 @@ inline double SymmetryFunctionAngularWide::getEta() const
 inline double SymmetryFunctionAngularWide::getZeta() const
 {
     return zeta;
+}
+
+inline double SymmetryFunctionAngularWide::getRs() const
+{
+    return rs;
 }
 
 }

@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef ELEMENT_H
 #define ELEMENT_H
@@ -136,8 +146,8 @@ public:
      *                        calculated.
      */
     void                     calculateSymmetryFunctions(
-                                                       Atom&      atom,
-                                                       bool const derivatives);
+                                                 Atom&      atom,
+                                                 bool const derivatives) const;
     /** Calculate symmetry functions via groups.
      *
      * @param[in] atom Atom whose symmetry functions are calculated.
@@ -145,8 +155,22 @@ public:
      *                        calculated.
      */
     void                     calculateSymmetryFunctionGroups(
-                                                      Atom&       atom,
-                                                      bool const  derivatives);
+                                                Atom&       atom,
+                                                bool const  derivatives) const;
+    /** Update symmetry function statistics.
+     *
+     * @param[in] atom Atom with symmetry function values.
+     *
+     * This function checks also for extrapolation warnings.
+     */
+    void                     updateSymmetryFunctionStatistics(
+                                                             Atom const& atom);
+    /** Get symmetry function instance.
+     *
+     * @param[in] index Symmetry function index.
+     *
+     * @return Symmetry function object.
+     */
     SymmetryFunction const&  getSymmetryFunction(std::size_t index) const;
 
     /// Neural network pointer for this element.

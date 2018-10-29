@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef NOMPI
 #include <mpi.h>
@@ -250,6 +260,11 @@ void InterfaceLammps::process()
 #endif
     calculateAtomicNeuralNetworks(structure, true);
     calculateEnergy(structure);
+    if (normalize)
+    {
+        structure.energy = physicalEnergy(structure, false);
+    }
+    addEnergyOffset(structure, false);
 
     return;
 }
@@ -262,8 +277,7 @@ double InterfaceLammps::getMaxCutoffRadius() const
 
 double InterfaceLammps::getEnergy() const
 {
-    if (normalize) return physicalEnergy(structure, false) / cfenergy;
-    else return structure.energy / cfenergy;
+    return structure.energy / cfenergy;
 }
 
 double InterfaceLammps::getAtomicEnergy(int index) const
@@ -287,9 +301,19 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
     // atoms and their neighbors. These are now summed up to the force
     // contributions of local and ghost atoms.
-    for (vector<Atom>::const_iterator a = structure.atoms.begin();
-         a != structure.atoms.end(); ++a)
+    Atom const* a = NULL;
+
+//#ifdef _OPENMP
+//    #pragma omp parallel for private (a)
+//#endif
+    for (size_t i =  0; i < structure.atoms.size(); ++i)
     {
+    //for (vector<Atom>::const_iterator a = structure.atoms.begin();
+    //     a != structure.atoms.end(); ++a)
+    //{
+        // Set pointer to atom.
+        a = &(structure.atoms.at(i));
+
         // Temporarily save the number of symmetry functions of this atom.
         size_t const numSymmetryFunctions = a->numSymmetryFunctions;
         // Loop over all neighbor atoms. Some are local, some are ghost atoms.
@@ -305,8 +329,17 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             {
                 double const dEdG = a->dEdG[s] * cfforce * convForce;
                 double const* const dGdr = n->dGdr[s].r;
+//#ifdef _OPENMP
+//                #pragma omp atomic update
+//#endif
                 atomF[in][0] -= dEdG * dGdr[0];
+//#ifdef _OPENMP
+//                #pragma omp atomic update
+//#endif
                 atomF[in][1] -= dEdG * dGdr[1];
+//#ifdef _OPENMP
+//                #pragma omp atomic update
+//#endif
                 atomF[in][2] -= dEdG * dGdr[2];
             }
         }
@@ -319,8 +352,17 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         {
             double const dEdG = a->dEdG[s] * cfforce * convForce;
             double const* const dGdr = a->dGdr[s].r;
+//#ifdef _OPENMP
+//            #pragma omp atomic update
+//#endif
             atomF[ia][0] -= dEdG * dGdr[0];
+//#ifdef _OPENMP
+//            #pragma omp atomic update
+//#endif
             atomF[ia][1] -= dEdG * dGdr[1];
+//#ifdef _OPENMP
+//            #pragma omp atomic update
+//#endif
             atomF[ia][2] -= dEdG * dGdr[2];
         }
     }
