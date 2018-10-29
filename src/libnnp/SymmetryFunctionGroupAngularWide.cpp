@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SymmetryFunctionGroupAngularWide.h"
 #include "Atom.h"
@@ -12,6 +22,7 @@
 #include "utility.h"
 #include <algorithm> // std::sort
 #include <cmath>     // exp
+#include <stdexcept> // std::runtime_error
 
 using namespace std;
 using namespace nnp;
@@ -26,6 +37,7 @@ SymmetryFunctionGroupAngularWide(ElementMap const& elementMap) :
     parametersCommon.insert("e2");
 
     parametersMember.insert("eta");
+    parametersMember.insert("rs");
     parametersMember.insert("lambda");
     parametersMember.insert("zeta");
     parametersMember.insert("mindex");
@@ -87,6 +99,7 @@ addMember(SymmetryFunction const* const symmetryFunction)
         rc          = sf->getRc();
         e1          = sf->getE1();
         e2          = sf->getE2();
+        convLength  = sf->getConvLength();
 
         fc.setCutoffType(cutoffType);
         fc.setCutoffRadius(rc);
@@ -99,6 +112,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     if (sf->getRc()          != rc         ) return false;
     if (sf->getE1()          != e1         ) return false;
     if (sf->getE2()          != e2         ) return false;
+    if (sf->getConvLength()  != convLength )
+    {
+        throw runtime_error("ERROR: Unable to add symmetry function members "
+                            "with different conversion factors.\n");
+    }
 
     members.push_back(sf);
 
@@ -123,7 +141,8 @@ void SymmetryFunctionGroupAngularWide::sortMembers()
         }
         else
         {
-            if (members[i - 1]->getEta() != members[i]->getEta())
+            if ( members[i - 1]->getEta() != members[i]->getEta() ||
+                 members[i - 1]->getRs()  != members[i]->getRs() )
             {
                 calculateExp.push_back(true);
             }
@@ -136,6 +155,7 @@ void SymmetryFunctionGroupAngularWide::sortMembers()
         memberIndex.push_back(members[i]->getIndex());
         zetaInt.push_back(members[i]->getZetaInt());
         eta.push_back(members[i]->getEta());
+        rs.push_back(members[i]->getRs());
         zeta.push_back(members[i]->getZeta());
         lambda.push_back(members[i]->getLambda());
         zetaLambda.push_back(members[i]->getZeta() * members[i]->getLambda());
@@ -160,12 +180,10 @@ void SymmetryFunctionGroupAngularWide::setScalingFactors()
 // time-critical when predicting new structures (e.g. in MD simulations). Thus,
 // lots of optimizations were used sacrificing some readablity. Vec3D
 // operations have been rewritten in simple C array style and the use of
-// temporary objects has been minmized. Some of the originally coded
+// temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupAngularWide::calculate(
-                                  Atom&                       atom,
-                                  bool const                  derivatives,
-                                  SymmetryFunctionStatistics& statistics) const
+void SymmetryFunctionGroupAngularWide::calculate(Atom&      atom,
+                                                 bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t l = 0; l < members.size(); ++l)
@@ -258,12 +276,24 @@ void SymmetryFunctionGroupAngularWide::calculate(
                         double const pr1 = pfcik * pdfcij / rij;
                         double const pr2 = pfcij * pdfcik / rik;
                         double vexp = 0.0;
+                        double rijs = 0.0;
+                        double riks = 0.0;
 
                         for (size_t l = 0; l < members.size(); ++l)
                         {
                             if (calculateExp[l])
                             {
-                                vexp = exp(-eta[l] * r2sum);
+                                if (rs[l] > 0.0)
+                                {
+                                    rijs = rij - rs[l];
+                                    riks = rik - rs[l];
+                                    vexp = exp(-eta[l] * (rijs * rijs
+                                                        + riks * riks));
+                                }
+                                else
+                                {
+                                    vexp = exp(-eta[l] * r2sum);
+                                }
                             }
                             double const plambda = 1.0 + lambda[l] * costijk;
                             double fg = vexp;
@@ -286,12 +316,25 @@ void SymmetryFunctionGroupAngularWide::calculate(
                             fg *= factorNorm[l];
                             double const pfczl = pfc * zetaLambda[l];
                             double const p2etapl = plambda * factorDeriv[l];
-                            double const p1 = fg * (pfczl * (rinvijik
-                                            - costijk / r2ij - p2etapl)
-                                            + pr1 * plambda);
-                            double const p2 = fg * (pfczl * (rinvijik
-                                            - costijk / r2ik - p2etapl)
-                                            + pr2 * plambda);
+                            double p1;
+                            double p2;
+                            if (rs[l] > 0)
+                            {
+                                p1 = fg * (pfczl * (rinvijik
+                                   - costijk / r2ij - p2etapl
+                                   * rijs / rij) + pr1 * plambda);
+                                p2 = fg * (pfczl * (rinvijik
+                                   - costijk / r2ik - p2etapl
+                                   * riks / rik) + pr2 * plambda);
+                            }
+                            else
+                            {
+                                p1 = fg * (pfczl * (rinvijik - costijk / r2ij
+                                   - p2etapl) + pr1 * plambda);
+                                p2 = fg * (pfczl * (rinvijik - costijk / r2ik
+                                   - p2etapl) + pr2 * plambda);
+
+                            }
                             double const p3 = fg * pfczl * rinvijik;
 
                             // SIMPLE EXPRESSIONS:
@@ -342,7 +385,6 @@ void SymmetryFunctionGroupAngularWide::calculate(
     for (size_t l = 0; l < members.size(); ++l)
     {
         result[l] *= factorNorm[l] / scalingFactors[l];
-        members[l]->updateStatisticsGeneric(result[l], atom, statistics);
         atom.G[memberIndex[l]] = members[l]->scale(result[l]);
     }
 
@@ -361,14 +403,15 @@ vector<string> SymmetryFunctionGroupAngularWide::parameterLines() const
                       type,
                       elementMap[e1].c_str(),
                       elementMap[e2].c_str(),
-                      rc,
+                      rc / convLength,
                       (int)cutoffType,
                       cutoffAlpha));
 
     for (size_t i = 0; i < members.size(); ++i)
     {
         v.push_back(strpr(getPrintFormatMember().c_str(),
-                          members[i]->getEta(),
+                          members[i]->getEta() * convLength * convLength,
+                          members[i]->getRs() / convLength,
                           members[i]->getLambda(),
                           members[i]->getZeta(),
                           members[i]->getLineNumber(),

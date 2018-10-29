@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Structure.h"
 #include "utility.h"
@@ -51,6 +61,22 @@ void Structure::setElementMap(ElementMap const& elementMap)
     this->elementMap = elementMap;
     numElements = elementMap.size();
     numAtomsPerElement.resize(numElements, 0);
+
+    return;
+}
+
+void Structure::readFromFile(string const fileName)
+{
+    ifstream file;
+
+    file.open(fileName.c_str());
+    if (!file.is_open())
+    {
+        throw runtime_error("ERROR: Could not open file: \"" + fileName
+                            + "\".\n");
+    }
+    readFromFile(file);
+    file.close();
 
     return;
 }
@@ -176,9 +202,9 @@ void Structure::calculateNeighborList(double cutoffRadius)
         cutoffRadius *= cutoffRadius;
 
         size_t i = 0;
-//#ifdef _OPENMP
-//        #pragma omp parallel for private(i)
-//#endif
+#ifdef _OPENMP
+        #pragma omp parallel for private(i)
+#endif
         for (i = 0; i < numAtoms; i++)
         {
             // Count atom i as unique neighbor.
@@ -238,9 +264,9 @@ void Structure::calculateNeighborList(double cutoffRadius)
         cutoffRadius *= cutoffRadius;
 
         size_t i = 0;
-//#ifdef _OPENMP
-//        #pragma omp parallel for private(i)
-//#endif
+#ifdef _OPENMP
+        #pragma omp parallel for private(i)
+#endif
         for (i = 0; i < numAtoms; i++)
         {
             // Count atom i as unique neighbor.
@@ -491,7 +517,9 @@ void Structure::clearNeighborList()
         a.numNeighborsPerElement.resize(numElements, 0);
         a.numNeighborsUnique = 0;
         a.neighborsUnique.clear();
+        vector<size_t>(a.neighborsUnique).swap(a.neighborsUnique);
         a.neighbors.clear();
+        vector<Atom::Neighbor>(a.neighbors).swap(a.neighbors);
         a.hasNeighborList = false;
         a.free(true);
         a.hasNeighborList = false;
@@ -546,7 +574,7 @@ vector<string> Structure::getForcesLines() const
     return v;
 }
 
-void Structure::writeToFile(ofstream* const& file) const
+void Structure::writeToFile(ofstream* const& file, bool ref) const
 {
     if (!file->is_open())
     {
@@ -566,19 +594,38 @@ void Structure::writeToFile(ofstream* const& file) const
     for (vector<Atom>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it)
     {
-        (*file) << strpr("atom %24.16E %24.16E %24.16E %2s %24.16E %24.16E"
-                         " %24.16E %24.16E %24.16E\n",
-                         it->r[0],
-                         it->r[1],
-                         it->r[2],
-                         elementMap[it->element].c_str(),
-                         it->charge,
-                         0.0,
-                         it->fRef[0],
-                         it->fRef[1],
-                         it->fRef[2]);
+        if (ref)
+        {
+            (*file) << strpr("atom %24.16E %24.16E %24.16E %2s %24.16E %24.16E"
+                             " %24.16E %24.16E %24.16E\n",
+                             it->r[0],
+                             it->r[1],
+                             it->r[2],
+                             elementMap[it->element].c_str(),
+                             it->charge,
+                             0.0,
+                             it->fRef[0],
+                             it->fRef[1],
+                             it->fRef[2]);
+        }
+        else
+        {
+            (*file) << strpr("atom %24.16E %24.16E %24.16E %2s %24.16E %24.16E"
+                             " %24.16E %24.16E %24.16E\n",
+                             it->r[0],
+                             it->r[1],
+                             it->r[2],
+                             elementMap[it->element].c_str(),
+                             it->charge,
+                             0.0,
+                             it->f[0],
+                             it->f[1],
+                             it->f[2]);
+
+        }
     }
-    (*file) << strpr("energy %24.16E\n", energyRef);
+    if (ref) (*file) << strpr("energy %24.16E\n", energyRef);
+    else     (*file) << strpr("energy %24.16E\n", energy);
     (*file) << strpr("charge %24.16E\n", chargeRef);
     (*file) << strpr("end\n");
 

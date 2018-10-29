@@ -1,13 +1,26 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Mode.h"
 #include "NeuralNetwork.h"
 #include "utility.h"
 #include "version.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 #include <algorithm> // std::min, std::max
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
@@ -17,13 +30,14 @@
 using namespace std;
 using namespace nnp;
 
-Mode::Mode() : normalize      (false),
-               numElements    (0    ),
-               maxCutoffRadius(0.0  ),
-               cutoffAlpha    (0.0  ),
-               meanEnergy     (0.0  ),
-               convEnergy     (0.0  ),
-               convLength     (0.0  )
+Mode::Mode() : normalize                 (false),
+               checkExtrapolationWarnings(false),
+               numElements               (0    ),
+               maxCutoffRadius           (0.0  ),
+               cutoffAlpha               (0.0  ),
+               meanEnergy                (0.0  ),
+               convEnergy                (1.0  ),
+               convLength                (1.0  )
 {
 }
 
@@ -40,6 +54,10 @@ void Mode::initialize()
     log << "Git branch  : " NNP_GIT_BRANCH "\n";
     log << "Git revision: " NNP_GIT_REV_SHORT " (" NNP_GIT_REV ")\n";
     log << "\n";
+#ifdef _OPENMP
+    log << strpr("Number of OpenMP threads: %d", omp_get_max_threads());
+    log << "\n";
+#endif
     log << "*****************************************"
            "**************************************\n";
 
@@ -98,9 +116,11 @@ void Mode::setupNormalization()
         log << strpr("Conversion factor length : %24.16E\n", convLength);
         if (settings.keywordExists("atom_energy"))
         {
-            throw runtime_error("ERROR: Data set normalization can not be used"
-                                " in conjunction with keyword"
-                                " `atom_energy`.\n");
+            log << "\n";
+            log << "Atomic energy offsets are used in addition to"
+                   " data set normalization.\n";
+            log << "Offsets will be subtracted from reference energies BEFORE"
+                   " normalization is applied.\n";
         }
     }
     else if ((!settings.keywordExists("mean_energy")) &&
@@ -183,6 +203,8 @@ void Mode::setupElements()
                      i, elements.at(i).getAtomicEnergyOffset());
     }
 
+    log << "Energy offsets are automatically subtracted from reference "
+           "energies.\n";
     log << "*****************************************"
            "**************************************\n";
 
@@ -345,10 +367,10 @@ void Mode::setupSymmetryFunctions()
         minCutoffRadius.at(i) = elements.at(i).getMinCutoffRadius();
         log << strpr("Minimum cutoff radius for element %2s: %f\n",
                      elements.at(i).getSymbol().c_str(),
-                     minCutoffRadius.at(i));
+                     minCutoffRadius.at(i) / convLength);
     }
     log << strpr("Maximum cutoff radius (global)      : %f\n",
-                 maxCutoffRadius);
+                 maxCutoffRadius / convLength);
 
     log << "*****************************************"
            "**************************************\n";
@@ -585,6 +607,11 @@ void Mode::setupSymmetryFunctionStatistics(bool collectStatistics,
                                                    stopOnExtrapolationWarnings;
     }
 
+    checkExtrapolationWarnings = collectStatistics
+                              || collectExtrapolationWarnings
+                              || writeExtrapolationWarnings
+                              || stopOnExtrapolationWarnings;
+
     log << "*****************************************"
            "**************************************\n";
     return;
@@ -726,40 +753,59 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
     if (structure.hasSymmetryFunctionDerivatives) return;
     if (structure.hasSymmetryFunctions && !derivatives) return;
 
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    Atom* a = NULL;
+    Element* e = NULL;
+#ifdef _OPENMP
+    #pragma omp parallel for private (a, e)
+#endif
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
     {
+        // Pointer to atom.
+        a = &(structure.atoms.at(i));
+
         // Skip calculation for individual atom if results are already saved.
-        if (it->hasSymmetryFunctionDerivatives) continue;
-        if (it->hasSymmetryFunctions && !derivatives) continue;
+        if (a->hasSymmetryFunctionDerivatives) continue;
+        if (a->hasSymmetryFunctions && !derivatives) continue;
 
         // Get element of atom and set number of symmetry functions.
-        Element& e = elements.at(it->element);
-        it->numSymmetryFunctions = e.numSymmetryFunctions();
+        e = &(elements.at(a->element));
+        a->numSymmetryFunctions = e->numSymmetryFunctions();
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
-        size_t numNeighbors = it->getNumNeighbors(
-                                             minCutoffRadius.at(e.getIndex()));
-        if (numNeighbors < minNeighbors.at(e.getIndex()))
+        size_t numNeighbors = a->getNumNeighbors(
+                                            minCutoffRadius.at(e->getIndex()));
+        if (numNeighbors < minNeighbors.at(e->getIndex()))
         {
             log << strpr("WARNING: Structure %6zu Atom %6zu : %zu "
                          "neighbors.\n",
-                         it->indexStructure,
-                         it->index,
+                         a->indexStructure,
+                         a->index,
                          numNeighbors);
         }
 #endif
 
         // Allocate symmetry function data vectors in atom.
-        it->allocate(derivatives);
+        a->allocate(derivatives);
 
         // Calculate symmetry functions (and derivatives).
-        e.calculateSymmetryFunctions(*it, derivatives);
+        e->calculateSymmetryFunctions(*a, derivatives);
 
         // Remember that symmetry functions of this atom have been calculated.
-        it->hasSymmetryFunctions = true;
-        if (derivatives) it->hasSymmetryFunctionDerivatives = true;
+        a->hasSymmetryFunctions = true;
+        if (derivatives) a->hasSymmetryFunctionDerivatives = true;
+    }
+
+    // If requested, check extrapolation warnings or update statistics.
+    // Needed to shift this out of the loop above to make it thread-safe.
+    if (checkExtrapolationWarnings)
+    {
+        for (size_t i = 0; i < structure.atoms.size(); ++i)
+        {
+            a = &(structure.atoms.at(i));
+            e = &(elements.at(a->element));
+            e->updateSymmetryFunctionStatistics(*a);
+        }
     }
 
     // Remember that symmetry functions of this structure have been calculated.
@@ -776,40 +822,59 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
     if (structure.hasSymmetryFunctionDerivatives) return;
     if (structure.hasSymmetryFunctions && !derivatives) return;
 
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    Atom* a = NULL;
+    Element* e = NULL;
+#ifdef _OPENMP
+    #pragma omp parallel for private (a, e)
+#endif
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
     {
+        // Pointer to atom.
+        a = &(structure.atoms.at(i));
+
         // Skip calculation for individual atom if results are already saved.
-        if (it->hasSymmetryFunctionDerivatives) continue;
-        if (it->hasSymmetryFunctions && !derivatives) continue;
+        if (a->hasSymmetryFunctionDerivatives) continue;
+        if (a->hasSymmetryFunctions && !derivatives) continue;
 
         // Get element of atom and set number of symmetry functions.
-        Element& e = elements.at(it->element);
-        it->numSymmetryFunctions = e.numSymmetryFunctions();
+        e = &(elements.at(a->element));
+        a->numSymmetryFunctions = e->numSymmetryFunctions();
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
-        size_t numNeighbors = it->getNumNeighbors(
-                                             minCutoffRadius.at(e.getIndex()));
-        if (numNeighbors < minNeighbors.at(e.getIndex()))
+        size_t numNeighbors = a->getNumNeighbors(
+                                            minCutoffRadius.at(e->getIndex()));
+        if (numNeighbors < minNeighbors.at(e->getIndex()))
         {
             log << strpr("WARNING: Structure %6zu Atom %6zu : %zu "
                          "neighbors.\n",
-                         it->indexStructure,
-                         it->index,
+                         a->indexStructure,
+                         a->index,
                          numNeighbors);
         }
 #endif
 
         // Allocate symmetry function data vectors in atom.
-        it->allocate(derivatives);
+        a->allocate(derivatives);
 
         // Calculate symmetry functions (and derivatives).
-        e.calculateSymmetryFunctionGroups(*it, derivatives);
+        e->calculateSymmetryFunctionGroups(*a, derivatives);
 
         // Remember that symmetry functions of this atom have been calculated.
-        it->hasSymmetryFunctions = true;
-        if (derivatives) it->hasSymmetryFunctionDerivatives = true;
+        a->hasSymmetryFunctions = true;
+        if (derivatives) a->hasSymmetryFunctionDerivatives = true;
+    }
+
+    // If requested, check extrapolation warnings or update statistics.
+    // Needed to shift this out of the loop above to make it thread-safe.
+    if (checkExtrapolationWarnings)
+    {
+        for (size_t i = 0; i < structure.atoms.size(); ++i)
+        {
+            a = &(structure.atoms.at(i));
+            e = &(elements.at(a->element));
+            e->updateSymmetryFunctionStatistics(*a);
+        }
     }
 
     // Remember that symmetry functions of this structure have been calculated.
@@ -830,8 +895,6 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         e.neuralNetwork->propagate();
         if (derivatives) e.neuralNetwork->calculateDEdG(&((it->dEdG).front()));
         e.neuralNetwork->getOutput(&(it->energy));
-        // Add energy offset per atom.
-        it->energy += e.getAtomicEnergyOffset();
     }
 
     return;
@@ -852,10 +915,17 @@ void Mode::calculateEnergy(Structure& structure) const
 
 void Mode::calculateForces(Structure& structure) const
 {
+    Atom* ai = NULL;
     // Loop over all atoms, center atom i (ai).
-    for (vector<Atom>::iterator ai = structure.atoms.begin();
-         ai != structure.atoms.end(); ++ai)
+#ifdef _OPENMP
+    #pragma omp parallel for private(ai)
+#endif
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
     {
+        // Set pointer to atom.
+        ai = &(structure.atoms.at(i));
+
+        // Reset forces.
         ai->f[0] = 0.0;
         ai->f[1] = 0.0;
         ai->f[2] = 0.0;
@@ -898,6 +968,72 @@ void Mode::calculateForces(Structure& structure) const
     }
 
     return;
+}
+
+void Mode::addEnergyOffset(Structure& structure, bool ref)
+{
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        if (ref)
+        {
+            structure.energyRef += structure.numAtomsPerElement.at(i)
+                                 * elements.at(i).getAtomicEnergyOffset();
+        }
+        else
+        {
+            structure.energy += structure.numAtomsPerElement.at(i)
+                              * elements.at(i).getAtomicEnergyOffset();
+        }
+    }
+
+    return;
+}
+
+void Mode::removeEnergyOffset(Structure& structure, bool ref)
+{
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        if (ref)
+        {
+            structure.energyRef -= structure.numAtomsPerElement.at(i)
+                                 * elements.at(i).getAtomicEnergyOffset();
+        }
+        else
+        {
+            structure.energy -= structure.numAtomsPerElement.at(i)
+                              * elements.at(i).getAtomicEnergyOffset();
+        }
+    }
+
+    return;
+}
+
+double Mode::getEnergyOffset(Structure const& structure) const
+{
+    double result = 0.0;
+
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        result += structure.numAtomsPerElement.at(i)
+                * elements.at(i).getAtomicEnergyOffset();
+    }
+
+    return result;
+}
+
+double Mode::getEnergyWithOffset(Structure const& structure, bool ref) const
+{
+    double result;
+    if (ref) result = structure.energyRef;
+    else     result = structure.energy;
+
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        result += structure.numAtomsPerElement.at(i)
+                * elements.at(i).getAtomicEnergyOffset();
+    }
+
+    return result;
 }
 
 double Mode::normalizedEnergy(double energy) const
@@ -945,6 +1081,20 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
 double Mode::physicalForce(double force) const
 {
     return force * convLength / convEnergy;
+}
+
+void Mode::convertToNormalizedUnits(Structure& structure) const
+{
+    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength);
+
+    return;
+}
+
+void Mode::convertToPhysicalUnits(Structure& structure) const
+{
+    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength);
+
+    return;
 }
 
 void Mode::resetExtrapolationWarnings()

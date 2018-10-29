@@ -1,15 +1,6 @@
 n2p2 - The neural network potential package
 ===========================================
 
-@warning
-This is a preliminary version of the full neural network potential package. It
-contains only those parts of the code that are required to build the LAMMPS
-interface. Additional library functions and applications for neural network
-potential training will be added at a later point in time. Also, the
-documentation is complete only with respect to the LAMMPS interface
-functionality (see [LAMMPS interface build instructions](if_lammps.md) and
-[__LAMMPS pair style reference__](pair_nnp.html)).
-
 # Overview
 
 Welcome to the documentation for the neural network potential package! This
@@ -28,6 +19,10 @@ standalone tools but also in conjunction with the MD software
 neural network potentials with the provided training tools.
 
 # Documentation
+
+@warning
+Unfortunately many parts of the documentation are still unfinished and will
+be completed little by little.
 
 ## Online version
 This package uses automatic documentation generation via
@@ -61,6 +56,7 @@ documentation if you set the option `HAVE_DOT` in the file `src/doc/Doxyfile` to
 - [Input file keywords](keywords.md)
 - [LAMMPS interface build instructions](if_lammps.md)
 - [__LAMMPS pair style reference__](pair_nnp.html)
+- [Structure file format](cfg_file.md)
 
 
 # Purpose
@@ -77,8 +73,8 @@ network and symmetry function parameters, weight files and a scaling file)
 ready and want to predict energies and forces for a single structure you only
 need these components:
 
-- `libnnp`
-- `nnp-predict`
+- [libnnp](libnnp.md)
+- [nnp-predict](nnp-predict.md)
 
 ## Molecular dynamics simulation
 
@@ -86,28 +82,29 @@ Similarly, if you have a working neural network potential setup and would like
 to run an MD simulation with an external MD software (so far only LAMMPS is
 supported), these components are required:
 
-- `libnnp`
+- [libnnp](libnnp.md)
 - `libnnpif`
-- `pair_style nnp`
+- [pair_style nnp](if_lammps.md)
 
 ## Training a new neural network potential
 
 To train a completely new neural network potential the following parts are required:
 
-- `libnnp`
+- [libnnp](libnnp.md)
 - `libnnptrain`
-- `nnp-scaling`
-- `nnp-train`
+- [nnp-scaling](nnp-scaling.md)
+- [nnp-train](nnp-train.md)
 
 Additional, though not strictly required tools, are also quite useful:
 
-- `nnp-convert`
-- `nnp-dataset`
-- `nnp-dist`
-- `nnp-norm`
-- `nnp-prune`
-- `nnp-select`
-- `nnp-symfunc`
+- [nnp-comp2](nnp-comp2.md)
+- [nnp-convert](nnp-convert.md)
+- [nnp-dataset](nnp-dataset.md)
+- [nnp-dist](nnp-dist.md)
+- [nnp-norm](nnp-norm.md)
+- [nnp-prune](nnp-prune.md)
+- [nnp-select](nnp-select.md)
+- [nnp-symfunc](nnp-symfunc.md)
 
 # Build process
 
@@ -119,12 +116,26 @@ components, this depends on the intended use. The following table lists all
 components and their respective requirements (follow the links for more
 information).
 
-| Component                       | Location                        | Requirements              | Function                                           |
-| ------------------------------- | ------------------------------- | ------------------------- | -------------------------------------------------- |
-| libnnp         )                | `src`                           |                           | NNP core library (NN, SF, Structure, ...)          |
-| libnnpif                        | `src`                           | `libnnp`, MPI             | Interfaces to other software (LAMMPS, ...)         |
-| [pair_style  nnp](if_lammps.md) | `src/interface/LAMMPS`          | `libnnpif`                | %Pair style `nnp` for LAMMPS                       |
-| doc                             | `src/doc`                       | doxygen, graphviz         | Doxygen documentation                              |
+| Component                       | Location                        | Requirements               | Function                                             |
+| ------------------------------- | ------------------------------- | -------------------------- | ---------------------------------------------------- |
+| [libnnp](libnnp.md)             | `src`                           | C++98 compiler (icpc, g++) | NNP core library (NN, SF, Structure, ...)            |
+| libnnpif                        | `src`                           | `libnnp`, MPI              | Interfaces to other software (LAMMPS, ...)           |
+| libnnptrain                     | `src`                           | `libnnp`, MPI, GSL, Eigen  | Dataset and training routines (Kalman, ...).         |
+| [nnp-convert](nnp-convert.md)   | `src/application`               | `libnnp`                   | Convert between structure file formats.              |
+| [nnp-cutoff](nnp-cutoff.md)     | `src/application`               | `libnnp`                   | Test speed of different cutoff functions.            |
+| [nnp-dist](nnp-dist.md)         | `src/application`               | `libnnp`                   | Calculate radial and angular distribution functions. |
+| [nnp-predict](nnp-predict.md)   | `src/application`               | `libnnp`                   | Predict energy and forces for one structure.         |
+| [nnp-prune](nnp-prune.md)       | `src/application`               | `libnnp`                   | Prune symmetry functions.                            |
+| [nnp-select](nnp-select.md)     | `src/application`               | `libnnp`                   | Select subset from data set.                         |
+| [nnp-symfunc](nnp-symfunc.md)   | `src/application`               | `libnnp`                   | Symmetry function shape from settings file.          |
+| [nnp-comp2](nnp-comp2.md)       | `src/application`               | `libnnptrain`              | Compare prediction of 2 NNPs for data set.           |
+| [nnp-dataset](nnp-dataset.md)   | `src/application`               | `libnnptrain`              | Calculate energies and forces for a whole data set.  |
+| [nnp-norm](nnp-norm.md)         | `src/application`               | `libnnptrain`              | Calculate normalization factors for data set.        |
+| [nnp-scaling](nnp-scaling.md)   | `src/application`               | `libnnptrain`              | Calculate symmetry function values for data set.     |
+| [nnp-train](nnp-train.md)       | `src/application`               | `libnnptrain`              | Train a neural network potential.                    |
+| [pair_style  nnp](if_lammps.md) | `src/interface/LAMMPS`          | `libnnpif`                 | %Pair style `nnp` for LAMMPS                         |
+| [pynnp](pynnp.md)               | `src/`                          | `libnnp`, python, cython   | Python interface to NNP library.                     |
+| doc                             | `src/doc`                       | doxygen, graphviz          | Doxygen documentation.                               |
 
 ## The simple way using the master makefile
 
@@ -210,4 +221,8 @@ list of keywords is provided [here](keywords.md).
 
 # License
 
-This software is licensed under the [Mozilla Public License Version 2.0 (MPL 2.0)](https://www.mozilla.org/en-US/MPL/2.0/).
+This software is licensed under the [GNU General Public License version 3 or any later version (GPL-3.0-or-later)](https://www.gnu.org/licenses/gpl.txt).
+
+# Changelog
+
+See what's [new](CHANGELOG.md).

@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef STRUCTURE_H
 #define STRUCTURE_H
@@ -91,6 +101,14 @@ struct Structure
      *                       (symbol, index)-pairs (see ElementMap).
      */
     void                     setElementMap(ElementMap const& elementMap);
+    /** Read configuration from file.
+     *
+     * @param[in] fileName Input file name.
+     *
+     * Reads the first configuration found in the input file.
+     */
+    void                     readFromFile(std::string const fileName
+                                                            = "input.data");
     /** Read configuration from file.
      *
      * @param[in] file Input file stream (already opened).
@@ -222,8 +240,12 @@ struct Structure
     /** Write configuration to file.
      *
      * @param[in,out] file Ouptut file.
+     * @param[in] ref If true, write reference energy and forces, if false,
+     *                write NNP results instead.
      */
-    void                     writeToFile(std::ofstream* const& file) const;
+    void                     writeToFile(
+                                       std::ofstream* const& file,
+                                       bool                  ref = true) const;
     /** Write configuration to xyz file.
      *
      * @param[in,out] file xyz output file.

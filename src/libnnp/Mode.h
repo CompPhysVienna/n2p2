@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef MODE_H
 #define MODE_H
@@ -38,6 +48,7 @@ namespace nnp
  * mode.setupCutoff();
  * mode.setupSymmetryFunctions();
  * mode.setupSymmetryFunctionGroups();
+ * mode.setupSymmetryFunctionStatistics(false, false, true, false);
  * mode.setupNeuralNetwork();
  * ```
  * To load weights and scaling information from files add these lines:
@@ -243,6 +254,42 @@ public:
      * computation to atomic forces. Results are stored in Atom::f.
      */
     void                     calculateForces(Structure& structure) const;
+    /* Add atomic energy offsets to reference energy.
+     *
+     * @param[in] structure Input structure.
+     * @param[in] ref If true, use reference energy, otherwise use NN energy.
+     */
+    void                     addEnergyOffset(Structure& structure,
+                                             bool       ref = true);
+    /* Remove atomic energy offsets from reference energy.
+     *
+     * @param[in] structure Input structure.
+     * @param[in] ref If true, use reference energy, otherwise use NN energy.
+     *
+     * This function should be called immediately after structures are read in.
+     */
+    void                     removeEnergyOffset(Structure& structure,
+                                                bool       ref = true);
+    /* Get atomic energy offset for given structure.
+     *
+     * @param[in] structure Input structure.
+     *
+     * @return Summed atomic energy offsets for structure.
+     */
+    double                   getEnergyOffset(Structure const& structure) const;
+    /* Add atomic energy offsets and return energy.
+     *
+     * @param[in] structure Input structure.
+     * @param[in] ref If true, use reference energy, otherwise use NN energy.
+     *
+     * @return Reference or NNP energy with energy offsets added.
+     *
+     * @note If normalization is used, ensure that structure energy is already
+     * in physical units.
+     */
+    double                   getEnergyWithOffset(
+                                            Structure const& structure,
+                                            bool             ref = true) const;
     /** Apply normalization to given energy.
      *
      * @param[in] energy Input energy in physical units.
@@ -257,8 +304,9 @@ public:
      *
      * @return Energy in normalized units.
      */
-    double                   normalizedEnergy(Structure const& structure,
-                                              bool             ref) const;
+    double                   normalizedEnergy(
+                                            Structure const& structure,
+                                            bool             ref = true) const;
     /** Apply normalization to given force.
      *
      * @param[in] force Input force in physical units.
@@ -281,7 +329,7 @@ public:
      * @return Energy in physical units.
      */
     double                   physicalEnergy(Structure const& structure,
-                                            bool             ref) const;
+                                            bool             ref = true) const;
     /** Undo normalization for a given force.
      *
      * @param[in] force Input force in normalized units.
@@ -289,6 +337,18 @@ public:
      * @return Force in physical units.
      */
     double                   physicalForce(double force) const;
+    /** Convert one structure to normalized units.
+     *
+     * @param[in,out] structure Input structure.
+     */
+    void                     convertToNormalizedUnits(
+                                                   Structure& structure) const;
+    /** Convert one structure to physical units.
+     *
+     * @param[in,out] structure Input structure.
+     */
+    void                     convertToPhysicalUnits(
+                                                   Structure& structure) const;
     /** Count total number of extrapolation warnings encountered for all
      * elements and symmetry functions.
      *
@@ -398,6 +458,7 @@ public:
 
 protected:
     bool                          normalize;
+    bool                          checkExtrapolationWarnings;
     std::size_t                   numElements;
     std::vector<std::size_t>      minNeighbors;
     std::vector<double>           minCutoffRadius;

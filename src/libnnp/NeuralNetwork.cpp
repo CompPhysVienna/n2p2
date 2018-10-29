@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "NeuralNetwork.h"
 #include "utility.h"
@@ -907,39 +917,38 @@ vector<string> NeuralNetwork::info() const
     for (int i = 0; i < maxNeurons; ++i)
     {
         v.push_back(strpr("%4d", i + 1));
+        string s = "";
         for (int j = 0; j < numLayers; ++j)
         {
-            string s;
             if (i < layers[j].numNeurons)
             {
                 if (j == 0)
                 {
-                    s = "G";
+                    s += strpr(" %3s", "G");
                 }
                 else if (layers[j].activationFunction == AF_IDENTITY)
                 {
-                    s = "l";
+                    s += strpr(" %3s", "l");
                 }
                 else if (layers[j].activationFunction == AF_TANH)
                 {
-                    s = "t";
+                    s += strpr(" %3s", "t");
                 }
                 else if (layers[j].activationFunction == AF_LOGISTIC)
                 {
-                    s = "s";
+                    s += strpr(" %3s", "s");
                 }
                 else if (layers[j].activationFunction == AF_SOFTPLUS)
                 {
-                    s = "p";
+                    s += strpr(" %3s", "p");
                 }
             }
             else
             {
-                s = "";
+                s += "";
             }
-            v.push_back(strpr(" %3s", s.c_str()));
         }
-        v.push_back(strpr("\n"));
+        v.push_back(s += "\n");
     }
 
     return v;

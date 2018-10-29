@@ -46,6 +46,13 @@ Amongst others a variant of the above angular symmetry function was introduced:
           \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 ) } f_c(r_{ij}) f_c(r_{ik}) 
   @f]
 
+@note
+The implementation of both angular symmetry functions described above also
+supports an additional shift parameter @f$r_s@f$ in the exponential function
+(analogous to the radial symmetry function or the weighted symmetry functions
+below). Specifying the shift parameter is optional, omitting it will reproduce
+the formulae given above.
+
 Weighted atom-centered symmetry functions
 -----------------------------------------
 

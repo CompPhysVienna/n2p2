@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SymmetryFunctionAngularNarrow.h"
 #include "Atom.h"
@@ -26,7 +36,8 @@ SymmetryFunctionAngularNarrow(ElementMap const& elementMap) :
     zetaInt      (0    ),
     lambda       (0.0  ),
     eta          (0.0  ),
-    zeta         (0.0  )
+    zeta         (0.0  ),
+    rs           (0.0  )
 {
     minNeighbors = 2;
     parameters.insert("e1");
@@ -34,6 +45,7 @@ SymmetryFunctionAngularNarrow(ElementMap const& elementMap) :
     parameters.insert("eta");
     parameters.insert("zeta");
     parameters.insert("lambda");
+    parameters.insert("rs");
 }
 
 bool SymmetryFunctionAngularNarrow::
@@ -71,6 +83,8 @@ operator<(SymmetryFunction const& rhs) const
     else if (rc          > c.rc         ) return false;
     if      (eta         < c.eta        ) return true;
     else if (eta         > c.eta        ) return false;
+    if      (rs          < c.rs         ) return true;
+    else if (rs          > c.rs         ) return false;
     if      (zeta        < c.zeta       ) return true;
     else if (zeta        > c.zeta       ) return false;
     if      (lambda      < c.lambda     ) return true;
@@ -99,8 +113,14 @@ void SymmetryFunctionAngularNarrow::
     lambda = atof(splitLine.at(5).c_str());
     zeta   = atof(splitLine.at(6).c_str());
     rc     = atof(splitLine.at(7).c_str());
+    // Shift parameter is optional.
+    if (splitLine.size() > 8)
+    {
+        rs = atof(splitLine.at(8).c_str());
+    }
 
     fc.setCutoffRadius(rc);
+    fc.setCutoffParameter(cutoffAlpha);
 
     if (e1 > e2)
     {
@@ -124,33 +144,36 @@ void SymmetryFunctionAngularNarrow::
 
 void SymmetryFunctionAngularNarrow::changeLengthUnit(double convLength)
 {
+    this->convLength = convLength;
     eta /= convLength * convLength;
     rc *= convLength;
+    rs *= convLength;
+
+    fc.setCutoffRadius(rc);
+    fc.setCutoffParameter(cutoffAlpha);
 
     return;
 }
 
-string SymmetryFunctionAngularNarrow::getSettingsLine(
-                                                 double const convLength) const
+string SymmetryFunctionAngularNarrow::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
-                     "%16.8E %16.8E\n",
+                     "%16.8E %16.8E %16.8E\n",
                      elementMap[ec].c_str(),
                      type,
                      elementMap[e1].c_str(),
                      elementMap[e2].c_str(),
-                     eta / (convLength * convLength),
+                     eta * convLength * convLength,
                      lambda,
                      zeta,
-                     rc * convLength);
+                     rc / convLength,
+                     rs / convLength);
 
     return s;
 }
 
-void SymmetryFunctionAngularNarrow::calculate(
-                                  Atom&                       atom,
-                                  bool const                  derivatives,
-                                  SymmetryFunctionStatistics& statistics) const
+void SymmetryFunctionAngularNarrow::calculate(Atom&      atom,
+                                              bool const derivatives) const
 {
     double const pnorm  = pow(2.0, 1.0 - zeta);
     double const pzl    = zeta * lambda;
@@ -235,8 +258,12 @@ void SymmetryFunctionAngularNarrow::calculate(
 
                             double const pfc = pfcij * pfcik * pfcjk;
                             double const r2ik = rik * rik;
-                            double const pexp = exp(-eta *
-                                                (r2ij + r2ik + rjk * rjk));
+                            double const rijs = rij - rs;
+                            double const riks = rik - rs;
+                            double const rjks = rjk - rs;
+                            double const pexp = exp(-eta * (rijs * rijs +
+                                                            riks * riks +
+                                                            rjks * rjks));
                             double const plambda = 1.0 + lambda * costijk;
                             double       fg = pexp;
                             if (plambda <= 0.0) fg = 0.0;
@@ -260,14 +287,16 @@ void SymmetryFunctionAngularNarrow::calculate(
                             costijk  *= pzl;
                             double const p2etapl = 2.0 * eta * plambda;
                             double const p1 = fg * (pfc * (rinvijik - costijk
-                                            / r2ij - p2etapl) + pfcik * pfcjk
-                                            * pdfcij * plambda / rij);
+                                            / r2ij - p2etapl * rijs / rij)
+                                            + pfcik * pfcjk * pdfcij * plambda
+                                            / rij);
                             double const p2 = fg * (pfc * (rinvijik - costijk
-                                            / r2ik - p2etapl) + pfcij * pfcjk
-                                            * pdfcik * plambda / rik);
-                            double const p3 = fg * (pfc * (rinvijik + p2etapl)
-                                            - pfcij * pfcik * pdfcjk
-                                            * plambda / rjk);
+                                            / r2ik - p2etapl * riks / rik)
+                                            + pfcij * pfcjk * pdfcik * plambda
+                                            / rik);
+                            double const p3 = fg * (pfc * (rinvijik + p2etapl
+                                            * rjks / rjk) - pfcij * pfcik
+                                            * pdfcjk * plambda / rjk);
                             drij *= p1 * scalingFactor;
                             drik *= p2 * scalingFactor;
                             drjk *= p3 * scalingFactor;
@@ -284,7 +313,6 @@ void SymmetryFunctionAngularNarrow::calculate(
     } // j
     result *= pnorm;
 
-    updateStatisticsGeneric(result, atom, statistics);
     atom.G[index] = scale(result);
 
     return;
@@ -298,10 +326,11 @@ string SymmetryFunctionAngularNarrow::parameterLine() const
                  type,
                  elementMap[e1].c_str(),
                  elementMap[e2].c_str(),
-                 eta,
+                 eta * convLength * convLength,
+                 rs / convLength,
                  lambda,
                  zeta,
-                 rc,
+                 rc / convLength,
                  (int)cutoffType,
                  cutoffAlpha,
                  lineNumber + 1);
@@ -318,11 +347,14 @@ vector<string> SymmetryFunctionAngularNarrow::parameterInfo() const
     s = "e2";
     v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[e2].c_str()));
     s = "eta";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), eta));
+    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(),
+                      eta * convLength * convLength));
     s = "lambda";
     v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), lambda));
     s = "zeta";
     v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), zeta));
+    s = "rs";
+    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rs / convLength));
 
     return v;
 }
@@ -330,8 +362,8 @@ vector<string> SymmetryFunctionAngularNarrow::parameterInfo() const
 double SymmetryFunctionAngularNarrow::calculateRadialPart(
                                                          double distance) const
 {
-    double const& r = distance;
-    double const p = exp(-eta * r * r) * fc.f(r);
+    double const& r = distance * convLength;
+    double const p = exp(-eta * (r - rs) * (r - rs)) * fc.f(r);
 
     return p * p * p;
 }

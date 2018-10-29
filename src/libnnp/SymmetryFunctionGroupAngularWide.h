@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #ifndef SYMMETRYFUNCTIONGROUPANGULARWIDE_H
 #define SYMMETRYFUNCTIONGROUPANGULARWIDE_H
@@ -25,7 +35,8 @@ class SymmetryFunctionAngularWide;
  * @f[
    G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
            \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-           \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 ) } f_c(r_{ij}) f_c(r_{ik}) 
+           \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
+           f_c(r_{ij}) f_c(r_{ik}) 
  * @f]
  * Common features:
  * - element of central atom
@@ -81,11 +92,8 @@ public:
      * @param[in,out] atom Atom for which symmetry functions are caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
-     * @param[in,out] statistics Gathers statistics and extrapolation warnings.
      */
-    void calculate(Atom&                       atom,
-                   bool const                  derivatives,
-                   SymmetryFunctionStatistics& statistics) const;
+    void calculate(Atom& atom, bool const derivatives) const;
     /** Give symmetry function group parameters on multiple lines.
      *
      * @return Vector of string containing symmetry function parameters lines.
@@ -120,6 +128,8 @@ private:
     std::vector<double>                             lambda;
     /// Vector containing values of all member symmetry functions.
     std::vector<double>                             zetaLambda;
+    /// Vector containing values of all member symmetry functions.
+    std::vector<double>                               rs;
 };
 
 //////////////////////////////////

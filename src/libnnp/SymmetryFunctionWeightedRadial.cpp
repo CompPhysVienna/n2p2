@@ -1,8 +1,18 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SymmetryFunctionWeightedRadial.h"
 #include "Atom.h"
@@ -80,36 +90,38 @@ void SymmetryFunctionWeightedRadial::setParameters(
     rc   = atof(splitLine.at(4).c_str());
 
     fc.setCutoffRadius(rc);
+    fc.setCutoffParameter(cutoffAlpha);
 
     return;
 }
 
 void SymmetryFunctionWeightedRadial::changeLengthUnit(double convLength)
 {
+    this->convLength = convLength;
     eta /= convLength * convLength;
     rs *= convLength;
     rc *= convLength;
 
+    fc.setCutoffRadius(rc);
+    fc.setCutoffParameter(cutoffAlpha);
+
     return;
 }
 
-string SymmetryFunctionWeightedRadial::getSettingsLine(
-                                                 double const convLength) const
+string SymmetryFunctionWeightedRadial::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %16.8E %16.8E %16.8E\n",
                      elementMap[ec].c_str(),
                      type,
-                     eta / (convLength * convLength),
-                     rs * convLength,
-                     rc * convLength);
+                     eta * convLength * convLength,
+                     rs / convLength,
+                     rc / convLength);
 
     return s;
 }
 
-void SymmetryFunctionWeightedRadial::calculate(
-                                  Atom&                       atom,
-                                  bool const                  derivatives,
-                                  SymmetryFunctionStatistics& statistics) const
+void SymmetryFunctionWeightedRadial::calculate(Atom&      atom,
+                                               bool const derivatives) const
 {
     double result = 0.0;
 
@@ -157,7 +169,6 @@ void SymmetryFunctionWeightedRadial::calculate(
         }
     }
 
-    updateStatisticsGeneric(result, atom, statistics);
     atom.G[index] = scale(result);
 
     return;
@@ -169,9 +180,9 @@ string SymmetryFunctionWeightedRadial::parameterLine() const
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
-                 eta,
-                 rs,
-                 rc,
+                 eta * convLength * convLength,
+                 rs / convLength,
+                 rc / convLength,
                  (int)cutoffType,
                  cutoffAlpha,
                  lineNumber + 1);
@@ -184,9 +195,10 @@ vector<string> SymmetryFunctionWeightedRadial::parameterInfo() const
     size_t w = sfinfoWidth;
 
     s = "eta";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), eta));
+    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(),
+                      eta * convLength * convLength));
     s = "rs";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rs));
+    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rs / convLength));
 
     return v;
 }
@@ -194,7 +206,7 @@ vector<string> SymmetryFunctionWeightedRadial::parameterInfo() const
 double SymmetryFunctionWeightedRadial::calculateRadialPart(
                                                          double distance) const
 {
-    double const& r = distance;
+    double const& r = distance * convLength;
 
     return exp(-eta * (r - rs) * (r - rs)) * fc.f(r);
 }
