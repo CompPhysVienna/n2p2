@@ -1,28 +1,11 @@
 ###############################################################################
-# HDNNP for copper sulfide Cu2S
-###############################################################################
-# Length unit     : Angstrom
-# Energy unit     : eV
-# Reference method: PBE
-###############################################################################
-
-###############################################################################
-# DATA SET NORMALIZATION
-###############################################################################
-# This section was automatically added by nnp-norm.
-mean_energy  -3.8640662064628053E+00
-conv_energy   7.3890846653659121E+00
-conv_length   6.1376931796181502E+00
-###############################################################################
-
-###############################################################################
 # GENERAL NNP SETTINGS
 ###############################################################################
 number_of_elements              2              # Number of elements.
 elements                        S Cu           # Specification of elements.
 #atom_energy                     S  0.0         # Free atom reference energy (S).
 #atom_energy                     Cu 0.0         # Free atom reference energy (Cu).
-cutoff_type                     6 0.0          # Cutoff type.
+cutoff_type                     6 0.0          # Cutoff type (optional argument: shift parameter alpha).
 #scale_symmetry_functions                       # Scale all symmetry functions with min/max values.
 scale_symmetry_functions_sigma                 # Scale all symmetry functions with sigma.
 scale_min_short                 0.0            # Minimum value for scaling.
@@ -36,13 +19,13 @@ global_activation_short         p p l          # Activation function for each hi
 ###############################################################################
 # ADDITIONAL SETTINGS FOR TRAINING
 ###############################################################################
-epochs                          40             # Number of training epochs.
+epochs                          50             # Number of training epochs.
 updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
-parallel_mode                   2              # Training parallelization used (0 = Serial, 1-4 = MSEKF implementations (4-fastest)).
+parallel_mode                   4              # Training parallelization used (0 = Serial, 1-4 = MSEKF implementations (2 or 4 are fastest)).
 update_strategy                 0              # Update strategy (0 = Combined, 1 = Per-element).
-selection_mode                  2 10 1 15 2    # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+selection_mode                  2              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
-random_seed 3
+random_seed                     1234567        # Random number generator seed.
 test_fraction                   0.1            # Fraction of structures kept for testing.
 use_short_forces                               # Use forces for training.
 force_weight                    10.0           # Weight of force updates relative to energy updates.
@@ -57,16 +40,16 @@ weights_min                     -1.0           # Minimum value for initial rando
 weights_max                     1.0            # Maximum value for initial random weights.
 #precondition_weights                           # Precondition weights with initial energies.
 #nguyen_widrow_weights_short                    # Initialize neural network weights according to Nguyen-Widrow scheme.
-write_trainpoints               1              # Write energy comparison.
-write_trainforces               5              # Write force comparison.
-write_weights_epoch             1              # Write weights.
-write_neuronstats               5              # Write neuron statistics.
+write_trainpoints               1              # Write energy comparison every this many epochs.
+write_trainforces               5              # Write force comparison every this many epochs.
+write_weights_epoch             1              # Write weights every this many epochs.
+write_neuronstats               5              # Write neuron statistics every this many epochs.
 write_trainlog                                 # Write training log file.
 ####################
 # GRADIENT DESCENT #
 ####################
-gradient_type                   0              # Gradient descent type (0 = Fixed step size).
-gradient_eta                    1.0E-4         # Gradient descent parameter eta (fixed step size).
+#gradient_type                   0              # Gradient descent type (0 = Fixed step size).
+#gradient_eta                    1.0E-4         # Gradient descent parameter eta (fixed step size).
 ############################
 # KALMAN FILTER (STANDARD) #
 ############################

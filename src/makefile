@@ -84,7 +84,7 @@ INSTALL_LIB=${HOME}/local/lib
 ###############################################################################
 # PROJECT
 ###############################################################################
-PROJECT_DIR=./
+PROJECT_DIR=../
 PROJECT_BIN=${PROJECT_DIR}/bin
 PROJECT_INCLUDE=${PROJECT_DIR}/include
 PROJECT_LIB=${PROJECT_DIR}/lib
@@ -260,7 +260,7 @@ clean-pynnp:
 # install (set links to install directories) #
 ##############################################
 EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-select nnp-symfunc nnp-train
-LIB=libnnp.so libnnpif.so libnnptrain.so
+LIB=libnnp.so libnnpif.so libnnptrain.so pynnp.so
 install:
 	$(foreach exe, $(EXE), ln -s $(CURDIR)/${PROJECT_BIN}/${exe} ${INSTALL_BIN}/${exe};)
 	$(foreach lib, $(LIB), ln -s $(CURDIR)/${PROJECT_LIB}/${lib} ${INSTALL_LIB}/${lib};)
