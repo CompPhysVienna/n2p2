@@ -1,4 +1,13 @@
 ###############################################################################
+# DATA SET NORMALIZATION
+###############################################################################
+# This section was automatically added by nnp-norm.
+mean_energy  -3.9745355631944457E+00
+conv_energy   1.6464963191344094E+02
+conv_length   2.7000746146526534E+01
+###############################################################################
+
+###############################################################################
 # GENERAL NNP SETTINGS
 ###############################################################################
 number_of_elements              2              # Number of elements.
@@ -30,7 +39,7 @@ test_fraction                   0.1            # Fraction of structures kept for
 use_short_forces                               # Use forces for training.
 force_weight                    10.0           # Weight of force updates relative to energy updates.
 short_energy_fraction           1.000          # Fraction of energy updates per epoch.
-short_force_fraction            0.02315        # Fraction of force updates per epoch.
+short_force_fraction            0.02315       # Fraction of force updates per epoch.
 short_energy_error_threshold    0.00           # RMSE threshold for energy update candidates.
 short_force_error_threshold     1.00           # RMSE threshold for force update candidates.
 rmse_threshold_trials           3              # Maximum number of RMSE threshold trials.
