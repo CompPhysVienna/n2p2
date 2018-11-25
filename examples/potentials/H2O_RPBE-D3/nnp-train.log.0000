@@ -2,22 +2,22 @@
 *** SETUP: MPI ****************************************************************
 
 Number of processors: 16
-Process 1 of 16 (rank 0): n41-023
-Process 2 of 16 (rank 1): n41-023
-Process 3 of 16 (rank 2): n41-023
-Process 4 of 16 (rank 3): n41-023
-Process 5 of 16 (rank 4): n41-023
-Process 6 of 16 (rank 5): n41-023
-Process 7 of 16 (rank 6): n41-023
-Process 8 of 16 (rank 7): n41-023
-Process 9 of 16 (rank 8): n41-023
-Process 10 of 16 (rank 9): n41-023
-Process 11 of 16 (rank 10): n41-023
-Process 12 of 16 (rank 11): n41-023
-Process 13 of 16 (rank 12): n41-023
-Process 14 of 16 (rank 13): n41-023
-Process 15 of 16 (rank 14): n41-023
-Process 16 of 16 (rank 15): n41-023
+Process 1 of 16 (rank 0): n18-040
+Process 2 of 16 (rank 1): n18-040
+Process 3 of 16 (rank 2): n18-040
+Process 4 of 16 (rank 3): n18-040
+Process 5 of 16 (rank 4): n18-040
+Process 6 of 16 (rank 5): n18-040
+Process 7 of 16 (rank 6): n18-040
+Process 8 of 16 (rank 7): n18-040
+Process 9 of 16 (rank 8): n18-040
+Process 10 of 16 (rank 9): n18-040
+Process 11 of 16 (rank 10): n18-040
+Process 12 of 16 (rank 11): n18-040
+Process 13 of 16 (rank 12): n18-040
+Process 14 of 16 (rank 13): n18-040
+Process 15 of 16 (rank 14): n18-040
+Process 16 of 16 (rank 15): n18-040
 *******************************************************************************
 
 *******************************************************************************
@@ -26,7 +26,7 @@ Process 16 of 16 (rank 15): n41-023
    ------------------
 
 Git branch  : master
-Git revision: ff23516 (ff235161e90cd94280c0df259129e8d4e5e07007)
+Git revision: d2f83cd (d2f83cde386d59595aea395bfe3755dccebc195a)
 
 *******************************************************************************
 
@@ -437,31 +437,32 @@ Halt on any extrapolation warning                 : 0
 
 *** SETUP: RANDOM NUMBER GENERATOR ********************************************
 
-Random number generator seed: 5
-Seed for rank 0: 5
-Seed for rank 1: 953453411
-Seed for rank 2: 236996814
-Seed for rank 3: 3739766767
-Seed for rank 4: 3570525885
-Seed for rank 5: 887852006
-Seed for rank 6: 1562238070
-Seed for rank 7: 3945403792
-Seed for rank 8: 4206684233
-Seed for rank 9: 2097710088
-Seed for rank 10: 385778404
-Seed for rank 11: 2627419879
-Seed for rank 12: 1703970750
-Seed for rank 13: 3289549211
-Seed for rank 14: 1521011312
-Seed for rank 15: 2226588318
-Seed for global RNG: 2090094288
+Random number generator seed: 2
+Seed for rank 0: 2
+Seed for rank 1: 1872583848
+Seed for rank 2: 794921487
+Seed for rank 3: 111352301
+Seed for rank 4: 4000937544
+Seed for rank 5: 2360782358
+Seed for rank 6: 4070471979
+Seed for rank 7: 1869695442
+Seed for rank 8: 2081981515
+Seed for rank 9: 1805465960
+Seed for rank 10: 1376693511
+Seed for rank 11: 1418777250
+Seed for rank 12: 663257521
+Seed for rank 13: 878959199
+Seed for rank 14: 3001592395
+Seed for rank 15: 2659748565
+Seed for global RNG: 515183663
 *******************************************************************************
 
 *** STRUCTURE DISTRIBUTION ****************************************************
 
 Reading configurations from data file: input.data.
+Total number of structures: 7241
 Number of structures per processor: 452 (7) or 453 (9)
-Distributed 7241 structures, 122159142 bytes (116.50 MiB) transferred.
+Distributed 7241 structures, 123519504 bytes (117.80 MiB) transferred.
 Number of local structures: 452
 *******************************************************************************
 
@@ -469,11 +470,11 @@ Number of local structures: 452
 
 Desired test set ratio      : 0.100000
 Total number of energies    : 7241
-Number of training energies : 6528
-Number of test     energies : 713
-Number of training forces   : 1587132
-Number of test     forces   : 178812
-Actual test set fraction    : 0.098467
+Number of training energies : 6533
+Number of test     energies : 708
+Number of training forces   : 1596654
+Number of test     forces   : 169290
+Actual test set fraction    : 0.097777
 *******************************************************************************
 
 *** WRITE TRAINING/TEST SETS **************************************************
@@ -519,8 +520,8 @@ Training log with update information will be written to: train-log.out.
 Fraction of energies used per epoch:    1.0000
 Fraction of forces used per epoch  :    0.0410
 Projected energy updates per epoch :     408 (  9.1%)
-Projected forces updates per epoch :    4067 ( 90.9%)
-Total projected updates per epoch  :    4475
+Projected forces updates per epoch :    4091 ( 90.9%)
+Total projected updates per epoch  :    4500
 Multi-stream training uses 16 energies/forces per weight update.
 qtau is divided by number of projected updates per epoch.
 etatau is divided by number of projected updates per epoch.
@@ -532,10 +533,10 @@ sizeState       = 2827
 sizeObservation = 16
 epsilon         =   1.0000E-02
 q0              =   1.0000E-02
-qtau            =   5.1441E-04
+qtau            =   5.1159E-04
 qmin            =   1.0000E-06
 eta0            =   1.0000E-02
-etatau          =   5.1441E-04
+etatau          =   5.1159E-04
 etamax          =   1.0000E+00
 KalmanParallel::KP_PRECALCX (2)
 OpenMP threads used: 1
@@ -582,132 +583,132 @@ forces   ep   Ftrain_phys    Ftest_phys    Ftrain_int     Ftest_int
 update   ep       E_count       F_count         count
 timing   ep       t_train        t_rmse       t_epoch         t_tot
 -------------------------------------------------------------------
-ENERGY    0   4.33087E-03   4.59649E-03   1.05092E+00   1.11537E+00
-FORCES    0   2.37531E-02   2.42947E-02   9.93111E-01   1.01575E+00
-TIMING    0          0.00         29.51         29.55         29.55
+ENERGY    0   3.72115E-03   3.81895E-03   9.02965E-01   9.26696E-01
+FORCES    0   2.34072E-02   2.29953E-02   9.78649E-01   9.61428E-01
+TIMING    0          0.00         30.72         30.75         30.75
 ------
-ENERGY    1   2.92808E-04   2.93756E-04   7.10520E-02   7.12821E-02
-FORCES    1   9.78966E-04   9.31313E-04   4.09304E-02   3.89380E-02
-UPDATE    1           408          4090          4498
-TIMING    1        556.56          2.46        559.06        588.61
+ENERGY    1   5.27269E-05   5.44783E-05   1.27946E-02   1.32196E-02
+FORCES    1   9.78255E-04   9.47430E-04   4.09006E-02   3.96118E-02
+UPDATE    1           408          4076          4484
+TIMING    1        547.67          2.61        550.32        581.07
 ------
-ENERGY    2   1.24053E-04   1.28878E-04   3.01023E-02   3.12732E-02
-FORCES    2   9.96403E-04   9.61160E-04   4.16594E-02   4.01859E-02
-UPDATE    2           408          4108          4516
-TIMING    2        533.52          2.43        535.99       1124.59
+ENERGY    2   9.56678E-05   8.86669E-05   2.32145E-02   2.15157E-02
+FORCES    2   8.94076E-04   8.74898E-04   3.73811E-02   3.65793E-02
+UPDATE    2           408          4082          4490
+TIMING    2        525.97          2.71        528.71       1109.78
 ------
-ENERGY    3   6.38081E-05   6.74568E-05   1.54835E-02   1.63689E-02
-FORCES    3   8.85294E-04   8.67324E-04   3.70139E-02   3.62626E-02
-UPDATE    3           408          4099          4507
-TIMING    3        535.87          2.42        538.32       1662.92
+ENERGY    3   3.38638E-05   3.30619E-05   8.21730E-03   8.02272E-03
+FORCES    3   7.89628E-04   7.69554E-04   3.30142E-02   3.21749E-02
+UPDATE    3           408          3997          4405
+TIMING    3        517.62          2.69        520.35       1630.13
 ------
-ENERGY    4   4.97112E-05   5.56657E-05   1.20628E-02   1.35077E-02
-FORCES    4   8.39893E-04   8.38504E-04   3.51157E-02   3.50577E-02
-UPDATE    4           408          4064          4472
-TIMING    4        527.91          2.46        530.46       2193.37
+ENERGY    4   2.69193E-05   2.55573E-05   6.53218E-03   6.20168E-03
+FORCES    4   7.54758E-04   7.38703E-04   3.15563E-02   3.08850E-02
+UPDATE    4           408          4143          4551
+TIMING    4        530.61          2.66        533.30       2163.43
 ------
-ENERGY    5   4.80558E-05   4.75780E-05   1.16611E-02   1.15452E-02
-FORCES    5   8.21665E-04   8.19779E-04   3.43536E-02   3.42748E-02
-UPDATE    5           408          3978          4386
-TIMING    5        517.94          2.51        520.48       2713.85
+ENERGY    5   3.67487E-05   3.57290E-05   8.91736E-03   8.66991E-03
+FORCES    5   7.34764E-04   7.34122E-04   3.07203E-02   3.06935E-02
+UPDATE    5           408          3987          4395
+TIMING    5        508.88          2.63        511.54       2674.97
 ------
-ENERGY    6   4.37661E-05   4.51677E-05   1.06202E-02   1.09603E-02
-FORCES    6   8.17102E-04   8.16097E-04   3.41629E-02   3.41208E-02
-UPDATE    6           408          4024          4432
-TIMING    6        523.40          2.51        525.94       3239.79
+ENERGY    6   3.05092E-05   3.02791E-05   7.40328E-03   7.34745E-03
+FORCES    6   7.24954E-04   7.21860E-04   3.03102E-02   3.01808E-02
+UPDATE    6           408          4077          4485
+TIMING    6        520.66          2.68        523.37       3198.34
 ------
-ENERGY    7   4.47044E-05   4.89311E-05   1.08479E-02   1.18735E-02
-FORCES    7   8.21568E-04   8.19873E-04   3.43496E-02   3.42787E-02
-UPDATE    7           408          3953          4361
-TIMING    7        512.54          2.52        515.09       3754.88
+ENERGY    7   4.44131E-05   4.29940E-05   1.07772E-02   1.04328E-02
+FORCES    7   7.19542E-04   7.18822E-04   3.00839E-02   3.00538E-02
+UPDATE    7           408          4151          4559
+TIMING    7        529.47          2.71        532.21       3730.55
 ------
-ENERGY    8   6.34098E-05   6.88798E-05   1.53869E-02   1.67142E-02
-FORCES    8   8.08421E-04   8.07822E-04   3.37999E-02   3.37749E-02
-UPDATE    8           408          4019          4427
-TIMING    8        522.78          2.50        525.31       4280.19
+ENERGY    8   3.55360E-05   3.40692E-05   8.62307E-03   8.26716E-03
+FORCES    8   7.22773E-04   7.20229E-04   3.02190E-02   3.01126E-02
+UPDATE    8           408          4151          4559
+TIMING    8        527.71          2.63        530.38       4260.93
 ------
-ENERGY    9   4.35277E-05   4.32098E-05   1.05623E-02   1.04852E-02
-FORCES    9   8.19046E-04   8.22051E-04   3.42441E-02   3.43698E-02
-UPDATE    9           408          4114          4522
-TIMING    9        534.36          2.49        536.88       4817.07
+ENERGY    9   2.65646E-05   2.57801E-05   6.44610E-03   6.25574E-03
+FORCES    9   7.14881E-04   7.12744E-04   2.98890E-02   2.97997E-02
+UPDATE    9           408          4051          4459
+TIMING    9        515.96          2.67        518.66       4779.59
 ------
-ENERGY   10   5.24334E-05   5.28536E-05   1.27234E-02   1.28253E-02
-FORCES   10   8.09659E-04   8.07524E-04   3.38517E-02   3.37624E-02
-UPDATE   10           408          4034          4442
-TIMING   10        525.82          2.49        528.34       5345.41
+ENERGY   10   2.74199E-05   2.62896E-05   6.65364E-03   6.37936E-03
+FORCES   10   7.14391E-04   7.12126E-04   2.98685E-02   2.97738E-02
+UPDATE   10           408          4054          4462
+TIMING   10        519.13          2.76        521.92       5301.51
 ------
-ENERGY   11   4.83292E-05   5.48479E-05   1.17275E-02   1.33093E-02
-FORCES   11   8.15269E-04   8.17105E-04   3.40862E-02   3.41630E-02
-UPDATE   11           408          4006          4414
-TIMING   11        520.96          2.51        523.51       5868.92
+ENERGY   11   2.74124E-05   2.69574E-05   6.65184E-03   6.54141E-03
+FORCES   11   7.15474E-04   7.13003E-04   2.99138E-02   2.98105E-02
+UPDATE   11           408          3931          4339
+TIMING   11        501.49          2.65        504.17       5805.68
 ------
-ENERGY   12   5.17452E-05   5.80813E-05   1.25564E-02   1.40939E-02
-FORCES   12   8.09107E-04   8.11413E-04   3.38286E-02   3.39250E-02
-UPDATE   12           408          4062          4470
-TIMING   12        528.43          2.50        530.96       6399.88
+ENERGY   12   2.87293E-05   2.82820E-05   6.97137E-03   6.86285E-03
+FORCES   12   7.14605E-04   7.12197E-04   2.98775E-02   2.97768E-02
+UPDATE   12           408          4122          4530
+TIMING   12        526.86          2.66        529.54       6335.22
 ------
-ENERGY   13   4.86320E-05   4.94209E-05   1.18009E-02   1.19923E-02
-FORCES   13   8.09188E-04   8.09504E-04   3.38320E-02   3.38452E-02
-UPDATE   13           408          4060          4468
-TIMING   13        529.12          2.50        531.64       6931.52
+ENERGY   13   2.50400E-05   2.41467E-05   6.07614E-03   5.85937E-03
+FORCES   13   7.12309E-04   7.11631E-04   2.97815E-02   2.97531E-02
+UPDATE   13           408          4009          4417
+TIMING   13        511.79          2.72        514.54       6849.76
 ------
-ENERGY   14   4.64638E-05   5.10372E-05   1.12748E-02   1.23845E-02
-FORCES   14   7.99899E-04   8.02831E-04   3.34436E-02   3.35662E-02
-UPDATE   14           408          4176          4584
-TIMING   14        541.04          2.50        543.57       7475.09
+ENERGY   14   3.27553E-05   3.21490E-05   7.94833E-03   7.80119E-03
+FORCES   14   7.11961E-04   7.10919E-04   2.97669E-02   2.97234E-02
+UPDATE   14           408          4132          4540
+TIMING   14        526.43          2.68        529.14       7378.90
 ------
-ENERGY   15   4.51677E-05   4.24706E-05   1.09603E-02   1.03058E-02
-FORCES   15   8.10607E-04   8.14728E-04   3.38913E-02   3.40636E-02
-UPDATE   15           408          4076          4484
-TIMING   15        529.70          2.50        532.24       8007.33
+ENERGY   15   3.24771E-05   3.11575E-05   7.88081E-03   7.56061E-03
+FORCES   15   7.07100E-04   7.05472E-04   2.95637E-02   2.94956E-02
+UPDATE   15           408          4053          4461
+TIMING   15        515.38          2.65        518.06       7896.96
 ------
-ENERGY   16   4.93428E-05   5.20483E-05   1.19734E-02   1.26299E-02
-FORCES   16   7.99265E-04   8.00073E-04   3.34171E-02   3.34509E-02
-UPDATE   16           408          4055          4463
-TIMING   16        527.10          2.51        529.64       8536.97
+ENERGY   16   3.12976E-05   3.18343E-05   7.59461E-03   7.72483E-03
+FORCES   16   7.10094E-04   7.07533E-04   2.96889E-02   2.95818E-02
+UPDATE   16           408          4104          4512
+TIMING   16        523.43          2.71        526.17       8423.13
 ------
-ENERGY   17   4.67613E-05   4.95366E-05   1.13470E-02   1.20204E-02
-FORCES   17   8.06155E-04   8.07167E-04   3.37052E-02   3.37475E-02
-UPDATE   17           408          4108          4516
-TIMING   17        534.59          2.49        537.11       9074.08
+ENERGY   17   2.70985E-05   2.73839E-05   6.57565E-03   6.64491E-03
+FORCES   17   7.07123E-04   7.06332E-04   2.95647E-02   2.95316E-02
+UPDATE   17           408          4021          4429
+TIMING   17        513.31          2.67        516.01       8939.14
 ------
-ENERGY   18   5.34000E-05   6.13754E-05   1.29579E-02   1.48932E-02
-FORCES   18   8.08605E-04   8.09167E-04   3.38076E-02   3.38311E-02
-UPDATE   18           408          4015          4423
-TIMING   18        521.87          2.50        524.40       9598.48
+ENERGY   18   3.09332E-05   2.91548E-05   7.50617E-03   7.07463E-03
+FORCES   18   7.05834E-04   7.04317E-04   2.95108E-02   2.94473E-02
+UPDATE   18           408          4079          4487
+TIMING   18        521.91          2.66        524.60       9463.74
 ------
-ENERGY   19   6.40545E-05   6.67051E-05   1.55433E-02   1.61865E-02
-FORCES   19   7.98628E-04   8.00000E-04   3.33905E-02   3.34478E-02
-UPDATE   19           408          4064          4472
-TIMING   19        528.77          2.50        531.30      10129.78
+ENERGY   19   3.26598E-05   3.28139E-05   7.92515E-03   7.96254E-03
+FORCES   19   7.05070E-04   7.01846E-04   2.94788E-02   2.93440E-02
+UPDATE   19           408          4033          4441
+TIMING   19        514.32          2.69        517.05       9980.78
 ------
-ENERGY   20   5.89282E-05   6.65216E-05   1.42994E-02   1.61420E-02
-FORCES   20   8.00339E-04   8.04111E-04   3.34620E-02   3.36197E-02
-UPDATE   20           408          3989          4397
-TIMING   20        518.53          2.49        521.06      10650.84
+ENERGY   20   2.60466E-05   2.47333E-05   6.32039E-03   6.00173E-03
+FORCES   20   7.06028E-04   7.04603E-04   2.95189E-02   2.94593E-02
+UPDATE   20           408          4026          4434
+TIMING   20        568.05          2.67        570.75      10551.53
 ------
-ENERGY   21   4.03675E-05   4.30256E-05   9.79549E-03   1.04405E-02
-FORCES   21   7.98846E-04   8.00437E-04   3.33996E-02   3.34661E-02
-UPDATE   21           408          4174          4582
-TIMING   21        541.45          2.50        543.98      11194.82
+ENERGY   21   2.80412E-05   2.81732E-05   6.80440E-03   6.83644E-03
+FORCES   21   7.11965E-04   7.11953E-04   2.97671E-02   2.97666E-02
+UPDATE   21           408          4012          4420
+TIMING   21        518.97          2.80        521.80      11073.33
 ------
-ENERGY   22   4.39626E-05   4.50804E-05   1.06678E-02   1.09391E-02
-FORCES   22   8.01442E-04   8.04164E-04   3.35081E-02   3.36219E-02
-UPDATE   22           408          3934          4342
-TIMING   22        510.79          2.49        513.31      11708.13
+ENERGY   22   2.64661E-05   2.60412E-05   6.42221E-03   6.31908E-03
+FORCES   22   7.14539E-04   7.13341E-04   2.98747E-02   2.98246E-02
+UPDATE   22           408          4038          4446
+TIMING   22        520.31          2.72        523.07      11596.40
 ------
-ENERGY   23   4.64536E-05   4.52090E-05   1.12723E-02   1.09703E-02
-FORCES   23   7.94478E-04   7.96780E-04   3.32169E-02   3.33132E-02
-UPDATE   23           408          4020          4428
-TIMING   23        521.40          2.50        523.93      12232.06
+ENERGY   23   3.66545E-05   3.65880E-05   8.89450E-03   8.87835E-03
+FORCES   23   7.05732E-04   7.05303E-04   2.95065E-02   2.94886E-02
+UPDATE   23           408          4078          4486
+TIMING   23        526.46          3.31        529.80      12126.21
 ------
-ENERGY   24   4.20130E-05   4.59123E-05   1.01948E-02   1.11410E-02
-FORCES   24   7.99013E-04   8.00829E-04   3.34066E-02   3.34825E-02
-UPDATE   24           408          4007          4415
-TIMING   24        521.31          2.52        523.86      12755.92
+ENERGY   24   3.00251E-05   2.86382E-05   7.28581E-03   6.94926E-03
+FORCES   24   7.05073E-04   7.02898E-04   2.94790E-02   2.93880E-02
+UPDATE   24           408          3989          4397
+TIMING   24        515.17          2.68        517.87      12644.08
 ------
-ENERGY   25   4.73364E-05   5.33596E-05   1.14865E-02   1.29481E-02
-FORCES   25   8.04576E-04   8.07486E-04   3.36391E-02   3.37608E-02
-UPDATE   25           408          4061          4469
-TIMING   25        528.70          3.62        532.36      13288.27
+ENERGY   25   3.24461E-05   3.15622E-05   7.87329E-03   7.65879E-03
+FORCES   25   7.06710E-04   7.05342E-04   2.95474E-02   2.94902E-02
+UPDATE   25           408          4053          4461
+TIMING   25        523.39          3.60        527.02      13171.10
 *******************************************************************************

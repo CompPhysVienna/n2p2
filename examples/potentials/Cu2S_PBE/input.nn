@@ -1,4 +1,12 @@
 ###############################################################################
+# HDNNP for copper sulfide Cu2S
+###############################################################################
+# Length unit     : Angstrom
+# Energy unit     : eV
+# Reference method: PBE
+###############################################################################
+
+###############################################################################
 # DATA SET NORMALIZATION
 ###############################################################################
 # This section was automatically added by nnp-norm.
@@ -89,10 +97,10 @@ kalman_etamax                   1.0            # Standard Kalman filter paramete
 #symfunction_short <element-central> 2 <element-neighbor> <eta> <rshift> <rcutoff>
 
 # Narrow Angular symmetry function (type 3):
-#symfunction_short <element-central> 3 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff>
+#symfunction_short <element-central> 3 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
 
 # Wide Angular symmetry function (type 9):
-#symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff>
+#symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
 
 # Generating radial symmetry function set:
 # mode  = shift    

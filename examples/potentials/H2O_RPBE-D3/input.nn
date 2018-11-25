@@ -1,4 +1,12 @@
 ###############################################################################
+# HDNNP for water H2O
+###############################################################################
+# Length unit     : Bohr
+# Energy unit     : Ha
+# Reference method: RPBE-D3
+###############################################################################
+
+###############################################################################
 # DATA SET NORMALIZATION
 ###############################################################################
 # This section was automatically added by nnp-norm.
@@ -34,7 +42,7 @@ parallel_mode                   4              # Training parallelization used (
 update_strategy                 0              # Update strategy (0 = Combined, 1 = Per-element).
 selection_mode                  2              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
-random_seed 5
+random_seed 2
 test_fraction                   0.1            # Fraction of structures kept for testing.
 use_short_forces                               # Use forces for training.
 force_weight                    10.0           # Weight of force updates relative to energy updates.

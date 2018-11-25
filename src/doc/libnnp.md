@@ -1,8 +1,8 @@
 The libnnp core library
 =======================
 
-@warn
-UNDER CONSTRUCTION ...
+@warning
+Documentation under construction...
 
 The `libnnp` library provides all the basic ingredients for HDNNP generation or
 application. For instance, it contains classes for symmetry functions, a neural
@@ -15,19 +15,26 @@ produced by the [nnp-predict](nnp-predict.md) example for RPBE-D3 water (see
 `examples/nnp-predict/H2O_RPBE-D3` directory).
 
 
+The initial output section (corresponding to nnp::Mode::initialize()) is simply
+stating the current version, git branch and commit ID (if available). If the
+library was compiled with OpenMP support, the number of used threads is also
+provided (see [Parallelization](parallelization.md)).
 ```
 *******************************************************************************
 
    NNP LIBRARY v2.0.0
    ------------------
 
-Git branch  : n2p2-release-v2
-Git revision: 46e082e (46e082e7c51c870ec814ed1a6954a7fc6eaac455)
+Git branch  : master
+Git revision: 7b42366 (7b423664b02ff4e4979301b4a136ac3221f46be2)
 
-Number of OpenMP threads: 8
+Number of OpenMP threads: 2
 *******************************************************************************
 ```
-
+The next section (nnp::Mode::loadSettingsFile()) names which settings file is
+used and how many keywords (see [Keywords](keywords.md)) were found. If
+problems (unknown or multiply defined keywords) occur, warnings will be issued
+in this section.
 ```
 *** SETUP: SETTINGS FILE ******************************************************
 
@@ -36,7 +43,9 @@ Read 167 lines.
 Found 102 lines with keywords.
 *******************************************************************************
 ```
-
+If data set normalization is used (see the corresponding tool
+[nnp-norm](nnp-norm.md)) this section lists the required quantities to convert
+to normalized (internal) units.
 ```
 *** SETUP: NORMALIZATION ******************************************************
 

@@ -11,8 +11,11 @@ m.setupElements()
 m.setupCutoff()
 m.setupSymmetryFunctions()
 m.setupSymmetryFunctionGroups()
-m.setupSymmetryFunctionScaling("scaling.data")
-m.setupSymmetryFunctionStatistics(False, False, True, False)
+# Either use symmetry function scaling...
+#m.setupSymmetryFunctionScaling("scaling.data")
+#m.setupSymmetryFunctionStatistics(False, False, True, False)
+# ... or calculate raw values.
+m.setupSymmetryFunctionScalingNone()
 
 # Initialize NNP structure data container.
 s = pynnp.Structure()
