@@ -54,6 +54,7 @@ documentation if you set the option `HAVE_DOT` in the file `src/doc/Doxyfile` to
 
 - [Atomic environment descriptors](descriptors.md)
 - [Input file keywords](keywords.md)
+- [NNP training procedure](training.md)
 - [LAMMPS interface build instructions](if_lammps.md)
 - [__LAMMPS pair style reference__](pair_nnp.html)
 - [Structure file format](cfg_file.md)
@@ -105,6 +106,8 @@ Additional, though not strictly required tools, are also quite useful:
 - [nnp-prune](nnp-prune.md)
 - [nnp-select](nnp-select.md)
 - [nnp-symfunc](nnp-symfunc.md)
+
+Rough guidelines for NNP training are provided [here](training.md).
 
 # Build process
 
