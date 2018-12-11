@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
                                    outputFileNamePrefix.c_str(),
                                    countStructures + 1);
             outputFile.open(outputFileName.c_str());
-            structure.writeToFilePoscar(&outputFile);
+            structure.writeToFilePoscar(&outputFile, elements);
             outputFile.close();
         }
         countStructures++;

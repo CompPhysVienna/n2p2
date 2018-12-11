@@ -254,9 +254,20 @@ struct Structure
     /** Write configuration to POSCAR file.
      *
      * @param[in,out] file POSCAR output file.
+     *
+     * @warning Elements in POTCAR file must be ordered according to
+     *          periodic table.
      */
     void                     writeToFilePoscar(
                                              std::ofstream* const& file) const;
+    /** Write configuration to POSCAR file.
+     *
+     * @param[in,out] file POSCAR output file.
+     * @param[in,out] elements User-defined order of elements, e.g. "Zn O Cu".
+     */
+    void                     writeToFilePoscar(
+                                         std::ofstream* const& file,
+                                         std::string const     elements) const;
     /** Get structure information as a vector of strings.
      *
      * @return Lines with structure information.
