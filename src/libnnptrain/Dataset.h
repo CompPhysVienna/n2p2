@@ -125,7 +125,7 @@ public:
      *
      * @param[in] fileName File name for symmetry function file.
      */
-    void        writeSymmetryFunctionFile(std::string fileNameFormat
+    void        writeSymmetryFunctionFile(std::string fileName
                                               = "function.data");
     /** Calculate and write neighbor histogram.
      *
