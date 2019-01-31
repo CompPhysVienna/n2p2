@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = n2p2-Aneuralnetworkpotentialpackage
 SOURCEDIR     = source
-BUILDDIR      = build
+BUILDDIR      = ../../doc/
 
 # Put it first so that "make" without argument is like "make help".
 help:

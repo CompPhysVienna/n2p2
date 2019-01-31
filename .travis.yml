@@ -29,6 +29,10 @@ before_script:
   - wget -O - ${DOXYGEN_TAR} | tar -xz -C ${TMPDIR-/tmp}
   - cd ${TMPDIR-/tmp}/${DOXYGEN_DIR} && mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
   - export PATH="${TMPDIR-/tmp}/${DOXYGEN_DIR}/build/bin:$PATH"
+  - pip install sphinx
+  - pip install sphinx_rtd_theme
+  - pip install breathe
+  - pip install exhale
 
 script:
   - cd ${REPO_DIR}

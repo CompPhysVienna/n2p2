@@ -165,10 +165,10 @@ clean:	clean-doc \
 # doc #
 #######
 doc:
-	cd doc && $(MAKE)
+	cd doc-sphinx && $(MAKE) html
 
 clean-doc:
-	cd doc && $(MAKE) clean
+	cd doc-sphinx && $(MAKE) clean
 
 ##########
 # libnnp #

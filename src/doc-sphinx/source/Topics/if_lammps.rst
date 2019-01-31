@@ -42,7 +42,7 @@ the ``lib`` subdirectory:
    cd <path-to-LAMMPS>/
    ln -s <path-to-n2p2> lib/nnp
 
-.. warning::
+.. danger::
 
    The link should be named ``nnp``\ , NOT ``n2p2``\ !
 
