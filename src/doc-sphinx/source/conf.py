@@ -32,38 +32,39 @@
 # ones.
 extensions = [
     'breathe',
-    #'exhale',
+    'exhale',
     'sphinx.ext.mathjax'
 ]
 
-## Setup the breathe extension
-#breathe_projects = {
-#    "My Project": "./doxyoutput/xml"
-#}
-#
-#breathe_default_project = "My Project"
-#
-## Setup the exhale extension
-#exhale_args = {
-#    # These arguments are required
-#    "containmentFolder":     "./doc-exhale",
-#    "rootFileName":          "root.rst",
-#    "rootFileTitle":         "n2p2 documentation",
-#    "doxygenStripFromPath":  "..",
-#    # Suggested optional arguments
-#    "createTreeView":        True,
-#    # TIP: if using the sphinx-bootstrap-theme, you need
-#    # "treeViewIsBootstrap": True,
-#    "exhaleExecutesDoxygen": True,
-#    "exhaleDoxygenStdin":    "INPUT = ../../libnnp\n" +
-#                             "INPUT += ../../libnnptrain/\nUSE_MDFILE_AS_MAINPAGE = ../../doc/README.md"
-#}
-#
-## Tell sphinx what the primary language being documented is.
-#primary_domain = 'cpp'
-#
-## Tell sphinx what the pygments highlight language should be.
-#highlight_language = 'cpp'
+# Setup the breathe extension
+breathe_projects = {
+    "My Project": "./doxyoutput/xml"
+}
+
+breathe_default_project = "My Project"
+
+# Setup the exhale extension
+exhale_args = {
+    # These arguments are required
+    "containmentFolder":     "./doc-exhale",
+    "rootFileName":          "root.rst",
+    "rootFileTitle":         "n2p2 code documentation",
+    "doxygenStripFromPath":  "..",
+    # Suggested optional arguments
+    "createTreeView":        True,
+    # TIP: if using the sphinx-bootstrap-theme, you need
+    # "treeViewIsBootstrap": True,
+    "exhaleExecutesDoxygen": True,
+    "exhaleDoxygenStdin":    "INPUT = ../../libnnp\n" +
+                             "INPUT += ../../libnnpif/\n" 
+                             "INPUT += ../../libnnptrain/\n" 
+}
+
+# Tell sphinx what the primary language being documented is.
+primary_domain = 'cpp'
+
+# Tell sphinx what the pygments highlight language should be.
+highlight_language = 'cpp'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

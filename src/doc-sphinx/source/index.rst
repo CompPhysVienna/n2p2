@@ -25,7 +25,9 @@ Documentation
 .. warning::
 
    Unfortunately many parts of the documentation are still unfinished and will
-   be completed little by little.
+   be completed little by little. If you have specific questions, consider to
+   ask on GitHub (file an issue) and I will update the corresponding docs as
+   quickly as possible.
 
 This package uses automatic documentation generation via `doxygen
 <http://www.stack.nl/~dimitri/doxygen>`_, `sphinx <http://www.sphinx-doc.org>`_
@@ -75,14 +77,14 @@ To train a completely new neural network potential the following parts are requi
 
 Additional, though not strictly required tools, are also quite useful:
 
-* [nnp-comp2](nnp-comp2.md)
-* [nnp-convert](nnp-convert.md)
-* [nnp-dataset](nnp-dataset.md)
-* [nnp-dist](nnp-dist.md)
-* [nnp-norm](nnp-norm.md)
-* [nnp-prune](nnp-prune.md)
+* `nnp-comp2`
+* `nnp-convert`
+* `nnp-dataset`
+* `nnp-dist`
+* `nnp-norm`
+* `nnp-prune`
 * :ref:`nnp-select`
-* [nnp-symfunc](nnp-symfunc.md)
+* `nnp-symfunc`
 
 Rough guidelines for NNP training are provided [here](training.md).
 
@@ -99,45 +101,146 @@ components, this depends on the intended use. The following table lists all
 components and their respective requirements (follow the links for more
 information).
 
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| Component                       | Location                        | Requirements               | Function                                             |
-+=================================+=================================+============================+======================================================+
-| [libnnp](libnnp.md)             | `src`                           | C++98 compiler (icpc, g++) | NNP core library (NN, SF, Structure, ...)            |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| libnnpif                        | `src`                           | `libnnp`, MPI              | Interfaces to other software (LAMMPS, ...)           |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| libnnptrain                     | `src`                           | `libnnp`, MPI, GSL, Eigen  | Dataset and training routines (Kalman, ...).         |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-convert](nnp-convert.md)   | `src/application`               | `libnnp`                   | Convert between structure file formats.              |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-cutoff](nnp-cutoff.md)     | `src/application`               | `libnnp`                   | Test speed of different cutoff functions.            |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-dist](nnp-dist.md)         | `src/application`               | `libnnp`                   | Calculate radial and angular distribution functions. |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-predict](nnp-predict.md)   | `src/application`               | `libnnp`                   | Predict energy and forces for one structure.         |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-prune](nnp-prune.md)       | `src/application`               | `libnnp`                   | Prune symmetry functions.                            |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-select](nnp-select.md)     | `src/application`               | `libnnp`                   | Select subset from data set.                         |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-symfunc](nnp-symfunc.md)   | `src/application`               | `libnnp`                   | Symmetry function shape from settings file.          |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-comp2](nnp-comp2.md)       | `src/application`               | `libnnptrain`              | Compare prediction of 2 NNPs for data set.           |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-dataset](nnp-dataset.md)   | `src/application`               | `libnnptrain`              | Calculate energies and forces for a whole data set.  |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-norm](nnp-norm.md)         | `src/application`               | `libnnptrain`              | Calculate normalization factors for data set.        |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-scaling](nnp-scaling.md)   | `src/application`               | `libnnptrain`              | Calculate symmetry function values for data set.     |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [nnp-train](nnp-train.md)       | `src/application`               | `libnnptrain`              | Train a neural network potential.                    |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [pair_style  nnp](if_lammps.md) | `src/interface/LAMMPS`          | `libnnpif`                 | %Pair style `nnp` for LAMMPS                         |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| [pynnp](pynnp.md)               | `src/`                          | `libnnp`, python, cython   | Python interface to NNP library.                     |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
-| doc                             | `src/doc`                       | doxygen, graphviz          | Doxygen documentation.                               |
-+---------------------------------+---------------------------------+----------------------------+------------------------------------------------------+
++---------------------------------+----------------------------+------------------------------------------------------+
+| Component                       | Requirements               | Function                                             |
++=================================+============================+======================================================+
+| :ref:`libnnp <libnnp>`          | C++98 compiler (icpc, g++) | NNP core library (NN, SF, Structure, ...)            |
++---------------------------------+----------------------------+------------------------------------------------------+
+| libnnpif                        | libnnp, MPI                | Interfaces to other software (LAMMPS, ...)           |
++---------------------------------+----------------------------+------------------------------------------------------+
+| libnnptrain                     | libnnp, MPI, GSL, Eigen    | Dataset and training routines (Kalman, ...).         |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-convert                     | libnnp                     | Convert between structure file formats.              |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-cutoff                      | libnnp                     | Test speed of different cutoff functions.            |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-dist                        | libnnp                     | Calculate radial and angular distribution functions. |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-predict                     | libnnp                     | Predict energy and forces for one structure.         |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-prune                       | libnnp                     | Prune symmetry functions.                            |
++---------------------------------+----------------------------+------------------------------------------------------+
+| :ref:`nnp-select`               | libnnp                     | Select subset from data set.                         |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-symfunc                     | libnnp                     | Symmetry function shape from settings file.          |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-comp2                       | libnnptrain                | Compare prediction of 2 NNPs for data set.           |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-dataset                     | libnnptrain                | Calculate energies and forces for a whole data set.  |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-norm                        | libnnptrain                | Calculate normalization factors for data set.        |
++---------------------------------+----------------------------+------------------------------------------------------+
+| :ref:`nnp-scaling`              | libnnptrain                | Calculate symmetry function values for data set.     |
++---------------------------------+----------------------------+------------------------------------------------------+
+| nnp-train                       | libnnptrain                | Train a neural network potential.                    |
++---------------------------------+----------------------------+------------------------------------------------------+
+| pair_style nnp                  | libnnpif                   | Pair style `nnp` for LAMMPS                          |
++---------------------------------+----------------------------+------------------------------------------------------+
+| pynnp                           | libnnp, python, cython     | Python interface to NNP library.                     |
++---------------------------------+----------------------------+------------------------------------------------------+
+| doc                             | doxygen, graphviz          | Doxygen documentation.                               |
++---------------------------------+----------------------------+------------------------------------------------------+
+
+The simple way using the master makefile
+----------------------------------------
+
+A master makefile is provided in the ``src`` directory which provides targets for
+all individual components (except for the LAMMPS :ref:`pair_style  nnp <if_lammps>`).
+For instance, compiling the interface library ``libnnpif`` requires only to type
+
+.. code-block:: bash
+
+   cd src
+   make libnnpif-shared
+
+This will automatically build a shared version (for dynamic linking) of the
+required library ``libnnp`` and the requested ``libnnpif``.  Similarly, a static
+build is done like this:
+
+.. code-block:: bash
+
+   make libnnpif-static
+
+To build everything (all libraries and tools) type:
+
+.. code-block:: bash
+
+   make shared
+
+or
+
+.. code-block:: bash
+
+   make static
+
+Compiled binaries will be copied to the ``bin`` path (relative to the root
+directory), whereas libraries can be found in the ``lib`` folder.  To clean up
+individual components or everything use one of these makefile targets
+
+.. code-block:: bash
+
+   make clean
+   make clean-doc
+   make clean-libnnpif
+
+Have a look at the main makefile in ``src`` for all available build
+targets.
+
+Currently the build process has been tested with two different compilers, the
+GNU compiler g++ 5.4 (``gnu``) and the Intel compiler 17 (``intel``). It is
+possible to switch between them via the ``COMP`` variable, e.g.
+
+.. code-block:: bash
+
+   make libnnp COMP=intel
+
+If you need to change compiler variables and paths have a look at the
+corresponding makefiles containing global build parameters:
+
+.. code-block:: bash
+
+   src/makefile.gnu
+   src/makefile.intel
+
+You can also create new parameter makefiles based on the above and change the
+file name suffix according to your target:
+
+.. code-block:: bash
+
+   src/makefile.target
+   make libnnp COMP=target
+
+By default the makefile will use 4 processors for compiling multiple files at
+once, this behaviour can be overriden with the CORES switch, e.g. to use 8
+cores:
+
+.. code-block:: bash
+
+   make libnnp CORES=-j8
+
+.. warning::
+
+   Do not use the `-j` switch for the master makefile, this may mess up
+   the compilation order.
+
+Individual component makefiles
+------------------------------
+
+It is also possible to invoke individual makefiles for each component manually.
+Just switch to the corresponding folder and use ``make shared`` or ``make static``.
+
+Examples
+========
+
+Working minimal examples for each application can be found in the ``examples``
+directory.
+
+Keywords
+========
+
+The setup of a neural network potential (network topology, symmetry function
+parameters,...) is stored in a simple text file with keyword-argument pairs. A
+list of keywords is provided :ref:`here <keywords>`.
 
 .. toctree::
    :hidden:
@@ -163,9 +266,16 @@ information).
    Tools/nnp-select
    Tools/nnp-scaling
 
-Indices and tables
-==================
+.. toctree::
+   :hidden:
+   :caption: API
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   doc-exhale/root
+
+.. toctree::
+   :hidden:
+   :caption: About
+
+   About/authors
+   About/license
+   About/changelog

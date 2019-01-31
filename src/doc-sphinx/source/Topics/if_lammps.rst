@@ -79,5 +79,5 @@ named ``nnp``. LAMMPS comes with a large collection of these pair styles, e.g. f
 a LJ or Tersoff potential, look
 `here <http://lammps.sandia.gov/doc/pair_style.html>`_ for more information. The
 setup of a ``nnp`` pair style is done by issuing two commands: ``pair_style`` and
-``pair_coeff``. See `this page <pair_nnp.html>`_ for a detailed
+``pair_coeff``. See :ref:`this page <pair_nnp>` for a detailed
 description.

@@ -1,3 +1,5 @@
+.. _pair_nnp:
+
 LAMMPS NNP pair style
 =====================
 

@@ -1,7 +1,7 @@
 .. _nnp-scaling:
 
-nnp-scaling: Symmetry function calculation for data set
-=======================================================
+nnp-scaling
+===========
 
 .. warning::
    Documentation under construction...
