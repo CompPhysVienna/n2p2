@@ -50,7 +50,7 @@ ready and want to predict energies and forces for a single structure you only
 need these components:
 
 * :ref:`libnnp <libnnp>`
-* :ref:`nnp-predict`
+* `nnp-predict`
 
 Molecular dynamics simulation
 -----------------------------
@@ -71,7 +71,7 @@ To train a completely new neural network potential the following parts are requi
 * :ref:`libnnp <libnnp>`
 * `libnnptrain`
 * :ref:`nnp-scaling`
-* :ref:`nnp-train`
+* `nnp-train`
 
 Additional, though not strictly required tools, are also quite useful:
 

@@ -47,6 +47,8 @@ script:
   - cd ${REPO_DIR}
   - cd src
   - make doc
+  # Prevent GitHub Jekyll to interfere with Sphinx theme.
+  - touch ../doc/html/.nojekyll
 
 deploy:
   provider: pages
