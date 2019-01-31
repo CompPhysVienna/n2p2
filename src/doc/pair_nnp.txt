@@ -63,7 +63,7 @@ and zinc atoms is as follows:
 | Element | Atomic number | LAMMPS type |
 |---------------------------------------|
 |       H |             1 |           1 |
-|       O |            16 |           2 |
+|       O |             8 |           2 |
 |      Zn |            30 |           3 |
  --------------------------------------- :pre
 

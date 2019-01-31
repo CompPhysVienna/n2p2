@@ -54,7 +54,7 @@ public:
     /** Kalman filter class constructor.
      *
      * @param[in] type Kalman filter type (see #KalmanType).
-     * @param[in] parallel Parallelization mode (see #ParallelMode).
+     * @param[in] parallel Parallelization mode (see #KalmanParallel).
      * @param[in] sizeState Size of the state vector #w.
      * @param[in] sizeObservation Size of the observation vector #xi.
      */

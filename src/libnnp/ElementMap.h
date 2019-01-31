@@ -46,6 +46,11 @@ public:
      * @return Number of elements registered.
      */
     std::size_t              size() const;
+    /** Get sorted list of elements in one string (space separated).
+     *
+     * @return Element string.
+     */
+    std::string              getElementsString() const;
     /** Get index of given element.
      *
      * @param[in] symbol Element symbol.

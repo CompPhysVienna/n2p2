@@ -121,6 +121,12 @@ public:
     void        writeSymmetryFunctionHistograms(std::size_t numBins,
                                                 std::string fileNameFormat
                                                     = "sf.%03zu.%04zu.histo");
+    /** Write symmetry function legacy file ("function.data").
+     *
+     * @param[in] fileName File name for symmetry function file.
+     */
+    void        writeSymmetryFunctionFile(std::string fileName
+                                              = "function.data");
     /** Calculate and write neighbor histogram.
      *
      * @param[in] fileName Name of histogram file.

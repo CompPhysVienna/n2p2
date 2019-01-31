@@ -665,16 +665,35 @@ void Structure::writeToFileXyz(ofstream* const& file) const
 
 void Structure::writeToFilePoscar(ofstream* const& file) const
 {
+    writeToFilePoscar(file, elementMap.getElementsString());
+
+    return;
+}
+
+void Structure::writeToFilePoscar(ofstream* const& file,
+                                  string const elements) const
+{
     if (!file->is_open())
     {
         runtime_error("ERROR: Could not write to file.\n");
     }
 
-    (*file) << strpr("%s, ", comment.c_str());
-    (*file) << strpr("ATOM=%s", elementMap[0].c_str());
-    for (size_t i = 1; i < elementMap.size(); ++i)
+    vector<string> ve = split(elements);
+    vector<size_t> elementOrder;
+    for (size_t i = 0; i < ve.size(); ++i)
     {
-        (*file) << strpr(" %s", elementMap[i].c_str());
+        elementOrder.push_back(elementMap[ve.at(i)]);
+    }
+    if (elementOrder.size() != elementMap.size())
+    {
+        runtime_error("ERROR: Inconsistent element declaration.\n");
+    }
+
+    (*file) << strpr("%s, ", comment.c_str());
+    (*file) << strpr("ATOM=%s", elementMap[elementOrder.at(0)].c_str());
+    for (size_t i = 1; i < elementOrder.size(); ++i)
+    {
+        (*file) << strpr(" %s", elementMap[elementOrder.at(i)].c_str());
     }
     (*file) << "\n";
     (*file) << "1.0\n";
@@ -692,19 +711,19 @@ void Structure::writeToFilePoscar(ofstream* const& file) const
         runtime_error("ERROR: Writing non-periodic structure to POSCAR file "
                       "is not implemented.\n");
     }
-    (*file) << strpr("%d", numAtomsPerElement.at(0));
+    (*file) << strpr("%d", numAtomsPerElement.at(elementOrder.at(0)));
     for (size_t i = 1; i < numAtomsPerElement.size(); ++i)
     {
-        (*file) << strpr(" %d", numAtomsPerElement.at(i));
+        (*file) << strpr(" %d", numAtomsPerElement.at(elementOrder.at(i)));
     }
     (*file) << "\n";
     (*file) << "Cartesian\n";
-    for (size_t i = 0; i < elementMap.size(); ++i)
+    for (size_t i = 0; i < elementOrder.size(); ++i)
     {
         for (vector<Atom>::const_iterator it = atoms.begin();
              it != atoms.end(); ++it)
         {
-            if (it->element == i)
+            if (it->element == elementOrder.at(i))
             {
                 (*file) << strpr("%24.16E %24.16E %24.16E\n",
                                  it->r[0],
