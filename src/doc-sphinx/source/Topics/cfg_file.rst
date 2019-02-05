@@ -44,7 +44,7 @@ where the arguments of the keywords are:
 
 
 * ``<comment>`` : comment line
-* ``<ax>``... ``<cz>`` : box vectors :math:`\vec{\mathbf{a}}, \vec{\mathbf{b}}, \vec{\mathbf{c}}` (see nnp::Structure::calculateInverseBox()).
+* ``<ax>``... ``<cz>`` : box vectors :math:`\vec{\mathbf{a}}, \vec{\mathbf{b}}, \vec{\mathbf{c}}` (see :func:`nnp::Structure::calculateInverseBox`).
 * ``<x1>``... ``<zn>`` : atom coordinates of ``n`` atoms
 * ``<e1>``... ``<en>`` : atom element string (e.g. Cd, S)
 * ``<c1>``... ``<cn>`` : atom charge (for long range neural network only)
@@ -57,8 +57,8 @@ The ``lattice`` section must be omitted for non-periodic structures. It is
 possible to mix periodic and non-periodic structures. Also, configurations may
 contain different numbers of atoms. If atoms in a periodic structure are
 initially outside of the simulation box they will be automatically mapped back
-into the box (see nnp::Structure::remap()). Here is an example configuration
-file with 3 structures, 2 periodic and 1 non-periodic:
+into the box (see :func:`nnp::Structure::remap`). Here is an example
+configuration file with 3 structures, 2 periodic and 1 non-periodic:
 
 .. code-block:: none
 

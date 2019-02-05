@@ -68,7 +68,8 @@ This keyword defines all elements via a list of element symbols. The number
 of items provided has to be consistent with the argument of the
 ``number_of_elements`` keyword. The order of the items is not important,
 elements are automatically sorted according to their atomic number. The list
-nnp::ElementMap::knownElements contains a list of recognized element symbols.
+:member:`nnp::ElementMap::knownElements` contains a list of recognized element
+symbols.
 
 ----
 
@@ -131,7 +132,7 @@ of neural networks of all elements. The number of integer arguments has to
 be consistent with the argument of the ``global_hidden_layers_short`` keyword
 (i.e. number of hidden layers + 1). Activation functions are chosen via
 single characters from the following table (see also
-nnp::NeuralNetwork::ActivationFunction).
+:type:`nnp::NeuralNetwork::ActivationFunction`).
 
 .. list-table::
    :header-rows: 1
@@ -139,13 +140,13 @@ nnp::NeuralNetwork::ActivationFunction).
    * - Character
      - Activation function type
    * - l
-     - nnp::NeuralNetwork::AF_IDENTITY
+     - :enumerator:`nnp::NeuralNetwork::AF_IDENTITY`
    * - t
-     - nnp::NeuralNetwork::AF_TANH
+     - :enumerator:`nnp::NeuralNetwork::AF_TANH`
    * - s
-     - nnp::NeuralNetwork::AF_LOGISTIC
+     - :enumerator:`nnp::NeuralNetwork::AF_LOGISTIC`
    * - p
-     - nnp::NeuralNetwork::AF_SOFTPLUS
+     - :enumerator:`nnp::NeuralNetwork::AF_SOFTPLUS`
 
 
 ----
@@ -181,7 +182,7 @@ is modified according to:
    ``cutoff_type 7``
 
 Defines the cutoff function type used for all symmetry functions. The first
-argument determines the functional form, see nnp::CutoffFunction::CutoffType
+argument determines the functional form, see :type:`nnp::CutoffFunction::CutoffType`
 for all available options. Use one of the following integer numbers to
 select the cutoff type. The second argument is optional and sets the parameter
 :math:`\alpha`. If not provided, the default value is :math:`\alpha = 0.0`.
@@ -192,23 +193,23 @@ select the cutoff type. The second argument is optional and sets the parameter
    * - Cutoff #
      - Cutoff type
    * - 0
-     - nnp::CutoffFunction::CT_HARD
+     - :enumerator:`nnp::CutoffFunction::CT_HARD`
    * - 1
-     - nnp::CutoffFunction::CT_COS
+     - :enumerator:`nnp::CutoffFunction::CT_COS`
    * - 2
-     - nnp::CutoffFunction::CT_TANHU
+     - :enumerator:`nnp::CutoffFunction::CT_TANHU`
    * - 3
-     - nnp::CutoffFunction::CT_TANH
+     - :enumerator:`nnp::CutoffFunction::CT_TANH`
    * - 4
-     - nnp::CutoffFunction::CT_EXP
+     - :enumerator:`nnp::CutoffFunction::CT_EXP`
    * - 5
-     - nnp::CutoffFunction::CT_POLY1
+     - :enumerator:`nnp::CutoffFunction::CT_POLY1`
    * - 6
-     - nnp::CutoffFunction::CT_POLY2
+     - :enumerator:`nnp::CutoffFunction::CT_POLY2`
    * - 7
-     - nnp::CutoffFunction::CT_POLY3
+     - :enumerator:`nnp::CutoffFunction::CT_POLY3`
    * - 8
-     - nnp::CutoffFunction::CT_POLY4
+     - :enumerator:`nnp::CutoffFunction::CT_POLY4`
 
 
 ----
@@ -224,7 +225,7 @@ select the cutoff type. The second argument is optional and sets the parameter
 
 Combining these keywords determines how the symmetry functions are scaled
 before they are used as input for the neural network. See
-nnp::SymmetryFunction::ScalingType and the following table for allowed
+:type:`nnp::SymmetryFunction::ScalingType` and the following table for allowed
 combinations:
 
 .. list-table::
@@ -233,15 +234,15 @@ combinations:
    * - Keywords present
      - Scaling type
    * - ``None``
-     - nnp::SymmetryFunction::ST_NONE
+     - :enumerator:`nnp::SymmetryFunction::ST_NONE`
    * - ``scale_symmetry_functions``
-     - nnp::SymmetryFunction::ST_SCALE
+     - :enumerator:`nnp::SymmetryFunction::ST_SCALE`
    * - ``center_symmetry_functions``
-     - nnp::SymmetryFunction::ST_CENTER
+     - :enumerator:`nnp::SymmetryFunction::ST_CENTER`
    * - ``scale_symmetry_functions`` + ``center_symmetry_functions``
-     - nnp::SymmetryFunction::ST_SCALECENTER
+     - :enumerator:`nnp::SymmetryFunction::ST_SCALECENTER`
    * - ``scale_symmetry_functions_sigma``
-     - nnp::SymmetryFunction::ST_SCALESIGMA
+     - :enumerator:`nnp::SymmetryFunction::ST_SCALESIGMA`
 
 
 ----
@@ -263,7 +264,7 @@ combinations:
    ``scale_max_short 1.0``
 
 Set minimum :math:`S_{\min}` and maximum :math:`S_{\max}` for symmetry function
-scaling. See nnp::SymmetryFunction::ScalingType.
+scaling. See :type:`nnp::SymmetryFunction::ScalingType`.
 
 ----
 
@@ -295,13 +296,13 @@ and look for the detailed description of the class.
    * - Type integer
      - Symmetry function type
    * - 2
-     - nnp::SymmetryFunctionRadial
+     - :class:`nnp::SymmetryFunctionRadial`
    * - 3
-     - nnp::SymmetryFunctionAngularNarrow
+     - :class:`nnp::SymmetryFunctionAngularNarrow`
    * - 9
-     - nnp::SymmetryFunctionAngularWide
+     - :class:`nnp::SymmetryFunctionAngularWide`
    * - 12
-     - nnp::SymmetryFunctionWeightedRadial
+     - :class:`nnp::SymmetryFunctionWeightedRadial`
    * - 13
-     - nnp::SymmetryFunctionWeightedAngular
+     - :class:`nnp::SymmetryFunctionWeightedAngular`
 

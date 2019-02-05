@@ -81,7 +81,7 @@ Additional, though not strictly required tools, are also quite useful:
 * `nnp-convert`
 * `nnp-dataset`
 * `nnp-dist`
-* `nnp-norm`
+* :ref:`nnp-norm`
 * `nnp-prune`
 * :ref:`nnp-select`
 * `nnp-symfunc`
@@ -128,7 +128,7 @@ information).
 +---------------------------------+----------------------------+------------------------------------------------------+
 | nnp-dataset                     | libnnptrain                | Calculate energies and forces for a whole data set.  |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-norm                        | libnnptrain                | Calculate normalization factors for data set.        |
+| :ref:`nnp-norm`                 | libnnptrain                | Calculate normalization factors for data set.        |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | :ref:`nnp-scaling`              | libnnptrain                | Calculate symmetry function values for data set.     |
 +---------------------------------+----------------------------+------------------------------------------------------+
@@ -263,6 +263,7 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: Tools
 
    Tools/libnnp
+   Tools/nnp-norm
    Tools/nnp-select
    Tools/nnp-scaling
 

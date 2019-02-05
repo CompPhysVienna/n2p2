@@ -43,6 +43,28 @@ breathe_projects = {
 
 breathe_default_project = "My Project"
 
+# From https://exhale.readthedocs.io/en/latest/usage.html#customizing-breathe-output
+from exhale import utils
+def specificationsForKind(kind):
+    '''
+    For a given input ``kind``, return the list of reStructuredText specifications
+    for the associated Breathe directive.
+    '''
+    # Change the defaults for .. doxygenclass:: and .. doxygenstruct::
+    if kind == "class" or kind == "struct":
+        return [
+          ":members:",
+          ":protected-members:",
+          ":private-members:",
+          ":undoc-members:"
+        ]
+    # Change the defaults for .. doxygenenum::
+    elif kind == "enum":
+        return [":no-link:"]
+    # An empty list signals to Exhale to use the defaults
+    else:
+        return []
+
 # Setup the exhale extension
 exhale_args = {
     # These arguments are required
@@ -55,9 +77,15 @@ exhale_args = {
     # TIP: if using the sphinx-bootstrap-theme, you need
     # "treeViewIsBootstrap": True,
     "exhaleExecutesDoxygen": True,
-    "exhaleDoxygenStdin":    "INPUT = ../../libnnp\n" +
-                             "INPUT += ../../libnnpif/\n" 
-                             "INPUT += ../../libnnptrain/\n" 
+    "exhaleDoxygenStdin":    "INPUT = ../../libnnp\n"
+                             "INPUT += ../../libnnpif\n" 
+                             "INPUT += ../../libnnptrain\n" 
+                             "EXTRACT_ALL            = YES\n"
+                             "EXTRACT_PRIVATE        = YES\n"
+                             "EXTRACT_STATIC         = YES\n"
+                             "EXTRACT_LOCAL_CLASSES  = YES\n",
+    "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(specificationsForKind)
+
 }
 
 # Tell sphinx what the primary language being documented is.
