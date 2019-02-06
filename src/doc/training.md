@@ -1,2 +1,0 @@
-NNP training procedure
-======================

@@ -6,18 +6,20 @@
 Welcome to the documentation of n2p2!
 =====================================
 
-This repository (obtain source code `here <https://github.com/CompPhysVienna/n2p2>`__) provides ready-to-use
-software for high-dimensional neural network potentials in materials science.
-The methodology behind the Behler-Parinello neural network potentials was first
-described here:
+This repository (obtain source code `here
+<https://github.com/CompPhysVienna/n2p2>`__) provides ready-to-use software for
+high-dimensional neural network potentials in computational physics and
+chemistry.  The methodology behind the Behler-Parinello neural network
+potentials was first described here:
 
-`J. Behler and M. Parrinello, Phys. Rev. Lett. 98, 146401 (2007) <https://doi.org/10.1103/PhysRevLett.98.146401>`_
+`J. Behler and M. Parrinello, Phys. Rev. Lett. 98, 146401 (2007)
+<https://doi.org/10.1103/PhysRevLett.98.146401>`__
 
 This package contains software that will allow you to use existing neural
 network potential parameterizations to predict energies and forces (with
-standalone tools but also in conjunction with the MD software
-`LAMMPS <http://lammps.sandia.gov>`_). In addition it is possible to train new
-neural network potentials with the provided training tools.
+standalone tools but also in conjunction with the MD software `LAMMPS
+<http://lammps.sandia.gov>`__). In addition it is possible to train new neural
+network potentials with the provided training tools.
 
 Documentation
 =============
@@ -29,11 +31,22 @@ Documentation
    ask on GitHub (file an issue) and I will update the corresponding docs as
    quickly as possible.
 
-This package uses automatic documentation generation via `doxygen
-<http://www.stack.nl/~dimitri/doxygen>`_, `sphinx <http://www.sphinx-doc.org>`_
-and `exhale <https://github.com/svenevs/exhale>`_. An online version of the
+This package uses automatic documentation generation via `Doxygen
+<http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
+and `Exhale <https://github.com/svenevs/exhale>`__. An online version of the
 documentation which is automatically updated with the main repository can be
-found `here <http://compphysvienna.github.io/n2p2>`__.
+found `here <https://compphysvienna.github.io/n2p2>`__.
+
+API documentation
+-----------------
+
+Most parts of the C++ code are documented in the header files via Doxygen
+annotations. The information written in the source files is automatically
+extracted by `Exhale` (which uses `Doxygen`) and integrated into this
+documentation (see `API` section on the left). However, because
+this documentation and also `Exhale` is still under development some things may
+not work as expected. As a fallback option the unaltered Doxygen API
+documentation is also available `here <../doxygen/html/index.html>`__.
 
 Purpose
 =======
@@ -52,7 +65,7 @@ ready and want to predict energies and forces for a single structure you only
 need these components:
 
 * :ref:`libnnp <libnnp>`
-* `nnp-predict`
+* :ref:`nnp-predict`
 
 Molecular dynamics simulation
 -----------------------------
@@ -78,11 +91,11 @@ To train a completely new neural network potential the following parts are requi
 Additional, though not strictly required tools, are also quite useful:
 
 * `nnp-comp2`
-* `nnp-convert`
+* :ref:`nnp-convert`
 * `nnp-dataset`
 * `nnp-dist`
 * :ref:`nnp-norm`
-* `nnp-prune`
+* :ref:`nnp-prune`
 * :ref:`nnp-select`
 * `nnp-symfunc`
 
@@ -110,15 +123,15 @@ information).
 +---------------------------------+----------------------------+------------------------------------------------------+
 | libnnptrain                     | libnnp, MPI, GSL, Eigen    | Dataset and training routines (Kalman, ...).         |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-convert                     | libnnp                     | Convert between structure file formats.              |
+| :ref:`nnp-convert`              | libnnp                     | Convert between structure file formats.              |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | nnp-cutoff                      | libnnp                     | Test speed of different cutoff functions.            |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | nnp-dist                        | libnnp                     | Calculate radial and angular distribution functions. |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-predict                     | libnnp                     | Predict energy and forces for one structure.         |
+| :ref:`nnp-predict`              | libnnp                     | Predict energy and forces for one structure.         |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-prune                       | libnnp                     | Prune symmetry functions.                            |
+| :ref:`nnp-prune`                | libnnp                     | Prune symmetry functions.                            |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | :ref:`nnp-select`               | libnnp                     | Select subset from data set.                         |
 +---------------------------------+----------------------------+------------------------------------------------------+
@@ -138,7 +151,7 @@ information).
 +---------------------------------+----------------------------+------------------------------------------------------+
 | pynnp                           | libnnp, python, cython     | Python interface to NNP library.                     |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| doc                             | doxygen, graphviz          | Doxygen documentation.                               |
+| doc                             | Sphinx, Doxygen, Exhale    | Documentation.                                       |
 +---------------------------------+----------------------------+------------------------------------------------------+
 
 The simple way using the master makefile
@@ -263,7 +276,10 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: Tools
 
    Tools/libnnp
+   Tools/nnp-convert
    Tools/nnp-norm
+   Tools/nnp-predict
+   Tools/nnp-prune
    Tools/nnp-select
    Tools/nnp-scaling
 

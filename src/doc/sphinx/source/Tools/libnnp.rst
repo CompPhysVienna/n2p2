@@ -14,13 +14,13 @@ network class and data storage classes. Furthermore, a top-level class
 Most of the provided tools and the :ref:`LAMMPS interface <if_lammps>` make use of
 this Mode class and its setup methods. Consequently, the screen and log output
 will often look similar. This page will walk you through the library output as
-produced by the :ref:`nnp-predict <nnp-predict>` example for RPBE-D3 water (see
+produced by the :ref:`nnp-predict` example for RPBE-D3 water (see
 ``examples/nnp-predict/H2O_RPBE-D3`` directory).
 
-The initial output section (corresponding to nnp::Mode::initialize()) is simply
-stating the current version, git branch and commit ID (if available). If the
-library was compiled with OpenMP support, the number of used threads is also
-provided (see :ref:`Parallelization <parallelization>`).
+The initial output section (corresponding to :func:`nnp::Mode::initialize`)
+is simply stating the current version, git branch and commit ID (if available).
+If the library was compiled with OpenMP support, the number of used threads is
+also provided (see :ref:`Parallelization <parallelization>`).
 
 .. code-block:: none
 
@@ -35,8 +35,8 @@ provided (see :ref:`Parallelization <parallelization>`).
    Number of OpenMP threads: 2
    *******************************************************************************
 
-The next section (nnp::Mode::loadSettingsFile()) names which settings file is
-used and how many keywords (see :ref:`Keywords <keywords.md>`) were found. If
+The next section (:func:`nnp::Mode::loadSettingsFile`) names which settings file is
+used and how many keywords (see :ref:`Keywords <keywords>`) were found. If
 problems (unknown or multiply defined keywords) occur, warnings will be issued
 in this section.
 
@@ -49,8 +49,8 @@ in this section.
    Found 102 lines with keywords.
    *******************************************************************************
 
-If data set normalization is used (see the corresponding tool
-:ref:`nnp-norm <nnp-norm>`) this section lists the required quantities to convert
+If data set normalization is used (see the corresponding tool :ref:`nnp-norm`
+and :ref:`here <units>`) this section lists the required quantities to convert
 to normalized (internal) units.
 
 .. code-block:: none

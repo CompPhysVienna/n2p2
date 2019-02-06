@@ -77,9 +77,10 @@ exhale_args = {
     # TIP: if using the sphinx-bootstrap-theme, you need
     # "treeViewIsBootstrap": True,
     "exhaleExecutesDoxygen": True,
-    "exhaleDoxygenStdin":    "INPUT = ../../libnnp\n"
-                             "INPUT += ../../libnnpif\n" 
-                             "INPUT += ../../libnnptrain\n" 
+    "exhaleDoxygenStdin":    "INPUT = ../../../libnnp\n"
+                             "INPUT += ../../../libnnpif\n" 
+                             "INPUT += ../../../libnnptrain\n" 
+                             "XML_PROGRAMLISTING     = YES\n"
                              "EXTRACT_ALL            = YES\n"
                              "EXTRACT_PRIVATE        = YES\n"
                              "EXTRACT_STATIC         = YES\n"
@@ -162,7 +163,7 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 4,
+    'navigation_depth': -1,
     'includehidden': True,
     'titles_only': False
 }

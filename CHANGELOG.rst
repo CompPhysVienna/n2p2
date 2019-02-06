@@ -12,6 +12,7 @@ Added
 * Training library (Multi-stream Kalman filter training).
 * Tools for HDNNP data set handling, etc.
 * Python interface (basic functionality).
+* Sphinx documentation.
 
 Changed
 ^^^^^^^

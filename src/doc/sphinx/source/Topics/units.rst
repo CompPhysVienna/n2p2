@@ -15,7 +15,7 @@ e.g. :math:`\eta, r_c`, need to be given in length units).
 
    Note that unit conversion may be required if an existing neural network
    potential is used to drive an MD simulation in LAMMPS. If the LAMMPS units
-   (see command `units <https://lammps.sandia.gov/doc/units.html>`_) are not
+   (see command `units <https://lammps.sandia.gov/doc/units.html>`__) are not
    matching with those used during NNP training, appropriate conversion factors
    need to be provided. See the :ref:`pair_style nnp reference <pair_nnp>` for
    further details. 

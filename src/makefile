@@ -20,6 +20,8 @@ INSTALL_LIB=${HOME}/local/lib
 	shared \
 	static \
 	doc \
+	doc-sphinx \
+	doc-doxygen \
         libnnp \
         libnnptrain \
         libnnpif \
@@ -55,6 +57,8 @@ INSTALL_LIB=${HOME}/local/lib
         nnp-train-static \
         pynnp \
         clean-doc \
+        clean-doc-sphinx \
+        clean-doc-doxygen \
         clean-libnnp \
         clean-libnnptrain \
         clean-libnnpif \
@@ -144,6 +148,8 @@ static: libnnp-static \
 	nnp-train-static
 
 clean:	clean-doc \
+	clean-doc-sphinx \
+	clean-doc-doxygen \
 	clean-libnnp \
 	clean-libnnptrain \
 	clean-libnnpif \
@@ -164,11 +170,27 @@ clean:	clean-doc \
 #######
 # doc #
 #######
-doc:
-	cd doc-sphinx && $(MAKE) html
+doc: doc-doxygen doc-sphinx
 
-clean-doc:
-	cd doc-sphinx && $(MAKE) clean
+clean-doc: clean-doc-sphinx clean-doc-doxygen
+
+##############
+# doc-sphinx #
+##############
+doc-sphinx:
+	cd doc/sphinx && $(MAKE) html
+
+clean-doc-sphinx:
+	cd doc/sphinx && $(MAKE) clean
+
+###############
+# doc-doxygen #
+###############
+doc-doxygen:
+	cd doc/doxygen && $(MAKE)
+
+clean-doc-doxygen:
+	cd doc/doxygen && $(MAKE) clean
 
 ##########
 # libnnp #

@@ -54,6 +54,10 @@ Examples
 
    pair_coeff * * 6.01
 
+.. warning::
+
+   Only use a single `pair_style nnp` line in your LAMMPS script.
+
 Description
 ^^^^^^^^^^^
 
