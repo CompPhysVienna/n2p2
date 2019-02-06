@@ -1,4 +1,11 @@
+dist: xenial
+
 sudo: false
+
+language: python
+
+python:
+    - "2.7"
 
 branches:
   only:
@@ -7,8 +14,8 @@ branches:
 addons:
   apt:
     packages:
-      # The doxygen version on "trusty" is too old (1.8.6).
-      # - doxygen
+      # Use default doxygen (1.8.11) on "xenial" (The doxygen version on "trusty" was too old (1.8.6)).
+      - doxygen
       # Generating graphs with doxygen requires dot.
       - graphviz
       # Generating formulae with doxygen requires latex and dvips.
@@ -18,27 +25,35 @@ addons:
 
 before_install:
   # Set doxygen environment variables.
-  - export DOXYGEN_VER=1_8_14
-  - export DOXYGEN_TAR=https://github.com/doxygen/doxygen/archive/Release_${DOXYGEN_VER}.tar.gz
-  - export DOXYGEN_DIR=doxygen-Release_${DOXYGEN_VER}
+  #- export DOXYGEN_VER=1_8_14
+  #- export DOXYGEN_TAR=https://github.com/doxygen/doxygen/archive/Release_${DOXYGEN_VER}.tar.gz
+  #- export DOXYGEN_DIR=doxygen-Release_${DOXYGEN_VER}
+ 
+install:
+  - pip install sphinx
+  - pip install sphinx_rtd_theme
+  - pip install breathe
+  - pip install exhale
 
 before_script:
   # Remember directory.
   - export REPO_DIR=$(pwd)
   # Need to manually compile doxygen.
-  - wget -O - ${DOXYGEN_TAR} | tar -xz -C ${TMPDIR-/tmp}
-  - cd ${TMPDIR-/tmp}/${DOXYGEN_DIR} && mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
-  - export PATH="${TMPDIR-/tmp}/${DOXYGEN_DIR}/build/bin:$PATH"
+  #- wget -O - ${DOXYGEN_TAR} | tar -xz -C ${TMPDIR-/tmp}
+  #- cd ${TMPDIR-/tmp}/${DOXYGEN_DIR} && mkdir build && cd build && cmake -G "Unix Makefiles" .. && make
+  #- export PATH="${TMPDIR-/tmp}/${DOXYGEN_DIR}/build/bin:$PATH"
 
 script:
   - cd ${REPO_DIR}
   - cd src
   - make doc
+  # Prevent GitHub Jekyll to interfere with Sphinx theme.
+  - touch ../doc/sphinx/html/.nojekyll
 
 deploy:
   provider: pages
   skip_cleanup: true
-  local_dir: doc/html
+  local_dir: doc/sphinx/html
   github_token: $GH_REPO_TOKEN
   on:
     branch: master

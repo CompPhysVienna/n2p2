@@ -124,6 +124,7 @@ int main(int argc, char* argv[])
     dataset.writeSymmetryFunctionScaling();
     dataset.writeNeighborHistogram();
     dataset.writeSymmetryFunctionHistograms(numBins);
+    dataset.writeSymmetryFunctionFile();
 
     dataset.log << "\n";
     dataset.log << "*** MEMORY USAGE ESTIMATION *************"

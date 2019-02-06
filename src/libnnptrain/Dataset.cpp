@@ -1024,6 +1024,71 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
     return;
 }
 
+void Dataset::writeSymmetryFunctionFile(string fileName)
+{
+    log << "\n";
+    log << "*** SYMMETRY FUNCTION FILE **************"
+           "**************************************\n";
+    log << "\n";
+
+    // Create empty file.
+    log << strpr("Writing symmetry functions to file: %s\n", fileName.c_str());
+    if (myRank == 0)
+    {
+        ofstream file;
+        file.open(fileName.c_str());
+        file.close();
+    }
+    MPI_Barrier(comm);
+
+    // Prepare structure iterator.
+    vector<Structure>::const_iterator it = structures.begin();
+    // Loop over all structures (on each proc the local structures are stored
+    // with increasing index).
+    for (size_t i = 0; i < numStructures; ++i)
+    {
+        // If this proc holds structure with matching index,
+        // open file and write symmetry functions.
+        if (i == it->index)
+        {
+            ofstream file;
+            file.open(fileName.c_str(), ios_base::app);
+            file << strpr("%6zu\n", it->numAtoms);
+            // Loop over atoms.
+            for (vector<Atom>::const_iterator it2 = it->atoms.begin();
+                 it2 != it->atoms.end(); ++it2)
+            {
+                // Loop over symmetry functions.
+                file << strpr("%3zu ", elementMap.atomicNumber(it2->element));
+                for (vector<double>::const_iterator it3 = it2->G.begin();
+                     it3 != it2->G.end(); ++it3)
+                {
+                    file << strpr(" %14.10f", *it3);
+                }
+                file << '\n';
+            }
+            // There is no charge NN, so first and last entry is zero.
+            double energy = 0.0;
+            if (normalize) energy = physicalEnergy(*it);
+            else energy = it->energyRef;
+            energy += getEnergyOffset(*it);
+            energy /= it->numAtoms;
+            file << strpr(" %19.10f %19.10f %19.10f %19.10f\n",
+                          0.0, energy, energy, 0.0);
+            file.flush();
+            file.close();
+            // Iterate to next structure.
+            ++it;
+        }
+        MPI_Barrier(comm);
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
 size_t Dataset::writeNeighborHistogram(string const& fileName)
 {
     log << "\n";

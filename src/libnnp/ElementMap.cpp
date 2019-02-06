@@ -53,6 +53,21 @@ size_t ElementMap::registerElements(string const& elementLine)
     return forwardMap.size();
 }
 
+string ElementMap::getElementsString() const
+{
+    string elements = "";
+
+    if (size() == 0) return elements;
+    elements += symbol(0);
+    if (size() == 1) return elements;
+    for (size_t i = 1; i < size(); ++i)
+    {
+        elements += strpr(" %s", symbol(i).c_str());
+    }
+
+    return elements;
+}
+
 size_t ElementMap::index(string const& symbol) const
 {
     return safeFind(forwardMap, symbol);
