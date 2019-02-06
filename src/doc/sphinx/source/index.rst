@@ -46,7 +46,7 @@ extracted by `Exhale` (which uses `Doxygen`) and integrated into this
 documentation (see `API` section on the left). However, because
 this documentation and also `Exhale` is still under development some things may
 not work as expected. As a fallback option the unaltered Doxygen API
-documentation is also available `here <../doxygen/html/index.html>`__.
+documentation is also available `here <doxygen/index.html>`__.
 
 Purpose
 =======

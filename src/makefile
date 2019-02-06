@@ -171,7 +171,8 @@ clean:	clean-doc \
 # doc #
 #######
 doc: doc-doxygen doc-sphinx
-
+	cp -r ../doc/doxygen/html ../doc/sphinx/html/doxygen
+	
 clean-doc: clean-doc-sphinx clean-doc-doxygen
 
 ##############
