@@ -17,6 +17,7 @@
 #include "GradientDescent.h"
 #include "utility.h"
 #include <cstddef>
+#include <cmath>
 
 using namespace std;
 using namespace nnp;
@@ -26,11 +27,17 @@ GradientDescent::GradientDescent(DescentType const type,
     Updater(),
     sizeState  (0          ),
     eta        (0.0        ),
+    beta1      (0.0        ),
+    beta2      (0.0        ),
+    epsilon    (0.0        ),
+    beta1t     (0.0        ),
+    beta2t     (0.0        ),
     state      (NULL       ),
     error      (NULL       ),
     derivatives(NULL       )
 {
-    if (!(type == DT_FIXED))
+    if (!(type == DT_FIXED ||
+          type == DT_ADAM))
     {
         throw runtime_error("ERROR: Unknown GradientDescent type.\n");
     }
@@ -42,6 +49,12 @@ GradientDescent::GradientDescent(DescentType const type,
 
     this->type = type;
     this->sizeState = sizeState;
+
+    if (type == DT_ADAM)
+    {
+        m.resize(sizeState, 0.0);
+        v.resize(sizeState, 0.0);
+    }
 }
 
 void GradientDescent::setState(double* state)
@@ -67,9 +80,28 @@ void GradientDescent::setDerivativeMatrix(double const* const derivatives)
 
 void GradientDescent::update()
 {
-    for (std::size_t i = 0; i < sizeState; ++i)
+    if (type == DT_FIXED)
     {
-        state[i] -= eta * (*error) * -derivatives[i];
+        for (std::size_t i = 0; i < sizeState; ++i)
+        {
+            state[i] -= eta * (*error) * -derivatives[i];
+        }
+    }
+    else if (type == DT_ADAM)
+    {
+        for (std::size_t i = 0; i < sizeState; ++i)
+        {
+            double const g = (*error) * -derivatives[i];
+            m[i] = beta1 * m[i] + (1.0 - beta1) * g;
+            v[i] = beta2 * v[i] + (1.0 - beta2) * g * g;
+            m[i] /= (1.0 - beta1t);
+            v[i] /= (1.0 - beta2t);
+            state[i] -= eta * m[i] / (sqrt(v[i]) + epsilon);
+        }
+
+        // Update betas.
+        beta1t *= beta1;
+        beta2t *= beta2;
     }
 
     return;
@@ -78,6 +110,19 @@ void GradientDescent::update()
 void GradientDescent::setParametersFixed(double const eta)
 {
     this->eta = eta;
+
+    return;
+}
+
+void GradientDescent::setParametersAdam(double const eta,
+                                        double const beta1,
+                                        double const beta2,
+                                        double const epsilon)
+{
+    this->eta     = eta;
+    this->beta1   = beta1;
+    this->beta2   = beta2;
+    this->epsilon = epsilon;
 
     return;
 }
@@ -116,6 +161,15 @@ vector<string> GradientDescent::info() const
         v.push_back(strpr("GradientDescentType::DT_FIXED (%d)\n", type));
         v.push_back(strpr("sizeState       = %zu\n", sizeState));
         v.push_back(strpr("eta             = %12.4E\n", eta));
+    }
+    else if (type == DT_ADAM)
+    {
+        v.push_back(strpr("GradientDescentType::DT_ADAM (%d)\n", type));
+        v.push_back(strpr("sizeState       = %zu\n", sizeState));
+        v.push_back(strpr("eta             = %12.4E\n", eta));
+        v.push_back(strpr("beta1           = %12.4E\n", beta1));
+        v.push_back(strpr("beta2           = %12.4E\n", beta2));
+        v.push_back(strpr("epsilon         = %12.4E\n", epsilon));
     }
 
     return v;

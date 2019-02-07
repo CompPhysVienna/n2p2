@@ -28,10 +28,13 @@ namespace nnp
 class GradientDescent : public Updater
 {
 public:
+    /// Enumerate different gradient descent variants.
     enum DescentType
     {
-        // Fixed step size.
-        DT_FIXED
+        /// Fixed step size.
+        DT_FIXED,
+        /// Adaptive moment estimation (Adam).
+        DT_ADAM
     };
 
     /** %GradientDescent class constructor.
@@ -66,12 +69,24 @@ public:
      * Update the connections via steepest descent method.
      */
     void                     update();
-    /** Set parameters for gradient descent algorithm.
+    /** Set parameters for fixed step gradient descent algorithm.
      *
      * @param[in] eta Step size = ratio of gradient subtracted from current
      *                weights.
      */
     void                     setParametersFixed(double const eta);
+    /** Set parameters for Adam algorithm.
+     *
+     * @param[in] eta Step size (corresponds to @f$\alpha@f$ in Adam
+     *                publication).
+     * @param[in] beta1 Decay rate 1 (first moment).
+     * @param[in] beta2 Decay rate 2 (second moment).
+     * @param[in] epsilon Small scalar.
+     */
+    void                     setParametersAdam(double const eta,
+                                               double const beta1,
+                                               double const beta2,
+                                               double const epsilon);
     /** Status report.
      *
      * @param[in] epoch Current epoch.
@@ -91,17 +106,31 @@ public:
     std::vector<std::string> info() const;
 
 private:
-    DescentType   type;
+    DescentType         type;
     /// Number of neural network connections (weights + biases).
-    std::size_t   sizeState;
+    std::size_t         sizeState;
     /// Learning rate @f$\eta@f$.
-    double        eta;
+    double              eta;
+    /// Decay rate 1 (Adam).
+    double              beta1;
+    /// Decay rate 2 (Adam).
+    double              beta2;
+    /// Small scalar.
+    double              epsilon;
+    /// Decay rate 1 to the power of t (Adam).
+    double              beta1t;
+    /// Decay rate 2 to the power of t (Adam).
+    double              beta2t;
     /// State vector pointer.
-    double*       state;
+    double*             state;
     /// Error pointer (single double value).
-    double const* error;
+    double const*       error;
     /// Derivatives vector pointer.
-    double const* derivatives;
+    double const*       derivatives;
+    /// First moment estimate (Adam).
+    std::vector<double> m;
+    /// Second moment estimate (Adam).
+    std::vector<double> v;
 };
 
 }

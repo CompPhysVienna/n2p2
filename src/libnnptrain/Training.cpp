@@ -869,6 +869,19 @@ void Training::setupTraining()
                 u->setParametersFixed(eta);
             }
         }
+        if (descentType == GradientDescent::DT_ADAM)
+        {
+            double const eta = atof(settings["gradient_eta"].c_str());
+            double const beta1 = atof(settings["gradient_adam_beta1"].c_str());
+            double const beta2 = atof(settings["gradient_adam_beta2"].c_str());
+            double const eps = atof(settings["gradient_adam_epsilon"].c_str());
+            for (size_t i = 0; i < numUpdaters; ++i)
+            {
+                GradientDescent* u =
+                    dynamic_cast<GradientDescent*>(updaters.at(i));
+                u->setParametersAdam(eta, beta1, beta2, eps);
+            }
+        }
     }
     else if (hasUpdaters && (updaterType == UT_KALMANFILTER))
     {
