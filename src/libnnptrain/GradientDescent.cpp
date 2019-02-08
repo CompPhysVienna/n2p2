@@ -124,6 +124,9 @@ void GradientDescent::setParametersAdam(double const eta,
     this->beta2   = beta2;
     this->epsilon = epsilon;
 
+    beta1t = beta1;
+    beta2t = beta2;
+
     return;
 }
 
