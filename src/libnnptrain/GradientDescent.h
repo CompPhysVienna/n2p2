@@ -117,6 +117,8 @@ private:
     double              beta2;
     /// Small scalar.
     double              epsilon;
+    /// Initial learning rate.
+    double              eta0;
     /// Decay rate 1 to the power of t (Adam).
     double              beta1t;
     /// Decay rate 2 to the power of t (Adam).
