@@ -94,8 +94,18 @@ void GradientDescent::update()
             double const g = (*error) * -derivatives[i];
             m[i] = beta1 * m[i] + (1.0 - beta1) * g;
             v[i] = beta2 * v[i] + (1.0 - beta2) * g * g;
-            m[i] /= (1.0 - beta1t);
-            v[i] /= (1.0 - beta2t);
+
+            // Standard implementation
+            // (Algorithm 1 in publication).
+            //double const mhat = m[i] / (1.0 - beta1t);
+            //double const vhat = v[i] / (1.0 - beta2t);
+            //state[i] -= eta * mhat / (sqrt(vhat) + epsilon);
+            
+            // Faster (?) alternative
+            // (see last paragraph in Section 2 of publication).
+            // This is actually only marginally faster
+            // (less statements, but two sqrt() calls)!
+            eta = eta0 * sqrt(1 - beta2t) / (1 - beta1t); 
             state[i] -= eta * m[i] / (sqrt(v[i]) + epsilon);
         }
 
@@ -124,6 +134,7 @@ void GradientDescent::setParametersAdam(double const eta,
     this->beta2   = beta2;
     this->epsilon = epsilon;
 
+    eta0   = eta;
     beta1t = beta1;
     beta2t = beta2;
 
@@ -132,7 +143,25 @@ void GradientDescent::setParametersAdam(double const eta,
 
 string GradientDescent::status(size_t epoch) const
 {
-    return strpr("%10zu %16.8E\n", epoch, eta);
+    string s = strpr("%10zu %16.8E", epoch, eta);
+
+    if (type == DT_ADAM)
+    {
+        double meanm = 0.0;
+        double meanv = 0.0;
+        for (std::size_t i = 0; i < sizeState; ++i)
+        {
+            meanm += abs(m[i]);
+            meanv += abs(v[i]);
+        }
+        meanm /= sizeState;
+        meanv /= sizeState;
+        s += strpr(" %16.8E %16.8E %16.8E %16.8E",
+                   beta1t, beta2t, meanm, meanv);
+    }
+    s += '\n';
+
+    return s;
 }
 
 vector<string> GradientDescent::statusHeader() const
@@ -150,6 +179,21 @@ vector<string> GradientDescent::statusHeader() const
     colSize.push_back(16);
     colName.push_back("eta");
     colInfo.push_back("Step size.");
+    if (type == DT_ADAM)
+    {
+        colSize.push_back(16);
+        colName.push_back("beta1t");
+        colInfo.push_back("Decay rate 1 to the power of t.");
+        colSize.push_back(16);
+        colName.push_back("beta2t");
+        colInfo.push_back("Decay rate 2 to the power of t.");
+        colSize.push_back(16);
+        colName.push_back("mag_m");
+        colInfo.push_back("Mean of absolute first momentum (m).");
+        colSize.push_back(16);
+        colName.push_back("mag_v");
+        colInfo.push_back("Mean of absolute second momentum (v).");
+    }
     header = createFileHeader(title, colSize, colName, colInfo);
 
     return header;
