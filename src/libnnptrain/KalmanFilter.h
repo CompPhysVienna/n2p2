@@ -40,17 +40,6 @@ public:
         KT_FADINGMEMORY
     };
 
-    /// Enumerate different parallelization modes.
-    enum KalmanParallel
-    {
-        /// Serial Kalman filter, no parallelization.
-        KP_SERIAL,
-        /// Non-blocking communication, parallel matrix product P * H.
-        KP_NBCOMM,
-        /// Precalculate intermediate X = P . H for each stream.
-        KP_PRECALCX
-    };
-
     /** Kalman filter class constructor.
      *
      * @param[in] type Kalman filter type (see #KalmanType).
@@ -59,20 +48,10 @@ public:
      * @param[in] sizeObservation Size of the observation vector #xi.
      */
     KalmanFilter(KalmanType const     type,
-                 KalmanParallel const parallel,
-                 std::size_t const    sizeState,
-                 std::size_t const    sizeObservation);
+                 std::size_t const    sizeState);
     /** Destructor.
      */
     ~KalmanFilter();
-    /** Initialize MPI with given communicator.
-     *
-     * This function is only required if the KP_NBCOMM parallelization mode is
-     * used. Call before setParameters...() functions.
-     *
-     * @param[in] communicator Provided communicator which should be used.
-     */
-    void                     setupMPI(MPI_Comm* communicator);
     /** Set state vector.
      *
      * @param[in,out] state State vector (changed in-place upon calling
@@ -82,8 +61,13 @@ public:
     /** Set error vector.
      *
      * @param[in] error Error vector (left unchanged).
+     * @param[in] sizeObservation Current observation vector size.
+     *
+     * Make sure that sizeObservation is identical in the corresponding
+     * setDerivativeMatrix() call!
      */
-    void                     setError(double const* const error);
+    void                     setError(double const* const error,
+                                      std::size_t const   sizeObservation);
     /** Set derivative vector.
      *
      * @param[in] derivatives Derivative vector (one stream only).
@@ -93,21 +77,14 @@ public:
     /** Set derivative matrix.
      *
      * @param[in] derivatives Derivative matrix (left unchanged).
+     * @param[in] sizeObservation Current observation vector size.
+     *
+     * Make sure that sizeObservation is identical in the corresponding
+     * setError() call!
      */
     void                     setDerivativeMatrix(
-                                              double const* const derivatives);
-    /** Set MPI requests for non-blocking communication of xi and H.
-     *
-     * @param[in] requestXi MPI request for xi.
-     * @param[in] requestH MPI request for H.
-     */
-    void                     setRequests(MPI_Request* const& requestXi,
-                                         MPI_Request* const& requestH);
-    /** Calculate intermediate result X = P . H for one stream.
-     *
-     * @param[in] stream Number of stream (equal to column of H).
-     */
-    void                     calculatePartialX(std::size_t stream);
+                                          double const* const derivatives,
+                                          std::size_t const   sizeObservation);
     /** Update Kalman gain matrix, error covariance matrix and state vector.
      */
     void                     update();
@@ -199,12 +176,6 @@ public:
 private:
     /// Kalman filter type.
     KalmanType                         type;
-    /// Parallelization mode.
-    KalmanParallel                     parallel;
-    /// My process ID == my stream.
-    int                                myStream;
-    /// Total number of MPI processors == number of parallel streams.
-    int                                numStreams;
     /// Size of state vector.
     std::size_t                        sizeState;
     /// Size of observation (measurement) vector.
@@ -235,18 +206,10 @@ private:
     double                             nu;
     /// Forgetting gain factor gamma for fading memory Kalman filter.
     double                             gamma;
-    /// MPI communicator (only required for KP_NBCOMM mode).
-    MPI_Comm                           comm;
-    /// MPI request for xi.
-    MPI_Request*                       requestXi;
-    /// MPI request for H.
-    MPI_Request*                       requestH;
     /// State vector.
     Eigen::Map<Eigen::VectorXd>*       w;
     /// Error vector.
     Eigen::Map<Eigen::VectorXd const>* xi;
-    /// Derivative vector.
-    Eigen::Map<Eigen::VectorXd const>* h;
     /// Derivative matrix.
     Eigen::Map<Eigen::MatrixXd const>* H;
     /// Error covariance matrix.

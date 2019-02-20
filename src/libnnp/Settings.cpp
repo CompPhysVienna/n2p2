@@ -68,8 +68,10 @@ map<string, string> const createKnownKeywordsMap()
     m["repeated_energy_update"        ] = "";
     m["updater_type"                  ] = "";
     m["parallel_mode"                 ] = "";
+    m["jacobian_mode"                 ] = "";
     m["update_strategy"               ] = "";
     m["selection_mode"                ] = "";
+    m["task_batch_size"               ] = "";
     m["gradient_type"                 ] = "";
     m["gradient_eta"                  ] = "";
     m["kalman_type"                   ] = "";

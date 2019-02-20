@@ -36,24 +36,56 @@ public:
     enum UpdaterType
     {
         /// Simple gradient descent methods.
-        UT_GRADIENTDESCENT,
+        UT_GD,
         /// Kalman filter-based methods.
-        UT_KALMANFILTER
+        UT_KF,
+        /// Levenberg-Marquardt algorithm.
+        UT_LM
     };
 
-    /// Parallel modes available for Training.
+    /** Training parallelization mode.
+     *
+     * This mode determines if and how individual MPI tasks contribute to
+     * parallel training. Note that in all cases the data set gets distributed
+     * among the MPI processes and RMSE computation is always parallelized.
+     */
     enum ParallelMode
     {
-        /// No parallel training, serial updates only.
-        PM_SERIAL,
-        /// Multi-stream Kalman filter training, all MPI tasks update weights.
-        PM_MSEKF,
-        /// Multi-stream Kalman filter training, non-blocking communication.
-        PM_MSEKFNB,
-        /// Multi-stream Kalman filter training, update only at MPI rank 0.
-        PM_MSEKFR0,
-        /// Multi-stream Kalman filter training, update rank 0, precalc X.
-        PM_MSEKFR0PX
+        /** No training parallelization, only data set distribution.
+         *
+         * Data set is distributed via MPI, but for each weight update only
+         * a single task is active, selects energy/force update candidates,
+         * computes errors and gradients, and updates weights.
+         */
+        PM_DATASET,
+        /** Parallel gradient computation, update on rank 0.
+         *
+         * Data set is distributed via MPI, each tasks selects energy/force
+         * update candidates, and computes errors and gradients, which are
+         * collected on rank 0. Weight update is carried out on rank 0 and new
+         * weights are redistributed to all tasks.
+         */
+        PM_TRAIN_RK0,
+        /** Parallel gradient computation, update on each task.
+         *
+         * Data set is distributed via MPI, each tasks selects energy/force
+         * update candidates, and computes errors and gradients, which are
+         * collected on all MPI tasks. Identical weight updates are carried out
+         * on each task. This mode is ideal if the update routine itself is
+         * parallelized.
+         */
+        PM_TRAIN_ALL
+    };
+
+    /// Jacobian matrix preparation mode.
+    enum JacobianMode
+    {
+        /// No Jacobian, sum up contributions from update candidates.
+        JM_SUM,
+        /// Prepare one Jacobian entry for each task, sum up within tasks.
+        JM_TASK,
+        /// Prepare full Jacobian matrix.
+        JM_FULL
     };
 
     /// Update strategies available for Training.
@@ -260,8 +292,10 @@ private:
 
     /// Updater type used.
     UpdaterType                  updaterType;
-    /// Parallel mode used.
+    /// Parallelization mode used.
     ParallelMode                 parallelMode;
+    /// Jacobian mode used.
+    JacobianMode                 jacobianMode;
     /// Update strategy used.
     UpdateStrategy               updateStrategy;
     /// Selection mode for update candidates.
@@ -278,10 +312,6 @@ private:
     bool                         freeMemory;
     /// Whether training log file is written.
     bool                         writeTrainingLog;
-    /// Kalman filter stream of this processor. 
-    std::size_t                  myStream;
-    /// Number of Kalman filter streams.
-    std::size_t                  numStreams;
     /// Number of updaters (depends on update strategy).
     std::size_t                  numUpdaters;
     /// Number of energies in training set.
@@ -290,6 +320,8 @@ private:
     std::size_t                  numForcesTrain;
     /// Number of epochs requested.
     std::size_t                  numEpochs;
+    /// Multiplier for mini-batches (mini-batch size = cores x multiplier).
+    std::size_t                  minibatchMultiplier;
     /// Current epoch.
     std::size_t                  epoch;
     /// Write energy comparison every this many epochs.

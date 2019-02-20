@@ -24,27 +24,25 @@ using namespace Eigen;
 using namespace std;
 using namespace nnp;
 
-KalmanFilter::KalmanFilter(KalmanType const     type,
-                           KalmanParallel const parallel,
-                           size_t const         sizeState,
-                           size_t const         sizeObservation) :
+KalmanFilter::KalmanFilter(KalmanType const type, size_t const sizeState) :
     Updater(),
-    numUpdates    (0               ),
-    epsilon       (0.0             ),
-    q             (0.0             ),
-    q0            (0.0             ),
-    qtau          (0.0             ),
-    qmin          (0.0             ),
-    eta           (0.0             ),
-    eta0          (0.0             ),
-    etatau        (0.0             ),
-    etamax        (0.0             ),
-    lambda        (0.0             ),
-    nu            (0.0             ),
-    gamma         (0.0             ),
-    w             (NULL            ),
-    xi            (NULL            ),
-    H             (NULL            )
+    sizeObservation(0   ),
+    numUpdates     (0   ),
+    epsilon        (0.0 ),
+    q              (0.0 ),
+    q0             (0.0 ),
+    qtau           (0.0 ),
+    qmin           (0.0 ),
+    eta            (0.0 ),
+    eta0           (0.0 ),
+    etatau         (0.0 ),
+    etamax         (0.0 ),
+    lambda         (0.0 ),
+    nu             (0.0 ),
+    gamma          (0.0 ),
+    w              (NULL),
+    xi             (NULL),
+    H              (NULL)
 {
     if (!(type == KT_STANDARD ||
           type == KT_FADINGMEMORY))
@@ -52,47 +50,25 @@ KalmanFilter::KalmanFilter(KalmanType const     type,
         throw runtime_error("ERROR: Unknown Kalman filter type.\n");
     }
 
-    if (!(parallel != KP_SERIAL ||
-          parallel != KP_NBCOMM ||
-          parallel != KP_PRECALCX))
-    {
-        throw runtime_error("ERROR: Unknown parallelization mode.\n");
-    }
-
-    if (sizeState < 1 || sizeObservation < 1)
+    if (sizeState < 1)
     {
         throw runtime_error("ERROR: Wrong Kalman filter dimensions.\n");
     }
 
     this->type            = type;
-    this->parallel        = parallel;
     this->sizeState       = sizeState;
-    this->sizeObservation = sizeObservation;
+    sizeObservation = 1;
 
     w  = new Map<VectorXd      >(0, sizeState);
-    h  = new Map<VectorXd const>(0, sizeState);
     xi = new Map<VectorXd const>(0, sizeObservation);
     H  = new Map<MatrixXd const>(0, sizeState, sizeObservation);
     P.resize(sizeState, sizeState);
     P.setIdentity();
-    K.resize(sizeState, sizeObservation);
-    K.setZero();
-    X.resize(sizeState, sizeObservation);
 }
 
 KalmanFilter::~KalmanFilter()
 {
 }
-
-void KalmanFilter::setupMPI(MPI_Comm* communicator)
-{
-    MPI_Comm_dup(*communicator, &comm);
-    MPI_Comm_rank(comm, &myStream);
-    MPI_Comm_size(comm, &numStreams);
-
-    return;
-}
-
 
 void KalmanFilter::setState(double* state)
 {
@@ -101,69 +77,31 @@ void KalmanFilter::setState(double* state)
     return;
 }
 
-void KalmanFilter::setError(double const* const error)
+void KalmanFilter::setError(double const* const error,
+                            size_t const        sizeObservation)
 {
+    this->sizeObservation = sizeObservation;
     new (xi) Map<VectorXd const>(error, sizeObservation);
 
     return;
 }
 
-void KalmanFilter::setDerivativeMatrix(double const* const derivatives)
+void KalmanFilter::setDerivativeMatrix(double const* const derivatives,
+                                       size_t const        sizeObservation)
 {
+    this->sizeObservation = sizeObservation;
     new (H) Map<MatrixXd const>(derivatives, sizeState, sizeObservation);
-
-    return;
-}
-
-void KalmanFilter::setDerivativeVector(double const* const derivatives)
-{
-    new (h) Map<VectorXd const>(derivatives, sizeState);
-
-    return;
-}
-
-void KalmanFilter::setRequests(MPI_Request* const& requestXi,
-                               MPI_Request* const& requestH)
-{
-    this->requestXi = requestXi;
-    this->requestH = requestH;
-
-    return;
-}
-
-void KalmanFilter::calculatePartialX(size_t stream)
-{
-    // Calculate temporary result for one H column (= stream).
-    // X = P . H
-    X.col(stream) = P.selfadjointView<Lower>() * H->col(stream);
 
     return;
 }
 
 void KalmanFilter::update()
 {
-    MPI_Request requestX;
+    X.resize(sizeState, sizeObservation);
 
-    // Mode KP_PRECALCX already has X.
-    if (parallel == KP_SERIAL)
-    {
-        // Calculate temporary result.
-        // X = P . H
-        X = P.selfadjointView<Lower>() * (*H);
-    }
-    else if (parallel == KP_NBCOMM)
-    {
-        // Calculate temporary result for one H column (= stream).
-        // X = P . H
-        X.col(myStream) = P.selfadjointView<Lower>() * (*h);
-
-        // Communicate temporary matrix.
-        MPI_Iallgather(MPI_IN_PLACE, sizeState, MPI_DOUBLE, X.data(), sizeState, MPI_DOUBLE, comm, &requestX);
-
-        // Wait for finalized communication of H and X.
-        MPI_Wait(requestH, MPI_STATUS_IGNORE);
-        MPI_Wait(&requestX, MPI_STATUS_IGNORE);
-    }
+    // Calculate temporary result.
+    // X = P . H
+    X = P.selfadjointView<Lower>() * (*H);
 
     // Calculate scaling matrix.
     // A = H^T . X
@@ -186,6 +124,7 @@ void KalmanFilter::update()
 
     // Calculate Kalman gain matrix.
     // K = X . A^-1
+    K.resize(sizeState, sizeObservation);
     K = X * A.inverse();
 
     // Update error covariance matrix.
@@ -200,9 +139,6 @@ void KalmanFilter::update()
     // Add process noise.
     // P = P + Q
     P.diagonal() += VectorXd::Constant(sizeState, q);
-
-    // Wait for finalized xi communication.
-    if (parallel == KP_NBCOMM) MPI_Wait(requestXi, MPI_STATUS_IGNORE);
 
     // Update state vector.
     // w =  w + K . xi
@@ -374,18 +310,6 @@ vector<string> KalmanFilter::info() const
         v.push_back(strpr("qmin            = %12.4E\n", qmin   ));
         v.push_back(strpr("lambda          = %12.4E\n", lambda));
         v.push_back(strpr("nu              = %12.4E\n", nu    ));
-    }
-    if (parallel == KP_SERIAL)
-    {
-        v.push_back(strpr("KalmanParallel::KP_SERIAL (%d)\n", parallel));
-    }
-    else if (parallel == KP_NBCOMM)
-    {
-        v.push_back(strpr("KalmanParallel::KP_NBCOMM (%d)\n", parallel));
-    }
-    else if (parallel == KP_PRECALCX)
-    {
-        v.push_back(strpr("KalmanParallel::KP_PRECALCX (%d)\n", parallel));
     }
     v.push_back(strpr("OpenMP threads used: %d\n", nbThreads()));
 

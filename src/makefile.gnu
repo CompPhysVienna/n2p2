@@ -13,7 +13,7 @@ PROJECT_EIGEN=${HOME}/local/src/eigen-eigen-5a0156e40feb
 ###############################################################################
 PROJECT_CC=g++
 PROJECT_MPICC=mpic++
-PROJECT_CFLAGS=-O3 -march=native -std=c++98 -fopenmp
+PROJECT_CFLAGS=-O3 -march=native -std=c++11 -fopenmp
 PROJECT_CFLAGS_MPI=-Wno-long-long
 PROJECT_DEBUG=-g -pedantic-errors -Wall -Wextra
 PROJECT_AR=ar

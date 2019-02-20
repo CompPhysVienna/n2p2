@@ -32,45 +32,45 @@ using namespace std;
 using namespace nnp;
 
 Training::Training() : Dataset(),
-                       updaterType                (UT_GRADIENTDESCENT),
-                       parallelMode               (PM_SERIAL         ),
-                       updateStrategy             (US_COMBINED       ),
-                       selectionMode              (SM_RANDOM         ),
-                       hasUpdaters                (false             ),
-                       hasStructures              (false             ),
-                       useForces                  (false             ),
-                       reapeatedEnergyUpdates     (false             ),
-                       freeMemory                 (false             ),
-                       writeTrainingLog           (false             ),
-                       myStream                   (0                 ),
-                       numStreams                 (0                 ),
-                       numUpdaters                (0                 ),
-                       numEnergiesTrain           (0                 ),
-                       numForcesTrain             (0                 ),
-                       numEpochs                  (0                 ),
-                       epoch                      (0                 ),
-                       writeEnergiesEvery         (0                 ),
-                       writeForcesEvery           (0                 ),
-                       writeWeightsEvery          (0                 ),
-                       writeNeuronStatisticsEvery (0                 ),
-                       writeEnergiesAlways        (0                 ),
-                       writeForcesAlways          (0                 ),
-                       writeWeightsAlways         (0                 ),
-                       writeNeuronStatisticsAlways(0                 ),
-                       posUpdateCandidatesEnergy  (0                 ),
-                       posUpdateCandidatesForce   (0                 ),
-                       rmseThresholdTrials        (0                 ),
-                       countUpdates               (0                 ),
-                       epochFractionEnergies      (0.0               ),
-                       epochFractionForces        (0.0               ),
-                       rmseEnergiesTrain          (0.0               ),
-                       rmseEnergiesTest           (0.0               ),
-                       rmseForcesTrain            (0.0               ),
-                       rmseForcesTest             (0.0               ),
-                       rmseThresholdEnergy        (0.0               ),
-                       rmseThresholdForce         (0.0               ),
-                       forceWeight                (0.0               ),
-                       trainingLogFileName        ("train-log.out"   )
+                       updaterType                (UT_GD          ),
+                       parallelMode               (PM_DATASET     ),
+                       jacobianMode               (JM_SUM         ),
+                       updateStrategy             (US_COMBINED    ),
+                       selectionMode              (SM_RANDOM      ),
+                       hasUpdaters                (false          ),
+                       hasStructures              (false          ),
+                       useForces                  (false          ),
+                       reapeatedEnergyUpdates     (false          ),
+                       freeMemory                 (false          ),
+                       writeTrainingLog           (false          ),
+                       numUpdaters                (0              ),
+                       numEnergiesTrain           (0              ),
+                       numForcesTrain             (0              ),
+                       numEpochs                  (0              ),
+                       minibatchMultiplier        (0              ),
+                       epoch                      (0              ),
+                       writeEnergiesEvery         (0              ),
+                       writeForcesEvery           (0              ),
+                       writeWeightsEvery          (0              ),
+                       writeNeuronStatisticsEvery (0              ),
+                       writeEnergiesAlways        (0              ),
+                       writeForcesAlways          (0              ),
+                       writeWeightsAlways         (0              ),
+                       writeNeuronStatisticsAlways(0              ),
+                       posUpdateCandidatesEnergy  (0              ),
+                       posUpdateCandidatesForce   (0              ),
+                       rmseThresholdTrials        (0              ),
+                       countUpdates               (0              ),
+                       epochFractionEnergies      (0.0            ),
+                       epochFractionForces        (0.0            ),
+                       rmseEnergiesTrain          (0.0            ),
+                       rmseEnergiesTest           (0.0            ),
+                       rmseForcesTrain            (0.0            ),
+                       rmseForcesTest             (0.0            ),
+                       rmseThresholdEnergy        (0.0            ),
+                       rmseThresholdForce         (0.0            ),
+                       forceWeight                (0.0            ),
+                       trainingLogFileName        ("train-log.out")
 {
 }
 
@@ -79,11 +79,11 @@ Training::~Training()
     for (vector<Updater*>::iterator it = updaters.begin();
          it != updaters.end(); ++it)
     {
-        if (updaterType == UT_GRADIENTDESCENT)
+        if (updaterType == UT_GD)
         {
             delete dynamic_cast<GradientDescent*>(*it);
         }
-        else if (updaterType == UT_KALMANFILTER)
+        else if (updaterType == UT_KF)
         {
             delete dynamic_cast<KalmanFilter*>(*it);
         }
@@ -399,16 +399,23 @@ void Training::setupTraining()
     }
 
     updaterType = (UpdaterType)atoi(settings["updater_type"].c_str());
-    if (updaterType == UT_GRADIENTDESCENT)
+    if (updaterType == UT_GD)
     {
         log << strpr("Weight update via gradient descent selected: "
-                     "updaterType::UT_GRADIENTDESCENT (%d)\n",
+                     "updaterType::UT_GD (%d)\n",
                      updaterType);
     }
-    else if (updaterType == UT_KALMANFILTER)
+    else if (updaterType == UT_KF)
     {
         log << strpr("Weight update via Kalman filter selected: "
-                     "updaterType::UT_KALMANFILTER (%d)\n",
+                     "updaterType::UT_KF (%d)\n",
+                     updaterType);
+    }
+    else if (updaterType == UT_LM)
+    {
+        throw runtime_error("ERROR: LM algorithm not yet implemented.\n");
+        log << strpr("Weight update via Levenberg-Marquardt algorithm "
+                     "selected: updaterType::UT_LM (%d)\n",
                      updaterType);
     }
     else
@@ -417,61 +424,73 @@ void Training::setupTraining()
     }
 
     parallelMode = (ParallelMode)atoi(settings["parallel_mode"].c_str());
-    if (parallelMode == PM_SERIAL)
+    if (parallelMode == PM_DATASET)
     {
         log << strpr("Serial training selected: "
-                     "ParallelMode::PM_SERIAL (%d)\n",
+                     "ParallelMode::PM_DATASET (%d)\n",
                      parallelMode);
-        numStreams = 1;
-        myStream = 0;
-        log << strpr("Number of streams       : %zu\n", numStreams);
-        log << strpr("Stream of this processor: %zu\n", myStream);
     }
-    else if (parallelMode == PM_MSEKF ||
-             parallelMode == PM_MSEKFNB ||
-             parallelMode == PM_MSEKFR0 ||
-             parallelMode == PM_MSEKFR0PX)
+    else if (parallelMode == PM_TRAIN_RK0)
     {
-        if (updaterType == UT_GRADIENTDESCENT)
-        {
-            throw runtime_error("ERROR: Multi-stream training with "
-                                "gradient descent weight updater not "
-                                "implemented.\n");
-        }
-        if (parallelMode == PM_MSEKF)
-        {
-            log << strpr("Multi-stream Kalman filter training selected: "
-                         "ParallelMode::PM_MSEKF (%d)\n",
-                         parallelMode);
-        }
-        else if (parallelMode == PM_MSEKFNB)
-        {
-            log << strpr("Multi-stream Kalman filter training with "
-                         "non-blocking communication selected: "
-                         "ParallelMode::PM_MSEKFNB (%d)\n",
-                         parallelMode);
-        }
-        else if (parallelMode == PM_MSEKFR0)
-        {
-            log << strpr("Multi-stream Kalman filter training with update on "
-                         "rank 0 selected: ParallelMode::PM_MSEKFR0 (%d)\n",
-                         parallelMode);
-        }
-        else if (parallelMode == PM_MSEKFR0PX)
-        {
-            log << strpr("Multi-stream Kalman filter training, update on rank "
-                         "0, partial X calculation selected: "
-                         "ParallelMode::PM_MSEKFR0PX (%d)\n",
-                         parallelMode);
-        }
-        numStreams = numProcs;
-        myStream = myRank;
-        log << strpr("Number of streams       : %zu\n", numStreams);
-        log << strpr("Stream of this processor: %zu\n", myStream);
+        log << strpr("Parallel training (rank 0 updates) selected: "
+                     "ParallelMode::PM_TRAIN_RK0 (%d)\n",
+                     parallelMode);
+    }
+    else if (parallelMode == PM_TRAIN_ALL)
+    {
+        log << strpr("Parallel training (all ranks update) selected: "
+                     "ParallelMode::PM_TRAIN_ALL (%d)\n",
+                     parallelMode);
     }
     else
     {
         throw runtime_error("ERROR: Unknown parallelization mode.\n");
+    }
+
+    jacobianMode = (JacobianMode)atoi(settings["jacobian_mode"].c_str());
+    if (jacobianMode == JM_SUM)
+    {
+        log << strpr("Gradient summation only selected: "
+                     "JacobianMode::JM_SUM (%d)\n", jacobianMode);
+        log << "No Jacobi matrix is stored, gradients of individual training "
+               "candidates are summed up instead.\n"; 
+    }
+    else if (jacobianMode == JM_TASK)
+    {
+        log << strpr("Per-task Jacobian selected: "
+                     "JacobianMode::JM_TASK (%d)\n",
+                     jacobianMode);
+        log << "One Jacobi matrix row per MPI task is stored, within each "
+               "task gradients are summed up.\n"
+    }
+    else if (jacobianMode == JM_FULL)
+    {
+        log << strpr("Full Jacobian selected: "
+                     "JacobianMode::JM_FULL (%d)\n",
+                     jacobianMode);
+        log << "Each update candidate generates one Jacobi matrix row entry.\n"
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown Jacobian mode.\n");
+    }
+
+    taskBatchSize = (size_t)atoi(settings["task_batch_size"].c_str());
+    if (taskBatchSize > 0)
+    {
+        log << strpr("Per task batch size for each weight update: %zu\n",
+                     taskBatchSize);
+    }
+    else
+    {
+        log << "Task batch combines all scheduled training information "
+               "for one epoch.\n"
+    }
+
+    if ( (updaterType == UT_GD) && (jacobianMode != JM_SUM) )
+    {
+        throw runtime_error("ERROR: Gradient descent methods can only be "
+                            "combined with Jacobian mode JM_SUM.\n");
     }
 
     updateStrategy = (UpdateStrategy)atoi(settings["update_strategy"].c_str());
@@ -728,12 +747,12 @@ void Training::setupTraining()
                      epochFractionForces);
     }
     double projectedEnergyUpdates = updateCandidatesEnergy.size()
-                                  * epochFractionEnergies;
+                                  * epochFractionEnergies / taskBatchSize;
     double projectedForceUpdates = 0.0;
     if (useForces)
     {
         projectedForceUpdates = updateCandidatesForce.size()
-                              * epochFractionForces;
+                              * epochFractionForces / taskBatchSize;
     }
     if (reapeatedEnergyUpdates)
     {
@@ -741,13 +760,10 @@ void Training::setupTraining()
     }
     MPI_Allreduce(MPI_IN_PLACE, &projectedEnergyUpdates, 1, MPI_DOUBLE, MPI_SUM, comm);
     MPI_Allreduce(MPI_IN_PLACE, &projectedForceUpdates , 1, MPI_DOUBLE, MPI_SUM, comm);
-    if (parallelMode == PM_MSEKF ||
-        parallelMode == PM_MSEKFNB ||
-        parallelMode == PM_MSEKFR0 ||
-        parallelMode == PM_MSEKFR0PX)
+    if (parallelMode == PM_TRAIN)
     {
-        projectedEnergyUpdates /= numStreams;
-        projectedForceUpdates /= numStreams;
+        projectedEnergyUpdates /= numProcs;
+        projectedForceUpdates /= numProcs;
     }
     double totalUpdates = projectedEnergyUpdates + projectedForceUpdates;
     log << strpr("Projected energy updates per epoch : %7.0f (%5.1f%%)\n",
@@ -761,43 +777,32 @@ void Training::setupTraining()
         log << strpr("Total projected updates per epoch  : %7.0f\n",
                      totalUpdates);
     }
-    if (parallelMode == PM_MSEKF ||
-        parallelMode == PM_MSEKFNB ||
-        parallelMode == PM_MSEKFR0 ||
-        parallelMode == PM_MSEKFR0PX)
+    if ((parallelMode == PM_DATASET || numProcs == 1) && taskBatchSize == 1)
     {
-        log << strpr("Multi-stream training uses %d energies/forces"
-                     " per weight update.\n", numProcs);
+        log << "Each weight update is based on single energies/forces "
+               "(stochastic weight update).\n"
+    }
+    else
+    {
+        log << strpr("Each weight update is based on a combination of %zu "
+                     "energies/forces.\n", numProcs * taskBatchSize);
     }
 
-    KalmanFilter::KalmanType kalmanType = KalmanFilter::KT_STANDARD;
-    if (updaterType == UT_KALMANFILTER)
-    {
-        kalmanType = (KalmanFilter::KalmanType)
-                     atoi(settings["kalman_type"].c_str());
-    }
     GradientDescent::DescentType descentType = GradientDescent::DT_FIXED;
-    if (updaterType == UT_GRADIENTDESCENT)
+    if (updaterType == UT_GD)
     {
         descentType = (GradientDescent::DescentType)
                       atoi(settings["gradient_type"].c_str());
     }
+    KalmanFilter::KalmanType kalmanType = KalmanFilter::KT_STANDARD;
+    if (updaterType == UT_KF)
+    {
+        kalmanType = (KalmanFilter::KalmanType)
+                     atoi(settings["kalman_type"].c_str());
+    }
 
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        size_t sizeObservation = 0;
-        if (parallelMode == PM_SERIAL)
-        {
-            sizeObservation = 1;
-        }
-        else if (parallelMode == PM_MSEKF ||
-                 parallelMode == PM_MSEKFNB ||
-                 parallelMode == PM_MSEKFR0 ||
-                 parallelMode == PM_MSEKFR0PX)
-        {
-            sizeObservation = numStreams;
-        }
-
         size_t sizeState = 0;
         if (updateStrategy == US_COMBINED)
         {
@@ -811,53 +816,25 @@ void Training::setupTraining()
             sizeState = elements.at(i).neuralNetwork->getNumConnections();
         }
 
-        if (updaterType == UT_GRADIENTDESCENT)
+        if ( (myRank == 0) || (parallelMode == PM_TRAIN_ALL) )
         {
-            updaters.push_back((Updater*)new GradientDescent(descentType,
-                                                             sizeState));
+            if (updaterType == UT_GD)
+            {
+                updaters.push_back((Updater*)new GradientDescent(descentType,
+                                                                 sizeState));
+            }
+            else if (updaterType == UT_KF)
+            {
+                updaters.push_back((Updater*)new KalmanFilter(kalmanType,
+                                                              sizeState));
+            }
             updaters.back()->setState(&(weights.at(i).front()));
-        }
-        else if (updaterType == UT_KALMANFILTER)
-        {
-            KalmanFilter::
-            KalmanParallel kalmanParallelMode = KalmanFilter::KP_SERIAL;
-            if (parallelMode == PM_MSEKF)
-            {
-                kalmanParallelMode = KalmanFilter::KP_SERIAL;
-            }
-            else if (parallelMode == PM_MSEKFNB)
-            {
-                kalmanParallelMode = KalmanFilter::KP_NBCOMM;
-            }
-            else if (parallelMode == PM_MSEKFR0)
-            {
-                kalmanParallelMode = KalmanFilter::KP_SERIAL;
-            }
-            else if (parallelMode == PM_MSEKFR0PX)
-            {
-                kalmanParallelMode = KalmanFilter::KP_PRECALCX;
-            }
-            // Modes with PM_*R0* require only updater at rank 0.
-            if (myRank == 0 ||
-                (parallelMode != PM_MSEKFR0 && parallelMode != PM_MSEKFR0PX))
-            {
-                updaters.push_back((Updater*)new KalmanFilter(
-                                                            kalmanType,
-                                                            kalmanParallelMode,
-                                                            sizeState,
-                                                            sizeObservation));
-                updaters.back()->setState(&(weights.at(i).front()));
-            }
-            if (parallelMode == PM_MSEKFNB)
-            {
-                dynamic_cast<KalmanFilter*>(updaters.back())->setupMPI(&comm);
-            }
         }
     }
     if (updaters.size() > 0) hasUpdaters = true;
     else hasUpdaters = false;
 
-    if (updaterType == UT_GRADIENTDESCENT)
+    if (updaterType == UT_GD)
     {
         if (descentType == GradientDescent::DT_FIXED)
         {
@@ -883,7 +860,7 @@ void Training::setupTraining()
             }
         }
     }
-    else if (hasUpdaters && (updaterType == UT_KALMANFILTER))
+    else if (hasUpdaters && (updaterType == UT_KF))
     {
         if (kalmanType == KalmanFilter::KT_STANDARD)
         {
@@ -930,7 +907,7 @@ void Training::setupTraining()
             double const lambda =
                                  atof(settings["kalman_lambda_short"].c_str());
             //double const nu =
-            //       pow(atof(settings["kalman_nue_short"].c_str()), numStreams);
+            //       pow(atof(settings["kalman_nue_short"].c_str()), numProcs);
             //log << "nu is exponentiated with the number of streams.\n";
             double const nu = atof(settings["kalman_nue_short"].c_str());
             for (size_t i = 0; i < updaters.size(); ++i)
@@ -1608,12 +1585,9 @@ void Training::loop()
     // Set maximum number of energy/force updates per epoch.
     size_t maxEnergyUpdates = numEnergiesTrain;
     size_t maxForceLoop = numForcesTrain / numEnergiesTrain;
-    if (parallelMode == PM_MSEKF ||
-        parallelMode == PM_MSEKFNB ||
-        parallelMode == PM_MSEKFR0 ||
-        parallelMode == PM_MSEKFR0PX)
+    if (parallelMode != PM_DATASET)
     {
-        maxEnergyUpdates /= numProcs;
+        maxEnergyUpdates /= numProcs * taskBatchSize;
     }
 
     // Calculate initial RMSE and write comparison files.
@@ -1749,8 +1723,8 @@ void Training::update(bool force)
     if (parallelMode == PM_MSEKFNB) h.resize(numUpdaters);
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        xi.at(i).resize(numStreams, 0.0);
-        H.at(i).resize(numStreams * weights.at(i).size(), 0.0);
+        xi.at(i).resize(numProcs, 0.0);
+        H.at(i).resize(numProcs * weights.at(i).size(), 0.0);
         if (parallelMode == PM_MSEKFNB)
         {
             h.at(i).resize(weights.at(i).size(), 0.0);
@@ -2006,7 +1980,7 @@ void Training::update(bool force)
                 }
                 // Receive parts of H from individual streams.
                 size_t stream;
-                for (size_t p = 1; p < numStreams; ++p)
+                for (size_t p = 1; p < numProcs; ++p)
                 {
                     // Check which stream calls.
                     MPI_Recv(&stream, 1, MPI_SIZE_T, MPI_ANY_SOURCE, 0, comm, MPI_STATUS_IGNORE);
@@ -2160,7 +2134,7 @@ void Training::update(bool force)
         {
             updaters.at(i)->setDerivativeMatrix(&(H.at(i).front()));
         }
-        if (updaterType == UT_KALMANFILTER && parallelMode == PM_MSEKFNB)
+        if (updaterType == UT_KF && parallelMode == PM_MSEKFNB)
         {
             KalmanFilter* kf = dynamic_cast<KalmanFilter*>(updaters.at(i));
             kf->setDerivativeVector(&(h.at(i).front()));
@@ -2278,22 +2252,22 @@ void Training::update(bool force)
                 vector<size_t> vis;
                 vector<size_t> via;
                 vector<size_t> vic;
-                vrmseFraction.resize(numStreams, 0.0);
-                vil.resize(numStreams, 0);
-                visg.resize(numStreams, 0);
-                vis.resize(numStreams, 0);
+                vrmseFraction.resize(numProcs, 0.0);
+                vil.resize(numProcs, 0);
+                visg.resize(numProcs, 0);
+                vis.resize(numProcs, 0);
                 MPI_Gather(&rmseFraction, 1, MPI_DOUBLE, &(vrmseFraction.front()), 1, MPI_DOUBLE, 0, comm);
                 MPI_Gather(&il          , 1, MPI_SIZE_T, &(vil          .front()), 1, MPI_SIZE_T, 0, comm);
                 MPI_Gather(&isg         , 1, MPI_SIZE_T, &(visg         .front()), 1, MPI_SIZE_T, 0, comm);
                 MPI_Gather(&is          , 1, MPI_SIZE_T, &(vis          .front()), 1, MPI_SIZE_T, 0, comm);
                 if (force)
                 {
-                    via.resize(numStreams, 0);
-                    vic.resize(numStreams, 0);
+                    via.resize(numProcs, 0);
+                    vic.resize(numProcs, 0);
                     MPI_Gather(&ia, 1, MPI_SIZE_T, &(via.front()), 1, MPI_SIZE_T, 0, comm);
                     MPI_Gather(&ic, 1, MPI_SIZE_T, &(vic.front()), 1, MPI_SIZE_T, 0, comm);
                 }
-                for (size_t i = 0; i < numStreams; ++i)
+                for (size_t i = 0; i < numProcs; ++i)
                 {
                     // Collect updater input statistics.
                     vector<double> absXi(numUpdaters, 0.0);
