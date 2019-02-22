@@ -269,6 +269,7 @@ list of keywords is provided :ref:`here <keywords>`.
    Topics/cfg_file
    Topics/if_lammps
    Topics/pair_nnp
+   Topics/training
    Topics/units
 
 .. toctree::
