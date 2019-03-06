@@ -71,7 +71,8 @@ map<string, string> const createKnownKeywordsMap()
     m["jacobian_mode"                 ] = "";
     m["update_strategy"               ] = "";
     m["selection_mode"                ] = "";
-    m["task_batch_size"               ] = "";
+    m["task_batch_size_energy"        ] = "";
+    m["task_batch_size_force"         ] = "";
     m["gradient_type"                 ] = "";
     m["gradient_eta"                  ] = "";
     m["kalman_type"                   ] = "";

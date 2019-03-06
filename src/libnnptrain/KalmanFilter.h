@@ -42,52 +42,67 @@ public:
 
     /** Kalman filter class constructor.
      *
-     * @param[in] type Kalman filter type (see #KalmanType).
-     * @param[in] parallel Parallelization mode (see #KalmanParallel).
      * @param[in] sizeState Size of the state vector #w.
-     * @param[in] sizeObservation Size of the observation vector #xi.
+     * @param[in] type Kalman filter type (see #KalmanType).
      */
-    KalmanFilter(KalmanType const     type,
-                 std::size_t const    sizeState);
+    KalmanFilter(std::size_t const sizeState,
+                 KalmanType const  type);
     /** Destructor.
      */
-    ~KalmanFilter();
-    /** Set state vector.
+    virtual ~KalmanFilter();
+    /** Set observation vector size.
      *
-     * @param[in,out] state State vector (changed in-place upon calling
-     *                      #update()).
+     * @param[in] size Size of the observation vector.
+     *
+     * If the size of the observation vector is known in advance it can be set
+     * here.
+     */
+    void                     setSizeObservation(
+                                            std::size_t const sizeObservation);
+    /** Set pointer to current state.
+     *
+     * @param[in,out] state Pointer to state vector (weights vector), will be
+     *                      changed in-place upon calling update().
      */
     void                     setState(double* state);
-    /** Set error vector.
+    /** Set pointer to current error vector.
      *
-     * @param[in] error Error vector (left unchanged).
-     * @param[in] sizeObservation Current observation vector size.
+     * @param[in] error Pointer to error (difference between reference and
+     *                  neural network potential output).
+     */
+    void                     setError(double const* const error);
+    /** Set pointer to current error vector.
      *
-     * Make sure that sizeObservation is identical in the corresponding
-     * setDerivativeMatrix() call!
+     * @param[in] error Pointer to error (difference between reference and
+     *                  neural network potential output).
+     * @param[in] size Number of error vector entries.
      */
     void                     setError(double const* const error,
-                                      std::size_t const   sizeObservation);
-    /** Set derivative vector.
+                                      std::size_t const   size);
+    /** Set pointer to current Jacobi matrix.
      *
-     * @param[in] derivatives Derivative vector (one stream only).
+     * @param[in] jacobian Derivatives of error with respect to weights.
      */
-    void                     setDerivativeVector(
-                                              double const* const derivatives);
-    /** Set derivative matrix.
+    void                     setJacobian(double const* const jacobian);
+    /** Set pointer to current Jacobi matrix.
      *
-     * @param[in] derivatives Derivative matrix (left unchanged).
-     * @param[in] sizeObservation Current observation vector size.
+     * @param[in] jacobian Derivatives of error with respect to weights.
+     * @param[in] columns Number of gradients provided.
      *
-     * Make sure that sizeObservation is identical in the corresponding
-     * setError() call!
+     * @note
+     * If there are @f$m@f$ errors and @f$n@f$ weights, the Jacobi matrix
+     * is a @f$n \times m@f$ matrix stored in column-major order.
      */
-    void                     setDerivativeMatrix(
-                                          double const* const derivatives,
-                                          std::size_t const   sizeObservation);
-    /** Update Kalman gain matrix, error covariance matrix and state vector.
+    void                     setJacobian(double const* const jacobian,
+                                         std::size_t const   columns);
+    /** Update error covariance matrix and state vector.
      */
     void                     update();
+    /** Update error covariance matrix and state vector.
+     *
+     * @param[in] sizeObservation Size of the observation vector.
+     */
+    void                     update(std::size_t const sizeObservation);
     /** Set parameters for standard Kalman filter.
      *
      * @param[in] epsilon Error covariance initialization parameter
@@ -145,9 +160,12 @@ public:
     /** Getter for #type.
      */
     KalmanType               getType() const;
+    /** Getter for #sizeObservation.
+     */
+    std::size_t              getSizeObservation() const;
     /** Getter for #numUpdates.
      */
-    std::size_t              getNumUpdates();
+    std::size_t              getNumUpdates() const;
     /** Getter for #eta.
      */
     double                   getEta() const;
@@ -176,8 +194,6 @@ public:
 private:
     /// Kalman filter type.
     KalmanType                         type;
-    /// Size of state vector.
-    std::size_t                        sizeState;
     /// Size of observation (measurement) vector.
     std::size_t                        sizeObservation;
     /// Total number of updates performed.
@@ -227,6 +243,16 @@ private:
 inline KalmanFilter::KalmanType KalmanFilter::getType() const
 {
     return type;
+}
+
+inline std::size_t KalmanFilter::getSizeObservation() const
+{
+    return sizeObservation;
+}
+
+inline std::size_t KalmanFilter::getNumUpdates() const
+{
+    return numUpdates;
 }
 
 inline double KalmanFilter::getEta() const

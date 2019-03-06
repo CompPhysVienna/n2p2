@@ -57,7 +57,7 @@ public:
          * a single task is active, selects energy/force update candidates,
          * computes errors and gradients, and updates weights.
          */
-        PM_DATASET,
+        //PM_DATASET,
         /** Parallel gradient computation, update on rank 0.
          *
          * Data set is distributed via MPI, each tasks selects energy/force
@@ -212,6 +212,11 @@ public:
     /** Execute main training loop.
      */
     void                  loop();
+    /** Select energies or forces for next weight update.
+     *
+     * @param[in] force If true, use forces, otherwise energies.
+     */
+    void                  selectUpdateCandidates(bool force);
     /** Perform one update.
      *
      * @param[in] force If true, perform force update, otherwise energy update.
@@ -291,97 +296,121 @@ private:
     };
 
     /// Updater type used.
-    UpdaterType                  updaterType;
+    UpdaterType                   updaterType;
     /// Parallelization mode used.
-    ParallelMode                 parallelMode;
+    ParallelMode                  parallelMode;
     /// Jacobian mode used.
-    JacobianMode                 jacobianMode;
+    JacobianMode                  jacobianMode;
     /// Update strategy used.
-    UpdateStrategy               updateStrategy;
+    UpdateStrategy                updateStrategy;
     /// Selection mode for update candidates.
-    SelectionMode                selectionMode;
+    SelectionMode                 selectionMode;
     /// If this rank performs weight updates.
-    bool                         hasUpdaters;
+    bool                          hasUpdaters;
     /// If this rank holds structure information.
-    bool                         hasStructures;
+    bool                          hasStructures;
     /// Use forces for training.
-    bool                         useForces;
+    bool                          useForces;
     /// After force update perform energy update for corresponding structure.
-    bool                         reapeatedEnergyUpdates;
+    bool                          reapeatedEnergyUpdates;
     /// Free symmetry function memory after calculation.
-    bool                         freeMemory;
+    bool                          freeMemory;
     /// Whether training log file is written.
-    bool                         writeTrainingLog;
+    bool                          writeTrainingLog;
     /// Number of updaters (depends on update strategy).
-    std::size_t                  numUpdaters;
+    std::size_t                   numUpdaters;
     /// Number of energies in training set.
-    std::size_t                  numEnergiesTrain;
+    std::size_t                   numEnergiesTrain;
     /// Number of forces in training set.
-    std::size_t                  numForcesTrain;
+    std::size_t                   numForcesTrain;
     /// Number of epochs requested.
-    std::size_t                  numEpochs;
-    /// Multiplier for mini-batches (mini-batch size = cores x multiplier).
-    std::size_t                  minibatchMultiplier;
+    std::size_t                   numEpochs;
+    /// Batch size for each MPI task (energies).
+    std::size_t                   taskBatchSizeEnergy;
+    /// Batch size for each MPI task (forces).
+    std::size_t                   taskBatchSizeForce;
     /// Current epoch.
-    std::size_t                  epoch;
+    std::size_t                   epoch;
     /// Write energy comparison every this many epochs.
-    std::size_t                  writeEnergiesEvery;
+    std::size_t                   writeEnergiesEvery;
     /// Write force comparison every this many epochs.
-    std::size_t                  writeForcesEvery;
+    std::size_t                   writeForcesEvery;
     /// Write weights every this many epochs.
-    std::size_t                  writeWeightsEvery;
+    std::size_t                   writeWeightsEvery;
     /// Write neuron statistics every this many epochs.
-    std::size_t                  writeNeuronStatisticsEvery;
+    std::size_t                   writeNeuronStatisticsEvery;
     /// Up to this epoch energy comparison is written every epoch.
-    std::size_t                  writeEnergiesAlways;
+    std::size_t                   writeEnergiesAlways;
     /// Up to this epoch force comparison is written every epoch.
-    std::size_t                  writeForcesAlways;
+    std::size_t                   writeForcesAlways;
     /// Up to this epoch weights are written every epoch.
-    std::size_t                  writeWeightsAlways;
+    std::size_t                   writeWeightsAlways;
     /// Up to this epoch neuron statistics are written every epoch.
-    std::size_t                  writeNeuronStatisticsAlways;
+    std::size_t                   writeNeuronStatisticsAlways;
     /// Current position in energy update candidate list (SM_SORT).
-    std::size_t                  posUpdateCandidatesEnergy;
+    std::size_t                   posUpdateCandidatesEnergy;
     /// Current position in force update candidate list (SM_SORT).
-    std::size_t                  posUpdateCandidatesForce;
+    std::size_t                   posUpdateCandidatesForce;
     /// Maximum trials for SM_THRESHOLD selection mode.
-    std::size_t                  rmseThresholdTrials;
+    std::size_t                   rmseThresholdTrials;
     /// Update counter.
-    std::size_t                  countUpdates;
+    std::size_t                   countUpdates;
+    /// Number of energy updates per epoch.
+    std::size_t                   energyUpdates;
+    /// Number of force updates per epoch.
+    std::size_t                   forceUpdates;
+    /// Energies used per update.
+    std::size_t                   energiesPerUpdate;
+    /// Energies used per update (summed over all MPI tasks).
+    std::size_t                   energiesPerUpdateGlobal;
+    /// Forces used per update.
+    std::size_t                   forcesPerUpdate;
+    /// Forces used per update (summed over all MPI tasks).
+    std::size_t                   forcesPerUpdateGlobal;
     /// Desired energy update fraction per epoch.
-    double                       epochFractionEnergies;
+    double                        epochFractionEnergies;
     /// Desired force update fraction per epoch.
-    double                       epochFractionForces;
+    double                        epochFractionForces;
     /// Current RMSE of training energies.
-    double                       rmseEnergiesTrain;
+    double                        rmseEnergiesTrain;
     /// Current RMSE of test energies.
-    double                       rmseEnergiesTest;
+    double                        rmseEnergiesTest;
     /// Current RMSE of training forces.
-    double                       rmseForcesTrain;
+    double                        rmseForcesTrain;
     /// Current RMSE of test forces.
-    double                       rmseForcesTest;
+    double                        rmseForcesTest;
     /// RMSE threshold for energy update candidates.
-    double                       rmseThresholdEnergy;
+    double                        rmseThresholdEnergy;
     /// RMSE threshold for force update candidates.
-    double                       rmseThresholdForce;
+    double                        rmseThresholdForce;
     /// Force update weight.
-    double                       forceWeight;
+    double                        forceWeight;
     /// File name for training log.
-    std::string                  trainingLogFileName;
+    std::string                   trainingLogFileName;
     /// Training log file.
-    std::ofstream                trainingLog;
+    std::ofstream                 trainingLog;
+    /// Current RMSE fraction of update candidates.
+    std::vector<double>           currentRmseFraction;
     /// Vector with indices of training structures.
-    std::vector<UpdateCandidate> updateCandidatesEnergy;
+    std::vector<UpdateCandidate>  updateCandidatesEnergy;
     /// Vector with indices of training forces.
-    std::vector<UpdateCandidate> updateCandidatesForce;
+    std::vector<UpdateCandidate>  updateCandidatesForce;
+    /// Vector with pointers to selected update candidates.
+    std::vector<UpdateCandidate*> currentUpdateCandidates;
     /// Neural network weights and biases for each element.
     std::vector<
-    std::vector<double> >        weights;
+    std::vector<double> >         weights;
+    /// Global error vector (per element).
+    std::vector<
+    std::vector<double> >         error;
+    /// Global Jacobian (per element).
+    std::vector<
+    std::vector<double> >         jacobian;
     /// Updater (Kalman filter) for each element.
-    std::vector<Updater*>        updaters;
+    std::vector<Updater*>         updaters;
     /// Schedule for varying selection mode.
     std::map<std::size_t,
-             SelectionMode>      selectionModeSchedule;
+             SelectionMode>       selectionModeSchedule;
 
     /** Check if training loop should be continued.
      *

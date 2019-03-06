@@ -16,8 +16,9 @@
 
 #include "Updater.h"
 
+using namespace std;
 using namespace nnp;
 
-Updater::Updater()
+Updater::Updater(size_t const sizeState) : sizeState(sizeState)
 {
 }

@@ -17,8 +17,9 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
-#include <string>
-#include <vector>
+#include <cstddef> // std::size_t
+#include <string>  // std::string
+#include <vector>  // std::vector
 
 namespace nnp
 {
@@ -27,27 +28,34 @@ namespace nnp
 class Updater
 {
 public:
-    /** Constructor
-     */
-    virtual ~Updater() {};
     /** Set pointer to current state.
      *
-     * @param[in,out] state Pointer to state (weights vector).
+     * @param[in,out] state Pointer to state vector (weights vector), will be
+     *                      changed in-place upon calling update().
      */
     virtual void                     setState(double* state) = 0;
-    /** Set pointer to current error.
+    /** Set pointer to current error vector.
      *
      * @param[in] error Pointer to error (difference between reference and
      *                  neural network potential output).
+     * @param[in] size Number of error vector entries.
      */
-    virtual void                     setError(double const* const error) = 0;
-    /** Set pointer to derivative matrix.
+    virtual void                     setError(
+                                             double const* const error,
+                                             std::size_t const   size = 1) = 0;
+    /** Set pointer to current Jacobi matrix.
      *
-     * @param[in] derivatives Derivatives of error with respect to weights.
+     * @param[in] jacobian Derivatives of error with respect to weights.
+     * @param[in] columns Number of gradients provided.
+     *
+     * @note
+     * If there are @f$m@f$ errors and @f$n@f$ weights, the Jacobi matrix
+     * is a @f$n \times m@f$ matrix stored in column-major order.
      */
-    virtual void                     setDerivativeMatrix(
-                                          double const* const derivatives) = 0;
-    /** Perform update of state vector.
+    virtual void                     setJacobian(
+                                          double const* const jacobian,
+                                          std::size_t const   columns = 1) = 0;
+    /** Perform single update of state vector.
      */
     virtual void                     update() = 0;
     /** Status report.
@@ -69,9 +77,15 @@ public:
     virtual std::vector<std::string> info() const = 0;
 
 protected:
-    /** Constructor.
+    /** Constructor
+     *
+     * @param[in] sizeState Size of the state vector (number of parameters to
+     *                      optimize).
      */
-    Updater();
+    Updater(std::size_t const sizeState);
+
+    /// Number of neural network connections (weights + biases).
+    std::size_t sizeState;
 };
 
 }

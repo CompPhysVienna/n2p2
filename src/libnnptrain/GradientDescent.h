@@ -25,6 +25,7 @@
 namespace nnp
 {
 
+/// Weight updates based on simple gradient descent methods.
 class GradientDescent : public Updater
 {
 public:
@@ -39,31 +40,39 @@ public:
 
     /** %GradientDescent class constructor.
      *
-     * @param[in] type Descent type used for step size.
      * @param[in] sizeState Number of neural network connections (weights
      *                      and biases).
+     * @param[in] type Descent type used for step size.
      */
-    GradientDescent(DescentType const type, std::size_t const sizeState);
-    /** Destructor.
+    GradientDescent(std::size_t const sizeState, DescentType const type);
+    /** Destructor
      */
-    ~GradientDescent() {};
-    /** Set state vector.
+    virtual ~GradientDescent() {};
+    /** Set pointer to current state.
      *
-     * @param[in,out] state State vector (changed in-place upon calling
-     *                      #update()).
+     * @param[in,out] state Pointer to state vector (weights vector), will be
+     *                      changed in-place upon calling update().
      */
     void                     setState(double* state);
-    /** Set error.
+    /** Set pointer to current error vector.
      *
-     * @param[in] error Error value (left unchanged).
+     * @param[in] error Pointer to error (difference between reference and
+     *                  neural network potential output).
+     * @param[in] size Number of error vector entries.
      */
-    void                     setError(double const* const error);
-    /** Set derivative matrix.
+    void                     setError(double const* const error,
+                                      std::size_t const   size = 1);
+    /** Set pointer to current Jacobi matrix.
      *
-     * @param[in] derivatives Derivative matrix (left unchanged).
+     * @param[in] jacobian Derivatives of error with respect to weights.
+     * @param[in] columns Number of gradients provided.
+     *
+     * @note
+     * If there are @f$m@f$ errors and @f$n@f$ weights, the Jacobi matrix
+     * is a @f$n \times m@f$ matrix stored in column-major order.
      */
-    void                     setDerivativeMatrix(
-                                              double const* const derivatives);
+    void                     setJacobian(double const* const jacobian,
+                                         std::size_t const   columns = 1);
     /** Perform connection update.
      *
      * Update the connections via steepest descent method.
@@ -107,8 +116,6 @@ public:
 
 private:
     DescentType         type;
-    /// Number of neural network connections (weights + biases).
-    std::size_t         sizeState;
     /// Learning rate @f$\eta@f$.
     double              eta;
     /// Decay rate 1 (Adam).
@@ -127,8 +134,8 @@ private:
     double*             state;
     /// Error pointer (single double value).
     double const*       error;
-    /// Derivatives vector pointer.
-    double const*       derivatives;
+    /// Gradient vector pointer.
+    double const*       gradient;
     /// First moment estimate (Adam).
     std::vector<double> m;
     /// Second moment estimate (Adam).

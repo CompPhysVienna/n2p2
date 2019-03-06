@@ -22,19 +22,18 @@
 using namespace std;
 using namespace nnp;
 
-GradientDescent::GradientDescent(DescentType const type,
-                                 size_t const      sizeState) :
-    Updater(),
-    sizeState  (0          ),
-    eta        (0.0        ),
-    beta1      (0.0        ),
-    beta2      (0.0        ),
-    epsilon    (0.0        ),
-    beta1t     (0.0        ),
-    beta2t     (0.0        ),
-    state      (NULL       ),
-    error      (NULL       ),
-    derivatives(NULL       )
+GradientDescent::GradientDescent(size_t const      sizeState,
+                                 DescentType const type) :
+    Updater(sizeState),
+    eta     (0.0        ),
+    beta1   (0.0        ),
+    beta2   (0.0        ),
+    epsilon (0.0        ),
+    beta1t  (0.0        ),
+    beta2t  (0.0        ),
+    state   (NULL       ),
+    error   (NULL       ),
+    gradient(NULL       )
 {
     if (!(type == DT_FIXED ||
           type == DT_ADAM))
@@ -48,7 +47,6 @@ GradientDescent::GradientDescent(DescentType const type,
     }
 
     this->type = type;
-    this->sizeState = sizeState;
 
     if (type == DT_ADAM)
     {
@@ -64,16 +62,18 @@ void GradientDescent::setState(double* state)
     return;
 }
 
-void GradientDescent::setError(double const* const error)
+void GradientDescent::setError(double const* const error,
+                               size_t const /* size */)
 {
     this->error = error;
 
     return;
 }
 
-void GradientDescent::setDerivativeMatrix(double const* const derivatives)
+void GradientDescent::setJacobian(double const* const jacobian,
+                                  size_t const        /* columns*/)
 {
-    this->derivatives = derivatives;
+    this->gradient = jacobian;
 
     return;
 }
@@ -84,14 +84,14 @@ void GradientDescent::update()
     {
         for (std::size_t i = 0; i < sizeState; ++i)
         {
-            state[i] -= eta * (*error) * -derivatives[i];
+            state[i] -= eta * (*error) * -gradient[i];
         }
     }
     else if (type == DT_ADAM)
     {
         for (std::size_t i = 0; i < sizeState; ++i)
         {
-            double const g = (*error) * -derivatives[i];
+            double const g = (*error) * -gradient[i];
             m[i] = beta1 * m[i] + (1.0 - beta1) * g;
             v[i] = beta2 * v[i] + (1.0 - beta2) * g * g;
 

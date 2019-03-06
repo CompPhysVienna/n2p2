@@ -30,9 +30,12 @@ global_activation_short         p p l          # Activation function for each hi
 ###############################################################################
 epochs                          10             # Number of training epochs.
 updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
-parallel_mode                   4              # Training parallelization used (0 = Serial, 1-4 = MSEKF implementations (2 or 4 are fastest)).
+parallel_mode                   1              # Training parallelization used (0 = Serial, 1 = Parallel (rank 0 update), 2 = Parallel (all update)).
+jacobian_mode                   2              # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).
 update_strategy                 0              # Update strategy (0 = Combined, 1 = Per-element).
-selection_mode                  2              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+selection_mode                  0              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+task_batch_size_energy          4              # Number of energy update candidates prepared per task for each update (0 = Entire training set).
+task_batch_size_force           20             # Number of force update candidates prepared per task for each update (0 = Entire training set).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
 random_seed                     1234567        # Random number generator seed.
 test_fraction                   0.1            # Fraction of structures kept for testing.
@@ -57,8 +60,11 @@ write_trainlog                                 # Write training log file.
 ####################
 # GRADIENT DESCENT #
 ####################
-#gradient_type                   0              # Gradient descent type (0 = Fixed step size).
-#gradient_eta                    1.0E-4         # Gradient descent parameter eta (fixed step size).
+gradient_type                   0              # Gradient descent type (0 = Fixed step size, 1 = Adam).
+gradient_eta                    1.0E-4         # Gradient descent parameter eta (Fixed step size).
+gradient_adam_beta1             0.9            # Gradient descent parameter beta1 (Adam).
+gradient_adam_beta2             0.999          # Gradient descent parameter beta2 (Adam).
+gradient_adam_epsilon           1.0E-8         # Gradient descent parameter epsilon (Adam).
 ############################
 # KALMAN FILTER (STANDARD) #
 ############################

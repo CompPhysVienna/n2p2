@@ -24,8 +24,9 @@ using namespace Eigen;
 using namespace std;
 using namespace nnp;
 
-KalmanFilter::KalmanFilter(KalmanType const type, size_t const sizeState) :
-    Updater(),
+KalmanFilter::KalmanFilter(size_t const sizeState,
+                           KalmanType const type) :
+    Updater(sizeState),
     sizeObservation(0   ),
     numUpdates     (0   ),
     epsilon        (0.0 ),
@@ -56,7 +57,6 @@ KalmanFilter::KalmanFilter(KalmanType const type, size_t const sizeState) :
     }
 
     this->type            = type;
-    this->sizeState       = sizeState;
     sizeObservation = 1;
 
     w  = new Map<VectorXd      >(0, sizeState);
@@ -70,6 +70,13 @@ KalmanFilter::~KalmanFilter()
 {
 }
 
+void KalmanFilter::setSizeObservation(size_t const size)
+{
+    sizeObservation = size;
+
+    return;
+}
+
 void KalmanFilter::setState(double* state)
 {
     new (w) Map<VectorXd>(state, sizeState);
@@ -77,25 +84,43 @@ void KalmanFilter::setState(double* state)
     return;
 }
 
-void KalmanFilter::setError(double const* const error,
-                            size_t const        sizeObservation)
+void KalmanFilter::setError(double const* const error)
 {
-    this->sizeObservation = sizeObservation;
-    new (xi) Map<VectorXd const>(error, sizeObservation);
+    setError(error, sizeObservation);
 
     return;
 }
 
-void KalmanFilter::setDerivativeMatrix(double const* const derivatives,
-                                       size_t const        sizeObservation)
+void KalmanFilter::setError(double const* const error, size_t const size)
 {
-    this->sizeObservation = sizeObservation;
-    new (H) Map<MatrixXd const>(derivatives, sizeState, sizeObservation);
+    new (xi) Map<VectorXd const>(error, size);
+
+    return;
+}
+
+void KalmanFilter::setJacobian(double const* const jacobian)
+{
+    setJacobian(jacobian, sizeObservation);
+
+    return;
+}
+
+void KalmanFilter::setJacobian(double const* const jacobian,
+                               size_t const columns)
+{
+    new (H) Map<MatrixXd const>(jacobian, sizeState, columns);
 
     return;
 }
 
 void KalmanFilter::update()
+{
+    update(sizeObservation);
+
+    return;
+}
+
+void KalmanFilter::update(size_t const sizeObservation)
 {
     X.resize(sizeState, sizeObservation);
 
