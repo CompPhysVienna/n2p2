@@ -22,6 +22,7 @@
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
 #include <map>     // std::map
+#include <random>  // std::mt19937_64
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -212,6 +213,9 @@ public:
     /** Execute main training loop.
      */
     void                  loop();
+    /** Select energies/forces schedule for one epoch.
+     */
+    void                  setEpochSchedule();
     /** Select energies or forces for next weight update.
      *
      * @param[in] force If true, use forces, otherwise energies.
@@ -389,6 +393,8 @@ private:
     std::string                   trainingLogFileName;
     /// Training log file.
     std::ofstream                 trainingLog;
+    /// Update schedule epoch (false = energy update, true = force update).
+    std::vector<int>              epochSchedule;
     /// Current RMSE fraction of update candidates.
     std::vector<double>           currentRmseFraction;
     /// Vector with indices of training structures.
@@ -411,6 +417,8 @@ private:
     /// Schedule for varying selection mode.
     std::map<std::size_t,
              SelectionMode>       selectionModeSchedule;
+    /// Global random number generator.
+    std::mt19937_64               rngGlobalNew;
 
     /** Check if training loop should be continued.
      *

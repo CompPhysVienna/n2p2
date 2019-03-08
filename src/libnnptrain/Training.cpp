@@ -814,6 +814,9 @@ void Training::setupTraining()
     }
     log << "-----------------------------------------"
            "--------------------------------------\n";
+
+    rngGlobalNew.seed(gsl_rng_get(rngGlobal));
+
     //log << strpr("Projected energy updates per epoch : %7.0f (%5.1f%%)\n",
     //             projectedEnergyUpdates,
     //             100.0 * projectedEnergyUpdates / totalUpdates);
@@ -836,7 +839,6 @@ void Training::setupTraining()
     //                 "energies/forces.\n", numProcs * taskBatchSize);
     //}
 
-    exit(0);
     //if (taskBatchSize > 0)
     //{
     //    log << strpr("Per task batch size for each weight update: %zu\n",
@@ -1682,6 +1684,8 @@ void Training::loop()
     Stopwatch swTrain;
     Stopwatch swRmse;
     swTotal.start();
+        // Determine epoch update schedule.
+        setEpochSchedule();
 
     // Set maximum number of energy/force updates per epoch.
     size_t maxEnergyUpdates = numEnergiesTrain;
@@ -1737,6 +1741,9 @@ void Training::loop()
 
         // Sort update candidates if requested.
         if (selectionMode == SM_SORT) sortUpdateCandidates();
+
+        // Determine epoch update schedule.
+        setEpochSchedule();
 
         // Try energy/force updates.
         swTrain.start();
@@ -1808,6 +1815,22 @@ void Training::loop()
 
     log << "*****************************************"
            "**************************************\n";
+
+    return;
+}
+
+void Training::setEpochSchedule()
+{
+    epochSchedule.resize(energyUpdates + forceUpdates, 0);
+
+    fill(epochSchedule.begin(), epochSchedule.begin() + forceUpdates, 1);
+    shuffle(epochSchedule.begin(), epochSchedule.end(), rngGlobalNew);
+
+    for (size_t i = 0; i < epochSchedule.size(); ++i)
+    {
+        log << strpr("%zu %d\n", i, epochSchedule[i]);
+    }
+    exit(0);
 
     return;
 }
