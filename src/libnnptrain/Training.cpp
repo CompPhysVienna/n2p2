@@ -816,6 +816,7 @@ void Training::setupTraining()
            "--------------------------------------\n";
 
     rngGlobalNew.seed(gsl_rng_get(rngGlobal));
+    rngNew.seed(gsl_rng_get(rng));
 
     //log << strpr("Projected energy updates per epoch : %7.0f (%5.1f%%)\n",
     //             projectedEnergyUpdates,
@@ -1610,6 +1611,46 @@ void Training::sortUpdateCandidates()
     return;
 }
 
+void Training::shuffleUpdateCandidates()
+{
+    shuffle(updateCandidatesEnergy.begin(),
+            updateCandidatesEnergy.end(),
+            rngNew);
+
+    // Reset current position.
+    posUpdateCandidatesEnergy = 0;
+
+    if (useForces)
+    {
+        shuffle(updateCandidatesForce.begin(),
+                updateCandidatesForce.end(),
+                rngNew);
+
+        // Reset current position.
+        posUpdateCandidatesForce = 0;
+    }
+
+    return;
+}
+
+void Training::setEpochSchedule()
+{
+    // Clear epoch schedule.
+    epochSchedule.clear();
+    vector<int>(epochSchedule).swap(epochSchedule);
+
+    // Set size of schedule and initialize to 0 (i.e. all energy updates).
+    epochSchedule.resize(energyUpdates + forceUpdates, 0);
+
+    // Fill with as many "1"s as there are force updates.
+    fill(epochSchedule.begin(), epochSchedule.begin() + forceUpdates, 1);
+
+    // Now shuffle the schedule to get a random sequence.
+    shuffle(epochSchedule.begin(), epochSchedule.end(), rngGlobalNew);
+
+    return;
+}
+
 void Training::checkSelectionMode()
 {
     if (selectionModeSchedule.find(epoch) != selectionModeSchedule.end())
@@ -1684,16 +1725,6 @@ void Training::loop()
     Stopwatch swTrain;
     Stopwatch swRmse;
     swTotal.start();
-        // Determine epoch update schedule.
-        setEpochSchedule();
-
-    // Set maximum number of energy/force updates per epoch.
-    size_t maxEnergyUpdates = numEnergiesTrain;
-    size_t maxForceLoop = numForcesTrain / numEnergiesTrain;
-    //if (parallelMode != PM_DATASET)
-    //{
-    //    maxEnergyUpdates /= numProcs * taskBatchSize;
-    //}
 
     // Calculate initial RMSE and write comparison files.
     swRmse.start();
@@ -1739,40 +1770,35 @@ void Training::loop()
         // Check if selection mode should be changed in this epoch.
         checkSelectionMode();
 
-        // Sort update candidates if requested.
+        // Sort or shuffle update candidates.
         if (selectionMode == SM_SORT) sortUpdateCandidates();
+        else shuffleUpdateCandidates();
 
         // Determine epoch update schedule.
         setEpochSchedule();
 
-        // Try energy/force updates.
+        // Perform energy/force updates according to schedule.
         swTrain.start();
-        for (size_t i = 0; i < maxEnergyUpdates; ++i)
+        for (size_t i = 0; i < epochSchedule.size(); ++i)
         {
-            // Energy update.
-            if (gsl_rng_uniform(rngGlobal) < epochFractionEnergies)
+            bool force = static_cast<bool>(epochSchedule.at(i));
+            log << strpr("%zu %s", i, force ? "F" : "E");
+            if (force)
             {
-                update(false);
-                numUpdatesEnergy++;
+                UpdateCandidate& uc
+                    = updateCandidatesForce.at(posUpdateCandidatesForce);
+                log << strpr(" %zu %zu %zu %zu\n",
+                             posUpdateCandidatesForce, uc.s, uc.a, uc.c);
             }
-            if (useForces)
-            {
-                for (size_t j = 0; j < maxForceLoop; ++j)
-                {
-                    // Force update.
-                    if (gsl_rng_uniform(rngGlobal) < epochFractionForces)
-                    {
-                        update(true);
-                        numUpdatesForce++;
-                        if (reapeatedEnergyUpdates)
-                        {
-                            // Repeated energy update.
-                            update(false);
-                            numUpdatesEnergy++;
-                        }
-                    }
-                }
+            else {
+                UpdateCandidate& uc
+                    = updateCandidatesEnergy.at(posUpdateCandidatesEnergy);
+                log << strpr(" %zu %zu\n",
+                             posUpdateCandidatesEnergy, uc.s);
             }
+            update(force);
+            if (force) numUpdatesForce++;
+            else       numUpdatesEnergy++;
         }
         swTrain.stop();
 
@@ -1815,22 +1841,6 @@ void Training::loop()
 
     log << "*****************************************"
            "**************************************\n";
-
-    return;
-}
-
-void Training::setEpochSchedule()
-{
-    epochSchedule.resize(energyUpdates + forceUpdates, 0);
-
-    fill(epochSchedule.begin(), epochSchedule.begin() + forceUpdates, 1);
-    shuffle(epochSchedule.begin(), epochSchedule.end(), rngGlobalNew);
-
-    for (size_t i = 0; i < epochSchedule.size(); ++i)
-    {
-        log << strpr("%zu %d\n", i, epochSchedule[i]);
-    }
-    exit(0);
 
     return;
 }
@@ -1941,6 +1951,8 @@ void Training::selectUpdateCandidates(bool force)
 
 void Training::update(bool force)
 {
+    if (force) posUpdateCandidatesForce++;
+    else posUpdateCandidatesEnergy++;
 //    // Set correct update candidate list.
 //    vector<UpdateCandidate>* ucl = NULL;
 //    if (force) ucl = &updateCandidatesForce;

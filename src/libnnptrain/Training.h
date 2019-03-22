@@ -207,6 +207,9 @@ public:
     /** Sort update candidates with descending RMSE.
      */
     void                  sortUpdateCandidates();
+    /** Shuffle update candidates.
+     */
+    void                  shuffleUpdateCandidates();
     /** Check if selection mode should be changed.
      */
     void                  checkSelectionMode();
@@ -417,6 +420,8 @@ private:
     /// Schedule for varying selection mode.
     std::map<std::size_t,
              SelectionMode>       selectionModeSchedule;
+    /// Per-task random number generator.
+    std::mt19937_64               rngNew;
     /// Global random number generator.
     std::mt19937_64               rngGlobalNew;
 
