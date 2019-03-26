@@ -97,11 +97,11 @@ headers:
 
 version:
 	@$(eval GIT_REV_SHORT = $(shell git rev-parse --short HEAD))
-	@sed -i -r "s/(NNP_GIT_REV_SHORT) .*/\1 \"${GIT_REV_SHORT}\"/" version.h
+	@sed -i -E "s/\(NNP_GIT_REV_SHORT\) .*/\1 \"${GIT_REV_SHORT}\"/" version.h
 	@$(eval GIT_REV = $(shell git rev-parse HEAD))
-	@sed -i -r "s/(NNP_GIT_REV) .*/\1 \"${GIT_REV}\"/" version.h
+	@sed -i -E "s/\(NNP_GIT_REV\) .*/\1 \"${GIT_REV}\"/" version.h
 	@$(eval GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD))
-	@sed -i -r "s/(NNP_GIT_BRANCH) .*/\1 \"${GIT_BRANCH}\"/" version.h
+	@sed -i -E "s/\(NNP_GIT_BRANCH\) .*/\1 \"${GIT_BRANCH}\"/" version.h
 
 ${SLIB}: ${SOBJ}
 	${AR} ${ARFLAGS} $@ $+
