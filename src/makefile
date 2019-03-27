@@ -59,6 +59,7 @@ INSTALL_LIB=${HOME}/local/lib
         clean-doc \
         clean-doc-sphinx \
         clean-doc-doxygen \
+	clean-no-doc \
         clean-libnnp \
         clean-libnnptrain \
         clean-libnnpif \
@@ -150,22 +151,25 @@ static: libnnp-static \
 clean:	clean-doc \
 	clean-doc-sphinx \
 	clean-doc-doxygen \
-	clean-libnnp \
-	clean-libnnptrain \
-	clean-libnnpif \
-	clean-nnp-comp2 \
-	clean-nnp-convert \
-	clean-nnp-cutoff \
-	clean-nnp-dataset \
-	clean-nnp-dist \
-	clean-nnp-norm \
-	clean-nnp-predict \
-	clean-nnp-prune \
-	clean-nnp-scaling \
-	clean-nnp-select \
-	clean-nnp-symfunc \
-	clean-nnp-train \
-	clean-pynnp
+	clean-no-doc
+
+clean-no-doc: clean-libnnp \
+	      clean-libnnptrain \
+	      clean-libnnpif \
+	      clean-nnp-comp2 \
+	      clean-nnp-convert \
+	      clean-nnp-cutoff \
+	      clean-nnp-dataset \
+	      clean-nnp-dist \
+	      clean-nnp-norm \
+	      clean-nnp-predict \
+	      clean-nnp-prune \
+	      clean-nnp-scaling \
+	      clean-nnp-select \
+	      clean-nnp-symfunc \
+	      clean-nnp-train \
+	      clean-pynnp
+
 
 #######
 # doc #
