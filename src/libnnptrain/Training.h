@@ -219,11 +219,6 @@ public:
     /** Select energies/forces schedule for one epoch.
      */
     void                  setEpochSchedule();
-    /** Select energies or forces for next weight update.
-     *
-     * @param[in] force If true, use forces, otherwise energies.
-     */
-    void                  selectUpdateCandidates(bool force);
     /** Perform one update.
      *
      * @param[in] force If true, perform force update, otherwise energy update.
@@ -370,10 +365,16 @@ private:
     std::size_t                   energiesPerUpdate;
     /// Energies used per update (summed over all MPI tasks).
     std::size_t                   energiesPerUpdateGlobal;
+    /// Global number of energy errors per update.
+    std::size_t                   errorsGlobalEnergy;
     /// Forces used per update.
     std::size_t                   forcesPerUpdate;
     /// Forces used per update (summed over all MPI tasks).
     std::size_t                   forcesPerUpdateGlobal;
+    /// Global number of force errors per update.
+    std::size_t                   errorsGlobalForce;
+    /// Total number of weights.
+    std::size_t                   numWeights;
     /// Desired energy update fraction per epoch.
     double                        epochFractionEnergies;
     /// Desired force update fraction per epoch.
@@ -406,15 +407,33 @@ private:
     std::vector<UpdateCandidate>  updateCandidatesForce;
     /// Vector with pointers to selected update candidates.
     std::vector<UpdateCandidate*> currentUpdateCandidates;
+    /// Errors per task for each energy update.
+    std::vector<std::size_t>      errorsPerTaskEnergy;
+    /// Offset for combined energy error per task.
+    std::vector<std::size_t>      offsetPerTaskEnergy;
+    /// Errors/Jacobians per task for each force update.
+    std::vector<std::size_t>      errorsPerTaskForce;
+    /// Offset for combined force error per task.
+    std::vector<std::size_t>      offsetPerTaskForce;
+    /// Number of weights per updater.
+    std::vector<std::size_t>      numWeightsPerUpdater;
+    /// Offset of each element's weights in combined array.
+    std::vector<std::size_t>      weightsOffset;
     /// Neural network weights and biases for each element.
     std::vector<
     std::vector<double> >         weights;
-    /// Global error vector (per element).
+    /// Global error vector for energies (per element).
     std::vector<
-    std::vector<double> >         error;
-    /// Global Jacobian (per element).
+    std::vector<double> >         errorE;
+    /// Global error vector for forces (per element).
     std::vector<
-    std::vector<double> >         jacobian;
+    std::vector<double> >         errorF;
+    /// Global Jacobian for energies (per element).
+    std::vector<
+    std::vector<double> >         jacobianE;
+    /// Global Jacobian for forces (per element).
+    std::vector<
+    std::vector<double> >         jacobianF;
     /// Updater (Kalman filter) for each element.
     std::vector<Updater*>         updaters;
     /// Schedule for varying selection mode.

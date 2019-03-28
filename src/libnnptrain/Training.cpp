@@ -66,8 +66,11 @@ Training::Training() : Dataset(),
                        forceUpdates               (0              ),
                        energiesPerUpdate          (0              ),
                        energiesPerUpdateGlobal    (0              ),
+                       errorsGlobalEnergy         (0              ),
                        forcesPerUpdate            (0              ),
                        forcesPerUpdateGlobal      (0              ),
+                       errorsGlobalForce          (0              ),
+                       numWeights                 (0              ),
                        epochFractionEnergies      (0.0            ),
                        epochFractionForces        (0.0            ),
                        rmseEnergiesTrain          (0.0            ),
@@ -339,20 +342,22 @@ void Training::initializeWeights()
 void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
 {
     this->updateStrategy = updateStrategy;
+    numWeights= 0;
     if (updateStrategy == US_COMBINED)
     {
         log << strpr("Combined updater for all elements selected: "
                      "UpdateStrategy::US_COMBINED (%d)\n", updateStrategy);
         numUpdaters = 1;
         log << strpr("Number of weight updaters    : %zu\n", numUpdaters);
-        size_t n = 0;
         for (size_t i = 0; i < numElements; ++i)
         {
-            n += elements.at(i).neuralNetwork->getNumConnections();
+            weightsOffset.push_back(numWeights);
+            numWeights += elements.at(i).neuralNetwork->getNumConnections();
         }
         weights.resize(numUpdaters);
-        weights.at(0).resize(n, 0.0);
-        log << strpr("Total fit parameters         : %zu\n", n);
+        weights.at(0).resize(numWeights, 0.0);
+        numWeightsPerUpdater.push_back(numWeights);
+        log << strpr("Total fit parameters         : %zu\n", numWeights);
     }
     else if (updateStrategy == US_ELEMENT)
     {
@@ -365,6 +370,7 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         {
             size_t n = elements.at(i).neuralNetwork->getNumConnections();
             weights.at(i).resize(n, 0.0);
+            numWeightsPerUpdater.push_back(n);
             log << strpr("Fit parameters for element %2s: %zu\n",
                          elements.at(i).getSymbol().c_str(),
                          n);
@@ -753,6 +759,22 @@ void Training::setupTraining()
     }
     energiesPerUpdateGlobal = energiesPerUpdate;
     MPI_Allreduce(MPI_IN_PLACE, &energiesPerUpdateGlobal, 1, MPI_SIZE_T, MPI_SUM, comm);
+    errorsPerTaskEnergy.resize(numProcs, 0);
+    if (jacobianMode == JM_FULL)
+    {
+        errorsPerTaskEnergy.at(myRank) = energiesPerUpdate;
+    }
+    else
+    {
+        errorsPerTaskEnergy.at(myRank) = 1;
+    }
+    MPI_Allgather(MPI_IN_PLACE, 1, MPI_SIZE_T, &(errorsPerTaskEnergy.front()), 1, MPI_SIZE_T, comm);
+    errorsGlobalEnergy = 0;
+    for (size_t i = 0; i < errorsPerTaskEnergy.size(); ++i)
+    {
+        offsetPerTaskEnergy.push_back(errorsGlobalEnergy);
+        errorsGlobalEnergy += errorsPerTaskEnergy.at(i);
+    }
     log << strpr("Per-task batch size for energies             : %zu\n",
                  taskBatchSizeEnergy);
     log << strpr("Fraction of energies used per epoch          : %.4f\n",
@@ -784,6 +806,22 @@ void Training::setupTraining()
         }
         forcesPerUpdateGlobal = forcesPerUpdate;
         MPI_Allreduce(MPI_IN_PLACE, &forcesPerUpdateGlobal, 1, MPI_SIZE_T, MPI_SUM, comm);
+        errorsPerTaskForce.resize(numProcs, 0);
+        if (jacobianMode == JM_FULL)
+        {
+            errorsPerTaskForce.at(myRank) = forcesPerUpdate;
+        }
+        else
+        {
+            errorsPerTaskForce.at(myRank) = 1;
+        }
+        MPI_Allgather(MPI_IN_PLACE, 1, MPI_SIZE_T, &(errorsPerTaskForce.front()), 1, MPI_SIZE_T, comm);
+        errorsGlobalForce = 0;
+        for (size_t i = 0; i < errorsPerTaskForce.size(); ++i)
+        {
+            offsetPerTaskForce.push_back(errorsGlobalForce);
+            errorsGlobalForce += errorsPerTaskForce.at(i);
+        }
         log << strpr("Per-task batch size for forces               : %zu\n",
                      taskBatchSizeForce);
         log << strpr("Fraction of forces used per epoch            : %.4f\n",
@@ -806,11 +844,48 @@ void Training::setupTraining()
                      (energyUpdates * energiesPerUpdateGlobal
                      + forceUpdates * forcesPerUpdateGlobal));
     }
-
     double totalUpdates = energyUpdates + forceUpdates;
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
 
+    // Allocate error and Jacobian arrays.
+    log << "Allocating memory for energy error vector and Jacobian.\n";
+    errorE.resize(numUpdaters);
+    jacobianE.resize(numUpdaters);
+    for (size_t i = 0; i < numUpdaters; ++i)
+    {
+        size_t size = 1;
+        if (parallelMode == PM_TRAIN_ALL ||
+            (parallelMode == PM_TRAIN_RK0 && myRank == 0))
+        {
+            size *= errorsGlobalEnergy;            
+        }
+        errorE.at(i).resize(size, 0.0);
+        jacobianE.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
+        log << strpr("Updater %3zu:\n", i);
+        log << strpr(" - Error    size: %zu\n", errorE.at(i).size());
+        log << strpr(" - Jacobian size: %zu\n", jacobianE.at(i).size());
+    }
     if (useForces)
     {
+        log << "------------------------------------------------------\n";
+        log << "Allocating memory for force error vector and Jacobian.\n";
+        errorF.resize(numUpdaters);
+        jacobianF.resize(numUpdaters);
+        for (size_t i = 0; i < numUpdaters; ++i)
+        {
+            size_t size = 1;
+            if (parallelMode == PM_TRAIN_ALL ||
+                (parallelMode == PM_TRAIN_RK0 && myRank == 0))
+            {
+                size *= errorsGlobalForce;            
+            }
+            errorF.at(i).resize(size, 0.0);
+            jacobianF.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
+            log << strpr("Updater %3zu:\n", i);
+            log << strpr(" - Error    size: %zu\n", errorF.at(i).size());
+            log << strpr(" - Jacobian size: %zu\n", jacobianF.at(i).size());
+        }
     }
     log << "-----------------------------------------"
            "--------------------------------------\n";
@@ -1586,6 +1661,7 @@ void Training::sortUpdateCandidates()
     {
         Structure const& s = structures.at(it->s);
         it->error = fabs((s.energyRef - s.energy) / s.numAtoms);
+        log << strpr("%zu %f\n", s.index, it->error);
     }
     // Sort energy update candidates list.
     sort(updateCandidatesEnergy.begin(), updateCandidatesEnergy.end());
@@ -1782,20 +1858,6 @@ void Training::loop()
         for (size_t i = 0; i < epochSchedule.size(); ++i)
         {
             bool force = static_cast<bool>(epochSchedule.at(i));
-            log << strpr("%zu %s", i, force ? "F" : "E");
-            if (force)
-            {
-                UpdateCandidate& uc
-                    = updateCandidatesForce.at(posUpdateCandidatesForce);
-                log << strpr(" %zu %zu %zu %zu\n",
-                             posUpdateCandidatesForce, uc.s, uc.a, uc.c);
-            }
-            else {
-                UpdateCandidate& uc
-                    = updateCandidatesEnergy.at(posUpdateCandidatesEnergy);
-                log << strpr(" %zu %zu\n",
-                             posUpdateCandidatesEnergy, uc.s);
-            }
             update(force);
             if (force) numUpdatesForce++;
             else       numUpdatesEnergy++;
@@ -1845,401 +1907,327 @@ void Training::loop()
     return;
 }
 
-void Training::selectUpdateCandidates(bool force)
-{
-//    // Resize update candidate memory vector.
-//    if (force) currentUpdateCandidates.resize(forcesPerUpdate, NULL);
-//    else       currentUpdateCandidates.resize(energiesPerUpdate, NULL);
-//
-//    for (size_t b = 0; b < currentUpdateCandidates.size(); ++b)
-//    {
-//        UpdateCandidate* cuc = NULL; // Actual current update candidate.
-//        size_t indexBest = 0; // Index of best update candidate so far.
-//        double rmseFractionBest = 0.0; // RMSE of best update candidate so far.
-//
-//        // For SM_THRESHOLD need to loop until candidate's RMSE is above
-//        // threshold. Other modes don't loop here.
-//        size_t trials = 1;
-//        if (selectionMode == SM_THRESHOLD) trials = rmseThresholdTrials;
-//        size_t il = 0;
-//        for (il = 0; il < trials; ++il)
-//        {
-//            // Choose an energy or force component for the update.
-//            if (selectionMode == SM_RANDOM ||
-//                selectionMode == SM_THRESHOLD)
-//            {
-//                currentUpdateCandidates.at(b) =
-//                    gsl_rng_uniform_int(rng, ucl->size());
-//            }
-//            else if (selectionMode == SM_SORT)
-//            {
-//                // Reiterate list if there are more updates than candidates.
-//                currentUpdateCandidates.at(b) =
-//                    posUpdateCandidatesForce % ucl->size();
-//                if (force) posUpdateCandidatesForce++;
-//                else       posUpdateCandidatesEnergy++;
-//            }
-//            // Now set actual current update candidate.
-//            cuc = &(ucl->at(currentUpdateCandidates.at(b)));
-//            // Shortcut for current structure.
-//            Structure& s = structures.at(cuc->s);
-//            // Calculate symmetry functions (if results are already stored
-//            // these functions will return immediately).
-//#ifdef NOSFGROUPS
-//            calculateSymmetryFunctions(s, force);
-//#else
-//            calculateSymmetryFunctionGroups(s, force);
-//#endif
-//            // For SM_THRESHOLD calculate RMSE of update candidate.
-//            if (selectionMode == SM_THRESHOLD)
-//            {
-//                calculateAtomicNeuralNetworks(s, force);
-//                if (force)
-//                {
-//                    calculateForces(s);
-//                    Atom const& a = s.atoms.at(cuc->a);
-//                    currentRmseFraction.at(b)
-//                        = fabs(a.fRef[cuc->c] - a.f[cuc->c]) / rmseForcesTrain;
-//                    // If force RMSE is above threshold stop loop immediately.
-//                    if (currentRmseFraction.at(b) > rmseThresholdForce) break;
-//                }
-//                else
-//                {
-//                    calculateEnergy(s);
-//                    currentRmseFraction.at(b)
-//                        = fabs(s.energyRef - s.energy)
-//                        / (s.numAtoms * rmseEnergiesTrain);
-//                    // If energy RMSE is above threshold stop loop immediately.
-//                    if (currentRmseFraction.at(b) > rmseThresholdEnergy) break;
-//                }
-//                // If loop continues, free memory and remember best candidate
-//                // so far.
-//                if (freeMemory)
-//                {
-//                    s.freeAtoms(true);
-//                }
-//                if (currentRmseFraction.at(b) > rmseFractionBest)
-//                {
-//                    rmseFractionBest = currentRmseFraction.at(b);
-//                    indexBest = currentUpdateCandidates.at(b);
-//                }
-//            }
-//            if (selectionMode == SM_RANDOM || selectionMode == SM_SORT) break;
-//        }
-//
-//        // If loop was not stopped because of a proper update candidate found
-//        // (RMSE above threshold) use best candidate during iteration.
-//        if (selectionMode == SM_THRESHOLD && il == trials)
-//        {
-//            currentUpdateCandidates.at(b) = indexBest;
-//            currentRmseFraction.at(b) = rmseFractionBest;
-//            // Need to calculate the symmetry functions again, maybe results
-//            // were not stored.
-//            Structure& s = structures.at(cuc->s);
-//#ifdef NOSFGROUPS
-//            calculateSymmetryFunctions(s, force);
-//#else
-//            calculateSymmetryFunctionGroups(s, force);
-//#endif
-//        }
-//
-//
-//    }
-
-    return;
-}
-
 void Training::update(bool force)
 {
-    if (force) posUpdateCandidatesForce++;
-    else posUpdateCandidatesEnergy++;
-//    // Set correct update candidate list.
-//    vector<UpdateCandidate>* ucl = NULL;
-//    if (force) ucl = &updateCandidatesForce;
-//    else       ucl = &updateCandidatesEnergy;
-//
-//    // Loop over task batch size.
-//    for (size_t b = 0; b < taskBatchSizeEnergy; ++b)
-//    {
-//        ///////////////////////////////////////////////////////////////////////
-//        // PART 1: Select update candidate
-//        ///////////////////////////////////////////////////////////////////////
-// 
-//        UpdateCandidate* cuc = NULL; // Actual current update candidate.
-//        size_t indexBest = 0; // Index of best update candidate so far.
-//        double rmseFractionBest = 0.0; // RMSE of best update candidate so far.
-//
-//        // For SM_THRESHOLD need to loop until candidate's RMSE is above
-//        // threshold. Other modes don't loop here.
-//        size_t trials = 1;
-//        if (selectionMode == SM_THRESHOLD) trials = rmseThresholdTrials;
-//        size_t il = 0;
-//        for (il = 0; il < trials; ++il)
-//        {
-//            // Chose an energy or force component for the update.
-//            if (selectionMode == SM_RANDOM ||
-//                selectionMode == SM_THRESHOLD)
-//            {
-//                currentUpdateCandidates.at(b) =
-//                    gsl_rng_uniform_int(rng, ucl->size());
-//            }
-//            else if (selectionMode == SM_SORT)
-//            {
-//                // Reiterate list if there are more updates than candidates.
-//                currentUpdateCandidates.at(b) =
-//                    posUpdateCandidatesForce % ucl->size();
-//                if (force) posUpdateCandidatesForce++;
-//                else       posUpdateCandidatesEnergy++;
-//            }
-//            // Now set actual current update candidate.
-//            cuc = &(ucl->at(currentUpdateCandidates.at(b)));
-//            // Shortcut for current structure.
-//            Structure& s = structures.at(cuc->s);
-//            // Calculate symmetry functions (if results are already stored
-//            // these functions will return immediately).
-//#ifdef NOSFGROUPS
-//            calculateSymmetryFunctions(s, force);
-//#else
-//            calculateSymmetryFunctionGroups(s, force);
-//#endif
-//            // For SM_THRESHOLD calculate RMSE of update candidate.
-//            if (selectionMode == SM_THRESHOLD)
-//            {
-//                calculateAtomicNeuralNetworks(s, force);
-//                if (force)
-//                {
-//                    calculateForces(s);
-//                    Atom const& a = s.atoms.at(cuc->a);
-//                    currentRmseFraction.at(b)
-//                        = fabs(a.fRef[cuc->c] - a.f[cuc->c]) / rmseForcesTrain;
-//                    // If force RMSE is above threshold stop loop immediately.
-//                    if (currentRmseFraction.at(b) > rmseThresholdForce) break;
-//                }
-//                else
-//                {
-//                    calculateEnergy(s);
-//                    currentRmseFraction.at(b)
-//                        = fabs(s.energyRef - s.energy)
-//                        / (s.numAtoms * rmseEnergiesTrain);
-//                    // If energy RMSE is above threshold stop loop immediately.
-//                    if (currentRmseFraction.at(b) > rmseThresholdEnergy) break;
-//                }
-//                // If loop continues, free memory and remember best candidate
-//                // so far.
-//                if (freeMemory)
-//                {
-//                    s.freeAtoms(true);
-//                }
-//                if (currentRmseFraction.at(b) > rmseFractionBest)
-//                {
-//                    rmseFractionBest = currentRmseFraction.at(b);
-//                    indexBest = currentUpdateCandidates.at(b);
-//                }
-//            }
-//            if (selectionMode == SM_RANDOM || selectionMode == SM_SORT) break;
-//        }
-//
-//        // If loop was not stopped because of a proper update candidate found
-//        // (RMSE above threshold) use best candidate during iteration.
-//        if (selectionMode == SM_THRESHOLD && il == trials)
-//        {
-//            currentUpdateCandidates.at(b) = indexBest;
-//            currentRmseFraction.at(b) = rmseFractionBest;
-//            // Need to calculate the symmetry functions again, maybe results
-//            // were not stored.
-//            Structure& s = structures.at(cuc->s);
-//#ifdef NOSFGROUPS
-//            calculateSymmetryFunctions(s, force);
-//#else
-//            calculateSymmetryFunctionGroups(s, force);
-//#endif
-//        }
+    ///////////////////////////////////////////////////////////////////////
+    // PART 1: Calculate errors and derivatives
+    ///////////////////////////////////////////////////////////////////////
+
+    // Set local variables depending on energy/force update.
+    size_t batchSize = 0;
+    size_t* posUpdateCandidates = NULL;
+    vector<UpdateCandidate>* updateCandidates = NULL;
+    if (force)
+    {
+        batchSize = taskBatchSizeForce;
+        posUpdateCandidates = &posUpdateCandidatesForce;
+        updateCandidates = &updateCandidatesForce;
+    }
+    else
+    {
+        batchSize = taskBatchSizeEnergy;
+        posUpdateCandidates = &posUpdateCandidatesEnergy;
+        updateCandidates = &updateCandidatesEnergy;
+    }
+    currentRmseFraction.clear();
+    currentRmseFraction.resize(batchSize, 0.0);
+    currentUpdateCandidates.clear();
+    currentUpdateCandidates.resize(batchSize, 0);
+
+    // Loop over (mini-)batch size.
+    for (size_t b = 0; b < batchSize; ++b)
+    {
+        UpdateCandidate* c = NULL; // Actual current update candidate.
+        size_t indexBest = 0; // Index of best update candidate so far.
+        double rmseFractionBest = 0.0; // RMSE of best update candidate so far.
+
+        // For SM_THRESHOLD need to loop until candidate's RMSE is above
+        // threshold. Other modes don't loop here.
+        size_t trials = 1;
+        if (selectionMode == SM_THRESHOLD) trials = rmseThresholdTrials;
+        size_t il = 0;
+        for (il = 0; il < trials; ++il)
+        {
+            // Set current update candidate.
+            c = &(updateCandidates->at(*posUpdateCandidates));
+            // Keep update candidates (for logging later).
+            currentUpdateCandidates.at(b) = c;
+            // Shortcut for current structure.
+            Structure& s = structures.at(c->s);
+            // Calculate symmetry functions (if results are already stored
+            // these functions will return immediately).
+#ifdef NOSFGROUPS
+            calculateSymmetryFunctions(s, force);
+#else
+            calculateSymmetryFunctionGroups(s, force);
+#endif
+            // For SM_THRESHOLD calculate RMSE of update candidate.
+            if (selectionMode == SM_THRESHOLD)
+            {
+                calculateAtomicNeuralNetworks(s, force);
+                if (force)
+                {
+                    calculateForces(s);
+                    Atom const& a = s.atoms.at(c->a);
+                    currentRmseFraction.at(b)
+                        = fabs(a.fRef[c->c] - a.f[c->c]) / rmseForcesTrain;
+                    // If force RMSE is above threshold stop loop immediately.
+                    if (currentRmseFraction.at(b) > rmseThresholdForce)
+                    {
+                        // Increment position in update candidate list.
+                        (*posUpdateCandidates)++;
+                        break;
+                    }
+                }
+                else
+                {
+                    calculateEnergy(s);
+                    currentRmseFraction.at(b)
+                        = fabs(s.energyRef - s.energy)
+                        / (s.numAtoms * rmseEnergiesTrain);
+                    // If energy RMSE is above threshold stop loop immediately.
+                    if (currentRmseFraction.at(b) > rmseThresholdEnergy)
+                    {
+                        // Increment position in update candidate list.
+                        (*posUpdateCandidates)++;
+                        break;
+                    }
+                }
+                // If loop continues, free memory and remember best candidate
+                // so far.
+                if (freeMemory)
+                {
+                    s.freeAtoms(true);
+                }
+                if (currentRmseFraction.at(b) > rmseFractionBest)
+                {
+                    rmseFractionBest = currentRmseFraction.at(b);
+                    indexBest = *posUpdateCandidates;
+                }
+                // Increment position in update candidate list.
+                (*posUpdateCandidates)++;
+            }
+            // Break loop for all selection modes but SM_THRESHOLD.
+            else if (selectionMode == SM_RANDOM || selectionMode == SM_SORT)
+            {
+                // Increment position in update candidate list.
+                (*posUpdateCandidates)++;
+                break;
+            }
+        }
+
+        // If loop was not stopped because of a proper update candidate found
+        // (RMSE above threshold) use best candidate during iteration.
+        if (selectionMode == SM_THRESHOLD && il == trials)
+        {
+            // Set best candidate.
+            currentUpdateCandidates.at(b) = &(updateCandidates->at(indexBest));
+            currentRmseFraction.at(b) = rmseFractionBest;
+            // Need to calculate the symmetry functions again, maybe results
+            // were not stored.
+            Structure& s = structures.at(c->s);
+#ifdef NOSFGROUPS
+            calculateSymmetryFunctions(s, force);
+#else
+            calculateSymmetryFunctionGroups(s, force);
+#endif
+        }
 
         ///////////////////////////////////////////////////////////////////////
         // PART 2: Compute error vector and Jacobian
         ///////////////////////////////////////////////////////////////////////
  
-//        Structure& s = structures.at(cuc->s);
-//        // Temporary storage for derivative contributions of atoms (dXdc stores
-//        // dEdc or dFdc for energy or force update, respectively.
-//        vector<vector<double> > dXdc;
-//        dXdc.resize(numElements);
-//        for (size_t i = 0; i < numElements; ++i)
-//        {
-//            size_t n = elements.at(i).neuralNetwork->getNumConnections();
-//            dXdc.at(i).resize(n, 0.0);
-//        }
-//        // Loop over atoms and calculate atomic energy contributions.
-//        for (vector<Atom>::iterator it = s.atoms.begin();
-//             it != s.atoms.end(); ++it)
-//        {
-//            // For force update save derivative of symmetry function with
-//            // respect to coordinate.
-//            if (force) it->collectDGdxia(cuc->a, cuc->c);
-//            size_t i = it->element;
-//            NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
-//            nn->setInput(&((it->G).front()));
-//            nn->propagate();
-//            if (force) nn->calculateDEdG(&((it->dEdG).front()));
-//            nn->getOutput(&(it->energy));
-//            // Compute derivative of output node with respect to all neural
-//            // network connections (weights + biases).
-//            if (force)
-//            {
-//                nn->calculateDFdc(&(dXdc.at(i).front()),
-//                                  &(it->dGdxia.front()));
-//            }
-//            else
-//            {
-//                nn->calculateDEdc(&(dXdc.at(i).front()));
-//            }
-//            // Update derivative vector (depends on update strategy).
-//            // For multi-streaming calculate additional offset in H array.
-//            if (updateStrategy == US_COMBINED)
-//            {
-//                size_t os = myStream * weights.at(0).size() + start.at(i);
-//                for (size_t j = 0; j < dXdc.at(i).size(); ++j)
-//                {
-//                    H.at(0).at(os + j) += dXdc.at(i).at(j);
-//                }
-//            }
-//            else if (updateStrategy == US_ELEMENT)
-//            {
-//                size_t os = myStream * nn->getNumConnections();
-//                for (size_t j = 0; j < dXdc.at(i).size(); ++j)
-//                {
-//                    H.at(i).at(os + j) += dXdc.at(i).at(j);
-//                }
-//            }
-//        }
-//        // Apply force update weight to derivatives and copy local h vector.
-//        if (force || (parallelMode == PM_MSEKFNB))
-//        {
-//            for (size_t i = 0; i < numUpdaters; ++i)
-//            {
-//                size_t os = myStream * weights.at(i).size();
-//                for (size_t j = 0; j < weights.at(i).size(); ++j)
-//                {
-//                    if (force) H.at(i).at(os + j) *= forceWeight;
-//                    if (parallelMode == PM_MSEKFNB)
-//                    {
-//                        h.at(i).at(j) = H.at(i).at(os + j);
-//                    }
-//                }
-//            }
-//        }
-//        // Start communicating H matrix already here!
-//        if (parallelMode == PM_MSEKFNB)
-//        {
-//            requestsH = new MPI_Request[numUpdaters];
-//            for (size_t i = 0; i < numUpdaters; ++i)
-//            {
-//                size_t n = weights.at(i).size();
-//                MPI_Iallgather(MPI_IN_PLACE, n, MPI_DOUBLE, &(H.at(i).front()), n, MPI_DOUBLE, comm, &(requestsH[i]));
-//            }
-//        }
-//        else if (parallelMode == PM_MSEKFR0PX)
-//        {
-//            if (myRank == 0)
-//            {
-//                // Set current location of H storage.
-//                vector<KalmanFilter*> kf;
-//                for (size_t i = 0; i < numUpdaters; ++i)
-//                {
-//                    kf.push_back(dynamic_cast<KalmanFilter*>(updaters.at(i)));
-//                    kf.at(i)->setDerivativeMatrix(&(H.at(i).front()));
-//                    kf.at(i)->calculatePartialX(0);
-//                }
-//                // Receive parts of H from individual streams.
-//                size_t stream;
-//                for (size_t p = 1; p < numProcs; ++p)
-//                {
-//                    // Check which stream calls.
-//                    MPI_Recv(&stream, 1, MPI_SIZE_T, MPI_ANY_SOURCE, 0, comm, MPI_STATUS_IGNORE);
-//                    for (size_t i = 0; i < numUpdaters; ++i)
-//                    {
-//                        // Receive partial H (one column).
-//                        size_t n = weights.at(i).size();
-//                        MPI_Recv(&(H.at(i).at(stream * n)), n, MPI_DOUBLE, stream, 0, comm, MPI_STATUS_IGNORE);
-//                        // Calculate partial temporary result (X = P * H).
-//                        kf.at(i)->calculatePartialX(stream);
-//                    }
-//                }
-//            }
-//            else
-//            {
-//                requestsH = new MPI_Request[numUpdaters + 1];
-//                MPI_Isend(&myStream, 1, MPI_SIZE_T, 0, 0, comm, &(requestsH[numUpdaters]));
-//                for (size_t i = 0; i < numUpdaters; ++i)
-//                {
-//                    size_t n = weights.at(i).size();
-//                    MPI_Isend(&(H.at(i).at(myStream * n)), n, MPI_DOUBLE, 0, 0, comm, &(requestsH[i]));
-//                }
-//            }
-//        }
-//        // Sum up total potential energy or calculate force.
-//        if (force)
-//        {
-//            calculateForces(s);
-//            Atom const& a = s.atoms.at(ia);
-//            rmseFraction = fabs(a.fRef[ic] - a.f[ic]) / rmseForcesTrain;
-//        }
-//        else
-//        {
-//            calculateEnergy(s);
-//            rmseFraction = fabs(s.energyRef - s.energy)
-//                         / (s.numAtoms * rmseEnergiesTrain);
-//        }
-//
-//        // Now symmetry function memory is not required any more for this
-//        // update.
-//        if (freeMemory) s.freeAtoms(true);
-//
-//        // Compute error vector (depends on update strategy).
-//        if (updateStrategy == US_COMBINED)
-//        {
-//            if (force)
-//            {
-//                Atom const& a = s.atoms.at(ia);
-//                xi.at(0).at(myStream) =  a.fRef[ic] - a.f[ic];
-//            }
-//            else
-//            {
-//                xi.at(0).at(myStream) = s.energyRef - s.energy;
-//            }
-//        }
-//        else if (updateStrategy == US_ELEMENT)
-//        {
-//            for (size_t i = 0; i < numUpdaters; ++i)
-//            {
-//                if (force)
-//                {
-//                    Atom const& a = s.atoms.at(ia);
-//                    xi.at(i).at(myStream) = (a.fRef[ic] - a.f[ic])
-//                                          * a.numNeighborsPerElement.at(i)
-//                                          / a.numNeighbors;
-//                }
-//                else
-//                {
-//                    xi.at(i).at(myStream) = (s.energyRef - s.energy)
-//                                          * s.numAtomsPerElement.at(i)
-//                                          / s.numAtoms;
-//                }
-//            }
-//        }
-//        // Apply force update weight to error.
-//        if (force)
-//        {
-//            for (size_t i = 0; i < xi.size(); ++i)
-//            {
-//                for (size_t j = 0; j < xi.at(i).size(); ++j)
-//                {
-//                    xi.at(i).at(j) *= forceWeight;
-//                }
-//            }
-//        }
-//    }
-//    }
+        log << strpr("%zu %s", b, force ? "F" : "E");
+        if (force)
+        {
+            log << strpr(" %zu %zu %zu %zu %f\n",
+                         posUpdateCandidatesForce, c->s, c->a, c->c, rmseFractionBest);
+        }
+        else {
+            log << strpr(" %zu %zu %f\n",
+                         posUpdateCandidatesEnergy, c->s, rmseFractionBest);
+        }
+ 
+        Structure& s = structures.at(c->s);
+        // Temporary storage for derivative contributions of atoms (dXdc stores
+        // dEdc or dFdc for energy or force update, respectively.
+        vector<vector<double> > dXdc;
+        dXdc.resize(numElements);
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            size_t n = elements.at(i).neuralNetwork->getNumConnections();
+            dXdc.at(i).resize(n, 0.0);
+        }
+        // Loop over atoms and calculate atomic energy contributions.
+        for (vector<Atom>::iterator it = s.atoms.begin();
+             it != s.atoms.end(); ++it)
+        {
+            // For force update save derivative of symmetry function with
+            // respect to coordinate.
+            if (force) it->collectDGdxia(c->a, c->c);
+            size_t i = it->element;
+            NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
+            nn->setInput(&((it->G).front()));
+            nn->propagate();
+            if (force) nn->calculateDEdG(&((it->dEdG).front()));
+            nn->getOutput(&(it->energy));
+            // Compute derivative of output node with respect to all neural
+            // network connections (weights + biases).
+            if (force)
+            {
+                nn->calculateDFdc(&(dXdc.at(i).front()),
+                                  &(it->dGdxia.front()));
+            }
+            else
+            {
+                nn->calculateDEdc(&(dXdc.at(i).front()));
+            }
+            //// Update derivative vector (depends on update strategy).
+            //// For multi-streaming calculate additional offset in H array.
+            //if (updateStrategy == US_COMBINED)
+            //{
+            //    size_t os = myStream * weights.at(0).size() + start.at(i);
+            //    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+            //    {
+            //        H.at(0).at(os + j) += dXdc.at(i).at(j);
+            //    }
+            //}
+            //else if (updateStrategy == US_ELEMENT)
+            //{
+            //    size_t os = myStream * nn->getNumConnections();
+            //    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+            //    {
+            //        H.at(i).at(os + j) += dXdc.at(i).at(j);
+            //    }
+            //}
+        }
+        //// Apply force update weight to derivatives and copy local h vector.
+        //if (force || (parallelMode == PM_MSEKFNB))
+        //{
+        //    for (size_t i = 0; i < numUpdaters; ++i)
+        //    {
+        //        size_t os = myStream * weights.at(i).size();
+        //        for (size_t j = 0; j < weights.at(i).size(); ++j)
+        //        {
+        //            if (force) H.at(i).at(os + j) *= forceWeight;
+        //            if (parallelMode == PM_MSEKFNB)
+        //            {
+        //                h.at(i).at(j) = H.at(i).at(os + j);
+        //            }
+        //        }
+        //    }
+        //}
+        //// Start communicating H matrix already here!
+        //if (parallelMode == PM_MSEKFNB)
+        //{
+        //    requestsH = new MPI_Request[numUpdaters];
+        //    for (size_t i = 0; i < numUpdaters; ++i)
+        //    {
+        //        size_t n = weights.at(i).size();
+        //        MPI_Iallgather(MPI_IN_PLACE, n, MPI_DOUBLE, &(H.at(i).front()), n, MPI_DOUBLE, comm, &(requestsH[i]));
+        //    }
+        //}
+        //else if (parallelMode == PM_MSEKFR0PX)
+        //{
+        //    if (myRank == 0)
+        //    {
+        //        // Set current location of H storage.
+        //        vector<KalmanFilter*> kf;
+        //        for (size_t i = 0; i < numUpdaters; ++i)
+        //        {
+        //            kf.push_back(dynamic_cast<KalmanFilter*>(updaters.at(i)));
+        //            kf.at(i)->setDerivativeMatrix(&(H.at(i).front()));
+        //            kf.at(i)->calculatePartialX(0);
+        //        }
+        //        // Receive parts of H from individual streams.
+        //        size_t stream;
+        //        for (size_t p = 1; p < numProcs; ++p)
+        //        {
+        //            // Check which stream calls.
+        //            MPI_Recv(&stream, 1, MPI_SIZE_T, MPI_ANY_SOURCE, 0, comm, MPI_STATUS_IGNORE);
+        //            for (size_t i = 0; i < numUpdaters; ++i)
+        //            {
+        //                // Receive partial H (one column).
+        //                size_t n = weights.at(i).size();
+        //                MPI_Recv(&(H.at(i).at(stream * n)), n, MPI_DOUBLE, stream, 0, comm, MPI_STATUS_IGNORE);
+        //                // Calculate partial temporary result (X = P * H).
+        //                kf.at(i)->calculatePartialX(stream);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        requestsH = new MPI_Request[numUpdaters + 1];
+        //        MPI_Isend(&myStream, 1, MPI_SIZE_T, 0, 0, comm, &(requestsH[numUpdaters]));
+        //        for (size_t i = 0; i < numUpdaters; ++i)
+        //        {
+        //            size_t n = weights.at(i).size();
+        //            MPI_Isend(&(H.at(i).at(myStream * n)), n, MPI_DOUBLE, 0, 0, comm, &(requestsH[i]));
+        //        }
+        //    }
+        //}
+        //// Sum up total potential energy or calculate force.
+        //if (force)
+        //{
+        //    calculateForces(s);
+        //    Atom const& a = s.atoms.at(ia);
+        //    rmseFraction = fabs(a.fRef[ic] - a.f[ic]) / rmseForcesTrain;
+        //}
+        //else
+        //{
+        //    calculateEnergy(s);
+        //    rmseFraction = fabs(s.energyRef - s.energy)
+        //                 / (s.numAtoms * rmseEnergiesTrain);
+        //}
+
+        //// Now symmetry function memory is not required any more for this
+        //// update.
+        //if (freeMemory) s.freeAtoms(true);
+
+        //// Compute error vector (depends on update strategy).
+        //if (updateStrategy == US_COMBINED)
+        //{
+        //    if (force)
+        //    {
+        //        Atom const& a = s.atoms.at(ia);
+        //        xi.at(0).at(myStream) =  a.fRef[ic] - a.f[ic];
+        //    }
+        //    else
+        //    {
+        //        xi.at(0).at(myStream) = s.energyRef - s.energy;
+        //    }
+        //}
+        //else if (updateStrategy == US_ELEMENT)
+        //{
+        //    for (size_t i = 0; i < numUpdaters; ++i)
+        //    {
+        //        if (force)
+        //        {
+        //            Atom const& a = s.atoms.at(ia);
+        //            xi.at(i).at(myStream) = (a.fRef[ic] - a.f[ic])
+        //                                  * a.numNeighborsPerElement.at(i)
+        //                                  / a.numNeighbors;
+        //        }
+        //        else
+        //        {
+        //            xi.at(i).at(myStream) = (s.energyRef - s.energy)
+        //                                  * s.numAtomsPerElement.at(i)
+        //                                  / s.numAtoms;
+        //        }
+        //    }
+        //}
+        //// Apply force update weight to error.
+        //if (force)
+        //{
+        //    for (size_t i = 0; i < xi.size(); ++i)
+        //    {
+        //        for (size_t j = 0; j < xi.at(i).size(); ++j)
+        //        {
+        //            xi.at(i).at(j) *= forceWeight;
+        //        }
+        //    }
+        //}
+    }
 
     return;
 }
