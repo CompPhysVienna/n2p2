@@ -422,19 +422,19 @@ private:
     /// Neural network weights and biases for each element.
     std::vector<
     std::vector<double> >         weights;
-    /// Global error vector for energies (per element).
+    /// Global error vector for energies (per updater).
     std::vector<
     std::vector<double> >         errorE;
-    /// Global error vector for forces (per element).
+    /// Global error vector for forces (per updater).
     std::vector<
     std::vector<double> >         errorF;
-    /// Global Jacobian for energies (per element).
+    /// Global Jacobian for energies (per updater).
     std::vector<
     std::vector<double> >         jacobianE;
-    /// Global Jacobian for forces (per element).
+    /// Global Jacobian for forces (per updater).
     std::vector<
     std::vector<double> >         jacobianF;
-    /// Updater (Kalman filter) for each element.
+    /// Weight updater (combined or for each element).
     std::vector<Updater*>         updaters;
     /// Schedule for varying selection mode.
     std::map<std::size_t,

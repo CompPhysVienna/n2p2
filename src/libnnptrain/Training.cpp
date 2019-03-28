@@ -855,10 +855,16 @@ void Training::setupTraining()
     for (size_t i = 0; i < numUpdaters; ++i)
     {
         size_t size = 1;
-        if (parallelMode == PM_TRAIN_ALL ||
-            (parallelMode == PM_TRAIN_RK0 && myRank == 0))
+        if (( parallelMode == PM_TRAIN_ALL ||
+              (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
+            jacobianMode != JM_SUM)
         {
             size *= errorsGlobalEnergy;            
+        }
+        else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
+                 jacobianMode != JM_SUM)
+        {
+            size *= errorsPerTaskEnergy.at(myRank);            
         }
         errorE.at(i).resize(size, 0.0);
         jacobianE.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
@@ -875,10 +881,16 @@ void Training::setupTraining()
         for (size_t i = 0; i < numUpdaters; ++i)
         {
             size_t size = 1;
-            if (parallelMode == PM_TRAIN_ALL ||
-                (parallelMode == PM_TRAIN_RK0 && myRank == 0))
+            if ((parallelMode == PM_TRAIN_ALL ||
+                 (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
+                jacobianMode != JM_SUM)
             {
                 size *= errorsGlobalForce;            
+            }
+            else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
+                     jacobianMode != JM_SUM)
+            {
+                size *= errorsPerTaskForce.at(myRank);            
             }
             errorF.at(i).resize(size, 0.0);
             jacobianF.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
@@ -890,83 +902,11 @@ void Training::setupTraining()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
+    // Set up new C++11 random number generator (TODO: move it!).
     rngGlobalNew.seed(gsl_rng_get(rngGlobal));
     rngNew.seed(gsl_rng_get(rng));
 
-    //log << strpr("Projected energy updates per epoch : %7.0f (%5.1f%%)\n",
-    //             projectedEnergyUpdates,
-    //             100.0 * projectedEnergyUpdates / totalUpdates);
-    //if (useForces)
-    //{
-    //    log << strpr("Projected forces updates per epoch : %7.0f (%5.1f%%)\n",
-    //                 projectedForceUpdates,
-    //                 100.0 * projectedForceUpdates / totalUpdates);
-    //    log << strpr("Total projected updates per epoch  : %7.0f\n",
-    //                 totalUpdates);
-    //}
-    //if ((parallelMode == PM_DATASET || numProcs == 1) && taskBatchSize == 1)
-    //{
-    //    log << "Each weight update is based on single energies/forces "
-    //           "(stochastic weight update).\n";
-    //}
-    //else
-    //{
-    //    log << strpr("Each weight update is based on a combination of %zu "
-    //                 "energies/forces.\n", numProcs * taskBatchSize);
-    //}
-
-    //if (taskBatchSize > 0)
-    //{
-    //    log << strpr("Per task batch size for each weight update: %zu\n",
-    //                 taskBatchSize);
-
-    //    // Prepare update candidate list.
-    //    currentRmseFraction.resize(taskBatchSize);
-    //    currentUpdateCandidates.resize(taskBatchSize);
-
-    //    // Allocate memory for error vector and Jacobian.
-    //    error.resize(numUpdaters);
-    //    jacobian.resize(numUpdaters);
-    //    for (size_t i = 0; i < numUpdaters; ++i)
-    //    {
-    //        // Factor from different parallel modes.
-    //        size_t taskMultiplier = 1;
-    //        if (parallelMode == PM_TRAIN_ALL) taskMultiplier = numProcs;
-
-    //        // Factor from per-task batch size.
-    //        size_t batchMultiplier = 1;
-    //        if (jacobianMode == JM_FULL) batchMultiplier = taskBatchSize;
-
-    //        // Factor from weight vector size.
-    //        size_t weightsMultiplier = 0;
-    //        if (updateStrategy == US_COMBINED)
-    //        {
-    //            for (size_t j = 0; j < numElements; ++j)
-    //            {
-    //                weightsMultiplier +=
-    //                    elements.at(j).neuralNetwork->getNumConnections();
-    //            }
-    //        }
-    //        else if (updateStrategy == US_ELEMENT)
-    //        {
-    //            weightsMultiplier =
-    //                elements.at(i).neuralNetwork->getNumConnections();
-    //        }
-    //        error.at(i).resize(taskMultiplier * batchMultiplier, 0.0);
-    //        jacobian.at(i).resize(taskMultiplier *
-    //                              batchMultiplier *
-    //                              weightsMultiplier, 0.0);
-    //        log << strpr("Size of arrays for updater %3zu:\n", i);
-    //        log << strpr("- Error vector : %zu\n", error.at(i).size());
-    //        log << strpr("- Jacobian     : %zu\n", jacobian.at(i).size());
-    //    }
-    //}
-    //else
-    //{
-    //    log << "Task batch combines all scheduled training information "
-    //           "for one epoch.\n";
-    //}
-
+    // Updater setup.
     GradientDescent::DescentType descentType = GradientDescent::DT_FIXED;
     if (updaterType == UT_GD)
     {
@@ -982,30 +922,19 @@ void Training::setupTraining()
 
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        size_t sizeState = 0;
-        if (updateStrategy == US_COMBINED)
-        {
-            for (size_t j = 0; j < numElements; ++j)
-            {
-                sizeState += elements.at(j).neuralNetwork->getNumConnections();
-            }
-        }
-        else if (updateStrategy == US_ELEMENT)
-        {
-            sizeState = elements.at(i).neuralNetwork->getNumConnections();
-        }
-
         if ( (myRank == 0) || (parallelMode == PM_TRAIN_ALL) )
         {
             if (updaterType == UT_GD)
             {
-                updaters.push_back((Updater*)new GradientDescent(sizeState,
-                                                                 descentType));
+                updaters.push_back(
+                    (Updater*)new GradientDescent(numWeightsPerUpdater.at(i),
+                                                  descentType));
             }
             else if (updaterType == UT_KF)
             {
-                updaters.push_back((Updater*)new KalmanFilter(sizeState,
-                                                              kalmanType));
+                updaters.push_back(
+                    (Updater*)new KalmanFilter(numWeightsPerUpdater.at(i),
+                                               kalmanType));
             }
             updaters.back()->setState(&(weights.at(i).front()));
         }
@@ -1013,7 +942,7 @@ void Training::setupTraining()
     if (updaters.size() > 0) hasUpdaters = true;
     else hasUpdaters = false;
 
-    if (updaterType == UT_GD)
+    if (hasUpdaters && updaterType == UT_GD)
     {
         if (descentType == GradientDescent::DT_FIXED)
         {
@@ -1039,7 +968,7 @@ void Training::setupTraining()
             }
         }
     }
-    else if (hasUpdaters && (updaterType == UT_KF))
+    else if (hasUpdaters && updaterType == UT_KF)
     {
         if (kalmanType == KalmanFilter::KT_STANDARD)
         {
@@ -1814,7 +1743,7 @@ void Training::loop()
     if (myRank == 0) writeLearningCurve(false);
 
     // Write updater status to file.
-    if (myRank == 0) writeUpdaterStatus(false);
+    //if (myRank == 0) writeUpdaterStatus(false);
 
     // Write neuron statistics.
     writeNeuronStatisticsEpoch();
@@ -1886,7 +1815,7 @@ void Training::loop()
         if (myRank == 0) writeLearningCurve(true);
 
         // Write updater status to file.
-        if (myRank == 0) writeUpdaterStatus(true);
+        //if (myRank == 0) writeUpdaterStatus(true);
 
         // Write neuron statistics.
         writeNeuronStatisticsEpoch();
@@ -1916,17 +1845,26 @@ void Training::update(bool force)
     // Set local variables depending on energy/force update.
     size_t batchSize = 0;
     size_t* posUpdateCandidates = NULL;
+    vector<size_t>* offsetPerTask = NULL;
+    vector<vector<double> >* error = NULL;
+    vector<vector<double> >* jacobian = NULL;
     vector<UpdateCandidate>* updateCandidates = NULL;
     if (force)
     {
         batchSize = taskBatchSizeForce;
         posUpdateCandidates = &posUpdateCandidatesForce;
+        offsetPerTask = &offsetPerTaskForce;
+        error = &errorF;
+        jacobian = &jacobianF;
         updateCandidates = &updateCandidatesForce;
     }
     else
     {
         batchSize = taskBatchSizeEnergy;
         posUpdateCandidates = &posUpdateCandidatesEnergy;
+        offsetPerTask = &offsetPerTaskEnergy;
+        error = &errorE;
+        jacobian = &jacobianE;
         updateCandidates = &updateCandidatesEnergy;
     }
     currentRmseFraction.clear();
@@ -2041,11 +1979,13 @@ void Training::update(bool force)
         if (force)
         {
             log << strpr(" %zu %zu %zu %zu %f\n",
-                         posUpdateCandidatesForce, c->s, c->a, c->c, rmseFractionBest);
+                         posUpdateCandidatesForce,
+                         c->s, c->a, c->c, rmseFractionBest);
         }
         else {
             log << strpr(" %zu %zu %f\n",
-                         posUpdateCandidatesEnergy, c->s, rmseFractionBest);
+                         posUpdateCandidatesEnergy,
+                         c->s, rmseFractionBest);
         }
  
         Structure& s = structures.at(c->s);
@@ -2057,6 +1997,31 @@ void Training::update(bool force)
         {
             size_t n = elements.at(i).neuralNetwork->getNumConnections();
             dXdc.at(i).resize(n, 0.0);
+        }
+        // Precalculate offset in Jacobian array.
+        size_t iu = 0;
+        vector<size_t> offset(numElements, 0);
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            if (updateStrategy == US_ELEMENT) iu = i;
+            else iu = 0;
+            if (parallelMode == PM_TRAIN_ALL && jacobianMode != JM_SUM)
+            {
+                offset.at(i) += offsetPerTask->at(myRank)
+                              * numWeightsPerUpdater.at(iu);
+                log << strpr("%zu os 1: %zu ", i, offset.at(i));
+            }
+            if (jacobianMode == JM_FULL)
+            {
+                offset.at(i) += b * numWeightsPerUpdater.at(iu);
+                log << strpr("%zu os 2: %zu ", i, offset.at(i));
+            }
+            if (updateStrategy == US_COMBINED)
+            {
+                offset.at(i) += weightsOffset.at(i);
+                log << strpr("%zu os 3: %zu", i, offset.at(i));
+            }
+            log << strpr(" %zu final os: %zu\n", i, offset.at(i));
         }
         // Loop over atoms and calculate atomic energy contributions.
         for (vector<Atom>::iterator it = s.atoms.begin();
@@ -2082,24 +2047,13 @@ void Training::update(bool force)
             {
                 nn->calculateDEdc(&(dXdc.at(i).front()));
             }
-            //// Update derivative vector (depends on update strategy).
-            //// For multi-streaming calculate additional offset in H array.
-            //if (updateStrategy == US_COMBINED)
-            //{
-            //    size_t os = myStream * weights.at(0).size() + start.at(i);
-            //    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
-            //    {
-            //        H.at(0).at(os + j) += dXdc.at(i).at(j);
-            //    }
-            //}
-            //else if (updateStrategy == US_ELEMENT)
-            //{
-            //    size_t os = myStream * nn->getNumConnections();
-            //    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
-            //    {
-            //        H.at(i).at(os + j) += dXdc.at(i).at(j);
-            //    }
-            //}
+            // Finally sum up Jacobian.
+            if (updateStrategy == US_ELEMENT) iu = i;
+            else iu = 0;
+            for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+            {
+                jacobian->at(iu).at(offset.at(i) + j) += dXdc.at(i).at(j);
+            }
         }
         //// Apply force update weight to derivatives and copy local h vector.
         //if (force || (parallelMode == PM_MSEKFNB))
@@ -2166,23 +2120,24 @@ void Training::update(bool force)
         //        }
         //    }
         //}
-        //// Sum up total potential energy or calculate force.
-        //if (force)
-        //{
-        //    calculateForces(s);
-        //    Atom const& a = s.atoms.at(ia);
-        //    rmseFraction = fabs(a.fRef[ic] - a.f[ic]) / rmseForcesTrain;
-        //}
-        //else
-        //{
-        //    calculateEnergy(s);
-        //    rmseFraction = fabs(s.energyRef - s.energy)
-        //                 / (s.numAtoms * rmseEnergiesTrain);
-        //}
+ 
+        // Sum up total potential energy or calculate force.
+        if (force)
+        {
+            calculateForces(s);
+            Atom const& a = s.atoms.at(c->a);
+            //rmseFraction = fabs(a.fRef[c->c] - a.f[c->c]) / rmseForcesTrain;
+        }
+        else
+        {
+            calculateEnergy(s);
+            //rmseFraction = fabs(s.energyRef - s.energy)
+            //             / (s.numAtoms * rmseEnergiesTrain);
+        }
 
-        //// Now symmetry function memory is not required any more for this
-        //// update.
-        //if (freeMemory) s.freeAtoms(true);
+        // Now symmetry function memory is not required any more for this
+        // update.
+        if (freeMemory) s.freeAtoms(true);
 
         //// Compute error vector (depends on update strategy).
         //if (updateStrategy == US_COMBINED)
