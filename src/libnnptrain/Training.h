@@ -399,6 +399,10 @@ private:
     std::ofstream                 trainingLog;
     /// Update schedule epoch (false = energy update, true = force update).
     std::vector<int>              epochSchedule;
+    /// Errors per task for each energy update.
+    std::vector<int>              errorsPerTaskEnergy;
+    /// Errors/Jacobians per task for each force update.
+    std::vector<int>              errorsPerTaskForce;
     /// Current RMSE fraction of update candidates.
     std::vector<double>           currentRmseFraction;
     /// Vector with indices of training structures.
@@ -407,12 +411,8 @@ private:
     std::vector<UpdateCandidate>  updateCandidatesForce;
     /// Vector with pointers to selected update candidates.
     std::vector<UpdateCandidate*> currentUpdateCandidates;
-    /// Errors per task for each energy update.
-    std::vector<std::size_t>      errorsPerTaskEnergy;
     /// Offset for combined energy error per task.
     std::vector<std::size_t>      offsetPerTaskEnergy;
-    /// Errors/Jacobians per task for each force update.
-    std::vector<std::size_t>      errorsPerTaskForce;
     /// Offset for combined force error per task.
     std::vector<std::size_t>      offsetPerTaskForce;
     /// Number of weights per updater.

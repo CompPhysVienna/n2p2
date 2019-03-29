@@ -762,15 +762,15 @@ void Training::setupTraining()
     errorsPerTaskEnergy.resize(numProcs, 0);
     if (jacobianMode == JM_FULL)
     {
-        errorsPerTaskEnergy.at(myRank) = energiesPerUpdate;
+        errorsPerTaskEnergy.at(myRank) = static_cast<int>(energiesPerUpdate);
     }
     else
     {
         errorsPerTaskEnergy.at(myRank) = 1;
     }
-    MPI_Allgather(MPI_IN_PLACE, 1, MPI_SIZE_T, &(errorsPerTaskEnergy.front()), 1, MPI_SIZE_T, comm);
+    MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskEnergy.front()), 1, MPI_INT, comm);
     errorsGlobalEnergy = 0;
-    for (size_t i = 0; i < errorsPerTaskEnergy.size(); ++i)
+    for (int i = 0; i < errorsPerTaskEnergy.size(); ++i)
     {
         offsetPerTaskEnergy.push_back(errorsGlobalEnergy);
         errorsGlobalEnergy += errorsPerTaskEnergy.at(i);
@@ -809,15 +809,15 @@ void Training::setupTraining()
         errorsPerTaskForce.resize(numProcs, 0);
         if (jacobianMode == JM_FULL)
         {
-            errorsPerTaskForce.at(myRank) = forcesPerUpdate;
+            errorsPerTaskForce.at(myRank) = static_cast<int>(forcesPerUpdate);
         }
         else
         {
             errorsPerTaskForce.at(myRank) = 1;
         }
-        MPI_Allgather(MPI_IN_PLACE, 1, MPI_SIZE_T, &(errorsPerTaskForce.front()), 1, MPI_SIZE_T, comm);
+        MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskForce.front()), 1, MPI_INT, comm);
         errorsGlobalForce = 0;
-        for (size_t i = 0; i < errorsPerTaskForce.size(); ++i)
+        for (int i = 0; i < errorsPerTaskForce.size(); ++i)
         {
             offsetPerTaskForce.push_back(errorsGlobalForce);
             errorsGlobalForce += errorsPerTaskForce.at(i);
@@ -1653,10 +1653,10 @@ void Training::setEpochSchedule()
     // Now shuffle the schedule to get a random sequence.
     shuffle(epochSchedule.begin(), epochSchedule.end(), rngGlobalNew);
 
-    for (size_t i = 0; i < epochSchedule.size(); ++i)
-    {
-        log << strpr("%zu %zu\n", i, epochSchedule.at(i));
-    }
+    //for (size_t i = 0; i < epochSchedule.size(); ++i)
+    //{
+    //    log << strpr("%zu %zu\n", i, epochSchedule.at(i));
+    //}
 
     return;
 }
@@ -1850,6 +1850,7 @@ void Training::update(bool force)
     // Set local variables depending on energy/force update.
     size_t batchSize = 0;
     size_t* posUpdateCandidates = NULL;
+    vector<int>* errorsPerTask = NULL;
     vector<size_t>* offsetPerTask = NULL;
     vector<vector<double> >* error = NULL;
     vector<vector<double> >* jacobian = NULL;
@@ -1859,6 +1860,7 @@ void Training::update(bool force)
         batchSize = taskBatchSizeForce;
         if (batchSize == 0) batchSize = forcesPerUpdate;
         posUpdateCandidates = &posUpdateCandidatesForce;
+        errorsPerTask = &errorsPerTaskForce;
         offsetPerTask = &offsetPerTaskForce;
         error = &errorF;
         jacobian = &jacobianF;
@@ -1869,6 +1871,7 @@ void Training::update(bool force)
         batchSize = taskBatchSizeEnergy;
         if (batchSize == 0) batchSize = energiesPerUpdate;
         posUpdateCandidates = &posUpdateCandidatesEnergy;
+        errorsPerTask = &errorsPerTaskEnergy;
         offsetPerTask = &offsetPerTaskEnergy;
         error = &errorE;
         jacobian = &jacobianE;
@@ -1882,12 +1885,6 @@ void Training::update(bool force)
     {
         fill(error->at(i).begin(), error->at(i).end(), 0.0);
         fill(jacobian->at(i).begin(), jacobian->at(i).end(), 0.0);
-    }
-
-    // Restart position index if necessary.
-    if (*posUpdateCandidates >= updateCandidates->size())
-    {
-        *posUpdateCandidates = 0;
     }
 
     // Loop over (mini-)batch size.
@@ -1904,7 +1901,13 @@ void Training::update(bool force)
         size_t il = 0;
         for (il = 0; il < trials; ++il)
         {
-            log << strpr("pos %zu\n", *posUpdateCandidates);
+            // Restart position index if necessary.
+            if (*posUpdateCandidates >= updateCandidates->size())
+            {
+                *posUpdateCandidates = 0;
+            }
+
+            //log << strpr("pos %zu b %zu size %zu\n", *posUpdateCandidates, b, currentUpdateCandidates.size());
             // Set current update candidate.
             c = &(updateCandidates->at(*posUpdateCandidates));
             // Keep update candidates (for logging later).
@@ -1994,18 +1997,18 @@ void Training::update(bool force)
         // PART 2: Compute error vector and Jacobian
         ///////////////////////////////////////////////////////////////////////
  
-        log << strpr("%zu %s", b, force ? "F" : "E");
-        if (force)
-        {
-            log << strpr(" %zu %zu %zu %zu %f\n",
-                         posUpdateCandidatesForce,
-                         c->s, c->a, c->c, rmseFractionBest);
-        }
-        else {
-            log << strpr(" %zu %zu %f\n",
-                         posUpdateCandidatesEnergy,
-                         c->s, rmseFractionBest);
-        }
+        //log << strpr("%zu %s", b, force ? "F" : "E");
+        //if (force)
+        //{
+        //    log << strpr(" %zu %zu %zu %zu %f\n",
+        //                 posUpdateCandidatesForce,
+        //                 c->s, c->a, c->c, rmseFractionBest);
+        //}
+        //else {
+        //    log << strpr(" %zu %zu %f\n",
+        //                 posUpdateCandidatesEnergy,
+        //                 c->s, rmseFractionBest);
+        //}
  
         Structure& s = structures.at(c->s);
         // Temporary storage for derivative contributions of atoms (dXdc stores
@@ -2178,57 +2181,84 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                log << strpr("error %lf\n", error->at(i).at(0));
                 MPI_Allreduce(MPI_IN_PLACE, &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, comm);
                 MPI_Allreduce(MPI_IN_PLACE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, comm);
             }
         }
     }
-//    // Communicate error and derivative vector.
-//    if (parallelMode == PM_SERIAL)
-//    {
-//        for (size_t i = 0; i < numUpdaters; ++i)
-//        {
-//            MPI_Bcast(&(xi.at(i).front()), 1, MPI_DOUBLE, proc, comm);
-//            size_t n = H.at(i).size();
-//            MPI_Bcast(&(H.at(i).front()), n, MPI_DOUBLE, proc, comm);
-//        }
-//    }
-//    else if (parallelMode == PM_MSEKF)
-//    {
-//        for (size_t i = 0; i < numUpdaters; ++i)
-//        {
-//            size_t n = weights.at(i).size();
-//            MPI_Allgather(MPI_IN_PLACE, n, MPI_DOUBLE, &(H.at(i).front()), n, MPI_DOUBLE, comm);
-//            MPI_Allgather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(xi.at(i).front()), 1, MPI_DOUBLE, comm);
-//        }
-//    }
-//    else if (parallelMode == PM_MSEKFR0)
-//    {
-//        for (size_t i = 0; i < numUpdaters; ++i)
-//        {
-//            size_t n = weights.at(i).size();
-//            if (myRank == 0)
-//            {
-//                MPI_Gather(MPI_IN_PLACE, n, MPI_DOUBLE, &(H.at(i).front()),  n, MPI_DOUBLE, 0, comm);
-//                MPI_Gather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(xi.at(i).front()), 1, MPI_DOUBLE, 0, comm);
-//            }
-//            else
-//            {
-//                MPI_Gather(&(H.at(i).at(myStream * n)), n, MPI_DOUBLE, NULL, n, MPI_DOUBLE, 0, comm);
-//                MPI_Gather(&(xi.at(i).at(myStream))   , 1, MPI_DOUBLE, NULL, 1, MPI_DOUBLE, 0, comm);
-//            }
-//        }
-//    }
-//
+    else if (jacobianMode == JM_TASK)
+    {
+        if (parallelMode == PM_TRAIN_RK0)
+        {
+            for (size_t i = 0; i < numUpdaters; ++i)
+            {
+                if (myRank == 0) MPI_Gather(MPI_IN_PLACE           , 1, MPI_DOUBLE, &(error->at(i).front()),  1, MPI_DOUBLE, 0, comm);
+                else             MPI_Gather(&(error->at(i).front()), 1, MPI_DOUBLE, NULL                   ,  1, MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gather(MPI_IN_PLACE              , numWeightsPerUpdater.at(i), MPI_DOUBLE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
+                else             MPI_Gather(&(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, NULL                      , numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
+            }
+        }
+        else if (parallelMode == PM_TRAIN_ALL)
+        {
+            for (size_t i = 0; i < numUpdaters; ++i)
+            {
+                MPI_Allgather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(error->at(i).front()),  1, MPI_DOUBLE, comm);
+                MPI_Allgather(MPI_IN_PLACE, numWeightsPerUpdater.at(i), MPI_DOUBLE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, comm);
+            }
+        }
+    }
+    else if (jacobianMode == JM_FULL)
+    {
+        if (parallelMode == PM_TRAIN_RK0)
+        {
+            for (size_t i = 0; i < numUpdaters; ++i)
+            {
+                vector<int> weightsPerTask(numProcs);
+                for (int j = 0; j < numProcs; ++j)
+                {
+                    weightsPerTask.at(j) = errorsPerTask->at(j) * numWeightsPerUpdater.at(i);
+                }
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE           , errorsPerTask->at(myRank), MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(errorsPerTask->front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(error->at(i).front()), errorsPerTask->at(myRank), MPI_DOUBLE, NULL                   , NULL                     , NULL                     , MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE              , weightsPerTask.at(myRank), MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask.front()), &(weightsPerTask.front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(jacobian->at(i).front()), weightsPerTask.at(myRank), MPI_DOUBLE, NULL                      , NULL                     , NULL                     , MPI_DOUBLE, 0, comm);
+            }
+        }
+        else if (parallelMode == PM_TRAIN_ALL)
+        {
+            for (size_t i = 0; i < numUpdaters; ++i)
+            {
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    // PART 4: Perform weight update and apply new weights.
+    ///////////////////////////////////////////////////////////////////////
+
     // Loop over all updaters.
     for (size_t i = 0; i < updaters.size(); ++i)
     {
         updaters.at(i)->setError(&(error->at(i).front()), error->at(i).size());
-        updaters.at(i)->setJacobian(&(jacobian->at(i).front()), jacobian->at(i).size());
+        updaters.at(i)->setJacobian(&(jacobian->at(i).front()),
+                                    error->at(i).size());
+        if (updaterType == UT_KF) 
+        {
+            KalmanFilter* kf = dynamic_cast<KalmanFilter*>(updaters.at(i));
+            kf->setSizeObservation(error->at(i).size());
+        }
         updaters.at(i)->update();
     }
     countUpdates++;
+
+    // Redistribute weights to all MPI tasks.
+    if (parallelMode == PM_TRAIN_RK0)
+    {
+        for (size_t i = 0; i < numUpdaters; ++i)
+        {
+            MPI_Bcast(&(weights.at(i).front()), weights.at(i).size(), MPI_DOUBLE, 0, comm);
+        }
+    }
 
     // Set new weights in neural networks.
     setWeights();
