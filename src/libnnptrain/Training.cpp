@@ -21,6 +21,9 @@
 #include "Stopwatch.h"
 #include "utility.h"
 #include "mpi-extra.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 #include <algorithm> // std::sort, std::fill
 #include <cmath>     // fabs
 #include <cstdlib>   // atoi
@@ -769,11 +772,33 @@ void Training::setupTraining()
         errorsPerTaskEnergy.at(myRank) = 1;
     }
     MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskEnergy.front()), 1, MPI_INT, comm);
+    if (jacobianMode == JM_FULL)
+    {
+        weightsPerTaskEnergy.resize(numUpdaters);
+        for (size_t i = 0; i < numUpdaters; ++i)
+        {
+            weightsPerTaskEnergy.at(i).resize(numProcs, 0);
+            for (int j = 0; j < numProcs; ++j)
+            {
+                weightsPerTaskEnergy.at(i).at(j) = errorsPerTaskEnergy.at(j)
+                                                 * numWeightsPerUpdater.at(i);
+            }
+        }
+    }
     errorsGlobalEnergy = 0;
-    for (int i = 0; i < errorsPerTaskEnergy.size(); ++i)
+    for (size_t i = 0; i < errorsPerTaskEnergy.size(); ++i)
     {
         offsetPerTaskEnergy.push_back(errorsGlobalEnergy);
         errorsGlobalEnergy += errorsPerTaskEnergy.at(i);
+    }
+    offsetJacobianEnergy.resize(numUpdaters);
+    for (size_t i = 0; i < numUpdaters; ++i)
+    {
+        for (size_t j = 0; j < offsetPerTaskEnergy.size(); ++j)
+        {
+            offsetJacobianEnergy.at(i).push_back(offsetPerTaskEnergy.at(j) *
+                                                 numWeightsPerUpdater.at(i));
+        }
     }
     log << strpr("Per-task batch size for energies             : %zu\n",
                  taskBatchSizeEnergy);
@@ -816,11 +841,34 @@ void Training::setupTraining()
             errorsPerTaskForce.at(myRank) = 1;
         }
         MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskForce.front()), 1, MPI_INT, comm);
+        if (jacobianMode == JM_FULL)
+        {
+            weightsPerTaskForce.resize(numUpdaters);
+            for (size_t i = 0; i < numUpdaters; ++i)
+            {
+                weightsPerTaskForce.at(i).resize(numProcs, 0);
+                for (int j = 0; j < numProcs; ++j)
+                {
+                    weightsPerTaskForce.at(i).at(j) =
+                        errorsPerTaskForce.at(j) * numWeightsPerUpdater.at(i);
+                }
+            }
+        }
         errorsGlobalForce = 0;
-        for (int i = 0; i < errorsPerTaskForce.size(); ++i)
+        for (size_t i = 0; i < errorsPerTaskForce.size(); ++i)
         {
             offsetPerTaskForce.push_back(errorsGlobalForce);
             errorsGlobalForce += errorsPerTaskForce.at(i);
+        }
+        offsetJacobianForce.resize(numUpdaters);
+        for (size_t i = 0; i < numUpdaters; ++i)
+        {
+            for (size_t j = 0; j < offsetPerTaskForce.size(); ++j)
+            {
+                offsetJacobianForce.at(i).push_back(
+                                                   offsetPerTaskForce.at(j) *
+                                                   numWeightsPerUpdater.at(i));
+            }
         }
         log << strpr("Per-task batch size for forces               : %zu\n",
                      taskBatchSizeForce);
@@ -1064,6 +1112,12 @@ void Training::calculateNeighborLists()
            "**************************************\n";
     log << "\n";
 
+#ifdef _OPENMP
+    int num_threads = omp_get_max_threads();
+    omp_set_num_threads(1);
+    log << strpr("Temporarily disabling OpenMP parallelization: %d threads.\n",
+                 omp_get_max_threads());
+#endif
     log << "Calculating neighbor lists for all structures.\n";
     log << strpr("Cutoff radius for neighbor lists: %f\n",
                  maxCutoffRadius);
@@ -1072,6 +1126,11 @@ void Training::calculateNeighborLists()
     {
         it->calculateNeighborList(maxCutoffRadius);
     }
+#ifdef _OPENMP
+    omp_set_num_threads(num_threads);
+    log << strpr("Restoring OpenMP parallelization: max. %d threads.\n",
+                 omp_get_max_threads());
+#endif
 
     log << "*****************************************"
            "**************************************\n";
@@ -1086,6 +1145,10 @@ void Training::calculateRmse(bool const   writeCompFiles,
                              string const fileNameForcesTrain,
                              string const fileNameForcesTest)
 {
+#ifdef _OPENMP
+    int num_threads = omp_get_max_threads();
+    omp_set_num_threads(1);
+#endif
     bool     energiesTrain = true;
     if (fileNameEnergiesTrain == "") energiesTrain = false;
     bool     energiesTest = true;
@@ -1295,6 +1358,9 @@ void Training::calculateRmse(bool const   writeCompFiles,
             }
         }
     }
+#ifdef _OPENMP
+    omp_set_num_threads(num_threads);
+#endif
 
     return;
 }
@@ -1843,6 +1909,10 @@ void Training::loop()
 
 void Training::update(bool force)
 {
+#ifdef _OPENMP
+    int num_threads = omp_get_max_threads();
+    omp_set_num_threads(1);
+#endif
     ///////////////////////////////////////////////////////////////////////
     // PART 1: Calculate errors and derivatives
     ///////////////////////////////////////////////////////////////////////
@@ -1851,7 +1921,9 @@ void Training::update(bool force)
     size_t batchSize = 0;
     size_t* posUpdateCandidates = NULL;
     vector<int>* errorsPerTask = NULL;
-    vector<size_t>* offsetPerTask = NULL;
+    vector<int>* offsetPerTask = NULL;
+    vector<vector<int> >* weightsPerTask = NULL;
+    vector<vector<int> >* offsetJacobian = NULL;
     vector<vector<double> >* error = NULL;
     vector<vector<double> >* jacobian = NULL;
     vector<UpdateCandidate>* updateCandidates = NULL;
@@ -1862,6 +1934,8 @@ void Training::update(bool force)
         posUpdateCandidates = &posUpdateCandidatesForce;
         errorsPerTask = &errorsPerTaskForce;
         offsetPerTask = &offsetPerTaskForce;
+        weightsPerTask = &weightsPerTaskForce;
+        offsetJacobian = &offsetJacobianForce;
         error = &errorF;
         jacobian = &jacobianF;
         updateCandidates = &updateCandidatesForce;
@@ -1873,6 +1947,8 @@ void Training::update(bool force)
         posUpdateCandidates = &posUpdateCandidatesEnergy;
         errorsPerTask = &errorsPerTaskEnergy;
         offsetPerTask = &offsetPerTaskEnergy;
+        weightsPerTask = &weightsPerTaskEnergy;
+        offsetJacobian = &offsetJacobianEnergy;
         error = &errorE;
         jacobian = &jacobianE;
         updateCandidates = &updateCandidatesEnergy;
@@ -2213,21 +2289,18 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                vector<int> weightsPerTask(numProcs);
-                for (int j = 0; j < numProcs; ++j)
-                {
-                    weightsPerTask.at(j) = errorsPerTask->at(j) * numWeightsPerUpdater.at(i);
-                }
-                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE           , errorsPerTask->at(myRank), MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(errorsPerTask->front()), MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE           , 0                        , MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(offsetPerTask->front()), MPI_DOUBLE, 0, comm);
                 else             MPI_Gatherv(&(error->at(i).front()), errorsPerTask->at(myRank), MPI_DOUBLE, NULL                   , NULL                     , NULL                     , MPI_DOUBLE, 0, comm);
-                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE              , weightsPerTask.at(myRank), MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask.front()), &(weightsPerTask.front()), MPI_DOUBLE, 0, comm);
-                else             MPI_Gatherv(&(jacobian->at(i).front()), weightsPerTask.at(myRank), MPI_DOUBLE, NULL                      , NULL                     , NULL                     , MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE              , 0                               , MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask->at(i).front()), &(offsetJacobian->at(i).front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(jacobian->at(i).front()), weightsPerTask->at(i).at(myRank), MPI_DOUBLE, NULL                      , NULL                            , NULL                            , MPI_DOUBLE, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
+                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(offsetPerTask->front()), MPI_DOUBLE, comm);
+                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask->at(i).front()), &(offsetJacobian->at(i).front()), MPI_DOUBLE, comm);
             }
         }
     }
@@ -2236,6 +2309,9 @@ void Training::update(bool force)
     // PART 4: Perform weight update and apply new weights.
     ///////////////////////////////////////////////////////////////////////
 
+#ifdef _OPENMP
+    omp_set_num_threads(num_threads);
+#endif
     // Loop over all updaters.
     for (size_t i = 0; i < updaters.size(); ++i)
     {

@@ -401,24 +401,36 @@ private:
     std::vector<int>              epochSchedule;
     /// Errors per task for each energy update.
     std::vector<int>              errorsPerTaskEnergy;
-    /// Errors/Jacobians per task for each force update.
+    /// Errors per task for each force update.
     std::vector<int>              errorsPerTaskForce;
+    /// Offset for combined energy error per task.
+    std::vector<int>              offsetPerTaskEnergy;
+    /// Offset for combined force error per task.
+    std::vector<int>              offsetPerTaskForce;
     /// Current RMSE fraction of update candidates.
     std::vector<double>           currentRmseFraction;
+    /// Number of weights per updater.
+    std::vector<std::size_t>      numWeightsPerUpdater;
+    /// Offset of each element's weights in combined array.
+    std::vector<std::size_t>      weightsOffset;
     /// Vector with indices of training structures.
     std::vector<UpdateCandidate>  updateCandidatesEnergy;
     /// Vector with indices of training forces.
     std::vector<UpdateCandidate>  updateCandidatesForce;
     /// Vector with pointers to selected update candidates.
     std::vector<UpdateCandidate*> currentUpdateCandidates;
-    /// Offset for combined energy error per task.
-    std::vector<std::size_t>      offsetPerTaskEnergy;
-    /// Offset for combined force error per task.
-    std::vector<std::size_t>      offsetPerTaskForce;
-    /// Number of weights per updater.
-    std::vector<std::size_t>      numWeightsPerUpdater;
-    /// Offset of each element's weights in combined array.
-    std::vector<std::size_t>      weightsOffset;
+    /// Weights per task per updater for energy updates.
+    std::vector<
+    std::vector<int> >            weightsPerTaskEnergy;
+    /// Stride for Jacobians per task per updater for energy updates.
+    std::vector<
+    std::vector<int> >            offsetJacobianEnergy;
+    /// Weights per task per updater for force updates.
+    std::vector<
+    std::vector<int> >            weightsPerTaskForce;
+    /// Stride for Jacobians per task per updater for force updates.
+    std::vector<
+    std::vector<int> >            offsetJacobianForce;
     /// Neural network weights and biases for each element.
     std::vector<
     std::vector<double> >         weights;
