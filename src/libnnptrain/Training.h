@@ -407,8 +407,6 @@ private:
     std::vector<int>              offsetPerTaskEnergy;
     /// Offset for combined force error per task.
     std::vector<int>              offsetPerTaskForce;
-    /// Current RMSE fraction of update candidates.
-    std::vector<double>           currentRmseFraction;
     /// Number of weights per updater.
     std::vector<std::size_t>      numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
@@ -417,8 +415,6 @@ private:
     std::vector<UpdateCandidate>  updateCandidatesEnergy;
     /// Vector with indices of training forces.
     std::vector<UpdateCandidate>  updateCandidatesForce;
-    /// Vector with pointers to selected update candidates.
-    std::vector<UpdateCandidate*> currentUpdateCandidates;
     /// Weights per task per updater for energy updates.
     std::vector<
     std::vector<int> >            weightsPerTaskEnergy;
@@ -469,28 +465,22 @@ private:
     void setWeights();
     /** Write energy update data to training log file.
      *
-     * @param[in] proc Processor which performed update.
+     * @param[in] proc Processor which provided update candidate.
      * @param[in] il Loop index of threshold loop.
      * @param[in] f RMSE fraction of update candidate.
-     * @param[in] absXi Absolute error for each updater.
-     * @param[in] meanH Mean magnitude of derivative vector for each updater.
      * @param[in] is Local structure index.
      * @param[in] isg Global structure index.
      */
     void addTrainingLogEntry(int                 proc,
                              std::size_t         il,
                              double              f,
-                             std::vector<double> absXi,
-                             std::vector<double> meanH,
                              std::size_t         isg,
                              std::size_t         is);
     /** Write force update data to training log file.
      *
-     * @param[in] proc Processor which performed update.
+     * @param[in] proc Processor which provided update candidate.
      * @param[in] il Loop index of threshold loop.
      * @param[in] f RMSE fraction of update candidate.
-     * @param[in] absXi Absolute error for each updater.
-     * @param[in] meanH Mean magnitude of derivative vector for each updater.
      * @param[in] is Local structure index.
      * @param[in] isg Global structure index.
      * @param[in] ia Atom index.
@@ -499,10 +489,8 @@ private:
     void addTrainingLogEntry(int                 proc,
                              std::size_t         il,
                              double              f,
-                             std::vector<double> absXi,
-                             std::vector<double> meanH,
-                             std::size_t         is,
                              std::size_t         isg,
+                             std::size_t         is,
                              std::size_t         ia,
                              std::size_t         ic);
 };
