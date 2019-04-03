@@ -1658,7 +1658,6 @@ void Training::sortUpdateCandidates()
     {
         Structure const& s = structures.at(it->s);
         it->error = fabs((s.energyRef - s.energy) / s.numAtoms);
-        log << strpr("%zu %f\n", s.index, it->error);
     }
     // Sort energy update candidates list.
     sort(updateCandidatesEnergy.begin(), updateCandidatesEnergy.end());
