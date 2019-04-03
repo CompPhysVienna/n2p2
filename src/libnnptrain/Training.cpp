@@ -1004,7 +1004,7 @@ void Training::setupTraining()
         }
         if (descentType == GradientDescent::DT_ADAM)
         {
-            double const eta = atof(settings["gradient_eta"].c_str());
+            double const eta = atof(settings["gradient_adam_eta"].c_str());
             double const beta1 = atof(settings["gradient_adam_beta1"].c_str());
             double const beta2 = atof(settings["gradient_adam_beta2"].c_str());
             double const eps = atof(settings["gradient_adam_epsilon"].c_str());

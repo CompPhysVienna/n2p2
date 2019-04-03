@@ -75,6 +75,7 @@ map<string, string> const createKnownKeywordsMap()
     m["task_batch_size_force"         ] = "";
     m["gradient_type"                 ] = "";
     m["gradient_eta"                  ] = "";
+    m["gradient_adam_eta"             ] = "";
     m["gradient_adam_beta1"           ] = "";
     m["gradient_adam_beta2"           ] = "";
     m["gradient_adam_epsilon"         ] = "";
