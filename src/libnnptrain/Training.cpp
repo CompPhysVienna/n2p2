@@ -1119,8 +1119,10 @@ void Training::calculateNeighborLists()
                  omp_get_max_threads());
 #endif
     log << "Calculating neighbor lists for all structures.\n";
+    double maxCutoffRadiusPhys = maxCutoffRadius;
+    if (normalize) maxCutoffRadiusPhys = maxCutoffRadius / convLength;
     log << strpr("Cutoff radius for neighbor lists: %f\n",
-                 maxCutoffRadius);
+                 maxCutoffRadiusPhys);
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
