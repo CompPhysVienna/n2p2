@@ -38,7 +38,9 @@ public:
         /// @f$f_a(x) = 1 / (1 + \mathrm{e}^{-x})@f$
         AF_LOGISTIC,
         /// @f$f_a(x) = \ln (1 + \mathrm{e}^x)@f$
-        AF_SOFTPLUS
+        AF_SOFTPLUS,
+        /// @f$f_a(x) = \max(0, x)@f$
+        AF_RELU
     };
 
     /// List of available connection modification schemes.

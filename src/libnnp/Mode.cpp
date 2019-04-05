@@ -666,6 +666,10 @@ void Mode::setupNeuralNetwork()
             {
                 activationFunctionsPerLayer[i] = NeuralNetwork::AF_SOFTPLUS;
             }
+            else if (activationFunctions.at(i-1) == "r")
+            {
+                activationFunctionsPerLayer[i] = NeuralNetwork::AF_RELU;
+            }
             else
             {
                 throw runtime_error("ERROR: Unknown activation function.\n");

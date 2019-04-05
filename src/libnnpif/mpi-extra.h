@@ -15,24 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <mpi.h>
-// Unfortunately this would only work with C++11 standard, so it's not used.
-//#include <cstdint>
-//#include <climits>
-//
-//#if SIZE_MAX == UCHAR_MAX
-//   #define MPI_SIZE_T MPI_UNSIGNED_CHAR
-//#elif SIZE_MAX == USHRT_MAX
-//   #define MPI_SIZE_T MPI_UNSIGNED_SHORT
-//#elif SIZE_MAX == UINT_MAX
-//   #define MPI_SIZE_T MPI_UNSIGNED
-//#elif SIZE_MAX == ULONG_MAX
-//   #define MPI_SIZE_T MPI_UNSIGNED_LONG
-//#elif SIZE_MAX == ULLONG_MAX
-//   #define MPI_SIZE_T MPI_UNSIGNED_LONG_LONG
-//#else
-//   #error "No matching MPI data type for size_t."
-//#endif
+#include <cstdint>
+#include <climits>
 
-// Just a guess...
-#pragma message ( "CAUTION: Please check if MPI_SIZE_T is correctly defined here!\n" )
-#define MPI_SIZE_T MPI_UNSIGNED_LONG
+#if SIZE_MAX == UCHAR_MAX
+   #define MPI_SIZE_T MPI_UNSIGNED_CHAR
+#elif SIZE_MAX == USHRT_MAX
+   #define MPI_SIZE_T MPI_UNSIGNED_SHORT
+#elif SIZE_MAX == UINT_MAX
+   #define MPI_SIZE_T MPI_UNSIGNED
+#elif SIZE_MAX == ULONG_MAX
+   #define MPI_SIZE_T MPI_UNSIGNED_LONG
+#elif SIZE_MAX == ULLONG_MAX
+   #define MPI_SIZE_T MPI_UNSIGNED_LONG_LONG
+#else
+   #error "No matching MPI data type for size_t."
+#endif
