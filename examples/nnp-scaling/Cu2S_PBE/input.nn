@@ -32,6 +32,7 @@ global_activation_short         p p l          # Activation function for each hi
 # These keywords are used only by some tools handling data sets:
 # nnp-comp2, nnp-scaling, nnp-dataset, nnp-train.
 use_short_forces                               # Use forces.
+random_seed                     1234567        # Random number generator seed.
 
 ###############################################################################
 # SYMMETRY FUNCTIONS

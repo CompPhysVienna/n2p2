@@ -23,6 +23,7 @@ global_activation_short         p p l          # Activation function for each hi
 # These keywords are used only by some tools handling data sets:
 # nnp-comp2, nnp-scaling, nnp-dataset, nnp-train.
 use_short_forces                               # Use forces.
+random_seed                     1234567        # Random number generator seed.
 
 ###############################################################################
 # ADDITIONAL SETTINGS FOR TRAINING
@@ -37,7 +38,6 @@ selection_mode                  2              # Update candidate selection mode
 task_batch_size_energy          1              # Number of energy update candidates prepared per task for each update (0 = Entire training set).
 task_batch_size_force           1              # Number of force update candidates prepared per task for each update (0 = Entire training set).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
-random_seed                     1234567        # Random number generator seed.
 test_fraction                   0.1            # Fraction of structures kept for testing.
 use_short_forces                               # Use forces for training.
 force_weight                    10.0           # Weight of force updates relative to energy updates.
