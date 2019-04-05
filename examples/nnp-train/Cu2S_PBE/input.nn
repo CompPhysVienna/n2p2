@@ -10,6 +10,7 @@ conv_length   2.7000746146526534E+01
 ###############################################################################
 # GENERAL NNP SETTINGS
 ###############################################################################
+# These keywords are (almost) always required.
 number_of_elements              2              # Number of elements.
 elements                        S Cu           # Specification of elements.
 #atom_energy                     S  0.0         # Free atom reference energy (S).
@@ -26,24 +27,33 @@ global_activation_short         p p l          # Activation function for each hi
 #normalize_nodes                                # Normalize input of nodes.
 
 ###############################################################################
+# ADDITIONAL SETTINGS FOR DATASET TOOLS
+###############################################################################
+# These keywords are used only by some tools handling data sets:
+# nnp-comp2, nnp-scaling, nnp-dataset, nnp-train.
+use_short_forces                               # Use forces.
+random_seed                     1234567        # Random number generator seed.
+
+###############################################################################
 # ADDITIONAL SETTINGS FOR TRAINING
 ###############################################################################
+# These keywords are solely used for training with nnp-train.
 epochs                          10             # Number of training epochs.
 updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
-parallel_mode                   4              # Training parallelization used (0 = Serial, 1-4 = MSEKF implementations (2 or 4 are fastest)).
+parallel_mode                   0              # Training parallelization used (0 = Parallel (rank 0 update), 1 = Parallel (all update)).
+jacobian_mode                   1              # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).
 update_strategy                 0              # Update strategy (0 = Combined, 1 = Per-element).
 selection_mode                  2              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+task_batch_size_energy          1              # Number of energy update candidates prepared per task for each update (0 = Entire training set).
+task_batch_size_force           1              # Number of force update candidates prepared per task for each update (0 = Entire training set).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
-random_seed                     1234567        # Random number generator seed.
 test_fraction                   0.1            # Fraction of structures kept for testing.
-use_short_forces                               # Use forces for training.
 force_weight                    10.0           # Weight of force updates relative to energy updates.
 short_energy_fraction           1.000          # Fraction of energy updates per epoch.
-short_force_fraction            0.02315       # Fraction of force updates per epoch.
+short_force_fraction            0.02315        # Fraction of force updates per epoch.
 short_energy_error_threshold    0.00           # RMSE threshold for energy update candidates.
 short_force_error_threshold     1.00           # RMSE threshold for force update candidates.
 rmse_threshold_trials           3              # Maximum number of RMSE threshold trials.
-#repeated_energy_update                         # After force update perform energy update for corresponding structure.
 #use_old_weights_short                          # Restart fitting with old weight parameters.
 weights_min                     -1.0           # Minimum value for initial random weights.
 weights_max                     1.0            # Maximum value for initial random weights.
@@ -57,11 +67,17 @@ write_trainlog                                 # Write training log file.
 ####################
 # GRADIENT DESCENT #
 ####################
-#gradient_type                   0              # Gradient descent type (0 = Fixed step size).
-#gradient_eta                    1.0E-4         # Gradient descent parameter eta (fixed step size).
+# This section is only used if "updater_type" is "0".
+gradient_type                   1              # Gradient descent type (0 = Fixed step size, 1 = Adam).
+gradient_eta                    1.0E-5         # Fixed step size gradient descent parameter eta.
+gradient_adam_eta               1.0E-3         # Adam parameter eta.
+gradient_adam_beta1             0.9            # Adam parameter beta1.
+gradient_adam_beta2             0.999          # Adam parameter beta2.
+gradient_adam_epsilon           1.0E-8         # Adam parameter epsilon.
 ############################
 # KALMAN FILTER (STANDARD) #
 ############################
+# This section is only used if "updater_type" is "1".
 kalman_type                     0              # Kalman filter type (0 = Standard, 1 = Fading memory).
 kalman_epsilon                  1.0E-2         # General Kalman filter parameter epsilon (sigmoidal: 0.01, linear: 0.001).
 kalman_q0                       0.01           # General Kalman filter parameter q0 ("large").
@@ -73,6 +89,8 @@ kalman_etamax                   1.0            # Standard Kalman filter paramete
 #################################
 # KALMAN FILTER (FADING MEMORY) #
 #################################
+# This section is only used if "updater_type" is "1".
+# The settings here enable an alternative Kalman filter variant and are NOT RECOMMENDED!
 #kalman_type                     1              # Kalman filter type (0 = Standard, 1 = Fading memory).
 #kalman_epsilon                  1.0E-1         # General Kalman filter parameter epsilon (sigmoidal: 0.01, linear: 0.001).
 #kalman_q0                       0.00           # General Kalman filter parameter q0 ("large").
@@ -89,9 +107,11 @@ kalman_etamax                   1.0            # Standard Kalman filter paramete
 #symfunction_short <element-central> 2 <element-neighbor> <eta> <rshift> <rcutoff>
 
 # Narrow Angular symmetry function (type 3):
+# NOTE: <<rshift>> is optional!
 #symfunction_short <element-central> 3 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
 
 # Wide Angular symmetry function (type 9):
+# NOTE: <<rshift>> is optional!
 #symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
 
 # Generating radial symmetry function set:

@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "1c49b4491e973f72ff3f1a737bf37378a0b01f2e"
-#define NNP_GIT_REV_SHORT "1c49b44"
-#define NNP_GIT_BRANCH "master"
+#define NNP_GIT_REV "fbccbe5689e038af280340e3871df930b1f02fb0"
+#define NNP_GIT_REV_SHORT "fbccbe5"
+#define NNP_GIT_BRANCH "singraber-master"
 
 #endif

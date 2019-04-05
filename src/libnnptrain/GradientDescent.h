@@ -25,53 +25,77 @@
 namespace nnp
 {
 
+/// Weight updates based on simple gradient descent methods.
 class GradientDescent : public Updater
 {
 public:
+    /// Enumerate different gradient descent variants.
     enum DescentType
     {
-        // Fixed step size.
-        DT_FIXED
+        /// Fixed step size.
+        DT_FIXED,
+        /// Adaptive moment estimation (Adam).
+        DT_ADAM
     };
 
     /** %GradientDescent class constructor.
      *
-     * @param[in] type Descent type used for step size.
      * @param[in] sizeState Number of neural network connections (weights
      *                      and biases).
+     * @param[in] type Descent type used for step size.
      */
-    GradientDescent(DescentType const type, std::size_t const sizeState);
-    /** Destructor.
+    GradientDescent(std::size_t const sizeState, DescentType const type);
+    /** Destructor
      */
-    ~GradientDescent() {};
-    /** Set state vector.
+    virtual ~GradientDescent() {};
+    /** Set pointer to current state.
      *
-     * @param[in,out] state State vector (changed in-place upon calling
-     *                      #update()).
+     * @param[in,out] state Pointer to state vector (weights vector), will be
+     *                      changed in-place upon calling update().
      */
     void                     setState(double* state);
-    /** Set error.
+    /** Set pointer to current error vector.
      *
-     * @param[in] error Error value (left unchanged).
+     * @param[in] error Pointer to error (difference between reference and
+     *                  neural network potential output).
+     * @param[in] size Number of error vector entries.
      */
-    void                     setError(double const* const error);
-    /** Set derivative matrix.
+    void                     setError(double const* const error,
+                                      std::size_t const   size = 1);
+    /** Set pointer to current Jacobi matrix.
      *
-     * @param[in] derivatives Derivative matrix (left unchanged).
+     * @param[in] jacobian Derivatives of error with respect to weights.
+     * @param[in] columns Number of gradients provided.
+     *
+     * @note
+     * If there are @f$m@f$ errors and @f$n@f$ weights, the Jacobi matrix
+     * is a @f$n \times m@f$ matrix stored in column-major order.
      */
-    void                     setDerivativeMatrix(
-                                              double const* const derivatives);
+    void                     setJacobian(double const* const jacobian,
+                                         std::size_t const   columns = 1);
     /** Perform connection update.
      *
      * Update the connections via steepest descent method.
      */
     void                     update();
-    /** Set parameters for gradient descent algorithm.
+    /** Set parameters for fixed step gradient descent algorithm.
      *
      * @param[in] eta Step size = ratio of gradient subtracted from current
      *                weights.
      */
     void                     setParametersFixed(double const eta);
+    /** Set parameters for Adam algorithm.
+     *
+     * @param[in] eta Step size (corresponds to @f$\alpha@f$ in Adam
+     *                publication).
+     * @param[in] beta1 Decay rate 1 (first moment).
+     * @param[in] beta2 Decay rate 2 (second moment).
+     * @param[in] epsilon Small scalar.
+     */
+    void                     setParametersAdam(double const eta,
+                                               double const beta1,
+                                               double const beta2,
+                                               double const epsilon);
     /** Status report.
      *
      * @param[in] epoch Current epoch.
@@ -91,17 +115,31 @@ public:
     std::vector<std::string> info() const;
 
 private:
-    DescentType   type;
-    /// Number of neural network connections (weights + biases).
-    std::size_t   sizeState;
+    DescentType         type;
     /// Learning rate @f$\eta@f$.
-    double        eta;
+    double              eta;
+    /// Decay rate 1 (Adam).
+    double              beta1;
+    /// Decay rate 2 (Adam).
+    double              beta2;
+    /// Small scalar.
+    double              epsilon;
+    /// Initial learning rate.
+    double              eta0;
+    /// Decay rate 1 to the power of t (Adam).
+    double              beta1t;
+    /// Decay rate 2 to the power of t (Adam).
+    double              beta2t;
     /// State vector pointer.
-    double*       state;
+    double*             state;
     /// Error pointer (single double value).
-    double const* error;
-    /// Derivatives vector pointer.
-    double const* derivatives;
+    double const*       error;
+    /// Gradient vector pointer.
+    double const*       gradient;
+    /// First moment estimate (Adam).
+    std::vector<double> m;
+    /// Second moment estimate (Adam).
+    std::vector<double> v;
 };
 
 }

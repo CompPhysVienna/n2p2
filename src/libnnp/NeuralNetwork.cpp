@@ -787,6 +787,21 @@ void NeuralNetwork::propagateLayer(Layer& layer, Layer& layerPrev)
             layer.neurons[i].dfdx   = dtmp;
             layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
         }
+        else if (layer.activationFunction == AF_RELU)
+        {
+            if (dtmp > 0.0)
+            {
+                layer.neurons[i].value  = dtmp;
+                layer.neurons[i].dfdx   = 1.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else
+            {
+                layer.neurons[i].value  = 0.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+        }
         layer.neurons[i].count++;
         dtmp = layer.neurons[i].x;
         layer.neurons[i].min  = min(dtmp, layer.neurons[i].min);
@@ -941,6 +956,10 @@ vector<string> NeuralNetwork::info() const
                 else if (layers[j].activationFunction == AF_SOFTPLUS)
                 {
                     s += strpr(" %3s", "p");
+                }
+                else if (layers[j].activationFunction == AF_RELU)
+                {
+                    s += strpr(" %3s", "r");
                 }
             }
             else

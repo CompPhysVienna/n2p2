@@ -22,6 +22,7 @@
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
 #include <map>     // std::map
+#include <random>  // std::mt19937_64
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -36,24 +37,56 @@ public:
     enum UpdaterType
     {
         /// Simple gradient descent methods.
-        UT_GRADIENTDESCENT,
+        UT_GD,
         /// Kalman filter-based methods.
-        UT_KALMANFILTER
+        UT_KF,
+        /// Levenberg-Marquardt algorithm.
+        UT_LM
     };
 
-    /// Parallel modes available for Training.
+    /** Training parallelization mode.
+     *
+     * This mode determines if and how individual MPI tasks contribute to
+     * parallel training. Note that in all cases the data set gets distributed
+     * among the MPI processes and RMSE computation is always parallelized.
+     */
     enum ParallelMode
     {
-        /// No parallel training, serial updates only.
-        PM_SERIAL,
-        /// Multi-stream Kalman filter training, all MPI tasks update weights.
-        PM_MSEKF,
-        /// Multi-stream Kalman filter training, non-blocking communication.
-        PM_MSEKFNB,
-        /// Multi-stream Kalman filter training, update only at MPI rank 0.
-        PM_MSEKFR0,
-        /// Multi-stream Kalman filter training, update rank 0, precalc X.
-        PM_MSEKFR0PX
+        /** No training parallelization, only data set distribution.
+         *
+         * Data set is distributed via MPI, but for each weight update only
+         * a single task is active, selects energy/force update candidates,
+         * computes errors and gradients, and updates weights.
+         */
+        //PM_DATASET,
+        /** Parallel gradient computation, update on rank 0.
+         *
+         * Data set is distributed via MPI, each tasks selects energy/force
+         * update candidates, and computes errors and gradients, which are
+         * collected on rank 0. Weight update is carried out on rank 0 and new
+         * weights are redistributed to all tasks.
+         */
+        PM_TRAIN_RK0,
+        /** Parallel gradient computation, update on each task.
+         *
+         * Data set is distributed via MPI, each tasks selects energy/force
+         * update candidates, and computes errors and gradients, which are
+         * collected on all MPI tasks. Identical weight updates are carried out
+         * on each task. This mode is ideal if the update routine itself is
+         * parallelized.
+         */
+        PM_TRAIN_ALL
+    };
+
+    /// Jacobian matrix preparation mode.
+    enum JacobianMode
+    {
+        /// No Jacobian, sum up contributions from update candidates.
+        JM_SUM,
+        /// Prepare one Jacobian entry for each task, sum up within tasks.
+        JM_TASK,
+        /// Prepare full Jacobian matrix.
+        JM_FULL
     };
 
     /// Update strategies available for Training.
@@ -174,12 +207,18 @@ public:
     /** Sort update candidates with descending RMSE.
      */
     void                  sortUpdateCandidates();
+    /** Shuffle update candidates.
+     */
+    void                  shuffleUpdateCandidates();
     /** Check if selection mode should be changed.
      */
     void                  checkSelectionMode();
     /** Execute main training loop.
      */
     void                  loop();
+    /** Select energies/forces schedule for one epoch.
+     */
+    void                  setEpochSchedule();
     /** Perform one update.
      *
      * @param[in] force If true, perform force update, otherwise energy update.
@@ -259,97 +298,159 @@ private:
     };
 
     /// Updater type used.
-    UpdaterType                  updaterType;
-    /// Parallel mode used.
-    ParallelMode                 parallelMode;
+    UpdaterType                   updaterType;
+    /// Parallelization mode used.
+    ParallelMode                  parallelMode;
+    /// Jacobian mode used.
+    JacobianMode                  jacobianMode;
     /// Update strategy used.
-    UpdateStrategy               updateStrategy;
+    UpdateStrategy                updateStrategy;
     /// Selection mode for update candidates.
-    SelectionMode                selectionMode;
+    SelectionMode                 selectionMode;
     /// If this rank performs weight updates.
-    bool                         hasUpdaters;
+    bool                          hasUpdaters;
     /// If this rank holds structure information.
-    bool                         hasStructures;
+    bool                          hasStructures;
     /// Use forces for training.
-    bool                         useForces;
+    bool                          useForces;
     /// After force update perform energy update for corresponding structure.
-    bool                         reapeatedEnergyUpdates;
+    bool                          reapeatedEnergyUpdates;
     /// Free symmetry function memory after calculation.
-    bool                         freeMemory;
+    bool                          freeMemory;
     /// Whether training log file is written.
-    bool                         writeTrainingLog;
-    /// Kalman filter stream of this processor. 
-    std::size_t                  myStream;
-    /// Number of Kalman filter streams.
-    std::size_t                  numStreams;
+    bool                          writeTrainingLog;
     /// Number of updaters (depends on update strategy).
-    std::size_t                  numUpdaters;
+    std::size_t                   numUpdaters;
     /// Number of energies in training set.
-    std::size_t                  numEnergiesTrain;
+    std::size_t                   numEnergiesTrain;
     /// Number of forces in training set.
-    std::size_t                  numForcesTrain;
+    std::size_t                   numForcesTrain;
     /// Number of epochs requested.
-    std::size_t                  numEpochs;
+    std::size_t                   numEpochs;
+    /// Batch size for each MPI task (energies).
+    std::size_t                   taskBatchSizeEnergy;
+    /// Batch size for each MPI task (forces).
+    std::size_t                   taskBatchSizeForce;
     /// Current epoch.
-    std::size_t                  epoch;
+    std::size_t                   epoch;
     /// Write energy comparison every this many epochs.
-    std::size_t                  writeEnergiesEvery;
+    std::size_t                   writeEnergiesEvery;
     /// Write force comparison every this many epochs.
-    std::size_t                  writeForcesEvery;
+    std::size_t                   writeForcesEvery;
     /// Write weights every this many epochs.
-    std::size_t                  writeWeightsEvery;
+    std::size_t                   writeWeightsEvery;
     /// Write neuron statistics every this many epochs.
-    std::size_t                  writeNeuronStatisticsEvery;
+    std::size_t                   writeNeuronStatisticsEvery;
     /// Up to this epoch energy comparison is written every epoch.
-    std::size_t                  writeEnergiesAlways;
+    std::size_t                   writeEnergiesAlways;
     /// Up to this epoch force comparison is written every epoch.
-    std::size_t                  writeForcesAlways;
+    std::size_t                   writeForcesAlways;
     /// Up to this epoch weights are written every epoch.
-    std::size_t                  writeWeightsAlways;
+    std::size_t                   writeWeightsAlways;
     /// Up to this epoch neuron statistics are written every epoch.
-    std::size_t                  writeNeuronStatisticsAlways;
+    std::size_t                   writeNeuronStatisticsAlways;
     /// Current position in energy update candidate list (SM_SORT).
-    std::size_t                  posUpdateCandidatesEnergy;
+    std::size_t                   posUpdateCandidatesEnergy;
     /// Current position in force update candidate list (SM_SORT).
-    std::size_t                  posUpdateCandidatesForce;
+    std::size_t                   posUpdateCandidatesForce;
     /// Maximum trials for SM_THRESHOLD selection mode.
-    std::size_t                  rmseThresholdTrials;
+    std::size_t                   rmseThresholdTrials;
     /// Update counter.
-    std::size_t                  countUpdates;
+    std::size_t                   countUpdates;
+    /// Number of energy updates per epoch.
+    std::size_t                   energyUpdates;
+    /// Number of force updates per epoch.
+    std::size_t                   forceUpdates;
+    /// Energies used per update.
+    std::size_t                   energiesPerUpdate;
+    /// Energies used per update (summed over all MPI tasks).
+    std::size_t                   energiesPerUpdateGlobal;
+    /// Global number of energy errors per update.
+    std::size_t                   errorsGlobalEnergy;
+    /// Forces used per update.
+    std::size_t                   forcesPerUpdate;
+    /// Forces used per update (summed over all MPI tasks).
+    std::size_t                   forcesPerUpdateGlobal;
+    /// Global number of force errors per update.
+    std::size_t                   errorsGlobalForce;
+    /// Total number of weights.
+    std::size_t                   numWeights;
     /// Desired energy update fraction per epoch.
-    double                       epochFractionEnergies;
+    double                        epochFractionEnergies;
     /// Desired force update fraction per epoch.
-    double                       epochFractionForces;
+    double                        epochFractionForces;
     /// Current RMSE of training energies.
-    double                       rmseEnergiesTrain;
+    double                        rmseEnergiesTrain;
     /// Current RMSE of test energies.
-    double                       rmseEnergiesTest;
+    double                        rmseEnergiesTest;
     /// Current RMSE of training forces.
-    double                       rmseForcesTrain;
+    double                        rmseForcesTrain;
     /// Current RMSE of test forces.
-    double                       rmseForcesTest;
+    double                        rmseForcesTest;
     /// RMSE threshold for energy update candidates.
-    double                       rmseThresholdEnergy;
+    double                        rmseThresholdEnergy;
     /// RMSE threshold for force update candidates.
-    double                       rmseThresholdForce;
+    double                        rmseThresholdForce;
     /// Force update weight.
-    double                       forceWeight;
+    double                        forceWeight;
     /// File name for training log.
-    std::string                  trainingLogFileName;
+    std::string                   trainingLogFileName;
     /// Training log file.
-    std::ofstream                trainingLog;
+    std::ofstream                 trainingLog;
+    /// Update schedule epoch (false = energy update, true = force update).
+    std::vector<int>              epochSchedule;
+    /// Errors per task for each energy update.
+    std::vector<int>              errorsPerTaskEnergy;
+    /// Errors per task for each force update.
+    std::vector<int>              errorsPerTaskForce;
+    /// Offset for combined energy error per task.
+    std::vector<int>              offsetPerTaskEnergy;
+    /// Offset for combined force error per task.
+    std::vector<int>              offsetPerTaskForce;
+    /// Number of weights per updater.
+    std::vector<std::size_t>      numWeightsPerUpdater;
+    /// Offset of each element's weights in combined array.
+    std::vector<std::size_t>      weightsOffset;
     /// Vector with indices of training structures.
-    std::vector<UpdateCandidate> updateCandidatesEnergy;
+    std::vector<UpdateCandidate>  updateCandidatesEnergy;
     /// Vector with indices of training forces.
-    std::vector<UpdateCandidate> updateCandidatesForce;
+    std::vector<UpdateCandidate>  updateCandidatesForce;
+    /// Weights per task per updater for energy updates.
+    std::vector<
+    std::vector<int> >            weightsPerTaskEnergy;
+    /// Stride for Jacobians per task per updater for energy updates.
+    std::vector<
+    std::vector<int> >            offsetJacobianEnergy;
+    /// Weights per task per updater for force updates.
+    std::vector<
+    std::vector<int> >            weightsPerTaskForce;
+    /// Stride for Jacobians per task per updater for force updates.
+    std::vector<
+    std::vector<int> >            offsetJacobianForce;
     /// Neural network weights and biases for each element.
     std::vector<
-    std::vector<double> >        weights;
-    /// Updater (Kalman filter) for each element.
-    std::vector<Updater*>        updaters;
+    std::vector<double> >         weights;
+    /// Global error vector for energies (per updater).
+    std::vector<
+    std::vector<double> >         errorE;
+    /// Global error vector for forces (per updater).
+    std::vector<
+    std::vector<double> >         errorF;
+    /// Global Jacobian for energies (per updater).
+    std::vector<
+    std::vector<double> >         jacobianE;
+    /// Global Jacobian for forces (per updater).
+    std::vector<
+    std::vector<double> >         jacobianF;
+    /// Weight updater (combined or for each element).
+    std::vector<Updater*>         updaters;
     /// Schedule for varying selection mode.
     std::map<std::size_t,
-             SelectionMode>      selectionModeSchedule;
+             SelectionMode>       selectionModeSchedule;
+    /// Per-task random number generator.
+    std::mt19937_64               rngNew;
+    /// Global random number generator.
+    std::mt19937_64               rngGlobalNew;
 
     /** Check if training loop should be continued.
      *
@@ -364,28 +465,22 @@ private:
     void setWeights();
     /** Write energy update data to training log file.
      *
-     * @param[in] proc Processor which performed update.
+     * @param[in] proc Processor which provided update candidate.
      * @param[in] il Loop index of threshold loop.
      * @param[in] f RMSE fraction of update candidate.
-     * @param[in] absXi Absolute error for each updater.
-     * @param[in] meanH Mean magnitude of derivative vector for each updater.
      * @param[in] is Local structure index.
      * @param[in] isg Global structure index.
      */
     void addTrainingLogEntry(int                 proc,
                              std::size_t         il,
                              double              f,
-                             std::vector<double> absXi,
-                             std::vector<double> meanH,
                              std::size_t         isg,
                              std::size_t         is);
     /** Write force update data to training log file.
      *
-     * @param[in] proc Processor which performed update.
+     * @param[in] proc Processor which provided update candidate.
      * @param[in] il Loop index of threshold loop.
      * @param[in] f RMSE fraction of update candidate.
-     * @param[in] absXi Absolute error for each updater.
-     * @param[in] meanH Mean magnitude of derivative vector for each updater.
      * @param[in] is Local structure index.
      * @param[in] isg Global structure index.
      * @param[in] ia Atom index.
@@ -394,10 +489,8 @@ private:
     void addTrainingLogEntry(int                 proc,
                              std::size_t         il,
                              double              f,
-                             std::vector<double> absXi,
-                             std::vector<double> meanH,
-                             std::size_t         is,
                              std::size_t         isg,
+                             std::size_t         is,
                              std::size_t         ia,
                              std::size_t         ic);
 };

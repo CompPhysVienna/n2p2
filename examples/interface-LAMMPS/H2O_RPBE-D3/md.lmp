@@ -40,7 +40,7 @@ pair_coeff * * ${nnpCutoff}
 # INTEGRATOR
 ###############################################################################
 fix INT all nve
-#dump 1 all atom 1 traj.dump
+dump 1 all atom 1 traj.dump
 
 ###############################################################################
 # SIMULATION
