@@ -2210,20 +2210,20 @@ void Training::update(bool force)
                 }
             }
         }
+    }
 
-        // Apply force update weight to error and Jacobian.
-        if (force)
+    // Apply force update weight to error and Jacobian.
+    if (force)
+    {
+        for (size_t i = 0; i < numUpdaters; ++i)
         {
-            for (size_t i = 0; i < numUpdaters; ++i)
+            for (size_t j = 0; j < error->at(i).size(); ++j)
             {
-                for (size_t j = 0; j < error->at(i).size(); ++j)
-                {
-                    error->at(i).at(j) *= forceWeight;
-                }
-                for (size_t j = 0; j < jacobian->at(i).size(); ++j)
-                {
-                    jacobian->at(i).at(j) *= forceWeight;
-                }
+                error->at(i).at(j) *= forceWeight;
+            }
+            for (size_t j = 0; j < jacobian->at(i).size(); ++j)
+            {
+                jacobian->at(i).at(j) *= forceWeight;
             }
         }
     }
