@@ -339,7 +339,7 @@ list of keywords is provided :ref:`here <keywords>`.
 
 .. [1] Morawietz, T.; Singraber, A.; Dellago, C.; Behler, J. How van Der Waals
    Interactions Determine the Unique Properties of Water. Proc. Natl. Acad. Sci.
-   U. S. A. 2016, 113 (30), 8368–8373. `https://doi.org/10.1073/pnas.1602375113. <https://doi.org/10.5281/zenodo.2634098>`__
+   U. S. A. 2016, 113 (30), 8368–8373. `https://doi.org/10.1073/pnas.1602375113. <https://doi.org/10.1073/pnas.1602375113>`__
 
 .. [2] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
    Multi-Stream Training of High-Dimensional Neural Network Potentials. *Submitted
