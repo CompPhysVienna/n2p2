@@ -21,3 +21,8 @@
 1
 # Plot size dependence? (Yes=1/No=0)
 1
+##################################################
+# Specify random seed for creating datasets:
+##################################################
+# Shall random seed be fixed? (Yes=1/No=0)
+0

@@ -3,10 +3,13 @@
 11.04.2019
 @author: mr
 
+PYTHON 2
+
 NNTSSD: Neural Network Training Set Size Dependence
 """
 
 import os
+import sys
 import shutil
 import numpy as np
 import matplotlib.pyplot as plt
@@ -44,7 +47,7 @@ class NNTSSD():
         self.set_size_ratios = set_size_ratios
         self.n_sets_per_size = n_sets_per_size
     
-    def create_training_datasets(self):
+    def create_training_datasets(self,random_seed_logical):
         """Creates training datasets from a given original dataset using the program nnp-select.
         
         Requirements
@@ -64,11 +67,20 @@ class NNTSSD():
             Contains new training dataset of specified size ratio.
         'nnp-select.log' : file
             Log file created by running nnp-select.
+            
+        Parameters
+        ----------
+        random_seed_logical : logical
+            True if random seed for nnp-select shall be fixed, False otherwise.
         """
         try:
             os.path.isfile("input.data")
         except:
-            print "ERROR: The file 'input.data' does not exist!"
+            sys.exit("ERROR: The file 'input.data' does not exist!")
+        try:
+            os.path.isfile("../../../bin/nnp-select random")
+        except:
+            sys.exit("ERROR: The executable program nnp-select does not exist in ~/n2p2/bin")
         n_set_size_ratios = np.size(self.set_size_ratios)
         print "---------------------------------------------"
         print "CREATING TRAINING DATASETS"
@@ -81,12 +93,13 @@ class NNTSSD():
             ratio_folder = "ratio"+str("{:3.2f}".format(current_ratio))
             os.system("mkdir "+ratio_folder)
             for sets_per_size_counter in range(self.n_sets_per_size):
-                nnp_select = "../../../bin/nnp-select random "+str("{:3.2f}".format(current_ratio))+" "+str(int(np.random.randint(100,999,1)))
+                if random_seed_logical:
+                    random_seed = "123"
+                else:
+                    random_seed = int(np.random.randint(100,999,1))
+                nnp_select = "../../../bin/nnp-select random "+str("{:3.2f}".format(current_ratio))+" "+str(random_seed)
                 print nnp_select
-                try:
-                    os.system(nnp_select)
-                except:
-                    print "ERROR: The executable program nnp-select does not exist in ~/n2p2/bin"
+                os.system(nnp_select)
                 os.chdir(ratio_folder)
                 set_folder = "ratio"+str("{:3.2f}".format(current_ratio))+"_set"+str(sets_per_size_counter)
                 os.system("mkdir "+set_folder)
@@ -122,6 +135,10 @@ class NNTSSD():
         'ratio*/ratio*_**/learning-curve.out' : file
             Contains learning curve data, namely RMSE of energy and forces of train and test sets for each epoch.
         """
+        try:
+            os.path.isfile("../../../bin/nnp-train random")
+        except:
+            sys.exit("ERROR: The executable program nnp-train does not exist in ~/n2p2/bin")
         n_set_size_ratios = np.size(self.set_size_ratios)
         print "---------------------------------------------"
         print "TRAINING NEURAL NETWORK"
@@ -136,20 +153,17 @@ class NNTSSD():
                 try:
                     os.chdir(ratio_folder)
                 except:
-                    print "ERROR: The folder ",ratio_folder,"does not exist!"
+                    sys.exit("ERROR: The folder "+ratio_folder+"does not exist!")
                 set_folder = "ratio"+str("{:3.2f}".format(current_ratio))+"_set"+str(sets_per_size_counter)
                 try:
                     os.chdir(set_folder)
                 except:
-                    print "ERROR: The folder ",ratio_folder,"/",set_folder," does not exist!"
+                    sys.exit("ERROR: The folder "+ratio_folder+"/"+set_folder+" does not exist!")
                 shutil.copy("../../input.nn","input.nn")
                 shutil.copy("../../scaling.data","scaling.data")
                 nnp_train = "mpirun -np 4 ../../../../../bin/nnp-train"
                 print nnp_train
-                try:
-                    os.system(nnp_train)
-                except:
-                    print "ERROR: The executable program nnp-train does not exist in ~/n2p2/bin"
+                os.system(nnp_train)
                 os.chdir("../../")
 
     def analyse_learning_curves(self):
@@ -184,14 +198,17 @@ class NNTSSD():
             try:
                 os.chdir(ratio_folder)
             except:
-                print "ERROR: The folder ",ratio_folder,"does not exist!"
+                sys.exit("ERROR: The folder "+ratio_folder+" does not exist!")
             for sets_per_size_counter in range(self.n_sets_per_size):
                 set_folder = "ratio"+str("{:3.2f}".format(current_ratio))+"_set"+str(sets_per_size_counter)
                 try:
                     os.chdir(set_folder)
                 except:
-                    print "ERROR: The folder ",ratio_folder,"/",set_folder," does not exist!"
-                collect_data = np.vstack([collect_data,np.append(np.array([current_ratio,sets_per_size_counter]),np.genfromtxt("learning-curve.out")[-1,0:5],axis=0)])
+                    sys.exit("ERROR: The folder "+ratio_folder+"/"+set_folder+" does not exist!")
+                try:
+                    collect_data = np.vstack([collect_data,np.append(np.array([current_ratio,sets_per_size_counter]),np.genfromtxt("learning-curve.out")[-1,0:5],axis=0)])
+                except:
+                    sys.exit("ERROR: The file 'learing-curve.out' does not exist in "+ratio_folder+"/"+set_folder+"!")
                 os.chdir("../")
             np.savetxt("collect_data.out",collect_data,fmt="%.18e",header='%15s%25s%25s%25s%25s%25s%25s'%('ratio','set_number','last_epoch','RMSE_E_train','RMSE_E_test','RMSE_F_train','RMSE_F_test'))
             mean_data = np.mean(collect_data,axis=0)[3:]
@@ -222,13 +239,13 @@ class NNTSSD():
         try:
             os.path.isfile("analyse_data.out")
         except:
-            print "ERROR: The file 'analyse_data.out' does not exist!"
+            sys.exit("ERROR: The file 'analyse_data.out' does not exist!")
         ratio_folder = "ratio"+str("{:3.2f}".format(self.set_size_ratios[0]))
         set_folder = "ratio"+str("{:3.2f}".format(self.set_size_ratios[0]))+"_set0"
         try:
             os.path.isfile(ratio_folder+"/"+set_folder+"/nnp-select.log")
         except:
-            print "ERROR: The file 'nnp-select.log' does not exist in the desired path!"
+            sys.exit("ERROR: The file 'nnp-select.log' does not exist in the desired path!")
         os.chdir(ratio_folder+"/"+set_folder)
         nnp_select_log = open("nnp-select.log")
         for line in nnp_select_log:
@@ -273,20 +290,23 @@ def perform_NNTSSD():
     try:
         os.path.isfile("NNTSSD_input.dat")
     except:
-        print "ERROR: The file 'NNTSSD_input.dat' does not exist!"
+        sys.exit("ERROR: The file 'NNTSSD_input.dat' does not exist!")
     user_input = np.genfromtxt("NNTSSD_input.dat")
     user_input[1] += user_input[2]
     if not (0.0 < user_input[0] and user_input[0] < user_input[1] and user_input[1] <= 1.0):
-        print "ERROR: Make sure the input ratios are in interval (0,1] and minimum ratio < maximum ratio."
+        sys.exit("ERROR: Make sure the input ratios are in interval (0,1] and minimum ratio < maximum ratio.")
     elif not (user_input[2]*2.0 <= (user_input[1]-user_input[0])):
-        print "ERROR: Make sure you have specified at least 2 training set sizes."
+        sys.exit("ERROR: Make sure you have specified at least 2 training set sizes.")
     elif not (int(user_input[3]) >= 2):
-        print "ERROR: Make sure you have specified at least 2 sample sets per training size."
+        sys.exit("ERROR: Make sure you have specified at least 2 sample sets per training size.")
     elif not ((user_input[4] == 1. or user_input[4] == 0.) and (user_input[5] == 1. or user_input[5] == 0.) \
     and (user_input[6] == 1. or user_input[6] == 0.) and (user_input[7] == 1. or user_input[7] == 0.)):
-        print "ERROR: Make sure you have specified the NNTSSD steps with either 0 or 1."
+        sys.exit("ERROR: Make sure you have specified the NNTSSD steps with either 0 or 1.")
+    elif not (user_input[8] == 1. or user_input[8] == 0.):
+        sys.exit("ERROR: Make sure you have set the random seed specification to either 0 or 1.")
     else:
-        [create_logical,train_logical,analyse_logical,plot_logical] = map(bool,user_input[4:])
+        random_seed_logical = bool(user_input[8])
+        [create_logical,train_logical,analyse_logical,plot_logical] = map(bool,user_input[4:8])
         set_size_ratios = np.arange(user_input[0],user_input[1],user_input[2])
         n_sets_per_size = int(user_input[3])
         print "Performing the following NNTSSD steps:"
@@ -296,7 +316,7 @@ def perform_NNTSSD():
         print plot_logical, "\t Plot size dependence"
         myNNTSSD = NNTSSD(set_size_ratios,n_sets_per_size)
         if create_logical:
-            myNNTSSD.create_training_datasets()
+            myNNTSSD.create_training_datasets(random_seed_logical)
         if train_logical:
             myNNTSSD.training_neural_network()
         if analyse_logical:
