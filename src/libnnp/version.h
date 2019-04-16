@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "5e588e5d12ce1f81af6f1f4af21cda9ec5d4dba5"
-#define NNP_GIT_REV_SHORT "5e588e5"
+#define NNP_GIT_REV "e5030144c16374d7288d243e7ca4c8606b3a73fa"
+#define NNP_GIT_REV_SHORT "e503014"
 #define NNP_GIT_BRANCH "n2p2_training_size"
 
 #endif
