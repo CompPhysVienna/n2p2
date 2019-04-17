@@ -1,0 +1,28 @@
+# INPUT SPECIFICATIONS FOR RUNNING NNTSSD:
+##################################################
+# Specify which NNTSSD steps shall be performed:
+##################################################
+# Create training datasets? (Yes=1/No=0)
+1
+# Train neural network? (Yes=1/No=0)
+1
+# Analyse learning curves? (Yes=1/No=0)
+1
+# Plot size dependence? (Yes=1/No=0)
+1
+##################################################
+# Specify NNTSSD training set size parameters:
+##################################################
+# minimum ratio of total training set size
+0.8
+# maximum ratio of total training set size
+0.9
+# ratio step size in between minimum and maximum
+0.1
+# number of samples per set size
+2
+##################################################
+# Specify random seed for creating datasets:
+##################################################
+# Shall random seed be fixed? (Yes=1/No=0)
+0

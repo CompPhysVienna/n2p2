@@ -1,0 +1,6 @@
+How to run an example:
+
+* build n2p2 (https://compphysvienna.github.io/n2p2/) by running '$ make static' in ~/n2p2/src/
+* run with '$ python3 ../source/NNTSSD.py'
+
+INFO: For this example, 20 configurations from H2O_RPBE-D3 are used as original input training dataset.

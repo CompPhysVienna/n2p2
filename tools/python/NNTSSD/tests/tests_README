@@ -1,0 +1,2 @@
+in ~/n2p2/tools/python/NNTSSD/tests/, run the following command:
+$ python3 -m pytest

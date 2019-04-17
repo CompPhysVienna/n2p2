@@ -9,20 +9,20 @@
 # Analyse learning curves? (Yes=1/No=0)
 0
 # Plot size dependence? (Yes=1/No=0)
-1
+0
 ##################################################
 # Specify NNTSSD training set size parameters:
 ##################################################
 # minimum ratio of total training set size
-0.1
+0.8
 # maximum ratio of total training set size
-0.2
+0.9
 # ratio step size in between minimum and maximum
-0.05
+0.1
 # number of samples per set size
 2
 ##################################################
 # Specify random seed for creating datasets:
 ##################################################
 # Shall random seed be fixed? (Yes=1/No=0)
-1
+0
