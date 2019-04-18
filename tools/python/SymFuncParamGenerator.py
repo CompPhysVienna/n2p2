@@ -7,10 +7,14 @@ import traceback
 
 
 class SymFuncParamGenerator:
+    symfunc_type_numbers = dict(radial=2,
+                             angular_narrow=3,
+                             angular_wide=9,
+                             weighted_radial=12,
+                             weighted_angular=13)
+
     def __init__(self, elements):
         self.elements = elements
-
-        # TODO: add dictionary that matches sf type strings with the corresponding numbers
 
         self.r_shift_grid = None
         self.eta_grid = None
@@ -30,8 +34,9 @@ class SymFuncParamGenerator:
         pass
 
     def set_symfunc_type(self, symfunc_type):
-        # TODO: 1) make this raise an error if invalid type is given
-        # TODO: 2) set zetas to None if a radial type is given?
+        # TODO: set zetas to None if a radial type is given?
+        if not symfunc_type in self.symfunc_type_numbers.keys():
+            raise ValueError('Invalid symmetry function type given.')
         self.symfunc_type = symfunc_type
 
     def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None):
