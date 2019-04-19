@@ -30,13 +30,14 @@ class SymFuncParamGenerator:
         return self.elements
 
     def clear_all(self):
-        # TODO: make this do something...
+        # TODO: either make this do something or remove...
         pass
 
     def set_symfunc_type(self, symfunc_type):
         # TODO: set zetas to None if a radial type is given?
         if not symfunc_type in self.symfunc_type_numbers.keys():
-            raise ValueError('Invalid symmetry function type given.')
+            raise ValueError('Invalid symmetry function type given. Must be one of {}'.format(
+                list(self.symfunc_type_numbers.keys())))
         self.symfunc_type = symfunc_type
 
     def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None):
