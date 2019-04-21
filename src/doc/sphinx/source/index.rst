@@ -265,7 +265,9 @@ Actual full size data sets may be rather large and are therefore hosted elsewher
 +-------------+--------------+
 | System      | Link         |
 +=============+==============+
-| |Cu2S| [1]_ | |cu2s_data|_ |
+| |H2O| [1]_  | |h2o_data|_  |
++-------------+--------------+
+| |Cu2S| [2]_ | |cu2s_data|_ |
 +-------------+--------------+
 
 NNP potentials ready for use
@@ -325,12 +327,21 @@ list of keywords is provided :ref:`here <keywords>`.
    About/license
    About/changelog
 
+.. |H2O| replace:: H\ :sub:`2`\ O
+
 .. |Cu2S| replace:: Cu\ :sub:`2`\ S
+
+.. |h2o_data| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.2634098.svg
+.. _h2o_data: https://doi.org/10.5281/zenodo.2634098
 
 .. |cu2s_data| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.2603918.svg
 .. _cu2s_data: https://doi.org/10.5281/zenodo.2603918
 
-.. [1] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+.. [1] Morawietz, T.; Singraber, A.; Dellago, C.; Behler, J. How van Der Waals
+   Interactions Determine the Unique Properties of Water. Proc. Natl. Acad. Sci.
+   U. S. A. 2016, 113 (30), 8368–8373. `https://doi.org/10.1073/pnas.1602375113. <https://doi.org/10.1073/pnas.1602375113>`__
+
+.. [2] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
    Multi-Stream Training of High-Dimensional Neural Network Potentials. *Submitted
    to J. Chem. Theory Comput.* 2019.
 
