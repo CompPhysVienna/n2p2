@@ -21,7 +21,6 @@ class SymFuncParamGenerator:
         self.r_shift_grid = None
         self.eta_grid = None
 
-        self.r_cutoff = None
         self.symfunc_type = None
         self.radial_grid_info = None
 
@@ -170,58 +169,74 @@ class SymFuncParamGenerator:
 
     def write_parameter_strings(self):
         self.check_all_settings()
+
         element_combinations = self.create_element_combinations()
+        r_cutoff = self.radial_grid_info['r_cutoff']
+        sf_number = self.symfunc_type_numbers[self.symfunc_type]
 
         if self.symfunc_type == 'radial':
             for comb in element_combinations:
-                # TODO: replace with meaningful loop over sf parameters
-                for sth in range(6):
-                    sys.stdout.write(f'{comb[0]:2s} {comb[1]:2s} {sth}\n')
+                for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
+                    sys.stdout.write(
+                        f'symfunction_short {comb[0]:2s} {sf_number} {comb[1]:2s} {eta:9.3E} {rs:9.3E} {r_cutoff:9.3E}\n')
                 sys.stdout.write('\n')
+
         elif self.symfunc_type in ['angular_narrow', 'angular_wide']:
             for comb in element_combinations:
-                # TODO: replace with meaningful loop over sf parameters
-                for sth in range(6):
-                    sys.stdout.write(f'{comb[0]:2s} {comb[1]:2s} {comb[2]:2s} {sth}\n')
+                for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
+                    for zeta in self.zetas:
+                        for lambd in self.lambdas:
+                            sys.stdout.write(
+                                f'symfunction_short {comb[0]:2s} {sf_number} {comb[1]:2s} {comb[2]:2s} {eta:9.3E} {lambd:2.0f} {zeta:9.3E} {r_cutoff:9.3E} {rs:9.3E}\n')
                 sys.stdout.write('\n')
+
         elif self.symfunc_type == 'weighted_radial':
             for comb in element_combinations:
-                # TODO: replace with meaningful loop over sf parameters
-                for sth in range(6):
-                    sys.stdout.write(f'{comb[0]:2s} {sth}\n')
+                for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
+                    sys.stdout.write(
+                        f'symfunction_short {comb[0]:2s} {sf_number} {eta:9.3E} {rs:9.3E} {r_cutoff:9.3E}\n')
                 sys.stdout.write('\n')
-        elif self.symfunc_type == 'weighted_radial':
+
+        elif self.symfunc_type == 'weighted_angular':
             for comb in element_combinations:
-                # TODO: replace with meaningful loop over sf parameters
-                for sth in range(6):
-                    sys.stdout.write(f'{comb[0]:2s} {sth}\n')
+                for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
+                    for zeta in self.zetas:
+                        for lambd in self.lambdas:
+                            sys.stdout.write(
+                                f'symfunction_short {comb[0]:2s} {sf_number} {eta:9.3E} {rs:9.3E} {lambd:2.0f} {zeta:9.3E} {r_cutoff:9.3E} \n')
                 sys.stdout.write('\n')
 
 
 
 if __name__ == '__main__':
-    # elems = ['S', 'Cu']
-    elems = ['H', 'C', 'O']
+    elems = ['S', 'Cu']
+    # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
 
     # print('gastegger2018 center mode')
-    # myGen.generate_radial_params(method='gastegger2018', mode='center', r_cutoff=6., nb_gridpoints=9,
+    # myGen.generate_radial_params(method='gastegger2018', mode='center', r_cutoff=6., nb_gridpoints=3,
     #                              r_lower=1.5)
     # myGen.set_symfunc_type('angular_narrow')
     # myGen.set_zetas([1.0, 6.0])
     # myGen.write_generation_info()
     #
-    print('\ngastegger2018 shift mode')
-    myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=9, r_lower=1.5)
-    myGen.set_symfunc_type('angular_narrow')
-    myGen.set_zetas([1.0, 6.0])
-    myGen.write_generation_info()
+    # print('\ngastegger2018 shift mode')
+    # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=9, r_lower=1.5)
+    # myGen.set_symfunc_type('angular_narrow')
+    # myGen.set_zetas([1.0, 6.0])
+    # myGen.write_generation_info()
     #
     # print('\nimbalzano2018 center mode')
     # myGen.generate_radial_params(method='imbalzano2018', mode='center', r_cutoff=5., nb_gridpoints=5)
     # myGen.set_symfunc_type('weighted_radial')
     # myGen.set_zetas([1.0, 6.0])
     # myGen.write_generation_info()
+
+    print('\ngastegger2018 shift mode')
+    myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
+    myGen.set_symfunc_type('weighted_angular')
+    myGen.set_zetas([1.0, 6.0])
+    myGen.write_generation_info()
 
     # print('\nimbalzano2018 shift mode')
     # myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
