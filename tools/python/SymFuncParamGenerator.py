@@ -43,7 +43,7 @@ class SymFuncParamGenerator:
         # TODO: set zetas to None if a radial type is given ??
         self.symfunc_type = symfunc_type
         self.check_symfunc_type()
-    #
+
     def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None):
         # store infos on radial parameter generation settings (that are independent of method)
         self.radial_grid_info = dict(method=method,
@@ -137,14 +137,14 @@ class SymFuncParamGenerator:
         sys.stdout.write(
             "# {} symmetry function set, generated with parameters:\n".format(type_descriptions[self.symfunc_type]))
         for key, value in self.radial_grid_info.items():
-            sys.stdout.write('# {0:13s} = {1}\n'.format(key, value))
+            sys.stdout.write(f'# {key:13s} = {value}\n')
         # set numpy print precision to lower number of decimal places for the following outputs
         np.set_printoptions(precision=4)
-        sys.stdout.write('# r_shift_grid  = {}\n'.format(self.r_shift_grid))
-        sys.stdout.write('# eta_grid      = {}\n'.format(self.eta_grid))
+        sys.stdout.write(f'# r_shift_grid  = {self.r_shift_grid}\n')
+        sys.stdout.write(f'# eta_grid      = {self.eta_grid}\n')
         if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
-            sys.stdout.write('# lambdas       = {}\n'.format(self.lambdas))
-            sys.stdout.write('# zetas         = {}\n'.format(self.zetas))
+            sys.stdout.write(f'# lambdas       = {self.lambdas}\n')
+            sys.stdout.write(f'# zetas         = {self.zetas}\n')
         # reset numpy print precision to default
         np.set_printoptions(precision=8)
 
@@ -174,6 +174,7 @@ class SymFuncParamGenerator:
         r_cutoff = self.radial_grid_info['r_cutoff']
         sf_number = self.symfunc_type_numbers[self.symfunc_type]
 
+        # TODO: make some kind of linebreaks within the strings to keep code lines below 120 characters
         if self.symfunc_type == 'radial':
             for comb in element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
@@ -220,11 +221,11 @@ if __name__ == '__main__':
     # myGen.set_zetas([1.0, 6.0])
     # myGen.write_generation_info()
     #
-    # print('\ngastegger2018 shift mode')
-    # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=9, r_lower=1.5)
-    # myGen.set_symfunc_type('angular_narrow')
-    # myGen.set_zetas([1.0, 6.0])
-    # myGen.write_generation_info()
+    print('\ngastegger2018 shift mode')
+    myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=9, r_lower=1.5)
+    myGen.set_symfunc_type('angular_narrow')
+    myGen.set_zetas([1.0, 6.0])
+    myGen.write_generation_info()
     #
     # print('\nimbalzano2018 center mode')
     # myGen.generate_radial_params(method='imbalzano2018', mode='center', r_cutoff=5., nb_gridpoints=5)
@@ -232,11 +233,11 @@ if __name__ == '__main__':
     # myGen.set_zetas([1.0, 6.0])
     # myGen.write_generation_info()
 
-    print('\ngastegger2018 shift mode')
-    myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
-    myGen.set_symfunc_type('weighted_angular')
-    myGen.set_zetas([1.0, 6.0])
-    myGen.write_generation_info()
+    # print('\ngastegger2018 shift mode')
+    # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
+    # myGen.set_symfunc_type('weighted_angular')
+    # myGen.set_zetas([1.0, 6.0])
+    # myGen.write_generation_info()
 
     # print('\nimbalzano2018 shift mode')
     # myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
