@@ -1,0 +1,14 @@
+#Example of usage
+#new training set size "20", memory intensive "0"
+mpirun -np 1 nnp-fpssampling 20 0 > output
+
+#Example of usage
+#new training set size "50", memory saving "1"
+#mpirun -np 1 nnpf-fpssampling 50 1 > output
+
+#For very large trainingsets, memory saving is the only working route. It recalculates symmetry functions many times. The code may be optimized a lot in this mode.
+#Note that there is no memory overload control and the program will just stop with an undefined error message in case of memory overload
+#This application is not yet parallelized
+
+
+

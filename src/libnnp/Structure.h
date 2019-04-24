@@ -61,6 +61,8 @@ struct Structure
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for each atom.
     bool                     hasSymmetryFunctionDerivatives;
+    /// If structure already saved vector "allG"
+    bool                     hasallG;
     /// Index number of this structure.
     std::size_t              index;
     /// Total number of atoms present in this structure.
@@ -91,6 +93,8 @@ struct Structure
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
     std::vector<Atom>        atoms;
+    /// Sorted vector of all symmetry functions in this structures
+    std::vector<std::vector< float > > allG;
 
     /** Constructor, initializes to zero.
      */
@@ -273,6 +277,16 @@ struct Structure
      * @return Lines with structure information.
      */
     std::vector<std::string> info() const;
+
+    /** clear allG vector
+     *
+     */
+    void                     clearallG();
+    /** Build vector of vector of sorted symmetry functions
+     *
+     */
+    void                     updateallG(std::ofstream* file);
+
 };
 
 }

@@ -789,3 +789,36 @@ vector<string> Structure::info() const
 
     return v;
 }
+
+void Structure::clearallG()
+{
+        allG.clear();
+        hasallG=false;
+        return;
+}
+
+
+void Structure::updateallG(ofstream* file)
+{
+    allG.resize(numElements);
+    for (vector<Atom>::const_iterator it = atoms.begin();it != atoms.end(); ++it)
+        {
+
+        for (vector< double >::const_iterator itG = (it->G).begin(); itG != (it->G).end(); ++ itG)
+        {
+                allG[it->element].push_back((float)*itG);
+        }
+
+
+        }
+
+//sort them elementwise
+   for (vector<vector< float > >::iterator it1 = allG.begin(); it1 != allG.end(); ++it1){
+       sort((*it1).begin(),(*it1).end());
+   }
+
+   hasallG=true;
+
+return;
+}
+
