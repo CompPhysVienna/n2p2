@@ -21,14 +21,14 @@ class SymFuncParamGenerator:
         numbers used internally by n2p2 to distinguish symmetry function types.
     lambdas : numpy.ndarray
         Set of values for the parameter lambda of angular symmetry functions. Fixed to [-1, 1].
-    elements : list of string
-        The chemical elements present in the system. Same as what was passed as parameter to constructor.
     radial_grid_info : dict or None
         Stores settings that were used for generating the symmetry function parameters r_shift and eta.
     r_shift_grid : numpy.ndarray or None
         The set of values for the symmetry function parameter r_shift that was generated.
     eta_grid : numpy.ndarray or None
         The set of values for the symmetry function parameter eta that was generated.
+    elements
+    element_combinations
     symfunc_type
     zetas
     """
@@ -45,7 +45,8 @@ class SymFuncParamGenerator:
         self.lambdas = np.array([-1.0, 1.0])
 
         # TODO: consider checking if valid input for elements
-        self.elements = elements
+        self._elements = elements
+        self._element_combinations = None
         self._symfunc_type = None
         self._zetas = None
 
@@ -53,43 +54,38 @@ class SymFuncParamGenerator:
         self.r_shift_grid = None
         self.eta_grid = None
 
-    def get_elements(self):
-        return self.elements
-    
-    def check_symfunc_type(self):
-        """Check if a symmetry function type has been set and if it is a valid one.
-
-        Raises
-        -------
-        TypeError
-            If the symmmetry function type has not been set (i.e., it is None).
-        ValueError
-            If the symmmetry function type is invalid.
-
-        Returns
-        -------
-        None
+    @property
+    def elements(self):
+        """The chemical elements present in the system (list of string, read-only).
         """
-        if self._symfunc_type is None:
-            raise TypeError('No symmetry function type has been set.')
-        elif not self._symfunc_type in self.symfunc_type_numbers.keys():
-            raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
-                list(self.symfunc_type_numbers.keys())))
+        return self._elements
+
+    @property
+    def element_combinations(self):
+        """Combinations of elements (list of tuple of string, read-only).
+
+        This is computed and set automatically by the setter for symfunc_type.
+        """
+        return self._element_combinations
 
     @property
     def symfunc_type(self):
         """Type of symmetry function for which parameters are to be generated (`str`).
 
-        When the setter for this is called it also checks the validity of the input.
+        When the setter for this is called it also checks the validity of
+        the input, builds the necessary element combinations for the given
+        symmetry function type, and stores it to member variable.
         """
         return self._symfunc_type
 
     @symfunc_type.setter
     def symfunc_type(self, value):
         # TODO: set zetas to None if a radial type is given ??
-        # TODO: automatically generate element combinations (and store in member variable), when symfunc type is set ??
         self._symfunc_type = value
         self.check_symfunc_type()
+        # once symmetry function type has been set and found to be valid,
+        # build and store the element combinations
+        self._element_combinations = self.construct_element_combinations()
 
     @property
     def zetas(self):
@@ -100,6 +96,26 @@ class SymFuncParamGenerator:
     @zetas.setter
     def zetas(self, values):
         self._zetas = np.array(values)
+
+    def check_symfunc_type(self):
+        """Check if a symmetry function type has been set and if it is a valid one.
+
+        Raises
+        -------
+        TypeError
+            If the symmetry function type has not been set (i.e., it is None).
+        ValueError
+            If the symmetry function type is invalid.
+
+        Returns
+        -------
+        None
+        """
+        if self._symfunc_type is None:
+            raise TypeError('No symmetry function type has been set.')
+        elif not self._symfunc_type in self.symfunc_type_numbers.keys():
+            raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
+                list(self.symfunc_type_numbers.keys())))
 
     def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None):
         """Generate a set of values for r_shift and eta.
@@ -195,14 +211,14 @@ class SymFuncParamGenerator:
                 rs_grid_extended = r_cutoff / nb_intervals_extended ** (
                         gridpoint_indices_extended / nb_intervals_extended)
                 # from pairs of neighboring r_shift values, compute eta values.
-                # doing this for the nb_gridpoints + 1 values in the auxiliary grid ultimately gives...
-                # ...nb_gridpoints different values for eta
+                # doing this for the nb_gridpoints + 1 values in the auxiliary
+                # grid ultimately gives nb_gridpoints different values for eta.
                 eta_grid = np.zeros(nb_gridpoints)
                 for idx in range(len(rs_grid_extended) - 1):
                     eta_current = 1 / (rs_grid_extended[idx] - rs_grid_extended[idx + 1]) ** 2
                     eta_grid[idx] = eta_current
-                # create final grid of r_shift values by excluding the first entry...
-                # ...(for which r_shift coincides with the cutoff radius) from the extended grid
+                # create final grid of r_shift values by excluding the first entry
+                # (for which r_shift coincides with the cutoff radius) from the extended grid
                 r_shift_grid = rs_grid_extended[1:]
                 # reverse the order of r_shift and eta values so they are sorted in order of ascending r_shift...
                 # ...(not necessary, but makes the output consistent with the other methods)
@@ -315,20 +331,19 @@ class SymFuncParamGenerator:
         """
         self.check_all()
 
-        element_combinations = self.construct_element_combinations()
         r_cutoff = self.radial_grid_info['r_cutoff']
-        sf_number = self.symfunc_type_numbers[self._symfunc_type]
+        sf_number = self.symfunc_type_numbers[self.symfunc_type]
 
         # TODO: make some kind of linebreaks within the strings to keep code lines below hard limit of 120 chars
         if self._symfunc_type == 'radial':
-            for comb in element_combinations:
+            for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
                     sys.stdout.write(
                         f'symfunction_short {comb[0]:2s} {sf_number} {comb[1]:2s} {eta:9.3E} {rs:9.3E} {r_cutoff:9.3E}\n')
                 sys.stdout.write('\n')
 
         elif self._symfunc_type in ['angular_narrow', 'angular_wide']:
-            for comb in element_combinations:
+            for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
                     for zeta in self._zetas:
                         for lambd in self.lambdas:
@@ -337,14 +352,14 @@ class SymFuncParamGenerator:
                 sys.stdout.write('\n')
 
         elif self._symfunc_type == 'weighted_radial':
-            for comb in element_combinations:
+            for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
                     sys.stdout.write(
                         f'symfunction_short {comb[0]:2s} {sf_number} {eta:9.3E} {rs:9.3E} {r_cutoff:9.3E}\n')
                 sys.stdout.write('\n')
 
         elif self._symfunc_type == 'weighted_angular':
-            for comb in element_combinations:
+            for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
                     for zeta in self._zetas:
                         for lambd in self.lambdas:
@@ -380,7 +395,7 @@ def main():
     # myGen.generate_radial_params(method='imbalzano2018', mode='center', r_cutoff=5., nb_gridpoints=5)
     # myGen.symfunc_type = 'weighted_radial'
     # myGen.write_generation_info()
-    #
+
     # print('\ngastegger2018 shift mode')
     # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
     # myGen.symfunc_type = 'weighted_angular'
@@ -390,6 +405,8 @@ def main():
 
     print()
     myGen.write_parameter_strings()
+
+    print(myGen.element_combinations)
 
 
 if __name__ == '__main__':
