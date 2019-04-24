@@ -23,17 +23,16 @@ class SymFuncParamGenerator:
         Set of values for the parameter lambda of angular symmetry functions. Fixed to [-1, 1].
     elements : list of string
         The chemical elements present in the system. Same as what was passed as parameter to constructor.
-    _symfunc_type : {'radial', 'angular_narrow', 'angular_wide', 'weighted_radial', 'weighted_angular'} or None
-        String specifying the symmetry function type.
-    _zetas : numpy.ndarray
-        Set of values for the parameter zeta of angular symmetry functions.
     radial_grid_info : dict or None
         Stores settings that were used for generating the symmetry function parameters r_shift and eta.
     r_shift_grid : numpy.ndarray or None
         The set of values for the symmetry function parameter r_shift that was generated.
     eta_grid : numpy.ndarray or None
         The set of values for the symmetry function parameter eta that was generated.
-"""
+    symfunc_type
+    zetas
+    """
+
     # TODO: might want to rename that variable
     symfunc_type_numbers = dict(radial=2,
                              angular_narrow=3,
@@ -56,10 +55,9 @@ class SymFuncParamGenerator:
 
     def get_elements(self):
         return self.elements
-
+    
     def check_symfunc_type(self):
-        """
-        Check if a symmetry function type has been set and if it is a valid one.
+        """Check if a symmetry function type has been set and if it is a valid one.
 
         Raises
         -------
@@ -80,6 +78,10 @@ class SymFuncParamGenerator:
 
     @property
     def symfunc_type(self):
+        """Type of symmetry function for which parameters are to be generated (`str`).
+
+        When the setter for this is called it also checks the validity of the input.
+        """
         return self._symfunc_type
 
     @symfunc_type.setter
@@ -91,6 +93,8 @@ class SymFuncParamGenerator:
 
     @property
     def zetas(self):
+        """Set of values for the parameter zeta of angular symmetry functions (`numpy.ndarray`).
+        """
         return self._zetas
 
     @zetas.setter
@@ -98,14 +102,14 @@ class SymFuncParamGenerator:
         self._zetas = np.array(values)
 
     def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None):
-        """
-        Generate a set of values for r_shift and eta.
+        """Generate a set of values for r_shift and eta.
 
-        The generated values are then stored as arrays in the member variables r_shift_grid and eta_grid.
+        Such a set of values is required for any symmetry function type.
+        The generated values are stored as arrays in the member variables r_shift_grid and eta_grid.
         The entries are to be understood pairwise, i.e., the i-th entry of r_shift_grid
         and the i-th entry of eta_grid belong to one symmetry function.
         Besides the set of values for r_shift and eta, the settings that
-        were used for generating it are also stored in the dictionary radial_grid_info.
+        were used for generating it are also stored, in the dictionary radial_grid_info.
 
         Parameters
         ----------
@@ -213,8 +217,7 @@ class SymFuncParamGenerator:
         self.eta_grid = eta_grid
 
     def check_all(self):
-        """
-        Check if a complete symmetry function set, with all required settings for writing, has been generated.
+        """Check if a complete symmetry function set, with all required settings for writing, has been generated.
 
         Raises
         -------
@@ -235,8 +238,7 @@ class SymFuncParamGenerator:
                 raise TypeError('zeta values not set.')
 
     def write_generation_info(self):
-        """
-        Writes the settings used in generating the currently stored set of symmetry function parameters to stdout.
+        """Writes the settings used in generating the currently stored set of symmetry function parameters to stdout.
 
         Returns
         -------
@@ -265,8 +267,7 @@ class SymFuncParamGenerator:
         np.set_printoptions(precision=8)
 
     def construct_element_combinations(self):
-        """
-        Create necessary combinations of elements, depending on symmetry function type and the elements in the system.
+        """Create combinations of elements, depending on symmetry function type and the elements in the system.
 
         For radial symmetry functions, the combinations are all possible ordered pairs of elements in the system,
         including of an element with itself.
@@ -302,8 +303,7 @@ class SymFuncParamGenerator:
         return combinations
 
     def write_parameter_strings(self):
-        """
-        Write symmetry function parameter sets to stdout, formatted as in the file 'input.nn' required by n2p2.
+        """Write symmetry function parameter sets to stdout, formatted as in the file 'input.nn' required by n2p2.
 
         Each line in the output corresponds to one symmetry function.
         Output is formatted in blocks separated by blank lines, each block corresponding to one element combination.
@@ -354,7 +354,7 @@ class SymFuncParamGenerator:
 
 
 
-if __name__ == '__main__':
+def main():
     elems = ['S', 'Cu']
     # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
@@ -390,3 +390,7 @@ if __name__ == '__main__':
 
     print()
     myGen.write_parameter_strings()
+
+
+if __name__ == '__main__':
+    main()
