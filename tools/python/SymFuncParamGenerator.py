@@ -85,7 +85,7 @@ class SymFuncParamGenerator:
         self.check_symfunc_type()
         # once symmetry function type has been set and found to be valid,
         # build and store the element combinations
-        self._element_combinations = self.construct_element_combinations()
+        self._element_combinations = self.find_element_combinations()
 
     @property
     def zetas(self):
@@ -282,7 +282,7 @@ class SymFuncParamGenerator:
         # reset numpy print precision to default
         np.set_printoptions(precision=8)
 
-    def construct_element_combinations(self):
+    def find_element_combinations(self):
         """Create combinations of elements, depending on symmetry function type and the elements in the system.
 
         For radial symmetry functions, the combinations are all possible ordered pairs of elements in the system,
