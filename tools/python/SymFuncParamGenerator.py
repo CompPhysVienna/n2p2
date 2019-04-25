@@ -42,6 +42,7 @@ class SymFuncParamGenerator:
 
     def __init__(self, elements):
         # TODO: decide if there needs to be the option to change lambdas. If not, consider making it a class variable
+        # -> can probably be fixed to [-1, 1]
         self.lambdas = np.array([-1.0, 1.0])
 
         # TODO: consider checking if valid input for elements
@@ -80,7 +81,7 @@ class SymFuncParamGenerator:
 
     @symfunc_type.setter
     def symfunc_type(self, value):
-        # TODO: set zetas to None if a radial type is given ??
+        # TODO: set zetas to None if a radial type is given ?? -> why not
         self._symfunc_type = value
         self.check_symfunc_type()
         # once symmetry function type has been set and found to be valid,
@@ -117,7 +118,7 @@ class SymFuncParamGenerator:
             raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
                 list(self.symfunc_type_numbers.keys())))
 
-    def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None):
+    def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints, r_lower=None, r_upper=None):
         """Generate a set of values for r_shift and eta.
 
         Such a set of values is required for any symmetry function type.
@@ -140,30 +141,37 @@ class SymFuncParamGenerator:
             The exact implementation details differ depending on
             the method parameter and are described in the papers.
         r_cutoff : float
-            cutoff radius, at which the symmetry functions go to zero.
-            must be greater than zero.
+            Cutoff radius, at which the symmetry functions go to zero.
+            Must be greater than zero.
         nb_gridpoints : int
             number of (r_shift, eta)-pairs to be created.
         r_lower : float
             lowest value of radial grid points.
-            required if method=='gastegger2018', ignored if method=='imbalzano2018'.
+            required if method=='gastegger2018'.
+            ignored if method=='imbalzano2018'.
+        r_upper : float, optional
+            largest value of radial grid points.
+            optional if method=='gastegger2018, defaults to cutoff radius if not given.
+            ignored if method=='imbalzano2018'.
 
         Notes
         ----------
         [1] https://doi.org/10.1063/1.5019667
         [2] https://doi.org/10.1063/1.5024611
 
-        The nomenclature from the papers was slightly adapted to make behavior
-        consistent across all options for method and mode:
-        nb_gridpoints universally specifies the number of (r_shift, eta)-pairs
-        that the method ultimately generates, not the number of points in a
-        preliminary auxiliary grid, or the number of intervals in the final grid.
+        The parameter nb_gridpoints universally specifies the number of
+        (r_shift, eta)-pairs ultimately generated, not the number of
+        intervals between points in a grid of r_shift values, or the
+        number of points in some auxiliary grid.
+        This constitutes a slight modification of the nomenclature
+        from the papers, for the sake of consistent behavior across all
+        options for method and mode.
 
         Returns
         -------
         None
         """
-        # TODO: is this method the right place to pass the cutoff radius? Maybe even pass it to the constructor right away?
+        # TODO: add checks for r_lower, r_upper greater zero and less equal r_cutoff
         # store infos on radial parameter generation settings (that are independent of method)
         self.radial_grid_info = dict(method=method,
                                      mode=mode,
@@ -173,8 +181,14 @@ class SymFuncParamGenerator:
         if method == 'gastegger2018':
             if r_lower is None:
                 raise TypeError('Argument r_lower is required for method "gastegger2018"')
+            if r_upper is None:
+                # by default, set largest value of radial grid to cutoff radius
+                r_upper = r_cutoff
 
-            r_upper = r_cutoff - 0.5  # TODO: decide if hardcoding this (and in Angstrom!) is a good idea
+            # Check relationship between different radii parameters
+            if not 0 < r_lower < r_upper <= r_cutoff:
+                raise ValueError('Invalid arguments. It is required that 0 < r_lower < r_upper <= r_cutoff.')
+
             # store settings that are unique to this method
             self.radial_grid_info.update({'r_lower': r_lower, 'r_upper': r_upper})
 
@@ -193,11 +207,18 @@ class SymFuncParamGenerator:
 
         elif method == 'imbalzano2018':
             if r_lower is not None:
-                # TODO: decide if necessary to do this warning and if doing it this way makes sense
                 sys.stderr.write(
                     'Warning: argument r_lower is not used in method "imbalzano2018" and will be ignored.\n')
                 traceback.print_stack()
                 sys.stderr.flush()
+            if r_upper is not None:
+                sys.stderr.write(
+                    'Warning: argument r_upper is not used in method "imbalzano2018" and will be ignored.\n')
+                traceback.print_stack()
+                sys.stderr.flush()
+
+            if not r_cutoff > 0:
+                raise ValueError('Invalid argument for r_cutoff. Must be greater than zero.')
 
             if mode == 'center':
                 nb_intervals = nb_gridpoints - 1
@@ -205,6 +226,7 @@ class SymFuncParamGenerator:
                 eta_grid = (nb_intervals ** (gridpoint_indices / nb_intervals) / r_cutoff) ** 2
                 r_shift_grid = np.zeros_like(eta_grid)
             elif mode == 'shift':
+                # TODO: somehow mention that shift mode for angular symfuncs is actually not discussed in the paper
                 # create extended auxiliary grid of r_shift values, that contains nb_gridpoints + 1 values
                 nb_intervals_extended = nb_gridpoints
                 gridpoint_indices_extended = np.array(range(0, nb_intervals_extended + 1))
@@ -220,8 +242,8 @@ class SymFuncParamGenerator:
                 # create final grid of r_shift values by excluding the first entry
                 # (for which r_shift coincides with the cutoff radius) from the extended grid
                 r_shift_grid = rs_grid_extended[1:]
-                # reverse the order of r_shift and eta values so they are sorted in order of ascending r_shift...
-                # ...(not necessary, but makes the output consistent with the other methods)
+                # reverse the order of r_shift and eta values so they are sorted in order of ascending r_shift
+                # (not necessary, but makes the output consistent with the other methods)
                 r_shift_grid = np.flip(r_shift_grid)
                 eta_grid = np.flip(eta_grid)
             else:
@@ -247,10 +269,11 @@ class SymFuncParamGenerator:
         None
         """
         self.check_symfunc_type()
+        # TODO: consider removing the check for radial_grid_info (since a user might want to directly set r_shift and eta values on their own, in which case no info would have been generated
         if self.radial_grid_info is None or self.r_shift_grid is None or self.eta_grid is None:
             raise TypeError('No radial grid has been generated.')
-        if self._symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
-            if self._zetas is None:
+        if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
+            if self.zetas is None:
                 raise TypeError('zeta values not set.')
 
     def write_generation_info(self):
@@ -303,16 +326,16 @@ class SymFuncParamGenerator:
         self.check_symfunc_type()
         combinations = []
 
-        if self._symfunc_type == 'radial':
+        if self.symfunc_type == 'radial':
             for elem_central in self.elements:
                 for elem_neighbor in self.elements:
                     combinations.append((elem_central, elem_neighbor))
-        elif self._symfunc_type in ['angular_narrow', 'angular_wide']:
+        elif self.symfunc_type in ['angular_narrow', 'angular_wide']:
             for elem_central in self.elements:
                 for pair_of_neighbors in itertools.combinations_with_replacement(self.elements, 2):
                     comb = (elem_central,) + pair_of_neighbors
                     combinations.append(comb)
-        elif self._symfunc_type in ['weighted_radial', 'weighted_angular']:
+        elif self.symfunc_type in ['weighted_radial', 'weighted_angular']:
             for elem_central in self.elements:
                 combinations.append((elem_central,))
 
@@ -374,8 +397,14 @@ def main():
     # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
 
+    # print('\nimbalzano2018 shift mode')
+    # myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
+    # myGen.symfunc_type = 'radial'
+    # myGen.write_generation_info()
+
     print('\nimbalzano2018 shift mode')
-    myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
+    myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=5, r_lower=1.5,
+                                 r_upper=5.5)
     myGen.symfunc_type = 'radial'
     myGen.write_generation_info()
 
@@ -405,8 +434,6 @@ def main():
 
     print()
     myGen.write_parameter_strings()
-
-    print(myGen.element_combinations)
 
 
 if __name__ == '__main__':
