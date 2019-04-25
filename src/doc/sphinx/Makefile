@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
+SPHINXBUILD   = python3 -msphinx
 SPHINXPROJ    = n2p2-Aneuralnetworkpotentialpackage
 SOURCEDIR     = source
 BUILDDIR      = ../../../doc/sphinx/

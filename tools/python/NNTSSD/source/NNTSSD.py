@@ -35,7 +35,7 @@ class Class_NNTSSD():
     plot_size_dependence():
         Plots the energy and force RMSE versus training set size.
     """
-    def __init__(self,set_size_ratios,n_sets_per_size,random_seed_logical):
+    def __init__(self,set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train):
         """
         Parameters
         ----------
@@ -43,12 +43,15 @@ class Class_NNTSSD():
             One dimensional array; contains a list of ratios of the original training set size that are examined.
         n_sets_per_size : int
             Value, specifies how many sample sets per training size are considered.
-        random_seed_logical : logical
+        fix_random_seed_create : logical
             True if random seed for nnp-select shall be fixed, False otherwise.
+        fix_random_seed_train : logical
+            True if random seed for nnp-train shall be fixed, False otherwise.
         """
         self.set_size_ratios = set_size_ratios
         self.n_sets_per_size = n_sets_per_size
-        self.random_seed_logical = random_seed_logical
+        self.fix_random_seed_create = fix_random_seed_create
+        self.fix_random_seed_train = fix_random_seed_train
     
     def create_training_datasets(self):
         """Creates training datasets from a given original dataset using the program nnp-select.
@@ -94,7 +97,7 @@ class Class_NNTSSD():
             ratio_folder = "ratio"+str("{:3.2f}".format(current_ratio))
             os.system("mkdir "+ratio_folder)
             for sets_per_size_counter in range(1,self.n_sets_per_size+1):
-                if self.random_seed_logical:
+                if self.fix_random_seed_create:
                     random_seed = "123"
                 else:
                     random_seed = int(np.random.randint(100,999,1))
@@ -122,8 +125,16 @@ class Class_NNTSSD():
         print("Finished creating datasets.")
         return None
                 
-    def training_neural_network(self):
+    def training_neural_network(self,nnp_train,write_submission_script_logical):
         """Trains the neural network with existing datasets using the program nnp-train.
+        
+        Parameters
+        ----------
+        nnp_train : string
+            Command for executing n2p2's nnp-train.
+        write_submission_script_logical : logical
+            If True, a job submission script for VSC is written in each of the folders 'Output/ratio*/ratio*_**/'.
+            If False, the command nnp_train is executed right away.
         
         Requirements
         ----------
@@ -174,10 +185,15 @@ class Class_NNTSSD():
                     if set_dir_string[set_dir_counter].startswith('ratio'):
                         os.chdir(set_dir_string[set_dir_counter])
                         shutil.copy("../../../input.nn","input.nn")
+                        if not self.fix_random_seed_train:
+                            os.system("sed -i \"s/^{0:s} .*$/{0:s} {1:d}/g\" input.nn".format("random_seed", int(np.random.randint(100,999,1))))
                         shutil.copy("../../../scaling.data","scaling.data")
-                        nnp_train = "mpirun -np 4 ../../../../../../../bin/nnp-train"
-                        print(nnp_train)
-                        os.system(nnp_train)
+                        if write_submission_script_logical:
+                            write_submission_script(command=nnp_train,job_name=set_dir_string[set_dir_counter])
+                            os.system("sbatch check.slrm") #to submit the job
+                        else:
+                            print(nnp_train)
+                            os.system(nnp_train)
                         os.chdir("../")
                 os.chdir("../")
         os.chdir("../")
@@ -305,7 +321,7 @@ class Class_NNTSSD():
         plt.errorbar(training_set_sizes,analyse_data[:,2],analyse_data[:,3],label="mean_RMSE_E_train")
         plt.errorbar(training_set_sizes,analyse_data[:,4],analyse_data[:,5],label="mean_RMSE_E_test")
         plt.title("Energy RMSE in "+last_epoch+" epochs")
-        plt.xlabel("traning set size")
+        plt.xlabel("training set size")
         plt.ylabel(r"Energy RMSE (meV/atom)")
         plt.legend()
         plt.savefig("Energy_RMSE.png")
@@ -314,7 +330,7 @@ class Class_NNTSSD():
         plt.errorbar(training_set_sizes,analyse_data[:,6],analyse_data[:,7],label="mean_RMSE_F_train")
         plt.errorbar(training_set_sizes,analyse_data[:,8],analyse_data[:,9],label="mean_RMSE_F_test")
         plt.title("Forces RMSE in "+last_epoch+" epochs")
-        plt.xlabel("traning set size")
+        plt.xlabel("training set size")
         plt.ylabel(r"Forces RMSE (meV/$\AA$)")
         plt.legend()
         plt.savefig("Forces_RMSE.png")
@@ -334,6 +350,17 @@ def perform_NNTSSD():
     ----------
     'NNTSSD_input.dat' : file
         Contains user-given specifications on training set size parameters and NNTSSD steps.
+        
+    Returns
+    ----------
+    set_size_ratios : numpy.ndarray
+        One dimensional array; contains a list of ratios of the original training set size that are examined.
+    n_sets_per_size : int
+        Value, specifies how many sample sets per training size are considered.
+    fix_random_seed_create : logical
+        True if random seed for nnp-select shall be fixed, False otherwise.
+    fix_random_seed_train : logical
+        True if random seed for nnp-train shall be fixed, False otherwise.
     """
     try:
         os.path.isfile("NNTSSD_input.dat")
@@ -351,10 +378,21 @@ def perform_NNTSSD():
     elif not (int(user_input[7]) >= 2):
         sys.exit("ERROR: Make sure you have specified at least 2 sample sets per training size.")
     elif not (user_input[8] == 1. or user_input[8] == 0.):
-        sys.exit("ERROR: Make sure you have set the random seed specification to either 0 or 1.")
+        sys.exit("ERROR: Make sure you have set the random seed specifications to either 0 or 1.")
+    elif not (user_input[9] == 1. or user_input[9] == 0.):
+        sys.exit("ERROR: Make sure you have set the random seed specifications to either 0 or 1.")
+    elif not (user_input[10] >= 1.):
+        sys.exit("ERROR: Make sure you have set the number of cores to at least 1.")
+    elif not (user_input[11] == 1. or user_input[11] == 0.):
+        sys.exit("ERROR: Make sure you have set the submission script specification to either 0 or 1.")
     else:
-        random_seed_logical = bool(user_input[8])
+        fix_random_seed_create = bool(user_input[8])
+        fix_random_seed_train = bool(user_input[9])
         [create_logical,train_logical,analyse_logical,plot_logical] = map(bool,user_input[0:4])
+        
+        mpirun_cores = int(user_input[10])
+        nnp_train = "mpirun -np "+str(mpirun_cores)+" ../../../../../../../bin/nnp-train"
+        write_submission_script_logical = bool(user_input[11])
         
         print("Performing the following NNTSSD steps:")
         print(create_logical, "\t Create training datasets")
@@ -363,16 +401,45 @@ def perform_NNTSSD():
         print(plot_logical, "\t Plot size dependence")
         set_size_ratios = np.arange(user_input[4],user_input[5],user_input[6])
         n_sets_per_size = int(user_input[7])
-        myNNTSSD = Class_NNTSSD(set_size_ratios,n_sets_per_size,random_seed_logical)
+        myNNTSSD = Class_NNTSSD(set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train)
         if create_logical:
             myNNTSSD.create_training_datasets()
         if train_logical:
-            myNNTSSD.training_neural_network()
+            myNNTSSD.training_neural_network(nnp_train,write_submission_script_logical)
         if analyse_logical:
             myNNTSSD.analyse_learning_curves()
         if plot_logical:
             myNNTSSD.plot_size_dependence()
-    return set_size_ratios,n_sets_per_size,random_seed_logical
+    return set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train
+
+def write_submission_script(command,job_name="",n_nodes=1,n_tasks_per_node=16,n_tasks_per_core=1,time=None):
+    """Writes a submission script 'submit.slrm' for running a job command on VSC (Vienna Scientific Cluster).
+    
+    Parameters
+    ----------
+    command : string
+        Job command for VSC.
+    job_name : string
+        Name of the job. Default is none.
+    n_nodes : integer
+        Number of nodes requested (16 cores per node available). Default is 1.
+    n_tasks_per_node : integer
+        Number of processes run in parallel on a single node. Default is 16.
+    n_tasks_per_core : integer
+        Number of tasks a single core should work on. Default is 1.
+    time : string, optional
+        Maximum time required for exectuing the job; eg. time='08:00:00' for eight hours.
+    """
+    submission_script = open("submit.slrm","w")
+    submission_script.write("#!/bin/bash\n#\n")
+    submission_script.write("#SBATCH -J "+job_name+"\n")
+    submission_script.write("#SBATCH -N "+str(n_nodes)+"\n")
+    submission_script.write("#SBATCH --ntasks-per-node="+str(n_tasks_per_node)+"\n")
+    submission_script.write("#SBATCH --ntasks-per-core="+str(n_tasks_per_core)+"\n")
+    if not time==None:
+        submission_script.write("#SBATCH --time="+time+"\n")
+    submission_script.write("\n"+command)
+    submission_script.close()
 
 def main():
     pass

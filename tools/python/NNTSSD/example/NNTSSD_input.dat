@@ -7,9 +7,9 @@
 # Train neural network? (Yes=1/No=0)
 1
 # Analyse learning curves? (Yes=1/No=0)
-1
+0
 # Plot size dependence? (Yes=1/No=0)
-1
+0
 ##################################################
 # Specify NNTSSD training set size parameters:
 ##################################################
@@ -22,7 +22,16 @@
 # number of samples per set size
 2
 ##################################################
-# Specify random seed for creating datasets:
+# Specify random number generator seeds:
 ##################################################
-# Shall random seed be fixed? (Yes=1/No=0)
+# Shall seed be fixed for creating? (Yes=1/No=0)
 0
+# Shall seed be fixed for training? (Yes=1/No=0)
+0
+##################################################
+# Specifications for running nnp-train on VSC:
+##################################################
+# Number of cores
+4
+# Write a VSC submission script? (Yes=1/No=0)
+1
