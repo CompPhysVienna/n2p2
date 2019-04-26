@@ -49,6 +49,8 @@ INSTALL_LIB=${HOME}/local/lib
         nnp-prune-static \
         nnp-scaling-shared \
         nnp-scaling-static \
+        nnp-fpssampling-shared \
+        nnp-fpssampling-static \
         nnp-select-shared \
         nnp-select-static \
         nnp-symfunc-shared \
@@ -78,6 +80,7 @@ INSTALL_LIB=${HOME}/local/lib
         clean-nnp-predict \
         clean-nnp-prune \
         clean-nnp-scaling \
+        clean-nnp-fpssampling \
         clean-nnp-select \
         clean-nnp-symfunc \
         clean-nnp-train \
@@ -112,6 +115,7 @@ all:    libnnp \
 	nnp-predict-shared \
 	nnp-prune-shared \
 	nnp-scaling-shared \
+        nnp-fpssampling-shared \
 	nnp-select-shared \
 	nnp-symfunc-shared \
 	nnp-train-shared
@@ -128,6 +132,7 @@ shared: libnnp-shared \
 	nnp-predict-shared \
 	nnp-prune-shared \
 	nnp-scaling-shared \
+        nnp-fpssampling-shared \
 	nnp-select-shared \
 	nnp-symfunc-shared \
 	nnp-train-shared
@@ -144,6 +149,7 @@ static: libnnp-static \
 	nnp-predict-static \
 	nnp-prune-static \
 	nnp-scaling-static \
+        nnp-fpssampling-static \
 	nnp-select-static \
 	nnp-symfunc-static \
 	nnp-train-static
@@ -165,6 +171,7 @@ clean-no-doc: clean-libnnp \
 	      clean-nnp-predict \
 	      clean-nnp-prune \
 	      clean-nnp-scaling \
+              clean-nnp-fpssampling \
 	      clean-nnp-select \
 	      clean-nnp-symfunc \
 	      clean-nnp-train \
@@ -262,16 +269,16 @@ clean-nnp-convert clean-nnp-cutoff clean-nnp-dist clean-nnp-predict clean-nnp-pr
 ############################################################
 # nnp-comp2, nnp-dataset, nnp-norm, nnp-scaling, nnp-train #
 ############################################################
-nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-train-shared: APPDIR=$(subst -shared,,$@)
-nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-train-shared: libnnptrain-shared
+nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-fpssampling-shared nnp-train-shared: APPDIR=$(subst -shared,,$@)
+nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-fpssampling-shared nnp-train-shared: libnnptrain-shared
 	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} shared
 
-nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-train-static: APPDIR=$(subst -static,,$@)
-nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-train-static: libnnptrain-static
+nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-fpssampling-static nnp-train-static: APPDIR=$(subst -static,,$@)
+nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-fpssampling-static nnp-train-static: libnnptrain-static
 	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} static
 
-clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-train: APPDIR=$(subst clean-,,$@)
-clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-train:
+clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-fpssampling clean-nnp-train: APPDIR=$(subst clean-,,$@)
+clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-fpssampling clean-nnp-train:
 	cd application/${APPDIR} && $(MAKE) clean
 
 #########
@@ -286,7 +293,7 @@ clean-pynnp:
 ##############################################
 # install (set links to install directories) #
 ##############################################
-EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-select nnp-symfunc nnp-train
+EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-fpssampling nnp-select nnp-symfunc nnp-train
 LIB=libnnp.so libnnpif.so libnnptrain.so pynnp.so
 install:
 	$(foreach exe, $(EXE), ln -s $(CURDIR)/${PROJECT_BIN}/${exe} ${INSTALL_BIN}/${exe};)
