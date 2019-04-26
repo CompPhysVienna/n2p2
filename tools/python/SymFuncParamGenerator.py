@@ -39,12 +39,9 @@ class SymFuncParamGenerator:
                              angular_wide=9,
                              weighted_radial=12,
                              weighted_angular=13)
+    lambdas = np.array([-1.0, 1.0])
 
     def __init__(self, elements):
-        # TODO: decide if there needs to be the option to change lambdas. If not, consider making it a class variable
-        # -> can probably be fixed to [-1, 1]
-        self.lambdas = np.array([-1.0, 1.0])
-
         # TODO: consider checking if valid input for elements
         self._elements = elements
         self._element_combinations = None
@@ -335,6 +332,7 @@ class SymFuncParamGenerator:
             sys.stdout.write(f'# zetas         = {self.zetas}\n')
         # reset numpy print precision to default
         np.set_printoptions(precision=8)
+        sys.stdout.write('\n')
 
     def find_element_combinations(self):
         """Create combinations of elements, depending on symmetry function type and the elements in the system.
@@ -427,9 +425,9 @@ def main():
     # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
 
-    print('\nimbalzano2018 shift mode')
-    myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
-    myGen.symfunc_type = 'radial'
+    # print('\nimbalzano2018 shift mode')
+    # myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
+    # myGen.symfunc_type = 'radial'
 
     # print('\nimbalzano2018 shift mode')
     # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=5, r_lower=1.5,
@@ -443,10 +441,10 @@ def main():
     # myGen.zetas = [1.0, 6.0]
     # print(myGen.zetas)
 
-    # print('gastegger2018 center mode')
-    # myGen.generate_radial_params(method='gastegger2018', mode='center', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
-    # myGen.symfunc_type = 'angular_wide'
-    # myGen.zetas = [1.0, 6.0]
+    print('gastegger2018 center mode')
+    myGen.generate_radial_params(method='gastegger2018', mode='center', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
+    myGen.symfunc_type = 'angular_wide'
+    myGen.zetas = [1.0, 6.0]
 
     # print('\nimbalzano2018 center mode')
     # myGen.generate_radial_params(method='imbalzano2018', mode='center', r_cutoff=5., nb_gridpoints=5)
@@ -459,7 +457,6 @@ def main():
 
 
     myGen.write_generation_info()
-    print()
     myGen.write_parameter_strings()
 
 
