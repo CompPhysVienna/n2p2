@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 17.04.2019
@@ -13,30 +14,33 @@ import sys
 import shutil
 import numpy as np
 import matplotlib.pyplot as plt
+import file_input
+import interactive_input
 
-class Class_NNTSSD():
+class Tools():
     """Tools for Neural Network Training Set Size Dependence.
-    
-    Attributes
-    ----------
-    set_size_ratios : numpy.ndarray
-        One dimensional array; contains a list of ratios of the original training set size that are examined.
-    n_sets_per_size : int
-        Value, specifies how many sample sets per training size are considered.
     
     Methods
     ----------
     create_training_datasets()
-        Creates training datasets from a given original dataset using the program nnp-select.
+        Creates training datasets of different size from a given original dataset using the tool nnp-select.
     training_neural_network()
-        Trains the neural network with existing datasets using the program nnp-train.
+        Trains the neural network with different existing datasets using the program nnp-train.
     analyse_learning_curves():
-        Prepares analyse data from the learning curves.
+        Prepares analyse data from the learning curves obtained in training.
     plot_size_dependence():
         Plots the energy and force RMSE versus training set size.
     """
-    def __init__(self,set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train):
+    def __init__(self):
+        """In the moment, the class Tools() does not have any attributes.
+        
+        Still, it makes sense to define a class since it condenses NNTSSD functionalities and
+        for future purposes, it is likely that attributes will be added.
         """
+    
+    def create_training_datasets(self,set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create=123):
+        """Creates training datasets of different size from a given original dataset using the tool nnp-select.
+        
         Parameters
         ----------
         set_size_ratios : numpy.ndarray
@@ -45,16 +49,8 @@ class Class_NNTSSD():
             Value, specifies how many sample sets per training size are considered.
         fix_random_seed_create : logical
             True if random seed for nnp-select shall be fixed, False otherwise.
-        fix_random_seed_train : logical
-            True if random seed for nnp-train shall be fixed, False otherwise.
-        """
-        self.set_size_ratios = set_size_ratios
-        self.n_sets_per_size = n_sets_per_size
-        self.fix_random_seed_create = fix_random_seed_create
-        self.fix_random_seed_train = fix_random_seed_train
-    
-    def create_training_datasets(self):
-        """Creates training datasets from a given original dataset using the program nnp-select.
+        random_seed_create : integer, optional
+            User-given fixed random number generator seed. Default is 123.
         
         Requirements
         ----------
@@ -84,21 +80,19 @@ class Class_NNTSSD():
             os.path.isfile("../../../../bin/nnp-select")
         except:
             sys.exit("ERROR: The executable program nnp-select does not exist in ~/n2p2/bin")
-        n_set_size_ratios = np.size(self.set_size_ratios)
-        print("##################################################")
-        print("CREATING TRAINING DATASETS")
-        print("number of samples per training set size = ", self.n_sets_per_size)
+        n_set_size_ratios = np.size(set_size_ratios)
+        print("***CREATING TRAINING DATASETS***************************************************")
+        print("number of samples per training set size = ", n_sets_per_size)
         print("number of different training set sizes = ", n_set_size_ratios)
-        print("##################################################")
         print("...")
         for ratios_counter in range(n_set_size_ratios):
-            current_ratio = self.set_size_ratios[ratios_counter]
+            current_ratio = set_size_ratios[ratios_counter]
             print("We are working with ratio {:3.2f}".format(current_ratio))
             ratio_folder = "ratio"+str("{:3.2f}".format(current_ratio))
             os.system("mkdir "+ratio_folder)
-            for sets_per_size_counter in range(1,self.n_sets_per_size+1):
-                if self.fix_random_seed_create:
-                    random_seed = "123"
+            for sets_per_size_counter in range(1,n_sets_per_size+1):
+                if fix_random_seed_create:
+                    random_seed = random_seed_create
                 else:
                     random_seed = int(np.random.randint(100,999,1))
                 nnp_select = "../../../../bin/nnp-select random "+str("{:3.2f}".format(current_ratio))+" "+str(random_seed)
@@ -125,8 +119,8 @@ class Class_NNTSSD():
         print("Finished creating datasets.")
         return None
                 
-    def training_neural_network(self,nnp_train,write_submission_script_logical):
-        """Trains the neural network with existing datasets using the program nnp-train.
+    def training_neural_network(self,nnp_train,write_submission_script_logical,fix_random_seed_train,random_seed_train=123,maximum_time=None):
+        """Trains the neural network with different existing datasets using the program nnp-train.
         
         Parameters
         ----------
@@ -135,6 +129,12 @@ class Class_NNTSSD():
         write_submission_script_logical : logical
             If True, a job submission script for VSC is written in each of the folders 'Output/ratio*/ratio*_**/'.
             If False, the command nnp_train is executed right away.
+        fix_random_seed_train : logical
+            True if random seed for nnp-train shall be fixed, False otherwise.
+        random_seed_train : integer, optional
+            User given fixed random number generator seed. Default is 123.
+        maximum_time: string, optional
+            User given maximum time required for executing the VSC job. Default is None.
         
         Requirements
         ----------
@@ -160,13 +160,7 @@ class Class_NNTSSD():
         'Output/ratio*/ratio*_**/learning-curve.out' : file
             Contains learning curve data, namely RMSE of energy and forces of train and test sets for each epoch.
         """
-        try:
-            os.path.isfile("../../../../bin/nnp-train")
-        except:
-            sys.exit("ERROR: The executable program nnp-train does not exist in ~/n2p2/bin")
-        print("##################################################")
-        print("TRAINING NEURAL NETWORK")
-        print("##################################################")
+        print("***TRAINING NEURAL NETWORK*****************************************************")
         print("...")
         try:
             os.chdir("Output")
@@ -185,12 +179,15 @@ class Class_NNTSSD():
                     if set_dir_string[set_dir_counter].startswith('ratio'):
                         os.chdir(set_dir_string[set_dir_counter])
                         shutil.copy("../../../input.nn","input.nn")
-                        if not self.fix_random_seed_train:
-                            os.system("sed -i \"s/^{0:s} .*$/{0:s} {1:d}/g\" input.nn".format("random_seed", int(np.random.randint(100,999,1))))
+                        if fix_random_seed_train:
+                            random_seed = random_seed_train
+                        else:
+                            random_seed = int(np.random.randint(100,999,1))
+                        os.system("sed -i \"s/^{0:s} .*$/{0:s} {1:d}/g\" input.nn".format("random_seed", random_seed))                     
                         shutil.copy("../../../scaling.data","scaling.data")
                         if write_submission_script_logical:
-                            write_submission_script(command=nnp_train,job_name=set_dir_string[set_dir_counter])
-                            os.system("sbatch check.slrm") #to submit the job
+                            write_submission_script(command=nnp_train,job_name=set_dir_string[set_dir_counter],time=maximum_time)
+                            os.system("sbatch submit.slrm") #to submit the job to VSC
                         else:
                             print(nnp_train)
                             os.system(nnp_train)
@@ -201,7 +198,7 @@ class Class_NNTSSD():
         return None
 
     def analyse_learning_curves(self):
-        """Prepares analyse data from the learning curves.
+        """Prepares analyse data from the learning curves obtained in training.
         
         Requirements
         ----------
@@ -217,9 +214,7 @@ class Class_NNTSSD():
         'analyse_data.out' : file
             Contains processed RMSE size dependence information for all datasets.
         """
-        print("##################################################")
-        print("ANALYSING LEARNING CURVES")
-        print("##################################################")
+        print("***ANALYSING LEARNING CURVES***************************************************")
         print("...")
         try:
             os.chdir("Output")
@@ -278,9 +273,7 @@ class Class_NNTSSD():
         'Forces_RMSE.png' : png picture
             Shows train and test forces RMSE (and its standard deviation) versus training set size.
         """
-        print("##################################################")
-        print("PLOTTING SIZE DEPENDENCE")
-        print("##################################################")
+        print("***PLOTTING SIZE DEPENDENCE****************************************************")
         print("...")
         try:
             os.chdir("Output")
@@ -339,78 +332,50 @@ class Class_NNTSSD():
         print("Finished plotting size dependence.")
         return None
 
+
+
 def perform_NNTSSD():
     """This function performs NNTSSD methods according to user-given specifications.
     
-    Firstly, checks whether the input file contains valid parameter values. 
+    Firstly, it reads the NNTSSD parameters either from the file 'NNTSSD_input.dat' or,
+    if not successful, from interactive user input.
     Secondly, it performs a user-given selection of the NNTSSD methods
     create_training_datasets(), training_neural_network(), analyse_learning_curves() and plot_size_dependence().
-    
-    Requirements
-    ----------
-    'NNTSSD_input.dat' : file
-        Contains user-given specifications on training set size parameters and NNTSSD steps.
-        
-    Returns
-    ----------
-    set_size_ratios : numpy.ndarray
-        One dimensional array; contains a list of ratios of the original training set size that are examined.
-    n_sets_per_size : int
-        Value, specifies how many sample sets per training size are considered.
-    fix_random_seed_create : logical
-        True if random seed for nnp-select shall be fixed, False otherwise.
-    fix_random_seed_train : logical
-        True if random seed for nnp-train shall be fixed, False otherwise.
     """
+    print("**********************************************************************")
+    print("NNTSSD - Tools for Neural Network Training Set Size Dependence")
+    print("**********************************************************************")
+        
     try:
-        os.path.isfile("NNTSSD_input.dat")
+        create_logical,train_logical,analyse_logical,plot_logical,\
+        set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
+        mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
+        = file_input.read_parameters_from_file()
     except:
-        sys.exit("ERROR: The file 'NNTSSD_input.dat' does not exist!")
-    user_input = np.genfromtxt("NNTSSD_input.dat")
-    user_input[5] += user_input[6]
-    if not ((user_input[0] == 1. or user_input[0] == 0.) and (user_input[1] == 1. or user_input[1] == 0.) \
-    and (user_input[2] == 1. or user_input[2] == 0.) and (user_input[3] == 1. or user_input[3] == 0.)):
-        sys.exit("ERROR: Make sure you have specified the NNTSSD steps with either 0 or 1.")
-    elif not (0.0 < user_input[4] and user_input[4] < user_input[5] and user_input[5] <= 1.0):
-        sys.exit("ERROR: Make sure the input ratios are in interval (0,1] and minimum ratio < maximum ratio.")
-    elif not (round(user_input[6]*2.0,5) <= round(user_input[5]-user_input[4],5)):
-        sys.exit("ERROR: Make sure you have specified at least 2 training set sizes.")
-    elif not (int(user_input[7]) >= 2):
-        sys.exit("ERROR: Make sure you have specified at least 2 sample sets per training size.")
-    elif not (user_input[8] == 1. or user_input[8] == 0.):
-        sys.exit("ERROR: Make sure you have set the random seed specifications to either 0 or 1.")
-    elif not (user_input[9] == 1. or user_input[9] == 0.):
-        sys.exit("ERROR: Make sure you have set the random seed specifications to either 0 or 1.")
-    elif not (user_input[10] >= 1.):
-        sys.exit("ERROR: Make sure you have set the number of cores to at least 1.")
-    elif not (user_input[11] == 1. or user_input[11] == 0.):
-        sys.exit("ERROR: Make sure you have set the submission script specification to either 0 or 1.")
-    else:
-        fix_random_seed_create = bool(user_input[8])
-        fix_random_seed_train = bool(user_input[9])
-        [create_logical,train_logical,analyse_logical,plot_logical] = map(bool,user_input[0:4])
-        
-        mpirun_cores = int(user_input[10])
-        nnp_train = "mpirun -np "+str(mpirun_cores)+" ../../../../../../../bin/nnp-train"
-        write_submission_script_logical = bool(user_input[11])
-        
-        print("Performing the following NNTSSD steps:")
-        print(create_logical, "\t Create training datasets")
-        print(train_logical, "\t Training neural network")
-        print(analyse_logical, "\t Analyse learning curves")
-        print(plot_logical, "\t Plot size dependence")
-        set_size_ratios = np.arange(user_input[4],user_input[5],user_input[6])
-        n_sets_per_size = int(user_input[7])
-        myNNTSSD = Class_NNTSSD(set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train)
-        if create_logical:
-            myNNTSSD.create_training_datasets()
-        if train_logical:
-            myNNTSSD.training_neural_network(nnp_train,write_submission_script_logical)
-        if analyse_logical:
-            myNNTSSD.analyse_learning_curves()
-        if plot_logical:
-            myNNTSSD.plot_size_dependence()
-    return set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train
+        create_logical,train_logical,analyse_logical,plot_logical,\
+        set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
+        mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
+        = interactive_input.input_parameters_by_user()
+
+    nnp_train = "mpirun -np "+str(mpirun_cores)+" ../../../../../../../bin/nnp-train"
+    
+    print("Performing the following NNTSSD steps:")
+    print("  ",create_logical, "\t Create training datasets")
+    print("  ",train_logical, "\t Training neural network")
+    print("  ",analyse_logical, "\t Analyse learning curves")
+    print("  ",plot_logical, "\t Plot size dependence")
+    
+    myNNTSSD = Tools()
+    
+    if create_logical:
+        myNNTSSD.create_training_datasets(set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create)
+    if train_logical:
+        myNNTSSD.training_neural_network(nnp_train,write_submission_script_logical,fix_random_seed_train,random_seed_train,maximum_time)
+    if analyse_logical:
+        myNNTSSD.analyse_learning_curves()
+    if plot_logical:
+        myNNTSSD.plot_size_dependence()
+    return None
 
 def write_submission_script(command,job_name="",n_nodes=1,n_tasks_per_node=16,n_tasks_per_core=1,time=None):
     """Writes a submission script 'submit.slrm' for running a job command on VSC (Vienna Scientific Cluster).

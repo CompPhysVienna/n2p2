@@ -310,6 +310,7 @@ list of keywords is provided :ref:`here <keywords>`.
    Tools/nnp-prune
    Tools/nnp-select
    Tools/nnp-scaling
+   Tools/NNTSSD
 
 .. toctree::
    :hidden:

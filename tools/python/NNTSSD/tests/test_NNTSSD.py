@@ -20,8 +20,8 @@ def test_create_training_datasets():
     It fails if there is no file 'input.data' or 'nnp-select.log' in the created directories.
     """
     fails = []
-    my_Class = NNTSSD.Class_NNTSSD(np.array([0.8,0.9]),2,True,True)
-    my_Class.create_training_datasets()                    
+    my_Class = NNTSSD.Tools()
+    my_Class.create_training_datasets(np.array([0.8,0.9]),2,True)               
     
     if not os.path.isdir("Output"):
         fails.append("The file 'Output' has not been created.")
@@ -56,8 +56,8 @@ def test_training_neural_network():
     It fails if there is no file 'learning-curve.out' created in the given directories.
     """
     fails = []
-    my_Class = NNTSSD.Class_NNTSSD(np.array([0.8,0.9]),2,True,True)
-    my_Class.training_neural_network("mpirun -np 4 ../../../../../../../bin/nnp-train",False)
+    my_Class = NNTSSD.Tools()
+    my_Class.training_neural_network("mpirun -np 4 ../../../../../../../bin/nnp-train",False,False)
     
     if not os.path.isfile("Output/ratio0.80/ratio0.80_set1/learning-curve.out"):
         fails.append("The file 'Output/ratio0.80/ratio0.80_set1/learning-curve.out' does not exist.")
@@ -76,7 +76,7 @@ def test_analyse_learning_curves():
     It fails if there is no file 'collect_data.out' or 'analyse_data.out' created in the given directories.
     """
     fails = []
-    my_Class = NNTSSD.Class_NNTSSD(np.array([0.8,0.9]),2,True,True)
+    my_Class = NNTSSD.Tools()
     my_Class.analyse_learning_curves()
     
     if not os.path.isfile("Output/ratio0.80/collect_data.out"):
@@ -95,7 +95,7 @@ def test_plot_size_dependence():
     It fails if there is no file 'Energy_RMSE.png' or 'Forces_RMSE.png' created in the given directories.
     """
     fails = []
-    my_Class = NNTSSD.Class_NNTSSD(np.array([0.8,0.9]),2,True,True)
+    my_Class = NNTSSD.Tools()
     my_Class.plot_size_dependence()
     
     if not os.path.isfile("Output/Energy_RMSE.png"):
@@ -105,24 +105,6 @@ def test_plot_size_dependence():
         
     assert not fails, "Fails occured:\n{}".format("\n".join(fails))
 
-def test_perform_NNTSSD():
-    """This function tests the function perform_NNTSSD().
-    
-    It fails if input file 'NNTSSD_input.dat' is read incorrectly.
-    """
-    fails = []
-    set_size_ratios,n_sets_per_size,fix_random_seed_create,fix_random_seed_train = NNTSSD.perform_NNTSSD()
-    
-    if not np.array_equal(set_size_ratios,np.array([0.8,0.9])):
-        fails.append("The set_size_ratios were read incorrectly from the input file.")
-    if not n_sets_per_size == 2:
-        fails.append("The number of samples per set size was read incorrectly from the input file.")
-    if not fix_random_seed_create == False:
-        fails.append("The random seed logical for creating datasets is incorrect.")
-    if not fix_random_seed_train == False:
-        fails.append("The random seed logical for trainig datasets is incorrect.")
-    
-    assert not fails, "Fails occured:\n{}".format("\n".join(fails))
 
 def test_write_submission_script():
     """This function tests the function write_submission_script.
