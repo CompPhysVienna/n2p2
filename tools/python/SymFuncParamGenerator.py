@@ -33,7 +33,6 @@ class SymFuncParamGenerator:
     zetas
     """
 
-    # TODO: might want to rename that variable
     symfunc_type_numbers = dict(radial=2,
                              angular_narrow=3,
                              angular_wide=9,
@@ -123,10 +122,8 @@ class SymFuncParamGenerator:
             raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
                 list(self.symfunc_type_numbers.keys())))
 
-    def generate_radial_params(self, method, mode, r_cutoff, nb_gridpoints,
+    def generate_radial_params(self, rule, mode, r_cutoff, nb_param_pairs,
                                r_lower=None, r_upper=None):
-        # TODO: maybe rename the argument 'method' to 'rule' or something to avoid confusion in documentation as to whether I'm referring to the argument called 'method' or the class method
-        # TODO: consider renaming nb_gridpoints
         """Generate a set of values for r_shift and eta.
 
         Such a set of values is required for any symmetry function type.
@@ -140,52 +137,53 @@ class SymFuncParamGenerator:
         and the i-th entry of eta_grid belong to one symmetry function.
         Besides the set of values for r_shift and eta, the settings that
         were used for generating it are also stored, in the dictionary radial_grid_info.
+        # TODO: rethink use of radial_grid_info
 
         Parameters
         ----------
-        method : {'gastegger2018', 'imbalzano2018'}
-            If method=='gastegger2018' use the parameter generation rules presented in [1]_.
-            If method=='imbalzano2018' use the parameter generation rules presented in [2]_.
+        rule : {'gastegger2018', 'imbalzano2018'}
+            If rule=='gastegger2018' use the parameter generation rules presented in [1]_.
+            If rule=='imbalzano2018' use the parameter generation rules presented in [2]_.
         mode : {'center', 'shift'}
-            Selects which parameter generation rule to use, on top of the method argument,
+            Selects which parameter generation procedure to use, on top of the rule argument,
             since there are again two different varieties presented in each of the two papers.
             'center' sets r_shift to zero for all symmetry functions, varying only eta.
             'shift' creates parameter sets where r_shift varies.
             The exact implementation details differ depending on
-            the method parameter and are described in the papers.
+            the rule parameter and are described in the papers.
         r_cutoff : float
             Cutoff radius, at which symmetry functions go to zero.
             Must be greater than zero.
-        nb_gridpoints : int
-            number of (r_shift, eta)-pairs to be created.
+        nb_param_pairs : int
+            Number of (r_shift, eta)-pairs to be generated.
         r_lower : float
-            lowest value of radial grid points.
-            required if method=='gastegger2018'.
-            ignored if method=='imbalzano2018'.
+            lowest value in grid of r_shift values.
+            required if rule=='gastegger2018'.
+            ignored if rule=='imbalzano2018'.
         r_upper : float, optional
-            largest value of radial grid points.
-            optional if method=='gastegger2018, defaults to cutoff radius if not given.
-            ignored if method=='imbalzano2018'.
+            largest value in grid of r_shift values.
+            optional if rule=='gastegger2018, defaults to cutoff radius if not given.
+            ignored if rule=='imbalzano2018'.
 
         Notes
         ----------
         [1] https://doi.org/10.1063/1.5019667
         [2] https://doi.org/10.1063/1.5024611
 
-        The parameter nb_gridpoints universally specifies the number of
+        The parameter nb_param_pairs invariably specifies the number of
         (r_shift, eta)-pairs ultimately generated, not the number of
         intervals between points in a grid of r_shift values, or the
         number of points in some auxiliary grid.
-        This constitutes a slight modification of the nomenclature from the
-        papers, for the sake of consistent behavior across all options for
-        method and mode.
+        This constitutes a slight modification of the nomenclature in [2],
+        for the sake of consistent behavior across all options for rule and
+        mode.
 
         While the parameter generation by this method does not itself
         depend on symmetry function type, be aware of the exact mathematical
         expressions for the different symmetry function types and how the
         parameters r_shift and eta appear slightly differently in each of them.
 
-        All this method does is implement the rules described in the two
+        All this method does is implement the procedures described in the two
         papers for generating values of the symmetry function parameters
         r_shift and eta. As far as this module is concerned, these can then
         be used (with the above caveat) in combination with any symmetry
@@ -198,48 +196,50 @@ class SymFuncParamGenerator:
         None
         """
         # store those infos on radial parameter generation settings that are
-        # independent of method
-        self.radial_grid_info = dict(method=method,
+        # independent of rule
+        self.radial_grid_info = dict(rule=rule,
                                      mode=mode,
                                      r_cutoff=r_cutoff,
-                                     nb_gridpoints=nb_gridpoints)
+                                     nb_param_pairs=nb_param_pairs)
 
-        if method == 'gastegger2018':
+        if rule == 'gastegger2018':
             if r_lower is None:
-                raise TypeError('Argument r_lower is required for method "gastegger2018"')
+                raise TypeError('Argument r_lower is required for rule "gastegger2018"')
             if r_upper is None:
                 # by default, set largest value of radial grid to cutoff radius
                 r_upper = r_cutoff
 
             # Check relationship between different radii parameters is correct
+            # TODO: actually, this check may be too strong since for shift mode, r_lower can in fact be zero
             if not 0 < r_lower < r_upper <= r_cutoff:
                 raise ValueError('Invalid arguments. It is required that 0 < r_lower < r_upper <= r_cutoff.')
 
-            # store settings that are unique to this method
+            # store settings that are unique to this rule
             self.radial_grid_info.update({'r_lower': r_lower, 'r_upper': r_upper})
 
             # create auxiliary grid
-            grid = np.linspace(r_lower, r_upper, nb_gridpoints)
+            grid = np.linspace(r_lower, r_upper, nb_param_pairs)
 
             if mode == 'center':
-                r_shift_grid = np.zeros(nb_gridpoints)
+                r_shift_grid = np.zeros(nb_param_pairs)
                 eta_grid = 1.0 / (2.0 * grid ** 2)
             elif mode == 'shift':
                 r_shift_grid = grid
-                dr = (r_upper - r_lower) / (nb_gridpoints - 1)
-                eta_grid = np.full(nb_gridpoints, 1.0 / (2.0 * dr * dr))
+                # equidistant grid spacing
+                dr = (r_upper - r_lower) / (nb_param_pairs - 1)
+                eta_grid = np.full(nb_param_pairs, 1.0 / (2.0 * dr * dr))
             else:
                 raise ValueError('invalid argument for "mode"')
 
-        elif method == 'imbalzano2018':
+        elif rule == 'imbalzano2018':
             if r_lower is not None:
                 sys.stderr.write(
-                    'Warning: argument r_lower is not used in method "imbalzano2018" and will be ignored.\n')
+                    'Warning: argument r_lower is not used in rule "imbalzano2018" and will be ignored.\n')
                 traceback.print_stack()
                 sys.stderr.flush()
             if r_upper is not None:
                 sys.stderr.write(
-                    'Warning: argument r_upper is not used in method "imbalzano2018" and will be ignored.\n')
+                    'Warning: argument r_upper is not used in rule "imbalzano2018" and will be ignored.\n')
                 traceback.print_stack()
                 sys.stderr.flush()
 
@@ -247,21 +247,21 @@ class SymFuncParamGenerator:
                 raise ValueError('Invalid argument for r_cutoff. Must be greater than zero.')
 
             if mode == 'center':
-                nb_intervals = nb_gridpoints - 1
+                nb_intervals = nb_param_pairs - 1
                 gridpoint_indices = np.array(range(0, nb_intervals + 1))
                 eta_grid = (nb_intervals ** (gridpoint_indices / nb_intervals) / r_cutoff) ** 2
                 r_shift_grid = np.zeros_like(eta_grid)
             elif mode == 'shift':
-                # TODO: somehow mention that shift mode for angular symfuncs is actually not discussed in the paper
-                # create extended auxiliary grid of r_shift values, that contains nb_gridpoints + 1 values
-                nb_intervals_extended = nb_gridpoints
+                # create extended auxiliary grid of r_shift values,
+                # that contains nb_param_pairs + 1 values
+                nb_intervals_extended = nb_param_pairs
                 gridpoint_indices_extended = np.array(range(0, nb_intervals_extended + 1))
                 rs_grid_extended = r_cutoff / nb_intervals_extended ** (
                         gridpoint_indices_extended / nb_intervals_extended)
                 # from pairs of neighboring r_shift values, compute eta values.
-                # doing this for the nb_gridpoints + 1 values in the auxiliary
-                # grid ultimately gives nb_gridpoints different values for eta.
-                eta_grid = np.zeros(nb_gridpoints)
+                # doing this for the nb_param_pairs + 1 values in the auxiliary
+                # grid ultimately gives nb_param_pairs different values for eta.
+                eta_grid = np.zeros(nb_param_pairs)
                 for idx in range(len(rs_grid_extended) - 1):
                     eta_current = 1 / (rs_grid_extended[idx] - rs_grid_extended[idx + 1]) ** 2
                     eta_grid[idx] = eta_current
@@ -269,13 +269,13 @@ class SymFuncParamGenerator:
                 # (for which r_shift coincides with the cutoff radius) from the extended grid
                 r_shift_grid = rs_grid_extended[1:]
                 # reverse the order of r_shift and eta values so they are sorted in order of ascending r_shift
-                # (not necessary, but makes the output consistent with the other methods)
+                # (not necessary, but makes the output consistent with the other options)
                 r_shift_grid = np.flip(r_shift_grid)
                 eta_grid = np.flip(eta_grid)
             else:
                 raise ValueError('invalid argument for "mode"')
         else:
-            raise ValueError('invalid argument for "method"')
+            raise ValueError('invalid argument for "rule"')
 
         self.r_shift_grid = r_shift_grid
         self.eta_grid = eta_grid
@@ -426,34 +426,40 @@ def main():
     myGen = SymFuncParamGenerator(elems)
 
     # print('\nimbalzano2018 shift mode')
-    # myGen.generate_radial_params(method='imbalzano2018', mode='shift', r_cutoff=6., nb_gridpoints=5)
+    # myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
+    #                              r_cutoff=6., nb_param_pairs=5)
     # myGen.symfunc_type = 'radial'
 
     # print('\nimbalzano2018 shift mode')
-    # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=5, r_lower=1.5,
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              r_cutoff=6., nb_param_pairs=5, r_lower=1.5,
     #                              r_upper=5.5)
     # myGen.zetas = [1.0, 6.0]
     # myGen.symfunc_type = 'radial'
 
     # print('\ngastegger2018 shift mode')
-    # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=9, r_lower=1.5)
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
     # myGen.symfunc_type = 'angular_narrow'
     # myGen.zetas = [1.0, 6.0]
     # print(myGen.zetas)
 
-    print('gastegger2018 center mode')
-    myGen.generate_radial_params(method='gastegger2018', mode='center', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
-    myGen.symfunc_type = 'angular_wide'
-    myGen.zetas = [1.0, 6.0]
+    # print('gastegger2018 center mode')
+    # myGen.generate_radial_params(rule='gastegger2018', mode='center',
+    #                              r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    # myGen.symfunc_type = 'angular_wide'
+    # myGen.zetas = [1.0, 6.0]
 
     # print('\nimbalzano2018 center mode')
-    # myGen.generate_radial_params(method='imbalzano2018', mode='center', r_cutoff=5., nb_gridpoints=5)
+    # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
+    #                              r_cutoff=5., nb_param_pairs=5)
     # myGen.symfunc_type = 'weighted_radial'
 
-    # print('\ngastegger2018 shift mode')
-    # myGen.generate_radial_params(method='gastegger2018', mode='shift', r_cutoff=6., nb_gridpoints=3, r_lower=1.5)
-    # myGen.symfunc_type = 'weighted_angular'
-    # myGen.zetas = [1.0, 6.0]
+    print('\ngastegger2018 shift mode')
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    myGen.symfunc_type = 'weighted_angular'
+    myGen.zetas = [1.0, 6.0]
 
 
     myGen.write_generation_info()
