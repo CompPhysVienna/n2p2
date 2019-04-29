@@ -103,7 +103,7 @@ class SymFuncParamGenerator:
         self._zetas = np.array(values)
 
     def check_symfunc_type(self):
-        """Check if a symmetry function type has been set and if it is a valid one.
+        """Check if a symmetry function type has been set and if it is valid.
 
         Raises
         -------
@@ -157,12 +157,14 @@ class SymFuncParamGenerator:
         nb_param_pairs : int
             Number of (r_shift, eta)-pairs to be generated.
         r_lower : float
-            lowest value in grid of r_shift values.
+            lowest value in the radial grid from which r_shift and eta values
+            are computed.
             required if rule=='gastegger2018'.
             ignored if rule=='imbalzano2018'.
         r_upper : float, optional
-            largest value in grid of r_shift values.
-            optional if rule=='gastegger2018, defaults to cutoff radius if not given.
+            largest value in the radial grid from which r_shift and eta
+            values are computed.
+            optional if rule=='gastegger2018, defaults to r_cutoff if not given.
             ignored if rule=='imbalzano2018'.
 
         Notes
@@ -209,11 +211,6 @@ class SymFuncParamGenerator:
                 # by default, set largest value of radial grid to cutoff radius
                 r_upper = r_cutoff
 
-            # Check relationship between different radii parameters is correct
-            # TODO: actually, this check may be too strong since for shift mode, r_lower can in fact be zero
-            if not 0 < r_lower < r_upper <= r_cutoff:
-                raise ValueError('Invalid arguments. It is required that 0 < r_lower < r_upper <= r_cutoff.')
-
             # store settings that are unique to this rule
             self.radial_grid_info.update({'r_lower': r_lower, 'r_upper': r_upper})
 
@@ -221,11 +218,17 @@ class SymFuncParamGenerator:
             grid = np.linspace(r_lower, r_upper, nb_param_pairs)
 
             if mode == 'center':
+                # r_lower = 0 is not allowed, because it leads to division by zero
+                if not 0 < r_lower < r_upper <= r_cutoff:
+                    raise ValueError(f'Invalid argument(s): rule = {rule:s}, mode = {mode:s} requires that 0 < r_lower < r_upper <= r_cutoff.')
                 r_shift_grid = np.zeros(nb_param_pairs)
                 eta_grid = 1.0 / (2.0 * grid ** 2)
             elif mode == 'shift':
+                # conversely, in shift mode, r_lower = 0 is possible
+                if not 0 <= r_lower < r_upper <= r_cutoff:
+                    raise ValueError(f'Invalid argument(s): rule = {rule:s}, mode = {mode:s} requires that 0 <= r_lower < r_upper <= r_cutoff.')
                 r_shift_grid = grid
-                # equidistant grid spacing
+                # compute the equidistant grid spacing
                 dr = (r_upper - r_lower) / (nb_param_pairs - 1)
                 eta_grid = np.full(nb_param_pairs, 1.0 / (2.0 * dr * dr))
             else:
