@@ -18,7 +18,7 @@ y y y y
 # Do you wish to fix the random generator seed to a specific value? (y/n)
 y
 # If yes, give the random generator seed (optional, default is 123):
-456
+123
 ################################################################################
 # Specify parameters for NNTSSD.Tools.training_neural_network:
 ################################################################################

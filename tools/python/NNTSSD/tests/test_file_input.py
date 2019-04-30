@@ -22,7 +22,7 @@ def test_read_parameters_from_file():
     fails = []
     create_logical,train_logical,analyse_logical,plot_logical,\
     set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
-    mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
+    mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train \
     = file_input.read_parameters_from_file()
     
     if not create_logical and not train_logical and analyse_logical and plot_logical:
@@ -37,7 +37,7 @@ def test_read_parameters_from_file():
         fails.append("The random seed for creating datasets is incorrect.")
     if not mpirun_cores == 4:
         fails.append("Fail: mpirun_cores read incorrectly.")
-    if not write_submission_script_logical == False:
+    if not write_submission_script_logical == True:
         fails.append("The logical for writing a VSC submission script is incorrect.")
     if not maximum_time=="08:00:00":
         fails.append("The maximum time required for exectuing the job is incorrect.")

@@ -25,7 +25,7 @@ y
 # Give the number of cores you want to use for mpirun:
 4
 # Write a VSC submission script (if not, training is performed on your machine)?
-n
+y
 # If yes, give the maximum time required for exectuing the job (optional):
 08:00:00
 # Do you wish to fix the random generator seed to a specific value? (y/n)

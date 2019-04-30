@@ -109,7 +109,7 @@ def read_parameters_from_file():
         write_submission_script_logical = convert_yes_no_to_logical(content[7][0])
         if write_submission_script_logical:
             try:
-                maximum_time = content[8][0]
+                maximum_time = str(content[8][0])
             except:
                 maximum_time = None
         else:
@@ -129,6 +129,7 @@ def read_parameters_from_file():
         maximum_time = None
         fix_random_seed_train = None
         random_seed_train = None
+    user_input.close()
     return create_logical,train_logical,analyse_logical,plot_logical,\
     set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
     mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train
