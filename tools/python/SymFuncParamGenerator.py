@@ -280,6 +280,7 @@ class SymFuncParamGenerator:
         else:
             raise ValueError('invalid argument for "rule"')
 
+        # store the generated parameter sets
         self.r_shift_grid = r_shift_grid
         self.eta_grid = eta_grid
 
@@ -357,7 +358,7 @@ class SymFuncParamGenerator:
         handle.write('\n')
 
         # close the file again (unless writing to sys.stdout,
-        # which does not need to be closed in the same sense as a file object)
+        # which should not be closed)
         if handle is not sys.stdout:
             handle.close()
 
@@ -397,13 +398,19 @@ class SymFuncParamGenerator:
 
         return combinations
 
-    def write_parameter_strings(self):
-        """Write symmetry function parameter sets to stdout, formatted as in the file 'input.nn' required by n2p2.
+    def write_parameter_strings(self, file=None):
+        """Write symmetry function parameter sets, formatted as n2p2 requires.
 
         Each line in the output corresponds to one symmetry function.
         Output is formatted in blocks separated by blank lines, each block
         corresponding to one element combination.
         Within each block, the other parameters are iterated over.
+
+        Parameters
+        ----------
+        file : path-like, optional
+            The file to write the parameter strings to, using append mode.
+            If not specified, write to sys.stdout instead.
 
         Returns
         -------
@@ -411,41 +418,52 @@ class SymFuncParamGenerator:
         """
         self.check_all()
 
+        # depending on presence of file parameter, either direct output
+        # to stdout, or open the specified file
+        if file is None:
+            handle = sys.stdout
+        else:
+            handle = open(file, 'a')
+
         r_cutoff = self.radial_grid_info['r_cutoff']
         sf_number = self.symfunc_type_numbers[self.symfunc_type]
 
         if self.symfunc_type == 'radial':
             for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
-                    sys.stdout.write(
+                    handle.write(
                         f'symfunction_short {comb[0]:2s} {sf_number} {comb[1]:2s} {eta:9.3E} {rs:9.3E} {r_cutoff:9.3E}\n')
-                sys.stdout.write('\n')
+                handle.write('\n')
 
         elif self.symfunc_type in ['angular_narrow', 'angular_wide']:
             for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
                     for zeta in self.zetas:
                         for lambd in self.lambdas:
-                            sys.stdout.write(
+                            handle.write(
                                 f'symfunction_short {comb[0]:2s} {sf_number} {comb[1]:2s} {comb[2]:2s} {eta:9.3E} {lambd:2.0f} {zeta:9.3E} {r_cutoff:9.3E} {rs:9.3E}\n')
-                sys.stdout.write('\n')
+                handle.write('\n')
 
         elif self.symfunc_type == 'weighted_radial':
             for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
-                    sys.stdout.write(
+                    handle.write(
                         f'symfunction_short {comb[0]:2s} {sf_number} {eta:9.3E} {rs:9.3E} {r_cutoff:9.3E}\n')
-                sys.stdout.write('\n')
+                handle.write('\n')
 
         elif self.symfunc_type == 'weighted_angular':
             for comb in self.element_combinations:
                 for (eta, rs) in zip(self.eta_grid, self.r_shift_grid):
                     for zeta in self.zetas:
                         for lambd in self.lambdas:
-                            sys.stdout.write(
+                            handle.write(
                                 f'symfunction_short {comb[0]:2s} {sf_number} {eta:9.3E} {rs:9.3E} {lambd:2.0f} {zeta:9.3E} {r_cutoff:9.3E} \n')
-                sys.stdout.write('\n')
+                handle.write('\n')
 
+        # close the file again (unless writing to sys.stdout,
+        # which should not be closed)
+        if handle is not sys.stdout:
+            handle.close()
 
 
 def main():
@@ -453,10 +471,10 @@ def main():
     # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
 
-    # # imbalzano2018 shift mode
-    # myGen.symfunc_type = 'radial'
-    # myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
-    #                              r_cutoff=6., nb_param_pairs=5)
+    # imbalzano2018 shift mode
+    myGen.symfunc_type = 'radial'
+    myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
+                                 r_cutoff=6., nb_param_pairs=5)
 
     # # imbalzano2018 shift mode
     # myGen.symfunc_type = 'radial'
@@ -470,11 +488,11 @@ def main():
     #                              r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
     # myGen.zetas = [1.0, 6.0]
 
-    # gastegger2018 center mode
-    myGen.symfunc_type = 'angular_wide'
-    myGen.generate_radial_params(rule='gastegger2018', mode='center',
-                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    myGen.zetas = [1.0, 6.0]
+    # # gastegger2018 center mode
+    # myGen.symfunc_type = 'angular_wide'
+    # myGen.generate_radial_params(rule='gastegger2018', mode='center',
+    #                              r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    # myGen.zetas = [1.0, 6.0]
 
     # # imbalzano2018 center mode
     # myGen.symfunc_type = 'weighted_radial'
