@@ -300,15 +300,21 @@ class SymFuncParamGenerator:
         """
         self.check_symfunc_type()
         # TODO: consider removing the check for radial_grid_info (since a user might want to directly set r_shift and eta values on their own, in which case no info would have been generated)
-        # -> but how to handle setting of r_cutoff in that case?
+        # -> but how to handle setting (and storing) of r_cutoff in that case?
         if self.radial_grid_info is None or self.r_shift_grid is None or self.eta_grid is None:
             raise TypeError('No radial grid has been generated.')
         if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
             if self._zetas is None:
                 raise TypeError('zeta values not set.')
 
-    def write_parameter_info(self):
-        """Writes the settings used in generating the currently stored set of symmetry function parameters to stdout.
+    def write_parameter_info(self, file=None):
+        """Write settings used in generating the currently stored set of symmetry function parameters.
+
+        Parameters
+        ----------
+        file : path-like, optional
+            The file to write the settings information to, using append mode.
+            If not specified, write to sys.stdout instead.
 
         Returns
         -------
@@ -321,27 +327,39 @@ class SymFuncParamGenerator:
                                  weighted_radial='Weighted radial',
                                  weighted_angular='Weighted angular')
 
-        sys.stdout.write('#########################################################################\n')
-        sys.stdout.write(
+        # depending on presence of file parameter, either direct output
+        # to stdout, or open the specified file
+        if file is None:
+            handle = sys.stdout
+        else:
+            handle = open(file, 'a')
+
+        handle.write('#########################################################################\n')
+        handle.write(
             f'# {type_descriptions[self.symfunc_type]} symmetry function set, '
             f'for elements {self.elements}\n')
-        sys.stdout.write('#########################################################################\n')
+        handle.write('#########################################################################\n')
 
-        sys.stdout.write('# Radial parameters were generated using the following settings:\n')
+        handle.write('# Radial parameters were generated using the following settings:\n')
         for key, value in self.radial_grid_info.items():
-            sys.stdout.write(f'# {key:14s} = {value}\n')
+            handle.write(f'# {key:14s} = {value}\n')
 
-        sys.stdout.write('# Sets of values for parameters:\n')
+        handle.write('# Sets of values for parameters:\n')
         # set numpy print precision to lower number of decimal places for the following outputs
         np.set_printoptions(precision=4)
-        sys.stdout.write(f'# r_shift_grid   = {self.r_shift_grid}\n')
-        sys.stdout.write(f'# eta_grid       = {self.eta_grid}\n')
+        handle.write(f'# r_shift_grid   = {self.r_shift_grid}\n')
+        handle.write(f'# eta_grid       = {self.eta_grid}\n')
         if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
-            sys.stdout.write(f'# lambdas        = {self.lambdas}\n')
-            sys.stdout.write(f'# zetas          = {self.zetas}\n')
+            handle.write(f'# lambdas        = {self.lambdas}\n')
+            handle.write(f'# zetas          = {self.zetas}\n')
         # reset numpy print precision to default
         np.set_printoptions(precision=8)
-        sys.stdout.write('\n')
+        handle.write('\n')
+
+        # close the file again (unless writing to sys.stdout,
+        # which does not need to be closed in the same sense as a file object)
+        if handle is not sys.stdout:
+            handle.close()
 
     def find_element_combinations(self):
         """Create combinations of elements, depending on symmetry function type and the elements in the system.
@@ -383,7 +401,8 @@ class SymFuncParamGenerator:
         """Write symmetry function parameter sets to stdout, formatted as in the file 'input.nn' required by n2p2.
 
         Each line in the output corresponds to one symmetry function.
-        Output is formatted in blocks separated by blank lines, each block corresponding to one element combination.
+        Output is formatted in blocks separated by blank lines, each block
+        corresponding to one element combination.
         Within each block, the other parameters are iterated over.
 
         Returns
@@ -434,39 +453,39 @@ def main():
     # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
 
-    # print('\nimbalzano2018 shift mode')
+    # # imbalzano2018 shift mode
     # myGen.symfunc_type = 'radial'
     # myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
     #                              r_cutoff=6., nb_param_pairs=5)
 
-    # print('\nimbalzano2018 shift mode')
+    # # imbalzano2018 shift mode
     # myGen.symfunc_type = 'radial'
     # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
     #                              r_cutoff=6., nb_param_pairs=5, r_lower=1.5,
     #                              r_upper=5.5)
 
-    # print('\ngastegger2018 shift mode')
+    # # gastegger2018 shift mode
     # myGen.symfunc_type = 'angular_narrow'
     # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
     #                              r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
     # myGen.zetas = [1.0, 6.0]
 
-    # print('gastegger2018 center mode')
-    # myGen.symfunc_type = 'angular_wide'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='center',
-    #                              r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    # myGen.zetas = [1.0, 6.0]
+    # gastegger2018 center mode
+    myGen.symfunc_type = 'angular_wide'
+    myGen.generate_radial_params(rule='gastegger2018', mode='center',
+                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    myGen.zetas = [1.0, 6.0]
 
-    # print('\nimbalzano2018 center mode')
+    # # imbalzano2018 center mode
     # myGen.symfunc_type = 'weighted_radial'
     # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
     #                              r_cutoff=5., nb_param_pairs=5)
 
-    print('\ngastegger2018 shift mode')
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    myGen.symfunc_type = 'weighted_angular'
-    myGen.zetas = [1.0, 6.0]
+    # # gastegger2018 shift mode
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    # myGen.symfunc_type = 'weighted_angular'
+    # myGen.zetas = [1.0, 6.0]
 
 
     myGen.write_parameter_info()
