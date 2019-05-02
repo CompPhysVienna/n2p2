@@ -30,41 +30,46 @@ def test_output(tmpdir):
     outfile_path = os.path.join(tmpdir, 'outfile.txt')
 
     myGen.symfunc_type = 'radial'
+    myGen.r_cutoff = 6.
     myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=5)
+                                 nb_param_pairs=5)
     myGen.write_parameter_info(outfile_path)
     myGen.write_parameter_strings(outfile_path)
 
     myGen.symfunc_type = 'radial'
+    myGen.r_cutoff = 6.
     myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=5, r_lower=1.5,
-                                 r_upper=5.5)
+                                 nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
     myGen.write_parameter_info(outfile_path)
     myGen.write_parameter_strings(outfile_path)
 
     myGen.symfunc_type = 'angular_narrow'
+    myGen.r_cutoff = 6.
     myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
+                                 nb_param_pairs=9, r_lower=1.5)
     myGen.zetas = [1.0, 6.0]
     myGen.write_parameter_info(outfile_path)
     myGen.write_parameter_strings(outfile_path)
 
     myGen.symfunc_type = 'angular_wide'
+    myGen.r_cutoff = 6.
     myGen.generate_radial_params(rule='gastegger2018', mode='center',
-                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+                                 nb_param_pairs=3, r_lower=1.5)
     myGen.zetas = [1.0, 6.0]
     myGen.write_parameter_info(outfile_path)
     myGen.write_parameter_strings(outfile_path)
 
     myGen.symfunc_type = 'weighted_radial'
+    myGen.r_cutoff = 5.
     myGen.generate_radial_params(rule='imbalzano2018', mode='center',
-                                 r_cutoff=5., nb_param_pairs=5)
+                                 nb_param_pairs=5)
     myGen.write_parameter_info(outfile_path)
     myGen.write_parameter_strings(outfile_path)
 
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
     myGen.symfunc_type = 'weighted_angular'
+    myGen.r_cutoff = 6.
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 nb_param_pairs=3, r_lower=1.5)
     myGen.zetas = [1.0, 6.0]
     myGen.write_parameter_info(outfile_path)
     myGen.write_parameter_strings(outfile_path)

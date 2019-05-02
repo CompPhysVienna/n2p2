@@ -45,6 +45,7 @@ class SymFuncParamGenerator:
         self._elements = elements
         self._element_combinations = None
         self._symfunc_type = None
+        self._r_cutoff = None
         self._zetas = None
 
         self.radial_grid_info = None
@@ -93,6 +94,19 @@ class SymFuncParamGenerator:
             self._zetas = None
 
     @property
+    def r_cutoff(self):
+        '''Cutoff radius, at which symmetry functions go to zero (float).
+
+        Must be greater than zero.
+        '''
+        return self._r_cutoff
+
+    @r_cutoff.setter
+    def r_cutoff(self, value):
+        self._r_cutoff = value
+        self.check_rcutoff()
+
+    @property
     def zetas(self):
         """Set of values for the parameter zeta of angular symmetry functions (`numpy.ndarray`).
         """
@@ -106,7 +120,7 @@ class SymFuncParamGenerator:
         """Check if a symmetry function type has been set and if it is valid.
 
         Raises
-        -------
+        ------
         TypeError
             If the symmetry function type has not been set (i.e., it is None).
         ValueError
@@ -122,11 +136,34 @@ class SymFuncParamGenerator:
             raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
                 list(self.symfunc_type_numbers.keys())))
 
-    def generate_radial_params(self, rule, mode, r_cutoff, nb_param_pairs,
+    def check_rcutoff(self):
+        """Check if the cutoff radius has been set and if it is valid.
+
+        Raises
+        ------
+        TypeError
+            If the cutoff radius has not been set (i.e., it is None).
+        ValueError
+            If the cutoff radius is not greater than zero.
+
+        Returns
+        -------
+        None
+        """
+        if self.r_cutoff is None:
+            raise TypeError('No cutoff radius has been set.')
+        elif not self.r_cutoff > 0:
+            raise ValueError('Invalid cutoff radius. '
+                             'Must be greater than zero.')
+
+    def generate_radial_params(self, rule, mode, nb_param_pairs,
                                r_lower=None, r_upper=None):
         """Generate a set of values for r_shift and eta.
 
-        Such a set of values is required for any symmetry function type.
+        Requires that the cutoff radius have been set before.
+
+        Such a set of (r_shift, eta)-values is required for any
+        symmetry function type.
         Its generation is independent of the symmetry function type
         and the angular symmetry function parameters zeta and lambda.
 
@@ -137,7 +174,6 @@ class SymFuncParamGenerator:
         and the i-th entry of eta_grid belong to one symmetry function.
         Besides the set of values for r_shift and eta, the settings that
         were used for generating it are also stored, in the dictionary radial_grid_info.
-        # TODO: rethink use of radial_grid_info
 
         Parameters
         ----------
@@ -151,9 +187,6 @@ class SymFuncParamGenerator:
             'shift' creates parameter sets where r_shift varies.
             The exact implementation details differ depending on
             the rule parameter and are described in the papers.
-        r_cutoff : float
-            Cutoff radius, at which symmetry functions go to zero.
-            Must be greater than zero.
         nb_param_pairs : int
             Number of (r_shift, eta)-pairs to be generated.
         r_lower : float
@@ -162,13 +195,23 @@ class SymFuncParamGenerator:
             required if rule=='gastegger2018'.
             ignored if rule=='imbalzano2018'.
         r_upper : float, optional
-            largest value in the radial grid from which r_shift and eta
+            Largest value in the radial grid from which r_shift and eta
             values are computed.
-            optional if rule=='gastegger2018, defaults to r_cutoff if not given.
-            ignored if rule=='imbalzano2018'.
+            Optional if rule=='gastegger2018, defaults to cutoff radius if not
+            given.
+            Ignored if rule=='imbalzano2018'.
+
+        Raises
+        ------
+        TypeError
+            If parameter r_lower is not given, when using rule 'gastegger2018'.
+        ValueError
+            If illegal relation between r_lower, r_upper, r_cutoff.
+        ValueError
+            If invalid argument for parameter rule or mode.
 
         Notes
-        ----------
+        -----
         [1] https://doi.org/10.1063/1.5019667
         [2] https://doi.org/10.1063/1.5024611
 
@@ -197,12 +240,19 @@ class SymFuncParamGenerator:
         -------
         None
         """
+
+        # Check if cutoff radius has been set and is greater than zero
+        # TODO: Maybe replace this generic check with one that makes clear in its error message that the correct
+        #  way is to set cutoff radius before radial parameter generation, instead of generic error message ??
+        self.check_rcutoff()
+
         # store those infos on radial parameter generation settings that are
         # independent of the rule argument
         self.radial_grid_info = dict(rule=rule,
                                      mode=mode,
-                                     r_cutoff=r_cutoff,
                                      nb_param_pairs=nb_param_pairs)
+
+        r_cutoff = self.r_cutoff
 
         if rule == 'gastegger2018':
             if r_lower is None:
@@ -224,7 +274,7 @@ class SymFuncParamGenerator:
                 r_shift_grid = np.zeros(nb_param_pairs)
                 eta_grid = 1.0 / (2.0 * grid ** 2)
             elif mode == 'shift':
-                # conversely, in shift mode, r_lower = 0 is possible
+                # on the other hand, in shift mode, r_lower = 0 is possible
                 if not 0 <= r_lower < r_upper <= r_cutoff:
                     raise ValueError(f'Invalid argument(s): rule = {rule:s}, mode = {mode:s} requires that 0 <= r_lower < r_upper <= r_cutoff.')
                 r_shift_grid = grid
@@ -245,9 +295,6 @@ class SymFuncParamGenerator:
                     'Warning: argument r_upper is not used in rule "imbalzano2018" and will be ignored.\n')
                 traceback.print_stack()
                 sys.stderr.flush()
-
-            if not r_cutoff > 0:
-                raise ValueError('Invalid argument for r_cutoff. Must be greater than zero.')
 
             if mode == 'center':
                 nb_intervals = nb_param_pairs - 1
@@ -288,7 +335,7 @@ class SymFuncParamGenerator:
         """Check if a complete symmetry function set, with all required settings for writing, has been generated.
 
         Raises
-        -------
+        ------
         TypeError
             If no set of radial parameters (r_shift and eta) has been generated
         TypeError
@@ -301,7 +348,6 @@ class SymFuncParamGenerator:
         """
         self.check_symfunc_type()
         # TODO: consider removing the check for radial_grid_info (since a user might want to directly set r_shift and eta values on their own, in which case no info would have been generated)
-        # -> but how to handle setting (and storing) of r_cutoff in that case?
         if self.radial_grid_info is None or self.r_shift_grid is None or self.eta_grid is None:
             raise TypeError('No radial grid has been generated.')
         if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
@@ -321,6 +367,7 @@ class SymFuncParamGenerator:
         -------
         None
         """
+        # TODO: rethink the layout of the info that is written
         self.check_all()
         type_descriptions = dict(radial='Radial',
                                  angular_narrow='Narrow angular',
@@ -335,11 +382,14 @@ class SymFuncParamGenerator:
         else:
             handle = open(file, 'a')
 
+
         handle.write('#########################################################################\n')
         handle.write(
             f'# {type_descriptions[self.symfunc_type]} symmetry function set, '
             f'for elements {self.elements}\n')
         handle.write('#########################################################################\n')
+
+        handle.write(f'# r_cutoff       = {self.r_cutoff}\n')
 
         handle.write('# Radial parameters were generated using the following settings:\n')
         for key, value in self.radial_grid_info.items():
@@ -425,7 +475,7 @@ class SymFuncParamGenerator:
         else:
             handle = open(file, 'a')
 
-        r_cutoff = self.radial_grid_info['r_cutoff']
+        r_cutoff = self.r_cutoff
         sf_number = self.symfunc_type_numbers[self.symfunc_type]
 
         if self.symfunc_type == 'radial':
@@ -473,53 +523,46 @@ def main():
 
     # imbalzano2018 shift mode
     myGen.symfunc_type = 'radial'
+    myGen.r_cutoff = 6.
     myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=5)
-    myGen.write_parameter_info('outfile.txt')
-    myGen.write_parameter_strings('outfile.txt')
+                                 nb_param_pairs=5)
 
-    # imbalzano2018 shift mode
-    myGen.symfunc_type = 'radial'
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=5, r_lower=1.5,
-                                 r_upper=5.5)
-    myGen.write_parameter_info('outfile.txt')
-    myGen.write_parameter_strings('outfile.txt')
+    # # imbalzano2018 shift mode
+    # myGen.symfunc_type = 'radial'
+    # myGen.r_cutoff = 6.
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
 
-    # gastegger2018 shift mode
-    myGen.symfunc_type = 'angular_narrow'
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
-    myGen.zetas = [1.0, 6.0]
-    myGen.write_parameter_info('outfile.txt')
-    myGen.write_parameter_strings('outfile.txt')
+    # # gastegger2018 shift mode
+    # myGen.symfunc_type = 'angular_narrow'
+    # myGen.r_cutoff = 6.
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              nb_param_pairs=9, r_lower=1.5)
+    # myGen.zetas = [1.0, 6.0]
 
-    # gastegger2018 center mode
-    myGen.symfunc_type = 'angular_wide'
-    myGen.generate_radial_params(rule='gastegger2018', mode='center',
-                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    myGen.zetas = [1.0, 6.0]
-    myGen.write_parameter_info('outfile.txt')
-    myGen.write_parameter_strings('outfile.txt')
+    # # gastegger2018 center mode
+    # myGen.symfunc_type = 'angular_wide'
+    # myGen.r_cutoff = 6.
+    # myGen.generate_radial_params(rule='gastegger2018', mode='center',
+    #                              nb_param_pairs=3, r_lower=1.5)
+    # myGen.zetas = [1.0, 6.0]
 
-    # imbalzano2018 center mode
-    myGen.symfunc_type = 'weighted_radial'
-    myGen.generate_radial_params(rule='imbalzano2018', mode='center',
-                                 r_cutoff=5., nb_param_pairs=5)
-    myGen.write_parameter_info('outfile.txt')
-    myGen.write_parameter_strings('outfile.txt')
+    # # imbalzano2018 center mode
+    # myGen.symfunc_type = 'weighted_radial'
+    # myGen.r_cutoff = 5.
+    # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
+    #                              nb_param_pairs=5)
 
-    # gastegger2018 shift mode
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    myGen.symfunc_type = 'weighted_angular'
-    myGen.zetas = [1.0, 6.0]
-    myGen.write_parameter_info('outfile.txt')
-    myGen.write_parameter_strings('outfile.txt')
+    # # gastegger2018 shift mode
+    # myGen.r_cutoff = 6.
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              nb_param_pairs=3, r_lower=1.5)
+    # myGen.symfunc_type = 'weighted_angular'
+    # myGen.zetas = [1.0, 6.0]
 
 
-    # myGen.write_parameter_info()
-    # myGen.write_parameter_strings()
+    myGen.write_parameter_info()
+    myGen.write_parameter_strings()
 
 
 if __name__ == '__main__':
