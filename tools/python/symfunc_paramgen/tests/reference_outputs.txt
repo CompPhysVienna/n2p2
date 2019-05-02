@@ -1,0 +1,475 @@
+# Outputs generated at commit b1c014529c855cbf85af241fdb4bc776b7082714,
+# to detect possible future changes.
+#
+#########################################################################
+# Radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# Radial parameters were generated using the following settings:
+# rule           = imbalzano2018
+# mode           = shift
+# r_cutoff       = 6.0
+# nb_param_pairs = 5
+# Sets of values for parameters:
+# r_shift_grid   = [1.2    1.6557 2.2844 3.1518 4.3487]
+# eta_grid       = [4.816  2.5299 1.329  0.6981 0.3667]
+
+symfunction_short S  2 S  4.816E+00 1.200E+00 6.000E+00
+symfunction_short S  2 S  2.530E+00 1.656E+00 6.000E+00
+symfunction_short S  2 S  1.329E+00 2.284E+00 6.000E+00
+symfunction_short S  2 S  6.981E-01 3.152E+00 6.000E+00
+symfunction_short S  2 S  3.667E-01 4.349E+00 6.000E+00
+
+symfunction_short S  2 Cu 4.816E+00 1.200E+00 6.000E+00
+symfunction_short S  2 Cu 2.530E+00 1.656E+00 6.000E+00
+symfunction_short S  2 Cu 1.329E+00 2.284E+00 6.000E+00
+symfunction_short S  2 Cu 6.981E-01 3.152E+00 6.000E+00
+symfunction_short S  2 Cu 3.667E-01 4.349E+00 6.000E+00
+
+symfunction_short Cu 2 S  4.816E+00 1.200E+00 6.000E+00
+symfunction_short Cu 2 S  2.530E+00 1.656E+00 6.000E+00
+symfunction_short Cu 2 S  1.329E+00 2.284E+00 6.000E+00
+symfunction_short Cu 2 S  6.981E-01 3.152E+00 6.000E+00
+symfunction_short Cu 2 S  3.667E-01 4.349E+00 6.000E+00
+
+symfunction_short Cu 2 Cu 4.816E+00 1.200E+00 6.000E+00
+symfunction_short Cu 2 Cu 2.530E+00 1.656E+00 6.000E+00
+symfunction_short Cu 2 Cu 1.329E+00 2.284E+00 6.000E+00
+symfunction_short Cu 2 Cu 6.981E-01 3.152E+00 6.000E+00
+symfunction_short Cu 2 Cu 3.667E-01 4.349E+00 6.000E+00
+
+#########################################################################
+# Radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# Radial parameters were generated using the following settings:
+# rule           = gastegger2018
+# mode           = shift
+# r_cutoff       = 6.0
+# nb_param_pairs = 5
+# r_lower        = 1.5
+# r_upper        = 5.5
+# Sets of values for parameters:
+# r_shift_grid   = [1.5 2.5 3.5 4.5 5.5]
+# eta_grid       = [0.5 0.5 0.5 0.5 0.5]
+
+symfunction_short S  2 S  5.000E-01 1.500E+00 6.000E+00
+symfunction_short S  2 S  5.000E-01 2.500E+00 6.000E+00
+symfunction_short S  2 S  5.000E-01 3.500E+00 6.000E+00
+symfunction_short S  2 S  5.000E-01 4.500E+00 6.000E+00
+symfunction_short S  2 S  5.000E-01 5.500E+00 6.000E+00
+
+symfunction_short S  2 Cu 5.000E-01 1.500E+00 6.000E+00
+symfunction_short S  2 Cu 5.000E-01 2.500E+00 6.000E+00
+symfunction_short S  2 Cu 5.000E-01 3.500E+00 6.000E+00
+symfunction_short S  2 Cu 5.000E-01 4.500E+00 6.000E+00
+symfunction_short S  2 Cu 5.000E-01 5.500E+00 6.000E+00
+
+symfunction_short Cu 2 S  5.000E-01 1.500E+00 6.000E+00
+symfunction_short Cu 2 S  5.000E-01 2.500E+00 6.000E+00
+symfunction_short Cu 2 S  5.000E-01 3.500E+00 6.000E+00
+symfunction_short Cu 2 S  5.000E-01 4.500E+00 6.000E+00
+symfunction_short Cu 2 S  5.000E-01 5.500E+00 6.000E+00
+
+symfunction_short Cu 2 Cu 5.000E-01 1.500E+00 6.000E+00
+symfunction_short Cu 2 Cu 5.000E-01 2.500E+00 6.000E+00
+symfunction_short Cu 2 Cu 5.000E-01 3.500E+00 6.000E+00
+symfunction_short Cu 2 Cu 5.000E-01 4.500E+00 6.000E+00
+symfunction_short Cu 2 Cu 5.000E-01 5.500E+00 6.000E+00
+
+#########################################################################
+# Narrow angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# Radial parameters were generated using the following settings:
+# rule           = gastegger2018
+# mode           = shift
+# r_cutoff       = 6.0
+# nb_param_pairs = 9
+# r_lower        = 1.5
+# r_upper        = 6.0
+# Sets of values for parameters:
+# r_shift_grid   = [1.5    2.0625 2.625  3.1875 3.75   4.3125 4.875  5.4375 6.    ]
+# eta_grid       = [1.5802 1.5802 1.5802 1.5802 1.5802 1.5802 1.5802 1.5802 1.5802]
+# lambdas        = [-1.  1.]
+# zetas          = [1. 6.]
+
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 S  S  1.580E+00  1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 S  S  1.580E+00  1 6.000E+00 6.000E+00 6.000E+00
+
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 6.000E+00
+
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 6.000E+00
+symfunction_short S  3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 6.000E+00
+
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 S  S  1.580E+00 -1 6.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 S  S  1.580E+00  1 6.000E+00 6.000E+00 6.000E+00
+
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 S  Cu 1.580E+00 -1 6.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 S  Cu 1.580E+00  1 6.000E+00 6.000E+00 6.000E+00
+
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 1.500E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 2.062E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 2.625E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 3.188E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 3.750E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 4.312E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 4.875E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 5.438E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 1.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00 -1 6.000E+00 6.000E+00 6.000E+00
+symfunction_short Cu 3 Cu Cu 1.580E+00  1 6.000E+00 6.000E+00 6.000E+00
+
+#########################################################################
+# Wide angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# Radial parameters were generated using the following settings:
+# rule           = gastegger2018
+# mode           = center
+# r_cutoff       = 6.0
+# nb_param_pairs = 3
+# r_lower        = 1.5
+# r_upper        = 6.0
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0. 0.]
+# eta_grid       = [0.2222 0.0356 0.0139]
+# lambdas        = [-1.  1.]
+# zetas          = [1. 6.]
+
+symfunction_short S  9 S  S  2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  3.556E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  3.556E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  3.556E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  3.556E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.389E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.389E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.389E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.389E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short S  9 S  Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 3.556E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 3.556E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 3.556E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 3.556E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.389E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.389E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.389E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.389E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short S  9 Cu Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 3.556E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 3.556E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 3.556E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 3.556E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.389E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.389E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.389E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.389E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short Cu 9 S  S  2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  3.556E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  3.556E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  3.556E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  3.556E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.389E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.389E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.389E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.389E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short Cu 9 S  Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 3.556E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 3.556E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 3.556E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 3.556E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.389E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.389E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.389E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.389E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short Cu 9 Cu Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 3.556E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 3.556E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 3.556E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 3.556E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.389E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.389E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.389E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.389E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+#########################################################################
+# Weighted radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# Radial parameters were generated using the following settings:
+# rule           = imbalzano2018
+# mode           = center
+# r_cutoff       = 5.0
+# nb_param_pairs = 5
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0. 0. 0. 0.]
+# eta_grid       = [0.04 0.08 0.16 0.32 0.64]
+
+symfunction_short S  12 4.000E-02 0.000E+00 5.000E+00
+symfunction_short S  12 8.000E-02 0.000E+00 5.000E+00
+symfunction_short S  12 1.600E-01 0.000E+00 5.000E+00
+symfunction_short S  12 3.200E-01 0.000E+00 5.000E+00
+symfunction_short S  12 6.400E-01 0.000E+00 5.000E+00
+
+symfunction_short Cu 12 4.000E-02 0.000E+00 5.000E+00
+symfunction_short Cu 12 8.000E-02 0.000E+00 5.000E+00
+symfunction_short Cu 12 1.600E-01 0.000E+00 5.000E+00
+symfunction_short Cu 12 3.200E-01 0.000E+00 5.000E+00
+symfunction_short Cu 12 6.400E-01 0.000E+00 5.000E+00
+
+#########################################################################
+# Weighted angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# Radial parameters were generated using the following settings:
+# rule           = gastegger2018
+# mode           = shift
+# r_cutoff       = 6.0
+# nb_param_pairs = 3
+# r_lower        = 1.5
+# r_upper        = 6.0
+# Sets of values for parameters:
+# r_shift_grid   = [1.5  3.75 6.  ]
+# eta_grid       = [0.0988 0.0988 0.0988]
+# lambdas        = [-1.  1.]
+# zetas          = [1. 6.]
+
+symfunction_short S  13 9.877E-02 1.500E+00 -1 1.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 1.500E+00  1 1.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 1.500E+00 -1 6.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 1.500E+00  1 6.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 3.750E+00 -1 1.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 3.750E+00  1 1.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 3.750E+00 -1 6.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 3.750E+00  1 6.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 6.000E+00 -1 1.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 6.000E+00  1 1.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 6.000E+00 -1 6.000E+00 6.000E+00 
+symfunction_short S  13 9.877E-02 6.000E+00  1 6.000E+00 6.000E+00 
+
+symfunction_short Cu 13 9.877E-02 1.500E+00 -1 1.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 1.500E+00  1 1.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 1.500E+00 -1 6.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 1.500E+00  1 6.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 3.750E+00 -1 1.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 3.750E+00  1 1.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 3.750E+00 -1 6.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 3.750E+00  1 6.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 6.000E+00 -1 1.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 6.000E+00  1 1.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 6.000E+00 -1 6.000E+00 6.000E+00 
+symfunction_short Cu 13 9.877E-02 6.000E+00  1 6.000E+00 6.000E+00 
+

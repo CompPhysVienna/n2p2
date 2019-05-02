@@ -176,7 +176,7 @@ class SymFuncParamGenerator:
         (r_shift, eta)-pairs ultimately generated, not the number of
         intervals between points in a grid of r_shift values, or the
         number of points in some auxiliary grid.
-        This constitutes a slight modification of the nomenclature in [2],
+        This constitutes a slight modification of the nomenclature in [2]_,
         for the sake of consistent behavior across all options for rule and
         mode.
 
@@ -475,39 +475,51 @@ def main():
     myGen.symfunc_type = 'radial'
     myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
                                  r_cutoff=6., nb_param_pairs=5)
+    myGen.write_parameter_info('outfile.txt')
+    myGen.write_parameter_strings('outfile.txt')
 
-    # # imbalzano2018 shift mode
-    # myGen.symfunc_type = 'radial'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              r_cutoff=6., nb_param_pairs=5, r_lower=1.5,
-    #                              r_upper=5.5)
+    # imbalzano2018 shift mode
+    myGen.symfunc_type = 'radial'
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 r_cutoff=6., nb_param_pairs=5, r_lower=1.5,
+                                 r_upper=5.5)
+    myGen.write_parameter_info('outfile.txt')
+    myGen.write_parameter_strings('outfile.txt')
 
-    # # gastegger2018 shift mode
-    # myGen.symfunc_type = 'angular_narrow'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
-    # myGen.zetas = [1.0, 6.0]
+    # gastegger2018 shift mode
+    myGen.symfunc_type = 'angular_narrow'
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 r_cutoff=6., nb_param_pairs=9, r_lower=1.5)
+    myGen.zetas = [1.0, 6.0]
+    myGen.write_parameter_info('outfile.txt')
+    myGen.write_parameter_strings('outfile.txt')
 
-    # # gastegger2018 center mode
-    # myGen.symfunc_type = 'angular_wide'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='center',
-    #                              r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    # myGen.zetas = [1.0, 6.0]
+    # gastegger2018 center mode
+    myGen.symfunc_type = 'angular_wide'
+    myGen.generate_radial_params(rule='gastegger2018', mode='center',
+                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    myGen.zetas = [1.0, 6.0]
+    myGen.write_parameter_info('outfile.txt')
+    myGen.write_parameter_strings('outfile.txt')
 
-    # # imbalzano2018 center mode
-    # myGen.symfunc_type = 'weighted_radial'
-    # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
-    #                              r_cutoff=5., nb_param_pairs=5)
+    # imbalzano2018 center mode
+    myGen.symfunc_type = 'weighted_radial'
+    myGen.generate_radial_params(rule='imbalzano2018', mode='center',
+                                 r_cutoff=5., nb_param_pairs=5)
+    myGen.write_parameter_info('outfile.txt')
+    myGen.write_parameter_strings('outfile.txt')
 
-    # # gastegger2018 shift mode
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
-    # myGen.symfunc_type = 'weighted_angular'
-    # myGen.zetas = [1.0, 6.0]
+    # gastegger2018 shift mode
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 r_cutoff=6., nb_param_pairs=3, r_lower=1.5)
+    myGen.symfunc_type = 'weighted_angular'
+    myGen.zetas = [1.0, 6.0]
+    myGen.write_parameter_info('outfile.txt')
+    myGen.write_parameter_strings('outfile.txt')
 
 
-    myGen.write_parameter_info()
-    myGen.write_parameter_strings()
+    # myGen.write_parameter_info()
+    # myGen.write_parameter_strings()
 
 
 if __name__ == '__main__':
