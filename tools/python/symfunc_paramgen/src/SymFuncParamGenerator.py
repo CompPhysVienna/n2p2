@@ -204,6 +204,8 @@ class SymFuncParamGenerator:
 
         Raises
         ------
+        ValueError
+            If nb_param_pairs is not two or greater.
         TypeError
             If parameter r_lower is not given, when using rule 'gastegger2018'.
         ValueError
@@ -245,6 +247,9 @@ class SymFuncParamGenerator:
         # TODO: Maybe replace this generic check with one that makes clear in its error message that the correct
         #  way is to set cutoff radius before radial parameter generation, instead of generic error message ??
         self.check_rcutoff()
+
+        if not nb_param_pairs >= 2:
+            raise ValueError('nb_param_pairs must be two or greater.')
 
         # store those infos on radial parameter generation settings that are
         # independent of the rule argument
