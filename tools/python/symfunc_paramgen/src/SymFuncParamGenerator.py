@@ -13,6 +13,9 @@ class SymFuncParamGenerator:
     ----------
     elements : list of string
         The chemical elements present in the system.
+    r_cutoff : float
+        Cutoff radius, at which symmetry functions go to zero.
+        Must be greater than zero.
 
     Attributes
     ----------
@@ -30,6 +33,7 @@ class SymFuncParamGenerator:
         The set of values for the symmetry function parameter eta that was generated.
     elements
     element_combinations
+    r_cutoff
     symfunc_type
     zetas
     """
@@ -41,12 +45,17 @@ class SymFuncParamGenerator:
                              weighted_angular=13)
     lambdas = np.array([-1.0, 1.0])
 
-    def __init__(self, elements):
+    def __init__(self, elements, r_cutoff: float):
         # TODO: consider checking if valid input for elements
         self._elements = elements
+        if not r_cutoff > 0:
+            raise ValueError('Invalid cutoff radius given. '
+                             'Must be greater than zero.')
+        else:
+            self._r_cutoff = r_cutoff
+
         self._element_combinations = None
         self._symfunc_type = None
-        self._r_cutoff = None
         self._zetas = None
 
         self.radial_paramgen_settings = None
@@ -96,18 +105,9 @@ class SymFuncParamGenerator:
 
     @property
     def r_cutoff(self):
-        '''Cutoff radius, at which symmetry functions go to zero (float).
-
-        Must be greater than zero.
+        '''Cutoff radius where symmetry functions go to zero (float, read-only).
         '''
         return self._r_cutoff
-
-    @r_cutoff.setter
-    def r_cutoff(self, value):
-        # TODO: it is a problem that this can be modified after calling generate_radial_params,
-        #  without any notification that the cutoff radius now is no longer the one used before for generating r_shift, eta
-        self._r_cutoff = value
-        self.check_rcutoff()
 
     @property
     def zetas(self):
@@ -135,35 +135,13 @@ class SymFuncParamGenerator:
         """
         if self.symfunc_type is None:
             raise TypeError('Symmetry function type not set.')
-        elif not self.symfunc_type in self.symfunc_type_numbers.keys():
+        elif self.symfunc_type not in self.symfunc_type_numbers.keys():
             raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
                 list(self.symfunc_type_numbers.keys())))
-
-    def check_rcutoff(self):
-        """Check if the cutoff radius has been set and if it is valid.
-
-        Raises
-        ------
-        TypeError
-            If the cutoff radius has not been set (i.e., it is None).
-        ValueError
-            If the cutoff radius is not greater than zero.
-
-        Returns
-        -------
-        None
-        """
-        if self.r_cutoff is None:
-            raise TypeError('Cutoff radius not set.')
-        elif not self.r_cutoff > 0:
-            raise ValueError('Invalid cutoff radius. '
-                             'Must be greater than zero.')
 
     def generate_radial_params(self, rule, mode, nb_param_pairs: int,
                                r_lower=None, r_upper=None):
         """Generate a set of values for r_shift and eta.
-
-        Requires that the cutoff radius have been set before.
 
         Such a set of (r_shift, eta)-values is required for any
         symmetry function type.
@@ -245,11 +223,6 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        # Check if cutoff radius has been set and is greater than zero
-        # TODO: Maybe replace this generic check with one that makes clear in its error message that the correct
-        #  way is to set cutoff radius before radial parameter generation, instead of generic error message ??
-        self.check_rcutoff()
-
         if not nb_param_pairs >= 2:
             raise ValueError('nb_param_pairs must be two or greater.')
 
@@ -293,7 +266,7 @@ class SymFuncParamGenerator:
                 raise ValueError('invalid argument for "mode"')
 
         elif rule == 'imbalzano2018':
-            # TODO: rethink these warnings (might not want to print the whole stack)
+            # TODO: rethink these warnings (might not want to print the whole stack, especially in the test the output becomes very unwieldy)
             if r_lower is not None:
                 sys.stderr.write(
                     'Warning: argument r_lower is not used in rule "imbalzano2018" and will be ignored.\n')
@@ -374,6 +347,7 @@ class SymFuncParamGenerator:
         -------
         None
         """
+        # TODO: add checks on negative values, and values for r_shift greater than cutoff radius
         if len(r_shift_values) != len(eta_values):
             raise TypeError('Sets of values for r_shift and eta must have same length.')
         self.radial_paramgen_settings = None
@@ -385,7 +359,6 @@ class SymFuncParamGenerator:
 
         This comprises:
         -) check if symmetry function type is present and valid.
-        -) check if cutoff radius is present and valid.
         -) check for presence of values for r_shift and eta.
         -) check if equal length of r_shift and eta values.
         -) if angular symmetry function types, check for presence of zetas.
@@ -405,7 +378,6 @@ class SymFuncParamGenerator:
         None
         """
         self.check_symfunc_type()
-        self.check_rcutoff()
 
         if self.r_shift_grid is None:
             raise TypeError('Values for r_shift not set.')
@@ -583,39 +555,38 @@ class SymFuncParamGenerator:
 def main():
     elems = ['S', 'Cu']
     # elems = ['H', 'C', 'O']
-    myGen = SymFuncParamGenerator(elems)
 
-    # myGen.symfunc_type = 'radial'
-    # myGen.r_cutoff = 6.
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
+    myGen = SymFuncParamGenerator(elements=elems, r_cutoff=6.)
+    myGen.symfunc_type = 'radial'
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
 
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
     # myGen.symfunc_type = 'radial'
-    # myGen.r_cutoff = 6.
     # myGen.set_radial_params_manually([11,22,33,44,55], [55,44,33,22,11])
 
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
     # myGen.symfunc_type = 'angular_narrow'
-    # myGen.r_cutoff = 6.
     # myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
     #                              nb_param_pairs=3)
     # myGen.zetas = [1.0, 6.0]
 
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
     # myGen.symfunc_type = 'angular_wide'
-    # myGen.r_cutoff = 6.
     # myGen.generate_radial_params(rule='gastegger2018', mode='center',
     #                              nb_param_pairs=3, r_lower=1.5)
     # myGen.zetas = [1.0, 6.0]
 
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 5.)
     # myGen.symfunc_type = 'weighted_radial'
-    # myGen.r_cutoff = 5.
     # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
     #                              nb_param_pairs=5)
 
-    myGen.r_cutoff = 6.
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 nb_param_pairs=3, r_lower=1.5)
-    myGen.symfunc_type = 'weighted_angular'
-    myGen.zetas = [1.0, 6.0]
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
+    # myGen.symfunc_type = 'weighted_angular'
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              nb_param_pairs=3, r_lower=1.5)
+    # myGen.zetas = [1.0, 6.0]
 
 
     myGen.write_settings_overview()
