@@ -83,7 +83,9 @@ def test_output(tmpdir):
         assert all(x == y for x, y in zip(f_out, f_reference))
 
 
-def test_setter_sf_type():
+def test_setter_symfunc_type():
+    """Test if error when trying to set invalid symmetry function type
+    """
     elems = ['S', 'Cu']
     myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
     with pytest.raises(ValueError):

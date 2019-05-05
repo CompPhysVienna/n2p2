@@ -46,7 +46,6 @@ class SymFuncParamGenerator:
     lambdas = np.array([-1.0, 1.0])
 
     def __init__(self, elements, r_cutoff: float):
-        # TODO: consider checking if valid input for elements
         self._elements = elements
         if not r_cutoff > 0:
             raise ValueError('Invalid cutoff radius given. '
@@ -87,18 +86,27 @@ class SymFuncParamGenerator:
         If the given symmetry function type is a radial one,
         the setter also clears any preexisting zetas
         (i.e., sets the member variable zetas to None).
+
+        Raises
+        ------
+        ValueError
+            If invalid symmetry function type is given.
         """
         return self._symfunc_type
 
     @symfunc_type.setter
     def symfunc_type(self, value):
-        self._symfunc_type = value
-        self.check_symfunc_type()
+        if value not in self.symfunc_type_numbers.keys():
+            raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
+                list(self.symfunc_type_numbers.keys())))
+        else:
+            self._symfunc_type = value
+        # self.check_symfunc_type() # TODO: remove
         # once symmetry function type has been set and found to be valid,
         # build and store the element combinations
         self._element_combinations = self.find_element_combinations()
         # Clear any previous zeta values, if the given symfunc type is a radial one
-        if self.symfunc_type in ['radial', 'weighted_radial']:
+        if value in ['radial', 'weighted_radial']:
             # set the member variable explicitly (with underscore) instead of
             # calling setter, because the setter would put None into an array
             self._zetas = None
@@ -117,27 +125,24 @@ class SymFuncParamGenerator:
 
     @zetas.setter
     def zetas(self, values):
+        # TODO: possibly add checks on values for zeta
         self._zetas = np.array(values)
 
     def check_symfunc_type(self):
-        """Check if a symmetry function type has been set and if it is valid.
+        """Check if a symmetry function type has been set.
 
         Raises
         ------
         TypeError
             If the symmetry function type has not been set (i.e., it is None).
-        ValueError
-            If the symmetry function type is invalid.
 
         Returns
         -------
         None
         """
+        # TODO: consider changing the exception to ValueError or RuntimeError
         if self.symfunc_type is None:
             raise TypeError('Symmetry function type not set.')
-        elif self.symfunc_type not in self.symfunc_type_numbers.keys():
-            raise ValueError('Invalid symmetry function type. Must be one of {}'.format(
-                list(self.symfunc_type_numbers.keys())))
 
     def generate_radial_params(self, rule, mode, nb_param_pairs: int,
                                r_lower=None, r_upper=None):
@@ -368,8 +373,6 @@ class SymFuncParamGenerator:
         TypeError
             If values for r_shift or eta are not set.
         TypeError
-            If sets of values for r_shift and eta do not have equal length.
-        TypeError
             If an angular symmetry function type has been set, but no values
             for zeta were set.
 
@@ -377,14 +380,15 @@ class SymFuncParamGenerator:
         -------
         None
         """
+        # TODO: possibly change the exceptions to ValueError or RunTimeError (see https://stackoverflow.com/questions/10726919/what-error-to-raise-when-class-state-is-invalid)
+        #  this would then also need to be changed in the tests
+
         self.check_symfunc_type()
 
         if self.r_shift_grid is None:
             raise TypeError('Values for r_shift not set.')
         if self.eta_grid is None:
             raise TypeError('Values for eta not set.')
-        if len(self.r_shift_grid) != len(self.eta_grid):
-            raise TypeError('Sets of values for r_shift and eta must have same length.')
         if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
             if self.zetas is None:
                 raise TypeError(f'Values for zeta not set (required for symmetry'
