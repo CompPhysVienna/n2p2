@@ -21,8 +21,9 @@ class SymFuncParamGenerator:
         numbers used internally by n2p2 to distinguish symmetry function types.
     lambdas : numpy.ndarray
         Set of values for the parameter lambda of angular symmetry functions. Fixed to [-1, 1].
-    radial_param_settings : dict or None
-        Stores settings that were used for generating the symmetry function parameters r_shift and eta.
+    radial_paramgen_settings : dict or None
+        Stores settings that were used in generating the symmetry function parameters r_shift and eta
+        using the class method provided for that purpose.
     r_shift_grid : numpy.ndarray or None
         The set of values for the symmetry function parameter r_shift that was generated.
     eta_grid : numpy.ndarray or None
@@ -48,8 +49,7 @@ class SymFuncParamGenerator:
         self._r_cutoff = None
         self._zetas = None
 
-        # TODO: rename?
-        self.radial_param_settings = None
+        self.radial_paramgen_settings = None
         self.r_shift_grid = None
         self.eta_grid = None
 
@@ -104,6 +104,8 @@ class SymFuncParamGenerator:
 
     @r_cutoff.setter
     def r_cutoff(self, value):
+        # TODO: it is a problem that this can be modified after calling generate_radial_params,
+        #  without any notification that the cutoff radius now is no longer the one used before for generating r_shift, eta
         self._r_cutoff = value
         self.check_rcutoff()
 
@@ -157,7 +159,7 @@ class SymFuncParamGenerator:
             raise ValueError('Invalid cutoff radius. '
                              'Must be greater than zero.')
 
-    def generate_radial_params(self, rule, mode, nb_param_pairs,
+    def generate_radial_params(self, rule, mode, nb_param_pairs: int,
                                r_lower=None, r_upper=None):
         """Generate a set of values for r_shift and eta.
 
@@ -174,7 +176,7 @@ class SymFuncParamGenerator:
         The entries are to be understood pairwise, i.e., the i-th entry of r_shift_grid
         and the i-th entry of eta_grid belong to one symmetry function.
         Besides the set of values for r_shift and eta, the settings that
-        were used for generating it are also stored, in the dictionary radial_param_settings.
+        were used for generating it are also stored, in the dictionary radial_paramgen_settings.
 
         Parameters
         ----------
@@ -253,9 +255,9 @@ class SymFuncParamGenerator:
 
         # store those infos on radial parameter generation settings that are
         # independent of the rule argument
-        self.radial_param_settings = dict(rule=rule,
-                                          mode=mode,
-                                          nb_param_pairs=nb_param_pairs)
+        self.radial_paramgen_settings = dict(rule=rule,
+                                             mode=mode,
+                                             nb_param_pairs=nb_param_pairs)
 
         r_cutoff = self.r_cutoff
 
@@ -267,7 +269,7 @@ class SymFuncParamGenerator:
                 r_upper = r_cutoff
 
             # store those settings that are unique to this rule
-            self.radial_param_settings.update({'r_lower': r_lower, 'r_upper': r_upper})
+            self.radial_paramgen_settings.update({'r_lower': r_lower, 'r_upper': r_upper})
 
             # create auxiliary grid
             grid = np.linspace(r_lower, r_upper, nb_param_pairs)
@@ -291,16 +293,17 @@ class SymFuncParamGenerator:
                 raise ValueError('invalid argument for "mode"')
 
         elif rule == 'imbalzano2018':
+            # TODO: rethink these warnings (might not want to print the whole stack)
             if r_lower is not None:
                 sys.stderr.write(
                     'Warning: argument r_lower is not used in rule "imbalzano2018" and will be ignored.\n')
-                traceback.print_stack()
-                sys.stderr.flush()
+                # traceback.print_stack()
+                # sys.stderr.flush()
             if r_upper is not None:
                 sys.stderr.write(
                     'Warning: argument r_upper is not used in rule "imbalzano2018" and will be ignored.\n')
-                traceback.print_stack()
-                sys.stderr.flush()
+                # traceback.print_stack()
+                # sys.stderr.flush()
 
             if mode == 'center':
                 nb_intervals = nb_param_pairs - 1
@@ -373,13 +376,19 @@ class SymFuncParamGenerator:
         """
         if len(r_shift_values) != len(eta_values):
             raise TypeError('Sets of values for r_shift and eta must have same length.')
-        self.radial_param_settings = None
+        self.radial_paramgen_settings = None
         self.r_shift_grid = np.array(r_shift_values)
         self.eta_grid = np.array(eta_values)
 
-    # TODO: rename (to check_essentials or something similar)
-    def check_all(self):
+    def check_writing_prerequisites(self):
         """Check if all data required for writing symmetry function sets are present and valid.
+
+        This comprises:
+        -) check if symmetry function type is present and valid.
+        -) check if cutoff radius is present and valid.
+        -) check for presence of values for r_shift and eta.
+        -) check if equal length of r_shift and eta values.
+        -) if angular symmetry function types, check for presence of zetas.
 
         Raises
         ------
@@ -409,8 +418,7 @@ class SymFuncParamGenerator:
                 raise TypeError(f'Values for zeta not set (required for symmetry'
                                 f' function type {self.symfunc_type}).')
 
-    # TODO: rename? (write_settings maybe)
-    def write_parameter_info(self, file=None):
+    def write_settings_overview(self, file=None):
         """Write settings used in generating the currently stored set of symmetry function parameters.
 
         Parameters
@@ -423,8 +431,7 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        # TODO: rethink the layout of the info that is written
-        self.check_all()
+        self.check_writing_prerequisites()
         type_descriptions = dict(radial='Radial',
                                  angular_narrow='Narrow angular',
                                  angular_wide='Wide angular',
@@ -446,10 +453,10 @@ class SymFuncParamGenerator:
         # depending on whether radial parameters were generated using the method
         # or custom-set (indicated by presence or absence of radial parameter
         # generation settings), write the settings used or not
-        if self.radial_param_settings is not None:
+        if self.radial_paramgen_settings is not None:
             handle.write('# The following settings were used for generating sets\n')
             handle.write('# of values for the radial parameters r_shift and eta:\n')
-            for key, value in self.radial_param_settings.items():
+            for key, value in self.radial_paramgen_settings.items():
                 handle.write(f'# {key:14s} = {value}\n')
         else:
             handle.write('# A custom set of values was used for the radial parameters r_shift and eta.\n')
@@ -526,7 +533,7 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        self.check_all()
+        self.check_writing_prerequisites()
 
         # depending on presence of file parameter, either direct output
         # to stdout, or open the specified file, in append mode
@@ -578,10 +585,10 @@ def main():
     # elems = ['H', 'C', 'O']
     myGen = SymFuncParamGenerator(elems)
 
-    myGen.symfunc_type = 'radial'
-    myGen.r_cutoff = 6.
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
+    # myGen.symfunc_type = 'radial'
+    # myGen.r_cutoff = 6.
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
 
     # myGen.symfunc_type = 'radial'
     # myGen.r_cutoff = 6.
@@ -604,14 +611,14 @@ def main():
     # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
     #                              nb_param_pairs=5)
 
-    # myGen.r_cutoff = 6.
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              nb_param_pairs=3, r_lower=1.5)
-    # myGen.symfunc_type = 'weighted_angular'
-    # myGen.zetas = [1.0, 6.0]
+    myGen.r_cutoff = 6.
+    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+                                 nb_param_pairs=3, r_lower=1.5)
+    myGen.symfunc_type = 'weighted_angular'
+    myGen.zetas = [1.0, 6.0]
 
 
-    myGen.write_parameter_info()
+    myGen.write_settings_overview()
     myGen.write_parameter_strings()
 
 
