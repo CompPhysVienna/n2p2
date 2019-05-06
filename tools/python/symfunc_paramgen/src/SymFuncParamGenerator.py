@@ -2,6 +2,7 @@
 
 import numpy as np
 import sys
+import inspect
 import itertools
 import traceback
 
@@ -101,7 +102,6 @@ class SymFuncParamGenerator:
                 list(self.symfunc_type_numbers.keys())))
         else:
             self._symfunc_type = value
-        # self.check_symfunc_type() # TODO: remove
         # once symmetry function type has been set and found to be valid,
         # build and store the element combinations
         self._element_combinations = self.find_element_combinations()
@@ -128,8 +128,17 @@ class SymFuncParamGenerator:
         # TODO: possibly add checks on values for zeta
         self._zetas = np.array(values)
 
-    def check_symfunc_type(self):
+    def check_symfunc_type(self, calling_method_name=None):
         """Check if a symmetry function type has been set.
+
+        Parameters
+        ----------
+        calling_method_name : string, optional
+            The name of another method that calls this method.
+            If this parameter is given, a modified error message is printed
+            by this method, mentioning the method from which it was called.
+            This should make it clearer to the user in which part
+            of their own code to look for an error.
 
         Raises
         ------
@@ -140,9 +149,13 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        # TODO: consider changing the exception to ValueError or RuntimeError
         if self.symfunc_type is None:
-            raise TypeError('Symmetry function type not set.')
+            if calling_method_name is None:
+                raise ValueError('Symmetry function type not set.')
+            else:
+                raise ValueError(f'Symmetry function type not set. '
+                                f'Calling method {calling_method_name} requires'
+                                f' that symmetry function type have been set before.')
 
     def generate_radial_params(self, rule, mode, nb_param_pairs: int,
                                r_lower=None, r_upper=None):
@@ -359,14 +372,22 @@ class SymFuncParamGenerator:
         self.r_shift_grid = np.array(r_shift_values)
         self.eta_grid = np.array(eta_values)
 
-    def check_writing_prerequisites(self):
-        """Check if all data required for writing symmetry function sets are present and valid.
+    def check_writing_prerequisites(self, calling_method_name=None):
+        """Check if all data required for writing symmetry function sets are present.
 
-        This comprises:
-        -) check if symmetry function type is present and valid.
-        -) check for presence of values for r_shift and eta.
-        -) check if equal length of r_shift and eta values.
-        -) if angular symmetry function types, check for presence of zetas.
+        This comprises checking if the following have been set:
+        -) symmetry function type
+        -) values for r_shift and eta
+        -) values for zeta, if the symmetry function type is an angular one
+
+        Parameters
+        ----------
+        calling_method_name : string, optional
+            The name of another method that calls this method.
+            If this parameter is given, a modified error message is printed
+            by this method, mentioning the method from which it was called.
+            This should make it clearer to the user in which part
+            of their own code to look for an error.
 
         Raises
         ------
@@ -380,19 +401,26 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        # TODO: possibly change the exceptions to ValueError or RunTimeError (see https://stackoverflow.com/questions/10726919/what-error-to-raise-when-class-state-is-invalid)
-        #  this would then also need to be changed in the tests
+        self.check_symfunc_type(calling_method_name=calling_method_name)
 
-        self.check_symfunc_type()
-
-        if self.r_shift_grid is None:
-            raise TypeError('Values for r_shift not set.')
-        if self.eta_grid is None:
-            raise TypeError('Values for eta not set.')
-        if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
-            if self.zetas is None:
-                raise TypeError(f'Values for zeta not set (required for symmetry'
-                                f' function type {self.symfunc_type}).')
+        if calling_method_name is None:
+            if self.r_shift_grid is None or self.eta_grid is None:
+                raise ValueError('Values for r_shift and/or eta not set.')
+            if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
+                if self.zetas is None:
+                    raise ValueError(f'Values for zeta not set (required for symmetry'
+                                    f' function type {self.symfunc_type}).')
+        else:
+            if self.r_shift_grid is None or self.eta_grid is None:
+                raise ValueError(f'Values for r_shift and/or eta not set. '
+                                f'Calling method {calling_method_name} requires'
+                                f' that values for r_shift and eta have been set before.')
+            if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
+                if self.zetas is None:
+                    raise ValueError(f'Values for zeta not set. '
+                                    f'Calling method {calling_method_name} requires'
+                                    f' zetas to have been set before, when using'
+                                    f' symmetry function type {self.symfunc_type}.')
 
     def write_settings_overview(self, file=None):
         """Write settings used in generating the currently stored set of symmetry function parameters.
@@ -407,7 +435,9 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        self.check_writing_prerequisites()
+        this_method_name = inspect.currentframe().f_code.co_name
+        self.check_writing_prerequisites(calling_method_name=this_method_name)
+
         type_descriptions = dict(radial='Radial',
                                  angular_narrow='Narrow angular',
                                  angular_wide='Wide angular',
@@ -473,7 +503,9 @@ class SymFuncParamGenerator:
             Zero-th entry of tuples is always the type of the central atom, 1st and 2nd entry are neighbor atom types
             (radial sf: one neighbor, angular sf: two neighbors, weighted sf: no neighbors)
         """
-        self.check_symfunc_type()
+        this_method_name = inspect.currentframe().f_code.co_name
+        self.check_symfunc_type(calling_method_name=this_method_name)
+
         combinations = []
 
         if self.symfunc_type == 'radial':
@@ -509,7 +541,8 @@ class SymFuncParamGenerator:
         -------
         None
         """
-        self.check_writing_prerequisites()
+        this_method_name = inspect.currentframe().f_code.co_name
+        self.check_writing_prerequisites(calling_method_name=this_method_name)
 
         # depending on presence of file parameter, either direct output
         # to stdout, or open the specified file, in append mode
@@ -560,20 +593,20 @@ def main():
     elems = ['S', 'Cu']
     # elems = ['H', 'C', 'O']
 
-    myGen = SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    myGen.symfunc_type = 'radial'
-    myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-                                 nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff=6.)
+    # myGen.symfunc_type = 'radial'
+    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
+    #                              nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
 
     # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
     # myGen.symfunc_type = 'radial'
     # myGen.set_radial_params_manually([11,22,33,44,55], [55,44,33,22,11])
 
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    # myGen.symfunc_type = 'angular_narrow'
-    # myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
-    #                              nb_param_pairs=3)
-    # myGen.zetas = [1.0, 6.0]
+    myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
+    myGen.symfunc_type = 'angular_narrow'
+    myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
+                                 nb_param_pairs=3)
+    myGen.zetas = [1.0, 6.0]
 
     # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
     # myGen.symfunc_type = 'angular_wide'

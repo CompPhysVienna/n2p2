@@ -200,13 +200,13 @@ def test_check_writing_prerequisites(symfunc_type, r_shift_grid, eta_grid, zetas
     if zetas is not None:
         myGen.zetas = zetas
 
-    # test the completeness checker on its own
-    with pytest.raises(TypeError):
+    # test the completeness checker on its own (without argument)
+    with pytest.raises(ValueError):
         myGen.check_writing_prerequisites()
-    # test the method that call the completeness checker (someone might have removed it...)
-    with pytest.raises(TypeError):
+    # test the methods that call the completeness checker (which call it with argument)
+    with pytest.raises(ValueError):
         myGen.write_settings_overview()
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         myGen.write_parameter_strings()
 
 
