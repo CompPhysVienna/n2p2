@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-17.04.2019
+06.05.2019
 @author: mr
 
 PYTHON 3
@@ -67,7 +67,7 @@ class Tools():
             Its name tells the ratio * of current from original dataset.
         'Output/ratio*/ratio*_**' : subfolders of the previous
             Its name in addition tells the sample number ** of its ratio *.
-        'Output/ratio*/ratio*_**/input.data' :  file
+        'Output/ratio*/ratio*.**/input.data' :  file
             Contains new training dataset of specified size ratio.
         'Output/ratio*/ratio*_**/nnp-select.log' : file
             Log file created by running nnp-select.
@@ -121,13 +121,15 @@ class Tools():
         print("FINISHED creating datasets.")
         return None
                 
-    def training_neural_network(self,nnp_train,write_submission_script_logical,fix_random_seed_train,random_seed_train=123,maximum_time=None):
+    def training_neural_network(self,nnp_train,n_epochs,write_submission_script_logical,fix_random_seed_train,random_seed_train=123,maximum_time=None):
         """Trains the neural network with different existing datasets using the program nnp-train.
         
         Parameters
         ----------
         nnp_train : string
             Command for executing n2p2's nnp-train.
+        n_epochs : integer
+            Number of training epochs.
         write_submission_script_logical : logical
             If True, a job submission script for VSC is written in each of the folders 'Output/ratio*/ratio*_**/'.
             If False, the command nnp_train is executed right away.
@@ -186,7 +188,8 @@ class Tools():
                             random_seed = random_seed_train
                         else:
                             random_seed = int(np.random.randint(100,999,1))
-                        os.system("sed -i \"s/^{0:s} .*$/{0:s} {1:d}/g\" input.nn".format("random_seed", random_seed))                     
+                        os.system("sed -i \"s/^{0:s} .*$/{0:s} {1:d}/g\" input.nn".format("random_seed", random_seed))
+                        os.system("sed -i \"s/^{0:s} .*$/{0:s} {1:d}/g\" input.nn".format("epochs", n_epochs))
                         shutil.copy("../../../scaling.data","scaling.data")
                         if write_submission_script_logical:
                             write_submission_script(command=nnp_train,job_name=set_dir_string[set_dir_counter],time=maximum_time)
@@ -205,17 +208,21 @@ class Tools():
         
         Requirements
         ----------
-        'ratio*/ratio*_**' : 2-layered directory structure
+        'Output/ratio*/ratio*_**' : 3-layered directory structure
             Created with the method create_training_datasets().
-        'ratio*/ratio*_**/learning-curve.out' : file
+        'Output/ratio*/ratio*_**/learning-curve.out' : file
             Contains learning curve data, created with the method create_training_datasets().
         
         Outputs
         ----------
-        'ratio*/collect_data.out' : file
-            Contains analysis of learning curve data of specific training size.
-        'analyse_data.out' : file
-            Contains processed RMSE size dependence information for all datasets.
+        'Output/ratio*/collect_data_min_force.out' : file
+            Contains analysis of learning curve data of specific training size with respect to epoch of minimum force.
+        'Output/ratio*/collect_data_min_energy.out' : file
+            Contains analysis of learning curve data of specific training size with respect to epoch of minimum energy.
+        'Output/analyse_data_min_force.out' : file
+            Contains processed RMSE size dependence information for all datasets with respect to epoch of minimum force.
+        'Output/analyse_data_min_energy.out' : file
+            Contains processed RMSE size dependence information for all datasets with respect to epoch of minimum energy.
         """
         print("\n***ANALYSING LEARNING CURVES***************************************************")
         print("...",end="\r")
@@ -263,60 +270,7 @@ class Tools():
                     wip_analyse_data = np.reshape(wip_analyse_data,8,order="F")
                     analyse_data = np.vstack([analyse_data,np.append(np.take(collect_data,[0,2]),wip_analyse_data,axis=0)])
                     os.chdir("../")
-            np.savetxt("analyse_data_min_"+current_epoch_min_arg+".out",analyse_data,fmt="%.18e", header='%15s%25s%25s%25s%25s%25s%25s%25s%25s%25s'%('ratio','last_epoch','mean_RMSE_E_train','std_RMSE_E_train','mean_RMSE_E_test','std_RMSE_E_test','mean_RMSE_F_train','std_RMSE_F_train','mean_RMSE_F_test','std_RMSE_F_test'))
-#       COLLECT TRAINING PERFORMANCE DATA
-        print("   Collecting training performance data.")
-        print("...",end="\r")
-        set_size_ratios = np.array([])
-        learning_curve_E = np.zeros((number_of_epochs+1))
-        learning_curve_F = np.zeros((number_of_epochs+1))
-        ratio_dir_string = np.sort(os.listdir())
-        for ratio_dir_counter in range(len(ratio_dir_string)):
-            if ratio_dir_string[ratio_dir_counter].startswith('ratio'):
-                current_ratio = 0.01*int(''.join(filter(str.isdigit, ratio_dir_string[ratio_dir_counter])))
-                set_size_ratios = np.append(set_size_ratios,current_ratio)
-#                print("We are working with ratio {:3.2f}".format(current_ratio))
-#                print("...",end="\r")
-                collect_data = np.empty([0,7])
-                learning_curve_Etrain = np.zeros((number_of_epochs+1))
-                learning_curve_Etest = np.zeros((number_of_epochs+1))
-                learning_curve_Ftrain = np.zeros((number_of_epochs+1))
-                learning_curve_Ftest = np.zeros((number_of_epochs+1))
-                os.chdir(ratio_dir_string[ratio_dir_counter])
-                set_dir_string = np.sort(os.listdir())
-                for set_dir_counter in range(len(set_dir_string)):
-                    if set_dir_string[set_dir_counter].startswith('ratio'):
-                        os.chdir(set_dir_string[set_dir_counter])
-                        try:
-                            learning_curve_data = np.genfromtxt("learning-curve.out")
-                            learning_curve_Etrain = np.column_stack((learning_curve_Etrain,learning_curve_data[:,1]))
-                            learning_curve_Ftrain = np.column_stack((learning_curve_Ftrain,learning_curve_data[:,3]))
-                            learning_curve_Etest = np.column_stack((learning_curve_Etest,learning_curve_data[:,2]))
-                            learning_curve_Ftest = np.column_stack((learning_curve_Ftest,learning_curve_data[:,4]))
-                        except:
-                            print("INFO: The file 'learing-curve.out' does not exist in "+ratio_dir_string[ratio_dir_counter]+"/"+set_dir_string[set_dir_counter]+"!")
-#                            continue
-                        os.chdir("../")
-                learning_curve_Etrain = learning_curve_Etrain[:,1:]
-                learning_curve_Etest = learning_curve_Etest[:,1:]
-                learning_curve_Ftrain = learning_curve_Ftrain[:,1:]
-                learning_curve_Ftest = learning_curve_Ftest[:,1:]
-                
-                mean_Etrain_data = np.mean(learning_curve_Etrain,axis=1)
-                mean_Etest_data = np.mean(learning_curve_Etest,axis=1)
-                std_Etrain_data = np.std(learning_curve_Etrain,axis=1)
-                std_Etest_data = np.std(learning_curve_Etest,axis=1)
-                mean_Ftrain_data = np.mean(learning_curve_Ftrain,axis=1)
-                mean_Ftest_data = np.mean(learning_curve_Ftest,axis=1)
-                std_Ftrain_data = np.std(learning_curve_Ftrain,axis=1)
-                std_Ftest_data = np.std(learning_curve_Ftest,axis=1)
-                ratio_learning_curve_data = np.full_like(mean_Etrain_data,current_ratio)
-                learning_curve_E = np.column_stack((learning_curve_E,np.column_stack((np.column_stack((np.column_stack((ratio_learning_curve_data,np.column_stack((mean_Etrain_data,std_Etrain_data)))),mean_Etest_data)),std_Etest_data))))
-                learning_curve_F = np.column_stack((learning_curve_F,np.column_stack((np.column_stack((np.column_stack((ratio_learning_curve_data,np.column_stack((mean_Ftrain_data,std_Ftrain_data)))),mean_Ftest_data)),std_Ftest_data))))
-                
-                os.chdir("../")
-        np.savetxt("learning_curve_E.out",learning_curve_E[:,1:],fmt="%.18e",header='%15s%25s%25s%25s%25s'%('ratio','RMSE_Etrain','std_RMSE_Etrain','mean_RMSE_Etest','std_RMSE_Etest'))
-        np.savetxt("learning_curve_F.out",learning_curve_F[:,1:],fmt="%.18e",header='%15s%25s%25s%25s%25s'%('ratio','RMSE_Ftrain','std_RMSE_Ftrain','mean_RMSE_Ftest','std_RMSE_Ftest'))
+            np.savetxt("analyse_data_min_"+current_epoch_min_arg+".out",analyse_data,fmt="%.18e", header='%15s%25s%25s%25s%25s%25s%25s%25s%25s%25s'%('ratio','epoch','mean_RMSE_E_train','std_RMSE_E_train','mean_RMSE_E_test','std_RMSE_E_test','mean_RMSE_F_train','std_RMSE_F_train','mean_RMSE_F_test','std_RMSE_F_test'))
         os.chdir("../")
         print("FINISHED analysing learning curves.")
         return None
@@ -331,9 +285,11 @@ class Tools():
         
         Requirements
         ----------
-        'analyse_data.out' : file
+        'Output/analyse_data_min_force.out' : file
             Created with analyse_learning_curves().
-        'ratio*/ratio*_**/nnp-select.log' : file
+        'Output/analyse_data_min_energy.out' : file
+            Created with analyse_learning_curves().
+        'Output/ratio*/ratio*_**/nnp-select.log' : file
             Created with create_training_datasets().
 
         Outputs
@@ -367,9 +323,10 @@ class Tools():
                             for line in nnp_select_log:
                                 if line.startswith("Total"):
                                     n_total_configurations = int(''.join(filter(str.isdigit, str(line))))
-                            os.chdir("../")
+#                            os.chdir("../")
                         except:
                             continue
+                        os.chdir("../")
                         if not (n_total_configurations == 0):
                             break
                 os.chdir("../")
@@ -407,32 +364,6 @@ class Tools():
         plt.legend(loc=1, borderaxespad=0.1)
         plt.savefig("Forces_RMSE.png",dpi=300)
         
-#        PLOT TRAINING PERFORMANCE
-        print("   Plotting training performance.")
-        print("...",end="\r")
-        parameters = ["Energies","Forces"]
-        parameter_shortcuts = ["E","F"]
-        for parameter_counter in range(len(parameters)):
-            current_parameter = parameters[parameter_counter]
-            current_shortcut = parameter_shortcuts[parameter_counter]
-            learning_curve = np.genfromtxt("learning_curve_"+current_shortcut+".out")
-            epochs = np.arange(len(learning_curve[:,0]))
-            plt.figure("Learning_curve_"+current_parameter)
-            for set_sizes_counter in range(len(training_set_sizes)):
-                current_training_set_size = training_set_sizes[set_sizes_counter]
-                plt.errorbar(epochs,learning_curve[:,1+5*set_sizes_counter],learning_curve[:,2+5*set_sizes_counter],errorevery=(17+set_sizes_counter),linewidth=1,capsize=2,ls="-",color=plt.cm.Pastel2(set_sizes_counter),label=current_shortcut+"train_setsize="+str(int(current_training_set_size)))[-1][0].set_linestyle('--')
-                plt.errorbar(epochs,learning_curve[:,3+5*set_sizes_counter],learning_curve[:,4+5*set_sizes_counter],errorevery=(18+set_sizes_counter),linewidth=1,capsize=2,ls="-",color=plt.cm.Dark2(set_sizes_counter), label=current_shortcut+"test_setsize="+str(int(current_training_set_size)))
-                plt.yscale('log')
-            plt.title("Training performance for "+current_parameter)
-            plt.xlabel("epoch")
-            if current_parameter == "Energies":
-                plt.ylabel(r"Energy RMSE (meV/atom)")
-            elif current_parameter == "Forces":
-                plt.ylabel(r"Forces RMSE (meV/$\AA$)")
-            plt.grid(b=True, which='major', color='#999999', linestyle=':')
-            plt.legend(loc=1, borderaxespad=0.1)
-            plt.savefig("Learning_curve_"+current_parameter+".png",dpi=300)
-        
         os.chdir("../")
         print("FINISHED plotting size dependence.")
         return None
@@ -453,16 +384,16 @@ def perform_NNTSSD():
     try:
         create_logical,train_logical,analyse_logical,plot_logical,\
         set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
-        mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
+        n_epochs,mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
         = file_input.read_parameters_from_file()
     except:
         create_logical,train_logical,analyse_logical,plot_logical,\
         set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
-        mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
+        n_epochs,mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train\
         = interactive_input.input_parameters_by_user()
 
     nnp_train = "mpirun -np "+str(mpirun_cores)+" ../../../../../../../bin/nnp-train"
-    
+        
     print("Performing the following NNTSSD steps:")
     print("  ",create_logical, "\t Create training datasets")
     print("  ",train_logical, "\t Training neural network")
@@ -474,7 +405,7 @@ def perform_NNTSSD():
     if create_logical:
         myNNTSSD.create_training_datasets(set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create)
     if train_logical:
-        myNNTSSD.training_neural_network(nnp_train,write_submission_script_logical,fix_random_seed_train,random_seed_train,maximum_time)
+        myNNTSSD.training_neural_network(nnp_train,n_epochs,write_submission_script_logical,fix_random_seed_train,random_seed_train,maximum_time)
     if analyse_logical:
         myNNTSSD.analyse_learning_curves()
     if plot_logical:

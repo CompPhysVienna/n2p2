@@ -22,6 +22,8 @@ y
 ################################################################################
 # Specify parameters for NNTSSD.Tools.training_neural_network:
 ################################################################################
+# Give the desired number of training epochs:
+4
 # Give the number of cores you want to use for mpirun:
 4
 # Write a VSC submission script (if not, training is performed on your machine)?

@@ -56,6 +56,8 @@ def input_parameters_by_user():
         User given maximum time required for executing the VSC job. Default is None.
     mpirun_cores : integer
         Number of cores that shall be used for executing the training.
+    n_epochs : integer
+        Number of training epochs.
     """
     print("Specify which NNTSSD steps shall be performed:")
     create_logical = user_input_yes_no("  Shall training datasets be created?")
@@ -111,6 +113,14 @@ def input_parameters_by_user():
                 cores_loop_logical = user_input_yes_no(  "Continue?")
             else:
                 print("  Please use a positive value!")
+        epochs_loop_logical = False
+        while not epochs_loop_logical:
+            n_epochs = int(input("Give the number of training epochs: "))
+            if (n_epochs >= 1):
+                print(" The given number of epochs is ",n_epochs)
+                epochs_loop_logical = user_input_yes_no(  "Continue?")
+            else:
+                print("  Please use a positive value!")
         write_submission_script_logical = user_input_yes_no("Write a VSC submission script (if not, training is performed on your machine)?")
         if write_submission_script_logical:
             time_logical = user_input_yes_no("  Do you want to give a maximum time required for executing the job?")
@@ -121,4 +131,4 @@ def input_parameters_by_user():
             
     return create_logical,train_logical,analyse_logical,plot_logical,\
     set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
-    mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train
+    n_epochs,mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train

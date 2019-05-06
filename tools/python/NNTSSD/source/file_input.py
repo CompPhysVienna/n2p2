@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 26 10:27:01 2019
-
+06.05.2019
 @author: mr
+
+PYTHON 3
 
 Tools for reading the NNTSSD parameters from file 'NNTSSD_input.dat'.
 """
@@ -76,6 +77,8 @@ def read_parameters_from_file():
         User given maximum time required for executing the VSC job. Default is None.
     mpirun_cores : integer
         Number of cores that shall be used for executing the training.
+    n_epochs : integer
+        Number of training epochs.
     """
     content = []
     user_input  = open("NNTSSD_input.dat")
@@ -105,19 +108,20 @@ def read_parameters_from_file():
         fix_random_seed_create = None
         random_seed_create = None
     if train_logical:
-        mpirun_cores = abs(int(content[6][0]))
-        write_submission_script_logical = convert_yes_no_to_logical(content[7][0])
+        n_epochs = abs(int(content[6][0]))
+        mpirun_cores = abs(int(content[7][0]))
+        write_submission_script_logical = convert_yes_no_to_logical(content[8][0])
         if write_submission_script_logical:
             try:
-                maximum_time = str(content[8][0])
+                maximum_time = str(content[9][0])
             except:
                 maximum_time = None
         else:
             maximum_time = None
-        fix_random_seed_train = convert_yes_no_to_logical(content[9][0])
+        fix_random_seed_train = convert_yes_no_to_logical(content[10][0])
         if fix_random_seed_train:
             try:
-                random_seed_train = abs(int(content[10][0]))
+                random_seed_train = abs(int(content[11][0]))
                 print(random_seed_train)
             except:
                 random_seed_train = None
@@ -132,4 +136,4 @@ def read_parameters_from_file():
     user_input.close()
     return create_logical,train_logical,analyse_logical,plot_logical,\
     set_size_ratios,n_sets_per_size,fix_random_seed_create,random_seed_create,\
-    mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train
+    n_epochs,mpirun_cores,write_submission_script_logical,maximum_time,fix_random_seed_train,random_seed_train

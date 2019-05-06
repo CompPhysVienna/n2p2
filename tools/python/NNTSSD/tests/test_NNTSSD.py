@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-17.04.2019
+06.05.2019
 @author: mr
 
 PYTHON 3
@@ -57,7 +57,7 @@ def test_training_neural_network():
     """
     fails = []
     my_Class = NNTSSD.Tools()
-    my_Class.training_neural_network("mpirun -np 4 ../../../../../../../bin/nnp-train",False,True)
+    my_Class.training_neural_network("mpirun -np 4 ../../../../../../../bin/nnp-train",2,False,True)
     
     if not os.path.isfile("Output/ratio0.80/ratio0.80_set1/learning-curve.out"):
         fails.append("The file 'Output/ratio0.80/ratio0.80_set1/learning-curve.out' does not exist.")
@@ -91,10 +91,6 @@ def test_analyse_learning_curves():
         fails.append("The file 'analyse_data_min_energy.out' has not been created.")
     if not os.path.isfile("Output/analyse_data_min_force.out"):
         fails.append("The file 'analyse_data_min_force.out' has not been created.")
-    if not os.path.isfile("Output/learning_curve_E.out"):
-        fails.append("The file 'learning_curve_E.out' has not been created.")
-    if not os.path.isfile("Output/learning_curve_F.out"):
-        fails.append("The file 'learning_curve_F.out' has not been created.")
     
     assert not fails, "Fails occured:\n{}".format("\n".join(fails))
     
@@ -112,10 +108,6 @@ def test_plot_size_dependence():
         fails.append("The file 'Output/Energy_RMSE.png' has not been created.")
     if not os.path.isfile("Output/Forces_RMSE.png"):
         fails.append("The file 'Output/Forces_RMSE.png' has not been created.")
-    if not os.path.isfile("Output/Learning_curve_Energies.png"):
-        fails.append("The file 'Output/Learning_curve_Energies.png' has not been created.")
-    if not os.path.isfile("Output/Learning_curve_Forces.png"):
-        fails.append("The file 'Output/Learning_curve_Forces.png' has not been created.")
         
     assert not fails, "Fails occured:\n{}".format("\n".join(fails))
 
