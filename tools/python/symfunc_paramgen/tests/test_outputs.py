@@ -7,11 +7,37 @@ import os
 import SymFuncParamGenerator as sfpg
 
 
-def test_element_combinations():
-    elems = ['S', 'Cu']
+@pytest.mark.parametrize("symfunc_type,target_combinations", [
+    ('radial',
+     [('H', 'H'), ('H', 'C'), ('H', 'O'),
+      ('C', 'H'), ('C', 'C'), ('C', 'O'),
+      ('O', 'H'), ('O', 'C'), ('O', 'O')]),
+    ('angular_narrow',
+     [('H', 'H', 'H'), ('H', 'H', 'C'), ('H', 'H', 'O'), ('H', 'C', 'C'),
+      ('H', 'C', 'O'), ('H', 'O', 'O'),
+      ('C', 'H', 'H'), ('C', 'H', 'C'), ('C', 'H', 'O'), ('C', 'C', 'C'),
+      ('C', 'C', 'O'), ('C', 'O', 'O'),
+      ('O', 'H', 'H'), ('O', 'H', 'C'), ('O', 'H', 'O'), ('O', 'C', 'C'),
+      ('O', 'C', 'O'), ('O', 'O', 'O')]),
+    ('angular_wide',
+     [('H', 'H', 'H'), ('H', 'H', 'C'), ('H', 'H', 'O'), ('H', 'C', 'C'),
+      ('H', 'C', 'O'), ('H', 'O', 'O'),
+      ('C', 'H', 'H'), ('C', 'H', 'C'), ('C', 'H', 'O'), ('C', 'C', 'C'),
+      ('C', 'C', 'O'), ('C', 'O', 'O'),
+      ('O', 'H', 'H'), ('O', 'H', 'C'), ('O', 'H', 'O'), ('O', 'C', 'C'),
+      ('O', 'C', 'O'), ('O', 'O', 'O')]),
+    ('weighted_radial',
+     [('H',), ('C',), ('O',)]),
+    ('weighted_angular',
+     [('H',), ('C',), ('O',)])
+])
+def test_element_combinations(symfunc_type, target_combinations):
+    """Test if element combinations are correctly constructed.
+    """
+    elems = ['H', 'C', 'O']
     myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    myGen.symfunc_type = 'radial'
-    assert myGen.element_combinations == [('S', 'S'), ('S', 'Cu'), ('Cu', 'S'), ('Cu', 'Cu')]
+    myGen.symfunc_type = symfunc_type
+    assert myGen.element_combinations == target_combinations
 
 
 def isnotcomment(line):
@@ -105,76 +131,6 @@ def test_rcutoff():
     # test for AttributeError when trying to change r_cutoff afterwards
     with pytest.raises(AttributeError):
         myGen.r_cutoff = 10
-
-
-
-@pytest.mark.parametrize("rule,mode,nb_param_pairs,r_lower", [
-    ('bad_argument', 'center', 5, 1.5),
-    ('bad_argument', 'shift', 5, 1.5),
-    ('gastegger2018', 'bad_argument', 5, 1.5),
-    ('imbalzano2018', 'bad_argument', 5, None)
-])
-def test_radial_paramgen_2(rule, mode, nb_param_pairs, r_lower):
-    """Test for ValueError when invalid arguments for rule or method.
-    """
-    elems = ['S', 'Cu']
-    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    with pytest.raises(ValueError):
-        myGen.generate_radial_params(rule=rule, mode=mode,
-                                     nb_param_pairs=nb_param_pairs, r_lower=r_lower)
-
-
-@pytest.mark.parametrize("rule,mode,nb_param_pairs", [
-    ('gastegger2018', 'center', 5),
-    ('gastegger2018', 'shift', 5)
-])
-def test_radial_paramgen_3(rule, mode, nb_param_pairs):
-    """Test for TypeError when omitting r_lower argument in rule 'gastegger2018'
-    """
-    elems = ['S', 'Cu']
-    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    with pytest.raises(TypeError):
-        myGen.generate_radial_params(rule=rule, mode=mode,
-                                     nb_param_pairs=nb_param_pairs)
-
-
-@pytest.mark.parametrize("rule,mode,nb_param_pairs,r_lower", [
-    ('gastegger2018', 'center', 1, 1.5),
-    ('gastegger2018', 'shift', 1, 1.5),
-    ('imbalzano2018', 'center', 1, None),
-    ('imbalzano2018', 'shift', 1, None)
-])
-def test_radial_paramgen_4(rule, mode, nb_param_pairs, r_lower):
-    """Test for ValueError when nb_param_pairs less than two.
-    """
-    elems = ['S', 'Cu']
-    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    with pytest.raises(ValueError):
-        myGen.generate_radial_params(rule=rule, mode=mode,
-                                     nb_param_pairs=nb_param_pairs, r_lower=r_lower)
-
-
-@pytest.mark.parametrize("rule,mode,nb_param_pairs,r_lower,r_upper", [
-    ('gastegger2018', 'center', 2, 0., 5.),
-    ('gastegger2018', 'center', 2, 0., None),
-    ('gastegger2018', 'center', 2, 5., 1.),
-    ('gastegger2018', 'center', 2, 7., None),
-    ('gastegger2018', 'center', 2, 1., 7.),
-    ('gastegger2018', 'shift', 2, -1., 5.),
-    ('gastegger2018', 'shift', 2, -1., None),
-    ('gastegger2018', 'shift', 2, 5., 1.),
-    ('gastegger2018', 'shift', 2, 7, None),
-    ('gastegger2018', 'shift', 2, 1., 7.)
-])
-def test_radial_paramgen_5(rule, mode, nb_param_pairs, r_lower, r_upper):
-    """Test for ValueError when illegal relation between r_lower, r_upper, r_cutoff in rule 'gastegger2018'
-    """
-    elems = ['S', 'Cu']
-    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    with pytest.raises(ValueError):
-        myGen.generate_radial_params(rule=rule, mode=mode,
-                                     nb_param_pairs=nb_param_pairs,
-                                     r_lower=r_lower, r_upper=r_upper)
 
 
 @pytest.mark.parametrize("symfunc_type,r_shift_grid,eta_grid,zetas", [

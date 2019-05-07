@@ -616,9 +616,9 @@ def main():
     # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
     #                              nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
 
-    myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    myGen.symfunc_type = 'radial'
-    myGen.set_custom_radial_params([11, 22, 33, 44, 55], [55, 44, 33, 22, 11])
+    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
+    # myGen.symfunc_type = 'radial'
+    # myGen.set_custom_radial_params([11, 22, 33, 44, 55], [55, 44, 33, 22, 11])
 
     # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
     # myGen.symfunc_type = 'angular_narrow'
@@ -626,11 +626,11 @@ def main():
     #                              nb_param_pairs=3)
     # myGen.zetas = [1.0, 6.0]
 
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    # myGen.symfunc_type = 'angular_wide'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='center',
-    #                              nb_param_pairs=3, r_lower=1.5)
-    # myGen.zetas = [1.0, 6.0]
+    myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
+    myGen.symfunc_type = 'angular_wide'
+    myGen.generate_radial_params(rule='gastegger2018', mode='center',
+                                 nb_param_pairs=3, r_lower=1.5)
+    myGen.zetas = [1.0, 6.0]
 
     # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 5.)
     # myGen.symfunc_type = 'weighted_radial'
