@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import inspect
 import itertools
-import traceback
+import warnings
 
 
 class SymFuncParamGenerator:
@@ -28,6 +28,8 @@ class SymFuncParamGenerator:
     radial_paramgen_settings : dict or None
         Stores settings that were used in generating the symmetry function parameters r_shift and eta
         using the class method provided for that purpose.
+        None, if no radial parameters have been generated yet, or if custom ones
+        (without using the method for generating radial parameters) were set.
     _r_shift_grid : numpy.ndarray or None
         The set of values for the symmetry function parameter r_shift that was generated.
     _eta_grid : numpy.ndarray or None
@@ -292,17 +294,18 @@ class SymFuncParamGenerator:
                 raise ValueError('invalid argument for "mode"')
 
         elif rule == 'imbalzano2018':
-            # TODO: rethink these warnings (might not want to print the whole stack, especially in the test the output becomes very unwieldy)
             if r_lower is not None:
-                sys.stderr.write(
-                    'Warning: argument r_lower is not used in rule "imbalzano2018" and will be ignored.\n')
-                # traceback.print_stack()
-                # sys.stderr.flush()
+                this_method_name = inspect.currentframe().f_code.co_name
+                warnings.warn(f'The argument r_lower to method'
+                              f' {this_method_name} will be ignored,'
+                              f' since it is unused when calling the method'
+                              f' with rule="imbalzano2018".')
             if r_upper is not None:
-                sys.stderr.write(
-                    'Warning: argument r_upper is not used in rule "imbalzano2018" and will be ignored.\n')
-                # traceback.print_stack()
-                # sys.stderr.flush()
+                this_method_name = inspect.currentframe().f_code.co_name
+                warnings.warn(f'The argument r_upper to method'
+                              f' {this_method_name} will be ignored,'
+                              f' since it is unused when calling the method'
+                              f' with rule="imbalzano2018".')
 
             if mode == 'center':
                 nb_intervals = nb_param_pairs - 1
@@ -605,48 +608,3 @@ class SymFuncParamGenerator:
         # which should not be closed)
         if handle is not sys.stdout:
             handle.close()
-
-
-def main():
-    elems = ['S', 'Cu']
-    # elems = ['H', 'C', 'O']
-
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff=6.)
-    # myGen.symfunc_type = 'radial'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              nb_param_pairs=5, r_lower=1.5, r_upper=5.5)
-
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    # myGen.symfunc_type = 'radial'
-    # myGen.set_custom_radial_params([11, 22, 33, 44, 55], [55, 44, 33, 22, 11])
-
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    # myGen.symfunc_type = 'angular_narrow'
-    # myGen.generate_radial_params(rule='imbalzano2018', mode='shift',
-    #                              nb_param_pairs=3)
-    # myGen.zetas = [1.0, 6.0]
-
-    myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    myGen.symfunc_type = 'angular_wide'
-    myGen.generate_radial_params(rule='gastegger2018', mode='center',
-                                 nb_param_pairs=3, r_lower=1.5)
-    myGen.zetas = [1.0, 6.0]
-
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 5.)
-    # myGen.symfunc_type = 'weighted_radial'
-    # myGen.generate_radial_params(rule='imbalzano2018', mode='center',
-    #                              nb_param_pairs=5)
-
-    # myGen = SymFuncParamGenerator(elements=elems, r_cutoff = 6.)
-    # myGen.symfunc_type = 'weighted_angular'
-    # myGen.generate_radial_params(rule='gastegger2018', mode='shift',
-    #                              nb_param_pairs=3, r_lower=1.5)
-    # myGen.zetas = [1.0, 6.0]
-
-
-    myGen.write_settings_overview()
-    myGen.write_parameter_strings()
-
-
-if __name__ == '__main__':
-    main()

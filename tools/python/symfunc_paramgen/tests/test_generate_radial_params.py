@@ -89,8 +89,10 @@ def test_errors_numerical_order(rule, mode, nb_param_pairs, r_lower, r_upper):
      [1, 3.5, 6],
      [1/(2*2.5**2)]*3)
 ])
-def test_parameter_generation(rule, mode, nb_param_pairs, r_lower, r_upper,
+def test_parameter_generation_gastegger2018(rule, mode, nb_param_pairs, r_lower, r_upper,
                               target_r_shift, target_eta):
+    """Test if generated r_shift and eta values match target values.
+    """
     elems = ['S', 'Cu']
     myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
 
@@ -128,8 +130,10 @@ def test_parameter_generation(rule, mode, nb_param_pairs, r_lower, r_upper,
      [1.5, 2.1213203, 3.0, 4.2426407],
      [2.5904121, 1.2952060, 0.6476030, 0.3238015])
 ])
-def test_parameter_generation(rule, mode, nb_param_pairs,
+def test_parameter_generation_imbalzano2018(rule, mode, nb_param_pairs,
                               target_r_shift, target_eta):
+    """Test if generated r_shift and eta values match target values.
+    """
     elems = ['S', 'Cu']
     myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
 
@@ -144,6 +148,27 @@ def test_parameter_generation(rule, mode, nb_param_pairs,
     assert myGen.radial_paramgen_settings['rule'] == rule
     assert myGen.radial_paramgen_settings['mode'] == mode
     assert myGen.radial_paramgen_settings['nb_param_pairs'] == nb_param_pairs
+
+
+@pytest.mark.parametrize("mode", ['center', 'shift'])
+def test_warning_unused_args(mode):
+    """Test if warning when passing r_lower or r_upper while using rule 'imbalzano2018'
+    """
+    elems = ['S', 'Cu']
+    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
+
+    with pytest.warns(UserWarning):
+        myGen.generate_radial_params(rule='imbalzano2018', mode=mode,
+                                     nb_param_pairs=3,
+                                     r_lower=1)
+    with pytest.warns(UserWarning):
+        myGen.generate_radial_params(rule='imbalzano2018', mode=mode,
+                                     nb_param_pairs=3,
+                                     r_upper=5)
+    with pytest.warns(UserWarning):
+        myGen.generate_radial_params(rule='imbalzano2018', mode=mode,
+                                     nb_param_pairs=3,
+                                     r_lower=1, r_upper=5)
 
 
 

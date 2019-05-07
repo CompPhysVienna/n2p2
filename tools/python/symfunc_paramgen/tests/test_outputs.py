@@ -137,8 +137,16 @@ def test_rcutoff():
     (None, np.array([1,2,3]), np.array([4,5,6]), None),
     ('radial', None, np.array([4,5,6]), None),
     ('radial', np.array([1,2,3]), None, None),
+    ('weighted_radial', None, np.array([4, 5, 6]), None),
+    ('weighted_radial', np.array([1, 2, 3]), None, None),
+    ('angular_narrow', None, np.array([4,5,6]), np.array([1,4,9])),
+    ('angular_narrow', np.array([1,2,3]), None, np.array([1,4,9])),
     ('angular_narrow', np.array([1,2,3]), np.array([4,5,6]), None),
+    ('angular_wide', None, np.array([4,5,6]), np.array([1,4,9])),
+    ('angular_wide', np.array([1,2,3]), None, np.array([1,4,9])),
     ('angular_wide', np.array([1,2,3]), np.array([4,5,6]), None),
+    ('weighted_angular', None, np.array([4,5,6]), np.array([1,4,9])),
+    ('weighted_angular', np.array([1,2,3]), None, np.array([1,4,9])),
     ('weighted_angular', np.array([1,2,3]), np.array([4,5,6]), None)
 ])
 def test_check_writing_prerequisites(symfunc_type, r_shift_grid, eta_grid, zetas):
