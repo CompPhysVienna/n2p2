@@ -1,0 +1,137 @@
+#########################################################################
+# Radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+
+#########################################################################
+# Weighted radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+
+#########################################################################
+# Narrow angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+
+#########################################################################
+# Wide angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+
+#########################################################################
+# Weighted angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+
+#########################################################################
+# Radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# The following settings were used for generating sets
+# of values for the radial parameters r_shift and eta:
+# rule           = gastegger2018
+# mode           = center
+# nb_param_pairs = 2
+# r_lower        = 1.5
+# r_upper        = 9.0
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0.]
+# eta_grid       = [0.2222 0.0062]
+
+#########################################################################
+# Weighted radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# The following settings were used for generating sets
+# of values for the radial parameters r_shift and eta:
+# rule           = gastegger2018
+# mode           = center
+# nb_param_pairs = 2
+# r_lower        = 1.5
+# r_upper        = 9.0
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0.]
+# eta_grid       = [0.2222 0.0062]
+
+#########################################################################
+# Narrow angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# The following settings were used for generating sets
+# of values for the radial parameters r_shift and eta:
+# rule           = gastegger2018
+# mode           = center
+# nb_param_pairs = 2
+# r_lower        = 1.5
+# r_upper        = 9.0
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0.]
+# eta_grid       = [0.2222 0.0062]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+
+#########################################################################
+# Wide angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# The following settings were used for generating sets
+# of values for the radial parameters r_shift and eta:
+# rule           = gastegger2018
+# mode           = center
+# nb_param_pairs = 2
+# r_lower        = 1.5
+# r_upper        = 9.0
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0.]
+# eta_grid       = [0.2222 0.0062]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+
+#########################################################################
+# Weighted angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# The following settings were used for generating sets
+# of values for the radial parameters r_shift and eta:
+# rule           = gastegger2018
+# mode           = center
+# nb_param_pairs = 2
+# r_lower        = 1.5
+# r_upper        = 9.0
+# Sets of values for parameters:
+# r_shift_grid   = [0. 0.]
+# eta_grid       = [0.2222 0.0062]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+
