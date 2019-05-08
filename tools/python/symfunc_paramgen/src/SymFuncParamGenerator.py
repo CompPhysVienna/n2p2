@@ -127,7 +127,7 @@ class SymFuncParamGenerator:
 
     @zetas.setter
     def zetas(self, values):
-        # TODO: possibly add checks on values for zeta
+        # TODO: possibly add checks on values for zeta -> but how?
         self._zetas = np.array(values)
 
     @property
@@ -405,10 +405,11 @@ class SymFuncParamGenerator:
         ----------
         calling_method_name : string, optional
             The name of another method that calls this method.
-            If this parameter is given, a modified error message is printed
-            by this method, mentioning the method from which it was called.
-            This should make it clearer to the user in which part
-            of their own code to look for an error.
+            If this parameter is given, a modified error message is printed,
+            mentioning the method from which this error-raising method
+            was called.
+            This should make it clearer to a user in which part
+            of their code to look for an error.
 
         Raises
         ------
@@ -429,8 +430,11 @@ class SymFuncParamGenerator:
                 raise ValueError('Values for r_shift and/or eta not set.')
             if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
                 if self.zetas is None:
-                    raise ValueError(f'Values for zeta not set (required for symmetry'
-                                    f' function type {self.symfunc_type}).')
+                    raise ValueError(
+                        f'Values for zeta not set (required for symmetry'
+                        f' function type {self.symfunc_type}).\n'
+                        f' If you are seeing this error despite having previously set zetas, make sure\n'
+                        f' they have not been cleared since by setting a non-angular symmetry function type.')
         else:
             if self._r_shift_grid is None or self._eta_grid is None:
                 raise ValueError(f'Values for r_shift and/or eta not set. '
@@ -438,10 +442,12 @@ class SymFuncParamGenerator:
                                 f' that values for r_shift and eta have been set before.')
             if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
                 if self.zetas is None:
-                    raise ValueError(f'Values for zeta not set. '
-                                    f'Calling method {calling_method_name} requires'
-                                    f' zetas to have been set before, when using'
-                                    f' symmetry function type {self.symfunc_type}.')
+                    raise ValueError(
+                        f'Values for zeta not set.\n '
+                        f'Calling {calling_method_name}, while using symmetry function type {self.symfunc_type},\n'
+                        f' requires zetas to have been set before.\n '
+                        f'If you are seeing this error despite having previously set zetas, make sure\n'
+                        f' they have not been cleared since by setting a non-angular symmetry function type.')
 
     def write_settings_overview(self, file=None):
         """Write settings used in generating the currently stored set of symmetry function parameters.
@@ -548,9 +554,33 @@ class SymFuncParamGenerator:
         """Write symmetry function parameter sets, formatted as n2p2 requires.
 
         Each line in the output corresponds to one symmetry function.
+
         Output is formatted in blocks separated by blank lines, each block
-        corresponding to one element combination.
-        Within each block, the other parameters are iterated over.
+        corresponding to one element combination. The different blocks differ
+        from each other only in the element combinations and are otherwise
+        the same.
+
+        Within each block, all combinations of the other parameters
+        r_shift, eta, lambda, zeta (the latter two only for angular
+        symmetry function types), are iterated over.
+        Note, however, that the value pairs for r_shift and eta are not
+        all the possible combinations of elements in r_shift_grid and eta_grid,
+        but only the combinations of the i-th entries of r_shift_grid with
+        the i-th entries of eta_grid.
+
+        Schematic example: When r_shift_grid = [1, 2], eta_grid = [3, 4],
+        zetas = [5, 6], lambdas = [-1, 1] (the latter not being intended to be
+        set by the user, anyway), within each block of the output, the
+        method iterates over the following combinations of
+        (r_shift, eta, zeta, lambda):
+        [(1, 3, 5, -1),
+         (1, 3, 5, 1),
+         (1, 3, 6, -1),
+         (1, 3, 6, 1),
+         (2, 4, 5, -1),
+         (2, 4, 5, 1),
+         (2, 4, 6, -1),
+         (2, 4, 6, 1)]
 
         Parameters
         ----------
