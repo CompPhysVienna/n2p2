@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to symfunc_paramgen’s documentation! &#8212; symfunc_paramgen 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-symfunc-paramgen-s-documentation">
+<h1>Welcome to symfunc_paramgen’s documentation!<a class="headerlink" href="#welcome-to-symfunc-paramgen-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+<span class="target" id="module-SymFuncParamGenerator"></span><dl class="class">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator">
+<em class="property">class </em><code class="descclassname">SymFuncParamGenerator.</code><code class="descname">SymFuncParamGenerator</code><span class="sig-paren">(</span><em>elements</em>, <em>r_cutoff: float</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tools for generation, storage, and writing in the format required by n2p2, of symmetry function parameter sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>elements</strong><span class="classifier">list of string</span></dt><dd><p>The chemical elements present in the system.</p>
+</dd>
+<dt><strong>r_cutoff</strong><span class="classifier">float</span></dt><dd><p>Cutoff radius, at which symmetry functions go to zero.
+Must be greater than zero.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>symfunc_type_numbers</strong><span class="classifier">dict</span></dt><dd><p>Dictionary mapping strings specifying the symmetry function type to the
+numbers used internally by n2p2 to distinguish symmetry function types.</p>
+</dd>
+<dt><strong>lambdas</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Set of values for the parameter lambda of angular symmetry functions. Fixed to [-1, 1].</p>
+</dd>
+<dt><strong>radial_paramgen_settings</strong><span class="classifier">dict or None</span></dt><dd><p>Stores settings that were used in generating the symmetry function parameters r_shift and eta
+using the class method provided for that purpose.
+None, if no radial parameters have been generated yet, or if custom ones
+(without using the method for generating radial parameters) were set.</p>
+</dd>
+<dt><strong>_r_shift_grid</strong><span class="classifier">numpy.ndarray or None</span></dt><dd><p>The set of values for the symmetry function parameter r_shift that was generated.</p>
+</dd>
+<dt><strong>_eta_grid</strong><span class="classifier">numpy.ndarray or None</span></dt><dd><p>The set of values for the symmetry function parameter eta that was generated.</p>
+</dd>
+<dt><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.elements" title="SymFuncParamGenerator.SymFuncParamGenerator.elements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elements</span></code></a></dt><dd><p>The chemical elements present in the system (list of string, read-only).</p>
+</dd>
+<dt><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.element_combinations" title="SymFuncParamGenerator.SymFuncParamGenerator.element_combinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">element_combinations</span></code></a></dt><dd><p>Combinations of elements (list of tuple of string, read-only).</p>
+</dd>
+<dt><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.r_cutoff" title="SymFuncParamGenerator.SymFuncParamGenerator.r_cutoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">r_cutoff</span></code></a></dt><dd><p>Cutoff radius where symmetry functions go to zero (float, read-only).</p>
+</dd>
+<dt><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.symfunc_type" title="SymFuncParamGenerator.SymFuncParamGenerator.symfunc_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symfunc_type</span></code></a></dt><dd><p>Type of symmetry function for which parameters are to be generated (<cite>str</cite>).</p>
+</dd>
+<dt><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.zetas" title="SymFuncParamGenerator.SymFuncParamGenerator.zetas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zetas</span></code></a></dt><dd><p>Set of values for the parameter zeta of angular symmetry functions (<cite>numpy.ndarray</cite>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.check_symfunc_type" title="SymFuncParamGenerator.SymFuncParamGenerator.check_symfunc_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symfunc_type</span></code></a>(self[, calling_method_name])</p></td>
+<td><p>Check if a symmetry function type has been set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.check_writing_prerequisites" title="SymFuncParamGenerator.SymFuncParamGenerator.check_writing_prerequisites"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_writing_prerequisites</span></code></a>(self[, …])</p></td>
+<td><p>Check if all data required for writing symmetry function sets are present.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.find_element_combinations" title="SymFuncParamGenerator.SymFuncParamGenerator.find_element_combinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_element_combinations</span></code></a>(self)</p></td>
+<td><p>Create combinations of elements, depending on symmetry function type and the elements in the system.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.generate_radial_params" title="SymFuncParamGenerator.SymFuncParamGenerator.generate_radial_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_radial_params</span></code></a>(self, rule, mode, …)</p></td>
+<td><p>Generate a set of values for r_shift and eta.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.set_custom_radial_params" title="SymFuncParamGenerator.SymFuncParamGenerator.set_custom_radial_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_custom_radial_params</span></code></a>(self, …)</p></td>
+<td><p>Set custom r_shift and eta, bypassing the class’s generation method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.write_parameter_strings" title="SymFuncParamGenerator.SymFuncParamGenerator.write_parameter_strings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_parameter_strings</span></code></a>(self[, file])</p></td>
+<td><p>Write symmetry function parameter sets, formatted as n2p2 requires.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#SymFuncParamGenerator.SymFuncParamGenerator.write_settings_overview" title="SymFuncParamGenerator.SymFuncParamGenerator.write_settings_overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_settings_overview</span></code></a>(self[, file])</p></td>
+<td><p>Write settings used in generating the currently stored set of symmetry function parameters.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.check_symfunc_type">
+<code class="descname">check_symfunc_type</code><span class="sig-paren">(</span><em>self</em>, <em>calling_method_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.check_symfunc_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.check_symfunc_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a symmetry function type has been set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>calling_method_name</strong><span class="classifier">string, optional</span></dt><dd><p>The name of another method that calls this method.
+If this parameter is given, a modified error message is printed
+by this method, mentioning the method from which it was called.
+This should make it clearer to the user in which part
+of their own code to look for an error.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the symmetry function type has not been set (i.e., it is None).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.check_writing_prerequisites">
+<code class="descname">check_writing_prerequisites</code><span class="sig-paren">(</span><em>self</em>, <em>calling_method_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.check_writing_prerequisites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.check_writing_prerequisites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all data required for writing symmetry function sets are present.</p>
+<p>This comprises checking if the following have been set:
+-) symmetry function type
+-) values for r_shift and eta
+-) values for zeta, if the symmetry function type is an angular one</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>calling_method_name</strong><span class="classifier">string, optional</span></dt><dd><p>The name of another method that calls this method.
+If this parameter is given, a modified error message is printed,
+mentioning the method from which this error-raising method
+was called.
+This should make it clearer to a user in which part
+of their code to look for an error.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If values for r_shift or eta are not set.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If an angular symmetry function type has been set, but no values
+for zeta were set.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.element_combinations">
+<code class="descname">element_combinations</code><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.element_combinations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combinations of elements (list of tuple of string, read-only).</p>
+<p>This is computed and set automatically by the setter for symfunc_type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.elements">
+<code class="descname">elements</code><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>The chemical elements present in the system (list of string, read-only).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.find_element_combinations">
+<code class="descname">find_element_combinations</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.find_element_combinations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.find_element_combinations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create combinations of elements, depending on symmetry function type and the elements in the system.</p>
+<p>For radial symmetry functions, the combinations are all possible ordered pairs of elements in the system,
+including of an element with itself.
+For angular symmetry functions (narrow or wide), the combinations consist of all possible elements as the
+central atom, and then again for each central element all possible unordered pairs of neighbor elements.
+For weighted symmetry functions (radial or angular), the combinations run only over all possible
+central elements, with neighbors not taken into account at this stage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>combinations</strong><span class="classifier">list of tuple of string</span></dt><dd><p>Each tuple in the list represents one element combination.
+Length of the individual tuples can be 1, 2 or 3, depending on symmetry function type.
+Zero-th entry of tuples is always the type of the central atom, 1st and 2nd entry are neighbor atom types
+(radial sf: one neighbor, angular sf: two neighbors, weighted sf: no neighbors)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.generate_radial_params">
+<code class="descname">generate_radial_params</code><span class="sig-paren">(</span><em>self</em>, <em>rule</em>, <em>mode</em>, <em>nb_param_pairs: int</em>, <em>r_lower=None</em>, <em>r_upper=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.generate_radial_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.generate_radial_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a set of values for r_shift and eta.</p>
+<p>Such a set of (r_shift, eta)-values is required for any
+symmetry function type.
+Its generation is independent of the symmetry function type
+and the angular symmetry function parameters zeta and lambda.</p>
+<p>Rules for parameter generation are implemented based on <a href="#id6"><span class="problematic" id="id1">[1]_</span></a> and <a href="#id7"><span class="problematic" id="id2">[2]_</span></a>.</p>
+<p>The generated values are stored as arrays in the member variables _r_shift_grid and _eta_grid.
+The entries are to be understood pairwise, i.e., the i-th entry of _r_shift_grid
+and the i-th entry of _eta_grid belong to one symmetry function.
+Besides the set of values for r_shift and eta, the settings that
+were used for generating it are also stored, in the dictionary radial_paramgen_settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rule</strong><span class="classifier">{‘gastegger2018’, ‘imbalzano2018’}</span></dt><dd><p>If rule==’gastegger2018’ use the parameter generation rules presented in <a href="#id8"><span class="problematic" id="id3">[1]_</span></a>.
+If rule==’imbalzano2018’ use the parameter generation rules presented in <a href="#id9"><span class="problematic" id="id4">[2]_</span></a>.</p>
+</dd>
+<dt><strong>mode</strong><span class="classifier">{‘center’, ‘shift’}</span></dt><dd><p>Selects which parameter generation procedure to use, on top of the rule argument,
+since there are again two different varieties presented in each of the two papers.
+‘center’ sets r_shift to zero for all symmetry functions, varying only eta.
+‘shift’ creates parameter sets where r_shift varies.
+The exact implementation details differ depending on
+the rule parameter and are described in the papers.</p>
+</dd>
+<dt><strong>nb_param_pairs</strong><span class="classifier">int</span></dt><dd><p>Number of (r_shift, eta)-pairs to be generated.</p>
+</dd>
+<dt><strong>r_lower</strong><span class="classifier">float</span></dt><dd><p>lowest value in the radial grid from which r_shift and eta values
+are computed.
+required if rule==’gastegger2018’.
+ignored if rule==’imbalzano2018’.</p>
+</dd>
+<dt><strong>r_upper</strong><span class="classifier">float, optional</span></dt><dd><p>Largest value in the radial grid from which r_shift and eta
+values are computed.
+Optional if rule==’gastegger2018, defaults to cutoff radius if not
+given.
+Ignored if rule==’imbalzano2018’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If nb_param_pairs is not two or greater.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If parameter r_lower is not given, when using rule ‘gastegger2018’.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If illegal relation between r_lower, r_upper, r_cutoff.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If invalid argument for parameters rule or mode.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>[1] <a class="reference external" href="https://doi.org/10.1063/1.5019667">https://doi.org/10.1063/1.5019667</a>
+[2] <a class="reference external" href="https://doi.org/10.1063/1.5024611">https://doi.org/10.1063/1.5024611</a></p>
+<p>The parameter nb_param_pairs invariably specifies the number of
+(r_shift, eta)-pairs ultimately generated, not the number of
+intervals between points in a grid of r_shift values, or the
+number of points in some auxiliary grid.
+This constitutes a slight modification of the nomenclature in <a href="#id10"><span class="problematic" id="id5">[2]_</span></a>,
+for the sake of consistent behavior across all options for rule and
+mode.</p>
+<p>While the parameter generation by this method does not itself
+depend on symmetry function type, be aware of the exact mathematical
+expressions for the different symmetry function types and how the
+parameters r_shift and eta appear slightly differently in each of them.</p>
+<p>All this method does is implement the procedures described in the two
+papers for generating values of the symmetry function parameters
+r_shift and eta. As far as this module is concerned, these can then
+be used (with the above caveat) in combination with any symmetry
+function type. However, this does not imply that their use with all
+the different types of symmetry functions is actually discussed in
+the papers or was necessarily intended by the authors.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.r_cutoff">
+<code class="descname">r_cutoff</code><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.r_cutoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cutoff radius where symmetry functions go to zero (float, read-only).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.set_custom_radial_params">
+<code class="descname">set_custom_radial_params</code><span class="sig-paren">(</span><em>self</em>, <em>r_shift_values</em>, <em>eta_values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.set_custom_radial_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.set_custom_radial_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set custom r_shift and eta, bypassing the class’s generation method.</p>
+<p>The parameters r_shift_values and eta_values must have the same
+length.
+Ttheir entries are to be understood pairwise, i.e.,
+the i-th entry of r_shift_values and the i-th entry of eta_values
+belong together, describing one symmetry function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>r_shift_values</strong><span class="classifier">sequence of float or 1D-array</span></dt><dd><p>Set of values for the symmetry function parameter r_shift.</p>
+</dd>
+<dt><strong>eta_values</strong><span class="classifier">sequence of float or 1D-array</span></dt><dd><p>Set of values for the symmetry function parameter eta.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If r_shift_values and eta_values do not have equal length.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If r_shift_values or eta_values contain non-positive entries.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Setting r_shift and eta manually via this method instead of using the
+method generate_radial_params somewhat defeats the purpose of the
+class as a generator of symmetry function parameter values. However,
+it might still be useful, in case one wants to use custom values for
+r_shift and eta, for which the generation is not implemented as a
+class method, while still benefiting from the  parameter writing
+functionality of the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.symfunc_type">
+<code class="descname">symfunc_type</code><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.symfunc_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of symmetry function for which parameters are to be generated (<cite>str</cite>).</p>
+<p>When the setter for this is called it also checks the validity of
+the input, builds the necessary element combinations for the given
+symmetry function type, and stores it to member variable.</p>
+<p>If the given symmetry function type is a radial one,
+the setter also clears any preexisting zetas
+(i.e., sets the member variable zetas to None).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If invalid symmetry function type is given.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.write_parameter_strings">
+<code class="descname">write_parameter_strings</code><span class="sig-paren">(</span><em>self</em>, <em>file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.write_parameter_strings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.write_parameter_strings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write symmetry function parameter sets, formatted as n2p2 requires.</p>
+<p>Each line in the output corresponds to one symmetry function.</p>
+<p>Output is formatted in blocks separated by blank lines, each block
+corresponding to one element combination. The different blocks differ
+from each other only in the element combinations and are otherwise
+the same.</p>
+<p>Within each block, all combinations of the other parameters
+r_shift, eta, lambda, zeta (the latter two only for angular
+symmetry function types), are iterated over.
+Note, however, that the value pairs for r_shift and eta are not
+all the possible combinations of elements in r_shift_grid and eta_grid,
+but only the combinations of the i-th entries of r_shift_grid with
+the i-th entries of eta_grid.</p>
+<p>Schematic example: When r_shift_grid = [1, 2], eta_grid = [3, 4],
+zetas = [5, 6], lambdas = [-1, 1] (the latter not being intended to be
+set by the user, anyway), within each block of the output, the
+method iterates over the following combinations of
+(r_shift, eta, zeta, lambda):
+[(1, 3, 5, -1),</p>
+<blockquote>
+<div><p>(1, 3, 5, 1),
+(1, 3, 6, -1),
+(1, 3, 6, 1),
+(2, 4, 5, -1),
+(2, 4, 5, 1),
+(2, 4, 6, -1),
+(2, 4, 6, 1)]</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file</strong><span class="classifier">path-like, optional</span></dt><dd><p>The file to write the parameter strings to, using append mode.
+If not specified, write to sys.stdout instead.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.write_settings_overview">
+<code class="descname">write_settings_overview</code><span class="sig-paren">(</span><em>self</em>, <em>file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SymFuncParamGenerator.html#SymFuncParamGenerator.write_settings_overview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.write_settings_overview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write settings used in generating the currently stored set of symmetry function parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file</strong><span class="classifier">path-like, optional</span></dt><dd><p>The file to write the settings information to, using append mode.
+If not specified, write to sys.stdout instead.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="SymFuncParamGenerator.SymFuncParamGenerator.zetas">
+<code class="descname">zetas</code><a class="headerlink" href="#SymFuncParamGenerator.SymFuncParamGenerator.zetas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of values for the parameter zeta of angular symmetry functions (<cite>numpy.ndarray</cite>).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Florian Buchner.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
