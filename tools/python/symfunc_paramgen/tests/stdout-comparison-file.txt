@@ -1,0 +1,2 @@
+An interesting message on the first line.
+Another interesting message on the second line.

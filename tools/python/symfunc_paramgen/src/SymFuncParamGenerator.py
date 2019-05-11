@@ -150,14 +150,14 @@ class SymFuncParamGenerator:
             This should make it clearer to the user in which part
             of their own code to look for an error.
 
-        Raises
-        ------
-        TypeError
-            If the symmetry function type has not been set (i.e., it is None).
-
         Returns
         -------
         None
+
+        Raises
+        ------
+        ValueError
+            If the symmetry function type has not been set (i.e., it is None).
         """
         if self.symfunc_type is None:
             if calling_method_name is None:
@@ -206,9 +206,13 @@ class SymFuncParamGenerator:
         r_upper : float, optional
             Largest value in the radial grid from which r_shift and eta
             values are computed.
-            Optional if rule=='gastegger2018, defaults to cutoff radius if not
+            Optional if rule=='gastegger2018', defaults to cutoff radius if not
             given.
             Ignored if rule=='imbalzano2018'.
+
+        Returns
+        -------
+        None
 
         Raises
         ------
@@ -223,9 +227,6 @@ class SymFuncParamGenerator:
 
         Notes
         -----
-        [1] https://doi.org/10.1063/1.5019667
-        [2] https://doi.org/10.1063/1.5024611
-
         The parameter nb_param_pairs invariably specifies the number of
         (r_shift, eta)-pairs ultimately generated, not the number of
         intervals between points in a grid of r_shift values, or the
@@ -247,9 +248,10 @@ class SymFuncParamGenerator:
         the different types of symmetry functions is actually discussed in
         the papers or was necessarily intended by the authors.
 
-        Returns
-        -------
-        None
+        References
+        ----------
+        .. [1] https://doi.org/10.1063/1.5019667
+        .. [2] https://doi.org/10.1063/1.5024611
         """
         if not nb_param_pairs >= 2:
             raise ValueError('nb_param_pairs must be two or greater.')
@@ -358,6 +360,10 @@ class SymFuncParamGenerator:
         eta_values : sequence of float or 1D-array
             Set of values for the symmetry function parameter eta.
 
+        Returns
+        -------
+        None
+
         Raises
         ------
         TypeError
@@ -374,10 +380,6 @@ class SymFuncParamGenerator:
         r_shift and eta, for which the generation is not implemented as a
         class method, while still benefiting from the  parameter writing
         functionality of the class.
-
-        Returns
-        -------
-        None
         """
         if len(r_shift_values) != len(eta_values):
             raise TypeError('r_shift_values and eta_values must have same length.')
@@ -396,10 +398,10 @@ class SymFuncParamGenerator:
     def check_writing_prerequisites(self, calling_method_name=None):
         """Check if all data required for writing symmetry function sets are present.
 
-        This comprises checking if the following have been set:
-        -) symmetry function type
-        -) values for r_shift and eta
-        -) values for zeta, if the symmetry function type is an angular one
+        | This comprises checking if the following have been set:
+        | - symmetry function type
+        | - values for r_shift and eta
+        | - values for zeta, if the symmetry function type is an angular one
 
         Parameters
         ----------
@@ -411,17 +413,17 @@ class SymFuncParamGenerator:
             This should make it clearer to a user in which part
             of their code to look for an error.
 
-        Raises
-        ------
-        TypeError
-            If values for r_shift or eta are not set.
-        TypeError
-            If an angular symmetry function type has been set, but no values
-            for zeta were set.
-
         Returns
         -------
         None
+
+        Raises
+        ------
+        ValueError
+            If values for r_shift or eta are not set.
+        ValueError
+            If an angular symmetry function type has been set, but no values
+            for zeta were set.
         """
         self.check_symfunc_type(calling_method_name=calling_method_name)
 
@@ -473,7 +475,10 @@ class SymFuncParamGenerator:
 
         # depending on presence of file parameter, either direct output
         # to stdout, or open the specified file, in append mode
-        handle = open(file, 'a') if file is not None else sys.stdout
+        if file is None:
+            handle = sys.stdout
+        else:
+            handle = open(file, 'a')
 
         handle.write('#########################################################################\n')
         handle.write(
@@ -573,14 +578,15 @@ class SymFuncParamGenerator:
         set by the user, anyway), within each block of the output, the
         method iterates over the following combinations of
         (r_shift, eta, zeta, lambda):
-        [(1, 3, 5, -1),
-         (1, 3, 5, 1),
-         (1, 3, 6, -1),
-         (1, 3, 6, 1),
-         (2, 4, 5, -1),
-         (2, 4, 5, 1),
-         (2, 4, 6, -1),
-         (2, 4, 6, 1)]
+
+        | (1, 3, 5, -1)
+        | (1, 3, 5,  1)
+        | (1, 3, 6, -1)
+        | (1, 3, 6,  1)
+        | (2, 4, 5, -1)
+        | (2, 4, 5,  1)
+        | (2, 4, 6, -1)
+        | (2, 4, 6,  1)
 
         Parameters
         ----------
@@ -597,7 +603,10 @@ class SymFuncParamGenerator:
 
         # depending on presence of file parameter, either direct output
         # to stdout, or open the specified file, in append mode
-        handle = open(file, 'a') if file is not None else sys.stdout
+        if file is None:
+            handle = sys.stdout
+        else:
+            handle = open(file, 'a')
 
         r_cutoff = self.r_cutoff
         sf_number = self.symfunc_type_numbers[self.symfunc_type]

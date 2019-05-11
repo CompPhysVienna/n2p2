@@ -12,6 +12,15 @@ Welcome to symfunc_paramgen's documentation!
 
 
 
+Code documentation
+==================
+
+.. toctree::
+   :maxdepth: 2
+
+   code_structure
+
+
 Indices and tables
 ==================
 
@@ -19,5 +28,3 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. automodule:: SymFuncParamGenerator
-        :members:

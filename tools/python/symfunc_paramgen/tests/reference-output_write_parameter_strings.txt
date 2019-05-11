@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------------------
+# | Comment lines in this file (lines starting with '#') are not relevant to the tests |
+# | and are ignored by them.                                                           |
+# | They are only a reminder of what settings to use in the tests to recreate the      |
+# | reference output contained in this file.                                           |
+# --------------------------------------------------------------------------------------
+#
 #########################################################################
 # Radial symmetry function set, for elements ['S', 'Cu']
 #########################################################################
@@ -7,7 +14,6 @@
 # Sets of values for parameters:
 # r_shift_grid   = [1 2]
 # eta_grid       = [4 5]
-
 symfunction_short S  2 S  4.000E+00 1.000E+00 1.122E+01
 symfunction_short S  2 S  5.000E+00 2.000E+00 1.122E+01
 
@@ -29,7 +35,6 @@ symfunction_short Cu 2 Cu 5.000E+00 2.000E+00 1.122E+01
 # Sets of values for parameters:
 # r_shift_grid   = [1 2]
 # eta_grid       = [4 5]
-
 symfunction_short S  12 4.000E+00 1.000E+00 1.122E+01
 symfunction_short S  12 5.000E+00 2.000E+00 1.122E+01
 
@@ -47,7 +52,6 @@ symfunction_short Cu 12 5.000E+00 2.000E+00 1.122E+01
 # eta_grid       = [4 5]
 # lambdas        = [-1.  1.]
 # zetas          = [5.5 7.5]
-
 symfunction_short S  3 S  S  4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
 symfunction_short S  3 S  S  4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
 symfunction_short S  3 S  S  4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
@@ -113,7 +117,6 @@ symfunction_short Cu 3 Cu Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
 # eta_grid       = [4 5]
 # lambdas        = [-1.  1.]
 # zetas          = [5.5 7.5]
-
 symfunction_short S  9 S  S  4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
 symfunction_short S  9 S  S  4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
 symfunction_short S  9 S  S  4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
@@ -179,7 +182,6 @@ symfunction_short Cu 9 Cu Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
 # eta_grid       = [4 5]
 # lambdas        = [-1.  1.]
 # zetas          = [5.5 7.5]
-
 symfunction_short S  13 4.000E+00 1.000E+00 -1 5.500E+00 1.122E+01 
 symfunction_short S  13 4.000E+00 1.000E+00  1 5.500E+00 1.122E+01 
 symfunction_short S  13 4.000E+00 1.000E+00 -1 7.500E+00 1.122E+01 
