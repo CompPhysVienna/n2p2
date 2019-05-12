@@ -4,14 +4,14 @@ sys.path.append('../src')
 import numpy as np
 import pytest
 import os
-import SymFuncParamGenerator as sfpg
+from sfparamgen import SymFuncParamGenerator
 import filecmp
 
 
 @pytest.fixture
 def basic_generator():
     elems = ['S', 'Cu']
-    return sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
+    return SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
 
 
 def test_write_settings_overview_file(basic_generator, tmpdir):
@@ -20,7 +20,7 @@ def test_write_settings_overview_file(basic_generator, tmpdir):
     reference_path = 'reference-output_write_settings_overview.txt'
 
     elems = ['S', 'Cu']
-    basic_generator = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
+    basic_generator = SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
 
     ########### using custom radial parameters ###########
     basic_generator.set_custom_radial_params(r_shift_values=[1,2], eta_values=[4,5])

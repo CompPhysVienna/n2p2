@@ -4,13 +4,13 @@ sys.path.append('../src')
 import numpy as np
 import pytest
 import os
-import SymFuncParamGenerator as sfpg
+from sfparamgen import SymFuncParamGenerator
 
 
 @pytest.fixture
 def basic_generator():
     elems = ['S', 'Cu']
-    return sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
+    return SymFuncParamGenerator(elements=elems, r_cutoff=6.)
 
 
 @pytest.mark.parametrize("symfunc_type,target_combinations", [
@@ -41,7 +41,7 @@ def test_element_combinations(symfunc_type, target_combinations):
     """Test if element combinations are correctly constructed.
     """
     elems = ['H', 'C', 'O']
-    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
+    myGen = SymFuncParamGenerator(elements=elems, r_cutoff=6.)
     myGen.symfunc_type = symfunc_type
     assert myGen.element_combinations == target_combinations
 
@@ -50,11 +50,11 @@ def test_rcutoff():
     elems = ['S', 'Cu']
     # test for errors when cutoff radius not greater than zero
     with pytest.raises(ValueError):
-        myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=0)
+        myGen = SymFuncParamGenerator(elements=elems, r_cutoff=0)
     with pytest.raises(ValueError):
-        myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=-5)
+        myGen = SymFuncParamGenerator(elements=elems, r_cutoff=-5)
     # test if initializing and retrieving r_cutoff works as expected
-    myGen = sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6)
+    myGen = SymFuncParamGenerator(elements=elems, r_cutoff=6)
     assert myGen.r_cutoff == 6
     # test for AttributeError when trying to change r_cutoff afterwards
     with pytest.raises(AttributeError):

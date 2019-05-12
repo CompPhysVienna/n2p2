@@ -5,13 +5,13 @@ import numpy as np
 import pytest
 import os
 import sys
-import SymFuncParamGenerator as sfpg
+from sfparamgen import SymFuncParamGenerator
 
 
 @pytest.fixture
 def basic_generator():
     elems = ['S', 'Cu']
-    return sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
+    return SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
 
 
 def isnotcomment(line):

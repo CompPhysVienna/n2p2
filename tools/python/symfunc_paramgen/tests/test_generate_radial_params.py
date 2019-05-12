@@ -4,13 +4,13 @@ sys.path.append('../src')
 import numpy as np
 import pytest
 import os
-import SymFuncParamGenerator as sfpg
+from sfparamgen import SymFuncParamGenerator
 
 
 @pytest.fixture
 def basic_generator():
     elems = ['S', 'Cu']
-    return sfpg.SymFuncParamGenerator(elements=elems, r_cutoff=6.)
+    return SymFuncParamGenerator(elements=elems, r_cutoff=6.)
 
 
 @pytest.mark.parametrize("rule,mode,nb_param_pairs,r_lower", [
