@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-06.05.2019
-@author: mr
-
-PYTHON 3
-
 Tools for reading the NNTSSD parameters from file 'NNTSSD_input.dat'.
 """
 
@@ -21,13 +16,13 @@ def convert_yes_no_to_logical(yn_input):
         Should contain 'y' or 'n'.
     
     Returns
-    ----------
+    -------
     logical : logical
         True if the input string has been 'y'.
         False if the input string has been 'n'.
         
     Raises
-    ----------
+    ------
     ValueError
         If input string does not contain either 'y' or 'n'.
     """
@@ -44,12 +39,12 @@ def read_parameters_from_file():
     """This function reads the NNTSSD parameters from the file 'NNTSSD_input.dat'.
     
     Requirements
-    ----------
+    ------------
     'NNTSSD_input.dat' : file
         Contains user-given specifications on training set size parameters and NNTSSD steps.
         
     Returns
-    ----------
+    -------
     create_logical : logical
         True if the function NNTSSD.Tools.create_training_datasets() shall be performed. False otherwise.
     train_logical : logical
@@ -122,7 +117,7 @@ def read_parameters_from_file():
         if fix_random_seed_train:
             try:
                 random_seed_train = abs(int(content[11][0]))
-                print(random_seed_train)
+#                print(random_seed_train)
             except:
                 random_seed_train = None
         else:

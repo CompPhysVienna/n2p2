@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-06.05.2019
-@author: mr
-
-PYTHON 3
-
 Tools for analysing learning curves and plotting training performance.
 """
 
@@ -19,7 +14,7 @@ class Tools_LC():
     """Tools for analysing and plotting Learning Curves/Training Performance.
     
     Methods
-    ----------
+    -------
     analyse_learning_curves():
         Prepares analyse data from the learning curves obtained in training.
     plot_training_performance():
@@ -35,30 +30,29 @@ class Tools_LC():
     def analyse_learning_curves(self):
         """Prepares analyse data from the learning curves obtained in training.
         
-        Requirements
-        ----------
-        'Output/ratio*/ratio*_**' : 2-layered directory structure
-            Created with the method NNTSSD.Tools.create_training_datasets().
-        'Output/ratio*/ratio*_**/learning-curve.out' : file
-            Contains learning curve data, created with the method NNTSSD.Tools.create_training_datasets().
-        
-        Outputs
-        ----------
-        'Output/training_performance/learning_curve_E.out' : file
-            Contains processed mean energy training performance information for all dataset sizes.
-        'Output/training_performance/learning_curve_F.out' : file
-            Contains processed mean energy training performance information for all dataset sizes.
-        'Output/training_performance/learning_curve_Etest_*.out' : files
-            Contains processed energy test training performance information for all dataset samples of size *.
-        'Output/training_performance/learning_curve_Etrain_*.out' : files
-            Contains processed energy train training performance information for all dataset samples of size *.
-        'Output/training_performance/learning_curve_Ftest_*.out' : files
-            Contains processed force test training performance information for all dataset samples of size *.
-        'Output/training_performance/learning_curve_Ftrain_*.out' : files
-            Contains processed force train training performance information for all dataset samples of size *.
+        Notes
+        -----
+        REQUIREMENTS:
+            ``Output/ratio*/ratio*_**`` : 2-layered directory structure
+                Created with the method NNTSSD.Tools.create_training_datasets().
+            ``Output/ratio*/ratio*_**/learning-curve.out`` : file
+                Contains learning curve data, created with the method NNTSSD.Tools.create_training_datasets().
+        OUTPUTS:
+            ``Output/training_performance/learning_curve_E.out`` : file
+                Contains processed mean energy training performance information for all dataset sizes.
+            ``Output/training_performance/learning_curve_F.out`` : file
+                Contains processed mean energy training performance information for all dataset sizes.
+            ``Output/training_performance/learning_curve_Etest_*.out`` : files
+                Contains processed energy test training performance information for all dataset samples of size *.
+            ``Output/training_performance/learning_curve_Etrain_*.out`` : files
+                Contains processed energy train training performance information for all dataset samples of size *.
+            ``Output/training_performance/learning_curve_Ftest_*.out`` : files
+                Contains processed force test training performance information for all dataset samples of size *.
+            ``Output/training_performance/learning_curve_Ftrain_*.out`` : files
+                Contains processed force train training performance information for all dataset samples of size *.
         """
         print("\n***ANALYSING LEARNING CURVES***************************************************")
-        print("...",end="\r")
+#        print("...",end="\r")
         if not os.path.isdir("Output"):
             sys.exit("ERROR: The folder 'Output' does not exist!")
         else:
@@ -92,7 +86,7 @@ class Tools_LC():
                     break
         # COLLECT TRAINING PERFORMANCE DATA.
         print("   Collecting training performance data.")
-        print("...",end="\r")
+#        print("...",end="\r")
         try:
             shutil.rmtree("training_performance")
             print("INFO: Removed old 'training_performance' folder.")
@@ -163,34 +157,33 @@ class Tools_LC():
         Firstly, this method plots the mean energy and force RMSE training performance.
         Secondly, it plots the energy and force RMSE for all sample sets of each training size.
         
-        Requirements
-        ----------
-        'Output/training_performance/learning_curve_E.out' : file
-            Created with analyse_learning_curves().
-        'Output/training_performance/learning_curve_F.out' : file
-            Created with analyse_learning_curves().
-        'Output/training_performance/learning_curve_Etest_*.out' : files
-            Created with analyse_learning_curves().
-        'Output/training_performance/learning_curve_Etrain_*.out' : files
-            Created with analyse_learning_curves().
-        'Output/training_performance/learning_curve_Ftest_*.out' : files
-            Created with analyse_learning_curves().
-        'Output/training_performance/learning_curve_Ftrain_*.out' : files
-            Created with analyse_learning_curves().
-        
-        Outputs
-        ----------
-        'Output/training_performance/Learning_curve_Energies_mean.png' : png picture
-            Shows mean train and test energy RMSE (and its standard deviation) versus epoch number.
-        'Output/training_performance/Learning_curve_Forces_mean.png' : png picture
-            Shows mean train and test forces RMSE (and its standard deviation) versus epoch number.
-        'Output/training_performance/Learning_curve_Energies_all.png' : png picture
-            Shows train and test energy RMSE for all sample sets versus epoch number.
-        'Output/training_performance/Learning_curve_Forces_all.png' : png picture
-            Shows train and test forces RMSE for all sample sets versus epoch number.
+        Notes
+        -----
+        REQUIREMENTS:
+            ``Output/training_performance/learning_curve_E.out`` : file
+                Created with analyse_learning_curves().
+            ``Output/training_performance/learning_curve_F.out`` : file
+                Created with analyse_learning_curves().
+            ``Output/training_performance/learning_curve_Etest_*.out`` : files
+                Created with analyse_learning_curves().
+            ``Output/training_performance/learning_curve_Etrain_*.out`` : files
+                Created with analyse_learning_curves().
+            ``Output/training_performance/learning_curve_Ftest_*.out`` : files
+                Created with analyse_learning_curves().
+            ``Output/training_performance/learning_curve_Ftrain_*.out`` : files
+                Created with analyse_learning_curves().
+        OUTPUTS:
+            ``Output/training_performance/Learning_curve_Energies_mean.png`` : png picture
+                Shows mean train and test energy RMSE (and its standard deviation) versus epoch number.
+            ``Output/training_performance/Learning_curve_Forces_mean.png`` : png picture
+                Shows mean train and test forces RMSE (and its standard deviation) versus epoch number.
+            ``Output/training_performance/Learning_curve_Energies_all.png`` : png picture
+                Shows train and test energy RMSE for all sample sets versus epoch number.
+            ``Output/training_performance/Learning_curve_Forces_all.png`` : png picture
+                Shows train and test forces RMSE for all sample sets versus epoch number.
         """
         print("\n***PLOTTING TRAINING PERFORMANCE***********************************************")
-        print("...",end="\r")
+#        print("...",end="\r")
         if not os.path.isdir("Output/training_performance"):
             sys.exit("ERROR: The folder 'Output/training_performance' does not exist!")
         else:
@@ -201,7 +194,7 @@ class Tools_LC():
             sys.exit("ERROR: The file 'learning_curve_F.out' does not exist!")
         
         print("   Plotting training performance.")
-        print("...",end="\r")
+#        print("...",end="\r")
         parameters = ["Energies","Forces"]
         parameter_shortcuts = ["E","F"]
         for parameter_counter in range(len(parameters)):

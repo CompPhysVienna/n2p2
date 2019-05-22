@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-06.05.2019
-@author: mr
-
-PYTHON 3
-
 NNTSSD: Neural Network Training Set Size Dependence
 """
 
@@ -19,17 +14,6 @@ import interactive_input
 
 class Tools():
     """Tools for Neural Network Training Set Size Dependence.
-    
-    Methods
-    ----------
-    create_training_datasets()
-        Creates training datasets of different size from a given original dataset using the tool nnp-select.
-    training_neural_network()
-        Trains the neural network with different existing datasets using the program nnp-train.
-    analyse_learning_curves():
-        Prepares analyse data from the learning curves obtained in training.
-    plot_size_dependence():
-        Plots the energy and force RMSE versus training set size.
     """
     def __init__(self):
         """In the moment, the class Tools() does not have any attributes.
@@ -52,25 +36,24 @@ class Tools():
         random_seed_create : integer, optional
             User-given fixed random number generator seed. Default is 123.
         
+        Notes
+        -----
         Requirements
-        ----------
-        'input.data' : file
-            Contains original set of trainingdata.
-        ../../../../bin/nnp-select : executable program
-            Performs random selection of sets according to given ratio.
-            
+            ``input.data`` : file
+                Contains original set of trainingdata.
+            ../../../../bin/nnp-select : executable program
+                Performs random selection of sets according to given ratio.
         Outputs
-        ----------
-        'Output' : folder
-            It contains all of the following outputs.
-        'Output/ratio*' : folders
-            Its name tells the ratio * of current from original dataset.
-        'Output/ratio*/ratio*_**' : subfolders of the previous
-            Its name in addition tells the sample number ** of its ratio *.
-        'Output/ratio*/ratio*.**/input.data' :  file
-            Contains new training dataset of specified size ratio.
-        'Output/ratio*/ratio*_**/nnp-select.log' : file
-            Log file created by running nnp-select.
+            ``Output`` : folder
+                It contains all of the following outputs.
+            ``Output/ratio*`` : folders
+                Its name tells the ratio * of current from original dataset.
+            ``Output/ratio*/ratio*_**`` : subfolders of the previous
+                Its name in addition tells the sample number ** of its ratio *.
+            ``Output/ratio*/ratio*.**/input.data`` :  file
+                Contains new training dataset of specified size ratio.
+            ``Output/ratio*/ratio*_**/nnp-select.log`` : file
+                Log file created by running nnp-select.
         """
         try:
             os.path.isfile("input.data")
@@ -84,11 +67,11 @@ class Tools():
         print("\n***CREATING TRAINING DATASETS***************************************************")
         print("number of samples per training set size = ", n_sets_per_size)
         print("number of different training set sizes = ", n_set_size_ratios)
-        print("...",end="\r")
+#        print("...",end="\r")
         for ratios_counter in range(n_set_size_ratios):
             current_ratio = set_size_ratios[ratios_counter]
             print("We are working with ratio {:3.2f}".format(current_ratio))
-            print("...",end="\r")
+#            print("...",end="\r")
             ratio_folder = "ratio"+str("{:3.2f}".format(current_ratio))
             os.system("mkdir "+ratio_folder)
             for sets_per_size_counter in range(1,n_sets_per_size+1):
@@ -98,7 +81,7 @@ class Tools():
                     random_seed = int(np.random.randint(100,999,1))
                 nnp_select = "../../../../bin/nnp-select random "+str("{:3.2f}".format(current_ratio))+" "+str(random_seed)
                 print(nnp_select)
-                print("...",end="\r")
+#                print("...",end="\r")
                 os.system(nnp_select)
                 os.chdir(ratio_folder)
                 set_folder = "ratio"+str("{:3.2f}".format(current_ratio))+"_set"+str(sets_per_size_counter)
@@ -140,32 +123,31 @@ class Tools():
         maximum_time: string, optional
             User given maximum time required for executing the VSC job. Default is None.
         
+        Notes
+        -----
         Requirements
-        ----------
-        'Output/ratio*/ratio*_**' : 3-layered directory structure
-            Created with the method create_training_datasets().
-        'Output/ratio*/ratio*_**/input.data' : file
-            Contains the training datasets.
-        ../../../../bin/nnp-train : executable program
-            Performs training of neural network.
-        'Output/ratio*/ratio*_**/input.nn' : file
-            Specifies the training parameters.
-        'Output/ratio*/ratio*_**/scaling.data' : file
-            Contains symmetry function scaling data.
-        
+            ``Output/ratio*/ratio*_**`` : 3-layered directory structure
+                Created with the method create_training_datasets().
+            ``Output/ratio*/ratio*_**/input.data`` : file
+                Contains the training datasets.
+            ../../../../bin/nnp-train : executable program
+                Performs training of neural network.
+            ``Output/ratio*/ratio*_**/input.nn`` : file
+                Specifies the training parameters.
+            ``Output/ratio*/ratio*_**/scaling.data`` : file
+                Contains symmetry function scaling data.
         Outputs
-        ----------
-        'Output/ratio*/ratio*_**/train.data' : file
-            Dataset actually used for training.
-        'Output/ratio*/ratio*_**/test.data' : file
-            Dataset kept for testing.
-        'Output/ratio*/ratio*_**/nnp-train.log.****' : file
-            One or more log files from running nnp-train.
-        'Output/ratio*/ratio*_**/learning-curve.out' : file
-            Contains learning curve data, namely RMSE of energy and forces of train and test sets for each epoch.
+            ``Output/ratio*/ratio*_**/train.data`` : file
+                Dataset actually used for training.
+            ``Output/ratio*/ratio*_**/test.data`` : file
+                Dataset kept for testing.
+            ``Output/ratio*/ratio*_**/nnp-train.log.****`` : file
+                One or more log files from running nnp-train.
+            ``Output/ratio*/ratio*_**/learning-curve.out`` : file
+                Contains learning curve data, namely RMSE of energy and forces of train and test sets for each epoch.
         """
         print("\n***TRAINING NEURAL NETWORK*****************************************************")
-        print("...",end="\r")
+#        print("...",end="\r")
         try:
             os.chdir("Output")
         except:
@@ -177,7 +159,7 @@ class Tools():
                 ratio_counter += 1
                 current_ratio = 0.01*int(''.join(filter(str.isdigit, ratio_dir_string[ratio_dir_counter])))
                 print("   We are working with ratio {:3.2f}".format(current_ratio))
-                print("   ...",end="\r")
+#                print("   ...",end="\r")
                 os.chdir(ratio_dir_string[ratio_dir_counter])
                 set_dir_string = np.sort(os.listdir())
                 for set_dir_counter in range(len(set_dir_string)):
@@ -206,26 +188,25 @@ class Tools():
     def analyse_learning_curves(self):
         """Prepares analyse data from the learning curves obtained in training.
         
+        Notes
+        -----
         Requirements
-        ----------
-        'Output/ratio*/ratio*_**' : 3-layered directory structure
-            Created with the method create_training_datasets().
-        'Output/ratio*/ratio*_**/learning-curve.out' : file
-            Contains learning curve data, created with the method create_training_datasets().
-        
+            ``Output/ratio*/ratio*_**`` : 3-layered directory structure
+                Created with the method create_training_datasets().
+            ``Output/ratio*/ratio*_**/learning-curve.out`` : file
+                Contains learning curve data, created with the method create_training_datasets().
         Outputs
-        ----------
-        'Output/ratio*/collect_data_min_force.out' : file
-            Contains analysis of learning curve data of specific training size with respect to epoch of minimum force.
-        'Output/ratio*/collect_data_min_energy.out' : file
-            Contains analysis of learning curve data of specific training size with respect to epoch of minimum energy.
-        'Output/analyse_data_min_force.out' : file
-            Contains processed RMSE size dependence information for all datasets with respect to epoch of minimum force.
-        'Output/analyse_data_min_energy.out' : file
-            Contains processed RMSE size dependence information for all datasets with respect to epoch of minimum energy.
+            ``Output/ratio*/collect_data_min_force.out`` : file
+                Contains analysis of learning curve data of specific training size with respect to epoch of minimum force.
+            ``Output/ratio*/collect_data_min_energy.out`` : file
+                Contains analysis of learning curve data of specific training size with respect to epoch of minimum energy.
+            ``Output/analyse_data_min_force.out`` : file
+                Contains processed RMSE size dependence information for all datasets with respect to epoch of minimum force.
+            ``Output/analyse_data_min_energy.out`` : file
+                Contains processed RMSE size dependence information for all datasets with respect to epoch of minimum energy.
         """
         print("\n***ANALYSING LEARNING CURVES***************************************************")
-        print("...",end="\r")
+#        print("...",end="\r")
         if not os.path.isdir("Output"):
             sys.exit("ERROR: The folder 'Output' does not exist!")
         else:
@@ -237,14 +218,14 @@ class Tools():
             current_epoch_min_arg = epoch_min_arg[epoch_min_arg_counter]
             current_test_row_index = test_row_indices[epoch_min_arg_counter]
             print("   Analysing data at epoch of minimum "+current_epoch_min_arg)
-            print("...",end="\r")
+#            print("...",end="\r")
             analyse_data = np.empty([0,10])
             ratio_dir_string = np.sort(os.listdir())
             for ratio_dir_counter in range(len(ratio_dir_string)):
                 if ratio_dir_string[ratio_dir_counter].startswith('ratio'):
                     current_ratio = 0.01*int(''.join(filter(str.isdigit, ratio_dir_string[ratio_dir_counter])))
                     print("We are working with ratio {:3.2f}".format(current_ratio))
-                    print("...",end="\r")
+#                    print("...",end="\r")
                     collect_data = np.empty([0,7])
                     os.chdir(ratio_dir_string[ratio_dir_counter])
                     set_dir_string = np.sort(os.listdir())
@@ -283,24 +264,23 @@ class Tools():
         Secondly, it plots the energy and force RMSE including their standard deviation versus the
         selected training set sizes.
         
+        Notes
+        -----
         Requirements
-        ----------
-        'Output/analyse_data_min_force.out' : file
-            Created with analyse_learning_curves().
-        'Output/analyse_data_min_energy.out' : file
-            Created with analyse_learning_curves().
-        'Output/ratio*/ratio*_**/nnp-select.log' : file
-            Created with create_training_datasets().
-
+            ``Output/analyse_data_min_force.out`` : file
+                Created with analyse_learning_curves().
+            ``Output/analyse_data_min_energy.out`` : file
+                Created with analyse_learning_curves().
+            ``Output/ratio*/ratio*_**/nnp-select.log`` : file
+                Created with create_training_datasets().
         Outputs
-        ----------
-        'Energy_RMSE.png' : png picture
-            Shows train and test energy RMSE (and its standard deviation) versus training set size.
-        'Forces_RMSE.png' : png picture
-            Shows train and test forces RMSE (and its standard deviation) versus training set size.
+            ``Output/Energy_RMSE.png`` : png picture
+                Shows train and test energy RMSE (and its standard deviation) versus training set size.
+            ``Output/Forces_RMSE.png`` : png picture
+                Shows train and test forces RMSE (and its standard deviation) versus training set size.
         """
         print("\n***PLOTTING SIZE DEPENDENCE****************************************************")
-        print("...",end="\r")
+#        print("...",end="\r")
         if not os.path.isdir("Output"):
             sys.exit("ERROR: The folder 'Output' does not exist!")
         else:
@@ -334,7 +314,7 @@ class Tools():
                     break
 #        PLOT SIZE DEPENDENCE
         print("   Plotting size dependence.")
-        print("...",end="\r")
+#        print("...",end="\r")
         analyse_data_E = np.genfromtxt("analyse_data_min_energy.out")
         analyse_data_F = np.genfromtxt("analyse_data_min_force.out")
         training_set_sizes = analyse_data_E[:,0]*n_total_configurations

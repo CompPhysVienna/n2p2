@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 26 09:51:52 2019
-
-@author: mr
-
-Tools for reading the NNTSSD parameters by user.
+Tools for reading the NNTSSD parameters by interactive user input.
 """
 import numpy as np
 
@@ -28,7 +24,7 @@ def input_parameters_by_user():
     """This function reads the NNTSSD parameters from interactive user input.
     
     Returns
-    ----------
+    -------
     create_logical : logical
         True if the function NNTSSD.Tools.create_training_datasets() shall be performed. False otherwise.
     train_logical : logical
