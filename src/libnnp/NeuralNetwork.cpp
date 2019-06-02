@@ -774,7 +774,7 @@ void NeuralNetwork::propagateLayer(Layer& layer, Layer& layerPrev)
         }
         else if (layer.activationFunction == AF_LOGISTIC)
         {
-             if(dtmp > 0)
+            if(dtmp > 0)
             {
                 dtmp = 1.0 / (1.0 + exp(-dtmp));
             } else 
