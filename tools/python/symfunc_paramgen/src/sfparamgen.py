@@ -172,7 +172,7 @@ class SymFuncParamGenerator:
         """Generate a set of values for r_shift and eta.
 
         Such a set of (r_shift, eta)-values is required for any
-        symmetry function type.
+        symmetry function type (not only those called 'radial').
         Its generation is independent of the symmetry function type
         and the angular symmetry function parameters zeta and lambda.
 
