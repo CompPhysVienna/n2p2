@@ -30,10 +30,8 @@ class SymFuncParamGenerator:
         using the class method provided for that purpose.
         None, if no radial parameters have been generated yet, or if custom ones
         (without using the method for generating radial parameters) were set.
-    _r_shift_grid : numpy.ndarray or None
-        The set of values for the symmetry function parameter r_shift that was generated.
-    _eta_grid : numpy.ndarray or None
-        The set of values for the symmetry function parameter eta that was generated.
+    r_shift_grid
+    eta_grid
     elements
     element_combinations
     r_cutoff
@@ -82,13 +80,17 @@ class SymFuncParamGenerator:
     def symfunc_type(self):
         """Type of symmetry function for which parameters are to be generated (`str`).
 
-        When the setter for this is called it also checks the validity of
-        the input, builds the necessary element combinations for the given
-        symmetry function type, and stores it to member variable.
+        When the setter for this is called it checks the validity of the given
+        symmetry function type. A symmetry function type is valid if it is in
+        the keys of the dict :py:attr:`~symfunc_type_numbers`,
+        and invalid otherwise.
+
+        The setter also builds the necessary element combinations for the given
+        symmetry function type, and stores it to :py:attr:`~element_combinations`.
 
         If the given symmetry function type is a radial one,
         the setter also clears any preexisting zetas
-        (i.e., sets the member variable zetas to None).
+        (i.e., sets :py:attr:`~zetas` to None).
 
         Raises
         ------
@@ -132,10 +134,14 @@ class SymFuncParamGenerator:
 
     @property
     def r_shift_grid(self):
+        """Set of values for the symmetry function parameter r_shift (`numpy.ndarray` or None).
+        """
         return self._r_shift_grid
 
     @property
     def eta_grid(self):
+        """Set of values for the symmetry function parameter eta (`numpy.ndarray` or None).
+        """
         return self._eta_grid
 
     def check_symfunc_type(self, calling_method_name=None):
