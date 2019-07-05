@@ -72,7 +72,8 @@ class SymFuncParamGenerator:
     def element_combinations(self):
         """Combinations of elements (list of tuple of string, read-only).
 
-        This is computed and set automatically by the setter for symfunc_type.
+        This is (re)computed and set automatically each time
+        :py:attr:`~symfunc_type` is set.
         """
         return self._element_combinations
 
@@ -112,7 +113,7 @@ class SymFuncParamGenerator:
         # Clear any previous zeta values, if the given symfunc type is a radial one
         if value in ['radial', 'weighted_radial']:
             # set the member variable explicitly (with underscore) instead of
-            # calling setter, because the setter would put None into an array
+            # calling setter, because the setter would make an array out of the None
             self._zetas = None
 
     @property
@@ -184,11 +185,12 @@ class SymFuncParamGenerator:
 
         Rules for parameter generation are implemented based on [1]_ and [2]_.
 
-        The generated values are stored as arrays in the member variables _r_shift_grid and _eta_grid.
-        The entries are to be understood pairwise, i.e., the i-th entry of _r_shift_grid
-        and the i-th entry of _eta_grid belong to one symmetry function.
-        Besides the set of values for r_shift and eta, the settings that
-        were used for generating it are also stored, in the dictionary radial_paramgen_settings.
+        The generated values are stored as arrays to :py:attr:`~r_shift_grid`
+        and :py:attr:`~eta_grid`. The entries are to be understood pairwise,
+        i.e., the i-th entry of :py:attr:`~r_shift_grid` and the i-th entry of
+        :py:attr:`~eta_grid` belong to one symmetry function.
+        Besides the values, the settings they were generated with are also stored,
+        to :py:attr:`~radial_paramgen_settings`.
 
         Parameters
         ----------
@@ -355,7 +357,7 @@ class SymFuncParamGenerator:
 
         The parameters r_shift_values and eta_values must have the same
         length.
-        Ttheir entries are to be understood pairwise, i.e.,
+        Their entries are to be understood pairwise, i.e.,
         the i-th entry of r_shift_values and the i-th entry of eta_values
         belong together, describing one symmetry function.
 
@@ -380,13 +382,14 @@ class SymFuncParamGenerator:
         Notes
         -----
         Setting r_shift and eta manually via this method instead of using the
-        method generate_radial_params somewhat defeats the purpose of the
-        class as a generator of symmetry function parameter values. However,
-        it might still be useful, in case one wants to use custom values for
-        r_shift and eta, for which the generation is not implemented as a
-        class method, while still benefiting from the  parameter writing
-        functionality of the class.
+        method :py:attr:`~generate_radial_params` somewhat defeats the
+        purpose of the class as a generator of symmetry function parameter
+        values. However, it might still be useful, in case one wants to use
+        custom values for r_shift and eta, for which the generation is not
+        implemented as a class method, while still benefiting from the
+        parameter writing functionality of the class.
         """
+
         if len(r_shift_values) != len(eta_values):
             raise TypeError('r_shift_values and eta_values must have same length.')
         if min(r_shift_values) <= 0:
@@ -405,9 +408,9 @@ class SymFuncParamGenerator:
         """Check if all data required for writing symmetry function sets are present.
 
         | This comprises checking if the following have been set:
-        | - symmetry function type
-        | - values for r_shift and eta
-        | - values for zeta, if the symmetry function type is an angular one
+        | - :py:attr:`~symfunc_type`
+        | - :py:attr:`~r_shift_grid` and :py:attr:`~eta_grid`
+        | - :py:attr:`~zetas`, if the symmetry function type is an angular one
 
         Parameters
         ----------
@@ -458,7 +461,7 @@ class SymFuncParamGenerator:
                         f' they have not been cleared since by setting a non-angular symmetry function type.')
 
     def write_settings_overview(self, file=None):
-        """Write settings used in generating the currently stored set of symmetry function parameters.
+        """Write the settings the currently stored set of symmetry function parameters was generated with.
 
         Parameters
         ----------
