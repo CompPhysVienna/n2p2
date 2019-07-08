@@ -10,6 +10,9 @@ Welcome to symfunc_paramgen's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+This tool generates sets of symmetry function parameters, according to rules proposed in the literature ([1]_, [2]_), and outputs
+them in the format required by n2p2.
+
 
 
 Code documentation
@@ -27,4 +30,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. rubric:: References
+
+.. [1] https://doi.org/10.1063/1.5019667
+.. [2] https://doi.org/10.1063/1.5024611
 
