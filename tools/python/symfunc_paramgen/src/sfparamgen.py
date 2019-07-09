@@ -377,7 +377,9 @@ class SymFuncParamGenerator:
         TypeError
             If r_shift_values and eta_values do not have equal length.
         ValueError
-            If r_shift_values or eta_values contain non-positive entries.
+            If there are negative entries in r_shift_values.
+        ValueError
+            If there are non-positive entries in eta_values.
 
         Notes
         -----
@@ -392,8 +394,8 @@ class SymFuncParamGenerator:
 
         if len(r_shift_values) != len(eta_values):
             raise TypeError('r_shift_values and eta_values must have same length.')
-        if min(r_shift_values) <= 0:
-            raise ValueError('r_shift_values must all be greater than zero.')
+        if min(r_shift_values) < 0:
+            raise ValueError('r_shift_values must all be non-negative.')
         if min(eta_values) <= 0:
             raise ValueError('eta_values must all be greater than zero.')
         # (re)set radial_paramgen_settings to None, indicating that custom
@@ -566,6 +568,9 @@ class SymFuncParamGenerator:
 
     def write_parameter_strings(self, file=None):
         """Write symmetry function parameter sets, formatted as n2p2 requires.
+
+        The output format is that required by the parameter file 'input.nn'
+        used by n2p2. The output is intended to be pasted/appended to that file.
 
         Each line in the output corresponds to one symmetry function.
 
