@@ -1,0 +1,202 @@
+# --------------------------------------------------------------------------------------
+# | Comment lines in this file (lines starting with '#') are not relevant to the tests |
+# | and are ignored by them.                                                           |
+# | They are only a reminder of what settings to use in the tests to recreate the      |
+# | reference output contained in this file.                                           |
+# --------------------------------------------------------------------------------------
+#
+#########################################################################
+# Radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+symfunction_short S  2 S  4.000E+00 1.000E+00 1.122E+01
+symfunction_short S  2 S  5.000E+00 2.000E+00 1.122E+01
+
+symfunction_short S  2 Cu 4.000E+00 1.000E+00 1.122E+01
+symfunction_short S  2 Cu 5.000E+00 2.000E+00 1.122E+01
+
+symfunction_short Cu 2 S  4.000E+00 1.000E+00 1.122E+01
+symfunction_short Cu 2 S  5.000E+00 2.000E+00 1.122E+01
+
+symfunction_short Cu 2 Cu 4.000E+00 1.000E+00 1.122E+01
+symfunction_short Cu 2 Cu 5.000E+00 2.000E+00 1.122E+01
+
+#########################################################################
+# Weighted radial symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+symfunction_short S  12 4.000E+00 1.000E+00 1.122E+01
+symfunction_short S  12 5.000E+00 2.000E+00 1.122E+01
+
+symfunction_short Cu 12 4.000E+00 1.000E+00 1.122E+01
+symfunction_short Cu 12 5.000E+00 2.000E+00 1.122E+01
+
+#########################################################################
+# Narrow angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+symfunction_short S  3 S  S  4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  S  4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  S  4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  S  4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  S  5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 S  S  5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 S  S  5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 S  S  5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short S  3 S  Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 S  Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 S  Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 S  Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 S  Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short S  3 Cu Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 Cu Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 Cu Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 Cu Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  3 Cu Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 Cu Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 Cu Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short S  3 Cu Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short Cu 3 S  S  4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  S  4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  S  4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  S  4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  S  5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 S  S  5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 S  S  5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 S  S  5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short Cu 3 S  Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 S  Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 S  Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 S  Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 S  Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short Cu 3 Cu Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 Cu Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 Cu Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 Cu Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 3 Cu Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 Cu Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 Cu Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 3 Cu Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+#########################################################################
+# Wide angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+symfunction_short S  9 S  S  4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  S  4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  S  4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  S  4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  S  5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 S  S  5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 S  S  5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 S  S  5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short S  9 S  Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 S  Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 S  Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 S  Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 S  Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short S  9 Cu Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 Cu Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 Cu Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 Cu Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short S  9 Cu Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 Cu Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 Cu Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short S  9 Cu Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short Cu 9 S  S  4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  S  4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  S  4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  S  4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  S  5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 S  S  5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 S  S  5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 S  S  5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short Cu 9 S  Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 S  Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 S  Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 S  Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 S  Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+symfunction_short Cu 9 Cu Cu 4.000E+00 -1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 Cu Cu 4.000E+00  1 5.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 Cu Cu 4.000E+00 -1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 Cu Cu 4.000E+00  1 7.500E+00 1.122E+01 1.000E+00
+symfunction_short Cu 9 Cu Cu 5.000E+00 -1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 Cu Cu 5.000E+00  1 5.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 Cu Cu 5.000E+00 -1 7.500E+00 1.122E+01 2.000E+00
+symfunction_short Cu 9 Cu Cu 5.000E+00  1 7.500E+00 1.122E+01 2.000E+00
+
+#########################################################################
+# Weighted angular symmetry function set, for elements ['S', 'Cu']
+#########################################################################
+# r_cutoff       = 11.22
+# A custom set of values was used for the radial parameters r_shift and eta.
+# Thus, there are no settings on radial parameter generation available for display.
+# Sets of values for parameters:
+# r_shift_grid   = [1 2]
+# eta_grid       = [4 5]
+# lambdas        = [-1.  1.]
+# zetas          = [5.5 7.5]
+symfunction_short S  13 4.000E+00 1.000E+00 -1 5.500E+00 1.122E+01 
+symfunction_short S  13 4.000E+00 1.000E+00  1 5.500E+00 1.122E+01 
+symfunction_short S  13 4.000E+00 1.000E+00 -1 7.500E+00 1.122E+01 
+symfunction_short S  13 4.000E+00 1.000E+00  1 7.500E+00 1.122E+01 
+symfunction_short S  13 5.000E+00 2.000E+00 -1 5.500E+00 1.122E+01 
+symfunction_short S  13 5.000E+00 2.000E+00  1 5.500E+00 1.122E+01 
+symfunction_short S  13 5.000E+00 2.000E+00 -1 7.500E+00 1.122E+01 
+symfunction_short S  13 5.000E+00 2.000E+00  1 7.500E+00 1.122E+01 
+
+symfunction_short Cu 13 4.000E+00 1.000E+00 -1 5.500E+00 1.122E+01 
+symfunction_short Cu 13 4.000E+00 1.000E+00  1 5.500E+00 1.122E+01 
+symfunction_short Cu 13 4.000E+00 1.000E+00 -1 7.500E+00 1.122E+01 
+symfunction_short Cu 13 4.000E+00 1.000E+00  1 7.500E+00 1.122E+01 
+symfunction_short Cu 13 5.000E+00 2.000E+00 -1 5.500E+00 1.122E+01 
+symfunction_short Cu 13 5.000E+00 2.000E+00  1 5.500E+00 1.122E+01 
+symfunction_short Cu 13 5.000E+00 2.000E+00 -1 7.500E+00 1.122E+01 
+symfunction_short Cu 13 5.000E+00 2.000E+00  1 7.500E+00 1.122E+01 
+
