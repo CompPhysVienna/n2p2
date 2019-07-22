@@ -113,9 +113,9 @@ def test_set_custom_radial_params(basic_generator):
     # test for exception when unequal length
     with pytest.raises(TypeError):
         basic_generator.set_custom_radial_params([1.1, 2.2, 3.3], [4.4, 5.5])
-    # test for exception when non-positive value in values for r_shift
+    # test for exception when negative value in values for r_shift
     with pytest.raises(ValueError):
-        basic_generator.set_custom_radial_params([0, 2.2, 3.3], [1.1, 2.2, 3.3])
+        basic_generator.set_custom_radial_params([-0.1, 2.2, 3.3], [1.1, 2.2, 3.3])
     # test for exception when non-positive value in values for eta
     with pytest.raises(ValueError):
         basic_generator.set_custom_radial_params([1.1, 2.2, 3.3], [0, 2.2, 3.3])

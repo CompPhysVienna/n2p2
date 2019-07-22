@@ -514,11 +514,20 @@ class SymFuncParamGenerator:
         handle.write('# Sets of values for parameters:\n')
         # set numpy print precision to lower number of decimal places for the following outputs
         np.set_printoptions(precision=4)
-        handle.write(f'# r_shift_grid   = {self._r_shift_grid}\n')
-        handle.write(f'# eta_grid       = {self._eta_grid}\n')
+
+        # printing numpy arrays causes linebreaks if they contain many entries.
+        # -> need to make sure that every single line in the output
+        # is prepended by "# " to make it into a comment.
+        outstring_r_shift = f'r_shift_grid   = {self._r_shift_grid}'
+        handle.write('# ' + outstring_r_shift.replace("\n", "\n# ") + '\n')
+        outstring_eta = f'eta_grid       = {self._eta_grid}'
+        handle.write('# ' + outstring_eta.replace("\n", "\n# ") + '\n')
+
         if self.symfunc_type in ['angular_narrow', 'angular_wide', 'weighted_angular']:
-            handle.write(f'# lambdas        = {self.lambdas}\n')
-            handle.write(f'# zetas          = {self.zetas}\n')
+            outstring_lambdas = f'lambdas        = {self.lambdas}'
+            handle.write('# ' + outstring_lambdas.replace("\n", "\n# ") + '\n')
+            outstring_zetas = f'zetas          = {self.zetas}'
+            handle.write('# ' + outstring_zetas.replace("\n", "\n# ") + '\n')
         # reset numpy print precision to default
         np.set_printoptions(precision=8)
         handle.write('\n')
