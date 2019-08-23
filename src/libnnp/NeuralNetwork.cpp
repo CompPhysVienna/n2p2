@@ -964,7 +964,7 @@ vector<string> NeuralNetwork::info() const
             }
             else
             {
-                s += "";
+                s += "    ";
             }
         }
         v.push_back(s += "\n");
