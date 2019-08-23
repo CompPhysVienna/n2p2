@@ -6,7 +6,7 @@
 # Enter here paths to GSL or EIGEN if they are not in your standard include
 # path. DO NOT completely remove the entry, leave at least "./".
 PROJECT_GSL=./
-PROJECT_EIGEN=${HOME}/local/src/eigen-eigen-5a0156e40feb
+PROJECT_EIGEN=/usr/include/eigen3/
 
 ###############################################################################
 # COMPILERS AND FLAGS

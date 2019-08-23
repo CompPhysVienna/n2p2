@@ -17,5 +17,6 @@ extension = [Extension("*",
                        language="c++")]
 
 setup(
-    ext_modules=cythonize(extension)
+    ext_modules=cythonize(extension,
+                          compiler_directives={'language_level' : "3"})
 )

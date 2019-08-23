@@ -52,7 +52,7 @@ public:
          *  f(0) = 1 @f$
          */
         CT_TANH,
-        /** @f$f(x) = e^{-\frac{1}{1 - x^2}}@f$
+        /** @f$f(x) = e^{1 - \frac{1}{1 - x^2}}@f$
          */
         CT_EXP,
         /** @f$f(x) = (2x - 3)x^2 + 1@f$

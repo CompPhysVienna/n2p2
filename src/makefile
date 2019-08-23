@@ -287,11 +287,14 @@ clean-pynnp:
 # install (set links to install directories) #
 ##############################################
 EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-select nnp-symfunc nnp-train
-LIB=libnnp.so libnnpif.so libnnptrain.so pynnp.so
+LIB=libnnp.so libnnpif.so libnnptrain.so
+PYLIB=$(wildcard ${PROJECT_LIB}/pynnp*.so)
 install:
 	$(foreach exe, $(EXE), ln -s $(CURDIR)/${PROJECT_BIN}/${exe} ${INSTALL_BIN}/${exe};)
 	$(foreach lib, $(LIB), ln -s $(CURDIR)/${PROJECT_LIB}/${lib} ${INSTALL_LIB}/${lib};)
+	$(foreach pylib, $(notdir ${PYLIB}), ln -s $(CURDIR)/${PROJECT_LIB}/${pylib} ${INSTALL_LIB}/${pylib};)
 
 uninstall:
 	$(foreach exe, $(EXE), rm ${INSTALL_BIN}/${exe};)
 	$(foreach lib, $(LIB), rm ${INSTALL_LIB}/${lib};)
+	$(foreach pylib, $(notdir ${PYLIB}), rm ${INSTALL_LIB}/${pylib};)
