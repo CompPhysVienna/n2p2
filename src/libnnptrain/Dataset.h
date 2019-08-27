@@ -148,14 +148,16 @@ public:
      *
      * @param[in] neighCutoff Maximum number of neighbor to consider (for each
      *                        element).
-     * @param[in] fileName Name of atomic environment file.
+     * @param[in] derivatives If true, write separate files for derivates.
+     * @param[in] fileNamePrefix Prefix for atomic environment files.
      *
      * This file is used for symmetry function clustering analysis.
      */
     void        writeAtomicEnvironmentFile(
-                                         std::vector<std::size_t> neighCutoff,
-                                         std::string const &      fileName
-                                              = "atomic-env.data");
+                                        std::vector<std::size_t> neighCutoff,
+                                        bool                     derivatives,
+                                        std::string const &      fileNamePrefix
+                                             = "atomic-env");
     /** Reduce and average RMSE over all MPI procs.
      *
      * @param[in,out] rmse RMSE sum of this proc (in), global RMSE (out).

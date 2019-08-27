@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
     {
         neighCutoff.at(i) = atof(argv[i+2]);    
     }
-    //useForces = dataset.settingsKeywordExists("use_short_forces");
+    useForces = dataset.settingsKeywordExists("use_short_forces");
 
     dataset.log << "\n";
     dataset.log << "*** CALCULATING SYMMETRY FUNCTIONS ******"
@@ -93,10 +93,8 @@ int main(int argc, char* argv[])
 #else
         dataset.calculateSymmetryFunctionGroups((*it), useForces);
 #endif
-        // Clear unneccessary memory (neighbor list and others), leave only
-        // numNeighbors and symmetry functions (G) for histogram calculation.
-        // Don't use these structures after these operations unless you know
-        // what you do!
+        // Clear unneccessary memory, don't use these structures after these
+        // operations unless you know what you do!
         for (vector<Atom>::iterator it2 = it->atoms.begin();
              it2 != it->atoms.end(); ++it2)
         {
@@ -110,8 +108,11 @@ int main(int argc, char* argv[])
             it2->dGdxia.clear();
             vector<double>(it2->dGdxia).swap(it2->dGdxia);
 
-            it2->dGdr.clear();
-            vector<Vec3D>(it2->dGdr).swap(it2->dGdr);
+            if (!useForces)
+            {
+                it2->dGdr.clear();
+                vector<Vec3D>(it2->dGdr).swap(it2->dGdr);
+            }
         }
     }
     dataset.log << "*****************************************"
@@ -121,9 +122,9 @@ int main(int argc, char* argv[])
     dataset.writeSymmetryFunctionHistograms(numBins,
                                             "sf-scaled.%03zu.%04zu.histo");
     dataset.writeNeighborHistogram();
-    //dataset.sortNeighborLists();
+    dataset.sortNeighborLists();
     dataset.writeNeighborLists();
-    dataset.writeAtomicEnvironmentFile(neighCutoff);
+    dataset.writeAtomicEnvironmentFile(neighCutoff, useForces);
 
     myLog.close();
 

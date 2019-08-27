@@ -18,7 +18,7 @@
 #include "SymmetryFunction.h"
 #include "mpi-extra.h"
 #include "utility.h"
-#include <algorithm> // std::max, std::find, std::sort, std::fill
+#include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
 #include <cmath>     // sqrt, fabs
 #include <cstdlib>   // atoi
 #include <cstdio>    // fprintf, fopen, fclose, remove
@@ -1255,18 +1255,42 @@ void Dataset::writeNeighborLists(string const& fileName)
 }
 
 void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
-                                         string const&  fileName)
+                                         bool           derivatives,
+                                         string const&  fileNamePrefix)
 {
     log << "\n";
     log << "*** ATOMIC ENVIRONMENT ******************"
            "**************************************\n";
     log << "\n";
 
-    string fileNameLocal = strpr("%s.%04d", fileName.c_str(), myRank);
-    ofstream fileLocal;
-    fileLocal.open(fileNameLocal.c_str());
+    string const fileNamePrefixG    = strpr("%s.G"   , fileNamePrefix.c_str());
+    string const fileNamePrefixdGdx = strpr("%s.dGdx", fileNamePrefix.c_str());
+    string const fileNamePrefixdGdy = strpr("%s.dGdy", fileNamePrefix.c_str());
+    string const fileNamePrefixdGdz = strpr("%s.dGdz", fileNamePrefix.c_str());
 
-    log << "Preparing symmetry functions for atomic environment file.\n";
+    string const fileNameLocalG    = strpr("%s.%04d",
+                                           fileNamePrefixG.c_str(), myRank);
+    string const fileNameLocaldGdx = strpr("%s.%04d",
+                                           fileNamePrefixdGdx.c_str(), myRank);
+    string const fileNameLocaldGdy = strpr("%s.%04d",
+                                           fileNamePrefixdGdy.c_str(), myRank);
+    string const fileNameLocaldGdz = strpr("%s.%04d",
+                                           fileNamePrefixdGdz.c_str(), myRank);
+
+    ofstream fileLocalG;
+    ofstream fileLocaldGdx;
+    ofstream fileLocaldGdy;
+    ofstream fileLocaldGdz;
+
+    fileLocalG.open(fileNameLocalG.c_str());
+    if (derivatives)
+    {
+        fileLocaldGdx.open(fileNameLocaldGdx.c_str());
+        fileLocaldGdy.open(fileNameLocaldGdy.c_str());
+        fileLocaldGdz.open(fileNameLocaldGdz.c_str());
+    }
+
+    log << "Preparing symmetry functions for atomic environment file(s).\n";
     for (size_t i = 0; i < numElements; ++i)
     {
         log << strpr("Maximum number of neighbors for element %2s: %zu\n",
@@ -1290,12 +1314,22 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
                         "element %2s.\n", elementMap[i].c_str()).c_str());
                 }
             }
-            fileLocal << strpr("%2s", elementMap[it2->element].c_str());
-            // Write atom's own symmetry functions.
+            fileLocalG << strpr("%2s", elementMap[it2->element].c_str());
+            fileLocaldGdx << strpr("%2s", elementMap[it2->element].c_str());
+            fileLocaldGdy << strpr("%2s", elementMap[it2->element].c_str());
+            fileLocaldGdz << strpr("%2s", elementMap[it2->element].c_str());
+            // Write atom's own symmetry functions (and derivatives).
             for (vector<double>::const_iterator it3 = it2->G.begin();
                  it3 != it2->G.end(); ++it3)
             {
-                fileLocal << strpr(" %16.8E", (*it3));
+                fileLocalG << strpr(" %16.8E", (*it3));
+            }
+            for (vector<Vec3D>::const_iterator it3 = it2->dGdr.begin();
+                 it3 != it2->dGdr.end(); ++it3)
+            {
+                fileLocaldGdx << strpr(" %16.8E", (*it3)[0]);
+                fileLocaldGdy << strpr(" %16.8E", (*it3)[1]);
+                fileLocaldGdz << strpr(" %16.8E", (*it3)[2]);
             }
             // Write symmetry functions of neighbors
             for (vector<Atom::Neighbor>::const_iterator it3
@@ -1305,32 +1339,83 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
                 size_t const e = it3->element;
                 if (neighCount.at(e) < neighCutoff.at(e))
                 {
+                    // Look up symmetry function at Atom instance of neighbor.
                     Atom const& a = it->atoms.at(i);
                     for (vector<double>::const_iterator it4 = a.G.begin();
                          it4 != a.G.end(); ++it4)
                     {
-                        fileLocal << strpr(" %16.8E", (*it4));
+                        fileLocalG << strpr(" %16.8E", (*it4));
+                    }
+                    // Log derivatives directly from Neighbor instance.
+                    if (derivatives)
+                    {
+                        // Find atom in neighbor list of neighbor atom.
+                        vector<Atom::Neighbor>::const_iterator it4 = find_if(
+                            a.neighbors.begin(), a.neighbors.end(),
+                            [&it2](Atom::Neighbor const& n)
+                            {
+                                return n.index == it2->index;
+                            });
+                        for (vector<Vec3D>::const_iterator it5
+                             = it4->dGdr.begin();
+                             it5 != it4->dGdr.end(); ++it5)
+                        {
+                            fileLocaldGdx << strpr(" %16.8E", (*it5)[0]);
+                            fileLocaldGdy << strpr(" %16.8E", (*it5)[1]);
+                            fileLocaldGdz << strpr(" %16.8E", (*it5)[2]);
+                        }
                     }
                     neighCount.at(e)++;
                 }
             }
-            fileLocal << '\n';
+            fileLocalG << '\n';
+            if (derivatives)
+            {
+                fileLocaldGdx << '\n';
+                fileLocaldGdy << '\n';
+                fileLocaldGdz << '\n';
+            }
+            // Reset neighbor counter.
             fill(neighCount.begin(), neighCount.end(), 0);
         }
     }
 
-    fileLocal.flush();
-    fileLocal.close();
+    fileLocalG.flush();
+    fileLocalG.close();
+    if (derivatives)
+    {
+        fileLocaldGdx.flush();
+        fileLocaldGdx.close();
+        fileLocaldGdy.flush();
+        fileLocaldGdy.close();
+        fileLocaldGdz.flush();
+        fileLocaldGdz.close();
+    }
     MPI_Barrier(comm);
 
-    log << strpr("Combining atomic environment file: %s.\n", fileName.c_str());
-
-    if (myRank == 0) combineFiles(fileName);
+    if (myRank == 0)
+    {
+        log << strpr("Combining atomic environment file: %s.\n",
+                     fileNamePrefixG.c_str());
+        combineFiles(fileNamePrefixG);
+        if (derivatives)
+        {
+            log << strpr("Combining atomic environment file: %s.\n",
+                         fileNamePrefixdGdx.c_str());
+            combineFiles(fileNamePrefixdGdx);
+            log << strpr("Combining atomic environment file: %s.\n",
+                         fileNamePrefixdGdy.c_str());
+            combineFiles(fileNamePrefixdGdy);
+            log << strpr("Combining atomic environment file: %s.\n",
+                         fileNamePrefixdGdz.c_str());
+            combineFiles(fileNamePrefixdGdz);
+        }
+    }
 
     log << "*****************************************"
            "**************************************\n";
 
-
+    return;
 }
 
 void Dataset::averageRmse(double& rmse, size_t& count) const
