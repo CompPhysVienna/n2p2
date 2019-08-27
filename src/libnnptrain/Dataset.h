@@ -135,6 +135,27 @@ public:
      */
     std::size_t writeNeighborHistogram(std::string const& fileName
                                            = "neighbors.histo");
+    /** Sort all neighbor lists according to element and distance.
+     */
+    void        sortNeighborLists();
+    /** Write neighbor list file.
+     *
+     * @param[in] fileName Name for neighbor list file.
+     */
+    void        writeNeighborLists(std::string const& fileName
+                                       = "neighbor-list.data");
+    /** Write atomic environment file.
+     *
+     * @param[in] neighCutoff Maximum number of neighbor to consider (for each
+     *                        element).
+     * @param[in] fileName Name of atomic environment file.
+     *
+     * This file is used for symmetry function clustering analysis.
+     */
+    void        writeAtomicEnvironmentFile(
+                                         std::vector<std::size_t> neighCutoff,
+                                         std::string const &      fileName
+                                              = "atomic-env.data");
     /** Reduce and average RMSE over all MPI procs.
      *
      * @param[in,out] rmse RMSE sum of this proc (in), global RMSE (out).

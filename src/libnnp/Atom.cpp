@@ -341,6 +341,22 @@ Atom::Neighbor::Neighbor() : index      (0                      ),
 {
 }
 
+bool Atom::Neighbor::operator==(Atom::Neighbor const& rhs) const
+{
+    if (element != rhs.element) return false;
+    if (d       != rhs.d      ) return false;
+    return true;
+}
+
+bool Atom::Neighbor::operator<(Atom::Neighbor const& rhs) const
+{
+    if      (element < rhs.element) return true;
+    else if (element > rhs.element) return false;
+    if      (d       < rhs.d      ) return true;
+    else if (d       > rhs.d      ) return false;
+    return false;
+}
+
 vector<string> Atom::Neighbor::info() const
 {
     vector<string> v;

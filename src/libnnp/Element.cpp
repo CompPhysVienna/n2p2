@@ -381,7 +381,7 @@ void Element::updateSymmetryFunctionStatistics(Atom const& atom)
         size_t const index = symmetryFunctions.at(i)->getIndex();
         if (statistics.collectStatistics)
         {
-            statistics.addValue(index, value);
+            statistics.addValue(index, atom.G.at(i));
         }
 
         if (value < Gmin || value > Gmax)

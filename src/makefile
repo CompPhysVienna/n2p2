@@ -51,6 +51,8 @@ INSTALL_LIB=${HOME}/local/lib
         nnp-scaling-static \
         nnp-select-shared \
         nnp-select-static \
+        nnp-sfclust-shared \
+        nnp-sfclust-static \
         nnp-symfunc-shared \
         nnp-symfunc-static \
         nnp-train-shared \
@@ -79,6 +81,7 @@ INSTALL_LIB=${HOME}/local/lib
         clean-nnp-prune \
         clean-nnp-scaling \
         clean-nnp-select \
+        clean-nnp-sfclust \
         clean-nnp-symfunc \
         clean-nnp-train \
         clean-pynnp \
@@ -113,6 +116,7 @@ all:    libnnp \
 	nnp-prune-shared \
 	nnp-scaling-shared \
 	nnp-select-shared \
+	nnp-sfclust-shared \
 	nnp-symfunc-shared \
 	nnp-train-shared
 
@@ -129,6 +133,7 @@ shared: libnnp-shared \
 	nnp-prune-shared \
 	nnp-scaling-shared \
 	nnp-select-shared \
+	nnp-sfclust-shared \
 	nnp-symfunc-shared \
 	nnp-train-shared
 
@@ -145,6 +150,7 @@ static: libnnp-static \
 	nnp-prune-static \
 	nnp-scaling-static \
 	nnp-select-static \
+	nnp-sfclust-static \
 	nnp-symfunc-static \
 	nnp-train-static
 
@@ -166,6 +172,7 @@ clean-no-doc: clean-libnnp \
 	      clean-nnp-prune \
 	      clean-nnp-scaling \
 	      clean-nnp-select \
+	      clean-nnp-sfclust \
 	      clean-nnp-symfunc \
 	      clean-nnp-train \
 	      clean-pynnp
@@ -259,19 +266,19 @@ clean-nnp-convert clean-nnp-cutoff clean-nnp-dist clean-nnp-predict clean-nnp-pr
 clean-nnp-convert clean-nnp-cutoff clean-nnp-dist clean-nnp-predict clean-nnp-prune clean-nnp-select clean-nnp-symfunc:
 	cd application/${APPDIR} && $(MAKE) clean
 
-############################################################
-# nnp-comp2, nnp-dataset, nnp-norm, nnp-scaling, nnp-train #
-############################################################
-nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-train-shared: APPDIR=$(subst -shared,,$@)
-nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-train-shared: libnnptrain-shared
+#########################################################################
+# nnp-comp2, nnp-dataset, nnp-norm, nnp-scaling, nnp-sfclust, nnp-train #
+#########################################################################
+nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-sfclust-shared nnp-train-shared: APPDIR=$(subst -shared,,$@)
+nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-sfclust-shared nnp-train-shared: libnnptrain-shared
 	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} shared
 
-nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-train-static: APPDIR=$(subst -static,,$@)
-nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-train-static: libnnptrain-static
+nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-sfclust-static nnp-train-static: APPDIR=$(subst -static,,$@)
+nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-sfclust-static nnp-train-static: libnnptrain-static
 	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} static
 
-clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-train: APPDIR=$(subst clean-,,$@)
-clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-train:
+clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-sfclust clean-nnp-train: APPDIR=$(subst clean-,,$@)
+clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-sfclust clean-nnp-train:
 	cd application/${APPDIR} && $(MAKE) clean
 
 #########
@@ -286,7 +293,7 @@ clean-pynnp:
 ##############################################
 # install (set links to install directories) #
 ##############################################
-EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-select nnp-symfunc nnp-train
+EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-select nnp-sfclust nnp-symfunc nnp-train
 LIB=libnnp.so libnnpif.so libnnptrain.so
 PYLIB=$(wildcard ${PROJECT_LIB}/pynnp*.so)
 install:

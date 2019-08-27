@@ -66,6 +66,24 @@ struct Atom
         /** Neighbor constructor, initialize to zero.
          */
         Neighbor();
+        /** Overload == operator.
+         */
+        bool                     operator==(Neighbor const& rhs) const;
+        /** Overload != operator.
+         */
+        bool                     operator!=(Neighbor const& rhs) const;
+        /** Overload < operator.
+         */
+        bool                     operator<(Neighbor const& rhs) const;
+        /** Overload > operator.
+         */
+        bool                     operator>(Neighbor const& rhs) const;
+        /** Overload <= operator.
+         */
+        bool                     operator<=(Neighbor const& rhs) const;
+        /** Overload >= operator.
+         */
+        bool                     operator>=(Neighbor const& rhs) const;
         /** Get atom information as a vector of strings.
          *
          * @return Lines with atom information.
@@ -201,6 +219,26 @@ struct Atom
      */
     std::vector<std::string> info() const;
 };
+
+inline bool Atom::Neighbor::operator!=(Atom::Neighbor const& rhs) const
+{
+    return !((*this) == rhs);
+}
+
+inline bool Atom::Neighbor::operator>(Atom::Neighbor const& rhs) const
+{
+    return rhs < (*this);
+}
+
+inline bool Atom::Neighbor::operator<=(Atom::Neighbor const& rhs) const
+{
+    return !((*this) > rhs);
+}
+
+inline bool Atom::Neighbor::operator>=(Atom::Neighbor const& rhs) const
+{
+    return !((*this) < rhs);
+}
 
 }
 

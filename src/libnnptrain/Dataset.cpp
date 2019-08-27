@@ -18,7 +18,7 @@
 #include "SymmetryFunction.h"
 #include "mpi-extra.h"
 #include "utility.h"
-#include <algorithm> // std::max, std::find
+#include <algorithm> // std::max, std::find, std::sort, std::fill
 #include <cmath>     // sqrt, fabs
 #include <cstdlib>   // atoi
 #include <cstdio>    // fprintf, fopen, fclose, remove
@@ -1182,6 +1182,155 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
            "**************************************\n";
 
     return maxNeighbors;
+}
+
+void Dataset::sortNeighborLists()
+{
+    log << "\n";
+    log << "*** NEIGHBOR LIST ***********************"
+           "**************************************\n";
+    log << "\n";
+
+    log << "Sorting neighbor lists according to element and distance.\n";
+
+    for (vector<Structure>::iterator it = structures.begin();
+         it != structures.end(); ++it)
+    {
+        for (vector<Atom>::iterator it2 = it->atoms.begin();
+             it2 != it->atoms.end(); ++it2)
+        {
+            sort(it2->neighbors.begin(), it2->neighbors.end());
+        }
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+void Dataset::writeNeighborLists(string const& fileName)
+{
+    log << "\n";
+    log << "*** NEIGHBOR LIST ***********************"
+           "**************************************\n";
+    log << "\n";
+
+    string fileNameLocal = strpr("%s.%04d", fileName.c_str(), myRank);
+    ofstream fileLocal;
+    fileLocal.open(fileNameLocal.c_str());
+
+    for (vector<Structure>::const_iterator it = structures.begin();
+         it != structures.end(); ++it)
+    {
+        fileLocal << strpr("%zu\n", it->numAtoms);
+        for (vector<Atom>::const_iterator it2 = it->atoms.begin();
+             it2 != it->atoms.end(); ++it2)
+        {
+            fileLocal << strpr("%zu", elementMap.atomicNumber(it2->element));
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                fileLocal << strpr(" %zu", it2->numNeighborsPerElement.at(i));
+            }
+            for (vector<Atom::Neighbor>::const_iterator it3
+                 = it2->neighbors.begin(); it3 != it2->neighbors.end(); ++it3)
+            {
+                fileLocal << strpr(" %zu", it3->index);
+            }
+            fileLocal << '\n';
+        }
+    }
+
+    fileLocal.flush();
+    fileLocal.close();
+    MPI_Barrier(comm);
+
+    log << strpr("Writing neighbor lists to file: %s.\n", fileName.c_str());
+
+    if (myRank == 0) combineFiles(fileName);
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
+void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
+                                         string const&  fileName)
+{
+    log << "\n";
+    log << "*** ATOMIC ENVIRONMENT ******************"
+           "**************************************\n";
+    log << "\n";
+
+    string fileNameLocal = strpr("%s.%04d", fileName.c_str(), myRank);
+    ofstream fileLocal;
+    fileLocal.open(fileNameLocal.c_str());
+
+    log << "Preparing symmetry functions for atomic environment file.\n";
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        log << strpr("Maximum number of neighbors for element %2s: %zu\n",
+                     elementMap[i].c_str(), neighCutoff.at(i));
+    }
+
+    vector<size_t> neighCount(numElements, 0);
+    for (vector<Structure>::const_iterator it = structures.begin();
+         it != structures.end(); ++it)
+    {
+        for (vector<Atom>::const_iterator it2 = it->atoms.begin();
+             it2 != it->atoms.end(); ++it2)
+        {
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                if (it2->numNeighborsPerElement.at(i) < neighCutoff.at(i))
+                {
+                    throw runtime_error(strpr(
+                        "ERROR: Not enough neighbor atoms, cannot create "
+                        "atomic environment file. Reduce neighbor cutoff for "
+                        "element %2s.\n", elementMap[i].c_str()).c_str());
+                }
+            }
+            fileLocal << strpr("%2s", elementMap[it2->element].c_str());
+            // Write atom's own symmetry functions.
+            for (vector<double>::const_iterator it3 = it2->G.begin();
+                 it3 != it2->G.end(); ++it3)
+            {
+                fileLocal << strpr(" %16.8E", (*it3));
+            }
+            // Write symmetry functions of neighbors
+            for (vector<Atom::Neighbor>::const_iterator it3
+                 = it2->neighbors.begin(); it3 != it2->neighbors.end(); ++it3)
+            {
+                size_t const i = it3->index;
+                size_t const e = it3->element;
+                if (neighCount.at(e) < neighCutoff.at(e))
+                {
+                    Atom const& a = it->atoms.at(i);
+                    for (vector<double>::const_iterator it4 = a.G.begin();
+                         it4 != a.G.end(); ++it4)
+                    {
+                        fileLocal << strpr(" %16.8E", (*it4));
+                    }
+                    neighCount.at(e)++;
+                }
+            }
+            fileLocal << '\n';
+            fill(neighCount.begin(), neighCount.end(), 0);
+        }
+    }
+
+    fileLocal.flush();
+    fileLocal.close();
+    MPI_Barrier(comm);
+
+    log << strpr("Combining atomic environment file: %s.\n", fileName.c_str());
+
+    if (myRank == 0) combineFiles(fileName);
+
+    log << "*****************************************"
+           "**************************************\n";
+
+
 }
 
 void Dataset::averageRmse(double& rmse, size_t& count) const
