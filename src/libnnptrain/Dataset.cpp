@@ -1298,15 +1298,15 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
     }
 
     vector<size_t> neighCount(numElements, 0);
-    for (vector<Structure>::const_iterator it = structures.begin();
-         it != structures.end(); ++it)
+    for (vector<Structure>::const_iterator its = structures.begin();
+         its != structures.end(); ++its)
     {
-        for (vector<Atom>::const_iterator it2 = it->atoms.begin();
-             it2 != it->atoms.end(); ++it2)
+        for (vector<Atom>::const_iterator ita = its->atoms.begin();
+             ita != its->atoms.end(); ++ita)
         {
             for (size_t i = 0; i < numElements; ++i)
             {
-                if (it2->numNeighborsPerElement.at(i) < neighCutoff.at(i))
+                if (ita->numNeighborsPerElement.at(i) < neighCutoff.at(i))
                 {
                     throw runtime_error(strpr(
                         "ERROR: Not enough neighbor atoms, cannot create "
@@ -1314,55 +1314,58 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
                         "element %2s.\n", elementMap[i].c_str()).c_str());
                 }
             }
-            fileLocalG << strpr("%2s", elementMap[it2->element].c_str());
-            fileLocaldGdx << strpr("%2s", elementMap[it2->element].c_str());
-            fileLocaldGdy << strpr("%2s", elementMap[it2->element].c_str());
-            fileLocaldGdz << strpr("%2s", elementMap[it2->element].c_str());
+            fileLocalG << strpr("%2s", elementMap[ita->element].c_str());
+            fileLocaldGdx << strpr("%2s", elementMap[ita->element].c_str());
+            fileLocaldGdy << strpr("%2s", elementMap[ita->element].c_str());
+            fileLocaldGdz << strpr("%2s", elementMap[ita->element].c_str());
             // Write atom's own symmetry functions (and derivatives).
-            for (vector<double>::const_iterator it3 = it2->G.begin();
-                 it3 != it2->G.end(); ++it3)
+            for (vector<double>::const_iterator it = ita->G.begin();
+                 it != ita->G.end(); ++it)
             {
-                fileLocalG << strpr(" %16.8E", (*it3));
+                fileLocalG << strpr(" %16.8E", (*it));
             }
-            for (vector<Vec3D>::const_iterator it3 = it2->dGdr.begin();
-                 it3 != it2->dGdr.end(); ++it3)
+            if (derivatives)
             {
-                fileLocaldGdx << strpr(" %16.8E", (*it3)[0]);
-                fileLocaldGdy << strpr(" %16.8E", (*it3)[1]);
-                fileLocaldGdz << strpr(" %16.8E", (*it3)[2]);
+                for (vector<Vec3D>::const_iterator it = ita->dGdr.begin();
+                     it != ita->dGdr.end(); ++it)
+                {
+                    fileLocaldGdx << strpr(" %16.8E", (*it)[0]);
+                    fileLocaldGdy << strpr(" %16.8E", (*it)[1]);
+                    fileLocaldGdz << strpr(" %16.8E", (*it)[2]);
+                }
             }
             // Write symmetry functions of neighbors
-            for (vector<Atom::Neighbor>::const_iterator it3
-                 = it2->neighbors.begin(); it3 != it2->neighbors.end(); ++it3)
+            for (vector<Atom::Neighbor>::const_iterator itn
+                 = ita->neighbors.begin(); itn != ita->neighbors.end(); ++itn)
             {
-                size_t const i = it3->index;
-                size_t const e = it3->element;
+                size_t const i = itn->index;
+                size_t const e = itn->element;
                 if (neighCount.at(e) < neighCutoff.at(e))
                 {
                     // Look up symmetry function at Atom instance of neighbor.
-                    Atom const& a = it->atoms.at(i);
-                    for (vector<double>::const_iterator it4 = a.G.begin();
-                         it4 != a.G.end(); ++it4)
+                    Atom const& a = its->atoms.at(i);
+                    for (vector<double>::const_iterator it = a.G.begin();
+                         it != a.G.end(); ++it)
                     {
-                        fileLocalG << strpr(" %16.8E", (*it4));
+                        fileLocalG << strpr(" %16.8E", (*it));
                     }
                     // Log derivatives directly from Neighbor instance.
                     if (derivatives)
                     {
                         // Find atom in neighbor list of neighbor atom.
-                        vector<Atom::Neighbor>::const_iterator it4 = find_if(
+                        vector<Atom::Neighbor>::const_iterator itan = find_if(
                             a.neighbors.begin(), a.neighbors.end(),
-                            [&it2](Atom::Neighbor const& n)
+                            [&ita](Atom::Neighbor const& n)
                             {
-                                return n.index == it2->index;
+                                return n.index == ita->index;
                             });
-                        for (vector<Vec3D>::const_iterator it5
-                             = it4->dGdr.begin();
-                             it5 != it4->dGdr.end(); ++it5)
+                        for (vector<Vec3D>::const_iterator it
+                             = itan->dGdr.begin();
+                             it != itan->dGdr.end(); ++it)
                         {
-                            fileLocaldGdx << strpr(" %16.8E", (*it5)[0]);
-                            fileLocaldGdy << strpr(" %16.8E", (*it5)[1]);
-                            fileLocaldGdz << strpr(" %16.8E", (*it5)[2]);
+                            fileLocaldGdx << strpr(" %16.8E", (*it)[0]);
+                            fileLocaldGdy << strpr(" %16.8E", (*it)[1]);
+                            fileLocaldGdz << strpr(" %16.8E", (*it)[2]);
                         }
                     }
                     neighCount.at(e)++;

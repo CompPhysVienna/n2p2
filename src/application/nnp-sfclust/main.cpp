@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 
     if (argc < 3)
     {
-        cout << "USAGE: " << argv[0] << "<nbins> <ncut1 <ncut2 ...>>\n"
+        cout << "USAGE: " << argv[0] << " <nbins> <ncut1 <ncut2 ...>>\n"
              << "       <nbins> ... Number of symmetry function"
                 " histogram bins.\n"
              << "       <ncut1 <ncut2 ...>> ... Maximum number of neighbors"
