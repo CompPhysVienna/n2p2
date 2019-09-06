@@ -1254,9 +1254,10 @@ void Dataset::writeNeighborLists(string const& fileName)
     return;
 }
 
-void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
-                                         bool           derivatives,
-                                         string const&  fileNamePrefix)
+void Dataset::writeAtomicEnvironmentFile(
+                                        vector<vector<size_t> > neighCutoff,
+                                        bool                    derivatives,
+                                        string const&           fileNamePrefix)
 {
     log << "\n";
     log << "*** ATOMIC ENVIRONMENT ******************"
@@ -1293,8 +1294,14 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
     log << "Preparing symmetry functions for atomic environment file(s).\n";
     for (size_t i = 0; i < numElements; ++i)
     {
-        log << strpr("Maximum number of neighbors for element %2s: %zu\n",
-                     elementMap[i].c_str(), neighCutoff.at(i));
+        for (size_t j = 0; j < numElements; ++j)
+        {
+            log << strpr("Maximum number of %2s neighbors for central %2s "
+                         "atoms: %zu\n",
+                         elementMap[j].c_str(),
+                         elementMap[i].c_str(),
+                         neighCutoff.at(i).at(j));
+        }
     }
 
     vector<size_t> neighCount(numElements, 0);
@@ -1304,9 +1311,11 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
         for (vector<Atom>::const_iterator ita = its->atoms.begin();
              ita != its->atoms.end(); ++ita)
         {
+            size_t const ea = ita->element;
             for (size_t i = 0; i < numElements; ++i)
             {
-                if (ita->numNeighborsPerElement.at(i) < neighCutoff.at(i))
+                if (ita->numNeighborsPerElement.at(i)
+                    < neighCutoff.at(ea).at(i))
                 {
                     throw runtime_error(strpr(
                         "ERROR: Not enough neighbor atoms, cannot create "
@@ -1339,8 +1348,8 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
                  = ita->neighbors.begin(); itn != ita->neighbors.end(); ++itn)
             {
                 size_t const i = itn->index;
-                size_t const e = itn->element;
-                if (neighCount.at(e) < neighCutoff.at(e))
+                size_t const en = itn->element;
+                if (neighCount.at(en) < neighCutoff.at(ea).at(en))
                 {
                     // Look up symmetry function at Atom instance of neighbor.
                     Atom const& a = its->atoms.at(i);
@@ -1368,7 +1377,7 @@ void Dataset::writeAtomicEnvironmentFile(vector<size_t> neighCutoff,
                             fileLocaldGdz << strpr(" %16.8E", (*it)[2]);
                         }
                     }
-                    neighCount.at(e)++;
+                    neighCount.at(en)++;
                 }
             }
             fileLocalG << '\n';

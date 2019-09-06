@@ -147,14 +147,15 @@ public:
     /** Write atomic environment file.
      *
      * @param[in] neighCutoff Maximum number of neighbor to consider (for each
-     *                        element).
+     *                        element combination).
      * @param[in] derivatives If true, write separate files for derivates.
      * @param[in] fileNamePrefix Prefix for atomic environment files.
      *
      * This file is used for symmetry function clustering analysis.
      */
     void        writeAtomicEnvironmentFile(
-                                        std::vector<std::size_t> neighCutoff,
+                                        std::vector<std::vector<
+                                        std::size_t> >           neighCutoff,
                                         bool                     derivatives,
                                         std::string const &      fileNamePrefix
                                              = "atomic-env");

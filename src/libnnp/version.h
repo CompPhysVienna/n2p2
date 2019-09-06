@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "e11eccf16153503d1e19969e99a1a354e425d41e"
-#define NNP_GIT_REV_SHORT "e11eccf"
+#define NNP_GIT_REV "083ee0fcea1686e1d393c940fb26a64d8ba25dac"
+#define NNP_GIT_REV_SHORT "083ee0f"
 #define NNP_GIT_BRANCH "nnp-sfclust"
 
 #endif

@@ -36,11 +36,11 @@ int main(int argc, char* argv[])
 
     if (argc < 3)
     {
-        cout << "USAGE: " << argv[0] << " <nbins> <ncut1 <ncut2 ...>>\n"
+        cout << "USAGE: " << argv[0] << " <nbins> <ncutij> \n"
              << "       <nbins> ... Number of symmetry function"
                 " histogram bins.\n"
-             << "       <ncut1 <ncut2 ...>> ... Maximum number of neighbors"
-                " symmetry functions written (for each element).\n"
+             << "       <ncutij> ... Maximum number of neighbor symmetry "
+                "functions written (for each element combination).\n"
              << "       Execute in directory with these NNP files present:\n"
              << "       - input.data (structure file)\n"
              << "       - input.nn (NNP settings)\n"
@@ -68,14 +68,21 @@ int main(int argc, char* argv[])
     dataset.distributeStructures(false);
     if (dataset.useNormalization()) dataset.toNormalizedUnits();
 
-    if ((size_t)argc - 2 != dataset.getNumElements())
+    size_t n = dataset.getNumElements();
+    if ((size_t)argc - 2 != n * n)
     {
         throw runtime_error("ERROR: Wrong number of neighbor cutoffs.\n");
     }
-    vector<size_t> neighCutoff(dataset.getNumElements(), 0);
-    for (size_t i = 0; i < neighCutoff.size(); ++i)
+    vector<vector<size_t> > neighCutoff(n);
+    size_t count = 0;
+    for (size_t i = 0; i < n; ++i)
     {
-        neighCutoff.at(i) = atof(argv[i+2]);    
+        neighCutoff.at(i).resize(n, 0);
+        for (size_t j = 0; j < n; ++j)
+        {
+            neighCutoff.at(i).at(j) = atof(argv[count+2]);
+            count++;
+        }
     }
     useForces = dataset.settingsKeywordExists("use_short_forces");
 
