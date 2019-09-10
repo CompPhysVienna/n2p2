@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "64a0542df0cded2b75e4756dba7864e1dd5ac8e4"
-#define NNP_GIT_REV_SHORT "64a0542"
-#define NNP_GIT_BRANCH "master"
+#define NNP_GIT_REV "23e4dbec523b889ffb155e87f7b64a7291683848"
+#define NNP_GIT_REV_SHORT "23e4dbe"
+#define NNP_GIT_BRANCH "more-activation-functions"
 
 #endif
