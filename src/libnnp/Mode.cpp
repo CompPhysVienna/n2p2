@@ -670,6 +670,26 @@ void Mode::setupNeuralNetwork()
             {
                 activationFunctionsPerLayer[i] = NeuralNetwork::AF_RELU;
             }
+            else if (activationFunctions.at(i-1) == "g")
+            {
+                activationFunctionsPerLayer[i] = NeuralNetwork::AF_GAUSSIAN;
+            }
+            else if (activationFunctions.at(i-1) == "c")
+            {
+                activationFunctionsPerLayer[i] = NeuralNetwork::AF_COS;
+            }
+            else if (activationFunctions.at(i-1) == "S")
+            {
+                activationFunctionsPerLayer[i] = NeuralNetwork::AF_REVLOGISTIC;
+            }
+            else if (activationFunctions.at(i-1) == "e")
+            {
+                activationFunctionsPerLayer[i] = NeuralNetwork::AF_EXP;
+            }
+            else if (activationFunctions.at(i-1) == "h")
+            {
+                activationFunctionsPerLayer[i] = NeuralNetwork::AF_HARMONIC;
+            }
             else
             {
                 throw runtime_error("ERROR: Unknown activation function.\n");
