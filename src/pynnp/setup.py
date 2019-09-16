@@ -18,5 +18,7 @@ extension = [Extension("*",
 
 setup(
     ext_modules=cythonize(extension,
-                          compiler_directives={'language_level' : "3"})
+                          compiler_directives={'language_level' : "3",
+                                               'c_string_type' : 'unicode',
+                                               'c_string_encoding' : 'utf8'})
 )

@@ -1,5 +1,7 @@
 #!/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
 import pynnp
 
 # Initialize NNP setup (symmetry functions only).
@@ -26,7 +28,7 @@ s.readFromFile("input.data.1")
 
 # Retrieve cutoff radius form NNP setup.
 cutoffRadius = m.getMaxCutoffRadius()
-print "Cutoff radius = ", cutoffRadius
+print("Cutoff radius = ", cutoffRadius)
 
 # Calculate neighbor list.
 s.calculateNeighborList(cutoffRadius)
@@ -36,14 +38,14 @@ s.calculateNeighborList(cutoffRadius)
 m.calculateSymmetryFunctionGroups(s, False)
 
 # Loop over atoms, symmetry function values are stored in "G" member.
-print "------------"
-print "Structure 1:"
-print "------------"
-print "numAtoms           : ", s.numAtoms
-print "numAtomsPerElement : ", s.numAtomsPerElement
-print "------------"
+print("------------")
+print("Structure 1:")
+print("------------")
+print("numAtoms           : ", s.numAtoms)
+print("numAtomsPerElement : ", s.numAtomsPerElement)
+print("------------")
 for atom in s.atoms:
-    print atom.index, atom.element, m.elementMap[atom.element], len(atom.G), atom.G[0]
+    print(atom.index, atom.element, m.elementMap[atom.element], len(atom.G), atom.G[0])
 
 ####################################################
 # Let's do the same thing for another configuration.
@@ -55,11 +57,11 @@ s.reset()
 s.readFromFile("input.data.2")
 s.calculateNeighborList(cutoffRadius)
 m.calculateSymmetryFunctionGroups(s, False)
-print "------------"
-print "Structure 2:"
-print "------------"
-print "numAtoms           : ", s.numAtoms
-print "numAtomsPerElement : ", s.numAtomsPerElement
-print "------------"
+print("------------")
+print("Structure 2:")
+print("------------")
+print("numAtoms           : ", s.numAtoms)
+print("numAtomsPerElement : ", s.numAtomsPerElement)
+print("------------")
 for atom in s.atoms:
-    print atom.index, atom.element, m.elementMap[atom.element], len(atom.G), atom.G[0]
+    print(atom.index, atom.element, m.elementMap[atom.element], len(atom.G), atom.G[0])

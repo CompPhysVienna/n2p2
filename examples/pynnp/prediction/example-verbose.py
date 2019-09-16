@@ -1,5 +1,7 @@
 #!/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
 import pynnp
 
 # Initialize NNP setup (symmetry functions only).
@@ -25,7 +27,7 @@ s.readFromFile("input.data")
 
 # Retrieve cutoff radius form NNP setup.
 cutoffRadius = m.getMaxCutoffRadius()
-print "Cutoff radius = ", cutoffRadius
+print("Cutoff radius = ", cutoffRadius)
 
 # Calculate neighbor list.
 s.calculateNeighborList(cutoffRadius)
@@ -43,14 +45,14 @@ m.calculateEnergy(s)
 # Collect force contributions.
 m.calculateForces(s)
 
-print "------------"
-print "Structure 1:"
-print "------------"
-print "numAtoms           : ", s.numAtoms
-print "numAtomsPerElement : ", s.numAtomsPerElement
-print "------------"
-print "Energy (Ref) : ", s.energyRef
-print "Energy (NNP) : ", s.energy
-print "------------"
+print("------------")
+print("Structure 1:")
+print("------------")
+print("numAtoms           : ", s.numAtoms)
+print("numAtomsPerElement : ", s.numAtomsPerElement)
+print("------------")
+print("Energy (Ref) : ", s.energyRef)
+print("Energy (NNP) : ", s.energy)
+print("------------")
 for atom in s.atoms:
-    print atom.index, atom.element, m.elementMap[atom.element], atom.f.r
+    print(atom.index, atom.element, m.elementMap[atom.element], atom.f.r)
