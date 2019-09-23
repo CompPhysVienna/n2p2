@@ -180,8 +180,17 @@ cdef class Vec3D:
     cdef pd.Vec3D* thisptr
     cdef object owner
 
-    def __cinit__(self):
-        self.thisptr = new pd.Vec3D()
+    #def __cinit__(self):
+    #    self.thisptr = new pd.Vec3D()
+    #    owner = None
+    def __cinit__(self, x=None, y=None, z=None):
+        if x is not None and y is not None and z is not None:
+            self.thisptr = new pd.Vec3D(x, y, z)
+        elif x is not None or y is not None or z is not None:
+            raise ValueError("ERROR: Wrong arguments, either set all "
+                             "components or none.")
+        else:
+            self.thisptr = new pd.Vec3D()
         owner = None
     cdef set_ptr(self, pd.Vec3D* ptr, owner):
         if self.owner is None:
@@ -191,6 +200,93 @@ cdef class Vec3D:
     def __dealloc__(self):
         if self.owner is None:
             del self.thisptr
+    def __getitem__(self, item):
+        if item >= 3:
+            raise IndexError
+        return deref(self.thisptr).r[<size_t>item]
+    def __setitem__(self, item, value):
+        if item >= 3:
+            raise IndexError
+        deref(self.thisptr).r[<size_t>item] = value
+    def __str__(self):
+        return "x: {0:f} y: {1:f} z: {2:f}".format(*(deref(self.thisptr).r))
+    def __iadd__(self, v):
+        cdef Vec3D v2 = <Vec3D?>v
+        self.thisptr.iadd(deref(v2.thisptr))
+        return self
+    def __isub__(self, v):
+        cdef Vec3D v2 = <Vec3D?>v
+        self.thisptr.isub(deref(v2.thisptr))
+        return self
+    def __imul__(self, a):
+        self.thisptr.imul(a)
+        return self
+    def __itruediv__(self, a):
+        self.thisptr.itruediv(a)
+        return self
+    def __mul__(ls, rs):
+        if isinstance(ls, Vec3D) and isinstance(rs, Vec3D):
+            return ls.mul_Vec3D(rs)
+        elif isinstance(ls, float) and isinstance(rs, Vec3D):
+            return rs.mul_lfloat(ls)
+        elif isinstance(ls, Vec3D) and isinstance(rs, float):
+            return ls.mul_rfloat(rs)
+        else:
+            return NotImplemented
+    def mul_Vec3D(self, v):
+        cdef Vec3D self2 = <Vec3D?>self
+        cdef Vec3D v2 = <Vec3D?>v
+        return self2.thisptr.mul_vec3d(deref(v2.thisptr))
+    def mul_rfloat(self, a):
+        cdef Vec3D self2 = <Vec3D?>self
+        cdef Vec3D res = Vec3D()
+        res.thisptr[0] = pd.mul_d(deref(self2.thisptr), a)
+        return res
+    def mul_lfloat(self, a):
+        cdef Vec3D self2 = <Vec3D?>self
+        cdef Vec3D res = Vec3D()
+        res.thisptr[0] = pd.d_mul(a, deref(self2.thisptr))
+        return res
+    def __eq__(self, rhs):
+        cdef Vec3D v2 = <Vec3D?>rhs
+        return self.thisptr.eq(deref(v2.thisptr))
+    def __ne__(self, rhs):
+        cdef Vec3D v2 = <Vec3D?>rhs
+        return self.thisptr.ne(deref(v2.thisptr))
+    def norm(self):
+        return self.thisptr.norm()
+    def norm2(self):
+        return self.thisptr.norm2()
+    def normalize(self):
+        self.thisptr.normalize()
+        return self
+    def cross(self, v):
+        cdef Vec3D v2 = <Vec3D?>v
+        cdef Vec3D res = Vec3D()
+        res.thisptr[0] = self.thisptr.cross(deref(v2.thisptr))
+        return res
+    def __add__(self, rhs):
+        cdef Vec3D self2 = <Vec3D?>self
+        cdef Vec3D rhs2 = <Vec3D?>rhs
+        cdef Vec3D res = Vec3D()
+        res.thisptr[0] = pd.add(deref(self2.thisptr), deref(rhs2.thisptr))
+        return res
+    def __sub__(self, rhs):
+        cdef Vec3D self2 = <Vec3D?>self
+        cdef Vec3D rhs2 = <Vec3D?>rhs
+        cdef Vec3D res = Vec3D()
+        res.thisptr[0] = pd.sub(deref(self2.thisptr), deref(rhs2.thisptr))
+        return res
+    def __neg__(self):
+        cdef Vec3D self2 = <Vec3D?>self
+        cdef Vec3D res = Vec3D()
+        res.thisptr[0] = pd.neg(deref(self2.thisptr))
+        return res
+    def __truediv__(self, a):
+        if isinstance(a, float):
+            return self.thisptr.div_d(a)
+        else:
+            return NotImplemented
 
     # r
     @property
@@ -199,6 +295,7 @@ cdef class Vec3D:
     @r.setter
     def r(self, value):
         deref(self.thisptr).r = value
+
 
 ###############################################################################
 # Neighbor
@@ -501,10 +598,10 @@ cdef class Structure:
             del self.thisptr
     def setElementMap(self, ElementMap elementMap):
         self.thisptr.setElementMap(deref(elementMap.thisptr))
-    def readFromFile(self, fileName=None):
-        if fileName is None:
-            fileName = "input.data"
+    def readFromFile(self, fileName="input.data"):
         self.thisptr.readFromFile(fileName)
+    def readFromLines(self, lines):
+        self.thisptr.readFromLines(lines)
     def calculateNeighborList(self, cutoffRadius):
         self.thisptr.calculateNeighborList(cutoffRadius)
     def getMaxNumNeighbors(self):
@@ -513,6 +610,8 @@ cdef class Structure:
         self.thisptr.reset()
     def clearNeighborList(self):
         self.thisptr.clearNeighborList()
+    def writeToFile(self, fileName="output.data", ref=True, append=False):
+        self.thisptr.writeToFile(fileName, ref, append)
     def info(self):
         return self.thisptr.info()
 
@@ -685,9 +784,7 @@ cdef class Mode:
         del self.thisptr
     def initialize(self):
         self.thisptr.initialize()
-    def loadSettingsFile(self, fileName=None):
-        if fileName is None:
-            fileName = "input.nn"
+    def loadSettingsFile(self, fileName="input.nn"):
         self.thisptr.loadSettingsFile(fileName)
     def setupGeneric(self):
         self.thisptr.setupGeneric()
@@ -703,9 +800,7 @@ cdef class Mode:
         self.thisptr.setupSymmetryFunctions()
     def setupSymmetryFunctionScalingNone(self):
         self.thisptr.setupSymmetryFunctionScalingNone()
-    def setupSymmetryFunctionScaling(self, fileName=None):
-        if fileName is None:
-            fileName = "scaling.data"
+    def setupSymmetryFunctionScaling(self, fileName="scaling.data"):
         self.thisptr.setupSymmetryFunctionScaling(fileName)
     def setupSymmetryFunctionGroups(self):
         self.thisptr.setupSymmetryFunctionGroups()
@@ -721,9 +816,7 @@ cdef class Mode:
                                                   stopOnExtrapolationWarnings)
     def setupNeuralNetwork(self):
         self.thisptr.setupNeuralNetwork()
-    def setupNeuralNetworkWeights(self, fileNameFormat=None):
-        if fileNameFormat is None:
-            fileNameFormat = "weights.%03zu.data"
+    def setupNeuralNetworkWeights(self, fileNameFormat="weights.%03zu.data"):
         self.thisptr.setupNeuralNetworkWeights(fileNameFormat)
     def calculateSymmetryFunctions(self, Structure structure, derivatives):
         self.thisptr.calculateSymmetryFunctions(deref(structure.thisptr),
@@ -776,9 +869,7 @@ cdef class Prediction(Mode):
         if self.thisptr:
             del self.thisptr
             self.thisptr = <pd.Mode*>0
-    def readStructureFromFile(self, fileName=None):
-        if fileName is None:
-            fileName = "input.data"
+    def readStructureFromFile(self, fileName="input.data"):
         (<pd.Prediction*>self.thisptr).readStructureFromFile(fileName)
     def setup(self):
         (<pd.Prediction*>self.thisptr).setup()
@@ -813,3 +904,39 @@ cdef class Prediction(Mode):
             thisptr = <pd.Prediction*>self.thisptr
             r.set_ptr(&thisptr.structure, self)
             return r
+
+###############################################################################
+###############################################################################
+# Pure Python Section
+###############################################################################
+###############################################################################
+
+###############################################################################
+# DatasetReader
+###############################################################################
+class DatasetReader:
+    def __init__(self, file_name, elements):
+        self.file_name = file_name
+        self._element_map = ElementMap()
+        self._element_map.registerElements(elements)
+        self._f = open(self.file_name, "r")
+
+    def __iter__(self):
+        if(self._f.closed):
+            self._f = open(self.file_name, "r")
+        return self
+
+    def __next__(self):
+        line = self._f.readline()
+        if len(line) < 1:
+            self._f.close()
+            raise StopIteration
+        lines = [line.rstrip("\r\n")]
+        for line in self._f:
+            lines.append(line.rstrip("\r\n"))
+            if line.split()[0] == "end":
+                break
+        s = Structure()
+        s.setElementMap(self._element_map)
+        s.readFromLines(lines)
+        return s

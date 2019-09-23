@@ -103,6 +103,30 @@ cdef extern from "Settings.h" namespace "nnp":
 cdef extern from "Vec3D.h" namespace "nnp":
     cdef cppclass Vec3D:
         double r[3]
+        Vec3D() except +
+        Vec3D(double x, double y, double z) except +
+        #Vec3D(Vec3D source) except +
+        #Vec3D operator=(Vec3D rhs) except +
+        Vec3D  iadd      "operator+="(Vec3D v) except +
+        Vec3D  isub      "operator-="(Vec3D v) except +
+        Vec3D  imul      "operator*="(double a) except +
+        Vec3D  itruediv  "operator/="(double a) except +
+        double mul_vec3d "operator*"(Vec3D v) except +
+        #double&       operator[](std::size_t const index);
+        #double const& operator[](std::size_t const index) const;
+        bool   eq        "operator=="(Vec3D rhs) except +
+        bool   ne        "operator!="(Vec3D rhs) except +;
+        double norm() except +
+        double norm2() except +
+        Vec3D  normalize() except +
+        Vec3D  cross(Vec3D v) except +
+
+    Vec3D add   "operator+"(Vec3D lhs, Vec3D rhs) except +
+    Vec3D sub   "operator-"(Vec3D lhs, Vec3D rhs) except +
+    Vec3D neg   "operator-"(Vec3D v) except +
+    Vec3D mul_d "operator*"(Vec3D v, double a) except +
+    Vec3D div_d "operator/"(Vec3D v, double a) except +
+    Vec3D d_mul "operator*"(double a, Vec3D v) except +
 
 ###############################################################################
 # Atom
@@ -183,6 +207,7 @@ cdef extern from "Structure.h" namespace "nnp":
         void           setElementMap(ElementMap elementMap) except +
         void           readFromFile(string fileName) except +
         #void                     readFromFile(std::ifstream& file);
+        void           readFromLines(vector[string] lines) except +
         void           calculateNeighborList(double cutoffRadius) except +
         #void                     calculatePbcCopies(double cutoffRadius);
         #void                     calculateInverseBox();
@@ -204,6 +229,12 @@ cdef extern from "Structure.h" namespace "nnp":
         #                                          std::size_t& count) const;
         #std::string              getEnergyLine() const;
         #std::vector<std::string> getForcesLines() const;
+        void           writeToFile(string fileName,
+                                   bool ref,
+                                   bool append) except +
+        void           writeToFile(string fileName, bool ref) except +
+        void           writeToFile(string fileName) except +
+        void           writeToFile() except +
         #void                     writeToFile(
         #                                   std::ofstream* const& file,
         #                                   bool                  ref = true) const;

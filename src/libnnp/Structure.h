@@ -117,6 +117,14 @@ struct Structure
      * line should be `begin`. Reads until keyword is `end`.
      */
     void                     readFromFile(std::ifstream& file);
+    /** Read configuration from lines.
+     *
+     * @param[in] lines One configuration in form of a vector of strings.
+     *
+     * Read the configuration from a vector of strings.
+     */
+    void                     readFromLines(std::vector<
+                                           std::string> const& lines);
     /** Calculate neighbor list for all atoms.
      *
      * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
@@ -239,13 +247,24 @@ struct Structure
     std::vector<std::string> getForcesLines() const;
     /** Write configuration to file.
      *
+     * @param[in,out] fileName Ouptut file name.
+     * @param[in] ref If true, write reference energy and forces, if false,
+     *                write NNP results instead.
+     * @param[in] append If true, append to existing file.
+     */
+    void                     writeToFile(
+                                     std::string const fileName ="output.data",
+                                     bool const        ref = true,
+                                     bool const        append = false) const;
+    /** Write configuration to file.
+     *
      * @param[in,out] file Ouptut file.
      * @param[in] ref If true, write reference energy and forces, if false,
      *                write NNP results instead.
      */
     void                     writeToFile(
                                        std::ofstream* const& file,
-                                       bool                  ref = true) const;
+                                       bool const            ref = true) const;
     /** Write configuration to xyz file.
      *
      * @param[in,out] file xyz output file.

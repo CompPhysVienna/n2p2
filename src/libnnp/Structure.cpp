@@ -83,26 +83,58 @@ void Structure::readFromFile(string const fileName)
 
 void Structure::readFromFile(ifstream& file)
 {
-    size_t         iBoxVector = 0;
     string         line;
+    vector<string> lines;
     vector<string> splitLine;
 
     // read first line, should be keyword "begin".
     getline(file, line);
+    lines.push_back(line);
     splitLine = split(reduce(line));
     if (splitLine.at(0) != "begin")
     {
         throw runtime_error("ERROR: Unexpected file content, expected"
-                            "\"begin\" keyword.\n");
+                            " \"begin\" keyword.\n");
     }
 
     while (getline(file, line))
     {
+        lines.push_back(line);
         splitLine = split(reduce(line));
-        if (splitLine.at(0) == "comment")
+        if (splitLine.at(0) == "end") break;
+    }
+
+    readFromLines(lines);
+
+    return;
+}
+
+
+void Structure::readFromLines(vector<string> const& lines)
+{
+    size_t         iBoxVector = 0;
+    vector<string> splitLine;
+
+    // read first line, should be keyword "begin".
+    splitLine = split(reduce(lines.at(0)));
+    if (splitLine.at(0) != "begin")
+    {
+        throw runtime_error("ERROR: Unexpected line content, expected"
+                            " \"begin\" keyword.\n");
+    }
+
+    for (vector<string>::const_iterator line = lines.begin();
+         line != lines.end(); ++line)
+    {
+        splitLine = split(reduce(*line));
+        if (splitLine.at(0) == "begin")
         {
-            size_t position = line.find("comment");
-            comment = line.erase(position, splitLine.at(0).length() + 1);
+        }
+        else if (splitLine.at(0) == "comment")
+        {
+            size_t position = line->find("comment");
+            string tmpLine = *line;
+            comment = tmpLine.erase(position, splitLine.at(0).length() + 1);
         }
         else if (splitLine.at(0) == "lattice")
         {
@@ -574,11 +606,36 @@ vector<string> Structure::getForcesLines() const
     return v;
 }
 
-void Structure::writeToFile(ofstream* const& file, bool ref) const
+void Structure::writeToFile(string const fileName,
+                            bool const   ref,
+                            bool const   append) const
+{
+    ofstream file;
+
+    if (append)
+    {
+        file.open(fileName.c_str(), ofstream::app);
+    }
+    else
+    {
+        file.open(fileName.c_str());
+    }
+    if (!file.is_open())
+    {
+        throw runtime_error("ERROR: Could not open file: \"" + fileName
+                            + "\".\n");
+    }
+    writeToFile(&file, ref );
+    file.close();
+
+    return;
+}
+
+void Structure::writeToFile(ofstream* const& file, bool const ref) const
 {
     if (!file->is_open())
     {
-        runtime_error("ERROR: Could not write to file.\n");
+        runtime_error("ERROR: Cannot write to file, file is not open.\n");
     }
 
     (*file) << "begin\n";
