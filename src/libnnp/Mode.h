@@ -254,14 +254,14 @@ public:
      * computation to atomic forces. Results are stored in Atom::f.
      */
     void                     calculateForces(Structure& structure) const;
-    /* Add atomic energy offsets to reference energy.
+    /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.
      * @param[in] ref If true, use reference energy, otherwise use NN energy.
      */
     void                     addEnergyOffset(Structure& structure,
                                              bool       ref = true);
-    /* Remove atomic energy offsets from reference energy.
+    /** Remove atomic energy offsets from reference energy.
      *
      * @param[in] structure Input structure.
      * @param[in] ref If true, use reference energy, otherwise use NN energy.
@@ -270,14 +270,14 @@ public:
      */
     void                     removeEnergyOffset(Structure& structure,
                                                 bool       ref = true);
-    /* Get atomic energy offset for given structure.
+    /** Get atomic energy offset for given structure.
      *
      * @param[in] structure Input structure.
      *
      * @return Summed atomic energy offsets for structure.
      */
     double                   getEnergyOffset(Structure const& structure) const;
-    /* Add atomic energy offsets and return energy.
+    /** Add atomic energy offsets and return energy.
      *
      * @param[in] structure Input structure.
      * @param[in] ref If true, use reference energy, otherwise use NN energy.

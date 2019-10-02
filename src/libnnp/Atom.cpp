@@ -205,6 +205,28 @@ void Atom::free(bool all)
     return;
 }
 
+void Atom::clearNeighborList()
+{
+    clearNeighborList(numNeighborsPerElement.size());
+
+    return;
+}
+
+void Atom::clearNeighborList(size_t const numElements)
+{
+    free(true);
+    numNeighbors = 0;
+    numNeighborsPerElement.resize(numElements, 0);
+    numNeighborsUnique = 0;
+    neighborsUnique.clear();
+    vector<size_t>(neighborsUnique).swap(neighborsUnique);
+    neighbors.clear();
+    vector<Atom::Neighbor>(neighbors).swap(neighbors);
+    hasNeighborList = false;
+
+    return;
+}
+
 size_t Atom::getNumNeighbors(double cutoffRadius) const
 {
     size_t numNeighborsLocal = 0;
@@ -339,6 +361,22 @@ Atom::Neighbor::Neighbor() : index      (0                      ),
                              cutoffAlpha(0.0                    ),
                              cutoffType (CutoffFunction::CT_HARD)
 {
+}
+
+bool Atom::Neighbor::operator==(Atom::Neighbor const& rhs) const
+{
+    if (element != rhs.element) return false;
+    if (d       != rhs.d      ) return false;
+    return true;
+}
+
+bool Atom::Neighbor::operator<(Atom::Neighbor const& rhs) const
+{
+    if      (element < rhs.element) return true;
+    else if (element > rhs.element) return false;
+    if      (d       < rhs.d      ) return true;
+    else if (d       > rhs.d      ) return false;
+    return false;
 }
 
 vector<string> Atom::Neighbor::info() const

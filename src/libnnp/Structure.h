@@ -101,6 +101,18 @@ struct Structure
      *                       (symbol, index)-pairs (see ElementMap).
      */
     void                     setElementMap(ElementMap const& elementMap);
+    /** Add a single atom to structure.
+     *
+     * @param[in] atom Atom to insert.
+     * @param[in] element Element string of new atom.
+     *
+     * @note Be sure to set the element map properly before adding atoms. This
+     * function will only keep the atom's coordinates, energy, charge, tag and
+     * forces, all other members will be cleared or reset (in particular, the
+     * neighbor list and symmetry function data will be deleted).
+     */
+    void                     addAtom(Atom const&        atom,
+                                     std::string const& element);
     /** Read configuration from file.
      *
      * @param[in] fileName Input file name.

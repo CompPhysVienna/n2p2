@@ -65,6 +65,23 @@ void Structure::setElementMap(ElementMap const& elementMap)
     return;
 }
 
+void Structure::addAtom(Atom const& atom, string const& element)
+{
+    atoms.push_back(Atom());
+    atoms.back() = atom;
+    // The number of elements may have changed.
+    atoms.back().numNeighborsPerElement.resize(elementMap.size(), 0);
+    atoms.back().clearNeighborList();
+    atoms.back().index                = numAtoms;
+    atoms.back().indexStructure       = index;
+    atoms.back().element              = elementMap[element];
+    atoms.back().numSymmetryFunctions = 0;
+    numAtoms++;
+    numAtomsPerElement[elementMap[element]]++;
+
+    return;
+}
+
 void Structure::readFromFile(string const fileName)
 {
     ifstream file;
@@ -545,18 +562,9 @@ void Structure::clearNeighborList()
     for (size_t i = 0; i < numAtoms; i++)
     {
         Atom& a = atoms.at(i);
-        a.numNeighbors = 0;
+        // This may have changed if atoms are added via addAtoms().
         a.numNeighborsPerElement.resize(numElements, 0);
-        a.numNeighborsUnique = 0;
-        a.neighborsUnique.clear();
-        vector<size_t>(a.neighborsUnique).swap(a.neighborsUnique);
-        a.neighbors.clear();
-        vector<Atom::Neighbor>(a.neighbors).swap(a.neighbors);
-        a.hasNeighborList = false;
-        a.free(true);
-        a.hasNeighborList = false;
-        a.hasSymmetryFunctions = false;
-        a.hasSymmetryFunctionDerivatives = false;
+        a.clearNeighborList();
     }
     hasNeighborList = false;
     hasSymmetryFunctions = false;
