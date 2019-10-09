@@ -8,3 +8,5 @@
 /tools/python/NNTSSD/Z_water_RPBE-D3_testing
 /tools/python/NNTSSD/Z_water_RPBE-D3_trainiert_ext-test
 __pycache__/
+Output/
+submit.slrm

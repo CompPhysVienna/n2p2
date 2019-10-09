@@ -4,11 +4,11 @@
 ################################################################################
 # Create datasets/training/analyse learning curves/plot size dependence?
 # (y/n, separated by blank space):
-n n n n
+y y y y
 # In case of external testdata: predict data/analyse learning curves/plot SSD?
-n n n
+y y y
 # Predict validation data/plot size dependence?
-n y
+y y
 ################################################################################
 # Specify parameters for NNTSSD.Tools.create_training_datatsets:
 ################################################################################
