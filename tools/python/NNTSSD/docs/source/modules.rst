@@ -6,5 +6,4 @@ source
 
    NNTSSD
    file_input
-   interactive_input
    learning_curves

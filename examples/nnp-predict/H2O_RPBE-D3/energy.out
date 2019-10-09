@@ -1,0 +1,14 @@
+################################################################################
+# Energy comparison.
+################################################################################
+# Col  Name     Description
+################################################################################
+# 1    Ennp     Potential energy predicted by NNP.
+# 2    Eref     Reference potential energy.
+# 3    Ediff    Difference between reference and NNP prediction.
+# 4    E_offset Sum of atomic offset energies (included in column Ennp).
+################################################################################
+#              1                2                3                4
+#           Ennp             Eref            Ediff         E_offset
+###################################################################
+ -2.75645473E+04   0.00000000E+00   2.75645473E+04   0.00000000E+00

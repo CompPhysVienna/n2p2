@@ -15,9 +15,9 @@ class Tools_LC():
     
     Methods
     -------
-    analyse_learning_curves():
+    analyse_learning_curves() :
         Prepares analyse data from the learning curves obtained in training.
-    plot_training_performance():
+    plot_training_performance() :
         Plots the energy and force RMSE versus number of training epoch.
     """
     def __init__(self):
@@ -37,6 +37,8 @@ class Tools_LC():
                 Created with the method NNTSSD.Tools.create_training_datasets().
             ``Output/ratio*/ratio*_**/learning-curve.out`` : file
                 Contains learning curve data, created with the method NNTSSD.Tools.create_training_datasets().
+            ``Output/ratio*/ratio*_**/predict_testdata/learning-curve-testdata.out`` : file
+                Contains learning curve data of external testset, created with the method NNTSSD.External_Testset.predict_test_data().
         OUTPUTS:
             ``Output/training_performance/learning_curve_E.out`` : file
                 Contains processed mean energy training performance information for all dataset sizes.
@@ -114,10 +116,17 @@ class Tools_LC():
                             learning_curve_data = np.genfromtxt("learning-curve.out")
                             learning_curve_Etrain = np.column_stack((learning_curve_Etrain,learning_curve_data[:,1]))
                             learning_curve_Ftrain = np.column_stack((learning_curve_Ftrain,learning_curve_data[:,3]))
-                            learning_curve_Etest = np.column_stack((learning_curve_Etest,learning_curve_data[:,2]))
-                            learning_curve_Ftest = np.column_stack((learning_curve_Ftest,learning_curve_data[:,4]))
+                            try:
+                                learning_curve_testdata = np.genfromtxt("predict_testdata/learning-curve-testdata.out")
+                                learning_curve_Etest = np.column_stack((learning_curve_Etest,learning_curve_testdata[:,1]))
+                                learning_curve_Ftest = np.column_stack((learning_curve_Ftest,learning_curve_testdata[:,2]))
+                                print("INFO: Calculation with external Testdata.")
+                            except:
+                                print("INFO: Calculation with internal Testdata.")
+                                learning_curve_Etest = np.column_stack((learning_curve_Etest,learning_curve_data[:,2]))
+                                learning_curve_Ftest = np.column_stack((learning_curve_Ftest,learning_curve_data[:,4]))
                         except:
-                            print("INFO: The file 'learning-curve.out' does not exist in "+ratio_dir_string[ratio_dir_counter]+"/"+set_dir_string[set_dir_counter]+"!")
+                            print("INFO: The file 'learning-curve.out' does not exist.")
 #                            continue
                         os.chdir("../")
                 learning_curve_Etrain = learning_curve_Etrain[:,1:]
@@ -230,7 +239,7 @@ class Tools_LC():
                 for samples_counter in range(len(learning_curve_train[0,:])):
                     plt.plot(epochs,learning_curve_train[:,samples_counter],linewidth=1,ls="-",color=plt.cm.Pastel2(ratios_counter),label=current_shortcut+"train_setsize="+str(int(current_ratio*n_total_configurations)))
                     plt.plot(epochs,learning_curve_test[:,samples_counter],linewidth=1,ls="-",color=plt.cm.Dark2(ratios_counter),label=current_shortcut+"test_setsize="+str(int(current_ratio*n_total_configurations)))
-                plt.yscale('log')
+            plt.yscale('log')
             plt.title("Training performance for "+current_parameter)
             plt.xlabel("epoch")
             if current_parameter == "Energies":

@@ -1,0 +1,10 @@
+/tools/python/NNTSSD/RPBE-D3_1_split_data
+/tools/python/NNTSSD/RPBE-D3_2_selected_13_each
+/tools/python/NNTSSD/RPBE-D3_val_1_selected_6_each
+/tools/python/NNTSSD/RPBE-D3_val_2_Trainiert_von_VSC
+/tools/python/NNTSSD/RPBE-D3_val_3_Trainiert_prep4val
+/tools/python/NNTSSD/Z_vonVSC_ext-test_predict_teil
+/tools/python/NNTSSD/Z_water_RPBE-D3_70_700_7000
+/tools/python/NNTSSD/Z_water_RPBE-D3_testing
+/tools/python/NNTSSD/Z_water_RPBE-D3_trainiert_ext-test
+__pycache__/

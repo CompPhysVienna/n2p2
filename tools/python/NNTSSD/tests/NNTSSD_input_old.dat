@@ -4,11 +4,7 @@
 ################################################################################
 # Create datasets/training/analyse learning curves/plot size dependence?
 # (y/n, separated by blank space):
-n n n n
-# In case of external testdata: predict data/analyse learning curves/plot SSD?
-n n n
-# Predict validation data/plot size dependence?
-n y
+y y n n
 ################################################################################
 # Specify parameters for NNTSSD.Tools.create_training_datatsets:
 ################################################################################
@@ -20,41 +16,21 @@ n y
 # Give the number of sample datasets per training size:
 2
 # Do you wish to fix the random generator seed to a specific value? (y/n)
-n
+y
 # If yes, give the random generator seed (optional, default is 123):
-123
+456
 ################################################################################
 # Specify parameters for NNTSSD.Tools.training_neural_network:
 ################################################################################
 # Give the desired number of training epochs:
-4
-# Give the fraction of data you want to keep for testing (nnp-internal):
-0.1
-# Give the number of cores you want to use for mpirun (nnp-train):
+2
+# Give the number of cores you want to use for mpirun:
 4
 # Write a VSC submission script (if not, training is performed on your machine)?
-n
-# If yes, give the maximum time required for exectuing job (hh:mm:ss, optional):
-00:10:00
+y
+# If yes, give the maximum time required for exectuing the job (optional):
+08:00:00
 # Do you wish to fix the random generator seed to a specific value? (y/n)
-n
-# If yes, give the random generator seed (optional, default is 123):
-789
-################################################################################
-# Specify parameters for NNTSSD.External_Testdata.predict_test_data:
-################################################################################
-# Give the number of cores you want to use for mpirun (nnp-dataset):
-4
-# Do you wish to fix the random generator seed to a specific value? (y/n)
-n
-# If yes, give the random generator seed (optional, default is 123):
-789
-################################################################################
-# Specify parameters for NNTSSD.Validation.predict_validation_data:
-################################################################################
-# Give the number of cores you want to use for mpirun (nnp-dataset):
-4
-# Do you wish to fix the random generator seed to a specific value? (y/n)
-n
+y
 # If yes, give the random generator seed (optional, default is 123):
 789
