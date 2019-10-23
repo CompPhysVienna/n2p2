@@ -161,9 +161,11 @@ public:
      *
      * @param[in] atom Atom with symmetry function values.
      *
+     * @return Number of extrapolation warnings encountered.
+     *
      * This function checks also for extrapolation warnings.
      */
-    void                     updateSymmetryFunctionStatistics(
+    std::size_t              updateSymmetryFunctionStatistics(
                                                              Atom const& atom);
     /** Get symmetry function instance.
      *

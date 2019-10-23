@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "5439c876c249e5fb0026fcf1e92a9d9b89d9f2d2"
-#define NNP_GIT_REV_SHORT "5439c87"
-#define NNP_GIT_BRANCH "pynnp-cgdata"
+#define NNP_GIT_REV "8eacfab94d1a20437cace03c747d43b795606c4f"
+#define NNP_GIT_REV_SHORT "8eacfab"
+#define NNP_GIT_BRANCH "master"
 
 #endif
