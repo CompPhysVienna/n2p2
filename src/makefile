@@ -278,10 +278,16 @@ clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-tra
 # pynnp #
 #########
 pynnp:
-	cd pynnp && $(MAKE)
+	cd pynnp && $(MAKE) pynnp
 
 clean-pynnp:
 	cd pynnp && $(MAKE) clean
+
+pynnp-debug:
+	cd pynnp && $(MAKE) pynnp-debug
+
+clean-pynnp-debug:
+	cd pynnp && $(MAKE) clean-debug
 
 ##############################################
 # install (set links to install directories) #
