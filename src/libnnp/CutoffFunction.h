@@ -76,29 +76,44 @@ public:
      *
      * @param[in] cutoffType Type of cutoff used.
      */
-    void   setCutoffType(CutoffType const cutoffType);
+    void       setCutoffType(CutoffType const cutoffType);
+    /** Getter for #cutoffType.
+     *
+     * @return CutoffType used.
+     */
+    CutoffType getCutoffType() const;
     /** Set cutoff radius.
      *
      * @param[in] cutoffRadius Cutoff radius @f$r_c@f$.
      */
-    void   setCutoffRadius(double const cutoffRadius);
+    void       setCutoffRadius(double const cutoffRadius);
+    /** Getter for #rc.
+     *
+     * @return Cutoff radius used.
+     */
+    double     getCutoffRadius() const;
     /** Set parameter for polynomial cutoff function (CT_POLY).
      *
      * @param[in] alpha Width parameter @f$\alpha@f$.
      */
-    void   setCutoffParameter(double const alpha);
+    void       setCutoffParameter(double const alpha);
+    /** Getter for #alpha.
+     *
+     * @return Cutoff parameter used.
+     */
+    double     getCutoffParameter() const;
     /** Cutoff function @f$f_c@f$.
      *
      * @param[in] r Distance.
      * @return Cutoff function value.
      */
-    double f(double r) const;
+    double     f(double r) const;
     /** Derivative of cutoff function @f$\frac{d f_c}{d r}@f$.
      *
      * @param[in] r Distance.
      * @return Value of cutoff function derivative.
      */
-    double df(double r) const;
+    double     df(double r) const;
     /** Calculate cutoff function @f$f_c@f$ and derivative
      * @f$\frac{d f_c}{d r}@f$.
      *
@@ -106,7 +121,7 @@ public:
      * @param[out] fc Cutoff function value.
      * @param[out] dfc Value of cutoff function derivative.
      */
-    void   fdf(double r, double& fc, double& dfc) const;
+    void       fdf(double r, double& fc, double& dfc) const;
 
 private:
     static double const PI;
@@ -177,6 +192,21 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
+inline CutoffFunction::CutoffType CutoffFunction::getCutoffType() const
+{
+    return cutoffType;
+}
+
+inline double CutoffFunction::getCutoffRadius() const
+{
+    return rc;
+}
+
+inline double CutoffFunction::getCutoffParameter() const
+{
+    return alpha;
+}
+
 inline double CutoffFunction::f(double r) const
 {
     if (r >= rc) return 0.0;
@@ -211,7 +241,9 @@ inline double CutoffFunction::dfHARD(double /*r*/) const
     return 0.0;
 }
 
-inline void CutoffFunction::fdfHARD(double /*r*/, double& fc, double& dfc) const
+inline void CutoffFunction::fdfHARD(double /*r*/,
+                                    double& fc,
+                                    double& dfc) const
 {
     fc = 1.0;
     dfc = 0.0;

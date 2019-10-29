@@ -31,6 +31,7 @@ INSTALL_LIB=${HOME}/local/lib
         libnnp-shared \
         libnnptrain-shared \
         libnnpif-shared \
+        libnnp-test \
         nnp-comp2-shared \
         nnp-comp2-static \
         nnp-convert-shared \
@@ -56,6 +57,7 @@ INSTALL_LIB=${HOME}/local/lib
         nnp-train-shared \
         nnp-train-static \
         pynnp \
+        pynnp-test \
         clean-doc \
         clean-doc-sphinx \
         clean-doc-doxygen \
@@ -69,6 +71,7 @@ INSTALL_LIB=${HOME}/local/lib
         clean-libnnp-shared \
         clean-libnnptrain-shared \
         clean-libnnpif-shared \
+        clean-libnnp-test \
         clean-nnp-comp2 \
         clean-nnp-convert \
         clean-nnp-cutoff \
@@ -82,6 +85,7 @@ INSTALL_LIB=${HOME}/local/lib
         clean-nnp-symfunc \
         clean-nnp-train \
         clean-pynnp \
+        clean-pynnp-test \
 	install \
 	uninstall
 
@@ -170,6 +174,12 @@ clean-no-doc: clean-libnnp \
 	      clean-nnp-train \
 	      clean-pynnp
 
+test: libnnp-test \
+      pynnp-test
+
+clean-test: clean-libnnp-test \
+	    clean-pynnp-test
+
 
 #######
 # doc #
@@ -217,6 +227,13 @@ libnnp-static:
 
 clean-libnnp-static:
 	cd libnnp && $(MAKE) clean-static
+
+libnnp-test:
+	cd libnnp && $(MAKE) COMP=${COMP} ${CORES} test
+
+clean-libnnp-test:
+	cd libnnp && $(MAKE) clean-test
+
 
 #########################
 # libnnptrain, libnnpif #
@@ -278,16 +295,16 @@ clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-tra
 # pynnp #
 #########
 pynnp:
-	cd pynnp && $(MAKE) pynnp
+	cd pynnp && $(MAKE)
 
 clean-pynnp:
 	cd pynnp && $(MAKE) clean
 
-pynnp-debug:
-	cd pynnp && $(MAKE) pynnp-debug
+pynnp-test:
+	cd pynnp && $(MAKE) test
 
-clean-pynnp-debug:
-	cd pynnp && $(MAKE) clean-debug
+clean-pynnp-test:
+	cd pynnp && $(MAKE) clean-test
 
 ##############################################
 # install (set links to install directories) #

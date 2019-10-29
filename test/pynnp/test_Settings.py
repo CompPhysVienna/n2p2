@@ -15,7 +15,7 @@ def prepare_dir(request):
     shutil.rmtree(dirname)
 
 prepare_default_dir = pytest.mark.parametrize('prepare_dir',
-                                              ["test/setups/Settings"],
+                                              ["setups/Settings"],
                                               indirect=True)
 
 @pytest.fixture

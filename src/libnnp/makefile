@@ -104,6 +104,11 @@ version:
 	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"${GIT_BRANCH}\"/" version.h
 	@rm version.h.bak
 
+test: DEBUG+= ${PROJECT_TEST}
+test: static
+	cp ${SRC} ${SDIR}
+	cp ${HEADERS} ${SDIR}
+
 ${SLIB}: ${SOBJ}
 	${AR} ${ARFLAGS} $@ $+
 
@@ -129,5 +134,11 @@ clean-shared:
 
 clean-headers:
 	cd ${PROJECT_INCLUDE} && $(RM) ${HEADERS} 
+
+clean-test: clean-static clean-headers
+	$(RM) ${SDIR}/*.cpp
+	$(RM) ${SDIR}/*.h
+	$(RM) ${SDIR}/*.gcno
+	$(RM) ${SDIR}/*.gcda
 
 rebuild: clean all
