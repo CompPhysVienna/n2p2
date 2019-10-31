@@ -55,20 +55,23 @@ EXE=$(SRC:%.cpp=%)
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: compile test coverage clean
+.PHONY: all test coverage clean clean-coverage
 
 all: ${EXE}
 
 coverage:
-	lcov -c -i --no-external        -d . -d ../../build/static/ -o tests.base
-	lcov -c    --no-external        -d . -d ../../build/static/ -o tests.run
-	lcov -a tests.base -a tests.run -d . -d ../../build/static/ -o tests.info
+	lcov -c -i --no-external        -d . -d ${PROJECT_BUILD}/static/ -o tests.base
+	lcov -c    --no-external        -d . -d ${PROJECT_BUILD}/static/ -o tests.run
+	lcov -a tests.base -a tests.run -d . -d ${PROJECT_BUILD}/static/ -o tests.info
 	genhtml -o htmlcov tests.info
 
 %: %.cpp
 	${CC} ${CFLAGS} ${DEBUG} ${INCLUDES} ${OPTIONS} -o $@ $< ${LDFLAGS}
-	./$@ --color_output=yes
+	./$@ --color_output=yes --log_level=all
 
-clean:
-	$(RM) *.o *.gcno *.gcda *.base *.run *.info ${EXE}
+clean: clean-coverage
+	$(RM) *.o *.gcno ${EXE}
+
+clean-coverage:
+	$(RM) ${PROJECT_BUILD}/static/*.gcda *.gcda *.base *.run *.info
 	$(RM) -r htmlcov

@@ -23,7 +23,9 @@ COMP=$(shell grep "^COMP=" ${PROJECT_DIR}/src/makefile | cut -d"=" -f2)
 ###############################################################################
 # PHONY TARGETS
 ###############################################################################
-.PHONY: libnnp \
+.PHONY: all \
+	clean \
+	libnnp \
 	pynnp \
 	clean-libnnp \
 	clean-pynnp
@@ -32,6 +34,10 @@ COMP=$(shell grep "^COMP=" ${PROJECT_DIR}/src/makefile | cut -d"=" -f2)
 ###############################################################################
 # RULES
 ###############################################################################
+
+all: libnnp pynnp
+
+clean: clean-libnnp clean-pynnp
 
 libnnp:
 	cd libnnp && $(MAKE) COMP=${COMP}
