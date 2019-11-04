@@ -33,7 +33,8 @@ addons:
       - libeigen3-dev
       # GSL library
       - libgsl-dev
-
+      # Cython
+      - cython
       #########
       # TESTS #
       #########
@@ -72,16 +73,17 @@ script:
   - make doc
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
-  # Building
+  # C++ build and tests
   - make libnnp-test
-  - make pynnp-test
-  # Testing
   - cd ../test/
   - make libnnp
-  - make pynnp
-  # Coverage
   - cd libnnp
   - make coverage
+  # Python build and tests
+  - cd ../../src/
+  - make pynnp-test
+  - cd ../test/
+  - make pynnp
 
 deploy:
   provider: pages
