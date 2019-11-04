@@ -40,10 +40,6 @@ addons:
       - libboost-test-dev
       # Coverage for C++
       - lcov
-      # Pytest for Python testing
-      - python3-pytest
-      # Python coverage
-      - python3-pytest-cov
 
 before_install:
   # Set doxygen environment variables.
@@ -57,6 +53,8 @@ install:
   - pip install breathe
   - pip install exhale
   - pip install cython
+  - pip install pytest
+  - pip install pytest-cov
 
 before_script:
   # Remember directory.
