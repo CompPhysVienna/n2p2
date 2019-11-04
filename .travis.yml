@@ -15,6 +15,9 @@ branches:
 addons:
   apt:
     packages:
+      ########
+      # DOCS #
+      ########
       # Use default doxygen (1.8.11) on "xenial" (The doxygen version on "trusty" was too old (1.8.6)).
       - doxygen
       # Generating graphs with doxygen requires dot.
@@ -23,6 +26,25 @@ addons:
       - texlive-latex-base
       # Generating formulae with doxygen requires gs.
       - ghostscript
+      #########
+      # BUILD #
+      #########
+      # Eigen library
+      - libeigen3-dev
+      # GSL library
+      - libgsl-dev
+
+      #########
+      # TESTS #
+      #########
+      # Boost Test for C++ testing
+      - libboost-test-dev
+      # Coverage for C++
+      - lcov
+      # Pytest for Python testing
+      - python3-pytest
+      # Python coverage
+      - python3-pytest-cov
 
 before_install:
   # Set doxygen environment variables.
@@ -50,6 +72,16 @@ script:
   - make doc
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
+  # Building
+  - make libnnp-test
+  - make pynnp-test
+  # Testing
+  - cd ../test/
+  - make libnnp
+  - make pynnp
+  # Coverage
+  - cd libnnp
+  - make coverage
 
 deploy:
   provider: pages
@@ -57,4 +89,5 @@ deploy:
   local_dir: doc/sphinx/html
   github_token: $GH_REPO_TOKEN
   on:
-    branch: master
+    all_branches: true
+    #branch: master
