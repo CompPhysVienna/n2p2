@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 sudo: false
 
@@ -10,6 +10,7 @@ python:
 branches:
   only:
     - master
+    - symfunc_memory_reduction
 
 addons:
   apt:

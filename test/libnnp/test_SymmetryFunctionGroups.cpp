@@ -1,5 +1,5 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE SymmetryFunctions
+#define BOOST_TEST_MODULE SymmetryFunctionGroups
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
@@ -14,6 +14,12 @@
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
+#include "SymmetryFunctionGroup.h"
+#include "SymmetryFunctionGroupRadial.h"
+#include "SymmetryFunctionGroupAngularNarrow.h"
+#include "SymmetryFunctionGroupAngularWide.h"
+#include "SymmetryFunctionGroupWeightedRadial.h"
+#include "SymmetryFunctionGroupWeightedAngular.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
 #include <string> // std::string
@@ -51,24 +57,48 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     return sf;
 }
 
-void recalculateSymmetryFunction(Structure&              s,
-                                 Atom&                   a,
-                                 SymmetryFunction const& sf)
+SymmetryFunctionGroup* setupSymmetryFunctionGroup(ElementMap              em,
+                                                  SymmetryFunction const& sf)
+{
+    SymmetryFunctionGroup* sfg;
+    size_t const type = sf.getType();
+    if      (type ==  2) sfg = new SymmetryFunctionGroupRadial(em);
+    else if (type ==  3) sfg = new SymmetryFunctionGroupAngularNarrow(em);
+    else if (type ==  9) sfg = new SymmetryFunctionGroupAngularWide(em);
+    else if (type == 12) sfg = new SymmetryFunctionGroupWeightedRadial(em);
+    else if (type == 13) sfg = new SymmetryFunctionGroupWeightedAngular(em);
+    else
+    {
+        throw runtime_error("ERROR: Unknown symmetry function type.\n");
+    }
+
+    sfg->addMember(&sf);
+    sfg->sortMembers();
+    sfg->setScalingFactors();
+
+    return sfg;
+}
+
+void recalculateSymmetryFunctionGroup(Structure&                   s,
+                                      Atom&                        a,
+                                      SymmetryFunctionGroup const& sfg)
 {
     s.clearNeighborList();
     s.calculateNeighborList(10.0);
     a.allocate(true);
-    sf.calculate(a, true);
+    sfg.calculate(a, true);
 
     return;
 }
 
-void compareAnalyticNumericDeriv(Structure&   s,
-                                 ElementMap&  em,
-                                 size_t const type,
-                                 string const setupLine)
+void compareAnalyticNumericDerivGroup(Structure&   s,
+                                      ElementMap&  em,
+                                      size_t const type,
+                                      string const setupLine)
 {
     SymmetryFunction* sf = setupSymmetryFunction(em, type, setupLine);
+
+    SymmetryFunctionGroup* sfg = setupSymmetryFunctionGroup(em, *sf);
 
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
@@ -83,10 +113,10 @@ void compareAnalyticNumericDeriv(Structure&   s,
         for (size_t ic = 0; ic < 3; ++ic)
         {
             s.atoms.at(ia).r[ic] += h;
-            recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
+            recalculateSymmetryFunctionGroup(s, s.atoms.at(0), *sfg);
             double Gh = s.atoms.at(0).G.at(0);
             s.atoms.at(ia).r[ic] -= 2 * h;
-            recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
+            recalculateSymmetryFunctionGroup(s, s.atoms.at(0), *sfg);
             double Gl = s.atoms.at(0).G.at(0);
             s.atoms.at(ia).r[ic] += h;
             results.back().push_back((Gh - Gl)/(2 * h));
@@ -94,7 +124,7 @@ void compareAnalyticNumericDeriv(Structure&   s,
     }
 
     // Calculate symmetry function for atom 0.
-    recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
+    recalculateSymmetryFunctionGroup(s, s.atoms.at(0), *sfg);
 
     for (size_t ic = 0; ic < 3; ++ic)
     {
@@ -112,25 +142,28 @@ void compareAnalyticNumericDeriv(Structure&   s,
         }
     }
 
+    delete sfg;
     delete sf;
 
     return;
 }
 
-void checkAbsoluteValue(Structure&   s,
-                        ElementMap&  em,
-                        size_t const type,
-                        string const setupLine,
-                        double const value)
+void checkAbsoluteValueGroup(Structure&   s,
+                             ElementMap&  em,
+                             size_t const type,
+                             string const setupLine,
+                             double const value)
 {
     SymmetryFunction* sf = setupSymmetryFunction(em, type, setupLine);
+
+    SymmetryFunctionGroup* sfg = setupSymmetryFunctionGroup(em, *sf);
 
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
     s.atoms.at(0).allocate(true);
 
     // Calculate symmetry function for atom 0.
-    recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
+    recalculateSymmetryFunctionGroup(s, s.atoms.at(0), *sfg);
 
     BOOST_REQUIRE_SMALL(s.atoms.at(0).G.at(0) - value, accuracy);
 
@@ -147,7 +180,7 @@ BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
                        type,
                        setupLine)
 {
-    compareAnalyticNumericDeriv(s, em, type, setupLine);
+    compareAnalyticNumericDerivGroup(s, em, type, setupLine);
 }
 
 BOOST_DATA_TEST_CASE_F(FixtureFourAtomsMixed,
@@ -156,7 +189,7 @@ BOOST_DATA_TEST_CASE_F(FixtureFourAtomsMixed,
                        type,
                        setupLine)
 {
-    compareAnalyticNumericDeriv(s, em, type, setupLine);
+    compareAnalyticNumericDerivGroup(s, em, type, setupLine);
 }
 
 BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
@@ -168,7 +201,7 @@ BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
                        setupLine,
                        value)
 {
-    checkAbsoluteValue(s, em, type, setupLine, value);
+    checkAbsoluteValueGroup(s, em, type, setupLine, value);
 }
 
 BOOST_DATA_TEST_CASE_F(FixtureFourAtomsMixed,
@@ -180,7 +213,7 @@ BOOST_DATA_TEST_CASE_F(FixtureFourAtomsMixed,
                        setupLine,
                        value)
 {
-    checkAbsoluteValue(s, em, type, setupLine, value);
+    checkAbsoluteValueGroup(s, em, type, setupLine, value);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
