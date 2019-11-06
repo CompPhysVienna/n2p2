@@ -84,6 +84,11 @@ script:
   - cd ../test/
   - make pynnp
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -f ${REPO_DIR}/test/tests.info -F libnnp -c || echo "Codecov did not collect coverage reports"
+  - cd ${REPO_DIR}/test/pynnp/
+  - bash <(curl -s https://codecov.io/bash) -F pynnp -c || echo "Codecov did not collect coverage reports"
+
 deploy:
   provider: pages
   skip_cleanup: true
