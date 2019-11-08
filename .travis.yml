@@ -9,8 +9,9 @@ python:
 
 branches:
   only:
-    - master
-    - symfunc_memory_reduction
+    # Build all branches (but not gh-pages)
+    - /.*/
+    #- master
 
 addons:
   apt:
