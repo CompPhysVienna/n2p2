@@ -39,6 +39,8 @@ addons:
       #########
       # Boost Test for C++ testing
       - libboost-test-dev
+      # Boost Filesytem for C++ testing
+      - libboost-filesystem-dev
       # Coverage for C++
       - lcov
 

@@ -42,7 +42,7 @@ DEBUG=${PROJECT_DEBUG} ${PROJECT_TEST}
 INCLUDES=-I./ -I${PROJECT_BUILD}/static/
 
 # Extra flags for shared and static linking.
-LDFLAGS=${PROJECT_LIB}/libnnp.a -lboost_unit_test_framework
+LDFLAGS=${PROJECT_LIB}/libnnp.a -lboost_system -lboost_unit_test_framework -lboost_filesystem
 
 
 ###############################################################################
