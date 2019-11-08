@@ -60,9 +60,9 @@ EXE=$(SRC:%.cpp=%)
 all: ${EXE}
 
 coverage:
-	lcov -c -i --no-external        -d . -d ${PROJECT_BUILD}/static/ -o tests.base
-	lcov -c    --no-external        -d . -d ${PROJECT_BUILD}/static/ -o tests.run
-	lcov -a tests.base -a tests.run -d . -d ${PROJECT_BUILD}/static/ -o tests.info
+	lcov -c -i --no-external        -d ${PROJECT_BUILD}/static/ -o tests.base
+	lcov -c    --no-external        -d ${PROJECT_BUILD}/static/ -o tests.run
+	lcov -a tests.base -a tests.run -d ${PROJECT_BUILD}/static/ -o tests.info
 	genhtml -o htmlcov tests.info
 
 %: %.cpp
