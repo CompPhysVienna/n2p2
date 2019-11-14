@@ -22,6 +22,8 @@
 #include <cstdlib>   // exit, EXIT_FAILURE, rand, srand
 #include <limits>    // std::numeric_limits
 
+#define EXP_LIMIT 35.0
+
 using namespace std;
 using namespace nnp;
 
@@ -774,26 +776,48 @@ void NeuralNetwork::propagateLayer(Layer& layer, Layer& layerPrev)
         }
         else if (layer.activationFunction == AF_LOGISTIC)
         {
-            if(dtmp > 0)
+            if (dtmp > EXP_LIMIT)
+            {
+                layer.neurons[i].value  = 1.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else if (dtmp < -EXP_LIMIT)
+            {
+                layer.neurons[i].value  = 0.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else
             {
                 dtmp = 1.0 / (1.0 + exp(-dtmp));
-            } else 
-            {
-                dtmp = exp(dtmp) / (1.0 + exp(dtmp)); 
+                layer.neurons[i].value  = dtmp;
+                layer.neurons[i].dfdx   = dtmp * (1.0 - dtmp);
+                layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp)
+                                        * (1.0 - 2.0 * dtmp);
             }
-            layer.neurons[i].value  = dtmp;
-            layer.neurons[i].dfdx   = dtmp * (1.0 - dtmp);
-            layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp) * (1.0 - 2.0 * dtmp);
         }
         else if (layer.activationFunction == AF_SOFTPLUS)
         {
-            layer.neurons[i].value  = log(1.0 + exp(-abs(dtmp))) + max(dtmp,0.0);
-            if(dtmp > 0)
+            if (dtmp > EXP_LIMIT)
             {
-                dtmp = 1.0 / (1.0 + exp(-dtmp));
-            } else 
+                layer.neurons[i].value  = dtmp;
+                layer.neurons[i].dfdx   = 1.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else if (dtmp < -EXP_LIMIT)
             {
-                dtmp = exp(dtmp) / (1.0 + exp(dtmp)); 
+                layer.neurons[i].value  = 0.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else
+            {
+                dtmp = exp(dtmp);
+                layer.neurons[i].value  = log(1.0 + dtmp);
+                dtmp = 1.0 / (1.0 + 1.0 / dtmp);
+                layer.neurons[i].dfdx   = dtmp;
+                layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
             }
             layer.neurons[i].dfdx   = dtmp;
             layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
