@@ -1804,7 +1804,7 @@ void Training::loop()
     if (myRank == 0) writeLearningCurve(false);
 
     // Write updater status to file.
-    //if (myRank == 0) writeUpdaterStatus(false);
+    if (myRank == 0) writeUpdaterStatus(false);
 
     // Write neuron statistics.
     writeNeuronStatisticsEpoch();
@@ -1876,7 +1876,7 @@ void Training::loop()
         if (myRank == 0) writeLearningCurve(true);
 
         // Write updater status to file.
-        //if (myRank == 0) writeUpdaterStatus(true);
+        if (myRank == 0) writeUpdaterStatus(true);
 
         // Write neuron statistics.
         writeNeuronStatisticsEpoch();

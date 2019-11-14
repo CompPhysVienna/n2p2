@@ -114,7 +114,7 @@ void CutoffFunction::setCutoffRadius(double const cutoffRadius)
 
 void CutoffFunction::setCutoffParameter(double const alpha)
 {
-    if (0.0 < alpha && alpha >= 1.0)
+    if (alpha < 0.0 || alpha >= 1.0)
     {
         throw invalid_argument("ERROR: 0 <= alpha < 1.0 is required.\n");
     }

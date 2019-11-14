@@ -147,6 +147,18 @@ single characters from the following table (see also
      - :enumerator:`nnp::NeuralNetwork::AF_LOGISTIC`
    * - p
      - :enumerator:`nnp::NeuralNetwork::AF_SOFTPLUS`
+   * - r
+     - :enumerator:`nnp::NeuralNetwork::AF_RELU`
+   * - g
+     - :enumerator:`nnp::NeuralNetwork::AF_GAUSSIAN`
+   * - c
+     - :enumerator:`nnp::NeuralNetwork::AF_COS`
+   * - S
+     - :enumerator:`nnp::NeuralNetwork::AF_REVLOGISTIC`
+   * - e
+     - :enumerator:`nnp::NeuralNetwork::AF_EXP`
+   * - h
+     - :enumerator:`nnp::NeuralNetwork::AF_HARMONIC`
 
 
 ----

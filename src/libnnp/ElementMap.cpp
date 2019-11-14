@@ -109,9 +109,16 @@ string ElementMap::symbolFromAtomicNumber(size_t atomicNumber)
 
     if (atomicNumber >= numKnownElements)
     {
-        throw runtime_error("ERROR: Atomic number too high.\n");
+        throw runtime_error(strpr("ERROR: Only the first %zu elements are "
+                                  "known to this library.\n",
+                                  numKnownElements));
+    }
+    else if (atomicNumber == 0)
+    {
+        throw runtime_error("ERROR: Invalid atomic number.\n");
     }
 
+    atomicNumber--;
     return knownElements[atomicNumber];
 }
 
