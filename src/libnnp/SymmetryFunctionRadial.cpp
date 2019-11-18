@@ -219,3 +219,9 @@ double SymmetryFunctionRadial::calculateAngularPart(double /* angle */) const
 {
     return 1.0;
 }
+
+bool SymmetryFunctionRadial::checkRelevantElement(size_t index) const
+{
+    if (index == e1) return true;
+    else return false;
+}

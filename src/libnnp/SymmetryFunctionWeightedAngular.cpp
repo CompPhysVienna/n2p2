@@ -338,3 +338,9 @@ double SymmetryFunctionWeightedAngular::calculateAngularPart(double angle) const
 {
     return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
 }
+
+bool SymmetryFunctionWeightedAngular::checkRelevantElement(
+                                                        size_t /*index*/) const
+{
+    return true;
+}

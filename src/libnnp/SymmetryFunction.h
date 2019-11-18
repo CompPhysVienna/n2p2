@@ -237,6 +237,13 @@ public:
      * meaningful symmetry function value for visualization.
      */
     virtual double      calculateAngularPart(double angle) const = 0;
+    /** Check whether symmetry function is relevant for given element.
+     *
+     * @param[in] index Index of given element.
+     * @return True if symmetry function is sensitive to given element, false
+     *         otherwise.
+     */
+    virtual bool        checkRelevantElement(std::size_t index) const = 0;
 
 protected:
     typedef std::map<std::string,

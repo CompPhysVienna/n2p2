@@ -216,3 +216,9 @@ double SymmetryFunctionWeightedRadial::calculateAngularPart(
 {
     return 1.0;
 }
+
+bool SymmetryFunctionWeightedRadial::checkRelevantElement(
+                                                        size_t /*index*/) const
+{
+    return true;
+}

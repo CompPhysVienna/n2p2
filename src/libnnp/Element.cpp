@@ -228,6 +228,24 @@ void Element::setupSymmetryFunctionGroups()
     return;
 }
 
+void Element::setupSymmetryFunctionMemory()
+{
+    symmetryFunctionTable.clear();
+    symmetryFunctionTable.resize(elementMap.size());
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        for (auto const& s : symmetryFunctions)
+        {
+            if (s->checkRelevantElement(i))
+            {
+                symmetryFunctionTable.at(i).push_back(s->getIndex());
+            }
+        }
+    }
+
+    return;
+}
+
 vector<string> Element::infoSymmetryFunctionGroups() const
 {
     vector<string> v;

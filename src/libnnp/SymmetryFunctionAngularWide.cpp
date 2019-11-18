@@ -355,3 +355,9 @@ double SymmetryFunctionAngularWide::calculateAngularPart(double angle) const
 {
     return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
 }
+
+bool SymmetryFunctionAngularWide::checkRelevantElement(size_t index) const
+{
+    if (index == e1 || index == e2) return true;
+    else return false;
+}

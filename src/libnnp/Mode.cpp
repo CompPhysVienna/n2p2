@@ -577,6 +577,53 @@ void Mode::setupSymmetryFunctionGroups()
     return;
 }
 
+void Mode::setupSymmetryFunctionMemory(bool verbose)
+{
+    log << "\n";
+    log << "*** SETUP: SYMMETRY FUNCTION MEMORY *****"
+           "**************************************\n";
+    log << "\n";
+
+    for (auto& e : elements)
+    {
+        e.setupSymmetryFunctionMemory();
+        vector<
+        vector<size_t>> symmetryFunctionTable = e.getSymmetryFunctionTable();
+        log << strpr("Symmetry function derivatives memory table "
+                     "for element %2s :\n", e.getSymbol().c_str());
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+        log << "Relevant symmetry functions for neighbors with element:\n";
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            log << strpr("- %2s: %4zu of %4zu (%5.1f %)\n",
+                         elementMap[i].c_str(),
+                         symmetryFunctionTable.at(i).size(),
+                         e.numSymmetryFunctions(),
+                         (100.0 * symmetryFunctionTable.at(i).size())
+                         / e.numSymmetryFunctions());
+            if (verbose)
+            {
+                log << "-----------------------------------------"
+                       "--------------------------------------\n";
+                for (auto isf : symmetryFunctionTable.at(i))
+                {
+                    log << e.getSymmetryFunction(isf).parameterLine();
+                }
+                log << "-----------------------------------------"
+                       "--------------------------------------\n";
+            }
+        }
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
 void Mode::setupSymmetryFunctionStatistics(bool collectStatistics,
                                            bool collectExtrapolationWarnings,
                                            bool writeExtrapolationWarnings,
