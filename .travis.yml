@@ -1,19 +1,24 @@
-dist: xenial
+dist: bionic
 
 sudo: false
 
 language: python
 
 python:
-    - "2.7"
+    - "3.6"
 
 branches:
   only:
-    - master
+    # Build all branches (but not gh-pages)
+    - /.*/
+    #- master
 
 addons:
   apt:
     packages:
+      ########
+      # DOCS #
+      ########
       # Use default doxygen (1.8.11) on "xenial" (The doxygen version on "trusty" was too old (1.8.6)).
       - doxygen
       # Generating graphs with doxygen requires dot.
@@ -22,6 +27,22 @@ addons:
       - texlive-latex-base
       # Generating formulae with doxygen requires gs.
       - ghostscript
+      #########
+      # BUILD #
+      #########
+      # Eigen library
+      - libeigen3-dev
+      # GSL library
+      - libgsl-dev
+      #########
+      # TESTS #
+      #########
+      # Boost Test for C++ testing
+      - libboost-test-dev
+      # Boost Filesytem for C++ testing
+      - libboost-filesystem-dev
+      # Coverage for C++
+      - lcov
 
 before_install:
   # Set doxygen environment variables.
@@ -34,6 +55,9 @@ install:
   - pip install sphinx_rtd_theme
   - pip install breathe
   - pip install exhale
+  - pip install cython
+  - pip install pytest
+  - pip install pytest-cov
 
 before_script:
   # Remember directory.
@@ -49,6 +73,24 @@ script:
   - make doc
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
+  # C++ build and tests
+  - make libnnp-test
+  - cd ../test/
+  - make libnnp
+  - cd libnnp
+  - make coverage
+  # Python build and tests
+  - cd ../../src/
+  - make pynnp-test
+  - cd ../test/
+  - make pynnp
+
+after_success:
+  - cd ${REPO_DIR}/test/libnnp/ && rm *.gcda *.gcno
+  - cd ${REPO_DIR}
+  - bash <(curl -s https://codecov.io/bash) -f ${REPO_DIR}/test/libnnp/tests.info -F libnnp -c || echo "Codecov did not collect coverage reports"
+  - cd ${REPO_DIR}/test/pynnp/
+  - bash <(curl -s https://codecov.io/bash) -F pynnp -c || echo "Codecov did not collect coverage reports"
 
 deploy:
   provider: pages
@@ -56,4 +98,5 @@ deploy:
   local_dir: doc/sphinx/html
   github_token: $GH_REPO_TOKEN
   on:
-    branch: master
+    all_branches: true
+    #branch: master

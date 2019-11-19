@@ -214,6 +214,8 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         a.hasSymmetryFunctions           = false;
         a.hasSymmetryFunctionDerivatives = false;
         a.neighbors.clear();
+        a.numNeighborsPerElement.clear();
+        a.numNeighborsPerElement.resize(numElements, 0);
         structure.numAtomsPerElement[a.element]++;
     }
 
@@ -232,6 +234,7 @@ void InterfaceLammps::addNeighbor(int    i,
     Atom& a = structure.atoms[i];
     a.numNeighbors++;
     a.neighbors.push_back(Atom::Neighbor());
+    a.numNeighborsPerElement.at(type - 1)++;
     Atom::Neighbor& n = a.neighbors.back();
     n.index   = j;
     n.tag     = tag;

@@ -36,12 +36,12 @@ cdef extern from "CutoffFunction.h" namespace "nnp::CutoffFunction":
 cdef extern from "CutoffFunction.h" namespace "nnp":
     cdef cppclass CutoffFunction:
         CutoffFunction() except +
-        void   setCutoffType(CutoffType cutoffType) except +
-        void   setCutoffRadius(double cutoffRadius) except +
-        void   setCutoffParameter(double alpha) except +
+        void   setCutoffType(const CutoffType cutoffType) except +
+        void   setCutoffRadius(const double cutoffRadius) except +
+        void   setCutoffParameter(const double alpha) except +
         double f(double r) except +
         double df(double r) except +
-        void   fdf(double r, double fc, double dfc) except +
+        void   fdf(double r, double& fc, double& dfc) except +
 
 ###############################################################################
 # ElementMap
@@ -70,7 +70,7 @@ cdef extern from "Log.h" namespace "nnp":
         #Log&                     operator<<(std::string const& entry);
         #Log&                     operator<<(
         #                                  std::vector<std::string> const& entries);
-        #void                     addLogEntry(std::string const& entry);
+        void           addLogEntry(const string& entry) except +
         #void                     addMultipleLogEntries(
         #                                  std::vector<std::string> const& entries);
         #void                     registerCFilePointer(FILE** const& filePointer);
@@ -87,10 +87,10 @@ cdef extern from "Settings.h" namespace "nnp":
     #typedef std::pair<KeyMap::const_iterator,
     #                  KeyMap::const_iterator>                   KeyRange;
     cdef cppclass Settings:
-        string         operator[](string keyword) except +
-        void           loadFile(string fileName) except +
-        bool           keywordExists(string keyword) except +
-        string         getValue(string keyword) except +
+        string         operator[](const string& keyword) except +
+        void           loadFile(const string& fileName) except +
+        bool           keywordExists(const string& keyword) except +
+        string         getValue(const string& keyword) except +
         #KeyRange                 getValues(std::string const& keyword) const;
         vector[string] info() except +
         vector[string] getSettingsLines() except +
@@ -103,6 +103,30 @@ cdef extern from "Settings.h" namespace "nnp":
 cdef extern from "Vec3D.h" namespace "nnp":
     cdef cppclass Vec3D:
         double r[3]
+        Vec3D() except +
+        Vec3D(double x, double y, double z) except +
+        Vec3D(const Vec3D& source) except +
+        #Vec3D operator=(Vec3D rhs) except +
+        Vec3D& iadd      "operator+="(const Vec3D& v) except +
+        Vec3D& isub      "operator-="(const Vec3D& v) except +
+        Vec3D& imul      "operator*="(const double a) except +
+        Vec3D& itruediv  "operator/="(const double a) except +
+        double mul_vec3d "operator*"(const Vec3D& v) except +
+        #double&       operator[](std::size_t const index);
+        #double const& operator[](std::size_t const index) const;
+        bool   eq        "operator=="(const Vec3D& rhs) except +
+        bool   ne        "operator!="(const Vec3D& rhs) except +;
+        double norm() except +
+        double norm2() except +
+        Vec3D& normalize() except +
+        Vec3D  cross(const Vec3D& v) except +
+
+    Vec3D add   "operator+"(Vec3D lhs, const Vec3D& rhs) except +
+    Vec3D sub   "operator-"(Vec3D lhs, const Vec3D& rhs) except +
+    Vec3D neg   "operator-"(Vec3D v) except +
+    Vec3D mul_d "operator*"(Vec3D v, const double a) except +
+    Vec3D div_d "operator/"(Vec3D v, const double a) except +
+    Vec3D d_mul "operator*"(const double a, Vec3D v) except +
 
 ###############################################################################
 # Atom
@@ -122,6 +146,12 @@ cdef extern from "Atom.h" namespace "nnp":
             Vec3D         dr
             vector[Vec3D] dGdr
             Neighbor() except +
+            bool eq "operator=="(const Neighbor& rhs) except +
+            bool ne "operator!="(const Neighbor& rhs) except +
+            bool lt "operator<" (const Neighbor& rhs) except +
+            bool gt "operator>" (const Neighbor& rhs) except +
+            bool le "operator<="(const Neighbor& rhs) except +
+            bool ge "operator>="(const Neighbor& rhs) except +
         bool             hasNeighborList
         bool             hasSymmetryFunctions
         bool             hasSymmetryFunctionDerivatives
@@ -145,6 +175,7 @@ cdef extern from "Atom.h" namespace "nnp":
         vector[Vec3D]    dGdr
         vector[Neighbor] neighbors
         Atom() except +
+        vector[string] info() except +
 
 ###############################################################################
 # Structure
@@ -181,8 +212,10 @@ cdef extern from "Structure.h" namespace "nnp":
         vector[Atom]   atoms;
         Structure() except +
         void           setElementMap(ElementMap elementMap) except +
+        void           addAtom(Atom atom, string element) except +
         void           readFromFile(string fileName) except +
         #void                     readFromFile(std::ifstream& file);
+        void           readFromLines(vector[string] lines) except +
         void           calculateNeighborList(double cutoffRadius) except +
         #void                     calculatePbcCopies(double cutoffRadius);
         #void                     calculateInverseBox();
@@ -204,6 +237,12 @@ cdef extern from "Structure.h" namespace "nnp":
         #                                          std::size_t& count) const;
         #std::string              getEnergyLine() const;
         #std::vector<std::string> getForcesLines() const;
+        void           writeToFile(string fileName,
+                                   bool ref,
+                                   bool append) except +
+        void           writeToFile(string fileName, bool ref) except +
+        void           writeToFile(string fileName) except +
+        void           writeToFile() except +
         #void                     writeToFile(
         #                                   std::ofstream* const& file,
         #                                   bool                  ref = true) const;

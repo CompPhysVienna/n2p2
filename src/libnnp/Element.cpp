@@ -360,8 +360,11 @@ void Element::calculateSymmetryFunctionGroups(Atom&      atom,
     return;
 }
 
-void Element::updateSymmetryFunctionStatistics(Atom const& atom)
+size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
 {
+    size_t countExtrapolationWarnings = 0;
+    double epsilon = 10.0 * numeric_limits<double>::epsilon();
+
     if (atom.element != index)
     {
         throw runtime_error("ERROR: Atom has a different element index.\n");
@@ -384,8 +387,10 @@ void Element::updateSymmetryFunctionStatistics(Atom const& atom)
             statistics.addValue(index, atom.G.at(i));
         }
 
-        if (value < Gmin || value > Gmax)
+        // Avoid "fake" EWs at the boundaries.
+        if (value + epsilon < Gmin || value - epsilon > Gmax)
         {
+            countExtrapolationWarnings++;
             if (statistics.collectExtrapolationWarnings)
             {
                 statistics.addExtrapolationWarning(index,
@@ -424,5 +429,5 @@ void Element::updateSymmetryFunctionStatistics(Atom const& atom)
         }
     }
 
-    return;
+    return countExtrapolationWarnings;
 }

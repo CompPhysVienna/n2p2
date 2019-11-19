@@ -39,8 +39,18 @@ public:
         AF_LOGISTIC,
         /// @f$f_a(x) = \ln (1 + \mathrm{e}^x)@f$
         AF_SOFTPLUS,
-        /// @f$f_a(x) = \max(0, x)@f$
-        AF_RELU
+        /// @f$f_a(x) = \max(0, x)@f$ (NOT recommended for HDNNPs!)
+        AF_RELU,
+        /// @f$f_a(x) = \mathrm{e}^{-x^2 / 2}@f$
+        AF_GAUSSIAN,
+        /// @f$f_a(x) = \cos (x)@f$
+        AF_COS,
+        /// @f$f_a(x) = 1 - 1 / (1 + \mathrm{e}^{-x})@f$
+        AF_REVLOGISTIC,
+        /// @f$f_a(x) = \mathrm{e}^{-x}@f$
+        AF_EXP,
+        /// @f$f_a(x) = x^2@f$
+        AF_HARMONIC
     };
 
     /// List of available connection modification schemes.

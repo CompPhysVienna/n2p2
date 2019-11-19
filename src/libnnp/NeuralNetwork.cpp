@@ -22,6 +22,8 @@
 #include <cstdlib>   // exit, EXIT_FAILURE, rand, srand
 #include <limits>    // std::numeric_limits
 
+#define EXP_LIMIT 35.0
+
 using namespace std;
 using namespace nnp;
 
@@ -774,16 +776,49 @@ void NeuralNetwork::propagateLayer(Layer& layer, Layer& layerPrev)
         }
         else if (layer.activationFunction == AF_LOGISTIC)
         {
-            dtmp = 1.0 / (1.0 + exp(-dtmp));
-            layer.neurons[i].value  = dtmp;
-            layer.neurons[i].dfdx   = dtmp * (1.0 - dtmp);
-            layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp) * (1.0 - 2.0 * dtmp);
+            if (dtmp > EXP_LIMIT)
+            {
+                layer.neurons[i].value  = 1.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else if (dtmp < -EXP_LIMIT)
+            {
+                layer.neurons[i].value  = 0.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else
+            {
+                dtmp = 1.0 / (1.0 + exp(-dtmp));
+                layer.neurons[i].value  = dtmp;
+                layer.neurons[i].dfdx   = dtmp * (1.0 - dtmp);
+                layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp)
+                                        * (1.0 - 2.0 * dtmp);
+            }
         }
         else if (layer.activationFunction == AF_SOFTPLUS)
         {
-            dtmp = exp(dtmp);
-            layer.neurons[i].value  = log(1.0 + dtmp);
-            dtmp = 1.0 / (1.0 + 1.0 / dtmp);
+            if (dtmp > EXP_LIMIT)
+            {
+                layer.neurons[i].value  = dtmp;
+                layer.neurons[i].dfdx   = 1.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else if (dtmp < -EXP_LIMIT)
+            {
+                layer.neurons[i].value  = 0.0;
+                layer.neurons[i].dfdx   = 0.0;
+                layer.neurons[i].d2fdx2 = 0.0;
+            }
+            else
+            {
+                dtmp = exp(dtmp);
+                layer.neurons[i].value  = log(1.0 + dtmp);
+                dtmp = 1.0 / (1.0 + 1.0 / dtmp);
+                layer.neurons[i].dfdx   = dtmp;
+                layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
+            }
             layer.neurons[i].dfdx   = dtmp;
             layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
         }
@@ -801,6 +836,40 @@ void NeuralNetwork::propagateLayer(Layer& layer, Layer& layerPrev)
                 layer.neurons[i].dfdx   = 0.0;
                 layer.neurons[i].d2fdx2 = 0.0;
             }
+        }
+        else if (layer.activationFunction == AF_GAUSSIAN)
+        {
+            double const tmpexp = exp(-0.5 * dtmp * dtmp);
+            layer.neurons[i].value  = tmpexp;
+            layer.neurons[i].dfdx   = -dtmp * tmpexp;
+            layer.neurons[i].d2fdx2 = (dtmp * dtmp - 1.0) * tmpexp;
+        }
+        else if (layer.activationFunction == AF_COS)
+        {
+            double const tmpcos = cos(dtmp);
+            layer.neurons[i].value  = tmpcos;
+            layer.neurons[i].dfdx   = -sin(dtmp);
+            layer.neurons[i].d2fdx2 = -tmpcos;
+        }
+        else if (layer.activationFunction == AF_REVLOGISTIC)
+        {
+            dtmp = 1.0 / (1.0 + exp(-dtmp));
+            layer.neurons[i].value  = 1.0 - dtmp;
+            layer.neurons[i].dfdx   = dtmp * (dtmp - 1.0);
+            layer.neurons[i].d2fdx2 = dtmp * (dtmp - 1.0) * (1.0 - 2.0 * dtmp);
+        }
+        else if (layer.activationFunction == AF_EXP)
+        {
+            dtmp = exp(-dtmp);
+            layer.neurons[i].value  = dtmp;
+            layer.neurons[i].dfdx   = -dtmp;
+            layer.neurons[i].d2fdx2 = dtmp;
+        }
+        else if (layer.activationFunction == AF_HARMONIC)
+        {
+            layer.neurons[i].value  = dtmp * dtmp;
+            layer.neurons[i].dfdx   = 2.0 * dtmp;
+            layer.neurons[i].d2fdx2 = 2.0;
         }
         layer.neurons[i].count++;
         dtmp = layer.neurons[i].x;
@@ -960,6 +1029,26 @@ vector<string> NeuralNetwork::info() const
                 else if (layers[j].activationFunction == AF_RELU)
                 {
                     s += strpr(" %3s", "r");
+                }
+                else if (layers[j].activationFunction == AF_GAUSSIAN)
+                {
+                    s += strpr(" %3s", "g");
+                }
+                else if (layers[j].activationFunction == AF_COS)
+                {
+                    s += strpr(" %3s", "c");
+                }
+                else if (layers[j].activationFunction == AF_REVLOGISTIC)
+                {
+                    s += strpr(" %3s", "S");
+                }
+                else if (layers[j].activationFunction == AF_EXP)
+                {
+                    s += strpr(" %3s", "e");
+                }
+                else if (layers[j].activationFunction == AF_HARMONIC)
+                {
+                    s += strpr(" %3s", "h");
                 }
             }
             else

@@ -191,6 +191,21 @@ struct Atom
      *                #dGdxia and Neighbor::dGdr.
      */
     void                     free(bool all);
+    /** Clear neighbor list.
+     *
+     * @note Also clears symmetry function data.
+     */
+    void                     clearNeighborList();
+    /** Clear neighbor list and change number of elements.
+     *
+     * @param[in] numElements Number of elements present.
+     *
+     * @note Also clears symmetry function data. The number of elements is
+     * necessary to allocate the #numNeighborsPerElement vector. Use the
+     * overloaded version clearNeighborList() if the number of elements stays
+     * the same.
+     */
+    void                     clearNeighborList(std::size_t const numElements);
     /** Calculate number of neighbors for a given cutoff radius.
      *
      * @param[in] cutoffRadius Desired cutoff radius.

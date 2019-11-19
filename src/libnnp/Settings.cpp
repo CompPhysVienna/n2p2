@@ -199,6 +199,11 @@ void Settings::parseLines()
         {
             continue;
         }
+        // check for empty lines in Windows format
+        if (line == "\r")
+        {
+            continue;
+        }
         if (line.find('#') != string::npos)
         {
             line.erase(line.find('#'));
@@ -260,7 +265,9 @@ size_t Settings::sanityCheck()
         {
             countProblems++;
             log.push_back(strpr(
-                "WARNING: Unknown keyword \"%s\".\n", (*it).first.c_str()));
+                "WARNING: Unknown keyword \"%s\" at line %zu.\n",
+                (*it).first.c_str(),
+                (*it).second.second + 1));
         }
     }
 
