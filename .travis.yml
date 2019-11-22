@@ -33,6 +33,9 @@ addons:
       # MPI
       - openmpi-bin
       - libopenmpi-dev
+      # BLAS
+      - libblas3
+      - libblas-dev
       # Eigen library
       - libeigen3-dev
       # GSL library
