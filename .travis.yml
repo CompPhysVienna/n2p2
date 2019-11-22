@@ -74,23 +74,23 @@ script:
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
   # C++ build and tests
-  - make libnnp-test
+  - make MODE=test
   - cd ../test/
-  - make libnnp
-  - cd libnnp
+  - make cpp
+  - cd cpp
   - make coverage
   # Python build and tests
   - cd ../../src/
-  - make pynnp-test
+  - make pynnp MODE=test
   - cd ../test/
-  - make pynnp
+  - make python
 
 after_success:
-  - cd ${REPO_DIR}/test/libnnp/ && rm *.gcda *.gcno
+  - cd ${REPO_DIR}/test/cpp/ && rm *.gcda *.gcno
   - cd ${REPO_DIR}
-  - bash <(curl -s https://codecov.io/bash) -f ${REPO_DIR}/test/libnnp/tests.info -F libnnp -c || echo "Codecov did not collect coverage reports"
+  - bash <(curl -s https://codecov.io/bash) -f ${REPO_DIR}/test/cpp/tests.info -F cpp -c || echo "Codecov did not collect coverage reports"
   - cd ${REPO_DIR}/test/pynnp/
-  - bash <(curl -s https://codecov.io/bash) -F pynnp -c || echo "Codecov did not collect coverage reports"
+  - bash <(curl -s https://codecov.io/bash) -F python -c || echo "Codecov did not collect coverage reports"
 
 deploy:
   provider: pages

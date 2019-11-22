@@ -53,4 +53,4 @@ PROJECT_LDFLAGS_BLAS=-lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm 
 PROJECT_OPTIONS+= -DEIGEN_USE_MKL_ALL
 
 # Disable Eigen multi threading.
-OPTIONS+= -DEIGEN_DONT_PARALLELIZE
+PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE

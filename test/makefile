@@ -1,52 +1,39 @@
 #!/bin/make -f
 
 ###############################################################################
-# PROJECT
+# PROJECT PATHS
 ###############################################################################
-PROJECT_DIR=../
-PROJECT_BIN=${PROJECT_DIR}/bin
-PROJECT_INCLUDE=${PROJECT_DIR}/include
-PROJECT_LIB=${PROJECT_DIR}/lib
-PROJECT_BUILD=${PROJECT_DIR}/build
-
-
-###############################################################################
-# GENERAL SETTINGS
-###############################################################################
-# Compiler (gnu/intel).
-# Get from main makefile in src directory:
-COMP=$(shell grep "^COMP=" ${PROJECT_DIR}/src/makefile | cut -d"=" -f2)
-# or set manually here:
-#COMP=gnu
+PROJECT_DIR=..
+PROJECT_BIN=$(PROJECT_DIR)/bin
+PROJECT_INCLUDE=$(PROJECT_DIR)/include
+PROJECT_LIB=$(PROJECT_DIR)/lib
 
 
 ###############################################################################
 # PHONY TARGETS
 ###############################################################################
-.PHONY: all \
-	clean \
-	libnnp \
-	pynnp \
-	clean-libnnp \
-	clean-pynnp
+.PHONY: all clean cpp python clean-cpp clean-python
 
 
 ###############################################################################
 # RULES
 ###############################################################################
 
-all: libnnp pynnp
+all: cpp cpp-coverage python
 
-clean: clean-libnnp clean-pynnp
+clean: clean-cpp clean-python
 
-libnnp:
-	cd libnnp && $(MAKE) COMP=${COMP}
+cpp:
+	cd cpp && $(MAKE)
 
-clean-libnnp:
-	cd libnnp && $(MAKE) clean
+cpp-coverage:
+	cd cpp && $(MAKE) coverage
 
-pynnp:
-	cd pynnp && $(MAKE)
+clean-cpp:
+	cd cpp && $(MAKE) clean
 
-clean-pynnp:
-	cd pynnp && $(MAKE) clean
+python:
+	cd python && $(MAKE)
+
+clean-python:
+	cd python && $(MAKE) clean
