@@ -30,6 +30,9 @@ addons:
       #########
       # BUILD #
       #########
+      # MPI
+      - openmpi-bin
+      - libopenmpi-dev
       # Eigen library
       - libeigen3-dev
       # GSL library
