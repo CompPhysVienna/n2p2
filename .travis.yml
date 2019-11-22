@@ -95,7 +95,7 @@ after_success:
   - cd ${REPO_DIR}/test/cpp/ && rm *.gcda *.gcno
   - cd ${REPO_DIR}
   - bash <(curl -s https://codecov.io/bash) -f ${REPO_DIR}/test/cpp/tests.info -F cpp -c || echo "Codecov did not collect coverage reports"
-  - cd ${REPO_DIR}/test/pynnp/
+  - cd ${REPO_DIR}/test/python/
   - bash <(curl -s https://codecov.io/bash) -F python -c || echo "Codecov did not collect coverage reports"
 
 deploy:
