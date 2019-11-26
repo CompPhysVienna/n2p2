@@ -911,10 +911,26 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         {
             double l = safeFind(it->statistics.data, i).min;
             double h = safeFind(it->statistics.data, i).max;
-            // Add an extra bin at the end to cover complete range.
-            h += (h - l) / numBins;
-            histograms.back().push_back(gsl_histogram_alloc(numBins + 1));
-            gsl_histogram_set_ranges_uniform(histograms.back().back(), l, h);
+            if (l < h)
+            {
+                // Add an extra bin at the end to cover complete range.
+                h += (h - l) / numBins;
+                histograms.back().push_back(gsl_histogram_alloc(numBins + 1));
+                gsl_histogram_set_ranges_uniform(histograms.back().back(),
+                                                 l,
+                                                 h);
+            }
+            else
+            {
+                // Use nullptr so signalize non-existing histogram.
+                histograms.back().push_back(nullptr);
+                log << strpr("WARNING: Symmetry function min equals max, "
+                             "ommitting histogram (Element %2s SF %4zu "
+                             "(line %4zu).\n",
+                             it->getSymbol().c_str(),
+                             i,
+                             it->getSymmetryFunction(i).getLineNumber());
+            }
         }
     }
 
@@ -929,6 +945,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
             vector<gsl_histogram*>& h = histograms.at(e);
             for (size_t s = 0; s < it2->G.size(); ++s)
             {
+                if (h.at(s) == nullptr) continue;
                 gsl_histogram_increment(h.at(s), it2->G.at(s));
             }
         }
@@ -941,6 +958,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         for (vector<gsl_histogram*>::const_iterator it2 = it->begin();
              it2 != it->end(); ++it2)
         {
+            if ((*it2) == nullptr) continue;
             MPI_Allreduce(MPI_IN_PLACE, (*it2)->bin, numBins + 1, MPI_DOUBLE, MPI_SUM, comm);
         }
     }
@@ -953,6 +971,8 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         {
             for (size_t s = 0; s < elements.at(e).numSymmetryFunctions(); ++s)
             {
+                gsl_histogram*& h = histograms.at(e).at(s);
+                if (h == nullptr) continue;
                 FILE* fp = 0;
                 string fileName = strpr(fileNameFormat.c_str(),
                                         elementMap.atomicNumber(e),
@@ -963,7 +983,6 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                     throw runtime_error(strpr("ERROR: Could not open file:"
                                               " %s.\n", fileName.c_str()));
                 }
-                gsl_histogram*& h = histograms.at(e).at(s);
                 vector<string> info = elements.at(e).infoSymmetryFunction(s);
                 for (vector<string>::const_iterator it = info.begin();
                      it != info.end(); ++it)
@@ -1014,6 +1033,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         for (vector<gsl_histogram*>::const_iterator it2 = it->begin();
              it2 != it->end(); ++it2)
         {
+            if ((*it2) == nullptr) continue;
             gsl_histogram_free(*it2);
         }
     }

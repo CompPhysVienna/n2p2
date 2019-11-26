@@ -136,7 +136,7 @@ $(APP_TRAIN): libnnptrain
 	cd application && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
 $(CLEAN_APP):
-	cd application && $(MAKE) clean-$@
+	cd application && $(MAKE) $@
 
 #########
 # pynnp #
