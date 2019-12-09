@@ -819,8 +819,6 @@ void NeuralNetwork::propagateLayer(Layer& layer, Layer& layerPrev)
                 layer.neurons[i].dfdx   = dtmp;
                 layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
             }
-            layer.neurons[i].dfdx   = dtmp;
-            layer.neurons[i].d2fdx2 = dtmp * (1.0 - dtmp);
         }
         else if (layer.activationFunction == AF_RELU)
         {
