@@ -38,7 +38,7 @@ Atom::Atom() : hasNeighborList               (false),
 
 void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
 {
-    for (size_t i = 0; i < numSymmetryFunctions; i++)
+    for (size_t i = 0; i < dGdxia.size(); i++)
     {
         dGdxia[i] = 0.0;
     }
@@ -46,7 +46,8 @@ void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
     {
         if (neighbors[i].index == indexAtom)
         {
-            for (size_t j = 0; j < numSymmetryFunctions; j++)
+            // TODO: this needs to be fixed!!
+            for (size_t j = 0; j < numSymmetryFunctions; ++j)
             {
                 dGdxia[j] += neighbors[i].dGdr[j][indexComponent];
             }
@@ -54,7 +55,7 @@ void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
     }
     if (index == indexAtom)
     {
-        for (size_t i = 0; i < numSymmetryFunctions; i++)
+        for (size_t i = 0; i < numSymmetryFunctions; ++i)
         {
             dGdxia[i] += dGdr[i][indexComponent];
         }
@@ -90,7 +91,7 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
             it->dr *= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
-                for (size_t i = 0; i < numSymmetryFunctions; ++i)
+                for (size_t i = 0; i < dGdr.size(); ++i)
                 {
                     dGdr.at(i) /= convLength;
                 }
@@ -128,7 +129,7 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
             it->dr /= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
-                for (size_t i = 0; i < numSymmetryFunctions; ++i)
+                for (size_t i = 0; i < dGdr.size(); ++i)
                 {
                     dGdr.at(i) *= convLength;
                 }
@@ -166,13 +167,24 @@ void Atom::allocate(bool all)
     G.resize(numSymmetryFunctions, 0.0);
     if (all)
     {
+#ifdef IMPROVED_SFD_MEMORY
+        if (numSymmetryFunctionDerivatives.size() == 0)
+        {
+            throw range_error("ERROR: Number of symmetry function derivatives"
+                              " unset, cannot allocate.\n");
+        }
+#endif
         dEdG.resize(numSymmetryFunctions, 0.0);
         dGdxia.resize(numSymmetryFunctions, 0.0);
         dGdr.resize(numSymmetryFunctions);
         for (vector<Neighbor>::iterator it = neighbors.begin();
              it != neighbors.end(); ++it)
         {
+#ifdef IMPROVED_SFD_MEMORY
+            it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
+#else
             it->dGdr.resize(numSymmetryFunctions);
+#endif
         }
     }
 
@@ -302,6 +314,14 @@ vector<string> Atom::info() const
     for (size_t i = 0; i < numNeighborsPerElement.size(); ++i)
     {
         v.push_back(strpr("%29d  : %d\n", i, numNeighborsPerElement.at(i)));
+    }
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("numSymmetryFunctionDeriv.  [*] : %d\n", numSymmetryFunctionDerivatives.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < numSymmetryFunctionDerivatives.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %d\n", i, numSymmetryFunctionDerivatives.at(i)));
     }
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("--------------------------------\n"));

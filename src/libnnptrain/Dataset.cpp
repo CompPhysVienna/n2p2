@@ -199,6 +199,9 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numNeighborsPerElement
         bs += ss;
         bs += it->numNeighborsPerElement.size() * ss;
+        // Atom.numSymmetryFunctionDerivatives
+        bs += ss;
+        bs += it->numSymmetryFunctionDerivatives.size() * ss;
         // Atom.G
         bs += ss;
         bs += it->G.size() * ds;
@@ -320,6 +323,14 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             if (ts2 > 0)
             {
                 MPI_Pack(&(it->numNeighborsPerElement.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
+            }
+
+            // Atom.numSymmetryFunctionDerivatives
+            ts2 = it->numSymmetryFunctionDerivatives.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
             // Atom.G
@@ -511,6 +522,16 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 it->numNeighborsPerElement.clear();
                 it->numNeighborsPerElement.resize(ts2, 0);
                 MPI_Unpack(buf, bs, &p, &(it->numNeighborsPerElement.front()), ts2, MPI_SIZE_T, comm);
+            }
+
+            // Atom.numSymmetryFunctionDerivatives
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->numSymmetryFunctionDerivatives.clear();
+                it->numSymmetryFunctionDerivatives.resize(ts2, 0);
+                MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
             }
 
             // Atom.G

@@ -90,6 +90,9 @@ void Mode::setupGeneric()
 #ifndef NOSFGROUPS
     setupSymmetryFunctionGroups();
 #endif
+#ifdef IMPROVED_SFD_MEMORY
+    setupSymmetryFunctionMemory();
+#endif
     setupNeuralNetwork();
 
     return;
@@ -588,6 +591,8 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
     {
         e.setupSymmetryFunctionMemory();
         vector<
+        size_t> symmetryFunctionNumTable = e.getSymmetryFunctionNumTable();
+        vector<
         vector<size_t>> symmetryFunctionTable = e.getSymmetryFunctionTable();
         log << strpr("Symmetry function derivatives memory table "
                      "for element %2s :\n", e.getSymbol().c_str());
@@ -598,9 +603,9 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
         {
             log << strpr("- %2s: %4zu of %4zu (%5.1f %)\n",
                          elementMap[i].c_str(),
-                         symmetryFunctionTable.at(i).size(),
+                         symmetryFunctionNumTable.at(i),
                          e.numSymmetryFunctions(),
-                         (100.0 * symmetryFunctionTable.at(i).size())
+                         (100.0 * symmetryFunctionNumTable.at(i))
                          / e.numSymmetryFunctions());
             if (verbose)
             {
@@ -608,7 +613,8 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
                        "--------------------------------------\n";
                 for (auto isf : symmetryFunctionTable.at(i))
                 {
-                    log << e.getSymmetryFunction(isf).parameterLine();
+                    SymmetryFunction const& sf = e.getSymmetryFunction(isf);
+                    log << sf.parameterLine();
                 }
                 log << "-----------------------------------------"
                        "--------------------------------------\n";
@@ -616,6 +622,45 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
         }
         log << "-----------------------------------------"
                "--------------------------------------\n";
+    }
+    if (verbose)
+    {
+        for (auto& e : elements)
+        {
+            log << strpr("%2s - symmetry function per-element index table:\n",
+                         e.getSymbol().c_str());
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+            log << " ind";
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                log << strpr(" %4s", elementMap[i].c_str());
+            }
+            log << "\n";
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+            for (size_t i = 0; i < e.numSymmetryFunctions(); ++i)
+            {
+                SymmetryFunction const& sf = e.getSymmetryFunction(i);
+                log << strpr("%4zu", sf.getIndex() + 1);
+                vector<size_t> indexPerElement = sf.getIndexPerElement();
+                for (auto ipe : sf.getIndexPerElement())
+                {
+                    if (ipe == numeric_limits<size_t>::max())
+                    {
+                        log << strpr("     ");
+                    }
+                    else
+                    {
+                        log << strpr(" %4zu", ipe + 1);
+                    }
+                }
+                log << "\n";
+            }
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+        }
+
     }
 
     log << "*****************************************"
@@ -841,6 +886,11 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
         a->numSymmetryFunctions = e->numSymmetryFunctions();
+        if (derivatives)
+        {
+            a->numSymmetryFunctionDerivatives
+                = e->getSymmetryFunctionNumTable();
+        }
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
@@ -910,6 +960,11 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
         a->numSymmetryFunctions = e->numSymmetryFunctions();
+        if (derivatives)
+        {
+            a->numSymmetryFunctionDerivatives
+                = e->getSymmetryFunctionNumTable();
+        }
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
@@ -1021,7 +1076,10 @@ void Mode::calculateForces(Structure& structure) const
         {
             // Define shortcut for atom j (aj).
             Atom& aj = structure.atoms.at(*it);
-
+#ifdef IMPROVED_SFD_MEMORY
+            vector<vector<size_t> > const& tableFull
+                = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
             // Loop over atom j's neighbors (n), atom i should be one of them.
             for (vector<Atom::Neighbor>::const_iterator n =
                  aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
@@ -1029,10 +1087,18 @@ void Mode::calculateForces(Structure& structure) const
                 // If atom j's neighbor is atom i add force contributions.
                 if (n->index == ai->index)
                 {
+#ifdef IMPROVED_SFD_MEMORY
+                    vector<size_t> const& table = tableFull.at(n->element);
+                    for (size_t j = 0; j < n->dGdr.size(); ++j)
+                    {
+                        ai->f -= aj.dEdG.at(table.at(j)) * n->dGdr.at(j);
+                    }
+#else
                     for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
                     {
                         ai->f -= aj.dEdG.at(j) * n->dGdr.at(j);
                     }
+#endif
                 }
             }
         }

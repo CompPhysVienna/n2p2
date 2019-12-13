@@ -125,6 +125,8 @@ struct Atom
     std::vector<std::size_t> neighborsUnique;
     /// Number of neighbors per element.
     std::vector<std::size_t> numNeighborsPerElement;
+    /// Number of neighbor atom symmetry function derivatives per element.
+    std::vector<std::size_t> numSymmetryFunctionDerivatives;
     /// Symmetry function values
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.
@@ -181,7 +183,8 @@ struct Atom
      *                and Neighbor::dGdr, neighbors must be present). If
      *                `false` allocate only #G.
      *
-     * Warning: #numSymmetryFunctions needs to be set first!
+     * Warning: #numSymmetryFunctions and #numSymmetryFunctionDerivatives need
+     * to be set first (the latter only in case of argument all == true.
      */
     void                     allocate(bool all);
     /** Free vectors related to symmetry functions, opposite of #allocate().

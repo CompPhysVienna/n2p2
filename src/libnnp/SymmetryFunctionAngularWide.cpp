@@ -288,8 +288,13 @@ void SymmetryFunctionAngularWide::calculate(Atom&      atom,
 
                         // Save force contributions in Atom storage.
                         atom.dGdr[index] += drij + drik;
-                        nj.dGdr[index]   -= drij + drjk;
-                        nk.dGdr[index]   -= drik - drjk;
+#ifdef IMPROVED_SFD_MEMORY
+                        nj.dGdr[indexPerElement[nej]] -= drij + drjk;
+                        nk.dGdr[indexPerElement[nek]] -= drik - drjk;
+#else
+                        nj.dGdr[index] -= drij + drjk;
+                        nk.dGdr[index] -= drik - drjk;
+#endif
                     } // rik <= rc
                 } // elem
             } // k

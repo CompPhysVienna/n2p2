@@ -19,8 +19,9 @@
 #include "SymmetryFunctionStatistics.h"
 #include "utility.h"
 #include <cstdlib>   // atof, atoi
-#include <stdexcept> // std::runtime_error, std::out_of_range
 #include <iostream>  // std::cerr
+#include <limits>    // std::numeric_limits
+#include <stdexcept> // std::runtime_error, std::out_of_range
 
 using namespace std;
 using namespace nnp;
@@ -144,6 +145,10 @@ SymmetryFunction::SymmetryFunction(size_t type, ElementMap const& elementMap) :
     parameters.insert("cutoffType");
     parameters.insert("cutoffAlpha");
     parameters.insert("lineNumber");
+
+    // Initialize per-element index vector, use max to indicate
+    // "uninitialized" state.
+    indexPerElement.resize(elementMap.size(), numeric_limits<size_t>::max());
 }
 
 double SymmetryFunction::scale(double value) const

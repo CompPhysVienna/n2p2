@@ -142,12 +142,18 @@ public:
      * @return Maximum cutoff radius.
      */
     double                   getMaxCutoffRadius() const;
+    /** Get number of relevant symmetry functions per element.
+     *
+     * @return #symmetryFunctionNumTable
+     */
+    std::vector<
+    std::size_t> const&      getSymmetryFunctionNumTable() const;
     /** Get symmetry function element relevance table.
      *
      * @return #symmetryFunctionTable
      */
     std::vector<std::vector<
-    std::size_t>>            getSymmetryFunctionTable() const;
+    std::size_t>> const&     getSymmetryFunctionTable() const;
     /** Calculate symmetry functions.
      *
      * @param[in] atom Atom whose symmetry functions are calculated.
@@ -200,6 +206,8 @@ private:
     double                                atomicEnergyOffset;
     /// Element symbol.
     std::string                           symbol;
+    /// Number of relevant symmetry functions for each neighbor element.
+    std::vector<std::size_t>              symmetryFunctionNumTable;
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
     /// Vector of pointers to symmetry functions.
@@ -239,7 +247,13 @@ inline std::string Element::getSymbol() const
     return symbol;
 }
 
-inline std::vector<std::vector<std::size_t>>
+inline std::vector<std::size_t> const&
+Element::getSymmetryFunctionNumTable() const
+{
+    return symmetryFunctionNumTable;
+}
+
+inline std::vector<std::vector<std::size_t>> const&
 Element::getSymmetryFunctionTable() const
 {
     return symmetryFunctionTable;
