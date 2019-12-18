@@ -715,6 +715,10 @@ void Structure::writeToFileXyz(ofstream* const& file) const
         (*file) << strpr("%24.16E %24.16E %24.16E\"\n",
                          box[2][0], box[2][1], box[2][2]);
     }
+    else
+    {
+        (*file) << "\n";
+    }
     for (vector<Atom>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it)
     {
