@@ -24,6 +24,11 @@ network potentials with the provided training tools.
 Documentation
 =============
 
+.. danger::
+
+   The build process has changed recently, please have a look at the compilation
+   chapter below!
+
 .. warning::
 
    Unfortunately many parts of the documentation are still unfinished and will
@@ -117,7 +122,7 @@ information).
 +---------------------------------+----------------------------+------------------------------------------------------+
 | Component                       | Requirements               | Function                                             |
 +=================================+============================+======================================================+
-| :ref:`libnnp <libnnp>`          | C++98 compiler (icpc, g++) | NNP core library (NN, SF, Structure, ...)            |
+| :ref:`libnnp <libnnp>`          | C++11 compiler (icpc, g++) | NNP core library (NN, SF, Structure, ...)            |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | libnnpif                        | libnnp, MPI                | Interfaces to other software (LAMMPS, ...)           |
 +---------------------------------+----------------------------+------------------------------------------------------+
@@ -163,41 +168,52 @@ For instance, compiling the interface library ``libnnpif`` requires only to type
 
 .. code-block:: bash
 
-   cd src
-   make libnnpif-shared
+   make libnnpif
 
-This will automatically build a shared version (for dynamic linking) of the
-required library ``libnnp`` and the requested ``libnnpif``.  Similarly, a static
-build is done like this:
+in the ``src`` directory. Similarly, to build the application ``nnp-predict``
+run
 
 .. code-block:: bash
 
-   make libnnpif-static
+   make nnp-predict
 
-To build everything (all libraries and tools) type:
-
-.. code-block:: bash
-
-   make shared
-
-or
+If an application depends on libraries, these will be built in advance
+automatically. Compiled binaries will be copied to the ``bin`` path (relative to
+the root directory), whereas libraries can be found in the ``lib`` folder.  To
+clean up individual components use
 
 .. code-block:: bash
 
-   make static
+   make clean-<component>
 
-Compiled binaries will be copied to the ``bin`` path (relative to the root
-directory), whereas libraries can be found in the ``lib`` folder.  To clean up
-individual components or everything use one of these makefile targets
+or to clean everything (except documentation) use
 
 .. code-block:: bash
 
    make clean
-   make clean-doc
-   make clean-libnnpif
 
-Have a look at the main makefile in ``src`` for all available build
-targets.
+By default, all libraries and applications will be built for static linking,
+i.e ``.a`` versions of libraries and statically built versions of executables
+are created. If dynamic linking is preferred use the ``MODE=shared`` switch as
+additional argument of the make command:
+
+.. code-block:: bash
+
+   make MODE=shared nnp-predict
+
+This will build ``.so`` versions of libraries and executables which require
+dynamic linking at runtime. Do not forget to point your linker to the ``lib``
+directory, e.g. correctly set the environment variable ``LD_LIBRARY_PATH``.
+
+There are three different choices for the ``MODE`` switch: 
+
+   * ``static`` (*default*): This is the default which is used when no mode is
+     explicitly set at the command line. Static build of libraries and
+     applications.
+
+   * ``shared``: Use for dynamic linking, creates ``.so`` versions of libraries.
+
+   * ``test``: Special builds for CI tests and coverage reports.
 
 Currently the build process has been tested with two different compilers, the
 GNU compiler g++ 5.4 (``gnu``) and the Intel compiler 17 (``intel``). It is
@@ -220,8 +236,8 @@ file name suffix according to your target:
 
 .. code-block:: bash
 
-   src/makefile.target
-   make libnnp COMP=target
+   src/makefile.<target>
+   make libnnp COMP=<target>
 
 By default the makefile will use 4 processors for compiling multiple files at
 once, this behaviour can be overriden with the CORES switch, e.g. to use 8
@@ -229,7 +245,7 @@ cores:
 
 .. code-block:: bash
 
-   make libnnp CORES=-j8
+   make libnnp CORES=8
 
 .. warning::
 
@@ -240,7 +256,9 @@ Individual component makefiles
 ------------------------------
 
 It is also possible to invoke individual makefiles for each component manually.
-Just switch to the corresponding folder and use ``make shared`` or ``make static``.
+Just switch to the corresponding folder and use ``make MODE=<mode>
+COMP=<target>``. The global build parameters will be used from the
+``src/makefile.<target>`` file.
 
 Examples
 ========
@@ -342,6 +360,5 @@ list of keywords is provided :ref:`here <keywords>`.
    U. S. A. 2016, 113 (30), 8368–8373. `https://doi.org/10.1073/pnas.1602375113. <https://doi.org/10.1073/pnas.1602375113>`__
 
 .. [2] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
-   Multi-Stream Training of High-Dimensional Neural Network Potentials. *Submitted
-   to J. Chem. Theory Comput.* 2019.
-
+   Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+   Theory Comput. 2019, 15 (5), 3075–3092. `https://doi.org/10.1021/acs.jctc.8b01092. <https://doi.org/10.1021/acs.jctc.8b01092>`__

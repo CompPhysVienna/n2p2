@@ -70,14 +70,14 @@ all: libnnp \
      libnnpif \
      all-app
 
-clean: clean-doc \
-       clean-no-doc
+clean: clean-libnnp \
+       clean-libnnptrain \
+       clean-libnnpif \
+       clean-app \
+       clean-pynnp
 
-clean-no-doc: clean-libnnp \
-              clean-libnnptrain \
-              clean-libnnpif \
-	      clean-app \
-	      clean-pynnp
+clean-all: clean \
+           clean-doc
 
 ################################
 # doc, doc-sphinx, doc-doxygen #
