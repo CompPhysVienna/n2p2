@@ -24,53 +24,54 @@ def test_write_settings_overview_file(basic_generator, tmpdir):
     basic_generator.set_custom_radial_params(r_shift_values=[1,2],
                                              eta_values=[4,5])
 
-    ## radial
-    basic_generator.symfunc_type = 'radial'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ## weighted_radial
-    basic_generator.symfunc_type = 'weighted_radial'
-    basic_generator.write_settings_overview(outfile_path)
-
-    basic_generator.zetas = [5.5, 7.5]
-
-    ## angular narrow
-    basic_generator.symfunc_type = 'angular_narrow'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ## angular_wide
-    basic_generator.symfunc_type = 'angular_wide'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ## weighted_angular
-    basic_generator.symfunc_type = 'weighted_angular'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ########### using the method for radial parameter generation ###########
-    basic_generator.generate_radial_params(rule='gastegger2018', mode='center',
-                                 nb_param_pairs=2, r_lower=1.5, r_upper=9.)
-
-    ## radial
-    basic_generator.symfunc_type = 'radial'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ## weighted_radial
-    basic_generator.symfunc_type = 'weighted_radial'
-    basic_generator.write_settings_overview(outfile_path)
-
-    basic_generator.zetas = [5.5, 7.5]
-
-    ## angular narrow
-    basic_generator.symfunc_type = 'angular_narrow'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ## angular_wide
-    basic_generator.symfunc_type = 'angular_wide'
-    basic_generator.write_settings_overview(outfile_path)
-
-    ## weighted_angular
-    basic_generator.symfunc_type = 'weighted_angular'
-    basic_generator.write_settings_overview(outfile_path)
+    with open(outfile_path, 'w') as outfile_obj:
+        ## radial
+        basic_generator.symfunc_type = 'radial'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ## weighted_radial
+        basic_generator.symfunc_type = 'weighted_radial'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        basic_generator.zetas = [5.5, 7.5]
+    
+        ## angular narrow
+        basic_generator.symfunc_type = 'angular_narrow'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ## angular_wide
+        basic_generator.symfunc_type = 'angular_wide'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ## weighted_angular
+        basic_generator.symfunc_type = 'weighted_angular'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ########### using the method for radial parameter generation ###########
+        basic_generator.generate_radial_params(rule='gastegger2018', mode='center',
+                                     nb_param_pairs=2, r_lower=1.5, r_upper=9.)
+    
+        ## radial
+        basic_generator.symfunc_type = 'radial'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ## weighted_radial
+        basic_generator.symfunc_type = 'weighted_radial'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        basic_generator.zetas = [5.5, 7.5]
+    
+        ## angular narrow
+        basic_generator.symfunc_type = 'angular_narrow'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ## angular_wide
+        basic_generator.symfunc_type = 'angular_wide'
+        basic_generator.write_settings_overview(outfile_obj)
+    
+        ## weighted_angular
+        basic_generator.symfunc_type = 'weighted_angular'
+        basic_generator.write_settings_overview(outfile_obj)
 
     ########### test equality with target output ###########
     assert filecmp.cmp(outfile_path, REFERENCE_PATH)
@@ -78,7 +79,8 @@ def test_write_settings_overview_file(basic_generator, tmpdir):
 
 def test_write_settings_overview_stdout(basic_generator, capsys):
     ########### using custom radial parameters ###########
-    basic_generator.set_custom_radial_params(r_shift_values=[1,2], eta_values=[4,5])
+    basic_generator.set_custom_radial_params(r_shift_values=[1,2],
+                                             eta_values=[4,5])
 
     ## radial
     basic_generator.symfunc_type = 'radial'

@@ -5,6 +5,7 @@ import sys
 import inspect
 import itertools
 import warnings
+from typing import Optional, TextIO
 
 
 class SymFuncParamGenerator:
@@ -500,15 +501,15 @@ class SymFuncParamGenerator:
                         f' they have not been cleared since by setting a '
                         f'non-angular symmetry function type.')
 
-    def write_settings_overview(self, file=None):
+    def write_settings_overview(self, fileobj: Optional[TextIO]=None):
         """Write the settings the currently stored set of symmetry function
         parameters was generated with.
 
         Parameters
         ----------
-        file : path-like, optional
-            The file to write the settings information to, using append mode.
-            If not specified, write to sys.stdout instead.
+        fileobj : `typing.TextIO`, optional
+            file object to write the settings information to.
+            If not given, write to sys.stdout instead.
 
         Returns
         -------
@@ -523,12 +524,10 @@ class SymFuncParamGenerator:
                                  weighted_radial='Weighted radial',
                                  weighted_angular='Weighted angular')
 
-        # depending on presence of file parameter, either direct output
-        # to stdout, or open the specified file, in append mode
-        if file is None:
+        if fileobj is None:
             handle = sys.stdout
         else:
-            handle = open(file, 'a')
+            handle = fileobj
 
         handle.write('########################################################'
                      '#################\n')
@@ -580,11 +579,6 @@ class SymFuncParamGenerator:
         np.set_printoptions(precision=8)
         handle.write('\n')
 
-        # close the file again (unless writing to sys.stdout,
-        # which should not be closed)
-        if handle is not sys.stdout:
-            handle.close()
-
     def find_element_combinations(self):
         """Create combinations of elements, depending on symmetry function type
         and the elements in the system.
@@ -631,11 +625,11 @@ class SymFuncParamGenerator:
 
         return combinations
 
-    def write_parameter_strings(self, file=None):
+    def write_parameter_strings(self, fileobj: Optional[TextIO]=None):
         """Write symmetry function parameter sets, formatted as n2p2 requires.
 
         The output format is that required by the parameter file 'input.nn'
-        used by n2p2. The output is intended to be pasted/appended to that
+        used by n2p2. The output is intended to be pasted/written to that
         file.
 
         Each line in the output corresponds to one symmetry function.
@@ -659,7 +653,8 @@ class SymFuncParamGenerator:
         method iterates over the following combinations of
         (r_shift, eta, zeta, lambda):
 
-        | (1, 3, 5, -1) | (1, 3, 5,  1)
+        | (1, 3, 5, -1)
+        | (1, 3, 5,  1)
         | (1, 3, 6, -1)
         | (1, 3, 6,  1)
         | (2, 4, 5, -1)
@@ -669,9 +664,9 @@ class SymFuncParamGenerator:
 
         Parameters
         ----------
-        file : path-like, optional
-            The file to write the parameter strings to, using append mode.
-            If not specified, write to sys.stdout instead.
+        fileobj : `typing.TextIO`, optional
+            file object to write the parameter strings to.
+            If not given, write to sys.stdout instead.
 
         Returns
         -------
@@ -680,12 +675,10 @@ class SymFuncParamGenerator:
         this_method_name = inspect.currentframe().f_code.co_name
         self.check_writing_prerequisites(calling_method_name=this_method_name)
 
-        # depending on presence of file parameter, either direct output
-        # to stdout, or open the specified file, in append mode
-        if file is None:
+        if fileobj is None:
             handle = sys.stdout
         else:
-            handle = open(file, 'a')
+            handle = fileobj
 
         r_cutoff = self.r_cutoff
         sf_number = self.symfunc_type_numbers[self.symfunc_type]
@@ -728,8 +721,3 @@ class SymFuncParamGenerator:
                                 f'{eta:9.3E} {rs:9.3E} {lambd:2.0f} '
                                 f'{zeta:9.3E} {r_cutoff:9.3E} \n')
                 handle.write('\n')
-
-        # close the file again (unless writing to sys.stdout,
-        # which should not be closed)
-        if handle is not sys.stdout:
-            handle.close()

@@ -32,28 +32,29 @@ def test_write_parameter_strings_file(basic_generator, tmpdir):
 
     basic_generator.set_custom_radial_params([1,2], [4,5])
 
-    ## radial
-    basic_generator.symfunc_type = 'radial'
-    basic_generator.write_parameter_strings(outfile_path)
+    with open(outfile_path, 'w') as outfile_obj:
+        ## radial
+        basic_generator.symfunc_type = 'radial'
+        basic_generator.write_parameter_strings(outfile_obj)
 
-    ## weighted_radial
-    basic_generator.symfunc_type = 'weighted_radial'
-    basic_generator.write_parameter_strings(outfile_path)
+        ## weighted_radial
+        basic_generator.symfunc_type = 'weighted_radial'
+        basic_generator.write_parameter_strings(outfile_obj)
 
-    ## angular narrow
-    basic_generator.symfunc_type = 'angular_narrow'
-    basic_generator.zetas = [5.5, 7.5]
-    basic_generator.write_parameter_strings(outfile_path)
+        ## angular narrow
+        basic_generator.symfunc_type = 'angular_narrow'
+        basic_generator.zetas = [5.5, 7.5]
+        basic_generator.write_parameter_strings(outfile_obj)
 
-    ## angular_wide
-    basic_generator.symfunc_type = 'angular_wide'
-    basic_generator.zetas = [5.5, 7.5]
-    basic_generator.write_parameter_strings(outfile_path)
+        ## angular_wide
+        basic_generator.symfunc_type = 'angular_wide'
+        basic_generator.zetas = [5.5, 7.5]
+        basic_generator.write_parameter_strings(outfile_obj)
 
-    ## weighted_angular
-    basic_generator.symfunc_type = 'weighted_angular'
-    basic_generator.zetas = [5.5, 7.5]
-    basic_generator.write_parameter_strings(outfile_path)
+        ## weighted_angular
+        basic_generator.symfunc_type = 'weighted_angular'
+        basic_generator.zetas = [5.5, 7.5]
+        basic_generator.write_parameter_strings(outfile_obj)
 
     # Ignore comment lines in the reference output file (lines starting
     # with '#'). These lines are included in the reference output file as a
