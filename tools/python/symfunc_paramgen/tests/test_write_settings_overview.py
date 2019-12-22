@@ -8,6 +8,9 @@ from sfparamgen import SymFuncParamGenerator
 import filecmp
 
 
+REFERENCE_PATH = 'reference-output_write_settings_overview.txt'
+
+
 @pytest.fixture
 def basic_generator():
     elems = ['S', 'Cu']
@@ -15,15 +18,11 @@ def basic_generator():
 
 
 def test_write_settings_overview_file(basic_generator, tmpdir):
-    ########### general settings ###########
     outfile_path = os.path.join(tmpdir, 'outfile.txt')
-    reference_path = 'reference-output_write_settings_overview.txt'
-
-    elems = ['S', 'Cu']
-    basic_generator = SymFuncParamGenerator(elements=elems, r_cutoff=11.22)
 
     ########### using custom radial parameters ###########
-    basic_generator.set_custom_radial_params(r_shift_values=[1,2], eta_values=[4,5])
+    basic_generator.set_custom_radial_params(r_shift_values=[1,2],
+                                             eta_values=[4,5])
 
     ## radial
     basic_generator.symfunc_type = 'radial'
@@ -74,13 +73,10 @@ def test_write_settings_overview_file(basic_generator, tmpdir):
     basic_generator.write_settings_overview(outfile_path)
 
     ########### test equality with target output ###########
-    assert filecmp.cmp(outfile_path, reference_path)
+    assert filecmp.cmp(outfile_path, REFERENCE_PATH)
 
 
 def test_write_settings_overview_stdout(basic_generator, capsys):
-    ########### general settings ###########
-    reference_path = 'reference-output_write_settings_overview.txt'
-
     ########### using custom radial parameters ###########
     basic_generator.set_custom_radial_params(r_shift_values=[1,2], eta_values=[4,5])
 
@@ -136,7 +132,7 @@ def test_write_settings_overview_stdout(basic_generator, capsys):
     captured = capsys.readouterr()
 
     ########### test equality with target output ###########
-    with open(reference_path, 'r') as f_reference:
+    with open(REFERENCE_PATH, 'r') as f_reference:
         assert captured.out == f_reference.read()
 
 
