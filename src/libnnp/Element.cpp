@@ -407,7 +407,7 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
         size_t const index = symmetryFunctions.at(i)->getIndex();
         if (statistics.collectStatistics)
         {
-            statistics.addValue(index, value);
+            statistics.addValue(index, atom.G.at(i));
         }
 
         // Avoid "fake" EWs at the boundaries.

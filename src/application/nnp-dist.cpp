@@ -137,6 +137,8 @@ int main(int argc, char* argv[])
     structure.setElementMap(elementMap);
 
     size_t countStructures = 0;
+    size_t countPeriodicStructures = 0;
+    vector<double> numberDensity(numElements, 0.0);
     while (inputFile.peek() != EOF)
     {
         structure.readFromFile(inputFile);
@@ -190,13 +192,18 @@ int main(int argc, char* argv[])
             }
         }
         countStructures++;
+        if (structure.isPeriodic) countPeriodicStructures++;
+        double const volume = structure.volume;
         for (size_t i = 0; i < numElements; ++i)
         {
+            size_t const nni = structure.numAtomsPerElement.at(i);
+            if (structure.isPeriodic)
+            {
+                numberDensity.at(i) += nni / volume;
+            }
             for (size_t j = i; j < numElements; ++j)
             {
-                size_t const nni = structure.numAtomsPerElement.at(i);
                 size_t const nnj = structure.numAtomsPerElement.at(j);
-                double const volume = structure.volume;
                 pair<size_t, size_t> e(i, j);
                 for (size_t n = 0; n < numBins; ++n)
                 {
@@ -244,6 +251,25 @@ int main(int argc, char* argv[])
     }
     log << "*****************************************"
            "**************************************\n";
+    log << strpr("Number of          structures: %9zu\n", countStructures);
+    log << strpr("Number of periodic structures: %9zu\n",
+                 countPeriodicStructures);
+    bool calcCn = false;
+    if (countStructures == countPeriodicStructures) calcCn = true;
+    if (calcCn)
+    {
+        vector<double>::const_iterator minnd = min_element(
+                                   numberDensity.begin(), numberDensity.end());
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            log << strpr("Number density (ratio) of element %2s: %16.8E "
+                         "(%.2f)\n", elementMap[i].c_str(),
+                         numberDensity.at(i), numberDensity.at(i) / (*minnd));
+        }
+    }
+    log << "*****************************************"
+           "**************************************\n";
+
 
     ofstream outputFile;
     for (size_t i = 0; i < numElements; ++i)
@@ -284,22 +310,43 @@ int main(int argc, char* argv[])
             colName.push_back("rdf_max1");
             colInfo.push_back("Radial distribution function, maximum "
                               "normalized to 1.");
+            if (calcCn)
+            {
+                colSize.push_back(16);
+                colName.push_back("cn");
+                colInfo.push_back("Coordination number.");
+            }
             appendLinesToFile(outputFile,
                               createFileHeader(title,
                                                colSize,
                                                colName,
                                                colInfo));
 
+            vector<double> cn(rdf[e]->size(), 0.0);
+            double integral = 0.0;
+            double const pre = 4.0 * M_PI * dr * 0.5
+                             / countStructures / countStructures;
             double maxRdf = *max_element(rdf[e]->begin(), rdf[e]->end());
             for (size_t n = 0; n < numBins; ++n)
             {
                 double const low = n * dr;
+                double const center = (n + 0.5) * dr;
                 double const high = (n + 1) * dr;
-                outputFile << strpr("%16.8E %16.8E %16.8E %16.8E\n",
+                outputFile << strpr("%16.8E %16.8E %16.8E %16.8E",
                                     low,
                                     high,
                                     rdf[e]->at(n) / countStructures,
                                     rdf[e]->at(n) / maxRdf);
+                if (calcCn)
+                {
+                    if (n > 0)
+                    {
+                        integral += pre * center * center * numberDensity.at(j)
+                                  * (rdf[e]->at(n-1) + rdf[e]->at(n));
+                    }
+                    outputFile << strpr(" %16.8E", integral);
+                }
+                outputFile << '\n';
             }
             outputFile.close();
             delete rdf  [e];

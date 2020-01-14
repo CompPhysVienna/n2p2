@@ -1,123 +1,98 @@
 #!/bin/make -f
 
 ###############################################################################
-# PROJECT MAKEFILE
+# PROJECT PATHS
 ###############################################################################
-# Default compiler, may be overridden by master makefile.
+PROJECT_DIR=../..
+PROJECT_BIN=$(PROJECT_DIR)/bin
+PROJECT_INCLUDE=$(PROJECT_DIR)/include
+PROJECT_LIB=$(PROJECT_DIR)/lib
+
+
+###############################################################################
+# GENERAL SETTINGS
+###############################################################################
+# Default compiler, may be overridden by master makefile or command line.
 COMP=gnu
 
+# Default build mode, may be overridden by master makefile or command line.
+# Possible modes are "static", "shared" and "test".
+MODE=static
+
 # Include global (project-wide) settings.
-include ../makefile.${COMP}
+include $(PROJECT_DIR)/src/makefile.$(COMP)
 
 
 ###############################################################################
 # LIBRARY NAME
 ###############################################################################
 NAME=nnpif
-LIB=lib${NAME}
+LIB=lib$(NAME)
 
 
 ###############################################################################
-# PROJECT PATHS
+# PROJECT COMPILER AND FLAGS
 ###############################################################################
-PROJECT_DIR=../..
-PROJECT_BIN=${PROJECT_DIR}/bin
-PROJECT_INCLUDE=${PROJECT_DIR}/include
-PROJECT_LIB=${PROJECT_DIR}/lib
-PROJECT_BUILD=${PROJECT_DIR}/build
-
-
-###############################################################################
-# COMPILE-TIME OPTIONS
-###############################################################################
-OPTIONS+=${PROJECT_OPTIONS}
-
-# Do not use symmetry function groups.
-#OPTIONS+= -DNOSFGROUPS
-
-# Compile without MPI support.
-#OPTIONS+= -DNOMPI
-
-
-###############################################################################
-# COMPILER AND FLAGS
-###############################################################################
-CC=${PROJECT_CC}
-ifneq (,$(findstring NOMPI,${OPTIONS}))
+CC=$(PROJECT_CC)
+ifneq (,$(findstring NOMPI,${PROJECT_OPTIONS}))
 MPICC=${PROJECT_CC}
 CFLAGS=${PROJECT_CFLAGS}
 else
 MPICC=${PROJECT_MPICC}
 CFLAGS=${PROJECT_CFLAGS} ${PROJECT_CFLAGS_MPI}
 endif
-DEBUG=${PROJECT_DEBUG}
+OPTIONS+=$(PROJECT_OPTIONS)
+DEBUG=$(PROJECT_DEBUG)
+ifeq ($(MODE), test)
+	DEBUG+= $(PROJECT_TEST)
+endif
+AR=$(PROJECT_AR)
+ARFLAGS=$(PROJECT_ARFLAGS)
 
 # Extra include paths for compiling.
-INCLUDES=-I./ -I${PROJECT_INCLUDE}/
+INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
 
 
 ###############################################################################
-# ARCHIVE
-###############################################################################
-AR=${PROJECT_AR}
-ARFLAGS=${PROJECT_ARFLAGS}
-
-
-###############################################################################
-# BUILD DETAILS
+# DEFINE SOURCES AND HEADERS
 ###############################################################################
 SRC=$(wildcard *.cpp)
 HEADERS=$(wildcard *.h)
-
-# Static linking
-SLIB=${PROJECT_LIB}/${LIB}.a
-SDIR=${PROJECT_BUILD}/static
-SOBJ=$(SRC:%.cpp=${SDIR}/%.o)
-
-# Dynamic linking
-DLIB=${PROJECT_LIB}/${LIB}.so
-DDIR=${PROJECT_BUILD}/shared
-DOBJ=$(SRC:%.cpp=${DDIR}/%.o)
+OBJ=$(SRC:.cpp=.o)
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all static shared headers clean clean-static clean-shared rebuild
+.PHONY: all headers clean rebuild
 
-all: static shared
-
-static: ${SLIB} headers
-
-shared: ${DLIB} headers
+ifeq ($(MODE), shared)
+all: headers $(LIB).so
+else
+all: headers $(LIB).a
+endif
 
 headers:
-	cp ${HEADERS} ${PROJECT_INCLUDE}
+	cp $(HEADERS) $(PROJECT_INCLUDE)
 
-${SLIB}: ${SOBJ}
-	${AR} ${ARFLAGS} $@ $+
+$(LIB).so: CFLAGS+= -fPIC
+$(LIB).so: $(OBJ)
+	$(MPICC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $+ -shared
+	cp $@ $(PROJECT_LIB)
 
-${DLIB}: CFLAGS+= -fPIC
-${DLIB}: ${DOBJ}
-	${MPICC} ${CFLAGS} ${DEBUG} ${OPTIONS} -o $@ $+ -shared
+$(LIB).a: $(OBJ)
+	$(AR) $(ARFLAGS) $@ $+
+	cp $@ $(PROJECT_LIB)
 
-${SDIR}/%.o: %.cpp
-	${MPICC} ${CFLAGS} ${DEBUG} ${INCLUDES} ${OPTIONS} -o $@ -c $<
+%.o: %.cpp
+	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-${DDIR}/%.o: %.cpp
-	${MPICC} ${CFLAGS} ${DEBUG} ${INCLUDES} ${OPTIONS} -o $@ -c $<
-
-clean: clean-static clean-shared clean-headers
-
-clean-static:
-	$(RM) ${SOBJ}
-	$(RM) ${SLIB}
-
-clean-shared:
-	$(RM) ${DOBJ}
-	$(RM) ${DLIB}
+clean: clean-headers
+	$(RM) $(OBJ)
+	$(RM) *.gcno *.gcda $(LIB).so $(LIB).a
+	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
 
 clean-headers:
-	cd ${PROJECT_INCLUDE} && $(RM) ${HEADERS} 
+	cd $(PROJECT_INCLUDE) && $(RM) $(HEADERS)
 
 rebuild: clean all
