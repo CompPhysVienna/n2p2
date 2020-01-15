@@ -306,19 +306,15 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // contributions of local and ghost atoms.
     Atom const* a = NULL;
 
-//#ifdef _OPENMP
-//    #pragma omp parallel for private (a)
-//#endif
     for (size_t i =  0; i < structure.atoms.size(); ++i)
     {
-    //for (vector<Atom>::const_iterator a = structure.atoms.begin();
-    //     a != structure.atoms.end(); ++a)
-    //{
         // Set pointer to atom.
         a = &(structure.atoms.at(i));
 
-        // Temporarily save the number of symmetry functions of this atom.
-        size_t const numSymmetryFunctions = a->numSymmetryFunctions;
+#ifdef IMPROVED_SFD_MEMORY
+        vector<vector<size_t> > const& tableFull
+            = elements.at(a->element).getSymmetryFunctionTable();
+#endif
         // Loop over all neighbor atoms. Some are local, some are ghost atoms.
         for (vector<Atom::Neighbor>::const_iterator n = a->neighbors.begin();
              n != a->neighbors.end(); ++n)
@@ -328,21 +324,19 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             size_t const in = n->index;
             // Now loop over all symmetry functions and add force contributions
             // (local + ghost atoms).
-            for (size_t s = 0; s < numSymmetryFunctions; ++s)
+#ifdef IMPROVED_SFD_MEMORY
+            vector<size_t> const& table = tableFull.at(n->element);
+            for (size_t s = 0; s < n->dGdr.size(); ++s)
+            {
+                double const dEdG = a->dEdG[table.at(s)] * cfforce * convForce;
+#else
+            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
             {
                 double const dEdG = a->dEdG[s] * cfforce * convForce;
+#endif
                 double const* const dGdr = n->dGdr[s].r;
-//#ifdef _OPENMP
-//                #pragma omp atomic update
-//#endif
                 atomF[in][0] -= dEdG * dGdr[0];
-//#ifdef _OPENMP
-//                #pragma omp atomic update
-//#endif
                 atomF[in][1] -= dEdG * dGdr[1];
-//#ifdef _OPENMP
-//                #pragma omp atomic update
-//#endif
                 atomF[in][2] -= dEdG * dGdr[2];
             }
         }
@@ -351,21 +345,12 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         size_t const ia = a->index;
         // Loop over all symmetry functions and add force contributions (local
         // atoms).
-        for (size_t s = 0; s < numSymmetryFunctions; ++s)
+        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
         {
             double const dEdG = a->dEdG[s] * cfforce * convForce;
             double const* const dGdr = a->dGdr[s].r;
-//#ifdef _OPENMP
-//            #pragma omp atomic update
-//#endif
             atomF[ia][0] -= dEdG * dGdr[0];
-//#ifdef _OPENMP
-//            #pragma omp atomic update
-//#endif
             atomF[ia][1] -= dEdG * dGdr[1];
-//#ifdef _OPENMP
-//            #pragma omp atomic update
-//#endif
             atomF[ia][2] -= dEdG * dGdr[2];
         }
     }

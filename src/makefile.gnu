@@ -28,7 +28,7 @@ PROJECT_LDFLAGS_BLAS=-lblas
 ###############################################################################
 
 # Do not use symmetry function groups.
-PROJECT_OPTIONS+= -DNOSFGROUPS
+#PROJECT_OPTIONS+= -DNOSFGROUPS
 
 # Do not use cutoff function cache.
 #PROJECT_OPTIONS+= -DNOCFCACHE
@@ -55,4 +55,4 @@ PROJECT_OPTIONS+= -DEIGEN_USE_BLAS
 PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE
 
 # Use improved memory layout for symmetry function derivatives.
-#PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY
+PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY

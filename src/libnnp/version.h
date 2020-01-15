@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "5263e0172f9bcc986058e0147b5c11dcfe8fa43d"
-#define NNP_GIT_REV_SHORT "5263e01"
+#define NNP_GIT_REV "92407b6dc86beb53a5364af64fdb7c790777ac2f"
+#define NNP_GIT_REV_SHORT "92407b6"
 #define NNP_GIT_BRANCH "symfunc_memory_reduction"
 
 #endif

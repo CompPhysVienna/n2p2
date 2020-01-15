@@ -101,8 +101,6 @@ private:
     /// Vector of all group member pointers.
     std::vector<SymmetryFunctionWeightedRadial const*> members;
     /// Vector containing values of all member symmetry functions.
-    std::vector<size_t>                                memberIndex;
-    /// Vector containing values of all member symmetry functions.
     std::vector<double>                                eta;
     /// Vector containing values of all member symmetry functions.
     std::vector<double>                                rs;

@@ -131,9 +131,11 @@ struct Atom
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.
     std::vector<double>      dEdG;
+#ifndef IMPROVED_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>      dGdxia;
+#endif
     /// Derivative of symmetry functions with respect to this atom's
     /// coordinates.
     std::vector<Vec3D>       dGdr;
@@ -143,6 +145,7 @@ struct Atom
     /** Atom constructor, initialize to zero.
      */
     Atom();
+#ifndef IMPROVED_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
      *
@@ -162,6 +165,7 @@ struct Atom
      */
     void                     collectDGdxia(std::size_t indexAtom,
                                            std::size_t indexComponent);
+#endif
     /** Switch to normalized length and energy units.
      *
      * @param[in] convEnergy Multiplicative energy unit conversion factor.

@@ -208,9 +208,11 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.dEdG
         bs += ss;
         bs += it->dEdG.size() * ds;
+#ifndef IMPROVED_SFD_MEMORY
         // Atom.dGdxia
         bs += ss;
         bs += it->dGdxia.size() * ds;
+#endif
         // Atom.dGdr
         bs += ss;
         bs += it->dGdr.size() * 3 * ds;
@@ -349,6 +351,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->dEdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
 
+#ifndef IMPROVED_SFD_MEMORY
             // Atom.dGdxia
             ts2 = it->dGdxia.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -356,6 +359,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             {
                 MPI_Pack(&(it->dGdxia.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
+#endif
 
             // Atom.dGdr
             ts2 = it->dGdr.size();
@@ -554,6 +558,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->dEdG.front()), ts2, MPI_DOUBLE, comm);
             }
 
+#ifndef IMPROVED_SFD_MEMORY
             // Atom.dGdxia
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -563,6 +568,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 it->dGdxia.resize(ts2, 0.0);
                 MPI_Unpack(buf, bs, &p, &(it->dGdxia.front()), ts2, MPI_DOUBLE, comm);
             }
+#endif
 
             // Atom.dGdr
             ts2 = 0;
