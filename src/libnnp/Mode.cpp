@@ -87,11 +87,11 @@ void Mode::setupGeneric()
     setupElements();
     setupCutoff();
     setupSymmetryFunctions();
+#ifdef IMPROVED_SFD_MEMORY
+    setupSymmetryFunctionMemory(true);
+#endif
 #ifndef NOSFGROUPS
     setupSymmetryFunctionGroups();
-#endif
-#ifdef IMPROVED_SFD_MEMORY
-    setupSymmetryFunctionMemory();
 #endif
     setupNeuralNetwork();
 
