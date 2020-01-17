@@ -54,3 +54,6 @@ PROJECT_OPTIONS+= -DEIGEN_USE_MKL_ALL
 
 # Disable Eigen multi threading.
 PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE
+
+# Use improved memory layout for symmetry function derivatives.
+PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY
