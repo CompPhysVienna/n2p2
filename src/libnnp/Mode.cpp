@@ -88,7 +88,7 @@ void Mode::setupGeneric()
     setupCutoff();
     setupSymmetryFunctions();
 #ifdef IMPROVED_SFD_MEMORY
-    setupSymmetryFunctionMemory(true);
+    setupSymmetryFunctionMemory(false);
 #endif
 #ifndef NOSFGROUPS
     setupSymmetryFunctionGroups();

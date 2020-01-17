@@ -43,6 +43,10 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     }
 
     sf->setIndex(0);
+    for (size_t i = 0; i < em.size(); ++i)
+    {
+        sf->setIndexPerElement(i, 0);
+    }
     sf->setParameters(setupLine);
     sf->setCutoffFunction(CutoffFunction::CT_TANHU, 0.0);
     string scalingLine = "1 1 0.0 0.0 0.0 0.0";
@@ -72,6 +76,7 @@ void compareAnalyticNumericDeriv(Structure&   s,
 
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
+    s.atoms.at(0).numSymmetryFunctionDerivatives = vector<size_t>(em.size(), 1);
     s.atoms.at(0).allocate(true);
 
     double h = 1.0E-7;
@@ -127,6 +132,7 @@ void checkAbsoluteValue(Structure&   s,
 
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
+    s.atoms.at(0).numSymmetryFunctionDerivatives = vector<size_t>(em.size(), 1);
     s.atoms.at(0).allocate(true);
 
     // Calculate symmetry function for atom 0.
