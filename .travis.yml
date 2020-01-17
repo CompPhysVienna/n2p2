@@ -61,9 +61,10 @@ install:
   - pip install sphinx_rtd_theme
   - pip install breathe
   - pip install exhale
-  - pip install cython==0.29.13
-  - pip install pytest==5.1.1
+  - pip install cython
+  - pip install pytest
   - pip install pytest-cov
+  - pip install coverage==4.5.4
 
 before_script:
   # Remember directory.
