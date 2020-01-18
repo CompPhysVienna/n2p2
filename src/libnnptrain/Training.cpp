@@ -1084,6 +1084,15 @@ void Training::setupTraining()
             log << "-----------------------------------------"
                    "--------------------------------------\n";
             log << updaters.at(i)->info();
+            if (updaterType == UT_KF)
+            {
+                log << "Note: During training loop the actual observation\n";
+                log << "      size corresponds to error vector size:\n";
+                log << strpr("sizeObservation = %zu (energy updates)\n",
+                             errorE.at(i).size());
+                log << strpr("sizeObservation = %zu (force  updates)\n",
+                             errorF.at(i).size());
+            }
             log << "-----------------------------------------"
                    "--------------------------------------\n";
     }
