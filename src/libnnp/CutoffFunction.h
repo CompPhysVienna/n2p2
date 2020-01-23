@@ -17,6 +17,8 @@
 #ifndef CUTOFFFUNCTION_H
 #define CUTOFFFUNCTION_H
 
+#include "CoreFunction.h"
+
 namespace nnp
 {
 
@@ -167,25 +169,16 @@ private:
     double  dfTANH (double r) const;
     void   fdfTANH (double r, double& fc, double& dfc) const;
 
-    double   fPOLY1(double r) const;
-    double  dfPOLY1(double r) const;
-    void   fdfPOLY1(double r, double& fc, double& dfc) const;
-
-    double   fPOLY2(double r) const;
-    double  dfPOLY2(double r) const;
-    void   fdfPOLY2(double r, double& fc, double& dfc) const;
-
-    double   fPOLY3(double r) const;
-    double  dfPOLY3(double r) const;
-    void   fdfPOLY3(double r, double& fc, double& dfc) const;
-
-    double   fPOLY4(double r) const;
-    double  dfPOLY4(double r) const;
-    void   fdfPOLY4(double r, double& fc, double& dfc) const;
+    double   fPOLYX(double r) const;
+    double  dfPOLYX(double r) const;
+    void   fdfPOLYX(double r, double& fc, double& dfc) const;
 
     double   fEXP  (double r) const;
     double  dfEXP  (double r) const;
     void   fdfEXP  (double r, double& fc, double& dfc) const;
+
+    /// Core functions used by POLYX, if any.
+    CoreFunction              cf;
 };
 
 //////////////////////////////////
