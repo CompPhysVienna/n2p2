@@ -64,6 +64,7 @@ install:
   - pip install cython
   - pip install pytest
   - pip install pytest-cov
+  - pip install coverage==4.5.4
 
 before_script:
   # Remember directory.

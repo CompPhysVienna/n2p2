@@ -156,6 +156,13 @@ public:
      * ensure that correct scaling behavior has already been set.
      */
     void                     setupSymmetryFunctionGroups();
+    /** Extract required memory dimensions for symmetry function derivatives.
+     *
+     * @param[in] verbose If true, print all symmetry function lines.
+     *
+     * Call after symmetry functions have been set up and sorted.
+     */
+    void                     setupSymmetryFunctionMemory(bool verbose = false);
     /** Set up symmetry function statistics collection.
      *
      * @param[in] collectStatistics Whether statistics (min, max, mean, sigma)

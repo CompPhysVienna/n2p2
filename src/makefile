@@ -21,9 +21,6 @@ COMP=gnu
 # used instead.
 MODE=static
 
-# Number of cores used during compilation.
-CORES=4
-
 # Installation directory for binaries.
 INSTALL_BIN=$(HOME)/local/bin
 
@@ -103,7 +100,7 @@ clean-doc-doxygen:
 # libnnp #
 ##########
 libnnp:
-	cd libnnp && $(MAKE) COMP=$(COMP) MODE=$(MODE) -j$(CORES)
+	cd libnnp && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
 clean-libnnp:
 	cd libnnp && $(MAKE) clean
@@ -112,7 +109,7 @@ clean-libnnp:
 # libnnptrain, libnnpif #
 #########################
 libnnptrain libnnpif: libnnp
-	cd $@ && $(MAKE) COMP=$(COMP) MODE=$(MODE) -j$(CORES)
+	cd $@ && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
 clean-libnnptrain clean-libnnpif: LIBDIR=$(subst clean-,,$@)
 clean-libnnptrain clean-libnnpif:
@@ -123,7 +120,7 @@ clean-libnnptrain clean-libnnpif:
 ####################
 # All at once (parallel).
 all-app: libnnptrain
-	cd application && $(MAKE) COMP=$(COMP) MODE=$(MODE) -j$(CORES)
+	cd application && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
 clean-app:
 	cd application && $(MAKE) clean

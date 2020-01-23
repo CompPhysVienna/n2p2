@@ -13,7 +13,8 @@ PROJECT_EIGEN=/usr/include/eigen3/
 ###############################################################################
 PROJECT_CC=g++
 PROJECT_MPICC=mpic++
-PROJECT_CFLAGS=-O3 -march=native -std=c++11 -fopenmp
+#PROJECT_CFLAGS=-O3 -march=native -std=c++11 -fopenmp
+PROJECT_CFLAGS=-O3 -std=c++11 -fopenmp
 PROJECT_CFLAGS_MPI=-Wno-long-long
 PROJECT_DEBUG=-g -pedantic-errors -Wall -Wextra
 PROJECT_TEST=--coverage -fno-default-inline -fno-inline -fno-inline-small-functions -fno-elide-constructors
@@ -52,3 +53,6 @@ PROJECT_OPTIONS+= -DEIGEN_USE_BLAS
 
 # Disable Eigen multi threading.
 PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE
+
+# Use improved memory layout for symmetry function derivatives.
+PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY

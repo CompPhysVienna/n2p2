@@ -167,7 +167,11 @@ void SymmetryFunctionRadial::calculate(Atom&      atom,
             Vec3D dij = p1 * n.dr;
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
-            n.dGdr[index]    -= dij;
+#ifdef IMPROVED_SFD_MEMORY
+            n.dGdr[indexPerElement[e1]] -= dij;
+#else
+            n.dGdr[index] -= dij;
+#endif
         }
     }
 
@@ -218,4 +222,10 @@ double SymmetryFunctionRadial::calculateRadialPart(double distance) const
 double SymmetryFunctionRadial::calculateAngularPart(double /* angle */) const
 {
     return 1.0;
+}
+
+bool SymmetryFunctionRadial::checkRelevantElement(size_t index) const
+{
+    if (index == e1) return true;
+    else return false;
 }

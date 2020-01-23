@@ -112,8 +112,10 @@ int main(int argc, char* argv[])
             it2->dEdG.clear();
             vector<double>(it2->dEdG).swap(it2->dEdG);
 
+#ifndef IMPROVED_SFD_MEMORY
             it2->dGdxia.clear();
             vector<double>(it2->dGdxia).swap(it2->dGdxia);
+#endif
 
             if (!useForces)
             {

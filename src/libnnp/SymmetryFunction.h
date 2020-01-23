@@ -202,11 +202,22 @@ public:
      */
     std::set<
     std::string>        getParameters() const;
+    /** Get private #indexPerElement member variable.
+     */
+    std::vector<
+    std::size_t>        getIndexPerElement() const;
     /** Set private #index member variable.
      *
      * @param[in] index Symmetry function index.
      */
     void                setIndex(std::size_t index);
+    /** Set private #indexPerElement member variable.
+     *
+     * @param[in] elementIndex Element index.
+     * @param[in] index Symmetry function index.
+     */
+    void                setIndexPerElement(std::size_t elementIndex,
+                                           std::size_t index);
     /** Set line number.
      *
      * @param[in] lineNumber Line number in settings file.
@@ -237,6 +248,13 @@ public:
      * meaningful symmetry function value for visualization.
      */
     virtual double      calculateAngularPart(double angle) const = 0;
+    /** Check whether symmetry function is relevant for given element.
+     *
+     * @param[in] index Index of given element.
+     * @return True if symmetry function is sensitive to given element, false
+     *         otherwise.
+     */
+    virtual bool        checkRelevantElement(std::size_t index) const = 0;
 
 protected:
     typedef std::map<std::string,
@@ -282,6 +300,8 @@ protected:
     ScalingType                scalingType;
     /// Set with symmetry function parameter IDs (lookup for printing).
     std::set<std::string>      parameters;
+    /// Per-element index for derivative memory in Atom::Neighbor::dGdr arrays.
+    std::vector<std::size_t>   indexPerElement;
     /// Width of the SFINFO parameter description field (see #parameterInfo()).
     static std::size_t const   sfinfoWidth;
     /// Map of parameter format strings and empty strings.
@@ -384,6 +404,18 @@ inline CutoffFunction::CutoffType SymmetryFunction::getCutoffType() const
 inline std::set<std::string> SymmetryFunction::getParameters() const
 {
     return parameters;
+}
+
+inline std::vector<std::size_t> SymmetryFunction::getIndexPerElement() const
+{
+    return indexPerElement;
+}
+
+inline void SymmetryFunction::setIndexPerElement(std::size_t elementIndex,
+                                                 std::size_t index)
+{
+    indexPerElement.at(elementIndex) = index;
+    return;
 }
 
 }

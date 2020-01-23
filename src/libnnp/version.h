@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "9026fd12d395a45d2a1b4a59ca539d91689a7d7a"
-#define NNP_GIT_REV_SHORT "9026fd1"
-#define NNP_GIT_BRANCH "master"
+#define NNP_GIT_REV "7ef23e868c91a3783dcd602473362cb6b39bca92"
+#define NNP_GIT_REV_SHORT "7ef23e8"
+#define NNP_GIT_BRANCH "symfunc_memory_reduction"
 
 #endif

@@ -303,8 +303,13 @@ void SymmetryFunctionAngularNarrow::calculate(Atom&      atom,
 
                             // Save force contributions in Atom storage.
                             atom.dGdr[index] += drij + drik;
-                            nj.dGdr[index]   -= drij + drjk;
-                            nk.dGdr[index]   -= drik - drjk;
+#ifdef IMPROVED_SFD_MEMORY
+                            nj.dGdr[indexPerElement[nej]] -= drij + drjk;
+                            nk.dGdr[indexPerElement[nek]] -= drik - drjk;
+#else
+                            nj.dGdr[index] -= drij + drjk;
+                            nk.dGdr[index] -= drik - drjk;
+#endif
                         } // rjk <= rc
                     } // rik <= rc
                 } // elem
@@ -371,4 +376,10 @@ double SymmetryFunctionAngularNarrow::calculateRadialPart(
 double SymmetryFunctionAngularNarrow::calculateAngularPart(double angle) const
 {
     return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
+}
+
+bool SymmetryFunctionAngularNarrow::checkRelevantElement(size_t index) const
+{
+    if (index == e1 || index == e2) return true;
+    else return false;
 }

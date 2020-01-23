@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <string>
 
 namespace bfs = boost::filesystem;
 
@@ -60,5 +61,23 @@ bool copy_directory_recursively(bfs::path const& src, bfs::path const& dest)
     }
     return true;
 }
+
+struct FixtureRepairDir
+{
+    FixtureRepairDir()
+    {
+        std::string p = bfs::current_path().string();
+        if (p.substr(p.size() - 4) == "test")
+        {
+            bfs::current_path("..");
+            bfs::remove_all("test");
+        }
+        else if (bfs::exists("test"))
+        {
+            bfs::remove_all("test");
+        }
+    }
+
+};
 
 #endif

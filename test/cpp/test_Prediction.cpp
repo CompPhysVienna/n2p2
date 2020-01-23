@@ -5,49 +5,58 @@
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/filesystem.hpp>
 #include "fileHelpers.h"
+#include "ExamplePrediction.h"
 
 #include "Atom.h"
 #include "Structure.h"
 #include "Prediction.h"
+#include "utility.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
-#include <string> // std::string
+#include <string> // std::string, std::string::find_last_of
 #include <vector> // std::vector
 
 using namespace std;
 using namespace nnp;
-using namespace boost::filesystem;
 
 namespace bdata = boost::unit_test::data;
+namespace bfs = boost::filesystem;
 
-double const accuracy = 10.0 * numeric_limits<double>::epsilon();
+double const accuracy = 100.0 * numeric_limits<double>::epsilon();
 
-vector<string> sampleDirectories = {"../../examples/nnp-predict/H2O_RPBE-D3",
-                                    "../../examples/nnp-predict/Cu2S_PBE"};
-
-vector<double> energies = {-2.7564547347815904E+04,
-                           -5.7365603183874578E+02};
-
+BoostDataContainer<ExamplePrediction> container;
 
 BOOST_AUTO_TEST_SUITE(RegressionTests)
 
-BOOST_DATA_TEST_CASE(PredictStructure_CorrectEnergiesForces,
-                     bdata::make(sampleDirectories) ^ bdata::make(energies),
-                     sampleDirectory,
-                     energy)
+BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
+                       PredictStructure_CorrectEnergiesForces,
+                       bdata::make(container.examples),
+                       example)
 {
-    BOOST_REQUIRE(copy_directory_recursively(sampleDirectory, "test"));
-    current_path("test");
+    BOOST_REQUIRE(copy_directory_recursively(example.pathData, "test"));
+    bfs::current_path("test");
 
     Prediction p;
     p.log.writeToStdout = false;
     p.setup();
     p.readStructureFromFile();
     p.predict();
-    BOOST_REQUIRE_SMALL(p.structure.energy - energy, accuracy);
+    BOOST_TEST_INFO(example.name + " Potential energy");
+    BOOST_REQUIRE_SMALL(p.structure.energy - example.energy, accuracy);
 
-    current_path("..");
-    remove_all("test");
+    for (size_t i = 0; i < p.structure.atoms.size(); ++i)
+    {
+        Vec3D d = p.structure.atoms.at(i).f - example.forces.at(i);
+        BOOST_TEST_INFO(example.name + " Atom " << i << " fx");
+        BOOST_REQUIRE_SMALL(d[0], accuracy);
+        BOOST_TEST_INFO(example.name + " Atom " << i << " fy");
+        BOOST_REQUIRE_SMALL(d[1], accuracy);
+        BOOST_TEST_INFO(example.name + " Atom " << i << " fz");
+        BOOST_REQUIRE_SMALL(d[2], accuracy);
+    }
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

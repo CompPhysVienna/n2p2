@@ -105,33 +105,37 @@ protected:
                      std::pair<std::string, std::string> > PrintFormat;
     typedef std::vector<std::string>                       PrintOrder;
     /// Symmetry function type.
-    std::size_t                type;
+    std::size_t                            type;
     /// Copy of element map.
-    ElementMap                 elementMap;
+    ElementMap                             elementMap;
     /// Symmetry function group index.
-    std::size_t                index;
+    std::size_t                            index;
     /// Element index of center atom (common feature).
-    std::size_t                ec;
+    std::size_t                            ec;
     /// Cutoff radius @f$r_c@f$ (common feature).
-    double                     rc;
+    double                                 rc;
     /// Cutoff function parameter @f$\alpha@f$ (common feature).
-    double                     cutoffAlpha;
+    double                                 cutoffAlpha;
     /// Data set normalization length conversion factor.
-    double                     convLength;
+    double                                 convLength;
     /// Cutoff function used by this symmetry function group.
-    CutoffFunction             fc;
+    CutoffFunction                         fc;
     /// Cutoff type used by this symmetry function group (common feature).
-    CutoffFunction::CutoffType cutoffType;
+    CutoffFunction::CutoffType             cutoffType;
+    /// Vector containing indices of all member symmetry functions.
+    std::vector<size_t>                    memberIndex;
     /// Scaling factors of all member symmetry functions.
-    std::vector<double>        scalingFactors;
+    std::vector<double>                    scalingFactors;
     /// Set of common parameters IDs.
-    std::set<std::string>      parametersCommon;
+    std::set<std::string>                  parametersCommon;
     /// Set of common parameters IDs.
-    std::set<std::string>      parametersMember;
+    std::set<std::string>                  parametersMember;
+    /// Vector containing per-element indices of all member symmetry functions.
+    std::vector<std::vector<std::size_t> > memberIndexPerElement;
     /// Map of parameter format strings and empty strings.
-    static PrintFormat const   printFormat;
+    static PrintFormat const               printFormat;
     /// Vector of parameters in order of printing.
-    static PrintOrder const    printOrder;
+    static PrintOrder const                printOrder;
 
     /** Constructor, sets type.
      *

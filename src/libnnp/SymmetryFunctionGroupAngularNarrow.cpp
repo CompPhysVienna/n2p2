@@ -159,6 +159,7 @@ void SymmetryFunctionGroupAngularNarrow::sortMembers()
         zeta.push_back(members[i]->getZeta());
         lambda.push_back(members[i]->getLambda());
         zetaLambda.push_back(members[i]->getZeta() * members[i]->getLambda());
+        memberIndexPerElement.push_back(members[i]->getIndexPerElement());
     }
 
     return;
@@ -386,17 +387,27 @@ void SymmetryFunctionGroupAngularNarrow::calculate(
                                 double const p3drjky = p3 * dr3[1];
                                 double const p3drjkz = p3 * dr3[2];
 
+#ifdef IMPROVED_SFD_MEMORY
+                                size_t li = memberIndex[l];
+#else
                                 size_t const li = memberIndex[l];
+#endif
                                 double* dGdr = atom.dGdr[li].r;
                                 dGdr[0] += p1drijx + p2drikx;
                                 dGdr[1] += p1drijy + p2driky;
                                 dGdr[2] += p1drijz + p2drikz;
 
+#ifdef IMPROVED_SFD_MEMORY
+                                li = memberIndexPerElement[l][nej];
+#endif
                                 dGdr = nj.dGdr[li].r;
                                 dGdr[0] -= p1drijx + p3drjkx;
                                 dGdr[1] -= p1drijy + p3drjky;
                                 dGdr[2] -= p1drijz + p3drjkz;
 
+#ifdef IMPROVED_SFD_MEMORY
+                                li = memberIndexPerElement[l][nek];
+#endif
                                 dGdr = nk.dGdr[li].r;
                                 dGdr[0] -= p2drikx - p3drjkx;
                                 dGdr[1] -= p2driky - p3drjky;

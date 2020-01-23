@@ -123,6 +123,7 @@ void SymmetryFunctionGroupRadial::sortMembers()
         memberIndex.push_back(members[i]->getIndex());
         eta.push_back(members[i]->getEta());
         rs.push_back(members[i]->getRs());
+        memberIndexPerElement.push_back(members[i]->getIndexPerElement());
     }
 
     return;
@@ -198,7 +199,11 @@ void SymmetryFunctionGroupRadial::calculate(Atom&      atom,
                 double const p1drijz = p1 * d1[2];
 
                 // Save force contributions in Atom storage.
+#ifdef IMPROVED_SFD_MEMORY
+                size_t ki = memberIndex[k];
+#else
                 size_t const ki = memberIndex[k];
+#endif
                 // SIMPLE EXPRESSIONS:
                 //atom.dGdr[ki]              += dij;
                 //atom.neighbors[j].dGdr[ki] -= dij;
@@ -208,6 +213,9 @@ void SymmetryFunctionGroupRadial::calculate(Atom&      atom,
                 dGdr[1] += p1drijy;
                 dGdr[2] += p1drijz;
 
+#ifdef IMPROVED_SFD_MEMORY
+                ki = memberIndexPerElement[k][e1];
+#endif
                 dGdr = n.dGdr[ki].r;
                 dGdr[0] -= p1drijx;
                 dGdr[1] -= p1drijy;

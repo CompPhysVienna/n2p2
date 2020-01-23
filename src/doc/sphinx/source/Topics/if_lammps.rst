@@ -21,13 +21,13 @@ required libraries:
 .. code-block:: none
 
    cd src
-   make libnnpif-shared
+   make libnnpif
 
-For static linking use the target ``libnnpif-static`` instead.
+For dynamic linking add the argument ``MODE=shared``.
 
 .. note::
 
-   If dynamic linking (\ ``libnnpif-shared``\ ) is used, you need to make the NNP
+   If dynamic linking (\ ``make libnnpif MODE=shared``\ ) is used, you need to make the NNP
    libraries visibile in your system, e.g. add this line in your ``.bashrc``\ :
 
 .. code-block:: none
