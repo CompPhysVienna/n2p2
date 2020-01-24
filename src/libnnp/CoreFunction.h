@@ -43,9 +43,9 @@ public:
     /** Constructor, initializes to ´POLY2´.
      */
     CoreFunction();
-    /** Set cutoff type.
+    /** Set function type.
      *
-     * @param[in] cutoffType Type of cutoff used.
+     * @param[in] type Type of core function used.
      */
     void   setType(Type const type);
     /** Getter for #type.
@@ -74,7 +74,7 @@ public:
     void   fdf(double x, double& fx, double& dfx) const;
 
 private:
-    /// Cutoff function type.
+    /// Core function type.
     Type       type;
     /// Function pointer to f.
     double     (CoreFunction::*fPtr)(double x) const;
@@ -85,7 +85,7 @@ private:
                                        double& fx,
                                        double& dfx) const;
 
-    // Individual cutoff functions.
+    // Individual functions.
     double   fPOLY1(double x) const;
     double  dfPOLY1(double x) const;
     void   fdfPOLY1(double x, double& fx, double& dfx) const;

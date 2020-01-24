@@ -132,25 +132,27 @@ private:
     static double const TANH_PRE;
 
     /// Cutoff function type.
-    CutoffType cutoffType;
+    CutoffType   cutoffType;
     /// Outer cutoff radius @f$r_c@f$.
-    double     rc;
+    double       rc;
     /// Inverse cutoff radius @f$\frac{1}{r_c}@f$.
-    double     rcinv;
+    double       rcinv;
     /// Inner cutoff for cutoff function types which allow shifting.
-    double     rci;
+    double       rci;
     /// Cutoff function parameter for `CT_POLYn` and `CT_EXP` @f$\alpha@f$.
-    double     alpha;
+    double       alpha;
     /// Inverse width of cutoff function @f$\frac{1}{r_c - r_{ci}}@f$.
-    double     iw;
+    double       iw;
+    /// Core functions used by POLYN, if any.
+    CoreFunction core;
     /// Function pointer to f.
-    double     (CutoffFunction::*fPtr)(double r) const;
+    double       (CutoffFunction::*fPtr)(double r) const;
     /// Function pointer to df.
-    double     (CutoffFunction::*dfPtr)(double r) const;
+    double       (CutoffFunction::*dfPtr)(double r) const;
     /// Function pointer to fdf.
-    void       (CutoffFunction::*fdfPtr)(double  r,
-                                         double& fc,
-                                         double& dfc) const;
+    void         (CutoffFunction::*fdfPtr)(double  r,
+                                           double& fc,
+                                           double& dfc) const;
 
     // Individual cutoff functions.
     double   fHARD (double r) const;
@@ -169,16 +171,13 @@ private:
     double  dfTANH (double r) const;
     void   fdfTANH (double r, double& fc, double& dfc) const;
 
-    double   fPOLYX(double r) const;
-    double  dfPOLYX(double r) const;
-    void   fdfPOLYX(double r, double& fc, double& dfc) const;
+    double   fPOLYN(double r) const;
+    double  dfPOLYN(double r) const;
+    void   fdfPOLYN(double r, double& fc, double& dfc) const;
 
     double   fEXP  (double r) const;
     double  dfEXP  (double r) const;
     void   fdfEXP  (double r, double& fc, double& dfc) const;
-
-    /// Core functions used by POLYX, if any.
-    CoreFunction              cf;
 };
 
 //////////////////////////////////

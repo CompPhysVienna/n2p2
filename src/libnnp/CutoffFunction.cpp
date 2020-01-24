@@ -75,31 +75,35 @@ void CutoffFunction::setCutoffType(CutoffType const cutoffType)
     }
     else if (cutoffType == CT_POLY1)
     {
-     cf.setType(CoreFunction::Type::POLY1);
-          fPtr = &CutoffFunction::  fPOLYX;
-         dfPtr = &CutoffFunction:: dfPOLYX;
-        fdfPtr = &CutoffFunction::fdfPOLYX;
+        core.setType(CoreFunction::Type::POLY1);
+
+          fPtr = &CutoffFunction::  fPOLYN;
+         dfPtr = &CutoffFunction:: dfPOLYN;
+        fdfPtr = &CutoffFunction::fdfPOLYN;
     }
     else if (cutoffType == CT_POLY2)
     {
-     cf.setType(CoreFunction::Type::POLY2);
-          fPtr = &CutoffFunction::  fPOLYX;
-         dfPtr = &CutoffFunction:: dfPOLYX;
-        fdfPtr = &CutoffFunction::fdfPOLYX;
+        core.setType(CoreFunction::Type::POLY2);
+
+          fPtr = &CutoffFunction::  fPOLYN;
+         dfPtr = &CutoffFunction:: dfPOLYN;
+        fdfPtr = &CutoffFunction::fdfPOLYN;
     }
     else if (cutoffType == CT_POLY3)
     {
-     cf.setType(CoreFunction::Type::POLY3);
-          fPtr = &CutoffFunction::  fPOLYX;
-         dfPtr = &CutoffFunction:: dfPOLYX;
-        fdfPtr = &CutoffFunction::fdfPOLYX;
+        core.setType(CoreFunction::Type::POLY3);
+
+          fPtr = &CutoffFunction::  fPOLYN;
+         dfPtr = &CutoffFunction:: dfPOLYN;
+        fdfPtr = &CutoffFunction::fdfPOLYN;
     }
     else if (cutoffType == CT_POLY4)
     {
-     cf.setType(CoreFunction::Type::POLY4);
-          fPtr = &CutoffFunction::  fPOLYX;
-         dfPtr = &CutoffFunction:: dfPOLYX;
-        fdfPtr = &CutoffFunction::fdfPOLYX;
+        core.setType(CoreFunction::Type::POLY4);
+
+          fPtr = &CutoffFunction::  fPOLYN;
+         dfPtr = &CutoffFunction:: dfPOLYN;
+        fdfPtr = &CutoffFunction::fdfPOLYN;
     }
     else
     {
@@ -232,21 +236,21 @@ void CutoffFunction::fdfEXP(double r, double& fc, double& dfc) const
     return;
 }
 
-double CutoffFunction::fPOLYX(double r) const
+double CutoffFunction::fPOLYN(double r) const
 {
     if (r < rci) return 1.0;
     double const x = (r - rci) * iw;
-    return cf.f(x);
+    return core.f(x);
 }
 
-double CutoffFunction::dfPOLYX(double r) const
+double CutoffFunction::dfPOLYN(double r) const
 {
     if (r < rci) return 0.0;
     double const x = (r - rci) * iw;
-    return iw * cf.df(x);
+    return iw * core.df(x);
 }
 
-void CutoffFunction::fdfPOLYX(double r, double& fc, double& dfc) const
+void CutoffFunction::fdfPOLYN(double r, double& fc, double& dfc) const
 {
     if (r < rci)
     {
@@ -255,7 +259,7 @@ void CutoffFunction::fdfPOLYX(double r, double& fc, double& dfc) const
         return;
     }
     double const x = (r - rci) * iw;
-    cf.fdf(x, fc, dfc);
+    core.fdf(x, fc, dfc);
     dfc *= iw;
     return;
 }
