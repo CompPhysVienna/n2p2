@@ -284,9 +284,10 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                         double const p2eta = 2.0*eta;
                         double const chiij = rinvij / pfcij * pdfcij;
                         double const chiik = rinvik / pfcik * pdfcik;
-                        
-                        double const p1 = fgp * (  phiijik - p2eta + chiij );
-                        double const p2 = fgp * (  phiikij - p2eta + chiik );
+
+                        // rijs/rij due to the shifted radial part of the Gaussian                        
+                        double const p1 = fgp * (  phiijik - p2eta*rijs*rinvij + chiij );
+                        double const p2 = fgp * (  phiikij - p2eta*riks*rinvik + chiik );
                         double const p3 = fgp * psiijik;
                         drij *= p1 * scalingFactor;
                         drik *= p2 * scalingFactor;

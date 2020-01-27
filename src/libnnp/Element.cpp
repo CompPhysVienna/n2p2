@@ -21,6 +21,7 @@
 #include "SymmetryFunctionRadial.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
+#include "SymmetryFunctionAngularPolyWide.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
 #include "SymmetryFunctionGroup.h"
@@ -100,6 +101,11 @@ void Element::addSymmetryFunction(string const& parameters,
     {
         symmetryFunctions.push_back(
             new SymmetryFunctionWeightedAngular(elementMap));
+    }
+    else if (type == 29)
+    {
+        symmetryFunctions.push_back(
+            new SymmetryFunctionAngularPolyWide(elementMap));
     }
     else
     {
@@ -206,6 +212,11 @@ void Element::setupSymmetryFunctionGroups()
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
                     new SymmetryFunctionGroupWeightedAngular(elementMap));
             }
+            // TODO else if ((*sf)->getType() == 29)
+            // TODO {
+            // TODO     symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
+            // TODO         new SymmetryFunctionGroupAngularPolyWide(elementMap));
+            // TODO }
             else
             {
                 throw runtime_error("ERROR: Unknown symmetry function group"

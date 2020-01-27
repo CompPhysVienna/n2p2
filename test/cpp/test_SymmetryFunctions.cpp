@@ -12,6 +12,7 @@
 #include "SymmetryFunctionRadial.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
+#include "SymmetryFunctionAngularPolyWide.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
 #include <cstddef> // std::size_t
@@ -37,6 +38,7 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     else if (type ==  9) sf = new SymmetryFunctionAngularWide(em);
     else if (type == 12) sf = new SymmetryFunctionWeightedRadial(em);
     else if (type == 13) sf = new SymmetryFunctionWeightedAngular(em);
+    else if (type == 29) sf = new SymmetryFunctionAngularPolyWide(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
