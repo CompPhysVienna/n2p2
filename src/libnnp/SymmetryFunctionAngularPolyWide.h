@@ -34,7 +34,7 @@ class SymmetryFunctionStatistics;
  *
  * @f[
    G^{29}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
-              C_{\text{poly}(\theta_{ijk})
+              C_{\text{poly}}(\theta_{ijk})
               \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
               f_c(r_{ij}) f_c(r_{ik}) 
  * @f]

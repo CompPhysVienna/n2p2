@@ -187,7 +187,7 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
         double const rij = nj.d;
         if ((e1 == nej || e2 == nej) && rij < rc)
         {
-            double const r2ij   = rij * rij;
+            // TODO double const r2ij   = rij * rij;
 
             // Calculate cutoff function and derivative.
 #ifdef NOCFCACHE
@@ -240,48 +240,57 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                         Vec3D drij = nj.dr;
                         Vec3D drik = nk.dr;
                         Vec3D drjk = drik - drij;
-                        double costijk = drij * drik;;
+                        double costijk = drij * drik;
                         double rinvijik = 1.0 / rij / rik;
                         costijk *= rinvijik;
-
-                        double const pfc = pfcij * pfcik;
-                        double const r2ik = rik * rik;
+                        // Regroup later: Get acos(cos)
+                        double const acostijk = acos(costijk);
+                        // TODO checks for acos
+                        double const pfc = pfcij * pfcik; // product of cutoff fcts
+                        // TODO double const r2ik = rik * rik;
                         double const rijs = rij - rs;
                         double const riks = rik - rs;
                         double const pexp = exp(-eta * (rijs * rijs
                                                       + riks * riks));
-// TODO                        double const plambda = 1.0 + lambda * costijk;
-// TODO                        double       fg = pexp;
-// TODO                        if (plambda <= 0.0) fg = 0.0;
-// TODO                        else
-// TODO                        {
-// TODO                            if (useIntegerPow)
-// TODO                            {
-// TODO                                fg *= pow_int(plambda, zetaInt - 1);
-// TODO                            }
-// TODO                            else
-// TODO                            {
-// TODO                                fg *= pow(plambda, zeta - 1.0);
-// TODO                            }
-// TODO                        }
-// TODO                        result += fg * plambda * pfc;
-// TODO
-// TODO                        // Force calculation.
-// TODO                        if (!derivatives) continue;
-// TODO                        fg       *= pnorm;
-// TODO                        rinvijik *= pzl;
-// TODO                        costijk  *= pzl;
-// TODO                        double const p2etapl = 2.0 * eta * plambda;
-// TODO                        double const p1 = fg * (pfc * (rinvijik - costijk
-// TODO                                        / r2ij - p2etapl * rijs / rij) + pfcik
-// TODO                                        * pdfcij * plambda / rij);
-// TODO                        double const p2 = fg * (pfc * (rinvijik - costijk
-// TODO                                        / r2ik - p2etapl * riks / rik) + pfcij
-// TODO                                        * pdfcik * plambda / rik);
-// TODO                        double const p3 = fg * pfc * rinvijik;
-// TODO                        drij *= p1 * scalingFactor;
-// TODO                        drik *= p2 * scalingFactor;
-// TODO                        drjk *= p3 * scalingFactor;
+
+                        // TODO: Carefully check conditions, can we do this?
+                        double const poly = c.f(acostijk);
+                        double       fg   = pexp;
+                        // Should be able to leave that condition in
+                        fg *= poly;
+                        double const fgp = fg*pfc; // fgp = BCD
+
+                        result += fgp;
+
+                        // Force calculation.
+                        if (!derivatives) continue;
+
+                        double const dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
+                        double dpoly = c.df(acostijk);
+                        dpoly *= dacostijk;
+                        dpoly /= poly; // Keep B out of the whole equation (keep fg out)
+                        // dpoly now contains everything but \nabla costijk
+                        // dpoly = B'' from derviation
+
+                        double const rinvij  = rinvijik * rik;
+                        double const rinvik  = rinvijik * rij;
+                        double phiijik = rinvij * (rinvik - rinvij*costijk);
+                        double phiikij = rinvik * (rinvij - rinvik*costijk);
+                        double psiijik = rinvijik; // careful: sign flip w.r.t. notes due to nj.dGd...
+                        phiijik *= dpoly;
+                        phiikij *= dpoly;
+                        psiijik *= dpoly;
+
+                        double const p2eta = 2.0*eta;
+                        double const chiij = rinvij / pfcij * pdfcij;
+                        double const chiik = rinvik / pfcik * pdfcik;
+                        
+                        double const p1 = fgp * (  phiijik - p2eta + chiij );
+                        double const p2 = fgp * (  phiikij - p2eta + chiik );
+                        double const p3 = fgp * psiijik;
+                        drij *= p1 * scalingFactor;
+                        drik *= p2 * scalingFactor;
+                        drjk *= p3 * scalingFactor;
 
                         // Save force contributions in Atom storage.
                         atom.dGdr[index] += drij + drik;
@@ -297,7 +306,9 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
             } // k
         } // rij <= rc
     } // j
+
     // TODO result *= pnorm;
+    // supposed to disappear
 
     atom.G[index] = scale(result);
 
