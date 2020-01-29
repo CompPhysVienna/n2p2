@@ -169,6 +169,12 @@ string SymmetryFunctionAngularPolyWide::getSettingsLine() const
     return s;
 }
 
+void SymmetryFunctionAngularPolyWide::getCompactOnly(double x, double& fx, double& dfx) const
+{
+    c.fdf(x, fx, dfx);
+    return;
+}
+
 void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                                                 bool const derivatives) const
 {
@@ -254,7 +260,9 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                                                       + riks * riks));
 
                         // TODO: Carefully check conditions, can we do this?
-                        double const poly = c.f(acostijk);
+                        double poly  = 0.0;
+                        double dpoly = 0.0;
+                        c.fdf(acostijk, poly, dpoly);
                         double       fg   = pexp;
                         // Should be able to leave that condition in
                         fg *= poly;
@@ -266,7 +274,6 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                         if (!derivatives) continue;
 
                         double const dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
-                        double dpoly = c.df(acostijk);
                         dpoly *= dacostijk;
                         dpoly /= poly; // Keep B out of the whole equation (keep fg out)
                         // dpoly now contains everything but \nabla costijk

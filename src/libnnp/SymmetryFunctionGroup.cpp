@@ -63,6 +63,8 @@ SymmetryFunctionGroup::initializePrintFormat()
     pf["rs"]          = make_pair("%9.3E", string(9, ' '));
     pf["lambda"]      = make_pair("%2.0f", string(2, ' '));
     pf["zeta"]        = make_pair("%4.1f", string(4, ' '));
+    pf["angleLeft"]   = make_pair("%5.1f", string(5, ' '));
+    pf["angleRight"]  = make_pair("%5.1f", string(5, ' '));
     pf["rc"]          = make_pair("%9.3E", string(9, ' '));
     pf["cutoffType"]  = make_pair("%2d"  , string(2, ' '));
     pf["cutoffAlpha"] = make_pair("%4.2f", string(4, ' '));
@@ -88,6 +90,8 @@ SymmetryFunctionGroup::initializePrintOrder()
     po.push_back("rs"         );
     po.push_back("lambda"     );
     po.push_back("zeta"       );
+    po.push_back("angleLeft"  );
+    po.push_back("angleRight" );
     po.push_back("rc"         );
     po.push_back("cutoffType" );
     po.push_back("cutoffAlpha");

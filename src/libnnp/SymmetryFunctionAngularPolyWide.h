@@ -99,6 +99,8 @@ public:
      *                        calculated and saved.
      */
     void         calculate(Atom& atom, bool const derivatives) const;
+    // Core fct
+    void         getCompactOnly(double x, double& fx, double& dfx) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.

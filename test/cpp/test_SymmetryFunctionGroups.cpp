@@ -12,12 +12,14 @@
 #include "SymmetryFunctionRadial.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
+#include "SymmetryFunctionAngularPolyWide.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
 #include "SymmetryFunctionGroup.h"
 #include "SymmetryFunctionGroupRadial.h"
 #include "SymmetryFunctionGroupAngularNarrow.h"
 #include "SymmetryFunctionGroupAngularWide.h"
+#include "SymmetryFunctionGroupAngularPolyWide.h"
 #include "SymmetryFunctionGroupWeightedRadial.h"
 #include "SymmetryFunctionGroupWeightedAngular.h"
 #include <cstddef> // std::size_t
@@ -43,6 +45,7 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     else if (type ==  9) sf = new SymmetryFunctionAngularWide(em);
     else if (type == 12) sf = new SymmetryFunctionWeightedRadial(em);
     else if (type == 13) sf = new SymmetryFunctionWeightedAngular(em);
+    else if (type == 29) sf = new SymmetryFunctionAngularPolyWide(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -71,6 +74,7 @@ SymmetryFunctionGroup* setupSymmetryFunctionGroup(ElementMap              em,
     else if (type ==  9) sfg = new SymmetryFunctionGroupAngularWide(em);
     else if (type == 12) sfg = new SymmetryFunctionGroupWeightedRadial(em);
     else if (type == 13) sfg = new SymmetryFunctionGroupWeightedAngular(em);
+    else if (type == 29) sfg = new SymmetryFunctionGroupAngularPolyWide(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");

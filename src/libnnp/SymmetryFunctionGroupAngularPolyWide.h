@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPANGULARWIDE_H
-#define SYMMETRYFUNCTIONGROUPANGULARWIDE_H
+#ifndef SYMMETRYFUNCTIONGROUPANGULARPOLYWIDE_H
+#define SYMMETRYFUNCTIONGROUPANGULARPOLYWIDE_H
 
+#include "CompactFunction.h"
 #include "SymmetryFunctionGroup.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -28,30 +29,30 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymmetryFunction;
-class SymmetryFunctionAngularWide;
+class SymmetryFunctionAngularPolyWide;
 
-/** Angular symmetry function group (type 3)
- *
- * @f[
-   G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
-           \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-           \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
-           f_c(r_{ij}) f_c(r_{ik}) 
- * @f]
- * Common features:
- * - element of central atom
- * - element of neighbor atom 1
- * - element of neighbor atom 2
- * - cutoff type
- * - @f$r_c@f$
- * - @f$\alpha@f$
- */
-class SymmetryFunctionGroupAngularWide : public SymmetryFunctionGroup
+//TODO /** Angular symmetry function group (type 3)
+//TODO  *
+//TODO  * @f[
+//TODO    G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
+//TODO            \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+//TODO            \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
+//TODO            f_c(r_{ij}) f_c(r_{ik}) 
+//TODO  * @f]
+//TODO  * Common features:
+//TODO  * - element of central atom
+//TODO  * - element of neighbor atom 1
+//TODO  * - element of neighbor atom 2
+//TODO  * - cutoff type
+//TODO  * - @f$r_c@f$
+//TODO  * - @f$\alpha@f$
+//TODO  */
+class SymmetryFunctionGroupAngularPolyWide : public SymmetryFunctionGroup
 {
 public:
-    /** Constructor, sets type = 3
+    /** Constructor, sets type = 29
      */
-    SymmetryFunctionGroupAngularWide(ElementMap const& elementMap);
+    SymmetryFunctionGroupAngularPolyWide(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool operator==(SymmetryFunctionGroup const& rhs) const;
@@ -107,25 +108,16 @@ private:
     /// Element index of neighbor atom 2 (common feature).
     std::size_t                                     e2;
     /// Vector of all group member pointers.
-    std::vector<SymmetryFunctionAngularWide const*> members;
+    std::vector<SymmetryFunctionAngularPolyWide const*> members;
+    /// Compact function member. For the moment, only one polynomial accepted.
+    //  Therefore, no pointer to functions but one single function only.
+    std::vector<CompactFunction const*>             c;
     /// Vector indicating whether exponential term needs to be calculated.
     std::vector<bool>                               calculateExp;
-    /// Vector containing precalculated normalizing factor for each zeta.
-    std::vector<double>                             factorNorm;
     /// Vector containing precalculated normalizing factor for derivatives.
     std::vector<double>                             factorDeriv;
     /// Vector containing values of all member symmetry functions.
-    std::vector<bool>                               useIntegerPow;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<int>                                zetaInt;
-    /// Vector containing values of all member symmetry functions.
     std::vector<double>                             eta;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>                             zeta;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>                             lambda;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>                             zetaLambda;
     /// Vector containing values of all member symmetry functions.
     std::vector<double>                             rs;
 };
@@ -134,25 +126,25 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionGroupAngularWide::
+inline bool SymmetryFunctionGroupAngularPolyWide::
 operator!=(SymmetryFunctionGroup const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionGroupAngularWide::
+inline bool SymmetryFunctionGroupAngularPolyWide::
 operator>(SymmetryFunctionGroup const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionGroupAngularWide::
+inline bool SymmetryFunctionGroupAngularPolyWide::
 operator<=(SymmetryFunctionGroup const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionGroupAngularWide::
+inline bool SymmetryFunctionGroupAngularPolyWide::
 operator>=(SymmetryFunctionGroup const& rhs) const
 {
     return !((*this) < rhs);
