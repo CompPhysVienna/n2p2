@@ -247,6 +247,11 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                         Vec3D drik = nk.dr;
                         Vec3D drjk = drik - drij;
                         double costijk = drij * drik;
+
+                        // By definition, our polynomial is zero at 0 and 180 deg.
+                        // Therefore, skip the whole rest which might yield some NaN
+                        if (costijk <= -1.0 && costijk >= 1.0) continue;
+ 
                         double rinvijik = 1.0 / rij / rik;
                         costijk *= rinvijik;
                         // Regroup later: Get acos(cos)

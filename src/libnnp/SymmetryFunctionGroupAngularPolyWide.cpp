@@ -262,6 +262,11 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                         double const costijk = (dr1[0] * dr2[0] +
                                                 dr1[1] * dr2[1] +
                                                 dr1[2] * dr2[2]) * rinvijik;
+
+                        // By definition, our polynomial is zero at 0 and 180 deg.
+                        // Therefore, skip the whole rest which might yield some NaN
+                        if (costijk <= -1.0 && costijk >= 1.0) continue;
+
                         double const acostijk = acos(costijk);
                         double const pfc = pfcij * pfcik;
                         double const r2ik = rik * rik;
