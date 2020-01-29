@@ -250,7 +250,7 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
 
                         // By definition, our polynomial is zero at 0 and 180 deg.
                         // Therefore, skip the whole rest which might yield some NaN
-                        if (costijk <= -1.0 && costijk >= 1.0) continue;
+                        if (costijk <= -1.0 || costijk >= 1.0) continue;
  
                         double rinvijik = 1.0 / rij / rik;
                         costijk *= rinvijik;
