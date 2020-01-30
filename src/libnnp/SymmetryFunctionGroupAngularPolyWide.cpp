@@ -23,7 +23,7 @@
 #include <algorithm> // std::sort
 #include <cmath>     // exp
 #include <stdexcept> // std::runtime_error
-
+#include <iostream>
 using namespace std;
 using namespace nnp;
 
@@ -244,7 +244,7 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                         double pdfcik;
                         fc.fdf(rik, pfcik, pdfcik);
 #else
-                        double& pfcik = nk.fc;
+                        double& pfcik  = nk.fc;
                         double& pdfcik = nk.dfc;
                         if (nk.cutoffType != cutoffType ||
                             nk.rc != rc ||
@@ -265,12 +265,14 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
 
                         // By definition, our polynomial is zero at 0 and 180 deg.
                         // Therefore, skip the whole rest which might yield some NaN
-                        if (costijk <= -1.0 || costijk >= 1.0) continue;
+                        if (costijk <= -1.0 || costijk >= 1.0 ||
+                            pfcij   ==  0.0 || pfcik   == 0.0) continue;
 
                         double const acostijk = acos(costijk);
-                        double const pfc = pfcij * pfcik;
-                        double const r2ik = rik * rik;
-                        double const r2sum = r2ij + r2ik;
+                        double const pfc      = pfcij * pfcik;
+                        double const r2ik     = rik * rik;
+                        double const r2sum    = r2ij + r2ik;
+
                         double vexp = 0.0;
                         double rijs = 0.0;
                         double riks = 0.0;
@@ -308,9 +310,6 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                                 }
                             }
                             if (!members[l]->getCompactOnly(acostijk, poly, dpoly)) continue;
-                            // double fg = vexp;
-                            // fg *= poly;
-                            // double fgp = fg*pfc;
                             double fp = vexp;
                             fp *= pfc;
                             double fgp = fp*poly;
@@ -320,13 +319,14 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                             if (!derivatives) continue;
 
                             fgp *= scalingFactors[l];
+                            fp  *= scalingFactors[l];
 
                             double const p2eta = factorDeriv[l];
                             double p1;
                             double p2;
                             double p3;
 
-                            if (dpoly != 0.0)
+                            if (dpoly != 0.0 && fp != 0.0)
                             {
                                 dpoly *= dacostijk;
                                 // dpoly /= poly;
@@ -347,7 +347,7 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                                 }
                                 p3 = fp * psiijik;
                             }
-                            else
+                            else if (fgp != 0.0)
                             {
                                 if (rs[l] > 0)
                                 {
@@ -362,7 +362,7 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                                 }
                                 p3 = 0.0;
                             }
-
+                            else continue;
 
                             // SIMPLE EXPRESSIONS:
                             // Save force contributions in Atom storage.

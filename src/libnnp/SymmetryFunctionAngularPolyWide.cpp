@@ -252,7 +252,8 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
 
                         // By definition, our polynomial is zero at 0 and 180 deg.
                         // Therefore, skip the whole rest which might yield some NaN
-                        if (costijk <= -1.0 || costijk >= 1.0) continue;
+                        if (costijk <= -1.0 || costijk >= 1.0 ||
+                            pfcij   ==  0.0 || pfcik   == 0.0) continue;
  
                         // Regroup later: Get acos(cos)
                         double const acostijk = acos(costijk);

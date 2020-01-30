@@ -21,7 +21,7 @@ PROJECT_TEST=--coverage -fno-default-inline -fno-inline -fno-inline-small-functi
 PROJECT_AR=ar
 PROJECT_ARFLAGS=-rcsv
 PROJECT_CFLAGS_BLAS=
-PROJECT_LDFLAGS_BLAS=-lblas
+PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 
 ###############################################################################
 # COMPILE-TIME OPTIONS
