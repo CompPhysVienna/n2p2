@@ -169,10 +169,10 @@ string SymmetryFunctionAngularPolyWide::getSettingsLine() const
     return s;
 }
 
-void SymmetryFunctionAngularPolyWide::getCompactOnly(double x, double& fx, double& dfx) const
+bool SymmetryFunctionAngularPolyWide::getCompactOnly(double x, double& fx, double& dfx) const
 {
-    c.fdf(x, fx, dfx);
-    return;
+    bool const stat = c.fdf(x, fx, dfx);
+    return stat;
 }
 
 void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
@@ -247,32 +247,27 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                         Vec3D drik = nk.dr;
                         Vec3D drjk = drik - drij;
                         double costijk = drij * drik;
+                        double rinvijik = 1.0 / rij / rik;
+                        costijk *= rinvijik;
 
                         // By definition, our polynomial is zero at 0 and 180 deg.
                         // Therefore, skip the whole rest which might yield some NaN
                         if (costijk <= -1.0 || costijk >= 1.0) continue;
  
-                        double rinvijik = 1.0 / rij / rik;
-                        costijk *= rinvijik;
                         // Regroup later: Get acos(cos)
                         double const acostijk = acos(costijk);
-                        // TODO checks for acos
+                        // Only go on if we are within our compact support
+                        double poly  = 0.0;
+                        double dpoly = 0.0;
+                        if (!c.fdf(acostijk, poly, dpoly)) continue;
+
                         double const pfc = pfcij * pfcik; // product of cutoff fcts
-                        // TODO double const r2ik = rik * rik;
                         double const rijs = rij - rs;
                         double const riks = rik - rs;
                         double const pexp = exp(-eta * (rijs * rijs
                                                       + riks * riks));
-
-                        // TODO: Carefully check conditions, can we do this?
-                        double poly  = 0.0;
-                        double dpoly = 0.0;
-                        c.fdf(acostijk, poly, dpoly);
-                        double       fg   = pexp;
-                        // Should be able to leave that condition in
-                        fg *= poly;
-                        double const fgp = fg*pfc; // fgp = BCD
-
+                        double const fp   = pexp*pfc;
+                        double const fgp  = fp*poly; // fgp = BCD
                         result += fgp;
 
                         // Force calculation.
@@ -280,7 +275,7 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
 
                         double const dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
                         dpoly *= dacostijk;
-                        dpoly /= poly; // Keep B out of the whole equation (keep fg out)
+                        // dpoly /= poly; would be divide by 0
                         // dpoly now contains everything but \nabla costijk
                         // dpoly = B'' from derviation
 
@@ -293,14 +288,15 @@ void SymmetryFunctionAngularPolyWide::calculate(Atom&      atom,
                         phiikij *= dpoly;
                         psiijik *= dpoly;
 
+                        // Cutoff function might be a divide by zero, but we screen that case before
                         double const p2eta = 2.0*eta;
                         double const chiij = rinvij / pfcij * pdfcij;
                         double const chiik = rinvik / pfcik * pdfcik;
 
                         // rijs/rij due to the shifted radial part of the Gaussian                        
-                        double const p1 = fgp * (  phiijik - p2eta*rijs*rinvij + chiij );
-                        double const p2 = fgp * (  phiikij - p2eta*riks*rinvik + chiik );
-                        double const p3 = fgp * psiijik;
+                        double const p1 = fp * (  phiijik - poly*( p2eta*rijs*rinvij - chiij ) );
+                        double const p2 = fp * (  phiikij - poly*( p2eta*riks*rinvik - chiik ) );
+                        double const p3 = fp * psiijik;
                         drij *= p1 * scalingFactor;
                         drik *= p2 * scalingFactor;
                         drjk *= p3 * scalingFactor;

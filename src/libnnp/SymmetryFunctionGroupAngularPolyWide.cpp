@@ -307,10 +307,13 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
                                     vexp = exp(-eta[l] * r2sum);
                                 }
                             }
-                            members[l]->getCompactOnly(acostijk, poly, dpoly);
-                            double fg = vexp;
-                            fg *= poly;
-                            double fgp = fg*pfc;
+                            if (!members[l]->getCompactOnly(acostijk, poly, dpoly)) continue;
+                            // double fg = vexp;
+                            // fg *= poly;
+                            // double fgp = fg*pfc;
+                            double fp = vexp;
+                            fp *= pfc;
+                            double fgp = fp*poly;
                             result[l] += fgp;
 
                             // Force calculation.
@@ -318,28 +321,48 @@ void SymmetryFunctionGroupAngularPolyWide::calculate(Atom&      atom,
 
                             fgp *= scalingFactors[l];
 
-                            dpoly *= dacostijk;
-                            dpoly /= poly;
-
-                            double const phiijik = phiijik0 * dpoly;
-                            double const phiikij = phiikij0 * dpoly;
-                            double const psiijik = rinvijik * dpoly;
-
                             double const p2eta = factorDeriv[l];
                             double p1;
                             double p2;
-                            if (rs[l] > 0)
+                            double p3;
+
+                            if (dpoly != 0.0)
                             {
-                                p1 = fgp * ( phiijik - p2eta*rijs*rinvij + chiij );
-                                p2 = fgp * ( phiikij - p2eta*riks*rinvik + chiik );
+                                dpoly *= dacostijk;
+                                // dpoly /= poly;
+
+                                double const phiijik = phiijik0 * dpoly;
+                                double const phiikij = phiikij0 * dpoly;
+                                double const psiijik = rinvijik * dpoly;
+                                if (rs[l] > 0)
+                                {
+                                    p1 = fp * ( phiijik - poly*(p2eta*rijs*rinvij - chiij) );
+                                    p2 = fp * ( phiikij - poly*(p2eta*riks*rinvik - chiik) );
+                                }
+                                else
+                                {
+                                    p1 = fp * ( phiijik - poly*(p2eta - chiij) );
+                                    p2 = fp * ( phiikij - poly*(p2eta - chiik) );
+
+                                }
+                                p3 = fp * psiijik;
                             }
                             else
                             {
-                                p1 = fgp * ( phiijik - p2eta + chiij );
-                                p2 = fgp * ( phiikij - p2eta + chiik );
+                                if (rs[l] > 0)
+                                {
+                                    p1 = fgp * ( -p2eta*rijs*rinvij + chiij );
+                                    p2 = fgp * ( -p2eta*riks*rinvik + chiik );
+                                }
+                                else
+                                {
+                                    p1 = fgp * ( -p2eta + chiij );
+                                    p2 = fgp * ( -p2eta + chiik );
 
+                                }
+                                p3 = 0.0;
                             }
-                            double const p3 = fgp * psiijik;
+
 
                             // SIMPLE EXPRESSIONS:
                             // Save force contributions in Atom storage.

@@ -95,19 +95,19 @@ double CompactFunction::df(double a) const
     else       return  scale * core.df(a);
 }
 
-void CompactFunction::fdf(double a, double& fa, double& dfa) const
+bool CompactFunction::fdf(double a, double& fa, double& dfa) const
 {
     if (a <= left || a >= right)
     {
         fa  = 0.0;
         dfa = 0.0;
-        return;
+        return false;
     }
     else if (a == center)
     {
         fa  = 1.0;
         dfa = 0.0;
-        return;
+        return true;
     }
 
     a = (a - center) * scale;
@@ -122,6 +122,6 @@ void CompactFunction::fdf(double a, double& fa, double& dfa) const
        dfa *= scale;
     }
 
-    return;
+    return true;
 }
 

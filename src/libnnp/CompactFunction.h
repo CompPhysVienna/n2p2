@@ -110,7 +110,7 @@ public:
      * @param[out] fa Cutoff function value.
      * @param[out] dfa Value of cutoff function derivative.
      */
-    void       fdf(double a, double& fa, double& dfa) const;
+    bool       fdf(double a, double& fa, double& dfa) const;
 
 private:
     /// Compact function type.
