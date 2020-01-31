@@ -25,6 +25,7 @@
 #include <cmath>
 #include <string>
 #include <iostream>
+#include <limits>
 
 #define TOLCUTOFF 1.0E-2
 
@@ -226,10 +227,12 @@ void InterfaceLammps::initialize(char* const& directory,
                          i,
                          elementMap[e].c_str(),
                          elementMap.atomicNumber(e));
+            ignoreType[i] = false;
         }
         else
         {
-            log << strpr("%11d <-> -- (ignored)\n", i);
+            log << strpr("%11d <-> --\n", i);
+            ignoreType[i] = true;
 
         }
     }
@@ -254,20 +257,25 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         structure.numAtomsPerElement[i] = 0;
     }
     structure.index                          = myRank;
-    structure.numAtoms                       = numAtomsLocal;
+    structure.numAtoms                       = 0;
     structure.hasNeighborList                = false;
     structure.hasSymmetryFunctions           = false;
     structure.hasSymmetryFunctionDerivatives = false;
     structure.energy                         = 0.0;
-    structure.atoms.resize(numAtomsLocal);
-    for (size_t i = 0; i < structure.atoms.size(); i++)
+    structure.atoms.clear();
+    indexMap.clear();
+    indexMap.resize(numAtomsLocal, numeric_limits<size_t>::max());
+    for (int i = 0; i < numAtomsLocal; i++)
     {
-        Atom& a = structure.atoms[i];
-        a.free(true);
+        if (ignoreType[atomType[i]]) continue;
+        indexMap.at(i) = structure.numAtoms;
+        structure.numAtoms++;
+        structure.atoms.push_back(Atom());
+        Atom& a = structure.atoms.back();
         a.index                          = i;
         a.indexStructure                 = myRank;
         a.tag                            = atomTag[i];
-        a.element                        = atomType[i] - 1;
+        a.element                        = mapTypeToElement[atomType[i]];
         a.numNeighbors                   = 0;
         a.hasSymmetryFunctions           = false;
         a.hasSymmetryFunctionDerivatives = false;
@@ -289,14 +297,16 @@ void InterfaceLammps::addNeighbor(int    i,
                                   double dz,
                                   double d2)
 {
-    Atom& a = structure.atoms[i];
+    if (ignoreType[type] ||
+        indexMap.at(i) == numeric_limits<size_t>::max()) return;
+    Atom& a = structure.atoms[indexMap.at(i)];
     a.numNeighbors++;
     a.neighbors.push_back(Atom::Neighbor());
-    a.numNeighborsPerElement.at(type - 1)++;
+    a.numNeighborsPerElement.at(mapTypeToElement[type])++;
     Atom::Neighbor& n = a.neighbors.back();
     n.index   = j;
     n.tag     = tag;
-    n.element = type - 1;
+    n.element = mapTypeToElement[type];
     n.dr[0]   = dx * cflength;
     n.dr[1]   = dy * cflength;
     n.dr[2]   = dz * cflength;

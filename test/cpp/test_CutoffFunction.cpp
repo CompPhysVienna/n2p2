@@ -14,7 +14,7 @@ using namespace nnp;
 
 namespace bdata = boost::unit_test::data;
 
-double const accuracy = 10.0 * numeric_limits<double>::epsilon(); 
+double const accuracy = 100.0 * numeric_limits<double>::epsilon(); 
 
 double const cutoffRadius = 3.0;
 double const cutoffParameter = 0.2;

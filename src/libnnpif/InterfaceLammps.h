@@ -164,6 +164,10 @@ protected:
     double                     cfenergy;
     /// Corresponds to LAMMPS `map` keyword.
     std::string                emap;
+    /// Map from LAMMPS index to n2p2 atom index.
+    std::vector<size_t>        indexMap;
+    /// True if atoms of this LAMMPS type will be ignored.
+    std::map<int, bool>        ignoreType;
     /// Map from LAMMPS type to n2p2 element index.
     std::map<int, std::size_t> mapTypeToElement;
     /// Map from n2p2 element index to LAMMPS type.
