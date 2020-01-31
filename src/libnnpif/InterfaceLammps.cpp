@@ -44,6 +44,7 @@ InterfaceLammps::InterfaceLammps() : myRank      (0    ),
 }
 
 void InterfaceLammps::initialize(char* const& directory,
+                                 char* const& emap,
                                  bool         showew,
                                  bool         resetew,
                                  int          showewsum,
@@ -54,6 +55,7 @@ void InterfaceLammps::initialize(char* const& directory,
                                  int          lammpsNtypes,
                                  int          myRank)
 {
+    this->emap = emap;
     this->showew = showew;
     this->resetew = resetew;
     this->showewsum = showewsum;
@@ -154,26 +156,82 @@ void InterfaceLammps::initialize(char* const& directory,
         log << "Cutoff radii are consistent.\n";
     }
 
-    if (elementMap.size() != (size_t)lammpsNtypes)
-    {
-        throw runtime_error(strpr("ERROR: Number of LAMMPS atom types (%d) and"
-                                  " NNP elements (%zu) does not match.\n",
-                                  lammpsNtypes, elementMap.size()));
-    }
     log << "-----------------------------------------"
            "--------------------------------------\n";
+    log << "Element mapping string from LAMMPS to n2p2: \""
+           + this->emap + "\"\n";
+    // Create default element mapping.
+    if (this->emap == "")
+    {
+        if (elementMap.size() != (size_t)lammpsNtypes)
+        {
+            throw runtime_error(strpr("ERROR: No element mapping given and "
+                                      "number of LAMMPS atom types (%d) and "
+                                      "NNP elements (%zu) does not match.\n",
+                                      lammpsNtypes, elementMap.size()));
+        }
+        log << "Element mapping string empty, creating default mapping.\n";
+        for (int i = 0; i < lammpsNtypes; ++i)
+        {
+            mapTypeToElement[i + 1] = i;
+            mapElementToType[i] = i + 1;
+        }
+    }
+    // Read element mapping from pair_style argument.
+    else
+    {
+        vector<string> emapSplit = split(reduce(trim(this->emap), " \t", ""),
+                                         ',');
+        for (string s : emapSplit)
+        {
+            vector<string> typeString = split(s, ':');
+            if (typeString.size() != 2)
+            {
+                throw runtime_error(strpr("ERROR: Invalid element mapping "
+                                          "string: \"%s\".\n", s.c_str()));
+            }
+            int t = stoi(typeString.at(0));
+            if (t > lammpsNtypes)
+            {
+                throw runtime_error(strpr("ERROR: LAMMPS type \"%s\" not "
+                                          "present, there are only %d types "
+                                          "defined.\n", t, lammpsNtypes));
+            }
+            size_t e = elementMap[typeString.at(1)];
+            mapTypeToElement[t] = e;
+            mapElementToType[e] = t;
+        }
+        if (elementMap.size() != mapTypeToElement.size())
+        {
+            throw runtime_error(strpr("ERROR: Element mapping is inconsistent,"
+                                      " NNP elements: %zu,"
+                                      " emap elements: %zu.\n",
+                                      elementMap.size(),
+                                      mapTypeToElement.size()));
+        }
+    }
+    log << "\n";
     log << "CAUTION: Please ensure that this mapping between LAMMPS\n";
     log << "         atom types and NNP elements is consistent:\n";
     log << "\n";
     log << "---------------------------\n";
     log << "LAMMPS type  |  NNP element\n";
     log << "---------------------------\n";
-    for (int i = 0; i < lammpsNtypes; ++i)
+    for (int i = 1; i <= lammpsNtypes; ++i)
     {
-        log << strpr("%11d <-> %2s (%3zu)\n",
-                     i + 1,
-                     elementMap[(size_t)i].c_str(),
-                     elementMap.atomicNumber((size_t)i));
+        if (mapTypeToElement.find(i) != mapTypeToElement.end())
+        {
+            size_t e = mapTypeToElement.at(i);
+            log << strpr("%11d <-> %2s (%3zu)\n",
+                         i,
+                         elementMap[e].c_str(),
+                         elementMap.atomicNumber(e));
+        }
+        else
+        {
+            log << strpr("%11d <-> -- (ignored)\n", i);
+
+        }
     }
     log << "---------------------------\n";
     log << "\n";
