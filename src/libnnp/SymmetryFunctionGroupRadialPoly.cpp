@@ -159,7 +159,8 @@ void SymmetryFunctionGroupRadialPoly::calculate(Atom&      atom,
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
-        if (e1 == n.element && n.d < rc)
+        if ( (e1 == n.element && n.d < rc) ||
+             (e1 == n.element && n.d > rl) )
         {
             // Energy calculation.
             double const rij = n.d;
