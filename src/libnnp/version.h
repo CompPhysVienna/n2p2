@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "686b846b602f5d37edb0994a53ea73af244024ce"
-#define NNP_GIT_REV_SHORT "686b846"
+#define NNP_GIT_REV "c21e825a9c48eb762e73c1cb431a277cf2930905"
+#define NNP_GIT_REV_SHORT "c21e825"
 #define NNP_GIT_BRANCH "polynomial_symmetry_functions"
 
 #endif

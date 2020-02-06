@@ -10,6 +10,7 @@
 #include "Structure.h"
 #include "SymmetryFunction.h"
 #include "SymmetryFunctionRadial.h"
+#include "SymmetryFunctionRadialPoly.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionAngularPolyWide.h"
@@ -17,6 +18,7 @@
 #include "SymmetryFunctionWeightedAngular.h"
 #include "SymmetryFunctionGroup.h"
 #include "SymmetryFunctionGroupRadial.h"
+#include "SymmetryFunctionGroupRadialPoly.h"
 #include "SymmetryFunctionGroupAngularNarrow.h"
 #include "SymmetryFunctionGroupAngularWide.h"
 #include "SymmetryFunctionGroupAngularPolyWide.h"
@@ -45,6 +47,7 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     else if (type ==  9) sf = new SymmetryFunctionAngularWide(em);
     else if (type == 12) sf = new SymmetryFunctionWeightedRadial(em);
     else if (type == 13) sf = new SymmetryFunctionWeightedAngular(em);
+    else if (type == 28) sf = new SymmetryFunctionRadialPoly(em);
     else if (type == 29) sf = new SymmetryFunctionAngularPolyWide(em);
     else
     {
@@ -74,6 +77,7 @@ SymmetryFunctionGroup* setupSymmetryFunctionGroup(ElementMap              em,
     else if (type ==  9) sfg = new SymmetryFunctionGroupAngularWide(em);
     else if (type == 12) sfg = new SymmetryFunctionGroupWeightedRadial(em);
     else if (type == 13) sfg = new SymmetryFunctionGroupWeightedAngular(em);
+    else if (type == 28) sfg = new SymmetryFunctionGroupRadialPoly(em);
     else if (type == 29) sfg = new SymmetryFunctionGroupAngularPolyWide(em);
     else
     {

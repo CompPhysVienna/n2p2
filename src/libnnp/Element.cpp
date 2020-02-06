@@ -19,6 +19,7 @@
 #include "NeuralNetwork.h"
 #include "SymmetryFunction.h"
 #include "SymmetryFunctionRadial.h"
+#include "SymmetryFunctionRadialPoly.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionAngularPolyWide.h"
@@ -26,6 +27,7 @@
 #include "SymmetryFunctionWeightedAngular.h"
 #include "SymmetryFunctionGroup.h"
 #include "SymmetryFunctionGroupRadial.h"
+#include "SymmetryFunctionGroupRadialPoly.h"
 #include "SymmetryFunctionGroupAngularNarrow.h"
 #include "SymmetryFunctionGroupAngularWide.h"
 #include "SymmetryFunctionGroupAngularPolyWide.h"
@@ -102,6 +104,11 @@ void Element::addSymmetryFunction(string const& parameters,
     {
         symmetryFunctions.push_back(
             new SymmetryFunctionWeightedAngular(elementMap));
+    }
+    else if (type == 28)
+    {
+        symmetryFunctions.push_back(
+            new SymmetryFunctionRadialPoly(elementMap));
     }
     else if (type == 29)
     {
@@ -212,6 +219,11 @@ void Element::setupSymmetryFunctionGroups()
             {
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
                     new SymmetryFunctionGroupWeightedAngular(elementMap));
+            }
+            else if ((*sf)->getType() == 28)
+            {
+                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
+                    new SymmetryFunctionGroupRadialPoly(elementMap));
             }
             else if ((*sf)->getType() == 29)
             {

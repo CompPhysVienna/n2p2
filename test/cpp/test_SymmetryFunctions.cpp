@@ -10,6 +10,7 @@
 #include "Structure.h"
 #include "SymmetryFunction.h"
 #include "SymmetryFunctionRadial.h"
+#include "SymmetryFunctionRadialPoly.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionAngularPolyWide.h"
@@ -38,6 +39,7 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     else if (type ==  9) sf = new SymmetryFunctionAngularWide(em);
     else if (type == 12) sf = new SymmetryFunctionWeightedRadial(em);
     else if (type == 13) sf = new SymmetryFunctionWeightedAngular(em);
+    else if (type == 28) sf = new SymmetryFunctionRadialPoly(em);
     else if (type == 29) sf = new SymmetryFunctionAngularPolyWide(em);
     else
     {

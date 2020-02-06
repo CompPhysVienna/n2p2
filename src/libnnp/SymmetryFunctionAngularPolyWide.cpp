@@ -142,7 +142,7 @@ setParameters(string const& parameterString)
     }
     if (angleRight - angleLeft > 180.0)
     {
-        throw runtime_error("ERROR: Periodic symmetry function cannot spread over domain > 180 degrees");
+        throw runtime_error("ERROR: Periodic symmetry function cannot spread over domain > 180 degrees\n");
     }
 
     c.setType(CompactFunction::Type::POLY2);
