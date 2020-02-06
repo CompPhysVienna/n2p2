@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPANGULARPOLYWIDE_H
-#define SYMMETRYFUNCTIONGROUPANGULARPOLYWIDE_H
+#ifndef SYMMETRYFUNCTIONGROUPANGULARPOLYONLY_H
+#define SYMMETRYFUNCTIONGROUPANGULARPOLYONLY_H
 
 #include "CompactFunction.h"
 #include "SymmetryFunctionGroup.h"
@@ -29,7 +29,7 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymmetryFunction;
-class SymmetryFunctionAngularPolyWide;
+class SymmetryFunctionAngularPolyOnly;
 
 //TODO /** Angular symmetry function group (type 3)
 //TODO  *
@@ -47,12 +47,12 @@ class SymmetryFunctionAngularPolyWide;
 //TODO  * - @f$r_c@f$
 //TODO  * - @f$\alpha@f$
 //TODO  */
-class SymmetryFunctionGroupAngularPolyWide : public SymmetryFunctionGroup
+class SymmetryFunctionGroupAngularPolyOnly : public SymmetryFunctionGroup
 {
 public:
-    /** Constructor, sets type = 29
+    /** Constructor, sets type = 89
      */
-    SymmetryFunctionGroupAngularPolyWide(ElementMap const& elementMap);
+    SymmetryFunctionGroupAngularPolyOnly(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool operator==(SymmetryFunctionGroup const& rhs) const;
@@ -108,40 +108,36 @@ private:
     /// Element index of neighbor atom 2 (common feature).
     std::size_t                                     e2;
     /// Vector of all group member pointers.
-    std::vector<SymmetryFunctionAngularPolyWide const*> members;
-    /// Vector indicating whether exponential term needs to be calculated.
-    std::vector<bool>                               calculateExp;
-    /// Vector containing precalculated normalizing factor for derivatives.
-    std::vector<double>                             factorDeriv;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>                             eta;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>                             rs;
+    std::vector<SymmetryFunctionAngularPolyOnly const*> members;
+    /// Smallest cutoff value within group.
+    double                                          rl; 
+    /// Largest cutoff value within group.
+    double                                          rc;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionGroupAngularPolyWide::
+inline bool SymmetryFunctionGroupAngularPolyOnly::
 operator!=(SymmetryFunctionGroup const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionGroupAngularPolyWide::
+inline bool SymmetryFunctionGroupAngularPolyOnly::
 operator>(SymmetryFunctionGroup const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionGroupAngularPolyWide::
+inline bool SymmetryFunctionGroupAngularPolyOnly::
 operator<=(SymmetryFunctionGroup const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionGroupAngularPolyWide::
+inline bool SymmetryFunctionGroupAngularPolyOnly::
 operator>=(SymmetryFunctionGroup const& rhs) const
 {
     return !((*this) < rhs);

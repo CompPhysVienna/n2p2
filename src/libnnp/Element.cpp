@@ -32,6 +32,7 @@
 #include "SymmetryFunctionGroupAngularNarrow.h"
 #include "SymmetryFunctionGroupAngularWide.h"
 #include "SymmetryFunctionGroupAngularPolyWide.h"
+#include "SymmetryFunctionGroupAngularPolyOnly.h"
 #include "SymmetryFunctionGroupWeightedRadial.h"
 #include "SymmetryFunctionGroupWeightedAngular.h"
 #include "utility.h"
@@ -235,6 +236,11 @@ void Element::setupSymmetryFunctionGroups()
             {
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
                     new SymmetryFunctionGroupAngularPolyWide(elementMap));
+            }
+            else if ((*sf)->getType() == 89)
+            {
+                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
+                    new SymmetryFunctionGroupAngularPolyOnly(elementMap));
             }
             else
             {

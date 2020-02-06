@@ -211,7 +211,7 @@ void SymmetryFunctionAngularPolyOnly::calculate(Atom&      atom,
         Atom::Neighbor& nj = atom.neighbors[j];
         size_t const nej = nj.element;
         double const rij = nj.d;
-        if ((e1 == nej || e2 == nej) && rij < rc)
+        if ((e1 == nej || e2 == nej) && rij < rc && rij > rl)
         {
 
             // Is one part of the product == zero?
@@ -227,7 +227,7 @@ void SymmetryFunctionAngularPolyOnly::calculate(Atom&      atom,
                     (e2 == nej && e1 == nek))
                 {
                     double const rik = nk.d;
-                    if (rik < rc)
+                    if (rik < rc && rik > rl)
                     {
                     // Energy calculation.
 
