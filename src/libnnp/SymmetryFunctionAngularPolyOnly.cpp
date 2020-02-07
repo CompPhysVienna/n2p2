@@ -145,9 +145,9 @@ setParameters(string const& parameterString)
         throw runtime_error("ERROR: Angle boundary out of [0,180] "
                             "and center of angular function /= 0 or /= 180.\n");
     }
-    if (angleRight - angleLeft > 180.0)
+    if (angleRight - angleLeft > 360.0)
     {
-        throw runtime_error("ERROR: Periodic symmetry function cannot spread over domain > 180 degrees\n");
+        throw runtime_error("ERROR: Periodic symmetry function cannot spread over domain > 360 degrees\n");
     }
 
     ca.setType(CompactFunction::Type::POLY2);
