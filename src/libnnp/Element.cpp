@@ -371,10 +371,16 @@ double Element::getMinCutoffRadius() const
 {
     double minCutoffRadius = numeric_limits<double>::max();
 
+    // MPB: Hack to work with negative radii
+    //      Exploit the fact that all allowed symmetry functions are either
+    //      defined for a domain > 0 or have to be symmetric around 0.
+
     for (vector<SymmetryFunction*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
-        minCutoffRadius = min((*it)->getRc(), minCutoffRadius);
+        double tmpRc = (*it)->getRc();
+        tmpRc = max(tmpRc,0.0);
+        minCutoffRadius = min(tmpRc, minCutoffRadius);
     }
 
     return minCutoffRadius;
