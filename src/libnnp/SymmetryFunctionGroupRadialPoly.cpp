@@ -35,6 +35,7 @@ SymmetryFunctionGroupRadialPoly(ElementMap const& elementMap) :
 {
     parametersCommon.insert("e1");
     parametersMember.insert("rl");
+    parametersMember.insert("rc");
     parametersMember.insert("mindex");
     parametersMember.insert("sfindex");
 }
@@ -222,14 +223,17 @@ vector<string> SymmetryFunctionGroupRadialPoly::parameterLines() const
 {
     vector<string> v;
 
+    int const    izero = 0;
+    double const dzero = 0.0;
     // TODO
     v.push_back(strpr(getPrintFormatCommon().c_str(),
                       index + 1,
                       elementMap[ec].c_str(),
                       type,
                       elementMap[e1].c_str(),
-                      (int)cutoffType,
-                      cutoffAlpha));
+                      dzero,
+                      izero,
+                      dzero));
 
     for (size_t i = 0; i < members.size(); ++i)
     {

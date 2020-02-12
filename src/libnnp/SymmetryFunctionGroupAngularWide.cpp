@@ -38,11 +38,9 @@ SymmetryFunctionGroupAngularWide(ElementMap const& elementMap) :
 
     parametersMember.insert("eta");
     parametersMember.insert("rs");
-    parametersMember.insert("lambda");
-    parametersMember.insert("zeta");
+    parametersMember.insert("rc");
     parametersMember.insert("mindex");
     parametersMember.insert("sfindex");
-    parametersMember.insert("calcexp");
 }
 
 bool SymmetryFunctionGroupAngularWide::

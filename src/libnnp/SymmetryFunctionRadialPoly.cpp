@@ -172,6 +172,8 @@ void SymmetryFunctionRadialPoly::calculate(Atom&  atom,
 
 string SymmetryFunctionRadialPoly::parameterLine() const
 {
+    int const    izero = 0;
+    double const dzero = 0;
     return strpr(getPrintFormat().c_str(),
                  index + 1,
                  elementMap[ec].c_str(),
@@ -179,8 +181,8 @@ string SymmetryFunctionRadialPoly::parameterLine() const
                  elementMap[e1].c_str(),
                  rl / convLength,
                  rc / convLength,
-                 // TODO (int)cutoffType,
-                 // TODO cutoffAlpha,
+                 izero,
+                 dzero,
                  lineNumber + 1);
 }
 

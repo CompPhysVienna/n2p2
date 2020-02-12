@@ -225,21 +225,22 @@ SymmetryFunction::PrintFormat const SymmetryFunction::initializePrintFormat()
 {
     PrintFormat pf;
 
-    pf["index"]       = make_pair("%4zu" , string(4, ' '));
-    pf["ec"]          = make_pair("%2s"  , string(2, ' '));
-    pf["type"]        = make_pair("%2zu" , string(2, ' '));
-    pf["e1"]          = make_pair("%2s"  , string(2, ' '));
-    pf["e2"]          = make_pair("%2s"  , string(2, ' '));
-    pf["eta"]         = make_pair("%9.3E", string(9, ' '));
-    pf["rs"]          = make_pair("%9.3E", string(9, ' '));
-    pf["lambda"]      = make_pair("%2.0f", string(2, ' '));
-    pf["zeta"]        = make_pair("%4.1f", string(4, ' '));
-    pf["angleLeft"]   = make_pair("%5.1f", string(5, ' '));
-    pf["angleRight"]  = make_pair("%5.1f", string(5, ' '));
-    pf["rc"]          = make_pair("%9.3E", string(9, ' '));
-    pf["cutoffType"]  = make_pair("%2d"  , string(2, ' '));
-    pf["cutoffAlpha"] = make_pair("%4.2f", string(4, ' '));
-    pf["lineNumber"]  = make_pair("%5zu" , string(5, ' '));
+    pf["index"]       = make_pair("%4zu"  , string(4, ' '));
+    pf["ec"]          = make_pair("%2s"   , string(2, ' '));
+    pf["type"]        = make_pair("%2zu"  , string(2, ' '));
+    pf["e1"]          = make_pair("%2s"   , string(2, ' '));
+    pf["e2"]          = make_pair("%2s"   , string(2, ' '));
+    pf["eta"]         = make_pair("%9.3E" , string(9, ' '));
+    pf["rs"]          = make_pair("%9.3E" , string(9, ' '));
+    pf["lambda"]      = make_pair("%2.0f" , string(2, ' '));
+    pf["zeta"]        = make_pair("%4.1f" , string(4, ' '));
+    pf["rl"]          = make_pair("%10.3E", string(10, ' '));
+    pf["angleLeft"]   = make_pair("%6.1f" , string(6, ' '));
+    pf["angleRight"]  = make_pair("%6.1f" , string(6, ' '));
+    pf["rc"]          = make_pair("%10.3E", string(10, ' '));
+    pf["cutoffType"]  = make_pair("%2d"   , string(2, ' '));
+    pf["cutoffAlpha"] = make_pair("%4.2f" , string(4, ' '));
+    pf["lineNumber"]  = make_pair("%5zu"  , string(5, ' '));
 
     return pf;
 }
@@ -257,6 +258,7 @@ SymmetryFunction::PrintOrder const SymmetryFunction::initializePrintOrder()
     po.push_back("rs"         );
     po.push_back("lambda"     );
     po.push_back("zeta"       );
+    po.push_back("rl"         );
     po.push_back("angleLeft"  );
     po.push_back("angleRight" );
     po.push_back("rc"         );

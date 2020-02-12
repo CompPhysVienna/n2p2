@@ -39,9 +39,9 @@ SymmetryFunctionGroupAngularPolyOnly(ElementMap const& elementMap) :
     parametersMember.insert("rl");
     parametersMember.insert("angleLeft");
     parametersMember.insert("angleRight");
+    parametersMember.insert("rc");
     parametersMember.insert("mindex");
     parametersMember.insert("sfindex");
-    parametersMember.insert("calcexp");
 }
 
 bool SymmetryFunctionGroupAngularPolyOnly::
@@ -361,6 +361,8 @@ void SymmetryFunctionGroupAngularPolyOnly::calculate(Atom&      atom,
 vector<string> SymmetryFunctionGroupAngularPolyOnly::parameterLines() const
 {
     vector<string> v;
+    int const    izero = 0.0;
+    double const dzero = 0.0;
 
     v.push_back(strpr(getPrintFormatCommon().c_str(),
                       index + 1,
@@ -368,9 +370,9 @@ vector<string> SymmetryFunctionGroupAngularPolyOnly::parameterLines() const
                       type,
                       elementMap[e1].c_str(),
                       elementMap[e2].c_str(),
-                      rc / convLength,
-                      (int)cutoffType,
-                      cutoffAlpha));
+                      dzero,
+                      izero,
+                      dzero));
 
     for (size_t i = 0; i < members.size(); ++i)
     {

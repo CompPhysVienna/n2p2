@@ -378,9 +378,7 @@ double Element::getMinCutoffRadius() const
     for (vector<SymmetryFunction*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
-        double tmpRc = (*it)->getRc();
-        tmpRc = max(tmpRc,0.0);
-        minCutoffRadius = min(tmpRc, minCutoffRadius);
+        minCutoffRadius = min((*it)->getRc(), minCutoffRadius);
     }
 
     return minCutoffRadius;

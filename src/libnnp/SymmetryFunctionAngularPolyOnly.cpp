@@ -308,6 +308,8 @@ void SymmetryFunctionAngularPolyOnly::calculate(Atom&      atom,
 
 string SymmetryFunctionAngularPolyOnly::parameterLine() const
 {
+    int const    izero = 0;
+    double const dzero = 0;
     return strpr(getPrintFormat().c_str(),
                  index + 1,
                  elementMap[ec].c_str(),
@@ -319,8 +321,8 @@ string SymmetryFunctionAngularPolyOnly::parameterLine() const
                  angleRight,
                  rc / convLength,
                  // TODO
-                 (int)cutoffType,
-                 cutoffAlpha,
+                 izero,
+                 dzero,
                  // END TODO
                  lineNumber + 1);
 }

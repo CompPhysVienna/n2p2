@@ -337,7 +337,10 @@ void Mode::setupSymmetryFunctions()
     log << "rs ..... Shift distance of Gaussian.\n";
     log << "la ..... Angle prefactor lambda.\n";
     log << "zeta ... Angle term exponent zeta.\n";
-    log << "rc ..... Cutoff radius.\n";
+    log << "rl ..... Left cutoff radius for polynomial.\n";
+    log << "angl.... Left cutoff angle for polynomial.\n";
+    log << "angr.... Right cutoff angle for polynomial.\n";
+    log << "rc ..... Cutoff radius / right cutoff radius for polynomial.\n";
     log << "ct ..... Cutoff type.\n";
     log << "ca ..... Cutoff alpha.\n";
     log << "ln ..... Line number in settings file.\n";
@@ -352,15 +355,15 @@ void Mode::setupSymmetryFunctions()
         it->setCutoffFunction(cutoffType, cutoffAlpha);
         log << strpr("Short range atomic symmetry functions element %2s :\n",
                      it->getSymbol().c_str());
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
-        log << " ind ec ty e1 e2       eta        rs la "
-               "zeta        rc ct   ca    ln\n";
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "--------------------------------------------------"
+               "-----------------------------------------------\n";
+        log << " ind ec ty e1 e2       eta        rs la zeta"
+               "         rl   angl   angr         rc ct   ca    ln\n";
+        log << "--------------------------------------------------"
+               "-----------------------------------------------\n";
         log << it->infoSymmetryFunctionParameters();
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "--------------------------------------------------"
+               "-----------------------------------------------\n";
     }
     minNeighbors.resize(numElements, 0);
     minCutoffRadius.resize(numElements, maxCutoffRadius);
@@ -549,6 +552,9 @@ void Mode::setupSymmetryFunctionGroups()
     log << "rs ..... Shift distance of Gaussian.\n";
     log << "la ..... Angle prefactor lambda.\n";
     log << "zeta ... Angle term exponent zeta.\n";
+    log << "rl ..... Left cutoff radius for polynomial.\n";
+    log << "angl.... Left cutoff angle for polynomial.\n";
+    log << "angr.... Right cutoff angle for polynomial.\n";
     log << "rc ..... Cutoff radius.\n";
     log << "ct ..... Cutoff type.\n";
     log << "ca ..... Cutoff alpha.\n";
@@ -563,15 +569,15 @@ void Mode::setupSymmetryFunctionGroups()
         it->setupSymmetryFunctionGroups();
         log << strpr("Short range atomic symmetry function groups "
                      "element %2s :\n", it->getSymbol().c_str());
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "------------------------------------------------------"
+               "----------------------------------------------------\n";
         log << " ind ec ty e1 e2       eta        rs la "
-               "zeta        rc ct   ca    ln   mi  sfi e\n";
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+               "zeta         rl   angl   angr         rc ct   ca    ln   mi  sfi e\n";
+        log << "------------------------------------------------------"
+               "----------------------------------------------------\n";
         log << it->infoSymmetryFunctionGroups();
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "------------------------------------------------------"
+               "----------------------------------------------------\n";
     }
 
     log << "*****************************************"
