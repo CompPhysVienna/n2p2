@@ -22,7 +22,7 @@ using namespace nnp;
 namespace bdata = boost::unit_test::data;
 namespace bfs = boost::filesystem;
 
-double const accuracy = 100.0 * numeric_limits<double>::epsilon();
+double const accuracy = 1000.0 * numeric_limits<double>::epsilon();
 
 BoostDataContainer<ExamplePrediction> container;
 
