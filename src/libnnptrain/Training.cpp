@@ -1090,7 +1090,7 @@ void Training::setupTraining()
                 log << "      size corresponds to error vector size:\n";
                 log << strpr("sizeObservation = %zu (energy updates)\n",
                              errorE.at(i).size());
-                if (useforces)
+                if (useForces)
                 {
                     log << strpr("sizeObservation = %zu (force  updates)\n",
                                  errorF.at(i).size());
