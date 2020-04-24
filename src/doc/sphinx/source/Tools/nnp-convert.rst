@@ -7,9 +7,12 @@ The ``nnp-convert`` tool converts a given ``input.data`` set file (see
 :ref:`format <cfg_file>`) into a different file format. Currently, the following
 file formats are supported:
 
-
 #. `Extended <http://libatoms.github.io/QUIP/io.html#module-ase.io.extxyz>`_ XYZ,
 #. VASP POSCAR.
+
+Requirements:
+-------------
+A configuration file named ``input.data`` needs to be present.
 
 Usage:
 ------
@@ -19,32 +22,16 @@ Usage:
    nnp-convert <format> <elem1 <elem2 ...>>
                <format> ... Structure file output format (xyz/poscar).
                <elemN> .... Symbol for Nth element.
-               Execute in directory with these NNP files present:
-               - input.data (structure file)
 
-Unfortunately, the element symbols are not automatically determined and must be
-provided separated by spaces. For XYZ files the order is not important.
+Unfortunately, the element symbols present in the configuration file are not
+automatically determined and must be provided via the command line (separated by
+spaces). For XYZ files the order is not important.  
 
 .. warning::
 
    The order of elements given via the command line arguments is critical for
    POSCAR output as the atoms will be sorted according to this list. Hence, the
    order should match the one determined by the POTCAR file.
-
-Examples:
----------
-
-* Convert to XYZ:
-
-  .. code-block:: none
-
-     nnp-convert xyz S Cu
-
-* Convert to POSCAR:
-
-  .. code-block:: none
-
-     nnp-convert poscar Cu S
 
 Sample screen output:
 ---------------------
@@ -89,3 +76,19 @@ File output:
   #. POSCAR: For each configuration a separate file with prefix ``POSCAR_`` is written.
 
 * ``nnp-convert.log`` : Log file (copy of screen output).
+
+Examples:
+---------
+
+* Convert to XYZ:
+
+  .. code-block:: none
+
+     nnp-convert xyz S Cu
+
+* Convert to POSCAR:
+
+  .. code-block:: none
+
+     nnp-convert poscar Cu S
+

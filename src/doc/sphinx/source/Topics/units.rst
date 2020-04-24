@@ -51,5 +51,6 @@ publication [1]_.
    required to perform it. It is also not guaranteed that the quality of
    training will increase in all cases.
 
-.. [1] Singraber, Morawietz, Behler and Dellago, submitted to J. Chem. Theory Comput. (2019).
-
+.. [1] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+   Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+   Theory Comput. 2019, 15 (5), 3075–3092. https://doi.org/10.1021/acs.jctc.8b01092
