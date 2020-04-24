@@ -39,7 +39,20 @@ Prepare a settings file (name the file ``input.nn``): Use the recommended file
 and change the settings in the "GENERAL NNP SETTINGS" section according to
 your system. Change the symmetry function definitions in the "SYMMETRY
 FUNCTIONS" section.. again this not a trivial task, please find more information
-in the literature [1]_ [2]_ [3]_.
+in the literature [1]_ [2]_ [3]_. See also the description of the
+``symfunction_short`` keyword :ref:`here <keywords>`.
+
+.. note::
+
+   There is a very useful standalone Python tool written by Florian Buchner (see
+   his `pull request <https://github.com/CompPhysVienna/n2p2/pull/15>`__) which
+   allows to create sets of symmetry function lines following the guidelines
+   given in [2]_ and [3]_. To use it, just copy the file `sfparamgen.py
+   <https://github.com/flobuch/n2p2/blob/symfunc_paramgen/tools/python/symfunc_paramgen/src/sfparamgen.py>`__
+   to a local directory and follow the instructions given in this `Jupyter
+   notebook
+   <https://github.com/flobuch/n2p2/blob/symfunc_paramgen/tools/python/symfunc_paramgen/examples/example.ipynb>`__.
+
 
 Step 3: Compute symmetry function statistics
 """"""""""""""""""""""""""""""""""""""""""""
