@@ -37,21 +37,31 @@ Documentation
    quickly as possible.
 
 This package uses automatic documentation generation via `Doxygen
-<http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
-and `Exhale <https://github.com/svenevs/exhale>`__. An online version of the
-documentation which is automatically updated with the main repository can be
-found `here <https://compphysvienna.github.io/n2p2>`__.
+<http://www.doxygen.nl>`__ and `Sphinx <http://www.sphinx-doc.org>`__. An online
+version of the documentation which is automatically updated with the main
+repository can be found `here <https://compphysvienna.github.io/n2p2>`__.
+
+.. This package uses automatic documentation generation via `Doxygen
+.. <http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
+.. and `Exhale <https://github.com/svenevs/exhale>`__. An online version of the
+.. documentation which is automatically updated with the main repository can be
+.. found `here <https://compphysvienna.github.io/n2p2>`__.
 
 API documentation
 -----------------
 
 Most parts of the C++ code are documented in the header files via Doxygen
 annotations. The information written in the source files is automatically
-extracted by `Exhale` (which uses `Doxygen`) and integrated into this
-documentation (see `API` section on the left). However, because
-this documentation and also `Exhale` is still under development some things may
-not work as expected. As a fallback option the unaltered Doxygen API
-documentation is also available `here <doxygen/index.html>`__.
+extracted by `Doxygen` and presented in a separate API documentation page
+available `here <doxygen/index.html>`__.
+
+.. Most parts of the C++ code are documented in the header files via Doxygen
+.. annotations. The information written in the source files is automatically
+.. extracted by `Exhale` (which uses `Doxygen`) and integrated into this
+.. documentation (see `API` section on the left). However, because
+.. this documentation and also `Exhale` is still under development some things may
+.. not work as expected. As a fallback option the unaltered Doxygen API
+.. documentation is also available `here <doxygen/index.html>`__.
 
 Purpose
 =======
@@ -179,11 +189,11 @@ list of keywords is provided :ref:`here <keywords>`.
    Tools/nnp-scaling
    Tools/nnp-train
 
-.. toctree::
-   :hidden:
-   :caption: API
-
-   doc-exhale/root
+.. .. toctree::
+..    :hidden:
+..    :caption: API
+.. 
+..    doc-exhale/root
 
 .. toctree::
    :hidden:
