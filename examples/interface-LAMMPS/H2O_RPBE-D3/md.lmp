@@ -9,7 +9,7 @@ clear
 # Configuration files
 variable cfgFile         string "h2o_8640_liquid_NpT_RPBE-D3.data"
 # Timesteps
-variable numSteps        equal  10
+variable numSteps        equal  5
 variable dt              equal  0.0005
 # NN
 variable nnpCutoff       equal  6.36

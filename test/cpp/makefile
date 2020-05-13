@@ -52,7 +52,7 @@ EXE=$(SRC:%.cpp=%)
 ###############################################################################
 .PHONY: all coverage clean clean-coverage
 
-all: $(EXE) 
+all: $(EXE)
 
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)

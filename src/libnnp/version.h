@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "7cc58c06a41aa9c0dd5169206825a89e3fceab5d"
-#define NNP_GIT_REV_SHORT "7cc58c0"
+#define NNP_GIT_REV "0659ffbde2e0d4696315aae786e713aafce7c3a7"
+#define NNP_GIT_REV_SHORT "0659ffb"
 #define NNP_GIT_BRANCH "fix_lammps_hybrid"
 
 #endif

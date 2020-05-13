@@ -50,6 +50,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 	libnnp \
 	libnnptrain \
 	libnnpif \
+	lammps-nnp \
 	pynnp \
 	clean-doc \
 	clean-doc-sphinx \
@@ -58,6 +59,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 	clean-libnnp \
 	clean-libnnptrain \
 	clean-libnnpif \
+	clean-lammps-nnp \
 	clean-pynnp \
 	install \
 	uninstall
@@ -71,6 +73,7 @@ clean: clean-libnnp \
        clean-libnnptrain \
        clean-libnnpif \
        clean-app \
+       clean-lammps-nnp \
        clean-pynnp
 
 clean-all: clean \
@@ -134,6 +137,15 @@ $(APP_TRAIN): libnnptrain
 
 $(CLEAN_APP):
 	cd application && $(MAKE) $@
+
+##############
+# lammps-nnp #
+##############
+lammps-nnp: libnnpif
+	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
+
+clean-lammps-nnp:
+	cd interface && $(MAKE) $@
 
 #########
 # pynnp #
