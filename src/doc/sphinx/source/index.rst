@@ -91,7 +91,7 @@ To train a completely new neural network potential the following parts are requi
 * :ref:`libnnp <libnnp>`
 * `libnnptrain`
 * :ref:`nnp-scaling`
-* `nnp-train`
+* :ref:`nnp-train`
 
 Additional, though not strictly required tools, are also quite useful:
 
@@ -177,6 +177,7 @@ list of keywords is provided :ref:`here <keywords>`.
    Tools/nnp-prune
    Tools/nnp-select
    Tools/nnp-scaling
+   Tools/nnp-train
 
 .. toctree::
    :hidden:
