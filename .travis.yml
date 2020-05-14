@@ -81,7 +81,8 @@ script:
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
   # C++ build and tests
-  - make MODE=test
+  - make MODE=test -j
+  - make MODE=test lammps-nnp -j
   - cd ../test/
   - make cpp
   - cd cpp

@@ -39,18 +39,24 @@ clean: clean-lammps-nnp
 # lammps-nnp #
 ##############
 lammps-nnp:
-	wget https://github.com/lammps/lammps/archive/$(LAMMPS_VERSION).tar.gz
+	if [ ! -e $(LAMMPS_VERSION).tar.gz ]; then \
+		wget https://github.com/lammps/lammps/archive/$(LAMMPS_VERSION).tar.gz; \
+	fi
 	tar -xzf $(LAMMPS_VERSION).tar.gz
 	ln -s $(PROJECT_DIR)/../../ lammps-$(LAMMPS_VERSION)/lib/nnp
 	cp -r ./LAMMPS/src/USER-NNP lammps-$(LAMMPS_VERSION)/src/
 	if [ "$(MODE)" = "test" ]; then \
-		sed -i "/^CCFLAGS =/   s/$$/ $(PROJECT_TEST)/" lammps-$(LAMMPS_VERSION)/src/MAKE/Makefile.mpi; \
-		sed -i "/^LINKFLAGS =/ s/$$/ $(PROJECT_TEST)/" lammps-$(LAMMPS_VERSION)/src/MAKE/Makefile.mpi; \
+		sed -i "/^CCFLAGS =/   s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-$(LAMMPS_VERSION)/src/MAKE/Makefile.mpi; \
+		sed -i "/^LINKFLAGS =/ s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-$(LAMMPS_VERSION)/src/MAKE/Makefile.mpi; \
 	fi
 	cd lammps-$(LAMMPS_VERSION)/src/ && $(MAKE) yes-molecule && $(MAKE) yes-user-nnp && $(MAKE) mpi
-	ln -s ../src/interface/lammps-$(LAMMPS_VERSION)/src/lmp_mpi $(PROJECT_BIN)/
+	cp lammps-$(LAMMPS_VERSION)/src/lmp_mpi $(PROJECT_BIN)/
 
 clean-lammps-nnp:
-	$(RM) -r lammps-$(LAMMPS_VERSION)  
+	$(RM) -r lammps-$(LAMMPS_VERSION)
 	$(RM) $(LAMMPS_VERSION).tar.gz
+	$(RM) $(PROJECT_BIN)/lmp_mpi
+
+clean-lammps-nnp-keep-file:
+	$(RM) -r lammps-$(LAMMPS_VERSION)
 	$(RM) $(PROJECT_BIN)/lmp_mpi

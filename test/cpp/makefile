@@ -59,9 +59,9 @@ all: $(EXE)
 	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 
 coverage:
-	lcov -c -i --no-external        -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/application -o tests.base
-	lcov -c    --no-external        -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/application -o tests.run
-	lcov -a tests.base -a tests.run -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/application -o tests.info
+	lcov -c -i --no-external        -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/libnnpif -d $(PROJECT_DIR)/src/application -o tests.base
+	lcov -c    --no-external        -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/libnnpif -d $(PROJECT_DIR)/src/application -o tests.run
+	lcov -a tests.base -a tests.run -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/libnnpif -d $(PROJECT_DIR)/src/application -o tests.info
 	genhtml -o htmlcov tests.info
 
 clean: clean-coverage
@@ -70,6 +70,7 @@ clean: clean-coverage
 clean-coverage:
 	$(RM) $(PROJECT_DIR)/src/libnnp/*.gcda
 	$(RM) $(PROJECT_DIR)/src/libnnptrain/*.gcda
+	$(RM) $(PROJECT_DIR)/src/libnnpif/*.gcda
 	$(RM) $(PROJECT_DIR)/src/application/*.gcda
 	$(RM) *.gcda *.base *.run *.info
 	$(RM) -r htmlcov
