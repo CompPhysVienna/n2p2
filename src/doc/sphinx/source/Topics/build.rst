@@ -45,7 +45,7 @@ information).
 +---------------------------------+----------------------------+------------------------------------------------------+
 | nnp-train                       | libnnptrain                | Train a neural network potential.                    |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| pair_style nnp                  | libnnpif                   | Pair style `nnp` for LAMMPS                          |
+| :ref:`lammps-nnp <if_lammps>`   | libnnpif                   | Pair style `nnp` for LAMMPS                          |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | pynnp                           | libnnp, python, cython     | Python interface to NNP library.                     |
 +---------------------------------+----------------------------+------------------------------------------------------+
@@ -55,9 +55,9 @@ information).
 The master makefile
 -------------------
 
-A master makefile is provided in the ``src`` directory which provides targets for
-all individual components (except for the LAMMPS :ref:`pair_style  nnp <if_lammps>`).
-For instance, compiling the interface library ``libnnpif`` requires only to type
+A master makefile is provided in the ``src`` directory which provides targets
+for all individual components.  For instance, compiling the interface library
+``libnnpif`` requires only to type
 
 .. code-block:: bash
 
