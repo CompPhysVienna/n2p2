@@ -19,7 +19,7 @@ Syntax
 
 * value depends on the preceding keyword:
 
-  *   *emap* value = mapping
+  *  *emap* value = mapping
 
       mapping = Element mapping from LAMMPS atom types to n2p2 elements
 

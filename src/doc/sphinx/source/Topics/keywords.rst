@@ -350,6 +350,7 @@ implemented:
 * ``0``: **Random selection**
 
   Select training candidates randomly.
+
 |br|
 * ``1``: **Sort by RMSE**
 
@@ -359,6 +360,7 @@ implemented:
   error. This selection scheme can be helpful to decrease the error of
   outlier forces when used in conjunction with the optional selection mode
   switching (see above).
+
 |br|
 * ``2``: **Random selection with threshold**
 

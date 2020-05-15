@@ -20,7 +20,7 @@ Automatic build
 .. important::
 
    The automatic compilation will only work on Unix-like systems as it relies on
-   tools such as ``sed`` and ``tar``
+   tools such as ``sed`` and ``tar``.
 
 For convenience the main makefile provides the compilation target ``lammps-nnp``
 which will automatically download LAMMPS (version ``stable_3Mar2020`` from the
