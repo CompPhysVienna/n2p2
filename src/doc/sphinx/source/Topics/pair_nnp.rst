@@ -216,8 +216,12 @@ present elements (see above).
 
 ----
 
-.. [1] `Behler and Parrinello, Phys. Rev. Lett. 98, 146401 (2007) <https://doi.org/10.1103/PhysRevLett.98.146401>`_
+.. [1] Behler, J.; Parrinello, M. Generalized Neural-Network Representation of
+   High-Dimensional Potential-Energy Surfaces. Phys. Rev. Lett. 2007, 98 (14),
+   146401. https://doi.org/10.1103/PhysRevLett.98.146401
 
 .. [2] https://github.com/CompPhysVienna/n2p2
 
-.. [3] `Singraber, Behler and Dellago, J. Chem. Theory Comput. (2019) <https://doi.org/10.1021/acs.jctc.8b00770>`_
+.. [3] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+   Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+   Theory Comput. 2019, 15 (5), 3075–3092. https://doi.org/10.1021/acs.jctc.8b01092

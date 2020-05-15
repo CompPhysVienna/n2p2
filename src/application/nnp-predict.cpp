@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
     if (argc != 2)
     {
         cout << "USAGE: " << argv[0] << " <info>\n"
-             << "       <info> ... Write structure information to "
-                " \"structure.out (0/1)\".\n"
+             << "       <info> ... Write structure information for debugging "
+                "to \"structure.out (0/1)\".\n"
              << "       Execute in directory with these NNP files present:\n"
              << "       - input.data (structure file)\n"
              << "       - input.nn (NNP settings)\n"
