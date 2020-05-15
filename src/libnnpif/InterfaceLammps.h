@@ -19,7 +19,9 @@
 
 #include "Mode.h"
 #include "Structure.h"
+#include <map>     // std::map
 #include <cstddef> // std::size_t
+#include <string>  // std::string
 
 namespace nnp
 {
@@ -33,6 +35,7 @@ public:
      *
      * @param[in] directory Directory containing NNP data files (weights,
      *                      scaling, settings).
+     * @param[in] emap Element mapping from LAMMPS to n2p2.
      * @param[in] showew If detailed extrapolation warnings for all atoms are
      *                   shown.
      * @param[in] resetew If extrapolation warnings counter is reset every
@@ -47,6 +50,7 @@ public:
      * @param[in] myRank MPI process rank (passed on to structure index).
      */
     void   initialize(char* const& directory,
+                      char* const& emap,
                       bool         showew,
                       bool         resetew,
                       int          showewsum,
@@ -143,23 +147,33 @@ public:
 
 protected:
     /// Process rank.
-    int       myRank;
+    int                        myRank;
     /// Initialization state.
-    bool      initialized;
+    bool                       initialized;
     /// Corresponds to LAMMPS `showew` keyword.
-    bool      showew;
+    bool                       showew;
     /// Corresponds to LAMMPS `resetew` keyword.
-    bool      resetew;
+    bool                       resetew;
     /// Corresponds to LAMMPS `showewsum` keyword.
-    int       showewsum;
+    int                        showewsum;
     /// Corresponds to LAMMPS `maxew` keyword.
-    int       maxew;
+    int                        maxew;
     /// Corresponds to LAMMPS `cflength` keyword.
-    double    cflength;
+    double                     cflength;
     /// Corresponds to LAMMPS `cfenergy` keyword.
-    double    cfenergy;
+    double                     cfenergy;
+    /// Corresponds to LAMMPS `map` keyword.
+    std::string                emap;
+    /// Map from LAMMPS index to n2p2 atom index.
+    std::vector<size_t>        indexMap;
+    /// True if atoms of this LAMMPS type will be ignored.
+    std::map<int, bool>        ignoreType;
+    /// Map from LAMMPS type to n2p2 element index.
+    std::map<int, std::size_t> mapTypeToElement;
+    /// Map from n2p2 element index to LAMMPS type.
+    std::map<std::size_t, int> mapElementToType;
     /// Structure containing local atoms.
-    Structure structure;
+    Structure                  structure;
 };
 
 //////////////////////////////////

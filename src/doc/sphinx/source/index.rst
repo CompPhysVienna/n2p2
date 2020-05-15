@@ -26,8 +26,8 @@ Documentation
 
 .. danger::
 
-   The build process has changed recently, please have a look at the compilation
-   chapter below!
+   The build process has changed recently, please have a look at the :ref:`build
+   instructions <build>`!
 
 .. warning::
 
@@ -91,7 +91,7 @@ supported), these components are required:
 
 * :ref:`libnnp <libnnp>`
 * `libnnpif`
-* :ref:`pair_style nnp <if_lammps>`
+* :ref:`lammps-nnp <if_lammps>`
 
 Training a new neural network potential
 ---------------------------------------
