@@ -8,6 +8,7 @@ given an existing HDNNP parameterization.
 
 Requirements:
 -------------
+
 The HDNNP setup, symmetry function scaling data and weight parameters are
 required in the usual files:
 
