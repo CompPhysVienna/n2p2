@@ -14,6 +14,7 @@
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionAngularPolyOnly.h"
+#include "SymmetryFunctionAngularPolyOnlyNarrow.h"
 #include "SymmetryFunctionAngularPolyWide.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
@@ -43,6 +44,7 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     else if (type == 28) sf = new SymmetryFunctionRadialPoly(em);
     else if (type == 29) sf = new SymmetryFunctionAngularPolyWide(em);
     else if (type == 89) sf = new SymmetryFunctionAngularPolyOnly(em);
+    else if (type == 99) sf = new SymmetryFunctionAngularPolyOnlyNarrow(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
