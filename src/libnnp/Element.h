@@ -46,7 +46,7 @@ public:
      *
      * Necessary because of #symmetryFunctions vector of pointers.
      */
-    ~Element();
+    virtual ~Element();
     /** Set #atomicEnergyOffset.
      */
     void                     setAtomicEnergyOffset(double atomicEnergyOffset);
