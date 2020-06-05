@@ -14,10 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef TYPES_NNP_H
-#define TYPES_NNP_H
-
-#include <Kokkos_Core.hpp>
+#ifndef TYPES_CABANA_H
+#define TYPES_CABANA_H
 
 constexpr double CFLENGTH = 1.889726;
 constexpr double CFENERGY = 0.036749;
@@ -31,4 +29,4 @@ enum ScalingType {
     ST_SCALESIGMA
 };
 
-#endif // TYPES_NNP_H
+#endif // TYPES_CABANA_H

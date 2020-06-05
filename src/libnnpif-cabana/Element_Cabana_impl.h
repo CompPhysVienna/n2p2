@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <nnp_element.h>
-
 #include <utility.h>
 
 #include <algorithm> // std::sort, std::min, std::max
@@ -25,29 +23,32 @@
 #include <stdexcept> // std::runtime_error
 
 using namespace std;
-namespace nnpCbn
+
+namespace nnp
 {
 
-Element::Element( size_t const index )
-    : index( index )
-    , atomicEnergyOffset( 0.0 )
+ElementCabana::ElementCabana( size_t const _index )
+    : Element()
 {
+    index = _index;
+    atomicEnergyOffset = 0.0;
+    neuralNetwork = NULL;
 }
 
-Element::~Element() {}
+ElementCabana::~ElementCabana() {}
 
 template <class t_SF, class h_t_int>
-void Element::addSymmetryFunction( string const &parameters,
-                                   vector<string> elementStrings, int attype,
-                                   t_SF SF, double convLength,
-                                   h_t_int h_numSFperElem )
+void ElementCabana::addSymmetryFunction( string const &parameters,
+                                         vector<string> elementStrings, int attype,
+                                         t_SF SF, double convLength,
+                                         h_t_int h_numSFperElem )
 {
-    vector<string> args = nnp::split( nnp::reduce( parameters ) );
+    vector<string> args = split( reduce( parameters ) );
     size_t type = (size_t)atoi( args.at( 1 ).c_str() );
     const char *estring;
     int el = 0;
 
-    vector<string> splitLine = nnp::split( nnp::reduce( parameters ) );
+    vector<string> splitLine = split( reduce( parameters ) );
     if ( type == 2 )
     {
         estring = splitLine.at( 0 ).c_str();
@@ -164,8 +165,8 @@ void Element::addSymmetryFunction( string const &parameters,
 }
 
 template <class t_SF, class h_t_int>
-void Element::sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem,
-                                     int attype )
+void ElementCabana::sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem,
+                                           int attype )
 {
     int size = h_numSFperElem( attype );
     h_t_int h_SFsort( "SortSort", size );
@@ -200,7 +201,7 @@ void Element::sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem,
 }
 
 template <class t_SF>
-bool Element::compareSF( t_SF SF, int attype, int index1, int index2 )
+bool ElementCabana::compareSF( t_SF SF, int attype, int index1, int index2 )
 {
     if ( SF( attype, index2, 0 ) < SF( attype, index1, 0 ) )
         return true; // ec
@@ -263,8 +264,8 @@ bool Element::compareSF( t_SF SF, int attype, int index1, int index2 )
 
 template <class t_SF, class h_t_int>
 vector<string>
-Element::infoSymmetryFunctionParameters( t_SF SF, int attype,
-                                         h_t_int h_numSFperElem ) const
+ElementCabana::infoSymmetryFunctionParameters( t_SF SF, int attype,
+                                               h_t_int h_numSFperElem ) const
 {
     vector<string> v;
     string pushstring = "";
@@ -288,7 +289,7 @@ Element::infoSymmetryFunctionParameters( t_SF SF, int attype,
 
 template <class t_SF, class t_SFscaling, class h_t_int>
 vector<string>
-Element::infoSymmetryFunctionScaling( ScalingType scalingType, t_SF SF,
+ElementCabana::infoSymmetryFunctionScaling( ScalingType scalingType, t_SF SF,
                                       t_SFscaling SFscaling, int attype,
                                       h_t_int h_numSFperElem ) const
 {
@@ -303,11 +304,11 @@ Element::infoSymmetryFunctionScaling( ScalingType scalingType, t_SF SF,
 }
 
 template <class t_SF, class t_SFGmemberlist, class h_t_int>
-void Element::setupSymmetryFunctionGroups( t_SF SF,
-                                           t_SFGmemberlist SFGmemberlist,
-                                           int attype, h_t_int h_numSFperElem,
-                                           h_t_int h_numSFGperElem,
-                                           int maxSFperElem )
+void ElementCabana::setupSymmetryFunctionGroups( t_SF SF,
+                                                 t_SFGmemberlist SFGmemberlist,
+                                                 int attype, h_t_int h_numSFperElem,
+                                                 h_t_int h_numSFGperElem,
+                                                 int maxSFperElem )
 {
     h_t_int h_numGR( "RadialCounter", h_numSFGperElem.extent( 0 ) );
     h_t_int h_numGA( "AngularCounter", h_numSFGperElem.extent( 0 ) );
@@ -382,8 +383,8 @@ void Element::setupSymmetryFunctionGroups( t_SF SF,
 
 template <class t_SF, class t_SFGmemberlist, class h_t_int>
 vector<string>
-Element::infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
-                                     int attype, h_t_int h_numSFGperElem ) const
+ElementCabana::infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
+                                           int attype, h_t_int h_numSFGperElem ) const
 {
     vector<string> v;
     string pushstring = "";
@@ -404,9 +405,9 @@ Element::infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
 }
 
 template <class t_SF, class h_t_int>
-void Element::setCutoffFunction( CutoffFunction::CutoffType const cutoffType,
-                                 double const cutoffAlpha, t_SF SF, int attype,
-                                 h_t_int h_numSFperElem )
+void ElementCabana::setCutoffFunction( CutoffFunction::CutoffType const cutoffType,
+                                       double const cutoffAlpha, t_SF SF, int attype,
+                                       h_t_int h_numSFperElem )
 {
     for ( int k = 0; k < h_numSFperElem( attype ); ++k )
     {
@@ -417,10 +418,10 @@ void Element::setCutoffFunction( CutoffFunction::CutoffType const cutoffType,
 }
 
 template <class t_SF, class t_SFscaling, class h_t_int>
-void Element::setScaling( ScalingType scalingType,
-                          vector<string> const &statisticsLine, double Smin,
-                          double Smax, t_SF SF, t_SFscaling SFscaling,
-                          int attype, h_t_int h_numSFperElem ) const
+void ElementCabana::setScaling( ScalingType scalingType,
+                                vector<string> const &statisticsLine, double Smin,
+                                double Smax, t_SF SF, t_SFscaling SFscaling,
+                                int attype, h_t_int h_numSFperElem ) const
 {
     int index;
     for ( int k = 0; k < h_numSFperElem( attype ); ++k )
@@ -437,7 +438,7 @@ void Element::setScaling( ScalingType scalingType,
 }
 
 template <class t_SF>
-size_t Element::getMinNeighbors( int attype, t_SF SF, int nSF ) const
+size_t ElementCabana::getMinNeighbors( int attype, t_SF SF, int nSF ) const
 {
     // get max number of minNeighbors
     size_t global_minNeighbors = 0;
@@ -457,8 +458,8 @@ size_t Element::getMinNeighbors( int attype, t_SF SF, int nSF ) const
 }
 
 template <class t_SF, class h_t_int>
-double Element::getMinCutoffRadius( t_SF SF, int attype,
-                                    h_t_int h_numSFperElem ) const
+double ElementCabana::getMinCutoffRadius( t_SF SF, int attype,
+                                          h_t_int h_numSFperElem ) const
 {
     double minCutoffRadius = numeric_limits<double>::max();
 
@@ -469,8 +470,8 @@ double Element::getMinCutoffRadius( t_SF SF, int attype,
 }
 
 template <class t_SF, class h_t_int>
-double Element::getMaxCutoffRadius( t_SF SF, int attype,
-                                    h_t_int h_numSFperElem ) const
+double ElementCabana::getMaxCutoffRadius( t_SF SF, int attype,
+                                          h_t_int h_numSFperElem ) const
 {
     double maxCutoffRadius = 0.0;
 
@@ -482,12 +483,7 @@ double Element::getMaxCutoffRadius( t_SF SF, int attype,
 
 // TODO:add functionality
 /*
-void Element::updateSymmetryFunctionStatistics(System* s, AoSoA_NNP_all
-nnp_data,
-...)
-{
-    return;
-}
+void ElementCabana::updateSymmetryFunctionStatistics
 */
 
-} // namespace nnpCbn
+}

@@ -14,15 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef CBN_ELEMENT_H
-#define CBN_ELEMENT_H
+#ifndef ELEMENT_CABANA_H
+#define ELEMENT_CABANA_H
 
-#include <nnp_cutoff.h>
-#include <types_nnp.h>
+#include <Types_Cabana.h>
 
-#include <system.h>
-#include <types.h>
-
+#include <CutoffFunction.h>
+#include <Element.h>
 #include <utility.h>
 
 #include <cstddef> // size_t
@@ -30,38 +28,21 @@
 #include <vector>  // vector
 
 using namespace std;
-namespace nnpCbn
+
+namespace nnp
 {
 
-class SymmetryFunctionGroup;
-
-/// Contains element-specific data.
-class Element
+/// Derived Cabana class for element-specific data.
+class ElementCabana : public Element
 {
   public:
     /** Constructor using index.
      */
-    Element( size_t const index );
+    ElementCabana( size_t const index );
     /** Destructor.
-     *
-     * Necessary because of #symmetryFunctions vector of pointers.
      */
-    ~Element();
-    /** Set #atomicEnergyOffset.
-     */
-    void setAtomicEnergyOffset( double atomicEnergyOffset );
-    /** Get #index.
-     */
-    size_t getIndex() const;
-    /** Get #atomicNumber.
-     */
-    size_t getAtomicNumber() const;
-    /** Get #atomicEnergyOffset.
-     */
-    double getAtomicEnergyOffset() const;
-    /** Get #symbol.
-     */
-    string getSymbol() const;
+    ~ElementCabana();
+
     /** Add one symmetry function.
      *
      * @param[in] parameters String containing settings for symmetry function.
@@ -191,54 +172,35 @@ class Element
                            t_SFscaling SFscaling );
 
   private:
-    /// Copy of element map.
     /// Global index of this element.
-    size_t index;
+    using Element::index;
     /// Atomic number of this element.
-    size_t atomicNumber;
+    using Element::atomicNumber;
     /// Offset energy for every atom of this element.
-    double atomicEnergyOffset;
+    using Element::atomicEnergyOffset;
     /// Element symbol.
-    string symbol;
+    using Element::symbol;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline void Element::setAtomicEnergyOffset( double atomicEnergyOffset )
-{
-    this->atomicEnergyOffset = atomicEnergyOffset;
-
-    return;
-}
-
-inline size_t Element::getIndex() const { return index; }
-
-inline size_t Element::getAtomicNumber() const { return atomicNumber; }
-
-inline double Element::getAtomicEnergyOffset() const
-{
-    return atomicEnergyOffset;
-}
-
-inline string Element::getSymbol() const { return symbol; }
-
 template <class h_t_int>
-inline size_t Element::numSymmetryFunctions( int attype,
+inline size_t ElementCabana::numSymmetryFunctions( int attype,
                                              h_t_int h_numSFperElem ) const
 {
     return h_numSFperElem( attype );
 }
 
 template <class t_SFscaling>
-inline void Element::setScalingType( ScalingType scalingType,
-                                     string statisticsLine, double Smin,
-                                     double Smax, t_SFscaling SFscaling,
-                                     int attype, int k ) const
+inline void ElementCabana::setScalingType( ScalingType scalingType,
+                                           string statisticsLine, double Smin,
+                                           double Smax, t_SFscaling SFscaling,
+                                           int attype, int k ) const
 {
     double Gmin, Gmax, Gmean, Gsigma = 0, scalingFactor = 0;
-    vector<string> s = nnp::split( nnp::reduce( statisticsLine ) );
+    vector<string> s = split( reduce( statisticsLine ) );
 
     Gmin = atof( s.at( 2 ).c_str() );
     Gmax = atof( s.at( 3 ).c_str() );
@@ -272,21 +234,21 @@ inline void Element::setScalingType( ScalingType scalingType,
 }
 
 template <class t_SFscaling>
-inline string Element::scalingLine( ScalingType scalingType,
-                                    t_SFscaling SFscaling, int attype,
-                                    int k ) const
+inline string ElementCabana::scalingLine( ScalingType scalingType,
+                                          t_SFscaling SFscaling, int attype,
+                                          int k ) const
 {
-    return nnp::strpr( "%4zu %9.2E %9.2E %9.2E %9.2E %9.2E %5.2f %5.2f %d\n",
-                       k + 1, SFscaling( attype, k, 0 ),
-                       SFscaling( attype, k, 1 ), SFscaling( attype, k, 2 ),
-                       SFscaling( attype, k, 3 ), SFscaling( attype, k, 6 ),
-                       SFscaling( attype, k, 4 ), SFscaling( attype, k, 5 ),
-                       scalingType );
+    return strpr( "%4zu %9.2E %9.2E %9.2E %9.2E %9.2E %5.2f %5.2f %d\n",
+                  k + 1, SFscaling( attype, k, 0 ),
+                  SFscaling( attype, k, 1 ), SFscaling( attype, k, 2 ),
+                  SFscaling( attype, k, 3 ), SFscaling( attype, k, 6 ),
+                  SFscaling( attype, k, 4 ), SFscaling( attype, k, 5 ),
+                  scalingType );
 }
 
 template <class t_SFscaling>
-inline double Element::unscale( int attype, double value, int k,
-                                t_SFscaling SFscaling )
+inline double ElementCabana::unscale( int attype, double value, int k,
+                                      t_SFscaling SFscaling )
 {
     double scalingType = SFscaling( attype, k, 7 );
     double scalingFactor = SFscaling( attype, k, 6 );
@@ -323,8 +285,8 @@ inline double Element::unscale( int attype, double value, int k,
     }
 }
 
-} // namespace nnpCbn
+}
 
-#include <nnp_element_impl.h>
+#include <Element_Cabana_impl.h>
 
 #endif

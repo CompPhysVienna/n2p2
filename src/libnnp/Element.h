@@ -36,6 +36,9 @@ class SymmetryFunctionGroup;
 class Element
 {
 public:
+    /** Default constructor
+     */
+    Element() {}
     /** Constructor using index.
      */
     Element(std::size_t const index, ElementMap const& elementMap);
@@ -195,7 +198,7 @@ public:
     /// Symmetry function statistics.
     SymmetryFunctionStatistics statistics;
 
-private:
+protected:
     /// Copy of element map.
     ElementMap                            elementMap;
     /// Global index of this element.

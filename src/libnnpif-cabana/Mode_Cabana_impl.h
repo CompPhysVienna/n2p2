@@ -23,117 +23,14 @@
 #include <stdexcept> // std::runtime_error
 #include <string>
 
-#define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "7b73a36a9acfdcc80e44265bac92b055f41a1d07"
-#define NNP_GIT_REV_SHORT "7b73a36"
-#define NNP_GIT_BRANCH "master"
-
 using namespace std;
 
-namespace nnpCbn
+namespace nnp
 {
 
+// TODO: call base, then copy to Views
 template <class t_device>
-Mode<t_device>::Mode()
-    : normalize( false )
-    , checkExtrapolationWarnings( false )
-    , numElements( 0 )
-    , maxCutoffRadius( 0.0 )
-    , cutoffAlpha( 0.0 )
-    , meanEnergy( 0.0 )
-    , convEnergy( 1.0 )
-    , convLength( 1.0 )
-{
-}
-
-template <class t_device>
-void Mode<t_device>::initialize()
-{
-
-    log << "\n";
-    log << "*****************************************"
-           "**************************************\n";
-    log << "\n";
-    log << "   NNP LIBRARY v" NNP_VERSION "\n";
-    log << "   ------------------\n";
-    log << "\n";
-    log << "Git branch  : " NNP_GIT_BRANCH "\n";
-    log << "Git revision: " NNP_GIT_REV_SHORT " (" NNP_GIT_REV ")\n";
-    log << "\n";
-    log << "*****************************************"
-           "**************************************\n";
-    return;
-}
-
-template <class t_device>
-void Mode<t_device>::loadSettingsFile( string const &fileName )
-{
-    log << "\n";
-    log << "*** SETUP: SETTINGS FILE ****************"
-           "**************************************\n";
-    log << "\n";
-
-    settings.loadFile( fileName );
-    log << settings.info();
-
-    log << "*****************************************"
-           "**************************************\n";
-
-    return;
-}
-
-template <class t_device>
-void Mode<t_device>::setupNormalization()
-{
-    log << "\n";
-    log << "*** SETUP: NORMALIZATION ****************"
-           "**************************************\n";
-    log << "\n";
-
-    if ( settings.keywordExists( "mean_energy" ) &&
-         settings.keywordExists( "conv_energy" ) &&
-         settings.keywordExists( "conv_length" ) )
-    {
-        normalize = true;
-        meanEnergy = atof( settings["mean_energy"].c_str() );
-        convEnergy = atof( settings["conv_energy"].c_str() );
-        convLength = atof( settings["conv_length"].c_str() );
-        log << "Data set normalization is used.\n";
-        log << nnp::strpr( "Mean energy per atom     : %24.16E\n", meanEnergy );
-        log << nnp::strpr( "Conversion factor energy : %24.16E\n", convEnergy );
-        log << nnp::strpr( "Conversion factor length : %24.16E\n", convLength );
-        if ( settings.keywordExists( "atom_energy" ) )
-        {
-            log << "\n";
-            log << "Atomic energy offsets are used in addition to"
-                   " data set normalization.\n";
-            log << "Offsets will be subtracted from reference energies BEFORE"
-                   " normalization is applied.\n";
-        }
-    }
-    else if ( ( !settings.keywordExists( "mean_energy" ) ) &&
-              ( !settings.keywordExists( "conv_energy" ) ) &&
-              ( !settings.keywordExists( "conv_length" ) ) )
-    {
-        normalize = false;
-        log << "Data set normalization is not used.\n";
-    }
-    else
-    {
-        throw runtime_error( "ERROR: Incorrect usage of normalization"
-                             " keywords.\n"
-                             "       Use all or none of \"mean_energy\", "
-                             "\"conv_energy\" and \"conv_length\".\n" );
-    }
-
-    log << "*****************************************"
-           "**************************************\n";
-
-    return;
-}
-
-template <class t_device>
-void Mode<t_device>::setupElementMap()
+void ModeCabana<t_device>::setupElementMap()
 {
     log << "\n";
     log << "*** SETUP: ELEMENT MAP ******************"
@@ -159,7 +56,7 @@ void Mode<t_device>::setupElementMap()
 }
 
 template <class t_device>
-void Mode<t_device>::setupElements()
+void ModeCabana<t_device>::setupElements()
 {
     log << "\n";
     log << "*** SETUP: ELEMENTS *********************"
@@ -177,7 +74,7 @@ void Mode<t_device>::setupElements()
 
     for ( size_t i = 0; i < numElements; ++i )
     {
-        elements.push_back( Element( i ) );
+        elements.push_back( ElementCabana( i ) );
     }
 
     if ( settings.keywordExists( "atom_energy" ) )
@@ -212,103 +109,7 @@ void Mode<t_device>::setupElements()
 }
 
 template <class t_device>
-void Mode<t_device>::setupCutoff()
-{
-    log << "\n";
-    log << "*** SETUP: CUTOFF FUNCTIONS *************"
-           "**************************************\n";
-    log << "\n";
-
-    vector<string> args = nnp::split( settings["cutoff_type"] );
-
-    cutoffType = (CutoffFunction::CutoffType)atoi( args.at( 0 ).c_str() );
-    if ( args.size() > 1 )
-    {
-        cutoffAlpha = atof( args.at( 1 ).c_str() );
-        if ( 0.0 < cutoffAlpha && cutoffAlpha >= 1.0 )
-        {
-            throw invalid_argument( "ERROR: 0 <= alpha < 1.0 is required.\n" );
-        }
-    }
-    log << nnp::strpr( "Parameter alpha for inner cutoff: %f\n", cutoffAlpha );
-    log << "Inner cutoff = Symmetry function cutoff * alpha\n";
-
-    log << "Equal cutoff function type for all symmetry functions:\n";
-    if ( cutoffType == CutoffFunction::CT_COS )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_COS (%d)\n", cutoffType );
-        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
-        log << "f(x) = 1/2 * (cos(pi*x) + 1)\n";
-    }
-    else if ( cutoffType == CutoffFunction::CT_TANHU )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_TANHU (%d)\n", cutoffType );
-        log << "f(r) = tanh^3(1 - r/rc)\n";
-        if ( cutoffAlpha > 0.0 )
-        {
-            log << "WARNING: Inner cutoff parameter not used in combination"
-                   " with this cutoff function.\n";
-        }
-    }
-    else if ( cutoffType == CutoffFunction::CT_TANH )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_TANH (%d)\n", cutoffType );
-        log << "f(r) = c * tanh^3(1 - r/rc), f(0) = 1\n";
-        if ( cutoffAlpha > 0.0 )
-        {
-            log << "WARNING: Inner cutoff parameter not used in combination"
-                   " with this cutoff function.\n";
-        }
-    }
-    else if ( cutoffType == CutoffFunction::CT_POLY1 )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_POLY1 (%d)\n", cutoffType );
-        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
-        log << "f(x) = (2x - 3)x^2 + 1\n";
-    }
-    else if ( cutoffType == CutoffFunction::CT_POLY2 )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_POLY2 (%d)\n", cutoffType );
-        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
-        log << "f(x) = ((15 - 6x)x - 10)x^3 + 1\n";
-    }
-    else if ( cutoffType == CutoffFunction::CT_POLY3 )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_POLY3 (%d)\n", cutoffType );
-        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
-        log << "f(x) = (x(x(20x - 70) + 84) - 35)x^4 + 1\n";
-    }
-    else if ( cutoffType == CutoffFunction::CT_POLY4 )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_POLY4 (%d)\n", cutoffType );
-        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
-        log << "f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1\n";
-    }
-    else if ( cutoffType == CutoffFunction::CT_EXP )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_EXP (%d)\n", cutoffType );
-        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
-        log << "f(x) = exp(-1 / 1 - x^2)\n";
-    }
-    else if ( cutoffType == CutoffFunction::CT_HARD )
-    {
-        log << nnp::strpr( "CutoffFunction::CT_HARD (%d)\n", cutoffType );
-        log << "f(r) = 1\n";
-        log << "WARNING: Hard cutoff used!\n";
-    }
-    else
-    {
-        throw invalid_argument( "ERROR: Unknown cutoff type.\n" );
-    }
-
-    log << "*****************************************"
-           "**************************************\n";
-
-    return;
-}
-
-template <class t_device>
-void Mode<t_device>::setupSymmetryFunctions()
+void ModeCabana<t_device>::setupSymmetryFunctions()
 {
     maxSFperElem = 0;
     h_numSFperElem =
@@ -381,7 +182,7 @@ void Mode<t_device>::setupSymmetryFunctions()
     log << "\n";
     maxCutoffRadius = 0.0;
 
-    for ( vector<Element>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -430,8 +231,9 @@ void Mode<t_device>::setupSymmetryFunctions()
     return;
 }
 
+// TODO: call base, then copy to View
 template <class t_device>
-void Mode<t_device>::setupSymmetryFunctionScaling( string const &fileName )
+void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName )
 {
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTION SCALING ****"
@@ -538,7 +340,7 @@ void Mode<t_device>::setupSymmetryFunctionScaling( string const &fileName )
     log << "Smax .... Desired maximum scaled symmetry function value.\n";
     log << "t ....... Scaling type.\n";
     log << "\n";
-    for ( vector<Element>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -575,7 +377,7 @@ void Mode<t_device>::setupSymmetryFunctionScaling( string const &fileName )
 }
 
 template <class t_device>
-void Mode<t_device>::setupSymmetryFunctionGroups()
+void ModeCabana<t_device>::setupSymmetryFunctionGroups()
 {
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTION GROUPS *****"
@@ -605,7 +407,7 @@ void Mode<t_device>::setupSymmetryFunctionGroups()
     h_numSFGperElem =
         h_t_int( "numSymmetryFunctionGroupsPerElement", numElements );
 
-    for ( vector<Element>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -637,53 +439,7 @@ void Mode<t_device>::setupSymmetryFunctionGroups()
 }
 
 template <class t_device>
-void Mode<t_device>::setupSymmetryFunctionStatistics(
-    bool collectStatistics, bool collectExtrapolationWarnings,
-    bool writeExtrapolationWarnings, bool stopOnExtrapolationWarnings )
-{
-    log << "\n";
-    log << "*** SETUP: SYMMETRY FUNCTION STATISTICS *"
-           "**************************************\n";
-    log << "\n";
-
-    log << "Equal symmetry function statistics for all elements.\n";
-    log << nnp::strpr(
-        "Collect min/max/mean/sigma                        : %d\n",
-        (int)collectStatistics );
-    log << nnp::strpr(
-        "Collect extrapolation warnings                    : %d\n",
-        (int)collectExtrapolationWarnings );
-    log << nnp::strpr(
-        "Write extrapolation warnings immediately to stderr: %d\n",
-        (int)writeExtrapolationWarnings );
-    log << nnp::strpr(
-        "Halt on any extrapolation warning                 : %d\n",
-        (int)stopOnExtrapolationWarnings );
-    for ( vector<Element>::iterator it = elements.begin(); it != elements.end();
-          ++it )
-    {
-        // it->statistics.collectStatistics = collectStatistics;
-        // it->statistics.collectExtrapolationWarnings =
-        //                                          collectExtrapolationWarnings;
-        // it->statistics.writeExtrapolationWarnings =
-        // writeExtrapolationWarnings;
-        // it->statistics.stopOnExtrapolationWarnings
-        // =
-        //                                           stopOnExtrapolationWarnings;
-    }
-
-    /*checkExtrapolationWarnings = collectStatistics
-                              || collectExtrapolationWarnings
-                              || writeExtrapolationWarnings
-                              || stopOnExtrapolationWarnings;*/
-
-    log << "*****************************************"
-           "**************************************\n";
-    return;
-}
-
-template <class t_device>
-void Mode<t_device>::setupNeuralNetwork()
+void ModeCabana<t_device>::setupNeuralNetwork()
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORKS **************"
@@ -725,7 +481,7 @@ void Mode<t_device>::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
-    for ( vector<Element>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -770,7 +526,7 @@ void Mode<t_device>::setupNeuralNetwork()
 }
 
 template <class t_device>
-void Mode<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
+void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
@@ -781,7 +537,7 @@ void Mode<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
                        fileNameFormat.c_str() );
     int count = 0;
     int AN = 0;
-    for ( vector<Element>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         const char *estring = elementStrings[count].c_str();
@@ -847,7 +603,7 @@ void Mode<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
 template <class t_device>
 template <class t_slice_x, class t_slice_type, class t_slice_G,
           class t_neigh_list, class t_neigh_parallel, class t_angle_parallel>
-void Mode<t_device>::calculateSymmetryFunctionGroups(
+void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
     t_slice_x x, t_slice_type type, t_slice_G G, t_neigh_list neigh_list,
     int N_local, t_neigh_parallel neigh_op_tag, t_angle_parallel angle_op_tag )
 {
@@ -1064,10 +820,8 @@ void Mode<t_device>::calculateSymmetryFunctionGroups(
 template <class t_device>
 template <class t_slice_type, class t_slice_G, class t_slice_dEdG,
           class t_slice_E>
-void Mode<t_device>::calculateAtomicNeuralNetworks( t_slice_type type,
-                                                    t_slice_G G,
-                                                    t_slice_dEdG dEdG,
-                                                    t_slice_E E, int N_local )
+void ModeCabana<t_device>::calculateAtomicNeuralNetworks( 
+    t_slice_type type, t_slice_G G, t_slice_dEdG dEdG, t_slice_E E, int N_local )
 {
     NN = d_t_NN( "Mode::NN", N_local, numLayers, maxNeurons );
     dfdx = d_t_NN( "Mode::dfdx", N_local, numLayers, maxNeurons );
@@ -1153,11 +907,10 @@ template <class t_device>
 template <class t_slice_x, class t_slice_f, class t_slice_type,
           class t_slice_dEdG, class t_neigh_list, class t_neigh_parallel,
           class t_angle_parallel>
-void Mode<t_device>::calculateForces( t_slice_x x, t_slice_f f_a,
-                                      t_slice_type type, t_slice_dEdG dEdG,
-                                      t_neigh_list neigh_list, int N_local,
-                                      t_neigh_parallel neigh_op_tag,
-                                      t_angle_parallel angle_op_tag )
+void ModeCabana<t_device>::calculateForces( 
+    t_slice_x x, t_slice_f f_a, t_slice_type type, t_slice_dEdG dEdG,
+    t_neigh_list neigh_list, int N_local, t_neigh_parallel neigh_op_tag,
+    t_angle_parallel angle_op_tag )
 {
     double convForce = convLength / convEnergy;
 
@@ -1429,4 +1182,4 @@ void Mode<t_device>::calculateForces( t_slice_x x, t_slice_f f_a,
     return;
 }
 
-} // namespace nnpCbn
+}
