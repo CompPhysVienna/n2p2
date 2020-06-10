@@ -50,6 +50,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 	libnnp \
 	libnnptrain \
 	libnnpif \
+        libnnpif-cabana \
 	lammps-nnp \
 	pynnp \
 	clean-doc \
@@ -59,6 +60,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 	clean-libnnp \
 	clean-libnnptrain \
 	clean-libnnpif \
+	clean-libnnpif-cabana \
 	clean-lammps-nnp \
 	clean-pynnp \
 	install \
@@ -67,11 +69,13 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 all: libnnp \
      libnnptrain \
      libnnpif \
+     libnnpif-cabana \
      all-app
 
 clean: clean-libnnp \
        clean-libnnptrain \
        clean-libnnpif \
+       clean-libnnpif-cabana \
        clean-app \
        clean-lammps-nnp \
        clean-pynnp
@@ -84,7 +88,7 @@ clean-all: clean \
 ################################
 doc: doc-doxygen doc-sphinx
 	cp -r ../doc/doxygen/html ../doc/sphinx/html/doxygen
-	
+
 clean-doc: clean-doc-sphinx clean-doc-doxygen
 
 doc-sphinx:
@@ -108,14 +112,14 @@ libnnp:
 clean-libnnp:
 	cd libnnp && $(MAKE) clean
 
-#########################
-# libnnptrain, libnnpif #
-#########################
-libnnptrain libnnpif: libnnp
+##########################################
+# libnnptrain, libnnpif, libnnpif-cabana #
+##########################################
+libnnptrain libnnpif libnnpif-cabana: libnnp
 	cd $@ && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
-clean-libnnptrain clean-libnnpif: LIBDIR=$(subst clean-,,$@)
-clean-libnnptrain clean-libnnpif:
+clean-libnnptrain clean-libnnpif clean-libnnpif-cabana: LIBDIR=$(subst clean-,,$@)
+clean-libnnptrain clean-libnnpif clean-libnnpif-cabana:
 	cd $(LIBDIR) && $(MAKE) clean
 
 ####################
@@ -160,7 +164,7 @@ clean-pynnp:
 # install (set links to install directories) #
 ##############################################
 EXE=$(APP)
-DLIB=libnnp.so libnnpif.so libnnptrain.so
+DLIB=libnnp.so libnnpif.so libnnptrain.so libnnpifcabana.so
 SLIB=$(DLIB:.so=.a)
 PYLIB=$(wildcard $(PROJECT_LIB)/pynnp*.so)
 install:
