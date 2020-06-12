@@ -65,7 +65,7 @@ void ModeCabana<t_device>::setupElements()
 
     numElements = (size_t)atoi( settings["number_of_elements"].c_str() );
     atomicEnergyOffset =
-        h_t_mass( "ForceNNP::atomicEnergyOffset", numElements );
+        h_t_mass( "Mode::atomicEnergyOffset", numElements );
     if ( numElements != elementStrings.size() )
     {
         throw runtime_error( "ERROR: Inconsistent number of elements.\n" );
@@ -113,7 +113,7 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
 {
     maxSFperElem = 0;
     h_numSFperElem =
-        h_t_int( "ForceNNP::numSymmetryFunctionsPerElement", numElements );
+        h_t_int( "Mode::numSymmetryFunctionsPerElement", numElements );
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTIONS ***********"
            "**************************************\n";
@@ -405,7 +405,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionGroups()
     log << "\n";
 
     h_numSFGperElem =
-        h_t_int( "numSymmetryFunctionGroupsPerElement", numElements );
+        h_t_int( "Mode::numSymmetryFunctionGroupsPerElement", numElements );
 
     for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
           ++it )
@@ -449,8 +449,8 @@ void ModeCabana<t_device>::setupNeuralNetwork()
     numLayers = 2 + atoi( settings["global_hidden_layers_short"].c_str() );
     numHiddenLayers = numLayers - 2;
 
-    h_numNeuronsPerLayer = h_t_int( "numNeuronsPerLayer", numLayers );
-    h_AF = h_t_int( "ActivationFunctions", numLayers );
+    h_numNeuronsPerLayer = h_t_int( "Mode::numNeuronsPerLayer", numLayers );
+    h_AF = h_t_int( "Mode::ActivationFunctions", numLayers );
 
     vector<string> numNeuronsPerHiddenLayer =
         split( reduce( settings["global_nodes_short"] ) );
@@ -515,8 +515,8 @@ void ModeCabana<t_device>::setupNeuralNetwork()
     for ( int j = 0; j < numLayers; ++j )
         maxNeurons = max( maxNeurons, h_numNeuronsPerLayer( j ) );
 
-    h_bias = t_bias( "ForceNNP::biases", numElements, numLayers, maxNeurons );
-    h_weights = t_weights( "ForceNNP::weights", numElements, numLayers,
+    h_bias = t_bias( "Mode::biases", numElements, numLayers, maxNeurons );
+    h_weights = t_weights( "Mode::weights", numElements, numLayers,
                            maxNeurons, maxNeurons );
 
     log << "*****************************************"
