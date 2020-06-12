@@ -27,8 +27,6 @@
 #include <string>  // string
 #include <vector>  // vector
 
-using namespace std;
-
 namespace nnp
 {
 
@@ -38,7 +36,7 @@ class ElementCabana : public Element
   public:
     /** Constructor using index.
      */
-    ElementCabana( size_t const index );
+    ElementCabana( std::size_t const index );
     /** Destructor.
      */
     ~ElementCabana();
@@ -54,9 +52,9 @@ class ElementCabana : public Element
      *                           functions per element.
      */
     template <class t_SF, class h_t_int>
-    void addSymmetryFunction( string const &parameters,
-                              vector<string> elementStrings, int attype,
-                              t_SF SF, double convLength,
+    void addSymmetryFunction( std::string const &parameters,
+                              std::vector<std::string> elementStrings,
+                              int attype, t_SF SF, double convLength,
                               h_t_int h_numSFperElem );
     /** Change length unit for all symmetry functions.
      *
@@ -89,7 +87,7 @@ class ElementCabana : public Element
      *                           functions per element.
      */
     template <class t_SF, class h_t_int>
-    vector<string>
+    std::vector<std::string>
     infoSymmetryFunctionParameters( t_SF SF, int attype,
                                     h_t_int h_numSFperElem ) const;
     /** Print symmetry function scaling information.
@@ -103,10 +101,11 @@ class ElementCabana : public Element
      *                           functions per element.
      */
     template <class t_SF, class t_SFscaling, class h_t_int>
-    vector<string> infoSymmetryFunctionScaling( ScalingType scalingType,
-                                                t_SF SF, t_SFscaling SFscaling,
-                                                int attype,
-                                                h_t_int h_numSFperElem ) const;
+    std::vector<std::string>
+    infoSymmetryFunctionScaling( ScalingType scalingType,
+                                 t_SF SF, t_SFscaling SFscaling,
+                                 int attype,
+                                 h_t_int h_numSFperElem ) const;
     /** Set up symmetry function groups.
      *
      * @param[in] SF Kokkos host View of symmetry functions.
@@ -131,7 +130,7 @@ class ElementCabana : public Element
      *                            function groups per element.
      */
     template <class t_SF, class t_SFGmemberlist, class h_t_int>
-    vector<string>
+    std::vector<std::string>
     infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
                                 int attype, h_t_int h_numSFGperElem ) const;
     /** Set cutoff function for all symmetry functions.
@@ -163,8 +162,9 @@ class ElementCabana : public Element
      */
     template <class t_SF, class t_SFscaling, class h_t_int>
     void setScaling( ScalingType scalingType,
-                     vector<string> const &statisticsLine, double minS,
-                     double maxS, t_SF SF, t_SFscaling SFscaling, int attype,
+                     std::vector<std::string> const &statisticsLine,
+                     double minS, double maxS, t_SF SF,
+                     t_SFscaling SFscaling, int attype,
                      h_t_int h_numSFperElem ) const;
     /** Get number of symmetry functions.
      *
@@ -175,7 +175,7 @@ class ElementCabana : public Element
      * @return Number of symmetry functions.
      */
     template <class h_t_int>
-    size_t numSymmetryFunctions( int attype, h_t_int h_numSFperElem ) const;
+    std::size_t numSymmetryFunctions( int attype, h_t_int h_numSFperElem ) const;
     /** Get maximum of required minimum number of neighbors for all symmetry
      * functions for this element.
      *
@@ -187,7 +187,7 @@ class ElementCabana : public Element
      * @return Minimum number of neighbors required.
      */
     template <class t_SF>
-    size_t getMinNeighbors( int attype, t_SF SF, int nSF ) const;
+    std::size_t getMinNeighbors( int attype, t_SF SF, int nSF ) const;
     /** Get minimum cutoff radius of all symmetry functions.
      *
      * @param[in] SF Kokkos host View of symmetry functions.
@@ -233,8 +233,10 @@ class ElementCabana : public Element
      * @param[in] k Symmetry function index.
      */
     template <class t_SFscaling>
-    inline void setScalingType( ScalingType scalingType, string statisticsLine,
-                                double Smin, double Smax, t_SFscaling SFscaling,
+    inline void setScalingType( ScalingType scalingType,
+                                std::string statisticsLine,
+                                double Smin, double Smax,
+                                t_SFscaling SFscaling,
                                 int attype, int k ) const;
     /** Print scaling for one symmetry function.
      *
@@ -245,8 +247,9 @@ class ElementCabana : public Element
      * @param[in] k Symmetry function index.
      */
     template <class t_SFscaling>
-    inline string scalingLine( ScalingType scalingType, t_SFscaling SFscaling,
-                               int attype, int k ) const;
+    inline std::string scalingLine( ScalingType scalingType,
+                                    t_SFscaling SFscaling,
+                                    int attype, int k ) const;
     /** Unscale one symmetry function.
      *
      * @param[in] attype Atom type.
@@ -270,20 +273,22 @@ class ElementCabana : public Element
 //////////////////////////////////
 
 template <class h_t_int>
-inline size_t ElementCabana::numSymmetryFunctions( int attype,
-                                             h_t_int h_numSFperElem ) const
+inline std::size_t
+ElementCabana::numSymmetryFunctions( int attype,
+                                     h_t_int h_numSFperElem ) const
 {
     return h_numSFperElem( attype );
 }
 
 template <class t_SFscaling>
-inline void ElementCabana::setScalingType( ScalingType scalingType,
-                                           string statisticsLine, double Smin,
-                                           double Smax, t_SFscaling SFscaling,
-                                           int attype, int k ) const
+inline void
+ElementCabana::setScalingType( ScalingType scalingType,
+                               std::string statisticsLine, double Smin,
+                               double Smax, t_SFscaling SFscaling,
+                               int attype, int k ) const
 {
     double Gmin, Gmax, Gmean, Gsigma = 0, scalingFactor = 0;
-    vector<string> s = split( reduce( statisticsLine ) );
+    std::vector<std::string> s = split( reduce( statisticsLine ) );
 
     Gmin = atof( s.at( 2 ).c_str() );
     Gmax = atof( s.at( 3 ).c_str() );
@@ -317,9 +322,10 @@ inline void ElementCabana::setScalingType( ScalingType scalingType,
 }
 
 template <class t_SFscaling>
-inline string ElementCabana::scalingLine( ScalingType scalingType,
-                                          t_SFscaling SFscaling, int attype,
-                                          int k ) const
+inline std::string
+ElementCabana::scalingLine( ScalingType scalingType,
+                            t_SFscaling SFscaling, int attype,
+                            int k ) const
 {
     return strpr( "%4zu %9.2E %9.2E %9.2E %9.2E %9.2E %5.2f %5.2f %d\n",
                   k + 1, SFscaling( attype, k, 0 ),

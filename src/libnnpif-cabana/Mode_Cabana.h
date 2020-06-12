@@ -32,8 +32,6 @@
 #include <string>  // std::string
 #include <vector>  // std::vector
 
-using namespace std;
-
 namespace nnp
 {
 
@@ -223,7 +221,7 @@ class ModeCabana : public Mode
 
     /// list of element symbols in order of periodic table
     // (duplicated from ElementMap)
-    vector<string> knownElements = {
+    std::vector<std::string> knownElements = {
         "H",  "He", "Li", "Be", "B",  "C",  "N",  "O",  "F",  "Ne", "Na", "Mg",
         "Al", "Si", "P",  "S",  "Cl", "Ar", "K",  "Ca", "Sc", "Ti", "V",  "Cr",
         "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
@@ -274,7 +272,7 @@ class ModeCabana : public Mode
     using Mode::settings;
     using Mode::cutoffType;
     std::vector<ElementCabana> elements;
-    std::vector<string> elementStrings;
+    std::vector<std::string> elementStrings;
 };
 
 //////////////////////////////////
