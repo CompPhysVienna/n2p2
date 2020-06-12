@@ -37,13 +37,13 @@ void ModeCabana<t_device>::setupElementMap()
            "**************************************\n";
     log << "\n";
 
-    elementStrings = nnp::split( nnp::reduce( settings["elements"] ) );
+    elementStrings = split( reduce( settings["elements"] ) );
 
-    log << nnp::strpr( "Number of element strings found: %d\n",
+    log << strpr( "Number of element strings found: %d\n",
                        elementStrings.size() );
     for ( size_t i = 0; i < elementStrings.size(); ++i )
     {
-        log << nnp::strpr( "Element %2zu: %2s\n", i,
+        log << strpr( "Element %2zu: %2s\n", i,
                            elementStrings[i].c_str() );
     }
     // resize to match number of element types
@@ -70,7 +70,7 @@ void ModeCabana<t_device>::setupElements()
     {
         throw runtime_error( "ERROR: Inconsistent number of elements.\n" );
     }
-    log << nnp::strpr( "Number of elements is consistent: %zu\n", numElements );
+    log << strpr( "Number of elements is consistent: %zu\n", numElements );
 
     for ( size_t i = 0; i < numElements; ++i )
     {
@@ -79,11 +79,11 @@ void ModeCabana<t_device>::setupElements()
 
     if ( settings.keywordExists( "atom_energy" ) )
     {
-        nnp::Settings::KeyRange r = settings.getValues( "atom_energy" );
-        for ( nnp::Settings::KeyMap::const_iterator it = r.first;
+        Settings::KeyRange r = settings.getValues( "atom_energy" );
+        for ( Settings::KeyMap::const_iterator it = r.first;
               it != r.second; ++it )
         {
-            vector<string> args = nnp::split( nnp::reduce( it->second.first ) );
+            vector<string> args = split( reduce( it->second.first ) );
             const char *estring = args.at( 0 ).c_str();
             for ( size_t i = 0; i < elementStrings.size(); ++i )
             {
@@ -96,7 +96,7 @@ void ModeCabana<t_device>::setupElements()
     log << "Atomic energy offsets per element:\n";
     for ( size_t i = 0; i < elementStrings.size(); ++i )
     {
-        log << nnp::strpr( "Element %2zu: %16.8E\n", i,
+        log << strpr( "Element %2zu: %16.8E\n", i,
                            atomicEnergyOffset( i ) );
     }
 
@@ -120,11 +120,11 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
     log << "\n";
 
     // Only count SF per element; parse and add later
-    nnp::Settings::KeyRange r = settings.getValues( "symfunction_short" );
-    for ( nnp::Settings::KeyMap::const_iterator it = r.first; it != r.second;
+    Settings::KeyRange r = settings.getValues( "symfunction_short" );
+    for ( Settings::KeyMap::const_iterator it = r.first; it != r.second;
           ++it )
     {
-        vector<string> args = nnp::split( nnp::reduce( it->second.first ) );
+        vector<string> args = split( reduce( it->second.first ) );
         int type = 0;
         const char *estring = args.at( 0 ).c_str();
         for ( size_t i = 0; i < elementStrings.size(); ++i )
@@ -148,10 +148,10 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
                                      maxSFperElem + 1, maxSFperElem + 1 );
 
     r = settings.getValues( "symfunction_short" );
-    for ( nnp::Settings::KeyMap::const_iterator it = r.first; it != r.second;
+    for ( Settings::KeyMap::const_iterator it = r.first; it != r.second;
           ++it )
     {
-        vector<string> args = nnp::split( nnp::reduce( it->second.first ) );
+        vector<string> args = split( reduce( it->second.first ) );
         int type = 0;
         const char *estring = args.at( 0 ).c_str();
         for ( size_t i = 0; i < elementStrings.size(); ++i )
@@ -192,7 +192,7 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
                  maxCutoffRadius );
         it->setCutoffFunction( cutoffType, cutoffAlpha, SF, attype,
                                h_numSFperElem );
-        log << nnp::strpr(
+        log << strpr(
             "Short range atomic symmetry functions element %2s :\n",
             it->getSymbol().c_str() );
         log << "-----------------------------------------"
@@ -215,11 +215,11 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
             elements.at( i ).getMinNeighbors( attype, SF, nSF );
         minCutoffRadius.at( i ) =
             elements.at( i ).getMinCutoffRadius( SF, attype, h_numSFperElem );
-        log << nnp::strpr( "Minimum cutoff radius for element %2s: %f\n",
+        log << strpr( "Minimum cutoff radius for element %2s: %f\n",
                            elements.at( i ).getSymbol().c_str(),
                            minCutoffRadius.at( i ) / convLength );
     }
-    log << nnp::strpr( "Maximum cutoff radius (global)      : %f\n",
+    log << strpr( "Maximum cutoff radius (global)      : %f\n",
                        maxCutoffRadius / convLength );
 
     log << "*****************************************"
@@ -245,33 +245,33 @@ void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName 
          ( !settings.keywordExists( "center_symmetry_functions" ) ) )
     {
         scalingType = ST_SCALE;
-        log << nnp::strpr( "Scaling type::ST_SCALE (%d)\n", scalingType );
+        log << strpr( "Scaling type::ST_SCALE (%d)\n", scalingType );
         log << "Gs = Smin + (Smax - Smin) * (G - Gmin) / (Gmax - Gmin)\n";
     }
     else if ( ( !settings.keywordExists( "scale_symmetry_functions" ) ) &&
               ( settings.keywordExists( "center_symmetry_functions" ) ) )
     {
         scalingType = ST_CENTER;
-        log << nnp::strpr( "Scaling type::ST_CENTER (%d)\n", scalingType );
+        log << strpr( "Scaling type::ST_CENTER (%d)\n", scalingType );
         log << "Gs = G - Gmean\n";
     }
     else if ( ( settings.keywordExists( "scale_symmetry_functions" ) ) &&
               ( settings.keywordExists( "center_symmetry_functions" ) ) )
     {
         scalingType = ST_SCALECENTER;
-        log << nnp::strpr( "Scaling type::ST_SCALECENTER (%d)\n", scalingType );
+        log << strpr( "Scaling type::ST_SCALECENTER (%d)\n", scalingType );
         log << "Gs = Smin + (Smax - Smin) * (G - Gmean) / (Gmax - Gmin)\n";
     }
     else if ( settings.keywordExists( "scale_symmetry_functions_sigma" ) )
     {
         scalingType = ST_SCALESIGMA;
-        log << nnp::strpr( "Scaling type::ST_SCALESIGMA (%d)\n", scalingType );
+        log << strpr( "Scaling type::ST_SCALESIGMA (%d)\n", scalingType );
         log << "Gs = Smin + (Smax - Smin) * (G - Gmean) / Gsigma\n";
     }
     else
     {
         scalingType = ST_NONE;
-        log << nnp::strpr( "Scaling type::ST_NONE (%d)\n", scalingType );
+        log << strpr( "Scaling type::ST_NONE (%d)\n", scalingType );
         log << "Gs = G\n";
         log << "WARNING: No symmetry function scaling!\n";
     }
@@ -303,11 +303,11 @@ void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName 
             Smax = 1.0;
         }
 
-        log << nnp::strpr( "Smin = %f\n", Smin );
-        log << nnp::strpr( "Smax = %f\n", Smax );
+        log << strpr( "Smin = %f\n", Smin );
+        log << strpr( "Smax = %f\n", Smax );
     }
 
-    log << nnp::strpr( "Symmetry function scaling statistics from file: %s\n",
+    log << strpr( "Symmetry function scaling statistics from file: %s\n",
                        fileName.c_str() );
     log << "-----------------------------------------"
            "--------------------------------------\n";
@@ -346,7 +346,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName 
         int attype = it->getIndex();
         it->setScaling( scalingType, lines, Smin, Smax, SF, SFscaling, attype,
                         h_numSFperElem );
-        log << nnp::strpr(
+        log << strpr(
             "Scaling data for symmetry functions element %2s :\n",
             it->getSymbol().c_str() );
         log << "-----------------------------------------"
@@ -414,7 +414,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionGroups()
         it->setupSymmetryFunctionGroups( SF, SFGmemberlist, attype,
                                          h_numSFperElem, h_numSFGperElem,
                                          maxSFperElem );
-        log << nnp::strpr( "Short range atomic symmetry function groups "
+        log << strpr( "Short range atomic symmetry function groups "
                            "element %2s :\n",
                            it->getSymbol().c_str() );
         log << "-----------------------------------------"
@@ -453,9 +453,9 @@ void ModeCabana<t_device>::setupNeuralNetwork()
     h_AF = h_t_int( "ActivationFunctions", numLayers );
 
     vector<string> numNeuronsPerHiddenLayer =
-        nnp::split( nnp::reduce( settings["global_nodes_short"] ) );
+        split( reduce( settings["global_nodes_short"] ) );
     vector<string> activationFunctions =
-        nnp::split( nnp::reduce( settings["global_activation_short"] ) );
+        split( reduce( settings["global_activation_short"] ) );
 
     for ( int i = 0; i < numLayers; i++ )
     {
@@ -476,7 +476,7 @@ void ModeCabana<t_device>::setupNeuralNetwork()
 
     // TODO: add normalization of neurons
     bool normalizeNeurons = settings.keywordExists( "normalize_nodes" );
-    log << nnp::strpr( "Normalize neurons (all elements): %d\n",
+    log << strpr( "Normalize neurons (all elements): %d\n",
                        (int)normalizeNeurons );
     log << "-----------------------------------------"
            "--------------------------------------\n";
@@ -487,7 +487,7 @@ void ModeCabana<t_device>::setupNeuralNetwork()
         int attype = it->getIndex();
         h_numNeuronsPerLayer( 0 ) =
             it->numSymmetryFunctions( attype, h_numSFperElem );
-        log << nnp::strpr( "Atomic short range NN for "
+        log << strpr( "Atomic short range NN for "
                            "element %2s :\n",
                            it->getSymbol().c_str() );
 
@@ -499,12 +499,12 @@ void ModeCabana<t_device>::setupNeuralNetwork()
             numBiases += h_numNeuronsPerLayer( j );
         }
         numConnections = numWeights + numBiases;
-        log << nnp::strpr( "Number of weights    : %6zu\n", numWeights );
-        log << nnp::strpr( "Number of biases     : %6zu\n", numBiases );
-        log << nnp::strpr( "Number of connections: %6zu\n", numConnections );
-        log << nnp::strpr( "Architecture    " );
+        log << strpr( "Number of weights    : %6zu\n", numWeights );
+        log << strpr( "Number of biases     : %6zu\n", numBiases );
+        log << strpr( "Number of connections: %6zu\n", numConnections );
+        log << strpr( "Architecture    " );
         for ( int j = 0; j < numLayers; ++j )
-            log << nnp::strpr( " %4d", h_numNeuronsPerLayer( j ) );
+            log << strpr( " %4d", h_numNeuronsPerLayer( j ) );
 
         log << "\n-----------------------------------------"
                "--------------------------------------\n";
@@ -533,7 +533,7 @@ void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameForm
            "**************************************\n";
     log << "\n";
 
-    log << nnp::strpr( "Weight file name format: %s\n",
+    log << strpr( "Weight file name format: %s\n",
                        fileNameFormat.c_str() );
     int count = 0;
     int AN = 0;
@@ -550,8 +550,8 @@ void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameForm
             }
         }
 
-        string fileName = nnp::strpr( fileNameFormat.c_str(), AN );
-        log << nnp::strpr( "Weight file for element %2s: %s\n",
+        string fileName = strpr( fileNameFormat.c_str(), AN );
+        log << strpr( "Weight file for element %2s: %s\n",
                            elementStrings[count].c_str(), fileName.c_str() );
         ifstream file;
         file.open( fileName.c_str() );
@@ -567,7 +567,7 @@ void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameForm
         {
             if ( line.at( 0 ) != '#' )
             {
-                vector<string> splitLine = nnp::split( nnp::reduce( line ) );
+                vector<string> splitLine = split( reduce( line ) );
                 if ( strcmp( splitLine.at( 1 ).c_str(), "a" ) == 0 )
                 {
                     layer = atoi( splitLine.at( 3 ).c_str() );
