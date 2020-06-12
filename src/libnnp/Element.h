@@ -117,7 +117,7 @@ public:
      * @param[in] statisticsLine Vector of strings containing statistics for
      *                           all symmetry functions.
      * @param[in] minS Minimum for scaling range.
-     * @param[in] maxS Minimum for scaling range.
+     * @param[in] maxS Maximum for scaling range.
      */
     void                     setScaling(
                                 SymmetryFunction::ScalingType   scalingType,

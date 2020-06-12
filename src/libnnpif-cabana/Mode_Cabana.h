@@ -133,13 +133,47 @@ class ModeCabana : public Mode
     void setupNeuralNetworkWeights(
         std::string const &fileNameFormat = "weights.%03zu.data") override;
 
+    /* Compute cutoff for a single atom pair.
+     *
+     * @param[in] cutoffType Cutoff type.
+     * @param[in] fc Cutoff function value.
+     * @param[in] dfc Derivative of cutoff function.
+     * @param[in] r Atom separation distance.
+     * @param[in] rc Cutoff radius.
+     * @param[in] derivative If the cutoff derivative should be computed.
+     *
+     * Callable within device kernel.
+     */
     KOKKOS_INLINE_FUNCTION
     void compute_cutoff(CutoffFunction::CutoffType cutoffType, double &fc,
                         double &dfc, double r, double rc, bool derivative);
-
+    /*
+     * Scale one symmetry function.
+     *
+     * @param[in] attype Atom type.
+     * @param[in] value Scaled symmetry function value.
+     * @param[in] k Symmetry function index.
+     * @param[in] SFscaling Kokkos host View of symmetry function scaling.
+     *
+     * Callable within device kernel.
+     */
     KOKKOS_INLINE_FUNCTION
     double scale(int attype, double value, int k, d_t_SFscaling SFscaling);
 
+    /** Calculate forces for all atoms in given structure.
+     *
+     * @param[in] x Cabana slice of atom positions.
+     * @param[in] f Cabana slice of atom forces.
+     * @param[in] type Cabana slice of atom types.
+     * @param[in] dEdG Cabana slice of the derivative of energy with respect
+                       to symmetry functions per atom.
+     * @param[in] N_local Number of atoms.
+     * @param[in] neigh_op Cabana tag for neighbor parallelism.
+     * @param[in] angle_op Cabana tag for angular parallelism.
+     *
+     * Combine intermediate results from symmetry function and neural network
+     * computation to atomic forces. Results are stored in f.
+     */
     template <class t_slice_x, class t_slice_f, class t_slice_type,
               class t_slice_dEdG, class t_neigh_list, class t_neigh_parallel,
               class t_angle_parallel>
@@ -147,12 +181,37 @@ class ModeCabana : public Mode
                          t_slice_dEdG dEdG, t_neigh_list neigh_list, int N_local,
                          t_neigh_parallel neigh_op, t_angle_parallel angle_op);
 
+    /** Calculate atomic neural networks for all atoms in given structure.
+     *
+     * @param[in] type Cabana slice of atom types.
+     * @param[in] G Cabana slice of symmetry functions per atom.
+     * @param[in] dEdG Cabana slice of the derivative of energy with respect
+                       to symmetry functions per atom.
+     * @param[in] E Cabana slice of energy per atom.
+     * @param[in] N_local Number of atoms.
+     *
+     * The atomic energy is stored in E.
+     */
     template <class t_slice_type, class t_slice_G, class t_slice_dEdG,
               class t_slice_E>
     void calculateAtomicNeuralNetworks(t_slice_type type, t_slice_G G,
                                        t_slice_dEdG dEdG, t_slice_E E,
                                        int N_local);
 
+    /** Calculate all symmetry function groups for all atoms in given
+     * structure.
+     *
+     * @param[in] x Cabana slice of atom positions.
+     * @param[in] type Cabana slice of atom types.
+     * @param[in] G Cabana slice of symmetry functions per atom.
+     * @param[in] neigh_list Cabana neighbor list.
+     * @param[in] N_local Number of atoms.
+     * @param[in] neigh_op Cabana tag for neighbor parallelism.
+     * @param[in] angle_op Cabana tag for angular parallelism.
+     *
+     * Note there is no calculateSymmetryFunctions() within this derived class.
+     * Results are stored in G.
+     */
     template <class t_slice_x, class t_slice_type, class t_slice_G,
               class t_neigh_list, class t_neigh_parallel, class t_angle_parallel>
     void calculateSymmetryFunctionGroups(t_slice_x x, t_slice_type type,
@@ -160,7 +219,6 @@ class ModeCabana : public Mode
                                          int N_local, t_neigh_parallel neigh_op,
                                          t_angle_parallel angle_op);
 
-    /// Global log file.
     using Mode::log;
 
     /// list of element symbols in order of periodic table

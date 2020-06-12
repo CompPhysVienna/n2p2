@@ -47,6 +47,11 @@ class ElementCabana : public Element
      *
      * @param[in] parameters String containing settings for symmetry function.
      * @param[in] lineNumber Line number of symmetry function in settings file.
+     * @param[in] attype Atom type.
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] convLength Length unit conversion factor.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
      */
     template <class t_SF, class h_t_int>
     void addSymmetryFunction( string const &parameters,
@@ -59,23 +64,59 @@ class ElementCabana : public Element
      */
     void changeLengthUnitSymmetryFunctions( double convLength );
     /** Sort all symmetry function.
+     *
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     * @param[in] attype Atom type.
      */
     template <class t_SF, class h_t_int>
     void sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem, int attype );
     /** Print symmetry function parameter value information.
+     *
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] attype Atom type.
+     * @param[in] index1 First symmetry function index.
+     * @param[in] index2 Second symmetry function index.
      */
     template <class t_SF>
     bool compareSF( t_SF SF, int attype, int index1, int index2 );
+    /** Print symmetry function parameter value information.
+     *
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     */
     template <class t_SF, class h_t_int>
     vector<string>
     infoSymmetryFunctionParameters( t_SF SF, int attype,
                                     h_t_int h_numSFperElem ) const;
+    /** Print symmetry function scaling information.
+     *
+     * @param[in] scalingType Type of scaling see
+     *                        SymmetryFunction::ScalingType.
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] SFscaling Kokkos host View of symmetry function scaling.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     */
     template <class t_SF, class t_SFscaling, class h_t_int>
     vector<string> infoSymmetryFunctionScaling( ScalingType scalingType,
                                                 t_SF SF, t_SFscaling SFscaling,
                                                 int attype,
                                                 h_t_int h_numSFperElem ) const;
     /** Set up symmetry function groups.
+     *
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] SFGmemberlist Kokkos host View of symmetry function groups.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     * @param[in] h_numSFGperElem Kokkos host View of number of symmetry
+     *                            function groups per element.
+     * @param[in] maxSFperElem Maximum number of symmetry functions per element.
      */
     template <class t_SF, class t_SFGmemberlist, class h_t_int>
     void setupSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
@@ -83,6 +124,11 @@ class ElementCabana : public Element
                                       h_t_int h_numSFGperElem,
                                       int maxSFperElem );
     /** Print symmetry function group info.
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] SFGmemberlist Kokkos host View of symmetry function groups.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFGperElem Kokkos host View of number of symmetry
+     *                            function groups per element.
      */
     template <class t_SF, class t_SFGmemberlist, class h_t_int>
     vector<string>
@@ -92,6 +138,10 @@ class ElementCabana : public Element
      *
      * @param[in] cutoffType Type of cutoff function.
      * @param[in] cutoffAlpha Cutoff parameter for all functions.
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
      */
     template <class t_SF, class h_t_int>
     void setCutoffFunction( CutoffFunction::CutoffType const cutoffType,
@@ -104,7 +154,12 @@ class ElementCabana : public Element
      * @param[in] statisticsLine Vector of strings containing statistics for
      *                           all symmetry functions.
      * @param[in] minS Minimum for scaling range.
-     * @param[in] maxS Minimum for scaling range.
+     * @param[in] maxS Maximum for scaling range.
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] SFscaling Kokkos host View of symmetry function scaling.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
      */
     template <class t_SF, class t_SFscaling, class h_t_int>
     void setScaling( ScalingType scalingType,
@@ -113,6 +168,10 @@ class ElementCabana : public Element
                      h_t_int h_numSFperElem ) const;
     /** Get number of symmetry functions.
      *
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     *
      * @return Number of symmetry functions.
      */
     template <class h_t_int>
@@ -120,11 +179,21 @@ class ElementCabana : public Element
     /** Get maximum of required minimum number of neighbors for all symmetry
      * functions for this element.
      *
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     * @param[in] nSF Number of symmetry function for this type.
+     *
      * @return Minimum number of neighbors required.
      */
     template <class t_SF>
     size_t getMinNeighbors( int attype, t_SF SF, int nSF ) const;
     /** Get minimum cutoff radius of all symmetry functions.
+     *
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
      *
      * @return Minimum cutoff radius.
      */
@@ -133,52 +202,66 @@ class ElementCabana : public Element
                                h_t_int h_numSFperElem ) const;
     /** Get maximum cutoff radius of all symmetry functions.
      *
+     * @param[in] SF Kokkos host View of symmetry functions.
+     * @param[in] attype Atom type.
+     * @param[in] h_numSFperElem Kokkos host View of number of symmetry
+     *                           functions per element.
+     *
      * @return Maximum cutoff radius.
      */
     template <class t_SF, class h_t_int>
     double getMaxCutoffRadius( t_SF SF, int attype,
                                h_t_int h_numSFperElem ) const;
-    /** Update symmetry function statistics.
+
+    /* Update symmetry function statistics.
      *
-     * @param[in] atom Atom with symmetry function values.
-     *
-     * This function checks also for extrapolation warnings.
      */
     // void                     updateSymmetryFunctionStatistics(
-    //                                                         System* s,
-    //                                                         AoSoA_NNP_all
-    //                                                         nnp_data,...);
-
-    /** Get symmetry function instance.
-     *
-     * @param[in] index Symmetry function index.
-     *
-     * @return Symmetry function object.
-     */
-    // SymmetryFunction const&  getSymmetryFunction(size_t index) const;
 
     /// Symmetry function statistics.
     // SymmetryFunctionStatistics statistics;
 
+    /** Set scaling type of one symmetry function
+     *
+     * @param[in] scalingType Type of scaling, see
+     *                        SymmetryFunction::ScalingType.
+     * @param[in] statisticsLine Output string for this symmetry function.
+     * @param[in] Smin Minimum for scaling range.
+     * @param[in] Smax Maximum for scaling range.
+     * @param[in] SFscaling Kokkos host View of symmetry function scaling.
+     * @param[in] attype Atom type.
+     * @param[in] k Symmetry function index.
+     */
     template <class t_SFscaling>
     inline void setScalingType( ScalingType scalingType, string statisticsLine,
                                 double Smin, double Smax, t_SFscaling SFscaling,
                                 int attype, int k ) const;
+    /** Print scaling for one symmetry function.
+     *
+     * @param[in] scalingType Type of scaling, see
+     *                        SymmetryFunction::ScalingType.
+     * @param[in] SFscaling Kokkos host View of symmetry function scaling.
+     * @param[in] attype Atom type.
+     * @param[in] k Symmetry function index.
+     */
     template <class t_SFscaling>
     inline string scalingLine( ScalingType scalingType, t_SFscaling SFscaling,
                                int attype, int k ) const;
+    /** Unscale one symmetry function.
+     *
+     * @param[in] attype Atom type.
+     * @param[in] value Unscaled symmetry function value.
+     * @param[in] k Symmetry function index.
+     * @param[in] SFscaling Kokkos host View of symmetry function scaling.
+     */
     template <class t_SFscaling>
     inline double unscale( int attype, double value, int k,
                            t_SFscaling SFscaling );
 
   private:
-    /// Global index of this element.
     using Element::index;
-    /// Atomic number of this element.
     using Element::atomicNumber;
-    /// Offset energy for every atom of this element.
     using Element::atomicEnergyOffset;
-    /// Element symbol.
     using Element::symbol;
 };
 
