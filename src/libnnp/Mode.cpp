@@ -807,14 +807,19 @@ void Mode::setupNeuralNetwork()
         }
     }
 
-    Settings::KeyRange r = settings.getValues("element_nodes_short");
-    for (Settings::KeyMap::const_iterator it = r.first; it != r.second; ++it)
+    if (settings.keywordExists("element_nodes_short"))
     {
-        vector<string> args = split(reduce(it->second.first));
-        size_t e = elementMap[args.at(0)];
-        size_t l = atoi(args.at(1).c_str());
+        Settings::KeyRange r = settings.getValues("element_nodes_short");
+        for (Settings::KeyMap::const_iterator it = r.first;
+             it != r.second; ++it)
+        {
+            vector<string> args = split(reduce(it->second.first));
+            size_t e = elementMap[args.at(0)];
+            size_t l = atoi(args.at(1).c_str());
 
-        nnt.at(e).numNeuronsPerLayer.at(l) = (size_t)atoi(args.at(2).c_str());
+            nnt.at(e).numNeuronsPerLayer.at(l) =
+                (size_t)atoi(args.at(2).c_str());
+        }
     }
 
     bool normalizeNeurons = settings.keywordExists("normalize_nodes");
