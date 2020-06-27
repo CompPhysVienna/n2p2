@@ -716,78 +716,105 @@ void Mode::setupNeuralNetwork()
            "**************************************\n";
     log << "\n";
 
-    int const numLayers = 2 +
-                          atoi(settings["global_hidden_layers_short"].c_str());
-    int* numNeuronsPerLayer = new int[numLayers];
-    NeuralNetwork::ActivationFunction* activationFunctionsPerLayer =
-        new NeuralNetwork::ActivationFunction[numLayers];
-    vector<string> numNeuronsPerHiddenLayer =
+    struct NeuralNetworkTopology
+    {
+        int                                       numLayers = 0;
+        vector<int>                               numNeuronsPerLayer;
+        vector<NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
+    };
+
+    vector<NeuralNetworkTopology> nnt(numElements);
+
+    size_t globalNumHiddenLayers =
+        (size_t)atoi(settings["global_hidden_layers_short"].c_str());
+    vector<string> globalNumNeuronsPerHiddenLayer =
         split(reduce(settings["global_nodes_short"]));
-    vector<string> activationFunctions =
+    vector<string> globalActivationFunctions =
         split(reduce(settings["global_activation_short"]));
 
-    for (int i = 0; i < numLayers; i++)
+    for (size_t i = 0; i < numElements; ++i)
     {
-        if (i == 0)
+        NeuralNetworkTopology& t = nnt.at(i);
+        t.numLayers = 2 + globalNumHiddenLayers;
+        t.numNeuronsPerLayer.resize(t.numLayers, 0);
+        t.activationFunctionsPerLayer.resize(t.numLayers,
+                                             NeuralNetwork::AF_IDENTITY);
+
+        for (int i = 0; i < t.numLayers; i++)
         {
-            numNeuronsPerLayer[i] = 0;
-            activationFunctionsPerLayer[i] = NeuralNetwork::AF_IDENTITY;
-        }
-        else if (i == numLayers - 1)
-        {
-            numNeuronsPerLayer[i] = 1;
-            activationFunctionsPerLayer[i] = NeuralNetwork::AF_IDENTITY;
-        }
-        else
-        {
-            numNeuronsPerLayer[i] =
-                atoi(numNeuronsPerHiddenLayer.at(i-1).c_str());
-            if (activationFunctions.at(i-1) == "l")
+            NeuralNetwork::
+            ActivationFunction& a = t.activationFunctionsPerLayer[i];
+            if (i == 0)
             {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_IDENTITY;
+                t.numNeuronsPerLayer[i] = 0;
+                a = NeuralNetwork::AF_IDENTITY;
             }
-            else if (activationFunctions.at(i-1) == "t")
+            else if (i == t.numLayers - 1)
             {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_TANH;
-            }
-            else if (activationFunctions.at(i-1) == "s")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_LOGISTIC;
-            }
-            else if (activationFunctions.at(i-1) == "p")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_SOFTPLUS;
-            }
-            else if (activationFunctions.at(i-1) == "r")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_RELU;
-            }
-            else if (activationFunctions.at(i-1) == "g")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_GAUSSIAN;
-            }
-            else if (activationFunctions.at(i-1) == "c")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_COS;
-            }
-            else if (activationFunctions.at(i-1) == "S")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_REVLOGISTIC;
-            }
-            else if (activationFunctions.at(i-1) == "e")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_EXP;
-            }
-            else if (activationFunctions.at(i-1) == "h")
-            {
-                activationFunctionsPerLayer[i] = NeuralNetwork::AF_HARMONIC;
+                t.numNeuronsPerLayer[i] = 1;
+                a = NeuralNetwork::AF_IDENTITY;
             }
             else
             {
-                throw runtime_error("ERROR: Unknown activation function.\n");
+                t.numNeuronsPerLayer[i] =
+                    atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
+                if (globalActivationFunctions.at(i-1) == "l")
+                {
+                    a = NeuralNetwork::AF_IDENTITY;
+                }
+                else if (globalActivationFunctions.at(i-1) == "t")
+                {
+                    a = NeuralNetwork::AF_TANH;
+                }
+                else if (globalActivationFunctions.at(i-1) == "s")
+                {
+                    a = NeuralNetwork::AF_LOGISTIC;
+                }
+                else if (globalActivationFunctions.at(i-1) == "p")
+                {
+                    a = NeuralNetwork::AF_SOFTPLUS;
+                }
+                else if (globalActivationFunctions.at(i-1) == "r")
+                {
+                    a = NeuralNetwork::AF_RELU;
+                }
+                else if (globalActivationFunctions.at(i-1) == "g")
+                {
+                    a = NeuralNetwork::AF_GAUSSIAN;
+                }
+                else if (globalActivationFunctions.at(i-1) == "c")
+                {
+                    a = NeuralNetwork::AF_COS;
+                }
+                else if (globalActivationFunctions.at(i-1) == "S")
+                {
+                    a = NeuralNetwork::AF_REVLOGISTIC;
+                }
+                else if (globalActivationFunctions.at(i-1) == "e")
+                {
+                    a = NeuralNetwork::AF_EXP;
+                }
+                else if (globalActivationFunctions.at(i-1) == "h")
+                {
+                    a = NeuralNetwork::AF_HARMONIC;
+                }
+                else
+                {
+                    throw runtime_error("ERROR: Unknown activation "
+                                        "function.\n");
+                }
             }
         }
+    }
 
+    Settings::KeyRange r = settings.getValues("element_nodes_short");
+    for (Settings::KeyMap::const_iterator it = r.first; it != r.second; ++it)
+    {
+        vector<string> args = split(reduce(it->second.first));
+        size_t e = elementMap[args.at(0)];
+        size_t l = atoi(args.at(1).c_str());
+
+        nnt.at(e).numNeuronsPerLayer.at(l) = (size_t)atoi(args.at(2).c_str());
     }
 
     bool normalizeNeurons = settings.keywordExists("normalize_nodes");
@@ -796,23 +823,23 @@ void Mode::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
-    for (vector<Element>::iterator it = elements.begin();
-         it != elements.end(); ++it)
+    for (size_t i = 0; i < numElements; ++i)
     {
-        numNeuronsPerLayer[0] = it->numSymmetryFunctions();
-        it->neuralNetwork = new NeuralNetwork(numLayers,
-                                              numNeuronsPerLayer,
-                                              activationFunctionsPerLayer);
-        it->neuralNetwork->setNormalizeNeurons(normalizeNeurons);
+        Element& e = elements.at(i);
+        NeuralNetworkTopology& t = nnt.at(i);
+
+        t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
+        e.neuralNetwork = new NeuralNetwork(
+                                         t.numLayers,
+                                         t.numNeuronsPerLayer.data(),
+                                         t.activationFunctionsPerLayer.data());
+        e.neuralNetwork->setNormalizeNeurons(normalizeNeurons);
         log << strpr("Atomic short range NN for "
-                     "element %2s :\n", it->getSymbol().c_str());
-        log << it->neuralNetwork->info();
+                     "element %2s :\n", e.getSymbol().c_str());
+        log << e.neuralNetwork->info();
         log << "-----------------------------------------"
                "--------------------------------------\n";
     }
-
-    delete[] numNeuronsPerLayer;
-    delete[] activationFunctionsPerLayer;
 
     log << "*****************************************"
            "**************************************\n";
