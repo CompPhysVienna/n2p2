@@ -1,5 +1,5 @@
 ###############################################################################
-# MD simulation for NN water
+# MD simulation for NN copper sulfide
 ###############################################################################
 
 ###############################################################################
@@ -7,16 +7,16 @@
 ###############################################################################
 clear
 # Configuration files
-variable cfgFile         string "h2o_8640_liquid_NpT_RPBE-D3.data"
+variable cfgFile         string "cu2s_144_low-chalcocite_Evans-1979_PBE.data"
 # Timesteps
-variable numSteps        equal  5
-variable dt              equal  0.0005
+variable numSteps        equal  100
+variable dt              equal  0.001
 # NN
-variable nnpCutoff       equal  6.36
+variable nnpCutoff       equal  6.01
 variable nnpDir          string "nnp-data"
 # Masses
-variable mass_H          equal  1.00794
-variable mass_O          equal  15.9994
+variable mass_S          equal  32.065                                                  # mass for element 1 (S)  (g/mol)
+variable mass_Cu         equal  63.546                                                  # mass for element 2 (Cu) (g/mol)
 
 ###############################################################################
 # GENERAL SETUP
@@ -25,22 +25,22 @@ units metal
 boundary p p p
 atom_style atomic
 read_data ${cfgFile}
-mass 1 ${mass_H}
-mass 2 ${mass_O}
+mass 1 ${mass_S}
+mass 2 ${mass_Cu}
 timestep ${dt}
-thermo 1
+thermo 10
 
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
+pair_style nnp dir ${nnpDir} showew no showewsum 100 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:S,2:Cu"
 pair_coeff * * ${nnpCutoff}
 
 ###############################################################################
 # INTEGRATOR
 ###############################################################################
 fix INT all nve
-dump 1 all atom 1 traj.dump
+dump 1 all atom 10 traj.dump
 
 ###############################################################################
 # SIMULATION

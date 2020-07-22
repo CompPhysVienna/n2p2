@@ -47,7 +47,7 @@ where the arguments of the keywords are:
 * ``<ax>``... ``<cz>`` : box vectors :math:`\vec{\mathbf{a}}, \vec{\mathbf{b}}, \vec{\mathbf{c}}` (see :func:`nnp::Structure::calculateInverseBox`).
 * ``<x1>``... ``<zn>`` : atom coordinates of ``n`` atoms
 * ``<e1>``... ``<en>`` : atom element string (e.g. Cd, S)
-* ``<c1>``... ``<cn>`` : atom charge (for long range neural network only)
+* ``<c1>``... ``<cn>`` : not (yet) used, reserved for atom charge in case of long range neural network (to be implemented)
 * ``<n1>``... ``<nn>`` : not used
 * ``<fx1>``... ``<fzn>`` : force components of ``n`` atoms
 * ``<energy>`` : total potential energy

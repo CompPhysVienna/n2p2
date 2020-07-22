@@ -14,9 +14,43 @@ fully supported.
 Build instructions
 ------------------
 
-The LAMMPS interface has been tested with version ``16Mar18``. To build LAMMPS
-with support for neural network potentials follow these steps: First, build the
-required libraries:
+Automatic build
+^^^^^^^^^^^^^^^
+
+.. important::
+
+   The automatic compilation will only work on Unix-like systems as it relies on
+   tools such as ``sed`` and ``tar``.
+
+For convenience the main makefile provides the compilation target ``lammps-nnp``
+which will automatically download LAMMPS (version ``stable_3Mar2020`` from the
+`GitHub releases page <https://github.com/lammps/lammps/releases>`__) into the
+``interface`` directory, unpack it to ``lammps-nnp``, add the necessary n2p2
+files to it and compile the LAMMPS ``mpi`` target. Finally, the binary
+``lmp_mpi`` will be copied to the n2p2 ``bin`` directory. Hence, compiling
+LAMMPS with NNP support is as easy as typing
+
+.. code-block:: none
+
+   make lammps-nnp
+
+in the n2p2 ``src`` directory. Uninstall with ``make clean-lammps-nnp``.
+
+.. note::
+
+   Before compiling the LAMMPS makefile (``src/MAKE/Makefile.mpi``) will be altered to
+   use the compiler and flags from the n2p2 target makefile (default:
+   ``makefile.gnu``).
+
+If this procedure fails or you prefer to add NNP support to an existing LAMMPS
+installation somewhere else in your system please follow the manual build
+instructions below.
+
+Manual build
+^^^^^^^^^^^^
+
+To build LAMMPS with support for neural network potentials follow these steps:
+First, build the required libraries:
 
 .. code-block:: none
 

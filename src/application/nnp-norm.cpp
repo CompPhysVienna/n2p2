@@ -62,6 +62,14 @@ int main(int argc, char* argv[])
                    "**************************************\n";
     dataset.log << "\n";
 
+    if (dataset.settingsKeywordExists("mean_energy") ||
+        dataset.settingsKeywordExists("conv_energy") ||
+        dataset.settingsKeywordExists("conv_length"))
+    {
+        throw runtime_error("ERROR: Normalization keywords found in settings, "
+                            "please remove them first.\n");
+    }
+
     ofstream fileEvsV;
     fileEvsV.open(strpr("evsv.dat.%04d", myRank).c_str());
 
@@ -193,10 +201,17 @@ int main(int argc, char* argv[])
     if (myRank == 0)
     {
         dataset.log << "\n";
-        dataset.log << "Writing extended settings file to \"output.nn\".\n";
-        dataset.log << "Use this settings file for normalized training.\n";
+        dataset.log << "Writing backup of original settings file to "
+                       "\"input.nn.bak\".\n";
         ofstream fileSettings;
-        fileSettings.open("output.nn");
+        fileSettings.open("input.nn.bak");
+        dataset.writeSettingsFile(&fileSettings);
+        fileSettings.close();
+
+        dataset.log << "\n";
+        dataset.log << "Writing extended settings file to \"input.nn\".\n";
+        dataset.log << "Use this settings file for normalized training.\n";
+        fileSettings.open("input.nn");
         fileSettings << "#########################################"
                         "######################################\n";
         fileSettings << "# DATA SET NORMALIZATION\n";
@@ -210,6 +225,7 @@ int main(int argc, char* argv[])
                         "######################################\n";
         fileSettings << "\n";
         dataset.writeSettingsFile(&fileSettings);
+        fileSettings.close();
     }
 
     dataset.log << "*****************************************"

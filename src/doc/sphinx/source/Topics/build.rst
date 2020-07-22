@@ -45,7 +45,7 @@ information).
 +---------------------------------+----------------------------+------------------------------------------------------+
 | nnp-train                       | libnnptrain                | Train a neural network potential.                    |
 +---------------------------------+----------------------------+------------------------------------------------------+
-| pair_style nnp                  | libnnpif                   | Pair style `nnp` for LAMMPS                          |
+| :ref:`lammps-nnp <if_lammps>`   | libnnpif                   | Pair style `nnp` for LAMMPS                          |
 +---------------------------------+----------------------------+------------------------------------------------------+
 | pynnp                           | libnnp, python, cython     | Python interface to NNP library.                     |
 +---------------------------------+----------------------------+------------------------------------------------------+
@@ -55,9 +55,9 @@ information).
 The master makefile
 -------------------
 
-A master makefile is provided in the ``src`` directory which provides targets for
-all individual components (except for the LAMMPS :ref:`pair_style  nnp <if_lammps>`).
-For instance, compiling the interface library ``libnnpif`` requires only to type
+A master makefile is provided in the ``src`` directory which provides targets
+for all individual components.  For instance, compiling the interface library
+``libnnpif`` requires only to type
 
 .. code-block:: bash
 
@@ -157,6 +157,16 @@ Each of the build parameter makefiles ``src/makefile.<target>`` contains a
 section at the end which allows to enable/disable certain options at compile
 time:
 
+Symmetry function groups
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Flag:** ``-DNOSFGROUPS`` (default: *disabled*)
+
+If this flag is set the symmetry function group feature will be disabled
+everywhere. This will result in a much worse performance but may be useful for
+debugging and development purposes. Note that disabling symmetry function groups
+will not change results, please see details in this publication [1]_.
+
 Improved symmetry function derivative memory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -212,3 +222,7 @@ this feature is enabled by default.
    If you prefer to disable this functionality please also remove the flag
    ``-DIMPROVED_SFD_MEMORY`` from the LAMMPS makefile in
    ``src/libnnpif/Makefile.lammps``!
+
+.. [1] Singraber, A.; Behler, J.; Dellago, C. Library-Based LAMMPS
+   Implementation of High-Dimensional Neural Network Potentials. J. Chem. Theory
+   Comput. 2019, 15 (3), 1827–1840. https://doi.org/10.1021/acs.jctc.8b00770

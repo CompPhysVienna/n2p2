@@ -90,6 +90,9 @@ void PairNNP::settings(int narg, char **arg)
   resetew = false;
   cflength = 1.0;
   cfenergy = 1.0;
+  len = strlen("") + 1;
+  emap = new char[len];
+  strcpy(emap,"");
   numExtrapolationWarningsTotal = 0;
   numExtrapolationWarningsSummary = 0;
 
@@ -102,6 +105,15 @@ void PairNNP::settings(int narg, char **arg)
       len = strlen(arg[iarg+1]) + 2;
       directory = new char[len];
       sprintf(directory, "%s/", arg[iarg+1]);
+      iarg += 2;
+    // element mapping
+    } else if (strcmp(arg[iarg],"emap") == 0) {
+      if (iarg+2 > narg)
+        error->all(FLERR,"Illegal pair_style command");
+      delete[] emap;
+      len = strlen(arg[iarg+1]) + 1;
+      emap = new char[len];
+      sprintf(emap, "%s", arg[iarg+1]);
       iarg += 2;
     // show extrapolation warnings
     } else if (strcmp(arg[iarg],"showew") == 0) {
@@ -204,8 +216,17 @@ void PairNNP::init_style()
   }
 
   // Initialize interface on all processors.
-  interface.initialize(directory, showew, resetew, showewsum, maxew, cflength,
-                       cfenergy, maxCutoffRadius, atom->ntypes, comm->me);
+  interface.initialize(directory,
+                       emap,
+                       showew,
+                       resetew,
+                       showewsum,
+                       maxew,
+                       cflength,
+                       cfenergy,
+                       maxCutoffRadius,
+                       atom->ntypes,
+                       comm->me);
 
   // LAMMPS cutoff radius (given via pair_coeff) should not be smaller than
   // maximum symmetry function cutoff radius.

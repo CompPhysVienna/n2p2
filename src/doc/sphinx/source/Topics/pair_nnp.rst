@@ -19,6 +19,10 @@ Syntax
 
 * value depends on the preceding keyword:
 
+  *  *emap* value = mapping
+
+      mapping = Element mapping from LAMMPS atom types to n2p2 elements
+
   *  *dir* value = directory
 
       directory = Path to NNP configuration files
@@ -48,7 +52,7 @@ Examples
 
 .. code-block:: none
 
-   pair_style nnp showew yes showewsum 100 maxew 1000 resetew yes cflength 1.8897261328 cfenergy 0.0367493254
+   pair_style nnp showew yes showewsum 100 maxew 1000 resetew yes cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
 
    pair_style nnp dir "./" showewsum 10000
 
@@ -85,13 +89,24 @@ The numeric value may be slightly larger than the actual maximum symmetry
 function cutoff radius (to account for rounding errors when converting units),
 but must not be smaller.
 
-.. important::
+----
 
-   The atom type specifications in configuration files used to
-   start MD simulations must be consistent with the ordering of elements in the NNP
-   library. Thus, atom types must be sorted in order of ascending atomic number,
-   e.g. the only correct mapping for a configuration containing hydrogen, oxygen
-   and zinc atoms is as follows:
+If provided, the keyword *emap* determines the mapping from LAMMPS atom types to
+n2p2 elements. The format is a comma-separated list of ``atom type:element``
+pairs, e.g. ``"1:Cu,2:Zn"`` will map atom types 1 and 2 to elements Cu and Zn,
+respectively. Atom types not present in the list will be completely ignored by
+the NNP. The keyword *emap* is mandatory in a "hybrid" setup (see `pair_hybrid
+<https://lammps.sandia.gov/doc/pair_hybrid.html>`__) with "extra" atom types in
+the simulation which are not handled by the NNP.
+
+.. warning::
+
+   Without an explicit mapping it is by default assumed that the atom type
+   specifications in LAMMPS configuration files are consistent with the ordering
+   of elements in the NNP library. Thus, without the *emap* keyword present
+   atom types must be sorted in order of ascending atomic number, e.g. the only
+   correct mapping for a configuration containing hydrogen, oxygen and zinc
+   atoms would be:
    
    +---------+---------------+-------------+
    | Element | Atomic number | LAMMPS type |
@@ -102,8 +117,6 @@ but must not be smaller.
    +---------+---------------+-------------+
    |      Zn |            30 |           3 |
    +---------+---------------+-------------+
-
-----
 
 Use the *dir* keyword to specify the directory containing the NNP configuration
 files. The directory must contain "input.nn" with neural network
@@ -181,28 +194,34 @@ quantities in native NNP units (1 Angstrom = 1.8897261328 Bohr, 1 eV =
 Restrictions
 ^^^^^^^^^^^^
 
-Currently it is unclear whether this pair style can work in conjunction with
-other interactions (`pair_hybrid <https://lammps.sandia.gov/doc/pair_hybrid.html>`_).
+Please report bugs and feature requests to the `n2p2 GitHub issue page
+<https://github.com/CompPhysVienna/n2p2/issues>`__.
 
 Related commands
 ^^^^^^^^^^^^^^^^
 
-`pair_coeff <https://lammps.sandia.gov/doc/pair_coeff.html>`_
+`pair_coeff <https://lammps.sandia.gov/doc/pair_coeff.html>`__
 
+`pair_hybrid <https://lammps.sandia.gov/doc/pair_hybrid.html>`__
 
-`units <https://lammps.sandia.gov/doc/units.html>`_
+`units <https://lammps.sandia.gov/doc/units.html>`__
 
 Default
 ^^^^^^^
 
-
-The default options are *dir* = "nnp/", *showew* = yes, *showewsum* = 0, *maxew* = 0, *resetew* = no,
-*cflength* = 1.0, *cfenergy* = 1.0.
+The default options are *dir* = "nnp/", *showew* = yes, *showewsum* = 0, *maxew*
+= 0, *resetew* = no, *cflength* = 1.0, *cfenergy* = 1.0. The default atom type
+mapping is determined automatically according to ascending atomic number of
+present elements (see above).
 
 ----
 
-.. [1] `Behler and Parrinello, Phys. Rev. Lett. 98, 146401 (2007) <https://doi.org/10.1103/PhysRevLett.98.146401>`_
+.. [1] Behler, J.; Parrinello, M. Generalized Neural-Network Representation of
+   High-Dimensional Potential-Energy Surfaces. Phys. Rev. Lett. 2007, 98 (14),
+   146401. https://doi.org/10.1103/PhysRevLett.98.146401
 
 .. [2] https://github.com/CompPhysVienna/n2p2
 
-.. [3] `Singraber, Behler and Dellago, J. Chem. Theory Comput. (2019) <https://doi.org/10.1021/acs.jctc.8b00770>`_
+.. [3] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+   Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+   Theory Comput. 2019, 15 (5), 3075–3092. https://doi.org/10.1021/acs.jctc.8b01092

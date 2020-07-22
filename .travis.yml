@@ -59,8 +59,8 @@ before_install:
 install:
   - pip install sphinx
   - pip install sphinx_rtd_theme
-  - pip install breathe
-  - pip install exhale
+  #- pip install breathe
+  #- pip install exhale
   - pip install cython
   - pip install pytest
   - pip install pytest-cov
@@ -81,7 +81,8 @@ script:
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
   # C++ build and tests
-  - make MODE=test
+  - make MODE=test -j
+  - make MODE=test lammps-nnp
   - cd ../test/
   - make cpp
   - cd cpp
