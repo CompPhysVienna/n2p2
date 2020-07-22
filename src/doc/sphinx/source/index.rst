@@ -185,8 +185,9 @@ list of keywords is provided :ref:`here <keywords>`.
    Tools/nnp-norm
    Tools/nnp-predict
    Tools/nnp-prune
-   Tools/nnp-select
    Tools/nnp-scaling
+   Tools/nnp-select
+   Tools/nnp-sfclust
    Tools/nnp-train
 
 .. .. toctree::
