@@ -11,10 +11,13 @@
 #include "SymmetryFunction.h"
 #include "SymmetryFunctionRadial.h"
 #include "SymmetryFunctionRadialPoly.h"
+#include "SymmetryFunctionRadialPolyA.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionAngularPolyOnly.h"
 #include "SymmetryFunctionAngularPolyOnlyNarrow.h"
+#include "SymmetryFunctionAngularPolyAOnly.h"
+#include "SymmetryFunctionAngularPolyAOnlyNarrow.h"
 #include "SymmetryFunctionAngularPolyWide.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
@@ -36,15 +39,18 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
                                         string const setupLine)
 {
     SymmetryFunction* sf;
-    if      (type ==  2) sf = new SymmetryFunctionRadial(em);
-    else if (type ==  3) sf = new SymmetryFunctionAngularNarrow(em);
-    else if (type ==  9) sf = new SymmetryFunctionAngularWide(em);
-    else if (type == 12) sf = new SymmetryFunctionWeightedRadial(em);
-    else if (type == 13) sf = new SymmetryFunctionWeightedAngular(em);
-    else if (type == 28) sf = new SymmetryFunctionRadialPoly(em);
-    else if (type == 29) sf = new SymmetryFunctionAngularPolyWide(em);
-    else if (type == 89) sf = new SymmetryFunctionAngularPolyOnly(em);
-    else if (type == 99) sf = new SymmetryFunctionAngularPolyOnlyNarrow(em);
+    if      (type ==  2)  sf = new SymmetryFunctionRadial(em);
+    else if (type ==  3)  sf = new SymmetryFunctionAngularNarrow(em);
+    else if (type ==  9)  sf = new SymmetryFunctionAngularWide(em);
+    else if (type == 12)  sf = new SymmetryFunctionWeightedRadial(em);
+    else if (type == 13)  sf = new SymmetryFunctionWeightedAngular(em);
+    else if (type == 28)  sf = new SymmetryFunctionRadialPoly(em);
+    else if (type == 280) sf = new SymmetryFunctionRadialPolyA(em);
+    else if (type == 29)  sf = new SymmetryFunctionAngularPolyWide(em);
+    else if (type == 89)  sf = new SymmetryFunctionAngularPolyOnly(em);
+    else if (type == 890) sf = new SymmetryFunctionAngularPolyAOnly(em);
+    else if (type == 99)  sf = new SymmetryFunctionAngularPolyOnlyNarrow(em);
+    else if (type == 990) sf = new SymmetryFunctionAngularPolyAOnlyNarrow(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");

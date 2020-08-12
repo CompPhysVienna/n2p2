@@ -40,7 +40,8 @@ public:
         POLY3,
         /** @f$f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1@f$
          */
-        POLY4
+        POLY4,
+        POLYA
     };
 
     /** Constructor, initializes to ´POLY2´.

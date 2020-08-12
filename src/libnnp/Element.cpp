@@ -20,21 +20,27 @@
 #include "SymmetryFunction.h"
 #include "SymmetryFunctionRadial.h"
 #include "SymmetryFunctionRadialPoly.h"
+#include "SymmetryFunctionRadialPolyA.h"
 #include "SymmetryFunctionAngularNarrow.h"
 #include "SymmetryFunctionAngularWide.h"
 #include "SymmetryFunctionAngularPolyWide.h"
 #include "SymmetryFunctionAngularPolyOnly.h"
 #include "SymmetryFunctionAngularPolyOnlyNarrow.h"
+#include "SymmetryFunctionAngularPolyAOnly.h"
+#include "SymmetryFunctionAngularPolyAOnlyNarrow.h"
 #include "SymmetryFunctionWeightedRadial.h"
 #include "SymmetryFunctionWeightedAngular.h"
 #include "SymmetryFunctionGroup.h"
 #include "SymmetryFunctionGroupRadial.h"
 #include "SymmetryFunctionGroupRadialPoly.h"
+#include "SymmetryFunctionGroupRadialPolyA.h"
 #include "SymmetryFunctionGroupAngularNarrow.h"
 #include "SymmetryFunctionGroupAngularWide.h"
 #include "SymmetryFunctionGroupAngularPolyWide.h"
 #include "SymmetryFunctionGroupAngularPolyOnly.h"
 #include "SymmetryFunctionGroupAngularPolyOnlyNarrow.h"
+#include "SymmetryFunctionGroupAngularPolyAOnly.h"
+#include "SymmetryFunctionGroupAngularPolyAOnlyNarrow.h"
 #include "SymmetryFunctionGroupWeightedRadial.h"
 #include "SymmetryFunctionGroupWeightedAngular.h"
 #include "utility.h"
@@ -114,6 +120,11 @@ void Element::addSymmetryFunction(string const& parameters,
         symmetryFunctions.push_back(
             new SymmetryFunctionRadialPoly(elementMap));
     }
+    else if (type == 280)
+    {
+        symmetryFunctions.push_back(
+            new SymmetryFunctionRadialPolyA(elementMap));
+    }
     else if (type == 29)
     {
         symmetryFunctions.push_back(
@@ -124,10 +135,20 @@ void Element::addSymmetryFunction(string const& parameters,
         symmetryFunctions.push_back(
             new SymmetryFunctionAngularPolyOnly(elementMap));
     }
+    else if (type == 890)
+    {
+        symmetryFunctions.push_back(
+            new SymmetryFunctionAngularPolyAOnly(elementMap));
+    }
     else if (type == 99)
     {
         symmetryFunctions.push_back(
             new SymmetryFunctionAngularPolyOnlyNarrow(elementMap));
+    }
+    else if (type == 990)
+    {
+        symmetryFunctions.push_back(
+            new SymmetryFunctionAngularPolyAOnlyNarrow(elementMap));
     }
     else
     {
@@ -239,6 +260,11 @@ void Element::setupSymmetryFunctionGroups()
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
                     new SymmetryFunctionGroupRadialPoly(elementMap));
             }
+            else if ((*sf)->getType() == 280)
+            {
+                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
+                    new SymmetryFunctionGroupRadialPolyA(elementMap));
+            }
             else if ((*sf)->getType() == 29)
             {
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
@@ -249,10 +275,20 @@ void Element::setupSymmetryFunctionGroups()
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
                     new SymmetryFunctionGroupAngularPolyOnly(elementMap));
             }
+            else if ((*sf)->getType() == 890)
+            {
+                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
+                    new SymmetryFunctionGroupAngularPolyAOnly(elementMap));
+            }
             else if ((*sf)->getType() == 99)
             {
                 symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
                     new SymmetryFunctionGroupAngularPolyOnlyNarrow(elementMap));
+            }
+            else if ((*sf)->getType() == 990)
+            {
+                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
+                    new SymmetryFunctionGroupAngularPolyAOnlyNarrow(elementMap));
             }
             else
             {

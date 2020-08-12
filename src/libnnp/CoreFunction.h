@@ -37,7 +37,8 @@ public:
         POLY3,
         /** @f$f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1@f$
          */
-        POLY4
+        POLY4,
+        POLYA
     };
 
     /** Constructor, initializes to ´POLY2´.
@@ -101,6 +102,10 @@ private:
     double   fPOLY4(double x) const;
     double  dfPOLY4(double x) const;
     void   fdfPOLY4(double x, double& fx, double& dfx) const;
+
+    double   fPOLYA(double x) const;
+    double  dfPOLYA(double x) const;
+    void   fdfPOLYA(double x, double& fx, double& dfx) const;
 };
 
 //////////////////////////////////

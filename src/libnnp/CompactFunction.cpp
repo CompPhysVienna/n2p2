@@ -38,6 +38,7 @@ void CompactFunction::setType(Type const type)
     else if (type == Type::POLY2) core.setType(CoreFunction::Type::POLY2);
     else if (type == Type::POLY3) core.setType(CoreFunction::Type::POLY3);
     else if (type == Type::POLY4) core.setType(CoreFunction::Type::POLY4);
+    else if (type == Type::POLYA) core.setType(CoreFunction::Type::POLYA);
     else
     {
         throw invalid_argument("ERROR: Unknown compact function type.\n");
