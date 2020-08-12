@@ -89,7 +89,7 @@ void SymmetryFunctionRadialPoly::setParameters(string const& parameterString)
     }
     else if (rl < 0.0 && (rl + rc) != 0.0)
     {
-        throw runtime_error("ERROR: Radial function not symmetric w.r.t origin.\n");
+        fprintf(stderr, "WARNING: Radial function not symmetric w.r.t origin.\n");
     }
    
     c.setType(CompactFunction::Type::POLY2);
