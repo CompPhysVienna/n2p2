@@ -233,10 +233,13 @@ int main(int argc, char* argv[])
                         {
                             countAngles += ahist.at(i)[e]->at(n);
                         }
-                        for (size_t n = 0; n < numBins; ++n)
+                        if (countAngles > 0)
                         {
-                            adf.at(i)[e]->at(n) += ahist.at(i)[e]->at(n)
-                                                 / countAngles / da;
+                            for (size_t n = 0; n < numBins; ++n)
+                            {
+                                adf.at(i)[e]->at(n) += ahist.at(i)[e]->at(n)
+                                                     / countAngles / da;
+                            }
                         }
                         ahist.at(i)[e]->clear();
                         ahist.at(i)[e]->resize(numBins, 0.0);
