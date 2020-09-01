@@ -40,6 +40,7 @@ map<string, string> const createKnownKeywordsMap()
     m["global_hidden_layers_short"    ] = "";
     m["global_nodes_short"            ] = "";
     m["global_activation_short"       ] = "";
+    m["element_nodes_short"           ] = "";
     m["normalize_nodes"               ] = "";
     m["mean_energy"                   ] = "";
     m["conv_length"                   ] = "";
@@ -277,7 +278,8 @@ size_t Settings::sanityCheck()
     {
         if (contents.count((*it).first) > 1
             && (*it).first != "symfunction_short"
-            && (*it).first != "atom_energy")
+            && (*it).first != "atom_energy"
+            && (*it).first != "element_nodes_short")
         {
             countProblems++;
             log.push_back(strpr(

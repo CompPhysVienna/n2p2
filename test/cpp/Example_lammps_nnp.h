@@ -43,6 +43,13 @@ void BoostDataContainer<Example_lammps_nnp>::setup()
     e->potentialEnergy = -6000559.4;
     e->totalEnergy = -6000220.2;
 
+    examples.push_back(Example_lammps_nnp("Cu2S_PBE"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 100;
+    e->potentialEnergy = -574.21185;
+    e->totalEnergy = -573.6561;
+
     return;
 }
 
