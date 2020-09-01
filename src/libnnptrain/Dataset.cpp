@@ -1477,11 +1477,28 @@ void Dataset::writeAtomicEnvironmentFile(
     return;
 }
 
-void Dataset::averageRmse(double& rmse, size_t& count) const
+void Dataset::collectErrorEnergies(vector<double>& error, size_t& count) const
 {
-    MPI_Allreduce(MPI_IN_PLACE, &count, 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &rmse , 1, MPI_DOUBLE, MPI_SUM, comm);
-    rmse = sqrt(rmse / count);
+    MPI_Allreduce(MPI_IN_PLACE, &count         , 1, MPI_SIZE_T, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(0)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(1)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(2)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(3)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    error.at(0) = sqrt(error.at(0) / count);
+    error.at(1) = sqrt(error.at(1) / count);
+    error.at(2) = error.at(2) / count;
+    error.at(3) = error.at(3) / count;
+
+    return;
+}
+
+void Dataset::collectErrorForces(vector<double>& error, size_t& count) const
+{
+    MPI_Allreduce(MPI_IN_PLACE, &count         , 1, MPI_SIZE_T, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(0)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(1)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    error.at(0) = sqrt(error.at(0) / count);
+    error.at(1) = error.at(1) / count;
 
     return;
 }

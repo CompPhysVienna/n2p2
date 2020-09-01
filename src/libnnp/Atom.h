@@ -222,13 +222,14 @@ struct Atom
      * smaller cutoff is requested.
      */
     std::size_t              getNumNeighbors(double cutoffRadius) const;
-    /** Update force RMSE with forces of this atom.
+    /** Update force error metrices with forces of this atom.
      *
-     * @param[in,out] rmse Input RMSE to be updated.
+     * @param[in,out] error Input error metric vector to be updated.
      * @param[in,out] count Input counter to be updated.
      */
-    void                     updateRmseForces(double&      rmse,
-                                              std::size_t& count) const;
+    void                     updateErrorForces(
+                                             std::vector<double>& rmse,
+                                             std::size_t&         count) const;
     /** Get reference and NN forces for this atoms.
      *
      * @return Vector of strings with #indexStructure, #index, #fRef, #f

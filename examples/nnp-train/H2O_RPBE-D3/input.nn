@@ -33,6 +33,7 @@ global_activation_short         t t l          # Activation function for each hi
 # nnp-comp2, nnp-scaling, nnp-dataset, nnp-train.
 use_short_forces                               # Use forces.
 random_seed                     1234567        # Random number generator seed.
+main_error_metric               RMSEpa         # Main error metric for screen output (RMSEpa/RMSE/MAEpa/MAE).
 
 ###############################################################################
 # ADDITIONAL SETTINGS FOR TRAINING

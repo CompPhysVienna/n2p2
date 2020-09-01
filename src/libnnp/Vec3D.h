@@ -99,6 +99,11 @@ struct Vec3D
      * @return Square of norm of vector.
      */
     double        norm2() const;
+    /** Calculate l1 norm of vector (taxicab metric).
+     *
+     * @return L1-norm of vector.
+     */
+    double        l1norm() const;
     /** Normalize vector, norm equals 1.0 afterwards.
      */
     Vec3D&        normalize();
@@ -256,6 +261,11 @@ inline double Vec3D::norm() const
 inline double Vec3D::norm2() const
 {
     return r[0] * r[0] + r[1] * r[1] + r[2] * r[2];
+}
+
+inline double Vec3D::l1norm() const
+{
+    return fabs(r[0]) + fabs(r[1]) + fabs(r[2]);
 }
 
 inline Vec3D& Vec3D::normalize()

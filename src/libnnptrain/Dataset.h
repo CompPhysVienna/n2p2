@@ -159,12 +159,20 @@ public:
                                         bool                     derivatives,
                                         std::string const &      fileNamePrefix
                                              = "atomic-env");
-    /** Reduce and average RMSE over all MPI procs.
+    /** Collect error metrices of energies over all MPI procs.
      *
-     * @param[in,out] rmse RMSE sum of this proc (in), global RMSE (out).
+     * @param[in,out] error Metric sums of this proc (in), global metric (out).
      * @param[in,out] count Count for this proc (in), global count (out).
      */
-    void        averageRmse(double& rmse, std::size_t& count) const;
+    void        collectErrorEnergies(std::vector<double>& error,
+                                     std::size_t&         count) const;
+    /** Collect error metrices of forces over all MPI procs.
+     *
+     * @param[in,out] error Metric sums of this proc (in), global metric (out).
+     * @param[in,out] count Count for this proc (in), global count (out).
+     */
+    void        collectErrorForces(std::vector<double>& error,
+                                     std::size_t&       count) const;
     /** Combine individual MPI proc files to one.
      *
      * @param[in] filePrefix File prefix without the ".0001" suffix.
