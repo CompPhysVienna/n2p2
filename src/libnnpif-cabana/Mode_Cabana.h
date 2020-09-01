@@ -143,8 +143,9 @@ class ModeCabana : public Mode
      * Callable within device kernel.
      */
     KOKKOS_INLINE_FUNCTION
-    void compute_cutoff(CutoffFunction::CutoffType cutoffType, double &fc,
-                        double &dfc, double r, double rc, bool derivative) const;
+    void compute_cutoff(CutoffFunction::CutoffType cutoffType, double cutoffAlpha,
+                        double &fc, double &dfc, double r, double rc,
+                        bool derivative) const;
     /*
      * Scale one symmetry function.
      *
@@ -281,8 +282,8 @@ class ModeCabana : public Mode
 template <class t_device>
 KOKKOS_INLINE_FUNCTION void
 ModeCabana<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
-                                     double &fc, double &dfc, double r, double rc,
-                                     bool derivative) const
+                                     double cutoffAlpha, double &fc, double &dfc,
+                                     double r, double rc, bool derivative) const
 {
     double temp;
     if (cutoffType == CutoffFunction::CT_TANHU) {
@@ -312,16 +313,16 @@ ModeCabana<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
 template <class t_device>
 KOKKOS_INLINE_FUNCTION double
 ModeCabana<t_device>::scale(int attype, double value, int k,
-                            d_t_SFscaling SFscaling) const
+                            d_t_SFscaling SFscaling_) const
 {
-    double scalingType = SFscaling(attype, k, 7);
-    double scalingFactor = SFscaling(attype, k, 6);
-    double Gmin = SFscaling(attype, k, 0);
-    // double Gmax = SFscaling(attype,k,1);
-    double Gmean = SFscaling(attype, k, 2);
-    // double Gsigma = SFscaling(attype,k,3);
-    double Smin = SFscaling(attype, k, 4);
-    // double Smax = SFscaling(attype,k,5);
+    double scalingType = SFscaling_(attype, k, 7);
+    double scalingFactor = SFscaling_(attype, k, 6);
+    double Gmin = SFscaling_(attype, k, 0);
+    // double Gmax = SFscaling_(attype,k,1);
+    double Gmean = SFscaling_(attype, k, 2);
+    // double Gsigma = SFscaling_(attype,k,3);
+    double Smin = SFscaling_(attype, k, 4);
+    // double Smax = SFscaling_(attype,k,5);
 
     if (scalingType == 0.0) {
         return value;
