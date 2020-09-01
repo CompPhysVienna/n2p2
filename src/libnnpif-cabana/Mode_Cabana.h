@@ -241,7 +241,6 @@ class ModeCabana : public Mode
     t_SFscaling SFscaling;
 
     // NN Kokkos::Views
-    d_t_NN NN, dfdx, inner, outer;
     d_t_bias bias;
     d_t_weights weights;
     t_bias h_bias;

@@ -611,6 +611,15 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
 
     Kokkos::RangePolicy<exe_space> policy( 0, N_local );
 
+    // Create local copies for lambda
+    auto numSFGperElem_ = numSFGperElem;
+    auto SFGmemberlist_ = d_SFGmemberlist;
+    auto SF_ = d_SF;
+    auto SFscaling_ = d_SFscaling;
+    auto maxSFperElem_ = maxSFperElem;
+    auto convLength_ = convLength;
+    auto cutoffType_ = cutoffType;
+
     auto calc_radial_symm_op = KOKKOS_LAMBDA( const int i, const int j )
     {
         double pfcij = 0.0;
@@ -622,33 +631,33 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
         T_F_FLOAT dxij, dyij, dzij;
 
         int attype = type( i );
-        for ( int groupIndex = 0; groupIndex < numSFGperElem( attype );
+        for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
-            if ( d_SF( attype, d_SFGmemberlist( attype, groupIndex, 0 ), 1 ) ==
+            if ( SF_( attype, SFGmemberlist_( attype, groupIndex, 0 ), 1 ) ==
                  2 )
             {
-                size_t memberindex0 = d_SFGmemberlist( attype, groupIndex, 0 );
-                size_t e1 = d_SF( attype, memberindex0, 2 );
-                double rc = d_SF( attype, memberindex0, 7 );
+                size_t memberindex0 = SFGmemberlist_( attype, groupIndex, 0 );
+                size_t e1 = SF_( attype, memberindex0, 2 );
+                double rc = SF_( attype, memberindex0, 7 );
                 size_t size =
-                    d_SFGmemberlist( attype, groupIndex, maxSFperElem );
+                    SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
                 nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength;
+                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
                 r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
                 rij = sqrt( r2ij );
                 if ( e1 == nej && rij < rc )
                 {
-                    compute_cutoff( cutoffType, pfcij, pdfcij, rij, rc, false );
+                    compute_cutoff( cutoffType_, pfcij, pdfcij, rij, rc, false );
                     for ( size_t k = 0; k < size; ++k )
                     {
-                        memberindex = d_SFGmemberlist( attype, groupIndex, k );
-                        globalIndex = d_SF( attype, memberindex, 14 );
-                        eta = d_SF( attype, memberindex, 4 );
-                        rs = d_SF( attype, memberindex, 8 );
+                        memberindex = SFGmemberlist_( attype, groupIndex, k );
+                        globalIndex = SF_( attype, memberindex, 14 );
+                        eta = SF_( attype, memberindex, 4 );
+                        rs = SF_( attype, memberindex, 8 );
                         G( i, globalIndex ) +=
                             exp( -eta * ( rij - rs ) * ( rij - rs ) ) * pfcij;
                     }
@@ -674,29 +683,29 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
         double eta, rs, lambda, zeta;
 
         int attype = type( i );
-        for ( int groupIndex = 0; groupIndex < numSFGperElem( attype );
+        for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
-            if ( d_SF( attype, d_SFGmemberlist( attype, groupIndex, 0 ), 1 ) ==
+            if ( SF_( attype, SFGmemberlist_( attype, groupIndex, 0 ), 1 ) ==
                  3 )
             {
-                size_t memberindex0 = d_SFGmemberlist( attype, groupIndex, 0 );
-                size_t e1 = d_SF( attype, memberindex0, 2 );
-                size_t e2 = d_SF( attype, memberindex0, 3 );
-                double rc = d_SF( attype, memberindex0, 7 );
+                size_t memberindex0 = SFGmemberlist_( attype, groupIndex, 0 );
+                size_t e1 = SF_( attype, memberindex0, 2 );
+                size_t e2 = SF_( attype, memberindex0, 3 );
+                double rc = SF_( attype, memberindex0, 7 );
                 size_t size =
-                    d_SFGmemberlist( attype, groupIndex, maxSFperElem );
+                    SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
                 nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength;
+                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
                 r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
                 rij = sqrt( r2ij );
                 if ( ( e1 == nej || e2 == nej ) && rij < rc )
                 {
                     // Calculate cutoff function and derivative.
-                    compute_cutoff( cutoffType, pfcij, pdfcij, rij, rc, false );
+                    compute_cutoff( cutoffType_, pfcij, pdfcij, rij, rc, false );
 
                     nek = type( k );
 
@@ -704,11 +713,11 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
                          ( e2 == nej && e1 == nek ) )
                     {
                         dxik =
-                            ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength;
+                            ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength_;
                         dyik =
-                            ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength;
+                            ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength_;
                         dzik =
-                            ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength;
+                            ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength_;
                         r2ik = dxik * dxik + dyik * dyik + dzik * dzik;
                         rik = sqrt( r2ik );
                         if ( rik < rc )
@@ -720,11 +729,11 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
                             if ( r2jk < rc * rc )
                             {
                                 // Energy calculation.
-                                compute_cutoff( cutoffType, pfcik, pdfcik, rik,
+                                compute_cutoff( cutoffType_, pfcik, pdfcik, rik,
                                                 rc, false );
 
                                 rjk = sqrt( r2jk );
-                                compute_cutoff( cutoffType, pfcjk, pdfcjk, rjk,
+                                compute_cutoff( cutoffType_, pfcjk, pdfcjk, rjk,
                                                 rc, false );
 
                                 double const rinvijik = 1.0 / rij / rik;
@@ -737,16 +746,16 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
                                 for ( size_t l = 0; l < size; ++l )
                                 {
                                     globalIndex =
-                                        d_SF( attype,
-                                              d_SFGmemberlist( attype,
+                                        SF_( attype,
+                                              SFGmemberlist_( attype,
                                                                groupIndex, l ),
                                               14 );
-                                    memberindex = d_SFGmemberlist(
+                                    memberindex = SFGmemberlist_(
                                         attype, groupIndex, l );
-                                    eta = d_SF( attype, memberindex, 4 );
-                                    lambda = d_SF( attype, memberindex, 5 );
-                                    zeta = d_SF( attype, memberindex, 6 );
-                                    rs = d_SF( attype, memberindex, 8 );
+                                    eta = SF_( attype, memberindex, 4 );
+                                    lambda = SF_( attype, memberindex, 5 );
+                                    zeta = SF_( attype, memberindex, 6 );
+                                    rs = SF_( attype, memberindex, 8 );
                                     if ( rs > 0.0 )
                                     {
                                         rijs = rij - rs;
@@ -788,27 +797,27 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
         int memberindex0;
         int memberindex, globalIndex;
         double raw_value = 0.0;
-        for ( int groupIndex = 0; groupIndex < numSFGperElem( attype );
+        for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
-            memberindex0 = d_SFGmemberlist( attype, groupIndex, 0 );
+            memberindex0 = SFGmemberlist_( attype, groupIndex, 0 );
 
-            size_t size = d_SFGmemberlist( attype, groupIndex, maxSFperElem );
+            size_t size = SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
             for ( size_t k = 0; k < size; ++k )
             {
-                globalIndex = d_SF(
-                    attype, d_SFGmemberlist( attype, groupIndex, k ), 14 );
-                memberindex = d_SFGmemberlist( attype, groupIndex, k );
+                globalIndex = SF_(
+                    attype, SFGmemberlist_( attype, groupIndex, k ), 14 );
+                memberindex = SFGmemberlist_( attype, groupIndex, k );
 
-                if ( d_SF( attype, memberindex0, 1 ) == 2 )
+                if ( SF_( attype, memberindex0, 1 ) == 2 )
                     raw_value = G( i, globalIndex );
-                else if ( d_SF( attype, memberindex0, 1 ) == 3 )
+                else if ( SF_( attype, memberindex0, 1 ) == 3 )
                     raw_value =
                         G( i, globalIndex ) *
-                        pow( 2, ( 1 - d_SF( attype, memberindex, 6 ) ) );
+                        pow( 2, ( 1 - SF_( attype, memberindex, 6 ) ) );
 
                 G( i, globalIndex ) =
-                    scale( attype, raw_value, memberindex, d_SFscaling );
+                    scale( attype, raw_value, memberindex, SFscaling_ );
             }
         }
     };
@@ -823,43 +832,52 @@ template <class t_slice_type, class t_slice_G, class t_slice_dEdG,
 void ModeCabana<t_device>::calculateAtomicNeuralNetworks( 
     t_slice_type type, t_slice_G G, t_slice_dEdG dEdG, t_slice_E E, int N_local )
 {
-    NN = d_t_NN( "Mode::NN", N_local, numLayers, maxNeurons );
-    dfdx = d_t_NN( "Mode::dfdx", N_local, numLayers, maxNeurons );
-    inner = d_t_NN( "Mode::inner", N_local, numHiddenLayers, maxNeurons );
-    outer = d_t_NN( "Mode::outer", N_local, numHiddenLayers, maxNeurons );
+    auto NN = d_t_NN( "Mode::NN", N_local, numLayers, maxNeurons );
+    auto dfdx = d_t_NN( "Mode::dfdx", N_local, numLayers, maxNeurons );
+    auto inner = d_t_NN( "Mode::inner", N_local, numHiddenLayers, maxNeurons );
+    auto outer = d_t_NN( "Mode::outer", N_local, numHiddenLayers, maxNeurons );
 
     Kokkos::RangePolicy<exe_space> policy( 0, N_local );
+
+    // Create local copies for lambda
+    auto numSFperElem_ = numSFperElem;
+    auto numNeuronsPerLayer_ = numNeuronsPerLayer;
+    auto numLayers_ = numLayers;
+    auto numHiddenLayers_ = numHiddenLayers;
+    auto AF_ = AF;
+    auto weights_ = weights;
+    auto bias_ = bias;
 
     auto calc_nn_op = KOKKOS_LAMBDA( const int atomindex )
     {
         int attype = type( atomindex );
         // set input layer of NN
         int layer_0, layer_lminusone;
-        layer_0 = (int)numSFperElem( attype );
+        layer_0 = (int)numSFperElem_( attype );
 
         for ( int k = 0; k < layer_0; ++k )
             NN( atomindex, 0, k ) = G( atomindex, k );
         // forward propagation
-        for ( int l = 1; l < numLayers; l++ )
+        for ( int l = 1; l < numLayers_; l++ )
         {
             if ( l == 1 )
                 layer_lminusone = layer_0;
             else
-                layer_lminusone = numNeuronsPerLayer[l - 1];
+                layer_lminusone = numNeuronsPerLayer_( l - 1 );
             double dtmp;
-            for ( int i = 0; i < numNeuronsPerLayer[l]; i++ )
+            for ( int i = 0; i < numNeuronsPerLayer_( l ); i++ )
             {
                 dtmp = 0.0;
                 for ( int j = 0; j < layer_lminusone; j++ )
-                    dtmp += weights( attype, l - 1, i, j ) *
+                    dtmp += weights_( attype, l - 1, i, j ) *
                             NN( atomindex, l - 1, j );
-                dtmp += bias( attype, l - 1, i );
-                if ( AF( l ) == 0 )
+                dtmp += bias_( attype, l - 1, i );
+                if ( AF_( l ) == 0 )
                 {
                     NN( atomindex, l, i ) = dtmp;
                     dfdx( atomindex, l, i ) = 1.0;
                 }
-                else if ( AF( l ) == 1 )
+                else if ( AF_( l ) == 1 )
                 {
                     dtmp = tanh( dtmp );
                     NN( atomindex, l, i ) = dtmp;
@@ -868,34 +886,34 @@ void ModeCabana<t_device>::calculateAtomicNeuralNetworks(
             }
         }
 
-        E( atomindex ) = NN( atomindex, numLayers - 1, 0 );
+        E( atomindex ) = NN( atomindex, numLayers_ - 1, 0 );
 
         // derivative of network w.r.t NN inputs
-        for ( int k = 0; k < numNeuronsPerLayer[0]; k++ )
+        for ( int k = 0; k < numNeuronsPerLayer_( 0 ); k++ )
         {
-            for ( int i = 0; i < numNeuronsPerLayer[1]; i++ )
+            for ( int i = 0; i < numNeuronsPerLayer_( 1 ); i++ )
                 inner( atomindex, 0, i ) =
-                    weights( attype, 0, i, k ) * dfdx( atomindex, 1, i );
+                    weights_( attype, 0, i, k ) * dfdx( atomindex, 1, i );
 
-            for ( int l = 1; l < numHiddenLayers + 1; l++ )
+            for ( int l = 1; l < numHiddenLayers_ + 1; l++ )
             {
-                for ( int i2 = 0; i2 < numNeuronsPerLayer( l + 1 ); i2++ )
+                for ( int i2 = 0; i2 < numNeuronsPerLayer_( l + 1 ); i2++ )
                 {
                     outer( atomindex, l - 1, i2 ) = 0.0;
 
-                    for ( int i1 = 0; i1 < numNeuronsPerLayer( l ); i1++ )
+                    for ( int i1 = 0; i1 < numNeuronsPerLayer_( l ); i1++ )
                         outer( atomindex, l - 1, i2 ) +=
-                            weights( attype, l, i2, i1 ) *
+                            weights_( attype, l, i2, i1 ) *
                             inner( atomindex, l - 1, i1 );
                     outer( atomindex, l - 1, i2 ) *=
                         dfdx( atomindex, l + 1, i2 );
 
-                    if ( l < numHiddenLayers )
+                    if ( l < numHiddenLayers_ )
                         inner( atomindex, l, i2 ) =
                             outer( atomindex, l - 1, i2 );
                 }
             }
-            dEdG( atomindex, k ) = outer( atomindex, numHiddenLayers - 1, 0 );
+            dEdG( atomindex, k ) = outer( atomindex, numHiddenLayers_ - 1, 0 );
         }
     };
     Kokkos::parallel_for( "Mode::calculateAtomicNeuralNetworks", policy,
@@ -912,9 +930,18 @@ void ModeCabana<t_device>::calculateForces(
     t_neigh_list neigh_list, int N_local, t_neigh_parallel neigh_op_tag,
     t_angle_parallel angle_op_tag )
 {
-    double convForce = convLength / convEnergy;
+    double convForce_ = convLength / convEnergy;
 
     Kokkos::RangePolicy<exe_space> policy( 0, N_local );
+
+    // Create local copies for lambda
+    auto numSFGperElem_ = numSFGperElem;
+    auto SFGmemberlist_ = d_SFGmemberlist;
+    auto SF_ = d_SF;
+    auto SFscaling_ = d_SFscaling;
+    auto maxSFperElem_ = maxSFperElem;
+    auto convLength_ = convLength;
+    auto cutoffType_ = cutoffType;
 
     auto calc_radial_force_op = KOKKOS_LAMBDA( const int i, const int j )
     {
@@ -927,56 +954,56 @@ void ModeCabana<t_device>::calculateForces(
 
         int attype = type( i );
 
-        for ( int groupIndex = 0; groupIndex < numSFGperElem( attype );
+        for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
-            if ( d_SF( attype, d_SFGmemberlist( attype, groupIndex, 0 ), 1 ) ==
+            if ( SF_( attype, SFGmemberlist_( attype, groupIndex, 0 ), 1 ) ==
                  2 )
             {
-                size_t memberindex0 = d_SFGmemberlist( attype, groupIndex, 0 );
-                size_t e1 = d_SF( attype, memberindex0, 2 );
-                double rc = d_SF( attype, memberindex0, 7 );
+                size_t memberindex0 = SFGmemberlist_( attype, groupIndex, 0 );
+                size_t e1 = SF_( attype, memberindex0, 2 );
+                double rc = SF_( attype, memberindex0, 7 );
                 size_t size =
-                    d_SFGmemberlist( attype, groupIndex, maxSFperElem );
+                    SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
                 size_t nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength;
+                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
                 r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
                 rij = sqrt( r2ij );
                 if ( e1 == nej && rij < rc )
                 {
                     // Energy calculation.
                     // Calculate cutoff function and derivative.
-                    compute_cutoff( cutoffType, pfcij, pdfcij, rij, rc, true );
+                    compute_cutoff( cutoffType_, pfcij, pdfcij, rij, rc, true );
                     for ( size_t k = 0; k < size; ++k )
                     {
-                        globalIndex = d_SF(
-                            attype, d_SFGmemberlist( attype, groupIndex, k ),
+                        globalIndex = SF_(
+                            attype, SFGmemberlist_( attype, groupIndex, k ),
                             14 );
-                        memberindex = d_SFGmemberlist( attype, groupIndex, k );
-                        eta = d_SF( attype, memberindex, 4 );
-                        rs = d_SF( attype, memberindex, 8 );
+                        memberindex = SFGmemberlist_( attype, groupIndex, k );
+                        eta = SF_( attype, memberindex, 4 );
+                        rs = SF_( attype, memberindex, 8 );
                         double pexp = exp( -eta * ( rij - rs ) * ( rij - rs ) );
                         // Force calculation.
                         double const p1 =
-                            d_SFscaling( attype, memberindex, 6 ) *
+                            SFscaling_( attype, memberindex, 6 ) *
                             ( pdfcij - 2.0 * eta * ( rij - rs ) * pfcij ) *
                             pexp / rij;
                         f_a( i, 0 ) -= ( dEdG( i, globalIndex ) *
-                                         ( p1 * dxij ) * CFFORCE * convForce );
+                                         ( p1 * dxij ) * CFFORCE * convForce_ );
                         f_a( i, 1 ) -= ( dEdG( i, globalIndex ) *
-                                         ( p1 * dyij ) * CFFORCE * convForce );
+                                         ( p1 * dyij ) * CFFORCE * convForce_ );
                         f_a( i, 2 ) -= ( dEdG( i, globalIndex ) *
-                                         ( p1 * dzij ) * CFFORCE * convForce );
+                                         ( p1 * dzij ) * CFFORCE * convForce_ );
 
                         f_a( j, 0 ) += ( dEdG( i, globalIndex ) *
-                                         ( p1 * dxij ) * CFFORCE * convForce );
+                                         ( p1 * dxij ) * CFFORCE * convForce_ );
                         f_a( j, 1 ) += ( dEdG( i, globalIndex ) *
-                                         ( p1 * dyij ) * CFFORCE * convForce );
+                                         ( p1 * dyij ) * CFFORCE * convForce_ );
                         f_a( j, 2 ) += ( dEdG( i, globalIndex ) *
-                                         ( p1 * dzij ) * CFFORCE * convForce );
+                                         ( p1 * dzij ) * CFFORCE * convForce_ );
                     }
                 }
             }
@@ -1000,40 +1027,40 @@ void ModeCabana<t_device>::calculateForces(
         int memberindex, globalIndex;
 
         int attype = type( i );
-        for ( int groupIndex = 0; groupIndex < numSFGperElem( attype );
+        for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
-            if ( d_SF( attype, d_SFGmemberlist( attype, groupIndex, 0 ), 1 ) ==
+            if ( SF_( attype, SFGmemberlist_( attype, groupIndex, 0 ), 1 ) ==
                  3 )
             {
-                size_t memberindex0 = d_SFGmemberlist( attype, groupIndex, 0 );
-                size_t e1 = d_SF( attype, memberindex0, 2 );
-                size_t e2 = d_SF( attype, memberindex0, 3 );
-                double rc = d_SF( attype, memberindex0, 7 );
+                size_t memberindex0 = SFGmemberlist_( attype, groupIndex, 0 );
+                size_t e1 = SF_( attype, memberindex0, 2 );
+                size_t e2 = SF_( attype, memberindex0, 3 );
+                double rc = SF_( attype, memberindex0, 7 );
                 size_t size =
-                    d_SFGmemberlist( attype, groupIndex, maxSFperElem );
+                    SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
                 nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength;
+                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
                 r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
                 rij = sqrt( r2ij );
                 if ( ( e1 == nej || e2 == nej ) && rij < rc )
                 {
                     // Calculate cutoff function and derivative.
-                    compute_cutoff( cutoffType, pfcij, pdfcij, rij, rc, true );
+                    compute_cutoff( cutoffType_, pfcij, pdfcij, rij, rc, true );
 
                     nek = type( k );
                     if ( ( e1 == nej && e2 == nek ) ||
                          ( e2 == nej && e1 == nek ) )
                     {
                         dxik =
-                            ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength;
+                            ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength_;
                         dyik =
-                            ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength;
+                            ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength_;
                         dzik =
-                            ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength;
+                            ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength_;
                         r2ik = dxik * dxik + dyik * dyik + dzik * dzik;
                         rik = sqrt( r2ik );
                         if ( rik < rc )
@@ -1045,11 +1072,11 @@ void ModeCabana<t_device>::calculateForces(
                             if ( r2jk < rc * rc )
                             {
                                 // Energy calculation.
-                                compute_cutoff( cutoffType, pfcik, pdfcik, rik,
+                                compute_cutoff( cutoffType_, pfcik, pdfcik, rik,
                                                 rc, true );
                                 rjk = sqrt( r2jk );
 
-                                compute_cutoff( cutoffType, pfcjk, pdfcjk, rjk,
+                                compute_cutoff( cutoffType_, pfcjk, pdfcjk, rjk,
                                                 rc, true );
 
                                 double const rinvijik = 1.0 / rij / rik;
@@ -1067,16 +1094,16 @@ void ModeCabana<t_device>::calculateForces(
                                 for ( size_t l = 0; l < size; ++l )
                                 {
                                     globalIndex =
-                                        d_SF( attype,
-                                              d_SFGmemberlist( attype,
+                                        SF_( attype,
+                                              SFGmemberlist_( attype,
                                                                groupIndex, l ),
                                               14 );
-                                    memberindex = d_SFGmemberlist(
+                                    memberindex = SFGmemberlist_(
                                         attype, groupIndex, l );
-                                    rs = d_SF( attype, memberindex, 8 );
-                                    eta = d_SF( attype, memberindex, 4 );
-                                    lambda = d_SF( attype, memberindex, 5 );
-                                    zeta = d_SF( attype, memberindex, 6 );
+                                    rs = SF_( attype, memberindex, 8 );
+                                    eta = SF_( attype, memberindex, 4 );
+                                    lambda = SF_( attype, memberindex, 5 );
+                                    zeta = SF_( attype, memberindex, 6 );
                                     if ( rs > 0.0 )
                                     {
                                         rijs = rij - rs;
@@ -1098,7 +1125,7 @@ void ModeCabana<t_device>::calculateForces(
                                         fg *= pow( plambda, ( zeta - 1.0 ) );
 
                                     fg *= pow( 2, ( 1 - zeta ) ) *
-                                          d_SFscaling( attype, memberindex, 6 );
+                                          SFscaling_( attype, memberindex, 6 );
                                     double const pfczl = pfc * zeta * lambda;
                                     double factorDeriv =
                                         2.0 * eta / zeta / lambda;
@@ -1139,33 +1166,33 @@ void ModeCabana<t_device>::calculateForces(
                                     }
                                     f_a( i, 0 ) -= ( dEdG( i, globalIndex ) *
                                                      ( p1 * dxij + p2 * dxik ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                     f_a( i, 1 ) -= ( dEdG( i, globalIndex ) *
                                                      ( p1 * dyij + p2 * dyik ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                     f_a( i, 2 ) -= ( dEdG( i, globalIndex ) *
                                                      ( p1 * dzij + p2 * dzik ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
 
                                     f_a( j, 0 ) += ( dEdG( i, globalIndex ) *
                                                      ( p1 * dxij + p3 * dxjk ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                     f_a( j, 1 ) += ( dEdG( i, globalIndex ) *
                                                      ( p1 * dyij + p3 * dyjk ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                     f_a( j, 2 ) += ( dEdG( i, globalIndex ) *
                                                      ( p1 * dzij + p3 * dzjk ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
 
                                     f_a( k, 0 ) += ( dEdG( i, globalIndex ) *
                                                      ( p2 * dxik - p3 * dxjk ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                     f_a( k, 1 ) += ( dEdG( i, globalIndex ) *
                                                      ( p2 * dyik - p3 * dyjk ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                     f_a( k, 2 ) += ( dEdG( i, globalIndex ) *
                                                      ( p2 * dzik - p3 * dzjk ) *
-                                                     CFFORCE * convForce );
+                                                     CFFORCE * convForce_ );
                                 } // l
                             }     // rjk <= rc
                         }         // rik <= rc
