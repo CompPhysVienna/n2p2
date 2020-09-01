@@ -144,7 +144,7 @@ class ModeCabana : public Mode
      */
     KOKKOS_INLINE_FUNCTION
     void compute_cutoff(CutoffFunction::CutoffType cutoffType, double &fc,
-                        double &dfc, double r, double rc, bool derivative);
+                        double &dfc, double r, double rc, bool derivative) const;
     /*
      * Scale one symmetry function.
      *
@@ -156,7 +156,7 @@ class ModeCabana : public Mode
      * Callable within device kernel.
      */
     KOKKOS_INLINE_FUNCTION
-    double scale(int attype, double value, int k, d_t_SFscaling SFscaling);
+    double scale(int attype, double value, int k, d_t_SFscaling SFscaling) const;
 
     /** Calculate forces for all atoms in given structure.
      *
@@ -283,7 +283,8 @@ template <class t_device>
 KOKKOS_INLINE_FUNCTION void
 ModeCabana<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
                                      double &fc, double &dfc, double r, double rc,
-                                     bool derivative) {
+                                     bool derivative) const
+{
     double temp;
     if (cutoffType == CutoffFunction::CT_TANHU) {
         temp = tanh(1.0 - r / rc);
@@ -310,10 +311,9 @@ ModeCabana<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
 }
 
 template <class t_device>
-KOKKOS_INLINE_FUNCTION
-double ModeCabana<t_device>::scale(int attype, double value,
-                                   int k,
-                                   d_t_SFscaling SFscaling)
+KOKKOS_INLINE_FUNCTION double
+ModeCabana<t_device>::scale(int attype, double value, int k,
+                            d_t_SFscaling SFscaling) const
 {
     double scalingType = SFscaling(attype, k, 7);
     double scalingFactor = SFscaling(attype, k, 6);
