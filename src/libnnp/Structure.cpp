@@ -573,21 +573,25 @@ void Structure::clearNeighborList()
     return;
 }
 
-void Structure::updateRmseEnergy(double& rmse, size_t& count) const
+void Structure::updateErrorEnergy(vector<double>& error, size_t& count) const
 {
     count++;
-    rmse += (energyRef - energy) * (energyRef - energy)
-          / (numAtoms * numAtoms);
+    double diff = energyRef - energy;
+    error.at(0) += diff * diff / (numAtoms * numAtoms);
+    error.at(1) += diff * diff;
+    diff = fabs(diff);
+    error.at(2) += diff / numAtoms;
+    error.at(3) += diff;
 
     return;
 }
 
-void Structure::updateRmseForces(double& rmse, size_t& count) const
+void Structure::updateErrorForces(vector<double>& error, size_t& count) const
 {
     for (vector<Atom>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it)
     {
-        it->updateRmseForces(rmse, count);
+        it->updateErrorForces(error, count);
     }
 
     return;

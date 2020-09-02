@@ -377,6 +377,34 @@ implemented:
   so far is used. This selection scheme is a variation of the adaptive process
   described by Blank and Brown [1]_ and is described here [2]_.
 
+----
+
+``main_error_metric``
+^^^^^^^^^^^^^^^^^^^^^
+
+**Usage**:
+   ``main_error_metric <string>``
+
+**Examples**:
+   ``main_error_metric RMSEpa``
+
+   ``main_error_metric MAE``
+
+Selects the error metric to display on the screen during training. Four variants
+are available:
+
+* ``RMSEpa``: RMSE of energies per atom, RMSE of forces.
+
+* ``RMSE``: RMSE of energies, RMSE of forces.
+
+* ``MAEpa``: MAE of energies per atom, MAE of forces.
+
+* ``MAE``: MAE of energies, MAE of forces.
+
+If this keyword is omitted the default value is ``RMSEpa``. The keyword does not
+influence the output in the ``learning-curve.out`` file. There, all error metrics
+are written.
+
 .. [1] Blank, T. B.; Brown, S. D. Adaptive, Global, Extended Kalman Filters for
    Training Feedforward Neural Networks. J. Chemom. 1994, 8 (6), 391–407.
    https://doi.org/10.1002/cem.1180080605

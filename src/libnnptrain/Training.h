@@ -138,7 +138,7 @@ public:
     /** Calculate neighbor lists for all structures.
      */
     void                  calculateNeighborLists();
-    /** Calculate RMSE for all structures.
+    /** Calculate error metrics for all structures.
      *
      * @param[in] writeCompFiles Write NN and reference energies and forces to
      *                           comparison files.
@@ -151,7 +151,8 @@ public:
      *                                file.
      * @param[in] fileNameForcesTest File name for test forces comparison file.
      */
-    void                  calculateRmse(bool const        writeCompFiles,
+    void                  calculateError(
+                                        bool const        writeCompFiles,
                                         std::string const identifier           
                                             = "",
                                         std::string const fileNameEnergiesTrain
@@ -162,12 +163,12 @@ public:
                                             = "forces-train.comp",
                                         std::string const fileNameForcesTest
                                             = "forces-test.comp");
-    /** Calculate RMSE per epoch for all structures with file names used in
-     * training loop.
+    /** Calculate error metrics per epoch for all structures with file names
+     * used in training loop.
      *
      * Also write training curve to file.
      */
-    void                  calculateRmseEpoch();
+    void                  calculateErrorEpoch();
     /** Write weights to files (one file for each element).
      *
      * @param[in] fileNameFormat String with file name format.
@@ -376,18 +377,14 @@ private:
     std::size_t                   errorsGlobalForce;
     /// Total number of weights.
     std::size_t                   numWeights;
+    /// Error metric index for energies.
+    std::size_t                   errorMetricEnergies;
+    /// Error metric index for forces.
+    std::size_t                   errorMetricForces;
     /// Desired energy update fraction per epoch.
     double                        epochFractionEnergies;
     /// Desired force update fraction per epoch.
     double                        epochFractionForces;
-    /// Current RMSE of training energies.
-    double                        rmseEnergiesTrain;
-    /// Current RMSE of test energies.
-    double                        rmseEnergiesTest;
-    /// Current RMSE of training forces.
-    double                        rmseForcesTrain;
-    /// Current RMSE of test forces.
-    double                        rmseForcesTest;
     /// RMSE threshold for energy update candidates.
     double                        rmseThresholdEnergy;
     /// RMSE threshold for force update candidates.
@@ -412,6 +409,14 @@ private:
     std::vector<std::size_t>      numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
     std::vector<std::size_t>      weightsOffset;
+    /// Current error metrics of training energies.
+    std::vector<double>           errorEnergiesTrain;
+    /// Current error metrics of test energies.
+    std::vector<double>           errorEnergiesTest;
+    /// Current error metrics of training forces.
+    std::vector<double>           errorForcesTrain;
+    /// Current error metrics of test forces.
+    std::vector<double>           errorForcesTest;
 #ifdef IMPROVED_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.

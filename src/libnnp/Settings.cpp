@@ -61,6 +61,7 @@ map<string, string> const createKnownKeywordsMap()
     m["weights_max"                   ] = "";
     m["nguyen_widrow_weights_short"   ] = "";
     m["precondition_weights"          ] = "";
+    m["main_error_metric"             ] = "";
     m["write_trainpoints"             ] = "";
     m["write_trainforces"             ] = "";
     m["write_weights_epoch"           ] = "";
