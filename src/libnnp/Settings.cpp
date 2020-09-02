@@ -48,7 +48,6 @@ map<string, string> const createKnownKeywordsMap()
 
     // Training keywords.
     m["random_seed"                   ] = "";
-    m["main_error_metric"             ] = "";
     m["test_fraction"                 ] = "";
     m["epochs"                        ] = "";
     m["use_short_forces"              ] = "";
@@ -62,6 +61,7 @@ map<string, string> const createKnownKeywordsMap()
     m["weights_max"                   ] = "";
     m["nguyen_widrow_weights_short"   ] = "";
     m["precondition_weights"          ] = "";
+    m["main_error_metric"             ] = "";
     m["write_trainpoints"             ] = "";
     m["write_trainforces"             ] = "";
     m["write_weights_epoch"           ] = "";
