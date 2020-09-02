@@ -138,7 +138,7 @@ public:
     /** Calculate neighbor lists for all structures.
      */
     void                  calculateNeighborLists();
-    /** Calculate error metrices for all structures.
+    /** Calculate error metrics for all structures.
      *
      * @param[in] writeCompFiles Write NN and reference energies and forces to
      *                           comparison files.
@@ -163,7 +163,7 @@ public:
                                             = "forces-train.comp",
                                         std::string const fileNameForcesTest
                                             = "forces-test.comp");
-    /** Calculate error metrices per epoch for all structures with file names
+    /** Calculate error metrics per epoch for all structures with file names
      * used in training loop.
      *
      * Also write training curve to file.
@@ -409,13 +409,13 @@ private:
     std::vector<std::size_t>      numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
     std::vector<std::size_t>      weightsOffset;
-    /// Current error metrices of training energies.
+    /// Current error metrics of training energies.
     std::vector<double>           errorEnergiesTrain;
-    /// Current error metrices of test energies.
+    /// Current error metrics of test energies.
     std::vector<double>           errorEnergiesTest;
-    /// Current error metrices of training forces.
+    /// Current error metrics of training forces.
     std::vector<double>           errorForcesTrain;
-    /// Current error metrices of test forces.
+    /// Current error metrics of test forces.
     std::vector<double>           errorForcesTest;
 #ifdef IMPROVED_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom

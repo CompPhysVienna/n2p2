@@ -83,7 +83,7 @@ Training::Training() : Dataset(),
                        forceWeight                (0.0            ),
                        trainingLogFileName        ("train-log.out")
 {
-    // Set up error metrices
+    // Set up error metrics
     errorEnergiesTrain.resize(4, 0.0);
     errorEnergiesTest.resize(4, 0.0);
     errorForcesTrain.resize(2, 0.0);
@@ -1205,7 +1205,7 @@ void Training::calculateError(bool const   writeCompFiles,
     ofstream fileForcesTrain;
     ofstream fileForcesTest;
 
-    // Reset current error metrices.
+    // Reset current error metrics.
     fill(errorEnergiesTrain.begin(), errorEnergiesTrain.end(), 0.0);
     fill(errorEnergiesTest.begin() , errorEnergiesTest.end() , 0.0);
     fill(errorForcesTrain.begin()  , errorForcesTrain.end()  , 0.0);
@@ -1491,33 +1491,89 @@ void Training::writeLearningCurve(bool append, string const fileName) const
         colName.push_back("epoch");
         colInfo.push_back("Current epoch.");
         colSize.push_back(16);
-        colName.push_back("rmse_Etrain_phys");
+        colName.push_back("RMSEpa_Etrain_pu");
         colInfo.push_back("RMSE of training energies per atom (physical "
                           "units).");
         colSize.push_back(16);
-        colName.push_back("rmse_Etest_phys");
+        colName.push_back("RMSEpa_Etest_pu");
         colInfo.push_back("RMSE of test energies per atom (physical units).");
         colSize.push_back(16);
-        colName.push_back("rmse_Ftrain_phys");
+        colName.push_back("RMSE_Ftrain_pu");
         colInfo.push_back("RMSE of training forces (physical units).");
         colSize.push_back(16);
-        colName.push_back("rmse_Ftest_phys");
+        colName.push_back("RMSE_Ftest_pu");
         colInfo.push_back("RMSE of test forces (physical units).");
+        colSize.push_back(16);
+        colName.push_back("RMSE_Etrain_pu");
+        colInfo.push_back("RMSE of training energies (physical "
+                          "units).");
+        colSize.push_back(16);
+        colName.push_back("RMSE_Etest_pu");
+        colInfo.push_back("RMSE of test energies (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAEpa_Etrain_pu");
+        colInfo.push_back("MAE of training energies per atom (physical "
+                          "units).");
+        colSize.push_back(16);
+        colName.push_back("MAEpa_Etest_pu");
+        colInfo.push_back("MAE of test energies per atom (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Ftrain_pu");
+        colInfo.push_back("MAE of training forces (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Ftest_pu");
+        colInfo.push_back("MAE of test forces (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Etrain_pu");
+        colInfo.push_back("MAE of training energies (physical "
+                          "units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Etest_pu");
+        colInfo.push_back("MAE of test energies (physical units).");
         if (normalize)
         {
             colSize.push_back(16);
-            colName.push_back("rmse_Etrain_int");
+            colName.push_back("RMSEpa_Etrain_iu");
             colInfo.push_back("RMSE of training energies per atom (internal "
                               "units).");
             colSize.push_back(16);
-            colName.push_back("rmse_Etest_int");
-            colInfo.push_back("RMSE of test energies per atom (internal units).");
+            colName.push_back("RMSEpa_Etest_iu");
+            colInfo.push_back("RMSE of test energies per atom (internal "
+                              "units).");
             colSize.push_back(16);
-            colName.push_back("rmse_Ftrain_int");
+            colName.push_back("RMSE_Ftrain_iu");
             colInfo.push_back("RMSE of training forces (internal units).");
             colSize.push_back(16);
-            colName.push_back("rmse_Ftest_int");
+            colName.push_back("RMSE_Ftest_iu");
             colInfo.push_back("RMSE of test forces (internal units).");
+            colSize.push_back(16);
+            colName.push_back("RMSE_Etrain_iu");
+            colInfo.push_back("RMSE of training energies (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("RMSE_Etest_iu");
+            colInfo.push_back("RMSE of test energies (internal units).");
+            colSize.push_back(16);
+            colName.push_back("MAEpa_Etrain_iu");
+            colInfo.push_back("MAE of training energies per atom (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("MAEpa_Etest_iu");
+            colInfo.push_back("MAE of test energies per atom (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Ftrain_iu");
+            colInfo.push_back("MAE of training forces (internal units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Ftest_iu");
+            colInfo.push_back("MAE of test forces (internal units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Etrain_iu");
+            colInfo.push_back("MAE of training energies (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Etest_iu");
+            colInfo.push_back("MAE of test energies (internal units).");
         }
         appendLinesToFile(file,
                           createFileHeader(title, colSize, colName, colInfo));
@@ -1526,17 +1582,35 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     file << strpr("%10zu", epoch);
     if (normalize)
     {
-        file << strpr(" %16.8E %16.8E %16.8E %16.8E",
+        file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
+                      " %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E",
                       physicalEnergy(errorEnergiesTrain.at(0)),
                       physicalEnergy(errorEnergiesTest.at(0)),
                       physicalForce(errorForcesTrain.at(0)),
-                      physicalForce(errorForcesTest.at(0)));
+                      physicalForce(errorForcesTest.at(0)),
+                      physicalEnergy(errorEnergiesTrain.at(1)),
+                      physicalEnergy(errorEnergiesTest.at(1)),
+                      physicalEnergy(errorEnergiesTrain.at(2)),
+                      physicalEnergy(errorEnergiesTest.at(2)),
+                      physicalForce(errorForcesTrain.at(1)),
+                      physicalForce(errorForcesTest.at(1)),
+                      physicalEnergy(errorEnergiesTrain.at(3)),
+                      physicalEnergy(errorEnergiesTest.at(3)));
     }
-    file << strpr(" %16.8E %16.8E %16.8E %16.8E\n",
+    file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
+                  " %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E\n",
                   errorEnergiesTrain.at(0),
                   errorEnergiesTest.at(0),
                   errorForcesTrain.at(0),
-                  errorForcesTest.at(0));
+                  errorForcesTest.at(0),
+                  errorEnergiesTrain.at(1),
+                  errorEnergiesTest.at(1),
+                  errorEnergiesTrain.at(2),
+                  errorEnergiesTest.at(2),
+                  errorForcesTrain.at(1),
+                  errorForcesTest.at(1),
+                  errorEnergiesTrain.at(3),
+                  errorEnergiesTest.at(3));
     file.close();
 
     return;
@@ -1804,24 +1878,34 @@ void Training::loop()
            "**************************************\n";
     log << "\n";
 
+    string metric = "";
+    string peratom = "";
+    if (errorMetricForces == 0) metric = "RMSE";
+    else if (errorMetricForces == 1) metric = "MAE";
+    if (errorMetricEnergies % 2 == 0) peratom = "per atom ";
+
     log << "The training loop output covers different RMSEs, update and\n";
     log << "timing information. The following quantities are organized\n";
     log << "according to the matrix scheme below:\n";
     log << "-------------------------------------------------------------------\n";
     log << "ep ............ Epoch.\n";
-    log << "Etrain_phys ... RMSE of training energies per atom (p. u.).\n";
-    log << "Etest_phys .... RMSE of test     energies per atom (p. u.).\n";
-    log << "Etrain_int .... RMSE of training energies per atom (i. u.).\n";
-    log << "Etest_int ..... RMSE of test     energies per atom (i. u.).\n";
-    log << "Ftrain_phys ... RMSE of training forces (p. u.).\n";
-    log << "Ftest_phys .... RMSE of test     forces (p. u.).\n";
-    log << "Ftrain_int .... RMSE of training forces (i. u.).\n";
-    log << "Ftest_int ..... RMSE of test     forces (i. u.).\n";
+    log << "Etrain_phys ... " << metric << " of training energies "
+        << peratom << "(p. u.).\n";
+    log << "Etest_phys .... " << metric << " of test     energies "
+        << peratom << "(p. u.).\n";
+    log << "Etrain_int .... " << metric << " of training energies "
+        << peratom << "(i. u.).\n";
+    log << "Etest_int ..... " << metric << " of test     energies "
+        << peratom << "(i. u.).\n";
+    log << "Ftrain_phys ... " << metric << " of training forces (p. u.).\n";
+    log << "Ftest_phys .... " << metric << " of test     forces (p. u.).\n";
+    log << "Ftrain_int .... " << metric << " of training forces (i. u.).\n";
+    log << "Ftest_int ..... " << metric << " of test     forces (i. u.).\n";
     log << "E_count ....... Number of energy updates.\n";
     log << "F_count ....... Number of force  updates.\n";
     log << "count ......... Total number of updates.\n";
     log << "t_train ....... Time for training (seconds).\n";
-    log << "t_rmse ........ Time for RMSE calculation (seconds).\n";
+    log << "t_error ....... Time for error calculation (seconds).\n";
     log << "t_epoch ....... Total time for this epoch (seconds).\n";
     log << "t_tot ......... Total time for all epochs (seconds).\n";
     log << "Abbreviations:\n";
@@ -1834,7 +1918,7 @@ void Training::loop()
     log << "energy   ep   Etrain_phys    Etest_phys    Etrain_int     Etest_int\n";
     log << "forces   ep   Ftrain_phys    Ftest_phys    Ftrain_int     Ftest_int\n";
     log << "update   ep       E_count       F_count         count\n";
-    log << "timing   ep       t_train        t_rmse       t_epoch         t_tot\n";
+    log << "timing   ep       t_train       t_error       t_epoch         t_tot\n";
     log << "-------------------------------------------------------------------\n";
 
     // Set up stopwatch.

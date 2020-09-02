@@ -159,14 +159,14 @@ public:
                                         bool                     derivatives,
                                         std::string const &      fileNamePrefix
                                              = "atomic-env");
-    /** Collect error metrices of energies over all MPI procs.
+    /** Collect error metrics of energies over all MPI procs.
      *
      * @param[in,out] error Metric sums of this proc (in), global metric (out).
      * @param[in,out] count Count for this proc (in), global count (out).
      */
     void        collectErrorEnergies(std::vector<double>& error,
                                      std::size_t&         count) const;
-    /** Collect error metrices of forces over all MPI procs.
+    /** Collect error metrics of forces over all MPI procs.
      *
      * @param[in,out] error Metric sums of this proc (in), global metric (out).
      * @param[in,out] count Count for this proc (in), global count (out).
