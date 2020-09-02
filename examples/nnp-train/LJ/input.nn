@@ -49,6 +49,7 @@ weights_min                     -1.0           # Minimum value for initial rando
 weights_max                     1.0            # Maximum value for initial random weights.
 #precondition_weights                           # Precondition weights with initial energies.
 #nguyen_widrow_weights_short                    # Initialize neural network weights according to Nguyen-Widrow scheme.
+main_error_metric               RMSEpa         # Main error metric for screen output (RMSEpa/RMSE/MAEpa/MAE).
 write_trainpoints               1              # Write energy comparison every this many epochs.
 write_trainforces               1              # Write force comparison every this many epochs.
 write_weights_epoch             1              # Write weights every this many epochs.

@@ -266,10 +266,11 @@ size_t Atom::getNumNeighbors(double cutoffRadius) const
     return numNeighborsLocal;
 }
 
-void Atom::updateRmseForces(double& rmse, size_t& count) const
+void Atom::updateErrorForces(vector<double>& error, size_t& count) const
 {
     count += 3;
-    rmse += (fRef - f).norm2();
+    error.at(0) += (fRef - f).norm2();
+    error.at(1) += (fRef - f).l1norm();
 
     return;
 }

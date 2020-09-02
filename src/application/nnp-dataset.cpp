@@ -31,20 +31,20 @@ using namespace nnp;
 
 int main(int argc, char* argv[])
 {
-    bool     shuffle         = false;
-    bool     useForces       = false;
-    bool     normalize       = false;
-    int      numProcs        = 0;
-    int      myRank          = 0;
-    size_t   countEnergy     = 0;
-    size_t   countForces     = 0;
-    double   rmseEnergy      = 0.0;
-    double   rmseForces      = 0.0;
-    string   fileName;
-    ofstream fileEnergy;
-    ofstream fileForces;
-    ofstream fileOutputData;
-    ofstream myLog;
+    bool           shuffle         = false;
+    bool           useForces       = false;
+    bool           normalize       = false;
+    int            numProcs        = 0;
+    int            myRank          = 0;
+    size_t         countEnergy     = 0;
+    size_t         countForces     = 0;
+    vector<double> errorEnergy(4, 0.0);
+    vector<double> errorForces(2, 0.0);
+    string         fileName;
+    ofstream       fileEnergy;
+    ofstream       fileForces;
+    ofstream       fileOutputData;
+    ofstream       myLog;
 
     if (argc != 2)
     {
@@ -265,7 +265,7 @@ int main(int argc, char* argv[])
         it->hasNeighborList = false;
         it->hasSymmetryFunctions = false;
         it->hasSymmetryFunctionDerivatives = false;
-        it->updateRmseEnergy(rmseEnergy, countEnergy);
+        it->updateErrorEnergy(errorEnergy, countEnergy);
         fileEnergy << strpr("%10zu %10zu", it->index, it->numAtoms);
         if (normalize)
         {
@@ -285,7 +285,7 @@ int main(int argc, char* argv[])
         }
         if (useForces)
         {
-            it->updateRmseForces(rmseForces, countForces);
+            it->updateErrorForces(errorForces, countForces);
             for (vector<Atom>::const_iterator it2 = it->atoms.begin();
                  it2 != it->atoms.end(); ++it2)
             {
@@ -334,8 +334,8 @@ int main(int argc, char* argv[])
         dataset.combineFiles(fileName);
     }
 
-    dataset.averageRmse(rmseEnergy, countEnergy);
-    if (useForces) dataset.averageRmse(rmseForces, countForces);
+    dataset.collectErrorEnergies(errorEnergy, countEnergy);
+    if (useForces) dataset.collectErrorForces(errorForces, countForces);
 
     if (myRank == 0)
     {
@@ -352,26 +352,54 @@ int main(int argc, char* argv[])
         }
         dataset.log << "Predicted data set in \"output.data\"\n";
     }
-    dataset.log << "Root mean squared errors for energies and forces:\n";
-    dataset.log << strpr("ENERGY %3s", "S");
+    dataset.log << "Error metrics for energies and forces:\n";
+    dataset.log << "-----------------------------------------"
+                   "-----------------------------------------"
+                   "--------------------------------------\n";
+    dataset.log << "                      physical units                          ";
     if (normalize)
     {
-        dataset.log << strpr(" %13.5E %13.5E",
-                             dataset.physicalEnergy(rmseEnergy),
-                             0.0);
+        dataset.log << " |                    internal units                            ";
     }
-    dataset.log << strpr(" %13.5E %13.5E\n", rmseEnergy, 0.0);
+    dataset.log << "\n";
+    dataset.log << strpr("       %13s %13s %13s %13s",
+                         "RMSEpa", "RMSE", "MAEpa", "MAE");
+    if (normalize)
+    {
+        dataset.log << strpr(" | %13s %13s %13s %13s",
+                             "RMSEpa", "RMSE", "MAEpa", "MAE");
+    }
+    dataset.log << "\n";
+    dataset.log << "ENERGY";
+    if (normalize)
+    {
+        dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E |",
+                             dataset.physicalEnergy(errorEnergy.at(0)),
+                             dataset.physicalEnergy(errorEnergy.at(1)),
+                             dataset.physicalEnergy(errorEnergy.at(2)),
+                             dataset.physicalEnergy(errorEnergy.at(3)));
+    }
+    dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E\n",
+                         errorEnergy.at(0),
+                         errorEnergy.at(1),
+                         errorEnergy.at(2),
+                         errorEnergy.at(3));
     if (useForces)
     {
-        dataset.log << strpr("FORCES %3s", "S");
+        dataset.log << "FORCES";
         if (normalize)
         {
-            dataset.log << strpr(" %13.5E %13.5E",
-                                 dataset.physicalForce(rmseForces),
-                                 0.0);
+            dataset.log << strpr(" %13s %13.5E %13s %13.5E |", "",
+                                 dataset.physicalForce(errorForces.at(0)), "",
+                                 dataset.physicalForce(errorForces.at(1)));
         }
-        dataset.log << strpr(" %13.5E %13.5E\n", rmseForces, 0.0);
+        dataset.log << strpr(" %13s %13.5E %13s %13.5E\n", "",
+                             errorForces.at(0), "",
+                             errorForces.at(1));
     }
+    dataset.log << "-----------------------------------------"
+                   "-----------------------------------------"
+                   "--------------------------------------\n";
     dataset.log << "*****************************************"
                    "**************************************\n";
 

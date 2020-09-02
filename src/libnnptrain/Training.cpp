@@ -74,17 +74,20 @@ Training::Training() : Dataset(),
                        forcesPerUpdateGlobal      (0              ),
                        errorsGlobalForce          (0              ),
                        numWeights                 (0              ),
+                       errorMetricEnergies        (0              ),
+                       errorMetricForces          (0              ),
                        epochFractionEnergies      (0.0            ),
                        epochFractionForces        (0.0            ),
-                       rmseEnergiesTrain          (0.0            ),
-                       rmseEnergiesTest           (0.0            ),
-                       rmseForcesTrain            (0.0            ),
-                       rmseForcesTest             (0.0            ),
                        rmseThresholdEnergy        (0.0            ),
                        rmseThresholdForce         (0.0            ),
                        forceWeight                (0.0            ),
                        trainingLogFileName        ("train-log.out")
 {
+    // Set up error metrics
+    errorEnergiesTrain.resize(4, 0.0);
+    errorEnergiesTest.resize(4, 0.0);
+    errorForcesTrain.resize(2, 0.0);
+    errorForcesTest.resize(2, 0.0);
 }
 
 Training::~Training()
@@ -412,6 +415,39 @@ void Training::setupTraining()
     else
     {
         log << "Only energies will used for training.\n";
+    }
+
+    if (settings.keywordExists("main_error_metric"))
+    {
+        if (settings["main_error_metric"] == "RMSEpa")
+        {
+            errorMetricEnergies = 0;
+            errorMetricForces = 0;
+        }
+        else if (settings["main_error_metric"] == "RMSE")
+        {
+            errorMetricEnergies = 1;
+            errorMetricForces = 0;
+        }
+        else if (settings["main_error_metric"] == "MAEpa")
+        {
+            errorMetricEnergies = 2;
+            errorMetricForces = 1;
+        }
+        else if (settings["main_error_metric"] == "MAE")
+        {
+            errorMetricEnergies = 3;
+            errorMetricForces = 1;
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown error metric.\n");
+        }
+    }
+    else
+    {
+        errorMetricEnergies = 0;
+        errorMetricForces = 0;
     }
 
     updaterType = (UpdaterType)atoi(settings["updater_type"].c_str());
@@ -1141,12 +1177,12 @@ void Training::calculateNeighborLists()
     return;
 }
 
-void Training::calculateRmse(bool const   writeCompFiles,
-                             string const identifier,
-                             string const fileNameEnergiesTrain,
-                             string const fileNameEnergiesTest,
-                             string const fileNameForcesTrain,
-                             string const fileNameForcesTest)
+void Training::calculateError(bool const   writeCompFiles,
+                              string const identifier,
+                              string const fileNameEnergiesTrain,
+                              string const fileNameEnergiesTest,
+                              string const fileNameForcesTrain,
+                              string const fileNameForcesTest)
 {
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
@@ -1169,11 +1205,11 @@ void Training::calculateRmse(bool const   writeCompFiles,
     ofstream fileForcesTrain;
     ofstream fileForcesTest;
 
-    // Reset current RMSEs.
-    rmseEnergiesTrain = 0.0;
-    rmseEnergiesTest  = 0.0;
-    rmseForcesTrain   = 0.0;
-    rmseForcesTest    = 0.0;
+    // Reset current error metrics.
+    fill(errorEnergiesTrain.begin(), errorEnergiesTrain.end(), 0.0);
+    fill(errorEnergiesTest.begin() , errorEnergiesTest.end() , 0.0);
+    fill(errorForcesTrain.begin()  , errorForcesTrain.end()  , 0.0);
+    fill(errorForcesTest.begin()   , errorForcesTest.end()   , 0.0);
 
     if (writeCompFiles)
     {
@@ -1268,7 +1304,7 @@ void Training::calculateRmse(bool const   writeCompFiles,
         calculateEnergy((*it));
         if (it->sampleType == Structure::ST_TRAINING)
         {
-            it->updateRmseEnergy(rmseEnergiesTrain, countEnergiesTrain);
+            it->updateErrorEnergy(errorEnergiesTrain, countEnergiesTrain);
             if (writeCompFiles && energiesTrain)
             {
                 fileEnergiesTrain << it->getEnergyLine();
@@ -1277,7 +1313,7 @@ void Training::calculateRmse(bool const   writeCompFiles,
         }
         else if (it->sampleType == Structure::ST_TEST)
         {
-            it->updateRmseEnergy(rmseEnergiesTest, countEnergiesTest);
+            it->updateErrorEnergy(errorEnergiesTest, countEnergiesTest);
             if (writeCompFiles && energiesTest)
             {
                 fileEnergiesTest << it->getEnergyLine();
@@ -1288,7 +1324,7 @@ void Training::calculateRmse(bool const   writeCompFiles,
             calculateForces((*it));
             if (it->sampleType == Structure::ST_TRAINING)
             {
-                it->updateRmseForces(rmseForcesTrain, countForcesTrain);
+                it->updateErrorForces(errorForcesTrain, countForcesTrain);
                 if (writeCompFiles && forcesTrain)
                 {
                     vector<string> v = it->getForcesLines();
@@ -1301,7 +1337,7 @@ void Training::calculateRmse(bool const   writeCompFiles,
             }
             else if (it->sampleType == Structure::ST_TEST)
             {
-                it->updateRmseForces(rmseForcesTest, countForcesTest);
+                it->updateErrorForces(errorForcesTest, countForcesTest);
                 if (writeCompFiles && forcesTest)
                 {
                     vector<string> v = it->getForcesLines();
@@ -1316,28 +1352,33 @@ void Training::calculateRmse(bool const   writeCompFiles,
         if (freeMemory) it->freeAtoms(true);
     }
 
-    averageRmse(rmseEnergiesTrain, countEnergiesTrain);
-    averageRmse(rmseEnergiesTest , countEnergiesTest );
+    collectErrorEnergies(errorEnergiesTrain, countEnergiesTrain);
+    collectErrorEnergies(errorEnergiesTest , countEnergiesTest );
     log << strpr("ENERGY %4s", identifier.c_str());
     if (normalize)
     {
-        log << strpr(" %13.5E %13.5E",
-                     physicalEnergy(rmseEnergiesTrain),
-                     physicalEnergy(rmseEnergiesTest));
+        log << strpr(
+                    " %13.5E %13.5E",
+                    physicalEnergy(errorEnergiesTrain.at(errorMetricEnergies)),
+                    physicalEnergy(errorEnergiesTest.at(errorMetricEnergies)));
     }
-    log << strpr(" %13.5E %13.5E\n", rmseEnergiesTrain, rmseEnergiesTest);
+    log << strpr(" %13.5E %13.5E\n",
+                 errorEnergiesTrain.at(errorMetricEnergies),
+                 errorEnergiesTest.at(errorMetricEnergies));
     if (useForces)
     {
-        averageRmse(rmseForcesTrain, countForcesTrain);
-        averageRmse(rmseForcesTest , countForcesTest );
+        collectErrorForces(errorForcesTrain, countForcesTrain);
+        collectErrorForces(errorForcesTest , countForcesTest );
         log << strpr("FORCES %4s", identifier.c_str());
         if (normalize)
         {
             log << strpr(" %13.5E %13.5E",
-                         physicalForce(rmseForcesTrain),
-                         physicalForce(rmseForcesTest));
+                         physicalForce(errorForcesTrain.at(errorMetricForces)),
+                         physicalForce(errorForcesTest.at(errorMetricForces)));
         }
-        log << strpr(" %13.5E %13.5E\n", rmseForcesTrain, rmseForcesTest);
+        log << strpr(" %13.5E %13.5E\n",
+                     errorForcesTrain.at(errorMetricForces),
+                     errorForcesTest.at(errorMetricForces));
     }
 
     if (writeCompFiles)
@@ -1368,7 +1409,7 @@ void Training::calculateRmse(bool const   writeCompFiles,
     return;
 }
 
-void Training::calculateRmseEpoch()
+void Training::calculateErrorEpoch()
 {
     // Check whether energy/force comparison files should be written for
     // this epoch.
@@ -1392,12 +1433,12 @@ void Training::calculateRmseEpoch()
     }
 
     // Calculate RMSE and write comparison files.
-    calculateRmse(true,
-                  identifier,
-                  fileNameEnergiesTrain,
-                  fileNameEnergiesTest,
-                  fileNameForcesTrain,
-                  fileNameForcesTest);
+    calculateError(true,
+                   identifier,
+                   fileNameEnergiesTrain,
+                   fileNameEnergiesTest,
+                   fileNameForcesTrain,
+                   fileNameForcesTest);
 
     return;
 }
@@ -1450,33 +1491,89 @@ void Training::writeLearningCurve(bool append, string const fileName) const
         colName.push_back("epoch");
         colInfo.push_back("Current epoch.");
         colSize.push_back(16);
-        colName.push_back("rmse_Etrain_phys");
+        colName.push_back("RMSEpa_Etrain_pu");
         colInfo.push_back("RMSE of training energies per atom (physical "
                           "units).");
         colSize.push_back(16);
-        colName.push_back("rmse_Etest_phys");
+        colName.push_back("RMSEpa_Etest_pu");
         colInfo.push_back("RMSE of test energies per atom (physical units).");
         colSize.push_back(16);
-        colName.push_back("rmse_Ftrain_phys");
+        colName.push_back("RMSE_Ftrain_pu");
         colInfo.push_back("RMSE of training forces (physical units).");
         colSize.push_back(16);
-        colName.push_back("rmse_Ftest_phys");
+        colName.push_back("RMSE_Ftest_pu");
         colInfo.push_back("RMSE of test forces (physical units).");
+        colSize.push_back(16);
+        colName.push_back("RMSE_Etrain_pu");
+        colInfo.push_back("RMSE of training energies (physical "
+                          "units).");
+        colSize.push_back(16);
+        colName.push_back("RMSE_Etest_pu");
+        colInfo.push_back("RMSE of test energies (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAEpa_Etrain_pu");
+        colInfo.push_back("MAE of training energies per atom (physical "
+                          "units).");
+        colSize.push_back(16);
+        colName.push_back("MAEpa_Etest_pu");
+        colInfo.push_back("MAE of test energies per atom (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Ftrain_pu");
+        colInfo.push_back("MAE of training forces (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Ftest_pu");
+        colInfo.push_back("MAE of test forces (physical units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Etrain_pu");
+        colInfo.push_back("MAE of training energies (physical "
+                          "units).");
+        colSize.push_back(16);
+        colName.push_back("MAE_Etest_pu");
+        colInfo.push_back("MAE of test energies (physical units).");
         if (normalize)
         {
             colSize.push_back(16);
-            colName.push_back("rmse_Etrain_int");
+            colName.push_back("RMSEpa_Etrain_iu");
             colInfo.push_back("RMSE of training energies per atom (internal "
                               "units).");
             colSize.push_back(16);
-            colName.push_back("rmse_Etest_int");
-            colInfo.push_back("RMSE of test energies per atom (internal units).");
+            colName.push_back("RMSEpa_Etest_iu");
+            colInfo.push_back("RMSE of test energies per atom (internal "
+                              "units).");
             colSize.push_back(16);
-            colName.push_back("rmse_Ftrain_int");
+            colName.push_back("RMSE_Ftrain_iu");
             colInfo.push_back("RMSE of training forces (internal units).");
             colSize.push_back(16);
-            colName.push_back("rmse_Ftest_int");
+            colName.push_back("RMSE_Ftest_iu");
             colInfo.push_back("RMSE of test forces (internal units).");
+            colSize.push_back(16);
+            colName.push_back("RMSE_Etrain_iu");
+            colInfo.push_back("RMSE of training energies (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("RMSE_Etest_iu");
+            colInfo.push_back("RMSE of test energies (internal units).");
+            colSize.push_back(16);
+            colName.push_back("MAEpa_Etrain_iu");
+            colInfo.push_back("MAE of training energies per atom (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("MAEpa_Etest_iu");
+            colInfo.push_back("MAE of test energies per atom (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Ftrain_iu");
+            colInfo.push_back("MAE of training forces (internal units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Ftest_iu");
+            colInfo.push_back("MAE of test forces (internal units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Etrain_iu");
+            colInfo.push_back("MAE of training energies (internal "
+                              "units).");
+            colSize.push_back(16);
+            colName.push_back("MAE_Etest_iu");
+            colInfo.push_back("MAE of test energies (internal units).");
         }
         appendLinesToFile(file,
                           createFileHeader(title, colSize, colName, colInfo));
@@ -1485,17 +1582,35 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     file << strpr("%10zu", epoch);
     if (normalize)
     {
-        file << strpr(" %16.8E %16.8E %16.8E %16.8E",
-                      physicalEnergy(rmseEnergiesTrain),
-                      physicalEnergy(rmseEnergiesTest),
-                      physicalForce(rmseForcesTrain),
-                      physicalForce(rmseForcesTest));
+        file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
+                      " %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E",
+                      physicalEnergy(errorEnergiesTrain.at(0)),
+                      physicalEnergy(errorEnergiesTest.at(0)),
+                      physicalForce(errorForcesTrain.at(0)),
+                      physicalForce(errorForcesTest.at(0)),
+                      physicalEnergy(errorEnergiesTrain.at(1)),
+                      physicalEnergy(errorEnergiesTest.at(1)),
+                      physicalEnergy(errorEnergiesTrain.at(2)),
+                      physicalEnergy(errorEnergiesTest.at(2)),
+                      physicalForce(errorForcesTrain.at(1)),
+                      physicalForce(errorForcesTest.at(1)),
+                      physicalEnergy(errorEnergiesTrain.at(3)),
+                      physicalEnergy(errorEnergiesTest.at(3)));
     }
-    file << strpr(" %16.8E %16.8E %16.8E %16.8E\n",
-                  rmseEnergiesTrain,
-                  rmseEnergiesTest,
-                  rmseForcesTrain,
-                  rmseForcesTest);
+    file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
+                  " %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E\n",
+                  errorEnergiesTrain.at(0),
+                  errorEnergiesTest.at(0),
+                  errorForcesTrain.at(0),
+                  errorForcesTest.at(0),
+                  errorEnergiesTrain.at(1),
+                  errorEnergiesTest.at(1),
+                  errorEnergiesTrain.at(2),
+                  errorEnergiesTest.at(2),
+                  errorForcesTrain.at(1),
+                  errorForcesTest.at(1),
+                  errorEnergiesTrain.at(3),
+                  errorEnergiesTest.at(3));
     file.close();
 
     return;
@@ -1763,24 +1878,34 @@ void Training::loop()
            "**************************************\n";
     log << "\n";
 
+    string metric = "";
+    string peratom = "";
+    if (errorMetricForces == 0) metric = "RMSE";
+    else if (errorMetricForces == 1) metric = "MAE";
+    if (errorMetricEnergies % 2 == 0) peratom = "per atom ";
+
     log << "The training loop output covers different RMSEs, update and\n";
     log << "timing information. The following quantities are organized\n";
     log << "according to the matrix scheme below:\n";
     log << "-------------------------------------------------------------------\n";
     log << "ep ............ Epoch.\n";
-    log << "Etrain_phys ... RMSE of training energies per atom (p. u.).\n";
-    log << "Etest_phys .... RMSE of test     energies per atom (p. u.).\n";
-    log << "Etrain_int .... RMSE of training energies per atom (i. u.).\n";
-    log << "Etest_int ..... RMSE of test     energies per atom (i. u.).\n";
-    log << "Ftrain_phys ... RMSE of training forces (p. u.).\n";
-    log << "Ftest_phys .... RMSE of test     forces (p. u.).\n";
-    log << "Ftrain_int .... RMSE of training forces (i. u.).\n";
-    log << "Ftest_int ..... RMSE of test     forces (i. u.).\n";
+    log << "Etrain_phys ... " << metric << " of training energies "
+        << peratom << "(p. u.).\n";
+    log << "Etest_phys .... " << metric << " of test     energies "
+        << peratom << "(p. u.).\n";
+    log << "Etrain_int .... " << metric << " of training energies "
+        << peratom << "(i. u.).\n";
+    log << "Etest_int ..... " << metric << " of test     energies "
+        << peratom << "(i. u.).\n";
+    log << "Ftrain_phys ... " << metric << " of training forces (p. u.).\n";
+    log << "Ftest_phys .... " << metric << " of test     forces (p. u.).\n";
+    log << "Ftrain_int .... " << metric << " of training forces (i. u.).\n";
+    log << "Ftest_int ..... " << metric << " of test     forces (i. u.).\n";
     log << "E_count ....... Number of energy updates.\n";
     log << "F_count ....... Number of force  updates.\n";
     log << "count ......... Total number of updates.\n";
     log << "t_train ....... Time for training (seconds).\n";
-    log << "t_rmse ........ Time for RMSE calculation (seconds).\n";
+    log << "t_error ....... Time for error calculation (seconds).\n";
     log << "t_epoch ....... Total time for this epoch (seconds).\n";
     log << "t_tot ......... Total time for all epochs (seconds).\n";
     log << "Abbreviations:\n";
@@ -1793,7 +1918,7 @@ void Training::loop()
     log << "energy   ep   Etrain_phys    Etest_phys    Etrain_int     Etest_int\n";
     log << "forces   ep   Ftrain_phys    Ftest_phys    Ftrain_int     Ftest_int\n";
     log << "update   ep       E_count       F_count         count\n";
-    log << "timing   ep       t_train        t_rmse       t_epoch         t_tot\n";
+    log << "timing   ep       t_train       t_error       t_epoch         t_tot\n";
     log << "-------------------------------------------------------------------\n";
 
     // Set up stopwatch.
@@ -1801,13 +1926,13 @@ void Training::loop()
     double timeTotal;
     Stopwatch swTotal;
     Stopwatch swTrain;
-    Stopwatch swRmse;
+    Stopwatch swError;
     swTotal.start();
 
     // Calculate initial RMSE and write comparison files.
-    swRmse.start();
-    calculateRmseEpoch();
-    swRmse.stop();
+    swError.start();
+    calculateErrorEpoch();
+    swError.stop();
 
     // Write initial weights to files.
     if (myRank == 0) writeWeightsEpoch();
@@ -1826,7 +1951,7 @@ void Training::loop()
     log << strpr("TIMING %4zu %13.2f %13.2f %13.2f %13.2f\n",
                  epoch,
                  swTrain.getTimeElapsed(),
-                 swRmse.getTimeElapsed(),
+                 swError.getTimeElapsed(),
                  timeSplit,
                  timeTotal);
 
@@ -1839,7 +1964,7 @@ void Training::loop()
 
         // Reset timers.
         swTrain.reset();
-        swRmse.reset();
+        swError.reset();
 
         // Reset update counters.
         size_t numUpdatesEnergy = 0;
@@ -1870,9 +1995,9 @@ void Training::loop()
         resetNeuronStatistics();
 
         // Calculate RMSE and write comparison files.
-        swRmse.start();
-        calculateRmseEpoch();
-        swRmse.stop();
+        swError.start();
+        calculateErrorEpoch();
+        swError.stop();
 
         // Print update information.
         log << strpr("UPDATE %4zu %13zu %13zu %13zu\n",
@@ -1898,7 +2023,7 @@ void Training::loop()
         log << strpr("TIMING %4zu %13.2f %13.2f %13.2f %13.2f\n",
                      epoch,
                      swTrain.getTimeElapsed(),
-                     swRmse.getTimeElapsed(),
+                     swError.getTimeElapsed(),
                      timeSplit,
                      timeTotal);
     }
@@ -2006,8 +2131,8 @@ void Training::update(bool force)
                 {
                     calculateForces(s);
                     Atom const& a = s.atoms.at(c->a);
-                    currentRmseFraction.at(b)
-                        = fabs(a.fRef[c->c] - a.f[c->c]) / rmseForcesTrain;
+                    currentRmseFraction.at(b) = fabs(a.fRef[c->c] - a.f[c->c])
+                                              / errorForcesTrain.at(0);
                     // If force RMSE is above threshold stop loop immediately.
                     if (currentRmseFraction.at(b) > rmseThresholdForce)
                     {
@@ -2021,7 +2146,7 @@ void Training::update(bool force)
                     calculateEnergy(s);
                     currentRmseFraction.at(b)
                         = fabs(s.energyRef - s.energy)
-                        / (s.numAtoms * rmseEnergiesTrain);
+                        / (s.numAtoms * errorEnergiesTrain.at(0));
                     // If energy RMSE is above threshold stop loop immediately.
                     if (currentRmseFraction.at(b) > rmseThresholdEnergy)
                     {
@@ -2171,13 +2296,14 @@ void Training::update(bool force)
             calculateForces(s);
             Atom const& a = s.atoms.at(c->a);
             currentRmseFraction.at(b) = fabs(a.fRef[c->c] - a.f[c->c])
-                                      / rmseForcesTrain;
+                                      / errorForcesTrain.at(0);
         }
         else
         {
             calculateEnergy(s);
             currentRmseFraction.at(b) = fabs(s.energyRef - s.energy)
-                                      / (s.numAtoms * rmseEnergiesTrain);
+                                      / (s.numAtoms
+                                         * errorEnergiesTrain.at(0));
         }
 
         // Now symmetry function memory is not required any more for this

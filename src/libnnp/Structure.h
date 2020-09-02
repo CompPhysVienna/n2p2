@@ -233,20 +233,36 @@ struct Structure
     /** Clear neighbor list of all atoms.
      */
     void                     clearNeighborList();
-    /** Update energy RMSE with this structure.
+    /** Update energy error metrices with this structure.
      *
-     * @param[in,out] rmse Input RMSE to be updated.
+     * @param[in,out] error Input error metric vector to be updated.
      * @param[in,out] count Input counter to be updated.
-     */
-    void                     updateRmseEnergy(double&      rmse,
-                                              std::size_t& count) const;
-    /** Update force RMSE with all atoms of this structure.
      *
-     * @param[in,out] rmse Input RMSE to be updated.
-     * @param[in,out] count Input counter to be updated.
+     * The error metric vector stores temporary sums for the following
+     * metrices:
+     *
+     * index 0: RMSE of energy per atom
+     * index 1: RMSE of energy
+     * index 2: MAE  of energy per atom
+     * index 3: MAE  of energy
      */
-    void                     updateRmseForces(double&      rmse,
-                                              std::size_t& count) const;
+    void                     updateErrorEnergy(
+                                             std::vector<double>& error,
+                                             std::size_t&         count) const;
+    /** Update force error metrices with all atoms of this structure.
+     *
+     * @param[in,out] error Input error metric vector to be updated.
+     * @param[in,out] count Input counter to be updated.
+     *
+     * The error metric vector stores temporary sums for the following
+     * metrices:
+     *
+     * index 0: RMSE of forces
+     * index 1: MAE  of forces
+     */
+    void                     updateErrorForces(
+                                             std::vector<double>& error,
+                                             std::size_t&         count) const;
     /** Get reference and NN energy.
      *
      * @return String with #index, #energyRef and #energy values.
