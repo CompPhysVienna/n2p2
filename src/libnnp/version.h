@@ -17,9 +17,9 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "d2b2114316b4c4df4df16448b5d908e656ef8fa4"
-#define NNP_GIT_REV_SHORT "d2b2114"
-#define NNP_GIT_BRANCH "more-error-metrics"
+#define NNP_VERSION "2.0.0rc"
+#define NNP_GIT_REV ""
+#define NNP_GIT_REV_SHORT ""
+#define NNP_GIT_BRANCH ""
 
 #endif
