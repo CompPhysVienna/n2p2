@@ -39,7 +39,7 @@ CFLAGS=$(PROJECT_CFLAGS)
 OPTIONS+=$(PROJECT_OPTIONS)
 DEBUG=$(PROJECT_DEBUG)
 ifeq ($(MODE), test)
-	DEBUG+= $(PROJECT_TEST)
+DEBUG+= $(PROJECT_TEST)
 endif
 AR=$(PROJECT_AR)
 ARFLAGS=$(PROJECT_ARFLAGS)
@@ -91,10 +91,16 @@ $(LIB).a: $(OBJ)
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-clean: clean-headers
+clean: clean-version clean-headers
 	$(RM) $(OBJ)
 	$(RM) *.gcno *.gcda $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
+
+clean-version:
+	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"\"/" version.h
+	@rm version.h.bak
 
 clean-headers:
 	cd $(PROJECT_INCLUDE) && $(RM) $(HEADERS)
