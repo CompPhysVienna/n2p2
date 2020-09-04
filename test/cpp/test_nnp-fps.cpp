@@ -22,18 +22,18 @@ void nnpToolTestBody(Example_nnp_fps const example)
     ifstream file;
     file.open("nnp-fps.log.0000");
     BOOST_REQUIRE(file.is_open());
-    //while (getline(file, line))
-    //{
-    //    vector<string> columns = split(reduce(line));
-    //    if (columns.at(0) == "chosen")
-    //    {
-    //        BOOST_REQUIRE_EQUAL(example.chosenStructures.at(i),
-    //                            stoi(columns.at(3)));
-    //        i++;
-    //    }
-    //}
-    //BOOST_REQUIRE_MESSAGE((size_t)(i + 1) == example.chosenStructures.size(),
-    //                      string("ERROR: Not all structures were selected."));
+    while (getline(file, line))
+    {
+        vector<string> columns = split(reduce(line));
+        if (columns.size() > 0 && columns.at(0) == "chosen")
+        {
+            BOOST_REQUIRE_EQUAL(example.chosenStructures.at(i),
+                                stoi(columns.at(2)));
+            i++;
+        }
+    }
+    BOOST_REQUIRE_MESSAGE((size_t)i == example.chosenStructures.size(),
+                          string("ERROR: Not all structures were selected."));
 
     return;
 }
