@@ -25,6 +25,7 @@
 #include <cmath>
 #include <string>
 #include <iostream>
+#include <limits>
 
 #define TOLCUTOFF 1.0E-2
 
@@ -44,6 +45,7 @@ InterfaceLammps::InterfaceLammps() : myRank      (0    ),
 }
 
 void InterfaceLammps::initialize(char* const& directory,
+                                 char* const& emap,
                                  bool         showew,
                                  bool         resetew,
                                  int          showewsum,
@@ -54,6 +56,7 @@ void InterfaceLammps::initialize(char* const& directory,
                                  int          lammpsNtypes,
                                  int          myRank)
 {
+    this->emap = emap;
     this->showew = showew;
     this->resetew = resetew;
     this->showewsum = showewsum;
@@ -154,26 +157,84 @@ void InterfaceLammps::initialize(char* const& directory,
         log << "Cutoff radii are consistent.\n";
     }
 
-    if (elementMap.size() != (size_t)lammpsNtypes)
-    {
-        throw runtime_error(strpr("ERROR: Number of LAMMPS atom types (%d) and"
-                                  " NNP elements (%zu) does not match.\n",
-                                  lammpsNtypes, elementMap.size()));
-    }
     log << "-----------------------------------------"
            "--------------------------------------\n";
+    log << "Element mapping string from LAMMPS to n2p2: \""
+           + this->emap + "\"\n";
+    // Create default element mapping.
+    if (this->emap == "")
+    {
+        if (elementMap.size() != (size_t)lammpsNtypes)
+        {
+            throw runtime_error(strpr("ERROR: No element mapping given and "
+                                      "number of LAMMPS atom types (%d) and "
+                                      "NNP elements (%zu) does not match.\n",
+                                      lammpsNtypes, elementMap.size()));
+        }
+        log << "Element mapping string empty, creating default mapping.\n";
+        for (int i = 0; i < lammpsNtypes; ++i)
+        {
+            mapTypeToElement[i + 1] = i;
+            mapElementToType[i] = i + 1;
+        }
+    }
+    // Read element mapping from pair_style argument.
+    else
+    {
+        vector<string> emapSplit = split(reduce(trim(this->emap), " \t", ""),
+                                         ',');
+        for (string s : emapSplit)
+        {
+            vector<string> typeString = split(s, ':');
+            if (typeString.size() != 2)
+            {
+                throw runtime_error(strpr("ERROR: Invalid element mapping "
+                                          "string: \"%s\".\n", s.c_str()));
+            }
+            int t = stoi(typeString.at(0));
+            if (t > lammpsNtypes)
+            {
+                throw runtime_error(strpr("ERROR: LAMMPS type \"%s\" not "
+                                          "present, there are only %d types "
+                                          "defined.\n", t, lammpsNtypes));
+            }
+            size_t e = elementMap[typeString.at(1)];
+            mapTypeToElement[t] = e;
+            mapElementToType[e] = t;
+        }
+        if (elementMap.size() != mapTypeToElement.size())
+        {
+            throw runtime_error(strpr("ERROR: Element mapping is inconsistent,"
+                                      " NNP elements: %zu,"
+                                      " emap elements: %zu.\n",
+                                      elementMap.size(),
+                                      mapTypeToElement.size()));
+        }
+    }
+    log << "\n";
     log << "CAUTION: Please ensure that this mapping between LAMMPS\n";
     log << "         atom types and NNP elements is consistent:\n";
     log << "\n";
     log << "---------------------------\n";
     log << "LAMMPS type  |  NNP element\n";
     log << "---------------------------\n";
-    for (int i = 0; i < lammpsNtypes; ++i)
+    for (int i = 1; i <= lammpsNtypes; ++i)
     {
-        log << strpr("%11d <-> %2s (%3zu)\n",
-                     i + 1,
-                     elementMap[(size_t)i].c_str(),
-                     elementMap.atomicNumber((size_t)i));
+        if (mapTypeToElement.find(i) != mapTypeToElement.end())
+        {
+            size_t e = mapTypeToElement.at(i);
+            log << strpr("%11d <-> %2s (%3zu)\n",
+                         i,
+                         elementMap[e].c_str(),
+                         elementMap.atomicNumber(e));
+            ignoreType[i] = false;
+        }
+        else
+        {
+            log << strpr("%11d <-> --\n", i);
+            ignoreType[i] = true;
+
+        }
     }
     log << "---------------------------\n";
     log << "\n";
@@ -196,24 +257,31 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         structure.numAtomsPerElement[i] = 0;
     }
     structure.index                          = myRank;
-    structure.numAtoms                       = numAtomsLocal;
+    structure.numAtoms                       = 0;
     structure.hasNeighborList                = false;
     structure.hasSymmetryFunctions           = false;
     structure.hasSymmetryFunctionDerivatives = false;
     structure.energy                         = 0.0;
-    structure.atoms.resize(numAtomsLocal);
-    for (size_t i = 0; i < structure.atoms.size(); i++)
+    structure.atoms.clear();
+    indexMap.clear();
+    indexMap.resize(numAtomsLocal, numeric_limits<size_t>::max());
+    for (int i = 0; i < numAtomsLocal; i++)
     {
-        Atom& a = structure.atoms[i];
-        a.free(true);
+        if (ignoreType[atomType[i]]) continue;
+        indexMap.at(i) = structure.numAtoms;
+        structure.numAtoms++;
+        structure.atoms.push_back(Atom());
+        Atom& a = structure.atoms.back();
         a.index                          = i;
         a.indexStructure                 = myRank;
         a.tag                            = atomTag[i];
-        a.element                        = atomType[i] - 1;
+        a.element                        = mapTypeToElement[atomType[i]];
         a.numNeighbors                   = 0;
         a.hasSymmetryFunctions           = false;
         a.hasSymmetryFunctionDerivatives = false;
         a.neighbors.clear();
+        a.numNeighborsPerElement.clear();
+        a.numNeighborsPerElement.resize(numElements, 0);
         structure.numAtomsPerElement[a.element]++;
     }
 
@@ -229,13 +297,16 @@ void InterfaceLammps::addNeighbor(int    i,
                                   double dz,
                                   double d2)
 {
-    Atom& a = structure.atoms[i];
+    if (ignoreType[type] ||
+        indexMap.at(i) == numeric_limits<size_t>::max()) return;
+    Atom& a = structure.atoms[indexMap.at(i)];
     a.numNeighbors++;
     a.neighbors.push_back(Atom::Neighbor());
+    a.numNeighborsPerElement.at(mapTypeToElement[type])++;
     Atom::Neighbor& n = a.neighbors.back();
     n.index   = j;
     n.tag     = tag;
-    n.element = type - 1;
+    n.element = mapTypeToElement[type];
     n.dr[0]   = dx * cflength;
     n.dr[1]   = dy * cflength;
     n.dr[2]   = dz * cflength;
@@ -303,19 +374,15 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // contributions of local and ghost atoms.
     Atom const* a = NULL;
 
-//#ifdef _OPENMP
-//    #pragma omp parallel for private (a)
-//#endif
     for (size_t i =  0; i < structure.atoms.size(); ++i)
     {
-    //for (vector<Atom>::const_iterator a = structure.atoms.begin();
-    //     a != structure.atoms.end(); ++a)
-    //{
         // Set pointer to atom.
         a = &(structure.atoms.at(i));
 
-        // Temporarily save the number of symmetry functions of this atom.
-        size_t const numSymmetryFunctions = a->numSymmetryFunctions;
+#ifdef IMPROVED_SFD_MEMORY
+        vector<vector<size_t> > const& tableFull
+            = elements.at(a->element).getSymmetryFunctionTable();
+#endif
         // Loop over all neighbor atoms. Some are local, some are ghost atoms.
         for (vector<Atom::Neighbor>::const_iterator n = a->neighbors.begin();
              n != a->neighbors.end(); ++n)
@@ -325,21 +392,19 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             size_t const in = n->index;
             // Now loop over all symmetry functions and add force contributions
             // (local + ghost atoms).
-            for (size_t s = 0; s < numSymmetryFunctions; ++s)
+#ifdef IMPROVED_SFD_MEMORY
+            vector<size_t> const& table = tableFull.at(n->element);
+            for (size_t s = 0; s < n->dGdr.size(); ++s)
+            {
+                double const dEdG = a->dEdG[table.at(s)] * cfforce * convForce;
+#else
+            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
             {
                 double const dEdG = a->dEdG[s] * cfforce * convForce;
+#endif
                 double const* const dGdr = n->dGdr[s].r;
-//#ifdef _OPENMP
-//                #pragma omp atomic update
-//#endif
                 atomF[in][0] -= dEdG * dGdr[0];
-//#ifdef _OPENMP
-//                #pragma omp atomic update
-//#endif
                 atomF[in][1] -= dEdG * dGdr[1];
-//#ifdef _OPENMP
-//                #pragma omp atomic update
-//#endif
                 atomF[in][2] -= dEdG * dGdr[2];
             }
         }
@@ -348,21 +413,12 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         size_t const ia = a->index;
         // Loop over all symmetry functions and add force contributions (local
         // atoms).
-        for (size_t s = 0; s < numSymmetryFunctions; ++s)
+        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
         {
             double const dEdG = a->dEdG[s] * cfforce * convForce;
             double const* const dGdr = a->dGdr[s].r;
-//#ifdef _OPENMP
-//            #pragma omp atomic update
-//#endif
             atomF[ia][0] -= dEdG * dGdr[0];
-//#ifdef _OPENMP
-//            #pragma omp atomic update
-//#endif
             atomF[ia][1] -= dEdG * dGdr[1];
-//#ifdef _OPENMP
-//            #pragma omp atomic update
-//#endif
             atomF[ia][2] -= dEdG * dGdr[2];
         }
     }

@@ -50,6 +50,7 @@ class PairNNP : public Pair {
   double cfenergy;
   double maxCutoffRadius;
   char* directory;
+  char* emap;
   nnp::InterfaceLammps interface;
 };
 

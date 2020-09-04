@@ -1,203 +1,98 @@
 #!/bin/make -f
 
 ###############################################################################
+# PROJECT PATHS
+###############################################################################
+PROJECT_DIR=..
+PROJECT_BIN=$(PROJECT_DIR)/bin
+PROJECT_INCLUDE=$(PROJECT_DIR)/include
+PROJECT_LIB=$(PROJECT_DIR)/lib
+
+
+###############################################################################
 # GENERAL SETTINGS
 ###############################################################################
-# Number of cores used.
-CORES=-j4
-# Compiler (gnu/intel).
+# Default compiler (gnu/intel/llvm).
 COMP=gnu
+
+# Default build mode.
+# Possible modes are "static", "shared" and "test".
+# Note: For target "pynnp" there is no "static" mode, "shared" is automatically
+# used instead.
+MODE=static
+
 # Installation directory for binaries.
-INSTALL_BIN=${HOME}/local/bin
+INSTALL_BIN=$(HOME)/local/bin
+
 # Installation directory for libraries.
-INSTALL_LIB=${HOME}/local/lib
+INSTALL_LIB=$(HOME)/local/lib
 
 
 ###############################################################################
-# PHONY TARGETS
+# APPLICATION TARGET NAMES
 ###############################################################################
-.PHONY: all\
-	shared \
-	static \
-	doc \
-	doc-sphinx \
-	doc-doxygen \
-        libnnp \
-        libnnptrain \
-        libnnpif \
-        libnnp-static \
-        libnnptrain-static \
-        libnnpif-static \
-        libnnp-shared \
-        libnnptrain-shared \
-        libnnpif-shared \
-        nnp-comp2-shared \
-        nnp-comp2-static \
-        nnp-convert-shared \
-        nnp-convert-static \
-        nnp-cutoff-shared \
-        nnp-cutoff-static \
-        nnp-dataset-shared \
-        nnp-dataset-static \
-        nnp-dist-shared \
-        nnp-dist-static \
-        nnp-norm-shared \
-        nnp-norm-static \
-        nnp-predict-shared \
-        nnp-predict-static \
-        nnp-prune-shared \
-        nnp-prune-static \
-        nnp-scaling-shared \
-        nnp-scaling-static \
-        nnp-fpssampling-shared \
-        nnp-fpssampling-static \
-        nnp-select-shared \
-        nnp-select-static \
-        nnp-symfunc-shared \
-        nnp-symfunc-static \
-        nnp-train-shared \
-        nnp-train-static \
-        pynnp \
-        clean-doc \
-        clean-doc-sphinx \
-        clean-doc-doxygen \
-	clean-no-doc \
-        clean-libnnp \
-        clean-libnnptrain \
-        clean-libnnpif \
-        clean-libnnp-static \
-        clean-libnnptrain-static \
-        clean-libnnpif-static \
-        clean-libnnp-shared \
-        clean-libnnptrain-shared \
-        clean-libnnpif-shared \
-        clean-nnp-comp2 \
-        clean-nnp-convert \
-        clean-nnp-cutoff \
-        clean-nnp-dataset \
-        clean-nnp-dist \
-        clean-nnp-norm \
-        clean-nnp-predict \
-        clean-nnp-prune \
-        clean-nnp-scaling \
-        clean-nnp-fpssampling \
-        clean-nnp-select \
-        clean-nnp-symfunc \
-        clean-nnp-train \
-        clean-pynnp \
-	install \
-	uninstall
+# Call makefile in "application" directory to list targets.
+APP_CORE=$(shell cd application && make list-core)
+APP_TRAIN=$(shell cd application && make list-train)
+APP=$(shell cd application && make list-all)
 
-
-###############################################################################
-# PROJECT
-###############################################################################
-PROJECT_DIR=../
-PROJECT_BIN=${PROJECT_DIR}/bin
-PROJECT_INCLUDE=${PROJECT_DIR}/include
-PROJECT_LIB=${PROJECT_DIR}/lib
-PROJECT_BUILD=${PROJECT_DIR}/build
+# Targets for cleaning.
+CLEAN_APP=$(patsubst %, clean-%, $(APP))
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-
-all:    libnnp \
+.PHONY:	all \
+	doc \
+	doc-sphinx \
+	doc-doxygen \
+	libnnp \
 	libnnptrain \
 	libnnpif \
-	nnp-comp2-shared \
-	nnp-convert-shared \
-	nnp-cutoff-shared \
-	nnp-dataset-shared \
-	nnp-dist-shared \
-	nnp-norm-shared \
-	nnp-predict-shared \
-	nnp-prune-shared \
-	nnp-scaling-shared \
-        nnp-fpssampling-shared \
-	nnp-select-shared \
-	nnp-symfunc-shared \
-	nnp-train-shared
-
-shared: libnnp-shared \
-	libnnptrain-shared \
-	libnnpif-shared \
-	nnp-comp2-shared \
-	nnp-convert-shared \
-	nnp-cutoff-shared \
-	nnp-dataset-shared \
-	nnp-dist-shared \
-	nnp-norm-shared \
-	nnp-predict-shared \
-	nnp-prune-shared \
-	nnp-scaling-shared \
-        nnp-fpssampling-shared \
-	nnp-select-shared \
-	nnp-symfunc-shared \
-	nnp-train-shared
-
-static: libnnp-static \
-	libnnptrain-static \
-	libnnpif-static \
-	nnp-comp2-static \
-	nnp-convert-static \
-	nnp-cutoff-static \
-	nnp-dataset-static \
-	nnp-dist-static \
-	nnp-norm-static \
-	nnp-predict-static \
-	nnp-prune-static \
-	nnp-scaling-static \
-        nnp-fpssampling-static \
-	nnp-select-static \
-	nnp-symfunc-static \
-	nnp-train-static
-
-clean:	clean-doc \
+	lammps-nnp \
+	pynnp \
+	clean-doc \
 	clean-doc-sphinx \
 	clean-doc-doxygen \
-	clean-no-doc
+	clean-no-doc \
+	clean-libnnp \
+	clean-libnnptrain \
+	clean-libnnpif \
+	clean-lammps-nnp \
+	clean-pynnp \
+	install \
+	uninstall
 
-clean-no-doc: clean-libnnp \
-	      clean-libnnptrain \
-	      clean-libnnpif \
-	      clean-nnp-comp2 \
-	      clean-nnp-convert \
-	      clean-nnp-cutoff \
-	      clean-nnp-dataset \
-	      clean-nnp-dist \
-	      clean-nnp-norm \
-	      clean-nnp-predict \
-	      clean-nnp-prune \
-	      clean-nnp-scaling \
-              clean-nnp-fpssampling \
-	      clean-nnp-select \
-	      clean-nnp-symfunc \
-	      clean-nnp-train \
-	      clean-pynnp
+all: libnnp \
+     libnnptrain \
+     libnnpif \
+     all-app
 
+clean: clean-libnnp \
+       clean-libnnptrain \
+       clean-libnnpif \
+       clean-app \
+       clean-lammps-nnp \
+       clean-pynnp
 
-#######
-# doc #
-#######
+clean-all: clean \
+           clean-doc
+
+################################
+# doc, doc-sphinx, doc-doxygen #
+################################
 doc: doc-doxygen doc-sphinx
 	cp -r ../doc/doxygen/html ../doc/sphinx/html/doxygen
 	
 clean-doc: clean-doc-sphinx clean-doc-doxygen
 
-##############
-# doc-sphinx #
-##############
 doc-sphinx:
 	cd doc/sphinx && $(MAKE) html
 
 clean-doc-sphinx:
 	cd doc/sphinx && $(MAKE) clean
 
-###############
-# doc-doxygen #
-###############
 doc-doxygen:
 	cd doc/doxygen && $(MAKE)
 
@@ -208,84 +103,55 @@ clean-doc-doxygen:
 # libnnp #
 ##########
 libnnp:
-	cd libnnp && $(MAKE) COMP=${COMP} ${CORES}
+	cd libnnp && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
 clean-libnnp:
 	cd libnnp && $(MAKE) clean
-
-libnnp-shared:
-	cd libnnp && $(MAKE) COMP=${COMP} ${CORES} shared
-
-clean-libnnp-shared:
-	cd libnnp && $(MAKE) clean-shared
-
-libnnp-static:
-	cd libnnp && $(MAKE) COMP=${COMP} ${CORES} static
-
-clean-libnnp-static:
-	cd libnnp && $(MAKE) clean-static
 
 #########################
 # libnnptrain, libnnpif #
 #########################
 libnnptrain libnnpif: libnnp
-	cd $@ && $(MAKE) COMP=${COMP} ${CORES}
+	cd $@ && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
 clean-libnnptrain clean-libnnpif: LIBDIR=$(subst clean-,,$@)
 clean-libnnptrain clean-libnnpif:
-	cd ${LIBDIR} && $(MAKE) clean
+	cd $(LIBDIR) && $(MAKE) clean
 
-libnnptrain-shared libnnpif-shared: LIBDIR=$(subst -shared,,$@)
-libnnptrain-shared libnnpif-shared: libnnp-shared
-	cd ${LIBDIR} && $(MAKE) COMP=${COMP} ${CORES} shared
+####################
+# nnp applications #
+####################
+# All at once (parallel).
+all-app: libnnptrain
+	cd application && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
-clean-libnnptrain-shared clean-libnnpif-shared: LIBDIR=$(subst clean-,,$(subst -shared,,$@))
-clean-libnnptrain-shared clean-libnnpif-shared:
-	cd ${LIBDIR} && $(MAKE) clean-shared
+clean-app:
+	cd application && $(MAKE) clean
 
-libnnptrain-static libnnpif-static: LIBDIR=$(subst -static,,$@)
-libnnptrain-static libnnpif-static: libnnp-static
-	cd ${LIBDIR} && $(MAKE) COMP=${COMP} ${CORES} static
+# Individual applications.
+$(APP_CORE): libnnp
+	cd application && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
-clean-libnnptrain-static clean-libnnpif-static: LIBDIR=$(subst clean-,,$(subst -static,,$@))
-clean-libnnptrain-static clean-libnnpif-static:
-	cd ${LIBDIR} && $(MAKE) clean-static
+$(APP_TRAIN): libnnptrain
+	cd application && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
-######################################################################################
-# nnp-convert, nnp-cutoff, nnp-dist, nnp-predict, nnp-prune, nnp-select, nnp-symfunc #
-######################################################################################
-nnp-convert-shared nnp-cutoff-shared nnp-dist-shared nnp-predict-shared nnp-prune-shared nnp-select-shared nnp-symfunc-shared: APPDIR=$(subst -shared,,$@)
-nnp-convert-shared nnp-cutoff-shared nnp-dist-shared nnp-predict-shared nnp-prune-shared nnp-select-shared nnp-symfunc-shared: libnnp-shared
-	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} shared
+$(CLEAN_APP):
+	cd application && $(MAKE) $@
 
-nnp-convert-static nnp-cutoff-static nnp-dist-static nnp-predict-static nnp-prune-static nnp-select-static nnp-symfunc-static: APPDIR=$(subst -static,,$@)
-nnp-convert-static nnp-cutoff-static nnp-dist-static nnp-predict-static nnp-prune-static nnp-select-static nnp-symfunc-static: libnnp-static
-	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} static
+##############
+# lammps-nnp #
+##############
+lammps-nnp: libnnpif
+	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
-clean-nnp-convert clean-nnp-cutoff clean-nnp-dist clean-nnp-predict clean-nnp-prune clean-nnp-select clean-nnp-symfunc: APPDIR=$(subst clean-,,$@)
-clean-nnp-convert clean-nnp-cutoff clean-nnp-dist clean-nnp-predict clean-nnp-prune clean-nnp-select clean-nnp-symfunc:
-	cd application/${APPDIR} && $(MAKE) clean
-
-############################################################
-# nnp-comp2, nnp-dataset, nnp-norm, nnp-scaling, nnp-train #
-############################################################
-nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-fpssampling-shared nnp-train-shared: APPDIR=$(subst -shared,,$@)
-nnp-comp2-shared nnp-dataset-shared nnp-norm-shared nnp-scaling-shared nnp-fpssampling-shared nnp-train-shared: libnnptrain-shared
-	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} shared
-
-nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-fpssampling-static nnp-train-static: APPDIR=$(subst -static,,$@)
-nnp-comp2-static nnp-dataset-static nnp-norm-static nnp-scaling-static nnp-fpssampling-static nnp-train-static: libnnptrain-static
-	cd application/${APPDIR} && $(MAKE) COMP=${COMP} ${CORES} static
-
-clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-fpssampling clean-nnp-train: APPDIR=$(subst clean-,,$@)
-clean-nnp-comp2 clean-nnp-dataset clean-nnp-norm clean-nnp-scaling clean-nnp-fpssampling clean-nnp-train:
-	cd application/${APPDIR} && $(MAKE) clean
+clean-lammps-nnp:
+	cd interface && $(MAKE) $@
 
 #########
 # pynnp #
 #########
 pynnp:
-	cd pynnp && $(MAKE)
+	cd pynnp && $(MAKE) MODE=$(MODE)
 
 clean-pynnp:
 	cd pynnp && $(MAKE) clean
@@ -293,12 +159,18 @@ clean-pynnp:
 ##############################################
 # install (set links to install directories) #
 ##############################################
-EXE=nnp-comp2 nnp-convert nnp-cutoff nnp-dataset nnp-dist nnp-norm nnp-predict nnp-prune nnp-scaling nnp-fpssampling nnp-select nnp-symfunc nnp-train
-LIB=libnnp.so libnnpif.so libnnptrain.so pynnp.so
+EXE=$(APP)
+DLIB=libnnp.so libnnpif.so libnnptrain.so
+SLIB=$(DLIB:.so=.a)
+PYLIB=$(wildcard $(PROJECT_LIB)/pynnp*.so)
 install:
-	$(foreach exe, $(EXE), ln -s $(CURDIR)/${PROJECT_BIN}/${exe} ${INSTALL_BIN}/${exe};)
-	$(foreach lib, $(LIB), ln -s $(CURDIR)/${PROJECT_LIB}/${lib} ${INSTALL_LIB}/${lib};)
+	$(foreach exe, $(EXE), ln -s $(CURDIR)/$(PROJECT_BIN)/$(exe) $(INSTALL_BIN)/$(exe);)
+	$(foreach dlib, $(DLIB), ln -s $(CURDIR)/$(PROJECT_LIB)/$(dlib) $(INSTALL_LIB)/$(dlib);)
+	$(foreach slib, $(SLIB), ln -s $(CURDIR)/$(PROJECT_LIB)/$(slib) $(INSTALL_LIB)/$(slib);)
+	$(foreach pylib, $(notdir $(PYLIB)), ln -s $(CURDIR)/$(PROJECT_LIB)/$(pylib) $(INSTALL_LIB)/$(pylib);)
 
 uninstall:
-	$(foreach exe, $(EXE), rm ${INSTALL_BIN}/${exe};)
-	$(foreach lib, $(LIB), rm ${INSTALL_LIB}/${lib};)
+	$(foreach exe, $(EXE), rm $(INSTALL_BIN)/$(exe);)
+	$(foreach dlib, $(DLIB), rm $(INSTALL_LIB)/$(dlib);)
+	$(foreach slib, $(SLIB), rm $(INSTALL_LIB)/$(slib);)
+	$(foreach pylib, $(notdir $(PYLIB)), rm $(INSTALL_LIB)/$(pylib);)

@@ -135,12 +135,44 @@ public:
      */
     std::size_t writeNeighborHistogram(std::string const& fileName
                                            = "neighbors.histo");
-    /** Reduce and average RMSE over all MPI procs.
+    /** Sort all neighbor lists according to element and distance.
+     */
+    void        sortNeighborLists();
+    /** Write neighbor list file.
      *
-     * @param[in,out] rmse RMSE sum of this proc (in), global RMSE (out).
+     * @param[in] fileName Name for neighbor list file.
+     */
+    void        writeNeighborLists(std::string const& fileName
+                                       = "neighbor-list.data");
+    /** Write atomic environment file.
+     *
+     * @param[in] neighCutoff Maximum number of neighbor to consider (for each
+     *                        element combination).
+     * @param[in] derivatives If true, write separate files for derivates.
+     * @param[in] fileNamePrefix Prefix for atomic environment files.
+     *
+     * This file is used for symmetry function clustering analysis.
+     */
+    void        writeAtomicEnvironmentFile(
+                                        std::vector<std::vector<
+                                        std::size_t> >           neighCutoff,
+                                        bool                     derivatives,
+                                        std::string const &      fileNamePrefix
+                                             = "atomic-env");
+    /** Collect error metrics of energies over all MPI procs.
+     *
+     * @param[in,out] error Metric sums of this proc (in), global metric (out).
      * @param[in,out] count Count for this proc (in), global count (out).
      */
-    void        averageRmse(double& rmse, std::size_t& count) const;
+    void        collectErrorEnergies(std::vector<double>& error,
+                                     std::size_t&         count) const;
+    /** Collect error metrics of forces over all MPI procs.
+     *
+     * @param[in,out] error Metric sums of this proc (in), global metric (out).
+     * @param[in,out] count Count for this proc (in), global count (out).
+     */
+    void        collectErrorForces(std::vector<double>& error,
+                                     std::size_t&       count) const;
     /** Combine individual MPI proc files to one.
      *
      * @param[in] filePrefix File prefix without the ".0001" suffix.

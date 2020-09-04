@@ -17,6 +17,7 @@
 #ifndef TRAINING_H
 #define TRAINING_H
 
+#include "Atom.h"
 #include "Dataset.h"
 #include "Updater.h"
 #include <cstddef> // std::size_t
@@ -137,7 +138,7 @@ public:
     /** Calculate neighbor lists for all structures.
      */
     void                  calculateNeighborLists();
-    /** Calculate RMSE for all structures.
+    /** Calculate error metrics for all structures.
      *
      * @param[in] writeCompFiles Write NN and reference energies and forces to
      *                           comparison files.
@@ -150,7 +151,8 @@ public:
      *                                file.
      * @param[in] fileNameForcesTest File name for test forces comparison file.
      */
-    void                  calculateRmse(bool const        writeCompFiles,
+    void                  calculateError(
+                                        bool const        writeCompFiles,
                                         std::string const identifier           
                                             = "",
                                         std::string const fileNameEnergiesTrain
@@ -161,12 +163,12 @@ public:
                                             = "forces-train.comp",
                                         std::string const fileNameForcesTest
                                             = "forces-test.comp");
-    /** Calculate RMSE per epoch for all structures with file names used in
-     * training loop.
+    /** Calculate error metrics per epoch for all structures with file names
+     * used in training loop.
      *
      * Also write training curve to file.
      */
-    void                  calculateRmseEpoch();
+    void                  calculateErrorEpoch();
     /** Write weights to files (one file for each element).
      *
      * @param[in] fileNameFormat String with file name format.
@@ -375,18 +377,14 @@ private:
     std::size_t                   errorsGlobalForce;
     /// Total number of weights.
     std::size_t                   numWeights;
+    /// Error metric index for energies.
+    std::size_t                   errorMetricEnergies;
+    /// Error metric index for forces.
+    std::size_t                   errorMetricForces;
     /// Desired energy update fraction per epoch.
     double                        epochFractionEnergies;
     /// Desired force update fraction per epoch.
     double                        epochFractionForces;
-    /// Current RMSE of training energies.
-    double                        rmseEnergiesTrain;
-    /// Current RMSE of test energies.
-    double                        rmseEnergiesTest;
-    /// Current RMSE of training forces.
-    double                        rmseForcesTrain;
-    /// Current RMSE of test forces.
-    double                        rmseForcesTest;
     /// RMSE threshold for energy update candidates.
     double                        rmseThresholdEnergy;
     /// RMSE threshold for force update candidates.
@@ -411,6 +409,19 @@ private:
     std::vector<std::size_t>      numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
     std::vector<std::size_t>      weightsOffset;
+    /// Current error metrics of training energies.
+    std::vector<double>           errorEnergiesTrain;
+    /// Current error metrics of test energies.
+    std::vector<double>           errorEnergiesTest;
+    /// Current error metrics of training forces.
+    std::vector<double>           errorForcesTrain;
+    /// Current error metrics of test forces.
+    std::vector<double>           errorForcesTest;
+#ifdef IMPROVED_SFD_MEMORY
+    /// Derivative of symmetry functions with respect to one specific atom
+    /// coordinate.
+    std::vector<double>           dGdxia;
+#endif
     /// Vector with indices of training structures.
     std::vector<UpdateCandidate>  updateCandidatesEnergy;
     /// Vector with indices of training forces.
@@ -493,6 +504,29 @@ private:
                              std::size_t         is,
                              std::size_t         ia,
                              std::size_t         ic);
+#ifdef IMPROVED_SFD_MEMORY
+    /** Collect derivative of symmetry functions with repect to one atom's
+     * coordinate.
+     *
+     * @param[in] atom The atom which owns the symmetry functions.
+     * @param[in] indexAtom The index @f$i@f$ of the atom requested.
+     * @param[in] indexComponent The component @f$\alpha@f$ of the atom
+     *                           requested.
+     *
+     * This calculates an array of derivatives
+     * @f[
+     *   \left(\frac{\partial G_1}{\partial x_{i,\alpha}}, \ldots,
+     *   \frac{\partial G_n}{\partial x_{i,\alpha}}\right),
+     *
+     * @f]
+     * where @f$\{G_j\}_{j=1,\ldots,n}@f$ are the symmetry functions for this
+     * atom and @f$x_{i,\alpha}@f$ is the @f$\alpha@f$-component of the
+     * position of atom @f$i@f$. The result is stored in #dGdxia.
+     */
+    void collectDGdxia(Atom const& atom,
+                       std::size_t indexAtom,
+                       std::size_t indexComponent);
+#endif
 };
 
 //////////////////////////////////

@@ -65,6 +65,23 @@ void Structure::setElementMap(ElementMap const& elementMap)
     return;
 }
 
+void Structure::addAtom(Atom const& atom, string const& element)
+{
+    atoms.push_back(Atom());
+    atoms.back() = atom;
+    // The number of elements may have changed.
+    atoms.back().numNeighborsPerElement.resize(elementMap.size(), 0);
+    atoms.back().clearNeighborList();
+    atoms.back().index                = numAtoms;
+    atoms.back().indexStructure       = index;
+    atoms.back().element              = elementMap[element];
+    atoms.back().numSymmetryFunctions = 0;
+    numAtoms++;
+    numAtomsPerElement[elementMap[element]]++;
+
+    return;
+}
+
 void Structure::readFromFile(string const fileName)
 {
     ifstream file;
@@ -83,26 +100,58 @@ void Structure::readFromFile(string const fileName)
 
 void Structure::readFromFile(ifstream& file)
 {
-    size_t         iBoxVector = 0;
     string         line;
+    vector<string> lines;
     vector<string> splitLine;
 
     // read first line, should be keyword "begin".
     getline(file, line);
+    lines.push_back(line);
     splitLine = split(reduce(line));
     if (splitLine.at(0) != "begin")
     {
         throw runtime_error("ERROR: Unexpected file content, expected"
-                            "\"begin\" keyword.\n");
+                            " \"begin\" keyword.\n");
     }
 
     while (getline(file, line))
     {
+        lines.push_back(line);
         splitLine = split(reduce(line));
-        if (splitLine.at(0) == "comment")
+        if (splitLine.at(0) == "end") break;
+    }
+
+    readFromLines(lines);
+
+    return;
+}
+
+
+void Structure::readFromLines(vector<string> const& lines)
+{
+    size_t         iBoxVector = 0;
+    vector<string> splitLine;
+
+    // read first line, should be keyword "begin".
+    splitLine = split(reduce(lines.at(0)));
+    if (splitLine.at(0) != "begin")
+    {
+        throw runtime_error("ERROR: Unexpected line content, expected"
+                            " \"begin\" keyword.\n");
+    }
+
+    for (vector<string>::const_iterator line = lines.begin();
+         line != lines.end(); ++line)
+    {
+        splitLine = split(reduce(*line));
+        if (splitLine.at(0) == "begin")
         {
-            size_t position = line.find("comment");
-            comment = line.erase(position, splitLine.at(0).length() + 1);
+        }
+        else if (splitLine.at(0) == "comment")
+        {
+            size_t position = line->find("comment");
+            string tmpLine = *line;
+            comment = tmpLine.erase(position, splitLine.at(0).length() + 1);
         }
         else if (splitLine.at(0) == "lattice")
         {
@@ -513,18 +562,9 @@ void Structure::clearNeighborList()
     for (size_t i = 0; i < numAtoms; i++)
     {
         Atom& a = atoms.at(i);
-        a.numNeighbors = 0;
+        // This may have changed if atoms are added via addAtoms().
         a.numNeighborsPerElement.resize(numElements, 0);
-        a.numNeighborsUnique = 0;
-        a.neighborsUnique.clear();
-        vector<size_t>(a.neighborsUnique).swap(a.neighborsUnique);
-        a.neighbors.clear();
-        vector<Atom::Neighbor>(a.neighbors).swap(a.neighbors);
-        a.hasNeighborList = false;
-        a.free(true);
-        a.hasNeighborList = false;
-        a.hasSymmetryFunctions = false;
-        a.hasSymmetryFunctionDerivatives = false;
+        a.clearNeighborList();
     }
     hasNeighborList = false;
     hasSymmetryFunctions = false;
@@ -533,21 +573,25 @@ void Structure::clearNeighborList()
     return;
 }
 
-void Structure::updateRmseEnergy(double& rmse, size_t& count) const
+void Structure::updateErrorEnergy(vector<double>& error, size_t& count) const
 {
     count++;
-    rmse += (energyRef - energy) * (energyRef - energy)
-          / (numAtoms * numAtoms);
+    double diff = energyRef - energy;
+    error.at(0) += diff * diff / (numAtoms * numAtoms);
+    error.at(1) += diff * diff;
+    diff = fabs(diff);
+    error.at(2) += diff / numAtoms;
+    error.at(3) += diff;
 
     return;
 }
 
-void Structure::updateRmseForces(double& rmse, size_t& count) const
+void Structure::updateErrorForces(vector<double>& error, size_t& count) const
 {
     for (vector<Atom>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it)
     {
-        it->updateRmseForces(rmse, count);
+        it->updateErrorForces(error, count);
     }
 
     return;
@@ -574,11 +618,36 @@ vector<string> Structure::getForcesLines() const
     return v;
 }
 
-void Structure::writeToFile(ofstream* const& file, bool ref) const
+void Structure::writeToFile(string const fileName,
+                            bool const   ref,
+                            bool const   append) const
+{
+    ofstream file;
+
+    if (append)
+    {
+        file.open(fileName.c_str(), ofstream::app);
+    }
+    else
+    {
+        file.open(fileName.c_str());
+    }
+    if (!file.is_open())
+    {
+        throw runtime_error("ERROR: Could not open file: \"" + fileName
+                            + "\".\n");
+    }
+    writeToFile(&file, ref );
+    file.close();
+
+    return;
+}
+
+void Structure::writeToFile(ofstream* const& file, bool const ref) const
 {
     if (!file->is_open())
     {
-        runtime_error("ERROR: Could not write to file.\n");
+        runtime_error("ERROR: Cannot write to file, file is not open.\n");
     }
 
     (*file) << "begin\n";
@@ -649,6 +718,10 @@ void Structure::writeToFileXyz(ofstream* const& file) const
                          box[1][0], box[1][1], box[1][2]);
         (*file) << strpr("%24.16E %24.16E %24.16E\"\n",
                          box[2][0], box[2][1], box[2][2]);
+    }
+    else
+    {
+        (*file) << "\n";
     }
     for (vector<Atom>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it)
@@ -792,33 +865,34 @@ vector<string> Structure::info() const
 
 void Structure::clearallG()
 {
-        allG.clear();
-        hasallG=false;
-        return;
+    allG.clear();
+    hasallG = false;
+
+    return;
 }
 
 
-void Structure::updateallG(ofstream* file)
+void Structure::updateallG()
 {
     allG.resize(numElements);
-    for (vector<Atom>::const_iterator it = atoms.begin();it != atoms.end(); ++it)
+    for (vector<Atom>::const_iterator it = atoms.begin();
+         it != atoms.end(); ++it)
+    {
+        for (vector<double>::const_iterator itG = (it->G).begin();
+             itG != (it->G).end(); ++itG)
         {
-
-        for (vector< double >::const_iterator itG = (it->G).begin(); itG != (it->G).end(); ++ itG)
-        {
-                allG[it->element].push_back((float)*itG);
+            allG[it->element].push_back((float)*itG);
         }
+    }
 
+    // sort them elementwise
+    for (vector<vector<float>>::iterator it1 = allG.begin();
+         it1 != allG.end(); ++it1)
+    {
+        sort(it1->begin(), it1->end());
+    }
 
-        }
+    hasallG = true;
 
-//sort them elementwise
-   for (vector<vector< float > >::iterator it1 = allG.begin(); it1 != allG.end(); ++it1){
-       sort((*it1).begin(),(*it1).end());
-   }
-
-   hasallG=true;
-
-return;
+    return;
 }
-

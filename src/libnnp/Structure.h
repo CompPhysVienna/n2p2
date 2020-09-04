@@ -61,7 +61,7 @@ struct Structure
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for each atom.
     bool                     hasSymmetryFunctionDerivatives;
-    /// If structure already saved vector "allG"
+    /// If structure already saved vector #allG
     bool                     hasallG;
     /// Index number of this structure.
     std::size_t              index;
@@ -93,8 +93,9 @@ struct Structure
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
     std::vector<Atom>        atoms;
-    /// Sorted vector of all symmetry functions in this structures
-    std::vector<std::vector< float > > allG;
+    /// Sorted vector of all symmetry functions in this structure.
+    std::vector<
+    std::vector<float>>      allG;
 
     /** Constructor, initializes to zero.
      */
@@ -105,6 +106,18 @@ struct Structure
      *                       (symbol, index)-pairs (see ElementMap).
      */
     void                     setElementMap(ElementMap const& elementMap);
+    /** Add a single atom to structure.
+     *
+     * @param[in] atom Atom to insert.
+     * @param[in] element Element string of new atom.
+     *
+     * @note Be sure to set the element map properly before adding atoms. This
+     * function will only keep the atom's coordinates, energy, charge, tag and
+     * forces, all other members will be cleared or reset (in particular, the
+     * neighbor list and symmetry function data will be deleted).
+     */
+    void                     addAtom(Atom const&        atom,
+                                     std::string const& element);
     /** Read configuration from file.
      *
      * @param[in] fileName Input file name.
@@ -121,6 +134,14 @@ struct Structure
      * line should be `begin`. Reads until keyword is `end`.
      */
     void                     readFromFile(std::ifstream& file);
+    /** Read configuration from lines.
+     *
+     * @param[in] lines One configuration in form of a vector of strings.
+     *
+     * Read the configuration from a vector of strings.
+     */
+    void                     readFromLines(std::vector<
+                                           std::string> const& lines);
     /** Calculate neighbor list for all atoms.
      *
      * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
@@ -217,20 +238,36 @@ struct Structure
     /** Clear neighbor list of all atoms.
      */
     void                     clearNeighborList();
-    /** Update energy RMSE with this structure.
+    /** Update energy error metrices with this structure.
      *
-     * @param[in,out] rmse Input RMSE to be updated.
+     * @param[in,out] error Input error metric vector to be updated.
      * @param[in,out] count Input counter to be updated.
-     */
-    void                     updateRmseEnergy(double&      rmse,
-                                              std::size_t& count) const;
-    /** Update force RMSE with all atoms of this structure.
      *
-     * @param[in,out] rmse Input RMSE to be updated.
-     * @param[in,out] count Input counter to be updated.
+     * The error metric vector stores temporary sums for the following
+     * metrices:
+     *
+     * index 0: RMSE of energy per atom
+     * index 1: RMSE of energy
+     * index 2: MAE  of energy per atom
+     * index 3: MAE  of energy
      */
-    void                     updateRmseForces(double&      rmse,
-                                              std::size_t& count) const;
+    void                     updateErrorEnergy(
+                                             std::vector<double>& error,
+                                             std::size_t&         count) const;
+    /** Update force error metrices with all atoms of this structure.
+     *
+     * @param[in,out] error Input error metric vector to be updated.
+     * @param[in,out] count Input counter to be updated.
+     *
+     * The error metric vector stores temporary sums for the following
+     * metrices:
+     *
+     * index 0: RMSE of forces
+     * index 1: MAE  of forces
+     */
+    void                     updateErrorForces(
+                                             std::vector<double>& error,
+                                             std::size_t&         count) const;
     /** Get reference and NN energy.
      *
      * @return String with #index, #energyRef and #energy values.
@@ -243,13 +280,24 @@ struct Structure
     std::vector<std::string> getForcesLines() const;
     /** Write configuration to file.
      *
+     * @param[in,out] fileName Ouptut file name.
+     * @param[in] ref If true, write reference energy and forces, if false,
+     *                write NNP results instead.
+     * @param[in] append If true, append to existing file.
+     */
+    void                     writeToFile(
+                                     std::string const fileName ="output.data",
+                                     bool const        ref = true,
+                                     bool const        append = false) const;
+    /** Write configuration to file.
+     *
      * @param[in,out] file Ouptut file.
      * @param[in] ref If true, write reference energy and forces, if false,
      *                write NNP results instead.
      */
     void                     writeToFile(
                                        std::ofstream* const& file,
-                                       bool                  ref = true) const;
+                                       bool const            ref = true) const;
     /** Write configuration to xyz file.
      *
      * @param[in,out] file xyz output file.
@@ -278,14 +326,14 @@ struct Structure
      */
     std::vector<std::string> info() const;
 
-    /** clear allG vector
+    /** Clear #allG vector.
      *
      */
     void                     clearallG();
-    /** Build vector of vector of sorted symmetry functions
+    /** Build vector of vector of sorted symmetry functions.
      *
      */
-    void                     updateallG(std::ofstream* file);
+    void                     updateallG();
 
 };
 

@@ -9,7 +9,7 @@ clear
 # Configuration files
 variable cfgFile         string "h2o_8640_liquid_NpT_RPBE-D3.data"
 # Timesteps
-variable numSteps        equal  10
+variable numSteps        equal  5
 variable dt              equal  0.0005
 # NN
 variable nnpCutoff       equal  6.36
@@ -23,7 +23,7 @@ variable mass_O          equal  15.9994
 ###############################################################################
 units metal
 boundary p p p
-atom_style full
+atom_style atomic
 read_data ${cfgFile}
 mass 1 ${mass_H}
 mass 2 ${mass_O}
@@ -33,7 +33,7 @@ thermo 1
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254
+pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
 pair_coeff * * ${nnpCutoff}
 
 ###############################################################################

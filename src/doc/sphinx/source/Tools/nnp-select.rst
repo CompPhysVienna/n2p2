@@ -26,23 +26,6 @@ Usage:
               Execute in directory with these NNP files present:
               - input.data (structure file)
 
-Examples:
----------
-
-* 
-  Select randomly 10% of the original set with random seed 123:
-
-  .. code-block:: none
-
-     nnp-select random 0.1 123
-
-* 
-  Select every 20th structure from original set (starting with structure 1):
-
-  .. code-block:: none
-
-     nnp-select interval 20
-
 Sample screen output:
 ---------------------
 
@@ -69,3 +52,21 @@ File output:
 
 * ``output.data``\ : The requested subset of training structures.
 * ``nnp-select.log`` : Log file (copy of screen output).
+
+Examples:
+---------
+
+* 
+  Select randomly 10% of the original set with random seed 123:
+
+  .. code-block:: none
+
+     nnp-select random 0.1 123
+
+* 
+  Select every 20th structure from original set (starting with structure 1):
+
+  .. code-block:: none
+
+     nnp-select interval 20
+

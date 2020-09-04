@@ -147,6 +147,18 @@ single characters from the following table (see also
      - :enumerator:`nnp::NeuralNetwork::AF_LOGISTIC`
    * - p
      - :enumerator:`nnp::NeuralNetwork::AF_SOFTPLUS`
+   * - r
+     - :enumerator:`nnp::NeuralNetwork::AF_RELU`
+   * - g
+     - :enumerator:`nnp::NeuralNetwork::AF_GAUSSIAN`
+   * - c
+     - :enumerator:`nnp::NeuralNetwork::AF_COS`
+   * - S
+     - :enumerator:`nnp::NeuralNetwork::AF_REVLOGISTIC`
+   * - e
+     - :enumerator:`nnp::NeuralNetwork::AF_EXP`
+   * - h
+     - :enumerator:`nnp::NeuralNetwork::AF_HARMONIC`
 
 
 ----
@@ -272,7 +284,7 @@ scaling. See :type:`nnp::SymmetryFunction::ScalingType`.
 ^^^^^^^^^^^^^^^^^^^^^
 
 **Usage**:
-   ``symfunction_short <string> <int> ...``
+   ``symfunction_short <string> <integer> ...``
 
 **Examples**:
    ``symfunction_short H 2 H 0.01 0.0 12.0``
@@ -306,3 +318,101 @@ and look for the detailed description of the class.
    * - 13
      - :class:`nnp::SymmetryFunctionWeightedAngular`
 
+Training-specific keywords
+--------------------------
+
+The following keywords are solely used for training with :ref:`nnp-train`. All
+other tools and interfaces will ignore these keywords.
+
+----
+
+``selection_mode``
+^^^^^^^^^^^^^^^^^^
+
+**Usage**:
+   ``selection_mode <integer> <<pairs of integers>>``
+
+**Examples**:
+   ``selection_mode 0``
+
+   ``selection_mode 2 15 1 20 2``
+
+Sets the scheme to select energy and force candidates during training (first
+integer argument, mandatory). If only one argument is given the chosen mode is
+used for the entire training. The optional pairs of integers allow to switch the
+selection mode during training. The first integer of each pair determines the
+epoch when to switch while the second denotes the selection mode to switch to.
+Hence, the above example means: Start the training with selection mode ``2``,
+then after 15 epochs switch to mode ``1`` and finally at epoch 20 switch back to
+mode ``2`` until training is completed. There are three selection modes
+implemented:
+
+* ``0``: **Random selection**
+
+  Select training candidates randomly.
+
+|br|
+* ``1``: **Sort by RMSE**
+
+  At the beginning of each epoch all training candidates are sorted according
+  to their current RMSE. Throughout the epoch this list is then processed
+  sequentially in order of descending RMSE, i.e. from highest to lowest
+  error. This selection scheme can be helpful to decrease the error of
+  outlier forces when used in conjunction with the optional selection mode
+  switching (see above).
+
+|br|
+* ``2``: **Random selection with threshold**
+
+  Select training candidates randomly but use the choice only for training if
+  the current error is above a threshold. Otherwise, select another candidate.
+  The threshold can be set for energies and forces separately with the keywords
+  ``short_energy_error_threshold`` and ``short_force_error_threshold`` and is
+  expressed in terms of the last epochs RMSE, e.g.
+  ``short_energy_error_threshold 1.5`` means a threshold of :math:`1.5 \times
+  RMSE`. Training candidates are selected randomly until the threshold condition
+  is fulfilled or a the number of trial choices (keyword
+  ``rmse_threshold_trials``) is exceeded. If even in the latter case no
+  candidate above the threshold is found, the candidate with the highest error
+  so far is used. This selection scheme is a variation of the adaptive process
+  described by Blank and Brown [1]_ and is described here [2]_.
+
+----
+
+``main_error_metric``
+^^^^^^^^^^^^^^^^^^^^^
+
+**Usage**:
+   ``main_error_metric <string>``
+
+**Examples**:
+   ``main_error_metric RMSEpa``
+
+   ``main_error_metric MAE``
+
+Selects the error metric to display on the screen during training. Four variants
+are available:
+
+* ``RMSEpa``: RMSE of energies per atom, RMSE of forces.
+
+* ``RMSE``: RMSE of energies, RMSE of forces.
+
+* ``MAEpa``: MAE of energies per atom, MAE of forces.
+
+* ``MAE``: MAE of energies, MAE of forces.
+
+If this keyword is omitted the default value is ``RMSEpa``. The keyword does not
+influence the output in the ``learning-curve.out`` file. There, all error metrics
+are written.
+
+.. [1] Blank, T. B.; Brown, S. D. Adaptive, Global, Extended Kalman Filters for
+   Training Feedforward Neural Networks. J. Chemom. 1994, 8 (6), 391–407.
+   https://doi.org/10.1002/cem.1180080605
+
+.. [2] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+   Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+   Theory Comput. 2019, 15 (5), 3075–3092. https://doi.org/10.1021/acs.jctc.8b01092
+
+.. |br| raw:: html
+
+   <br />

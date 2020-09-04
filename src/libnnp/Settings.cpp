@@ -40,6 +40,7 @@ map<string, string> const createKnownKeywordsMap()
     m["global_hidden_layers_short"    ] = "";
     m["global_nodes_short"            ] = "";
     m["global_activation_short"       ] = "";
+    m["element_nodes_short"           ] = "";
     m["normalize_nodes"               ] = "";
     m["mean_energy"                   ] = "";
     m["conv_length"                   ] = "";
@@ -60,6 +61,7 @@ map<string, string> const createKnownKeywordsMap()
     m["weights_max"                   ] = "";
     m["nguyen_widrow_weights_short"   ] = "";
     m["precondition_weights"          ] = "";
+    m["main_error_metric"             ] = "";
     m["write_trainpoints"             ] = "";
     m["write_trainforces"             ] = "";
     m["write_weights_epoch"           ] = "";
@@ -199,6 +201,11 @@ void Settings::parseLines()
         {
             continue;
         }
+        // check for empty lines in Windows format
+        if (line == "\r")
+        {
+            continue;
+        }
         if (line.find('#') != string::npos)
         {
             line.erase(line.find('#'));
@@ -260,7 +267,9 @@ size_t Settings::sanityCheck()
         {
             countProblems++;
             log.push_back(strpr(
-                "WARNING: Unknown keyword \"%s\".\n", (*it).first.c_str()));
+                "WARNING: Unknown keyword \"%s\" at line %zu.\n",
+                (*it).first.c_str(),
+                (*it).second.second + 1));
         }
     }
 
@@ -270,7 +279,8 @@ size_t Settings::sanityCheck()
     {
         if (contents.count((*it).first) > 1
             && (*it).first != "symfunction_short"
-            && (*it).first != "atom_energy")
+            && (*it).first != "atom_energy"
+            && (*it).first != "element_nodes_short")
         {
             countProblems++;
             log.push_back(strpr(

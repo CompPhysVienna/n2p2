@@ -113,8 +113,6 @@ private:
     /// Vector containing values of all member symmetry functions.
     std::vector<bool>                                   useIntegerPow;
     /// Vector containing values of all member symmetry functions.
-    std::vector<size_t>                                 memberIndex;
-    /// Vector containing values of all member symmetry functions.
     std::vector<int>                                    zetaInt;
     /// Vector containing values of all member symmetry functions.
     std::vector<double>                                 eta;

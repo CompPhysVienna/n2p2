@@ -1,19 +1,24 @@
-dist: xenial
+dist: bionic
 
 sudo: false
 
 language: python
 
 python:
-    - "2.7"
+    - "3.6"
 
 branches:
   only:
-    - master
+    # Build all branches (but not gh-pages)
+    - /.*/
+    #- master
 
 addons:
   apt:
     packages:
+      ########
+      # DOCS #
+      ########
       # Use default doxygen (1.8.11) on "xenial" (The doxygen version on "trusty" was too old (1.8.6)).
       - doxygen
       # Generating graphs with doxygen requires dot.
@@ -22,6 +27,28 @@ addons:
       - texlive-latex-base
       # Generating formulae with doxygen requires gs.
       - ghostscript
+      #########
+      # BUILD #
+      #########
+      # MPI
+      - openmpi-bin
+      - libopenmpi-dev
+      # BLAS
+      - libblas3
+      - libblas-dev
+      # Eigen library
+      - libeigen3-dev
+      # GSL library
+      - libgsl-dev
+      #########
+      # TESTS #
+      #########
+      # Boost Test for C++ testing
+      - libboost-test-dev
+      # Boost Filesytem for C++ testing
+      - libboost-filesystem-dev
+      # Coverage for C++
+      - lcov
 
 before_install:
   # Set doxygen environment variables.
@@ -32,8 +59,12 @@ before_install:
 install:
   - pip install sphinx
   - pip install sphinx_rtd_theme
-  - pip install breathe
-  - pip install exhale
+  #- pip install breathe
+  #- pip install exhale
+  - pip install cython
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install coverage==4.5.4
 
 before_script:
   # Remember directory.
@@ -49,6 +80,25 @@ script:
   - make doc
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
+  # C++ build and tests
+  - make MODE=test -j
+  - make MODE=test lammps-nnp
+  - cd ../test/
+  - make cpp
+  - cd cpp
+  - make coverage
+  # Python build and tests
+  - cd ../../src/
+  - make pynnp MODE=test
+  - cd ../test/
+  - make python
+
+after_success:
+  - cd ${REPO_DIR}/test/cpp/ && rm *.gcda *.gcno
+  - cd ${REPO_DIR}
+  - bash <(curl -s https://codecov.io/bash) -f ${REPO_DIR}/test/cpp/tests.info -F cpp -c || echo "Codecov did not collect coverage reports"
+  - cd ${REPO_DIR}/test/python/
+  - bash <(curl -s https://codecov.io/bash) -F python -c || echo "Codecov did not collect coverage reports"
 
 deploy:
   provider: pages
@@ -56,4 +106,5 @@ deploy:
   local_dir: doc/sphinx/html
   github_token: $GH_REPO_TOKEN
   on:
-    branch: master
+    all_branches: true
+    #branch: master

@@ -13,9 +13,11 @@ PROJECT_EIGEN=/usr/local/include/eigen3
 ###############################################################################
 PROJECT_CC=clang++
 PROJECT_MPICC=mpic++
-PROJECT_CFLAGS=-O3 -march=native -std=c++98 -Xpreprocessor -fopenmp -lomp
+# OpenMP parallelization is disabled by default, add flags "-fopenmp -lomp" to enable.
+PROJECT_CFLAGS=-O3 -march=native -std=c++11 -Xpreprocessor
 PROJECT_CFLAGS_MPI=-Wno-long-long
 PROJECT_DEBUG=-g -pedantic-errors -Wall -Wextra
+PROJECT_TEST= # Testing works only with gnu compiler
 PROJECT_AR=ar
 PROJECT_ARFLAGS=-rcsv
 PROJECT_CFLAGS_BLAS=
@@ -52,4 +54,7 @@ PROJECT_OPTIONS+= -DEIGEN_USE_BLAS
 #PROJECT_OPTIONS+= -DEIGEN_USE_MKL_ALL
 
 # Disable Eigen multi threading.
-OPTIONS+= -DEIGEN_DONT_PARALLELIZE
+PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE
+
+# Use improved memory layout for symmetry function derivatives.
+PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY

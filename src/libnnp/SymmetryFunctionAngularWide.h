@@ -145,6 +145,13 @@ public:
      * @return @f$1@f$
      */
     double       calculateAngularPart(double angle) const;
+    /** Check whether symmetry function is relevant for given element.
+     *
+     * @param[in] index Index of given element.
+     * @return True if symmetry function is sensitive to given element, false
+     *         otherwise.
+     */
+    bool         checkRelevantElement(std::size_t index) const;
 
 private:
     /// Whether to use integer version of power function (faster).

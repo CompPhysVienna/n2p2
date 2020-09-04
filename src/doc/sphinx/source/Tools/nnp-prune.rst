@@ -50,7 +50,7 @@ symmetry functions with a sensitivity below the threshold:
 
 .. code-block:: bash
 
-   nnp-prune sensitivity 0.5
+   nnp-prune sensitivity 0.5 max
 
 Here, the threshold is set to 0.5% where 100% is equal to the total sum of all
 sensitivities. The resulting settings file is called

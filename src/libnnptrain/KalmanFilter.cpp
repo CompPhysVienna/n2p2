@@ -64,6 +64,9 @@ KalmanFilter::KalmanFilter(size_t const sizeState,
     H  = new Map<MatrixXd const>(0, sizeState, sizeObservation);
     P.resize(sizeState, sizeState);
     P.setIdentity();
+    // Prevent problems with unallocated K when log starts.
+    K.resize(sizeState, sizeObservation);
+    K.setZero();
 }
 
 KalmanFilter::~KalmanFilter()

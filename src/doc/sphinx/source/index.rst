@@ -24,6 +24,11 @@ network potentials with the provided training tools.
 Documentation
 =============
 
+.. danger::
+
+   The build process has changed recently, please have a look at the :ref:`build
+   instructions <build>`!
+
 .. warning::
 
    Unfortunately many parts of the documentation are still unfinished and will
@@ -32,21 +37,31 @@ Documentation
    quickly as possible.
 
 This package uses automatic documentation generation via `Doxygen
-<http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
-and `Exhale <https://github.com/svenevs/exhale>`__. An online version of the
-documentation which is automatically updated with the main repository can be
-found `here <https://compphysvienna.github.io/n2p2>`__.
+<http://www.doxygen.nl>`__ and `Sphinx <http://www.sphinx-doc.org>`__. An online
+version of the documentation which is automatically updated with the main
+repository can be found `here <https://compphysvienna.github.io/n2p2>`__.
+
+.. This package uses automatic documentation generation via `Doxygen
+.. <http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
+.. and `Exhale <https://github.com/svenevs/exhale>`__. An online version of the
+.. documentation which is automatically updated with the main repository can be
+.. found `here <https://compphysvienna.github.io/n2p2>`__.
 
 API documentation
 -----------------
 
 Most parts of the C++ code are documented in the header files via Doxygen
 annotations. The information written in the source files is automatically
-extracted by `Exhale` (which uses `Doxygen`) and integrated into this
-documentation (see `API` section on the left). However, because
-this documentation and also `Exhale` is still under development some things may
-not work as expected. As a fallback option the unaltered Doxygen API
-documentation is also available `here <doxygen/index.html>`__.
+extracted by `Doxygen` and presented in a separate API documentation page
+available `here <doxygen/index.html>`__.
+
+.. Most parts of the C++ code are documented in the header files via Doxygen
+.. annotations. The information written in the source files is automatically
+.. extracted by `Exhale` (which uses `Doxygen`) and integrated into this
+.. documentation (see `API` section on the left). However, because
+.. this documentation and also `Exhale` is still under development some things may
+.. not work as expected. As a fallback option the unaltered Doxygen API
+.. documentation is also available `here <doxygen/index.html>`__.
 
 Purpose
 =======
@@ -76,7 +91,7 @@ supported), these components are required:
 
 * :ref:`libnnp <libnnp>`
 * `libnnpif`
-* :ref:`pair_style nnp <if_lammps>`
+* :ref:`lammps-nnp <if_lammps>`
 
 Training a new neural network potential
 ---------------------------------------
@@ -86,7 +101,7 @@ To train a completely new neural network potential the following parts are requi
 * :ref:`libnnp <libnnp>`
 * `libnnptrain`
 * :ref:`nnp-scaling`
-* `nnp-train`
+* :ref:`nnp-train`
 
 Additional, though not strictly required tools, are also quite useful:
 
@@ -100,147 +115,6 @@ Additional, though not strictly required tools, are also quite useful:
 * `nnp-symfunc`
 
 Rough guidelines for NNP training are provided [here](training.md).
-
-
-Build process
-=============
-
-Code structure
---------------
-
-This package contains multiple components with varying interdependencies and
-dependencies on third-party libraries. You may not need to build all
-components, this depends on the intended use. The following table lists all
-components and their respective requirements (follow the links for more
-information).
-
-+---------------------------------+----------------------------+------------------------------------------------------+
-| Component                       | Requirements               | Function                                             |
-+=================================+============================+======================================================+
-| :ref:`libnnp <libnnp>`          | C++98 compiler (icpc, g++) | NNP core library (NN, SF, Structure, ...)            |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| libnnpif                        | libnnp, MPI                | Interfaces to other software (LAMMPS, ...)           |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| libnnptrain                     | libnnp, MPI, GSL, Eigen    | Dataset and training routines (Kalman, ...).         |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| :ref:`nnp-convert`              | libnnp                     | Convert between structure file formats.              |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-cutoff                      | libnnp                     | Test speed of different cutoff functions.            |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-dist                        | libnnp                     | Calculate radial and angular distribution functions. |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| :ref:`nnp-predict`              | libnnp                     | Predict energy and forces for one structure.         |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| :ref:`nnp-prune`                | libnnp                     | Prune symmetry functions.                            |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| :ref:`nnp-select`               | libnnp                     | Select subset from data set.                         |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-symfunc                     | libnnp                     | Symmetry function shape from settings file.          |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-comp2                       | libnnptrain                | Compare prediction of 2 NNPs for data set.           |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-dataset                     | libnnptrain                | Calculate energies and forces for a whole data set.  |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| :ref:`nnp-norm`                 | libnnptrain                | Calculate normalization factors for data set.        |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| :ref:`nnp-scaling`              | libnnptrain                | Calculate symmetry function values for data set.     |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| nnp-train                       | libnnptrain                | Train a neural network potential.                    |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| pair_style nnp                  | libnnpif                   | Pair style `nnp` for LAMMPS                          |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| pynnp                           | libnnp, python, cython     | Python interface to NNP library.                     |
-+---------------------------------+----------------------------+------------------------------------------------------+
-| doc                             | Sphinx, Doxygen, Exhale    | Documentation.                                       |
-+---------------------------------+----------------------------+------------------------------------------------------+
-
-The simple way using the master makefile
-----------------------------------------
-
-A master makefile is provided in the ``src`` directory which provides targets for
-all individual components (except for the LAMMPS :ref:`pair_style  nnp <if_lammps>`).
-For instance, compiling the interface library ``libnnpif`` requires only to type
-
-.. code-block:: bash
-
-   cd src
-   make libnnpif-shared
-
-This will automatically build a shared version (for dynamic linking) of the
-required library ``libnnp`` and the requested ``libnnpif``.  Similarly, a static
-build is done like this:
-
-.. code-block:: bash
-
-   make libnnpif-static
-
-To build everything (all libraries and tools) type:
-
-.. code-block:: bash
-
-   make shared
-
-or
-
-.. code-block:: bash
-
-   make static
-
-Compiled binaries will be copied to the ``bin`` path (relative to the root
-directory), whereas libraries can be found in the ``lib`` folder.  To clean up
-individual components or everything use one of these makefile targets
-
-.. code-block:: bash
-
-   make clean
-   make clean-doc
-   make clean-libnnpif
-
-Have a look at the main makefile in ``src`` for all available build
-targets.
-
-Currently the build process has been tested with two different compilers, the
-GNU compiler g++ 5.4 (``gnu``) and the Intel compiler 17 (``intel``). It is
-possible to switch between them via the ``COMP`` variable, e.g.
-
-.. code-block:: bash
-
-   make libnnp COMP=intel
-
-If you need to change compiler variables and paths have a look at the
-corresponding makefiles containing global build parameters:
-
-.. code-block:: bash
-
-   src/makefile.gnu
-   src/makefile.intel
-
-You can also create new parameter makefiles based on the above and change the
-file name suffix according to your target:
-
-.. code-block:: bash
-
-   src/makefile.target
-   make libnnp COMP=target
-
-By default the makefile will use 4 processors for compiling multiple files at
-once, this behaviour can be overriden with the CORES switch, e.g. to use 8
-cores:
-
-.. code-block:: bash
-
-   make libnnp CORES=-j8
-
-.. warning::
-
-   Do not use the `-j` switch for the master makefile, this may mess up
-   the compilation order.
-
-Individual component makefiles
-------------------------------
-
-It is also possible to invoke individual makefiles for each component manually.
-Just switch to the corresponding folder and use ``make shared`` or ``make static``.
 
 Examples
 ========
@@ -293,6 +167,7 @@ list of keywords is provided :ref:`here <keywords>`.
    :hidden:
    :caption: Topics
 
+   Topics/build
    Topics/descriptors
    Topics/keywords
    Topics/cfg_file
@@ -307,17 +182,19 @@ list of keywords is provided :ref:`here <keywords>`.
 
    Tools/libnnp
    Tools/nnp-convert
+   Tools/nnp-fps
    Tools/nnp-norm
    Tools/nnp-predict
    Tools/nnp-prune
    Tools/nnp-select
    Tools/nnp-scaling
+   Tools/nnp-train
 
-.. toctree::
-   :hidden:
-   :caption: API
-
-   doc-exhale/root
+.. .. toctree::
+..    :hidden:
+..    :caption: API
+.. 
+..    doc-exhale/root
 
 .. toctree::
    :hidden:
@@ -339,9 +216,8 @@ list of keywords is provided :ref:`here <keywords>`.
 
 .. [1] Morawietz, T.; Singraber, A.; Dellago, C.; Behler, J. How van Der Waals
    Interactions Determine the Unique Properties of Water. Proc. Natl. Acad. Sci.
-   U. S. A. 2016, 113 (30), 8368–8373. `https://doi.org/10.1073/pnas.1602375113. <https://doi.org/10.1073/pnas.1602375113>`__
+   U. S. A. 2016, 113 (30), 8368–8373. https://doi.org/10.1073/pnas.1602375113
 
 .. [2] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
-   Multi-Stream Training of High-Dimensional Neural Network Potentials. *Submitted
-   to J. Chem. Theory Comput.* 2019.
-
+   Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+   Theory Comput. 2019, 15 (5), 3075–3092. https://doi.org/10.1021/acs.jctc.8b01092

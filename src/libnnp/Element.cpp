@@ -228,6 +228,29 @@ void Element::setupSymmetryFunctionGroups()
     return;
 }
 
+void Element::setupSymmetryFunctionMemory()
+{
+    symmetryFunctionTable.clear();
+    symmetryFunctionTable.resize(elementMap.size());
+    for (auto const& s : symmetryFunctions)
+    {
+        for (size_t i = 0; i < elementMap.size(); ++i)
+        {
+            if (s->checkRelevantElement(i))
+            {
+                s->setIndexPerElement(i, symmetryFunctionTable.at(i).size());
+                symmetryFunctionTable.at(i).push_back(s->getIndex());
+            }
+        }
+    }
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        symmetryFunctionNumTable.push_back(symmetryFunctionTable.at(i).size());
+    }
+
+    return;
+}
+
 vector<string> Element::infoSymmetryFunctionGroups() const
 {
     vector<string> v;
@@ -360,8 +383,11 @@ void Element::calculateSymmetryFunctionGroups(Atom&      atom,
     return;
 }
 
-void Element::updateSymmetryFunctionStatistics(Atom const& atom)
+size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
 {
+    size_t countExtrapolationWarnings = 0;
+    double epsilon = 10.0 * numeric_limits<double>::epsilon();
+
     if (atom.element != index)
     {
         throw runtime_error("ERROR: Atom has a different element index.\n");
@@ -381,11 +407,13 @@ void Element::updateSymmetryFunctionStatistics(Atom const& atom)
         size_t const index = symmetryFunctions.at(i)->getIndex();
         if (statistics.collectStatistics)
         {
-            statistics.addValue(index, value);
+            statistics.addValue(index, atom.G.at(i));
         }
 
-        if (value < Gmin || value > Gmax)
+        // Avoid "fake" EWs at the boundaries.
+        if (value + epsilon < Gmin || value - epsilon > Gmax)
         {
+            countExtrapolationWarnings++;
             if (statistics.collectExtrapolationWarnings)
             {
                 statistics.addExtrapolationWarning(index,
@@ -424,5 +452,5 @@ void Element::updateSymmetryFunctionStatistics(Atom const& atom)
         }
     }
 
-    return;
+    return countExtrapolationWarnings;
 }

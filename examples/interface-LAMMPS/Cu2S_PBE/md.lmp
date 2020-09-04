@@ -1,0 +1,48 @@
+###############################################################################
+# MD simulation for NN copper sulfide
+###############################################################################
+
+###############################################################################
+# VARIABLES
+###############################################################################
+clear
+# Configuration files
+variable cfgFile         string "cu2s_144_low-chalcocite_Evans-1979_PBE.data"
+# Timesteps
+variable numSteps        equal  100
+variable dt              equal  0.001
+# NN
+variable nnpCutoff       equal  6.01
+variable nnpDir          string "nnp-data"
+# Masses
+variable mass_S          equal  32.065                                                  # mass for element 1 (S)  (g/mol)
+variable mass_Cu         equal  63.546                                                  # mass for element 2 (Cu) (g/mol)
+
+###############################################################################
+# GENERAL SETUP
+###############################################################################
+units metal
+boundary p p p
+atom_style atomic
+read_data ${cfgFile}
+mass 1 ${mass_S}
+mass 2 ${mass_Cu}
+timestep ${dt}
+thermo 10
+
+###############################################################################
+# NN
+###############################################################################
+pair_style nnp dir ${nnpDir} showew no showewsum 100 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:S,2:Cu"
+pair_coeff * * ${nnpCutoff}
+
+###############################################################################
+# INTEGRATOR
+###############################################################################
+fix INT all nve
+dump 1 all atom 10 traj.dump
+
+###############################################################################
+# SIMULATION
+###############################################################################
+run ${numSteps}

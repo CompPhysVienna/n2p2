@@ -115,6 +115,7 @@ void SymmetryFunctionGroupWeightedRadial::sortMembers()
         memberIndex.push_back(members[i]->getIndex());
         eta.push_back(members[i]->getEta());
         rs.push_back(members[i]->getRs());
+        memberIndexPerElement.push_back(members[i]->getIndexPerElement());
     }
 
     return;
@@ -154,6 +155,7 @@ void SymmetryFunctionGroupWeightedRadial::calculate(
         {
             // Energy calculation.
             double const rij = n.d;
+            size_t const nej = n.element;
 
             // Calculate cutoff function and derivative.
 #ifdef NOCFCACHE
@@ -178,7 +180,7 @@ void SymmetryFunctionGroupWeightedRadial::calculate(
             double const* const d1 = n.dr.r;
             for (size_t k = 0; k < members.size(); ++k)
             {
-                double pexp = elementMap.atomicNumber(n.element)
+                double pexp = elementMap.atomicNumber(nej)
                             * exp(-eta[k] * (rij - rs[k]) * (rij - rs[k]));
                 result[k] += pexp * pfc;
                 // Force calculation.
@@ -192,7 +194,11 @@ void SymmetryFunctionGroupWeightedRadial::calculate(
                 double const p1drijz = p1 * d1[2];
 
                 // Save force contributions in Atom storage.
+#ifdef IMPROVED_SFD_MEMORY
+                size_t ki = memberIndex[k];
+#else
                 size_t const ki = memberIndex[k];
+#endif
                 // SIMPLE EXPRESSIONS:
                 //atom.dGdr[ki]              += dij;
                 //atom.neighbors[j].dGdr[ki] -= dij;
@@ -202,6 +208,9 @@ void SymmetryFunctionGroupWeightedRadial::calculate(
                 dGdr[1] += p1drijy;
                 dGdr[2] += p1drijz;
 
+#ifdef IMPROVED_SFD_MEMORY
+                ki = memberIndexPerElement[k][nej];
+#endif
                 dGdr = n.dGdr[ki].r;
                 dGdr[0] -= p1drijx;
                 dGdr[1] -= p1drijy;

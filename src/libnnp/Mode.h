@@ -156,6 +156,13 @@ public:
      * ensure that correct scaling behavior has already been set.
      */
     void                     setupSymmetryFunctionGroups();
+    /** Extract required memory dimensions for symmetry function derivatives.
+     *
+     * @param[in] verbose If true, print all symmetry function lines.
+     *
+     * Call after symmetry functions have been set up and sorted.
+     */
+    void                     setupSymmetryFunctionMemory(bool verbose = false);
     /** Set up symmetry function statistics collection.
      *
      * @param[in] collectStatistics Whether statistics (min, max, mean, sigma)
@@ -254,14 +261,14 @@ public:
      * computation to atomic forces. Results are stored in Atom::f.
      */
     void                     calculateForces(Structure& structure) const;
-    /* Add atomic energy offsets to reference energy.
+    /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.
      * @param[in] ref If true, use reference energy, otherwise use NN energy.
      */
     void                     addEnergyOffset(Structure& structure,
                                              bool       ref = true);
-    /* Remove atomic energy offsets from reference energy.
+    /** Remove atomic energy offsets from reference energy.
      *
      * @param[in] structure Input structure.
      * @param[in] ref If true, use reference energy, otherwise use NN energy.
@@ -270,14 +277,14 @@ public:
      */
     void                     removeEnergyOffset(Structure& structure,
                                                 bool       ref = true);
-    /* Get atomic energy offset for given structure.
+    /** Get atomic energy offset for given structure.
      *
      * @param[in] structure Input structure.
      *
      * @return Summed atomic energy offsets for structure.
      */
     double                   getEnergyOffset(Structure const& structure) const;
-    /* Add atomic energy offsets and return energy.
+    /** Add atomic energy offsets and return energy.
      *
      * @param[in] structure Input structure.
      * @param[in] ref If true, use reference energy, otherwise use NN energy.

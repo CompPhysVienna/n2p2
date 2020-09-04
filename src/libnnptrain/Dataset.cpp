@@ -18,7 +18,7 @@
 #include "SymmetryFunction.h"
 #include "mpi-extra.h"
 #include "utility.h"
-#include <algorithm> // std::max, std::find
+#include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
 #include <cmath>     // sqrt, fabs
 #include <cstdlib>   // atoi
 #include <cstdio>    // fprintf, fopen, fclose, remove
@@ -199,15 +199,20 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numNeighborsPerElement
         bs += ss;
         bs += it->numNeighborsPerElement.size() * ss;
+        // Atom.numSymmetryFunctionDerivatives
+        bs += ss;
+        bs += it->numSymmetryFunctionDerivatives.size() * ss;
         // Atom.G
         bs += ss;
         bs += it->G.size() * ds;
         // Atom.dEdG
         bs += ss;
         bs += it->dEdG.size() * ds;
+#ifndef IMPROVED_SFD_MEMORY
         // Atom.dGdxia
         bs += ss;
         bs += it->dGdxia.size() * ds;
+#endif
         // Atom.dGdr
         bs += ss;
         bs += it->dGdr.size() * 3 * ds;
@@ -322,6 +327,14 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->numNeighborsPerElement.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
+            // Atom.numSymmetryFunctionDerivatives
+            ts2 = it->numSymmetryFunctionDerivatives.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
+            }
+
             // Atom.G
             ts2 = it->G.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -338,6 +351,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->dEdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
 
+#ifndef IMPROVED_SFD_MEMORY
             // Atom.dGdxia
             ts2 = it->dGdxia.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -345,6 +359,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             {
                 MPI_Pack(&(it->dGdxia.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
+#endif
 
             // Atom.dGdr
             ts2 = it->dGdr.size();
@@ -513,6 +528,16 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->numNeighborsPerElement.front()), ts2, MPI_SIZE_T, comm);
             }
 
+            // Atom.numSymmetryFunctionDerivatives
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->numSymmetryFunctionDerivatives.clear();
+                it->numSymmetryFunctionDerivatives.resize(ts2, 0);
+                MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
+            }
+
             // Atom.G
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -533,6 +558,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->dEdG.front()), ts2, MPI_DOUBLE, comm);
             }
 
+#ifndef IMPROVED_SFD_MEMORY
             // Atom.dGdxia
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -542,6 +568,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 it->dGdxia.resize(ts2, 0.0);
                 MPI_Unpack(buf, bs, &p, &(it->dGdxia.front()), ts2, MPI_DOUBLE, comm);
             }
+#endif
 
             // Atom.dGdr
             ts2 = 0;
@@ -911,10 +938,26 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         {
             double l = safeFind(it->statistics.data, i).min;
             double h = safeFind(it->statistics.data, i).max;
-            // Add an extra bin at the end to cover complete range.
-            h += (h - l) / numBins;
-            histograms.back().push_back(gsl_histogram_alloc(numBins + 1));
-            gsl_histogram_set_ranges_uniform(histograms.back().back(), l, h);
+            if (l < h)
+            {
+                // Add an extra bin at the end to cover complete range.
+                h += (h - l) / numBins;
+                histograms.back().push_back(gsl_histogram_alloc(numBins + 1));
+                gsl_histogram_set_ranges_uniform(histograms.back().back(),
+                                                 l,
+                                                 h);
+            }
+            else
+            {
+                // Use nullptr so signalize non-existing histogram.
+                histograms.back().push_back(nullptr);
+                log << strpr("WARNING: Symmetry function min equals max, "
+                             "ommitting histogram (Element %2s SF %4zu "
+                             "(line %4zu).\n",
+                             it->getSymbol().c_str(),
+                             i,
+                             it->getSymmetryFunction(i).getLineNumber());
+            }
         }
     }
 
@@ -929,6 +972,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
             vector<gsl_histogram*>& h = histograms.at(e);
             for (size_t s = 0; s < it2->G.size(); ++s)
             {
+                if (h.at(s) == nullptr) continue;
                 gsl_histogram_increment(h.at(s), it2->G.at(s));
             }
         }
@@ -941,6 +985,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         for (vector<gsl_histogram*>::const_iterator it2 = it->begin();
              it2 != it->end(); ++it2)
         {
+            if ((*it2) == nullptr) continue;
             MPI_Allreduce(MPI_IN_PLACE, (*it2)->bin, numBins + 1, MPI_DOUBLE, MPI_SUM, comm);
         }
     }
@@ -953,6 +998,8 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         {
             for (size_t s = 0; s < elements.at(e).numSymmetryFunctions(); ++s)
             {
+                gsl_histogram*& h = histograms.at(e).at(s);
+                if (h == nullptr) continue;
                 FILE* fp = 0;
                 string fileName = strpr(fileNameFormat.c_str(),
                                         elementMap.atomicNumber(e),
@@ -963,7 +1010,6 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                     throw runtime_error(strpr("ERROR: Could not open file:"
                                               " %s.\n", fileName.c_str()));
                 }
-                gsl_histogram*& h = histograms.at(e).at(s);
                 vector<string> info = elements.at(e).infoSymmetryFunction(s);
                 for (vector<string>::const_iterator it = info.begin();
                      it != info.end(); ++it)
@@ -1014,6 +1060,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
         for (vector<gsl_histogram*>::const_iterator it2 = it->begin();
              it2 != it->end(); ++it2)
         {
+            if ((*it2) == nullptr) continue;
             gsl_histogram_free(*it2);
         }
     }
@@ -1184,11 +1231,274 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
     return maxNeighbors;
 }
 
-void Dataset::averageRmse(double& rmse, size_t& count) const
+void Dataset::sortNeighborLists()
 {
-    MPI_Allreduce(MPI_IN_PLACE, &count, 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &rmse , 1, MPI_DOUBLE, MPI_SUM, comm);
-    rmse = sqrt(rmse / count);
+    log << "\n";
+    log << "*** NEIGHBOR LIST ***********************"
+           "**************************************\n";
+    log << "\n";
+
+    log << "Sorting neighbor lists according to element and distance.\n";
+
+    for (vector<Structure>::iterator it = structures.begin();
+         it != structures.end(); ++it)
+    {
+        for (vector<Atom>::iterator it2 = it->atoms.begin();
+             it2 != it->atoms.end(); ++it2)
+        {
+            sort(it2->neighbors.begin(), it2->neighbors.end());
+        }
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+void Dataset::writeNeighborLists(string const& fileName)
+{
+    log << "\n";
+    log << "*** NEIGHBOR LIST ***********************"
+           "**************************************\n";
+    log << "\n";
+
+    string fileNameLocal = strpr("%s.%04d", fileName.c_str(), myRank);
+    ofstream fileLocal;
+    fileLocal.open(fileNameLocal.c_str());
+
+    for (vector<Structure>::const_iterator it = structures.begin();
+         it != structures.end(); ++it)
+    {
+        fileLocal << strpr("%zu\n", it->numAtoms);
+        for (vector<Atom>::const_iterator it2 = it->atoms.begin();
+             it2 != it->atoms.end(); ++it2)
+        {
+            fileLocal << strpr("%zu", elementMap.atomicNumber(it2->element));
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                fileLocal << strpr(" %zu", it2->numNeighborsPerElement.at(i));
+            }
+            for (vector<Atom::Neighbor>::const_iterator it3
+                 = it2->neighbors.begin(); it3 != it2->neighbors.end(); ++it3)
+            {
+                fileLocal << strpr(" %zu", it3->index);
+            }
+            fileLocal << '\n';
+        }
+    }
+
+    fileLocal.flush();
+    fileLocal.close();
+    MPI_Barrier(comm);
+
+    log << strpr("Writing neighbor lists to file: %s.\n", fileName.c_str());
+
+    if (myRank == 0) combineFiles(fileName);
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
+void Dataset::writeAtomicEnvironmentFile(
+                                        vector<vector<size_t> > neighCutoff,
+                                        bool                    derivatives,
+                                        string const&           fileNamePrefix)
+{
+    log << "\n";
+    log << "*** ATOMIC ENVIRONMENT ******************"
+           "**************************************\n";
+    log << "\n";
+
+    string const fileNamePrefixG    = strpr("%s.G"   , fileNamePrefix.c_str());
+    string const fileNamePrefixdGdx = strpr("%s.dGdx", fileNamePrefix.c_str());
+    string const fileNamePrefixdGdy = strpr("%s.dGdy", fileNamePrefix.c_str());
+    string const fileNamePrefixdGdz = strpr("%s.dGdz", fileNamePrefix.c_str());
+
+    string const fileNameLocalG    = strpr("%s.%04d",
+                                           fileNamePrefixG.c_str(), myRank);
+    string const fileNameLocaldGdx = strpr("%s.%04d",
+                                           fileNamePrefixdGdx.c_str(), myRank);
+    string const fileNameLocaldGdy = strpr("%s.%04d",
+                                           fileNamePrefixdGdy.c_str(), myRank);
+    string const fileNameLocaldGdz = strpr("%s.%04d",
+                                           fileNamePrefixdGdz.c_str(), myRank);
+
+    ofstream fileLocalG;
+    ofstream fileLocaldGdx;
+    ofstream fileLocaldGdy;
+    ofstream fileLocaldGdz;
+
+    fileLocalG.open(fileNameLocalG.c_str());
+    if (derivatives)
+    {
+        fileLocaldGdx.open(fileNameLocaldGdx.c_str());
+        fileLocaldGdy.open(fileNameLocaldGdy.c_str());
+        fileLocaldGdz.open(fileNameLocaldGdz.c_str());
+    }
+
+    log << "Preparing symmetry functions for atomic environment file(s).\n";
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        for (size_t j = 0; j < numElements; ++j)
+        {
+            log << strpr("Maximum number of %2s neighbors for central %2s "
+                         "atoms: %zu\n",
+                         elementMap[j].c_str(),
+                         elementMap[i].c_str(),
+                         neighCutoff.at(i).at(j));
+        }
+    }
+
+    vector<size_t> neighCount(numElements, 0);
+    for (vector<Structure>::const_iterator its = structures.begin();
+         its != structures.end(); ++its)
+    {
+        for (vector<Atom>::const_iterator ita = its->atoms.begin();
+             ita != its->atoms.end(); ++ita)
+        {
+            size_t const ea = ita->element;
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                if (ita->numNeighborsPerElement.at(i)
+                    < neighCutoff.at(ea).at(i))
+                {
+                    throw runtime_error(strpr(
+                        "ERROR: Not enough neighbor atoms, cannot create "
+                        "atomic environment file. Reduce neighbor cutoff for "
+                        "element %2s.\n", elementMap[i].c_str()).c_str());
+                }
+            }
+            fileLocalG << strpr("%2s", elementMap[ita->element].c_str());
+            fileLocaldGdx << strpr("%2s", elementMap[ita->element].c_str());
+            fileLocaldGdy << strpr("%2s", elementMap[ita->element].c_str());
+            fileLocaldGdz << strpr("%2s", elementMap[ita->element].c_str());
+            // Write atom's own symmetry functions (and derivatives).
+            for (vector<double>::const_iterator it = ita->G.begin();
+                 it != ita->G.end(); ++it)
+            {
+                fileLocalG << strpr(" %16.8E", (*it));
+            }
+            if (derivatives)
+            {
+                for (vector<Vec3D>::const_iterator it = ita->dGdr.begin();
+                     it != ita->dGdr.end(); ++it)
+                {
+                    fileLocaldGdx << strpr(" %16.8E", (*it)[0]);
+                    fileLocaldGdy << strpr(" %16.8E", (*it)[1]);
+                    fileLocaldGdz << strpr(" %16.8E", (*it)[2]);
+                }
+            }
+            // Write symmetry functions of neighbors
+            for (vector<Atom::Neighbor>::const_iterator itn
+                 = ita->neighbors.begin(); itn != ita->neighbors.end(); ++itn)
+            {
+                size_t const i = itn->index;
+                size_t const en = itn->element;
+                if (neighCount.at(en) < neighCutoff.at(ea).at(en))
+                {
+                    // Look up symmetry function at Atom instance of neighbor.
+                    Atom const& a = its->atoms.at(i);
+                    for (vector<double>::const_iterator it = a.G.begin();
+                         it != a.G.end(); ++it)
+                    {
+                        fileLocalG << strpr(" %16.8E", (*it));
+                    }
+                    // Log derivatives directly from Neighbor instance.
+                    if (derivatives)
+                    {
+                        // Find atom in neighbor list of neighbor atom.
+                        vector<Atom::Neighbor>::const_iterator itan = find_if(
+                            a.neighbors.begin(), a.neighbors.end(),
+                            [&ita](Atom::Neighbor const& n)
+                            {
+                                return n.index == ita->index;
+                            });
+                        for (vector<Vec3D>::const_iterator it
+                             = itan->dGdr.begin();
+                             it != itan->dGdr.end(); ++it)
+                        {
+                            fileLocaldGdx << strpr(" %16.8E", (*it)[0]);
+                            fileLocaldGdy << strpr(" %16.8E", (*it)[1]);
+                            fileLocaldGdz << strpr(" %16.8E", (*it)[2]);
+                        }
+                    }
+                    neighCount.at(en)++;
+                }
+            }
+            fileLocalG << '\n';
+            if (derivatives)
+            {
+                fileLocaldGdx << '\n';
+                fileLocaldGdy << '\n';
+                fileLocaldGdz << '\n';
+            }
+            // Reset neighbor counter.
+            fill(neighCount.begin(), neighCount.end(), 0);
+        }
+    }
+
+    fileLocalG.flush();
+    fileLocalG.close();
+    if (derivatives)
+    {
+        fileLocaldGdx.flush();
+        fileLocaldGdx.close();
+        fileLocaldGdy.flush();
+        fileLocaldGdy.close();
+        fileLocaldGdz.flush();
+        fileLocaldGdz.close();
+    }
+    MPI_Barrier(comm);
+
+    if (myRank == 0)
+    {
+        log << strpr("Combining atomic environment file: %s.\n",
+                     fileNamePrefixG.c_str());
+        combineFiles(fileNamePrefixG);
+        if (derivatives)
+        {
+            log << strpr("Combining atomic environment file: %s.\n",
+                         fileNamePrefixdGdx.c_str());
+            combineFiles(fileNamePrefixdGdx);
+            log << strpr("Combining atomic environment file: %s.\n",
+                         fileNamePrefixdGdy.c_str());
+            combineFiles(fileNamePrefixdGdy);
+            log << strpr("Combining atomic environment file: %s.\n",
+                         fileNamePrefixdGdz.c_str());
+            combineFiles(fileNamePrefixdGdz);
+        }
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
+void Dataset::collectErrorEnergies(vector<double>& error, size_t& count) const
+{
+    MPI_Allreduce(MPI_IN_PLACE, &count         , 1, MPI_SIZE_T, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(0)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(1)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(2)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(3)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    error.at(0) = sqrt(error.at(0) / count);
+    error.at(1) = sqrt(error.at(1) / count);
+    error.at(2) = error.at(2) / count;
+    error.at(3) = error.at(3) / count;
+
+    return;
+}
+
+void Dataset::collectErrorForces(vector<double>& error, size_t& count) const
+{
+    MPI_Allreduce(MPI_IN_PLACE, &count         , 1, MPI_SIZE_T, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(0)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &(error.at(1)) , 1, MPI_DOUBLE, MPI_SUM, comm);
+    error.at(0) = sqrt(error.at(0) / count);
+    error.at(1) = error.at(1) / count;
 
     return;
 }

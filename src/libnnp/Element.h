@@ -88,6 +88,9 @@ public:
     /** Set up symmetry function groups.
      */
     void                     setupSymmetryFunctionGroups();
+    /** Extract relevant symmetry function combinations for derivative memory.
+     */
+    void                     setupSymmetryFunctionMemory();
     /** Print symmetry function group info.
      */
     std::vector<std::string> infoSymmetryFunctionGroups() const;
@@ -139,6 +142,18 @@ public:
      * @return Maximum cutoff radius.
      */
     double                   getMaxCutoffRadius() const;
+    /** Get number of relevant symmetry functions per element.
+     *
+     * @return #symmetryFunctionNumTable
+     */
+    std::vector<
+    std::size_t> const&      getSymmetryFunctionNumTable() const;
+    /** Get symmetry function element relevance table.
+     *
+     * @return #symmetryFunctionTable
+     */
+    std::vector<std::vector<
+    std::size_t>> const&     getSymmetryFunctionTable() const;
     /** Calculate symmetry functions.
      *
      * @param[in] atom Atom whose symmetry functions are calculated.
@@ -161,9 +176,11 @@ public:
      *
      * @param[in] atom Atom with symmetry function values.
      *
+     * @return Number of extrapolation warnings encountered.
+     *
      * This function checks also for extrapolation warnings.
      */
-    void                     updateSymmetryFunctionStatistics(
+    std::size_t              updateSymmetryFunctionStatistics(
                                                              Atom const& atom);
     /** Get symmetry function instance.
      *
@@ -180,19 +197,23 @@ public:
 
 private:
     /// Copy of element map.
-    ElementMap                          elementMap;
+    ElementMap                            elementMap;
     /// Global index of this element.
-    std::size_t                         index;
+    std::size_t                           index;
     /// Atomic number of this element.
-    std::size_t                         atomicNumber;
+    std::size_t                           atomicNumber;
     /// Offset energy for every atom of this element.
-    double                              atomicEnergyOffset;
+    double                                atomicEnergyOffset;
     /// Element symbol.
-    std::string                         symbol;
+    std::string                           symbol;
+    /// Number of relevant symmetry functions for each neighbor element.
+    std::vector<std::size_t>              symmetryFunctionNumTable;
+    /// List of symmetry function indices relevant for each neighbor element.
+    std::vector<std::vector<std::size_t>> symmetryFunctionTable;
     /// Vector of pointers to symmetry functions.
-    std::vector<SymmetryFunction*>      symmetryFunctions;
+    std::vector<SymmetryFunction*>        symmetryFunctions;
     /// Vector of pointers to symmetry function groups.
-    std::vector<SymmetryFunctionGroup*> symmetryFunctionGroups;
+    std::vector<SymmetryFunctionGroup*>   symmetryFunctionGroups;
 };
 
 //////////////////////////////////
@@ -224,6 +245,18 @@ inline double Element::getAtomicEnergyOffset() const
 inline std::string Element::getSymbol() const
 {
     return symbol;
+}
+
+inline std::vector<std::size_t> const&
+Element::getSymmetryFunctionNumTable() const
+{
+    return symmetryFunctionNumTable;
+}
+
+inline std::vector<std::vector<std::size_t>> const&
+Element::getSymmetryFunctionTable() const
+{
+    return symmetryFunctionTable;
 }
 
 inline

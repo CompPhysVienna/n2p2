@@ -1,133 +1,108 @@
 #!/bin/make -f
 
 ###############################################################################
-# PROJECT MAKEFILE
+# PROJECT PATHS
 ###############################################################################
-# Default compiler, may be overridden by master makefile.
+PROJECT_DIR=../..
+PROJECT_BIN=$(PROJECT_DIR)/bin
+PROJECT_INCLUDE=$(PROJECT_DIR)/include
+PROJECT_LIB=$(PROJECT_DIR)/lib
+
+
+###############################################################################
+# GENERAL SETTINGS
+###############################################################################
+# Default compiler, may be overridden by master makefile or command line.
 COMP=gnu
 
+# Default build mode, may be overridden by master makefile or command line.
+# Possible modes are "static", "shared" and "test".
+MODE=static
+
 # Include global (project-wide) settings.
-include ../makefile.${COMP}
+include $(PROJECT_DIR)/src/makefile.$(COMP)
 
 
 ###############################################################################
 # LIBRARY NAME
 ###############################################################################
 NAME=nnp
-LIB=lib${NAME}
+LIB=lib$(NAME)
 
 
 ###############################################################################
-# PROJECT PATHS
+# PROJECT COMPILER AND FLAGS
 ###############################################################################
-PROJECT_DIR=../..
-PROJECT_BIN=${PROJECT_DIR}/bin
-PROJECT_INCLUDE=${PROJECT_DIR}/include
-PROJECT_LIB=${PROJECT_DIR}/lib
-PROJECT_BUILD=${PROJECT_DIR}/build
-
-
-###############################################################################
-# COMPILE-TIME OPTIONS
-###############################################################################
-OPTIONS+=${PROJECT_OPTIONS}
-
-# Do not use symmetry function groups.
-#OPTIONS+= -DNOSFGROUPS
-
-# Do not use cutoff function cache.
-#OPTIONS+= -DNOCFCACHE
-
-# Build with dummy Stopwatch class.
-#OPTIONS+= -DNOTIME
-
-# Disable check for low number of neighbors.
-#OPTIONS+= -DNONEIGHCHECK
-
-
-###############################################################################
-# COMPILER AND FLAGS
-###############################################################################
-CC=${PROJECT_CC}
-MPICC=${PROJECT_MPICC}
-CFLAGS=${PROJECT_CFLAGS}
-DEBUG=${PROJECT_DEBUG}
+CC=$(PROJECT_CC)
+MPICC=$(PROJECT_MPICC)
+CFLAGS=$(PROJECT_CFLAGS)
+OPTIONS+=$(PROJECT_OPTIONS)
+DEBUG=$(PROJECT_DEBUG)
+ifeq ($(MODE), test)
+DEBUG+= $(PROJECT_TEST)
+endif
+AR=$(PROJECT_AR)
+ARFLAGS=$(PROJECT_ARFLAGS)
 
 # Extra include paths for compiling.
 INCLUDES=-I./
 
 
 ###############################################################################
-# ARCHIVE
-###############################################################################
-AR=${PROJECT_AR}
-ARFLAGS=${PROJECT_ARFLAGS}
-
-
-###############################################################################
-# BUILD DETAILS
+# DEFINE SOURCES AND HEADERS
 ###############################################################################
 SRC=$(wildcard *.cpp)
 HEADERS=$(wildcard *.h)
-
-# Static linking.
-SLIB=${PROJECT_LIB}/${LIB}.a
-SDIR=${PROJECT_BUILD}/static
-SOBJ=$(SRC:%.cpp=${SDIR}/%.o)
-
-# Dynamic linking.
-DLIB=${PROJECT_LIB}/${LIB}.so
-DDIR=${PROJECT_BUILD}/shared
-DOBJ=$(SRC:%.cpp=${DDIR}/%.o)
+OBJ=$(SRC:.cpp=.o)
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all static shared headers version clean clean-static clean-shared rebuild
+.PHONY: all headers version clean rebuild
 
-all: static shared
-
-static: version ${SLIB} headers
-
-shared: version ${DLIB} headers
+ifeq ($(MODE), shared)
+all: version headers $(LIB).so
+else
+all: version headers $(LIB).a
+endif
 
 headers:
-	cp ${HEADERS} ${PROJECT_INCLUDE}
+	cp $(HEADERS) $(PROJECT_INCLUDE)
 
 version:
 	@$(eval GIT_REV_SHORT = $(shell git rev-parse --short HEAD))
-	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"${GIT_REV_SHORT}\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"$(GIT_REV_SHORT)\"/" version.h
 	@$(eval GIT_REV = $(shell git rev-parse HEAD))
-	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"${GIT_REV}\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"$(GIT_REV)\"/" version.h
 	@$(eval GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD))
-	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"${GIT_BRANCH}\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"$(GIT_BRANCH)\"/" version.h
 	@rm version.h.bak
 
-${SLIB}: ${SOBJ}
-	${AR} ${ARFLAGS} $@ $+
+$(LIB).so: CFLAGS+= -fPIC
+$(LIB).so: $(OBJ)
+	$(CC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $+ -shared
+	cp $@ $(PROJECT_LIB)
 
-${DLIB}: CFLAGS+= -fPIC
-${DLIB}: ${DOBJ}
-	${CC} ${CFLAGS} ${DEBUG} ${OPTIONS} -o $@ $+ -shared
+$(LIB).a: $(OBJ)
+	$(AR) $(ARFLAGS) $@ $+
+	cp $@ $(PROJECT_LIB)
 
-${SDIR}/%.o: %.cpp
-	${CC} ${CFLAGS} ${DEBUG} ${INCLUDES} ${OPTIONS} -o $@ -c $<
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-${DDIR}/%.o: %.cpp
-	${CC} ${CFLAGS} ${DEBUG} ${INCLUDES} ${OPTIONS} -o $@ -c $<
+clean: clean-version clean-headers
+	$(RM) $(OBJ)
+	$(RM) *.gcno *.gcda $(LIB).so $(LIB).a
+	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
 
-clean: clean-static clean-shared clean-headers
-
-clean-static:
-	$(RM) ${SOBJ}
-	$(RM) ${SLIB}
-
-clean-shared:
-	$(RM) ${DOBJ}
-	$(RM) ${DLIB}
+clean-version:
+	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"\"/" version.h
+	@rm version.h.bak
 
 clean-headers:
-	cd ${PROJECT_INCLUDE} && $(RM) ${HEADERS} 
+	cd $(PROJECT_INCLUDE) && $(RM) $(HEADERS)
 
 rebuild: clean all
