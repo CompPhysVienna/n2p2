@@ -40,6 +40,7 @@ Training::Training() : Dataset(),
                        jacobianMode               (JM_SUM         ),
                        updateStrategy             (US_COMBINED    ),
                        selectionMode              (SM_RANDOM      ),
+                       decouplingType             (DT_GLOBAL      ),
                        hasUpdaters                (false          ),
                        hasStructures              (false          ),
                        useForces                  (false          ),
@@ -991,6 +992,47 @@ void Training::setupTraining()
     {
         kalmanType = (KalmanFilter::KalmanType)
                      atoi(settings["kalman_type"].c_str());
+        decouplingType = (DecouplingType)
+                         atoi(settings["decoupling_type"].c_str());
+        if (decouplingType == DT_GLOBAL)
+        {
+            log << strpr("No decoupling (GEKF) selected: DT_GLOBAL (%d).\n",
+                         decouplingType);
+        }
+        else if (decouplingType == DT_ELEMENT)
+        {
+            log << strpr("Per-element decoupling (ED-GEKF) selected: "
+                         "DT_ELEMENT (%d).\n", decouplingType);
+        }
+        else if (decouplingType == DT_LAYER)
+        {
+            log << strpr("Per-layer decoupling selected: "
+                         "DT_LAYER (%d).\n", decouplingType);
+        }
+        else if (decouplingType == DT_NODE)
+        {
+            log << strpr("Per-node decoupling (NDEKF) selected: "
+                         "DT_NODE (%d).\n", decouplingType);
+        }
+        else if (decouplingType == DT_FULL)
+        {
+            log << strpr("Full (per-weight) decoupling selected: "
+                         "DT_FULL (%d).\n", decouplingType);
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown Kalman filter decoupling "
+                                "type.\n");
+        }
+        if (decouplingType != DT_GLOBAL &&
+            (parallelMode != PM_TRAIN_ALL || updateStrategy != US_COMBINED))
+        {
+            throw runtime_error(strpr("ERROR: Kalman filter decoupling works "
+                                      "only in conjunction with"
+                                      "\"parallel_mode %d\" and "
+                                      "\"update_strategy %d\".\n",
+                                      PM_TRAIN_ALL, US_COMBINED));
+        }
     }
 
     for (size_t i = 0; i < numUpdaters; ++i)
