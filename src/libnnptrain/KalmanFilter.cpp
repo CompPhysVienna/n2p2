@@ -19,6 +19,7 @@
 #include <Eigen/LU>
 #include <iostream>
 #include <stdexcept>
+#include <map>       // std::map
 
 using namespace Eigen;
 using namespace std;
@@ -27,6 +28,8 @@ using namespace nnp;
 KalmanFilter::KalmanFilter(size_t const sizeState,
                            KalmanType const type) :
     Updater(sizeState),
+    myRank         (0   ),
+    numProcs       (0   ),
     sizeObservation(0   ),
     numUpdates     (0   ),
     epsilon        (0.0 ),
@@ -67,10 +70,45 @@ KalmanFilter::KalmanFilter(size_t const sizeState,
     // Prevent problems with unallocated K when log starts.
     K.resize(sizeState, sizeObservation);
     K.setZero();
+
+    // Set default decoupling group mask.
+    groupMask = new Map<VectorXi const>(0, sizeState);
 }
 
 KalmanFilter::~KalmanFilter()
 {
+}
+
+void KalmanFilter::setupMPI(MPI_Comm* communicator)
+{
+    MPI_Comm_dup(*communicator, &comm);
+    MPI_Comm_rank(comm, &myRank);
+    MPI_Comm_size(comm, &numProcs);
+
+    return;
+}
+
+void KalmanFilter::setupDecoupling(int const* const mask)
+{
+    new (groupMask) Map<VectorXi const>(mask, sizeState);
+
+    for (long i = 0; i < groupMask->size(); ++i)
+    {
+        groupMap[(*groupMask)(i)].push_back(i);
+    }
+
+    // Check consistency of group map.
+    for (size_t i = 0; i < groupMap.size(); ++i)
+    {
+        if (groupMap.find(i) == groupMap.end())
+        {
+            throw runtime_error(strpr("ERROR: Kalman filter decoupling group "
+                                      "mask is inconsistent, group %zu not "
+                                      "present.\n", i));
+        }
+    }
+
+    return;
 }
 
 void KalmanFilter::setSizeObservation(size_t const size)
@@ -317,8 +355,8 @@ vector<string> KalmanFilter::info() const
     if (type == KT_STANDARD)
     {
         v.push_back(strpr("KalmanType::KT_STANDARD (%d)\n", type));
-        v.push_back(strpr("sizeState       = %zu\n", sizeState));
-        v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
+        v.push_back(strpr("myRank          = %d\n", myRank));
+        v.push_back(strpr("numProcs        = %d\n", numProcs));
         v.push_back(strpr("epsilon         = %12.4E\n", epsilon));
         v.push_back(strpr("q0              = %12.4E\n", q0     ));
         v.push_back(strpr("qtau            = %12.4E\n", qtau   ));
@@ -339,7 +377,15 @@ vector<string> KalmanFilter::info() const
         v.push_back(strpr("lambda          = %12.4E\n", lambda));
         v.push_back(strpr("nu              = %12.4E\n", nu    ));
     }
+    v.push_back(strpr("sizeState       = %zu\n", sizeState));
+    v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
     v.push_back(strpr("OpenMP threads used: %d\n", nbThreads()));
+    v.push_back(strpr("Number of decoupling groups: %zu\n", groupMap.size()));
+    for (size_t i = 0; i < groupMap.size(); ++i)
+    {
+        v.push_back(strpr(" - group %5zu size: %zu\n",
+                          i, groupMap.at(i).size()));
+    }
 
     return v;
 }

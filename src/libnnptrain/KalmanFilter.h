@@ -50,6 +50,16 @@ public:
     /** Destructor.
      */
     virtual ~KalmanFilter();
+    /** Basic MPI setup.
+     *
+     * @param[in] communicator Input communicator of calling program.
+     */
+    void                     setupMPI(MPI_Comm* communicator);
+    /** Set decoupling group mask.
+     *
+     * @param[in] mask Input group mask provided via array of integers.
+     */
+    void                     setupDecoupling(int const* const mask);
     /** Set observation vector size.
      *
      * @param[in] size Size of the observation vector.
@@ -194,6 +204,10 @@ public:
 private:
     /// Kalman filter type.
     KalmanType                         type;
+    /// My process ID.
+    int                                myRank;
+    /// Total number of MPI processors.
+    int                                numProcs;
     /// Size of observation (measurement) vector.
     std::size_t                        sizeObservation;
     /// Total number of updates performed.
@@ -222,6 +236,10 @@ private:
     double                             nu;
     /// Forgetting gain factor gamma for fading memory Kalman filter.
     double                             gamma;
+    /// Decoupling group map.
+    std::map<int, std::vector<int>>    groupMap;
+    /// Decoupling group mask vector.
+    Eigen::Map<Eigen::VectorXi const>* groupMask;
     /// State vector.
     Eigen::Map<Eigen::VectorXd>*       w;
     /// Error vector.
@@ -234,6 +252,8 @@ private:
     Eigen::MatrixXd                    K;
     /// Intermediate result X = P . H.
     Eigen::MatrixXd                    X;
+    /// Global MPI communicator.
+    MPI_Comm                           comm;
 };
 
 //////////////////////////////////

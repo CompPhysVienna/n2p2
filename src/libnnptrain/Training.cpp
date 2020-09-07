@@ -1050,6 +1050,30 @@ void Training::setupTraining()
                 updaters.push_back(
                     (Updater*)new KalmanFilter(numWeightsPerUpdater.at(i),
                                                kalmanType));
+                KalmanFilter* u = dynamic_cast<KalmanFilter*>(updaters.back());
+                u->setupMPI(&comm);
+                vector<int> groupMask(weights.at(i).size(), 0);
+                if (decouplingType == DT_ELEMENT)
+                {
+                    for (size_t i = 0; i < numElements; ++i)
+                    {
+                        fill(groupMask.begin() + weightsOffset.at(i),
+                             groupMask.begin() + weightsOffset.at(i)
+                             + elements.at(i).
+                               neuralNetwork->getNumConnections(),
+                             i);
+                    }
+                }
+                else if (decouplingType == DT_LAYER)
+                {
+                }
+                else if (decouplingType == DT_NODE)
+                {
+                }
+                else if (decouplingType == DT_FULL)
+                {
+                }
+                u->setupDecoupling(groupMask.data());
             }
             updaters.back()->setState(&(weights.at(i).front()));
         }
