@@ -835,10 +835,21 @@ void Dataset::collectSymmetryFunctionStatistics()
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
+        // If no atoms of this element exist on this proc, create empty
+        // statistics.
+        if (it->statistics.data.size() == 0)
+        {
+            log << strpr("WARNING: No statistics for element %zu (%2s) found, "
+                         "process %d has no corresponding atoms, creating "
+                         "empty statistics.\n",
+                         it->getIndex(),
+                         it->getSymbol().c_str(),
+                         myRank);
+        }
         for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
         {
             SymmetryFunctionStatistics::
-            Container& c = it->statistics.data.at(i);
+            Container& c = it->statistics.data[i];
             MPI_Allreduce(MPI_IN_PLACE, &(c.count), 1, MPI_SIZE_T, MPI_SUM, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.min  ), 1, MPI_DOUBLE, MPI_MIN, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.max  ), 1, MPI_DOUBLE, MPI_MAX, comm);
