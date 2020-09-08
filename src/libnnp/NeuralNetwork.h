@@ -17,8 +17,10 @@
 #ifndef NEURALNETWORK_H
 #define NEURALNETWORK_H
 
+#include <cstddef>   // std::size_t
 #include <fstream>   // std::ofstream
 #include <string>    // std::string
+#include <utility>   // std::pair
 #include <vector>    // std::vector
 
 namespace nnp
@@ -333,6 +335,15 @@ public:
      * Counters and summation variables for neuron statistics are reset.
      */
     void                     resetNeuronStatistics();
+    /** Get layer boundaries in combined weight vector (for Kalman filter
+     * decoupling setup).
+     *
+     * @return Vector with layer boundaries as pair (begin, end),
+     * (numLayers + 1) points.
+     */
+    std::vector<std::pair<
+    std::size_t,
+    std::size_t>>            getLayerBoundaries() const;
     //void   writeStatus(int, int);
     long                     getMemoryUsage();
     /** Print neural network architecture.

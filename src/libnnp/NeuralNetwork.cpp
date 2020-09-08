@@ -921,6 +921,21 @@ void NeuralNetwork::getNeuronStatistics(long*   count,
     return;
 }
 
+vector<pair<size_t, size_t>> NeuralNetwork::getLayerBoundaries() const
+{
+    vector<pair<size_t, size_t>> boundaries;
+
+    for (int i = 0; i < numLayers - 1; ++i)
+    {
+        boundaries.push_back(make_pair(weightOffset[i],
+                                       weightOffset[i+1] - 1));
+    }
+    boundaries.push_back(make_pair(weightOffset[numLayers - 1],
+                                   numConnections - 1));
+
+    return boundaries;
+}
+
 /*
 void NeuralNetwork::writeStatus(int element, int epoch)
 {

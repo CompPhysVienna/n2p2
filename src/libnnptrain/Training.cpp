@@ -1066,6 +1066,26 @@ void Training::setupTraining()
                 }
                 else if (decouplingType == DT_LAYER)
                 {
+                    size_t index = 0;
+                    for (size_t i = 0; i < numElements; ++i)
+                    {
+                        for (auto b : elements.at(i).neuralNetwork
+                                      ->getLayerBoundaries())
+                        {
+                            log << strpr("%zu %zu\n", b.first, b.second);
+                            fill(groupMask.begin()
+                                    + weightsOffset.at(i) + b.first,
+                                 groupMask.begin()
+                                    + weightsOffset.at(i) + b.second,
+                                 index);
+                            index++;
+                        }
+                    }
+                    index = 0;
+                    for (auto m : groupMask)
+                    {
+                        log << strpr("%zu %zu\n", index, m);
+                    }
                 }
                 else if (decouplingType == DT_NODE)
                 {
