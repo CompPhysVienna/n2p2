@@ -21,6 +21,8 @@
 #include <cstdio>    // fprintf, stderr
 #include <cstdlib>   // exit, EXIT_FAILURE, rand, srand
 #include <limits>    // std::numeric_limits
+#include <numeric>   // std::iota
+#include <valarray>  // std::valarray, std::slice
 
 #define EXP_LIMIT 35.0
 
@@ -925,15 +927,41 @@ vector<pair<size_t, size_t>> NeuralNetwork::getLayerBoundaries() const
 {
     vector<pair<size_t, size_t>> boundaries;
 
-    for (int i = 0; i < numLayers - 1; ++i)
+    for (int i = 0; i < numLayers - 2; ++i)
     {
         boundaries.push_back(make_pair(weightOffset[i],
-                                       weightOffset[i+1] - 1));
+                                       weightOffset[i + 1] - 1));
     }
-    boundaries.push_back(make_pair(weightOffset[numLayers - 1],
+    boundaries.push_back(make_pair(weightOffset[numLayers - 2],
                                    numConnections - 1));
 
     return boundaries;
+}
+
+vector<vector<size_t>> NeuralNetwork::getNodeWeightIndices() const
+{
+    vector<vector<size_t>> indices;
+    valarray<size_t> wlist(numConnections);
+
+    // Fill array with increasing numbers from 0 to numConnections - 1.
+    iota(begin(wlist), end(wlist), 0);
+
+    for (int i = 1; i < numLayers; i++)
+    {
+        for (int j = 0; j < layers[i].numNeurons; j++)
+        {
+            indices.push_back(vector<size_t>());
+            // Use slice function to get the right weight indices.
+            valarray<size_t> v = wlist[slice(weightOffset[i - 1] + j,
+                                             layers[i].numNeuronsPrevLayer,
+                                             layers[i].numNeurons)];
+            indices.back().assign(begin(v), end(v));
+            // Add bias weight.
+            indices.back().push_back(biasOffset[i - 1] + j);
+        }
+    }
+
+    return indices;
 }
 
 /*

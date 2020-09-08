@@ -344,6 +344,14 @@ public:
     std::vector<std::pair<
     std::size_t,
     std::size_t>>            getLayerBoundaries() const;
+    /** Get indices of weights associated with nodes (for Kalman filter
+     * decoupling setup).
+     *
+     * @return Vector of each nodes weight indices.
+     */
+    std::vector<
+    std::vector<
+    std::size_t>>            getNodeWeightIndices() const;
     //void   writeStatus(int, int);
     long                     getMemoryUsage();
     /** Print neural network architecture.

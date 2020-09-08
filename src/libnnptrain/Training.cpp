@@ -1052,8 +1052,13 @@ void Training::setupTraining()
                                                kalmanType));
                 KalmanFilter* u = dynamic_cast<KalmanFilter*>(updaters.back());
                 u->setupMPI(&comm);
-                vector<int> groupMask(weights.at(i).size(), 0);
-                if (decouplingType == DT_ELEMENT)
+                vector<int> groupMask(weights.at(i).size(),
+                                      numeric_limits<int>::max());
+                if (decouplingType == DT_GLOBAL)
+                {
+                    fill(groupMask.begin(), groupMask.end(), 0);
+                }
+                else if (decouplingType == DT_ELEMENT)
                 {
                     for (size_t i = 0; i < numElements; ++i)
                     {
@@ -1076,23 +1081,44 @@ void Training::setupTraining()
                             fill(groupMask.begin()
                                     + weightsOffset.at(i) + b.first,
                                  groupMask.begin()
-                                    + weightsOffset.at(i) + b.second,
+                                    + weightsOffset.at(i) + b.second + 1,
                                  index);
                             index++;
                         }
                     }
-                    index = 0;
-                    for (auto m : groupMask)
-                    {
-                        log << strpr("%zu %zu\n", index, m);
-                    }
                 }
                 else if (decouplingType == DT_NODE)
                 {
+                    size_t index = 0;
+                    for (size_t i = 0; i < numElements; ++i)
+                    {
+                        vector<vector<size_t>> v = elements.at(i)
+                            .neuralNetwork->getNodeWeightIndices();
+                        for (auto n : v)
+                        {
+                            for (auto w : n)
+                            {
+                                groupMask.at(weightsOffset.at(i) + w) = index;
+                            }
+                            index++;
+                        }
+                    }
                 }
                 else if (decouplingType == DT_FULL)
                 {
+                    size_t index = 0;
+                    for (auto& m : groupMask)
+                    {
+                        m = index;
+                        index++;
+                    }
                 }
+                //size_t index = 0;
+                //for (auto m : groupMask)
+                //{
+                //    log << strpr("%zu %zu\n", index, m);
+                //    index++;
+                //}
                 u->setupDecoupling(groupMask.data());
             }
             updaters.back()->setState(&(weights.at(i).front()));
