@@ -17,9 +17,9 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define NNP_VERSION "2.0.0"
-#define NNP_GIT_REV "d8a2c23e7bcce24183c571d97d41e4f4f001aa4f"
-#define NNP_GIT_REV_SHORT "d8a2c23"
-#define NNP_GIT_BRANCH "polynomial_symmetry_functions"
+#define NNP_VERSION "2.0.0rc"
+#define NNP_GIT_REV ""
+#define NNP_GIT_REV_SHORT ""
+#define NNP_GIT_BRANCH ""
 
 #endif
