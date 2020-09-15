@@ -108,6 +108,26 @@ void KalmanFilter::setupDecoupling(int const* const mask)
         }
     }
 
+    numGroupsPerProc.resize(numProcs, 0);
+    groupOffsetPerProc.resize(numProcs, 0);
+    int quotient = groupMap.size() / numProcs;
+    int remainder = groupMap.size() % numProcs;
+    int groupSum = 0;
+    for (int i = 0; i < numProcs; i++)
+    {
+        numGroupsPerProc.at(i) = quotient;
+        if (remainder > 0 && i < remainder)
+        {
+            numGroupsPerProc.at(i)++;
+        }
+        groupOffsetPerProc.at(i) = groupSum;
+        groupSum += numGroupsPerProc.at(i);
+    }
+    for (size_t i = 0; i < numGroupsPerProc.at(myRank); ++i)
+    {
+        myGroups.push_back(groupOffsetPerProc.at(myRank) + i);
+    }
+
     return;
 }
 
@@ -385,6 +405,13 @@ vector<string> KalmanFilter::info() const
     {
         v.push_back(strpr(" - group %5zu size: %zu\n",
                           i, groupMap.at(i).size()));
+    }
+    v.push_back(strpr("Number of decoupling groups of proc %d: %zu\n",
+                      myRank, myGroups.size()));
+    for (size_t i = 0; i < myGroups.size(); ++i)
+    {
+        v.push_back(strpr(" - group %5zu size: %zu\n",
+                          i, groupMap.at(myGroups.at(i)).size()));
     }
 
     return v;

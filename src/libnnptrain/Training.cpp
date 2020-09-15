@@ -301,7 +301,12 @@ void Training::initializeWeights()
                 w.at(i).at(j) = minWeights + gsl_rng_uniform(rngGlobal)
                               * (maxWeights - minWeights);
             }
-            elements.at(i).neuralNetwork->setConnections(&(w.at(i).front()));
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+            // FIX!!!
+            elements.at(i).neuralNetwork->setConnectionsAO(&(w.at(i).front()));
+#else
+            elements.at(i).neuralNetwork->setConnectionsAO(&(w.at(i).front()));
+#endif
         }
         if (settings.keywordExists("nguyen_widrow_weights_short"))
         {
@@ -1077,7 +1082,6 @@ void Training::setupTraining()
                         for (auto b : elements.at(i).neuralNetwork
                                       ->getLayerBoundaries())
                         {
-                            log << strpr("%zu %zu\n", b.first, b.second);
                             fill(groupMask.begin()
                                     + weightsOffset.at(i) + b.first,
                                  groupMask.begin()
@@ -1089,20 +1093,29 @@ void Training::setupTraining()
                 }
                 else if (decouplingType == DT_NODE)
                 {
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
                     size_t index = 0;
                     for (size_t i = 0; i < numElements; ++i)
                     {
-                        vector<vector<size_t>> v = elements.at(i)
-                            .neuralNetwork->getNodeWeightIndices();
-                        for (auto n : v)
+                        for (auto b : elements.at(i).neuralNetwork
+                                      ->getNeuronBoundaries())
                         {
-                            for (auto w : n)
-                            {
-                                groupMask.at(weightsOffset.at(i) + w) = index;
-                            }
+                            log << strpr("%zu %zu %zu\n", i, b.first, b.second);
+                            fill(groupMask.begin()
+                                    + weightsOffset.at(i) + b.first,
+                                 groupMask.begin()
+                                    + weightsOffset.at(i) + b.second + 1,
+                                 index);
                             index++;
                         }
                     }
+#else
+                    throw runtime_error("ERROR: Node-decoupled Kalman filter "
+                                        "(NDEFK) training not possible with "
+                                        "alternative (old) weight memory "
+                                        "layout, recompile without "
+                                        "-DALTERNATIVE_WEIGHT_ORDERING.\n");
+#endif
                 }
                 else if (decouplingType == DT_FULL)
                 {
@@ -1113,12 +1126,6 @@ void Training::setupTraining()
                         index++;
                     }
                 }
-                //size_t index = 0;
-                //for (auto m : groupMask)
-                //{
-                //    log << strpr("%zu %zu\n", index, m);
-                //    index++;
-                //}
                 u->setupDecoupling(groupMask.data());
             }
             updaters.back()->setState(&(weights.at(i).front()));
@@ -1564,7 +1571,9 @@ void Training::writeWeights(string const fileNameFormat) const
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         file.open(fileName.c_str());
-        elements.at(i).neuralNetwork->writeConnections(file);
+        // Attention: need alternative (old) ordering scheme here for
+        // backward compatibility!
+        elements.at(i).neuralNetwork->writeConnectionsAO(file);
         file.close();
     }
 
@@ -2392,6 +2401,22 @@ void Training::update(bool force)
             else
             {
                 nn->calculateDEdc(&(dXdc.at(i).front()));
+                //vector<double> temp(dXdc.at(i).size(), 0.0);
+                //vector<double> tempAO(dXdc.at(i).size(), 0.0);
+                //nn->calculateDEdc(&(temp.front()));
+                //ofstream tf("dedc.out");
+                //size_t count;
+                //count = 0;
+                //sort(temp.begin(), temp.end());
+                //for (auto i : temp) tf << strpr("%zu %16.8E\n", count++, i);
+                //tf.close();
+                //nn->calculateDEdcAO(&(tempAO.front()));
+                //tf.open("dedc.out.ao");
+                //count = 0;
+                //sort(tempAO.begin(), tempAO.end());
+                //for (auto i : tempAO) tf << strpr("%zu %16.8E\n", count++, i);
+                //tf.close();
+                //throw runtime_error("END HERE");
             }
             // Finally sum up Jacobian.
             if (updateStrategy == US_ELEMENT) iu = i;
@@ -2827,7 +2852,11 @@ void Training::getWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork const* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->getConnections(&(weights.at(0).at(pos)));
+#else
+            nn->getConnectionsAO(&(weights.at(0).at(pos)));
+#endif
             pos += nn->getNumConnections();
         }
     }
@@ -2836,7 +2865,11 @@ void Training::getWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork const* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->getConnections(&(weights.at(i).front()));
+#else
+            nn->getConnectionsAO(&(weights.at(i).front()));
+#endif
         }
     }
 
@@ -2851,7 +2884,11 @@ void Training::setWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->setConnections(&(weights.at(0).at(pos)));
+#else
+            nn->setConnectionsAO(&(weights.at(0).at(pos)));
+#endif
             pos += nn->getNumConnections();
         }
     }
@@ -2860,7 +2897,11 @@ void Training::setWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->setConnections(&(weights.at(i).front()));
+#else
+            nn->setConnectionsAO(&(weights.at(i).front()));
+#endif
         }
     }
 

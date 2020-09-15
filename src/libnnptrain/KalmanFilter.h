@@ -236,6 +236,12 @@ private:
     double                             nu;
     /// Forgetting gain factor gamma for fading memory Kalman filter.
     double                             gamma;
+    /// List of group indices of this processor.
+    std::vector<int>                   myGroups;
+    /// Number of groups for each processor.
+    std::vector<std::size_t>           numGroupsPerProc;
+    /// Offset in terms of groups for each processor.
+    std::vector<std::size_t>           groupOffsetPerProc;
     /// Decoupling group map.
     std::map<int, std::vector<int>>    groupMap;
     /// Decoupling group mask vector.

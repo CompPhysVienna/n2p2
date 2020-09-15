@@ -884,7 +884,9 @@ void Mode::setupNeuralNetworkWeights(string const& fileNameFormat)
                 weights.push_back(atof(splitLine.at(0).c_str()));
             }
         }
-        it->neuralNetwork->setConnections(&(weights.front()));
+        // Attention: need alternative (old) ordering scheme here for
+        // backward compatibility!
+        it->neuralNetwork->setConnectionsAO(&(weights.front()));
         file.close();
     }
 
