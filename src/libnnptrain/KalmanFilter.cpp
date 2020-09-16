@@ -226,15 +226,32 @@ void KalmanFilter::update()
 
 void KalmanFilter::update(size_t const sizeObservation)
 {
-    X.at(0).resize(sizeState, sizeObservation);
+    MatrixXd A(sizeObservation, sizeObservation);
+    A.setZero();
 
-    // Calculate temporary result.
-    // X = P . H
-    X.at(0) = P.at(0).selfadjointView<Lower>() * (*H);
+    for (size_t i = 0; i < myGroups.size(); ++i)
+    {
+        size_t const& j = myGroups.at(i).first;     // group index
+        size_t const& n = myGroups.at(i).second;    // group size
+        size_t const& s = groupLimits.at(j).first;  // group weight start index
 
-    // Calculate scaling matrix.
-    // A = H^T . X
-    MatrixXd A = H->transpose() * X.at(0);
+        auto& x = X.at(i);
+        auto& p = P.at(i);
+
+        x.resize(n, sizeObservation);
+
+        // Calculate temporary result.
+        // X = P . H
+        x = p.selfadjointView<Lower>() * H->block(s, 0, n, sizeObservation);
+ 
+        // Calculate scaling matrix.
+        // A = H^T . X
+        // For decoupling summarize scaling matrix here (locally).
+        A += H->block(s, 0, n, sizeObservation).transpose() * x;
+    }
+
+    // Summarize scaling matrix globally.
+    MPI_Allreduce(MPI_IN_PLACE, A.data(), A.size(), MPI_DOUBLE, MPI_SUM, comm);
 
     // Increase learning rate.
     // eta(n) = eta(0) * exp(n * tau)
@@ -251,38 +268,52 @@ void KalmanFilter::update(size_t const sizeObservation)
         A.diagonal() += VectorXd::Constant(sizeObservation, lambda);
     }
 
-    // Calculate Kalman gain matrix.
-    // K = X . A^-1
-    K.at(0).resize(sizeState, sizeObservation);
-    K.at(0) = X.at(0) * A.inverse();
-
-    // Update error covariance matrix.
-    // P = P - K . X^T
-    P.at(0).noalias() -= K.at(0) * X.at(0).transpose();
-
-    // Apply forgetting factor.
-    if (type == KT_FADINGMEMORY)
+    for (size_t i = 0; i < myGroups.size(); ++i)
     {
-        P.at(0) *= 1.0 / lambda;
+        size_t const& j = myGroups.at(i).first;     // group index
+        size_t const& n = myGroups.at(i).second;    // group size
+        size_t const& s = groupLimits.at(j).first;  // group weight start index
+
+        auto& x = X.at(i);
+        auto& p = P.at(i);
+        auto& k = K.at(i);
+
+        // Calculate Kalman gain matrix.
+        // K = X . A^-1
+        k.resize(n, sizeObservation);
+        k = x * A.inverse();
+
+        // Update error covariance matrix.
+        // P = P - K . X^T
+        p.noalias() -= k * x.transpose();
+
+        // Apply forgetting factor.
+        if (type == KT_FADINGMEMORY)
+        {
+            p *= 1.0 / lambda;
+        }
+        // Add process noise.
+        // P = P + Q
+        p.diagonal() += VectorXd::Constant(n, q);
+
+        // Update state vector.
+        // w =  w + K . xi
+        w->segment(s, n) += k * (*xi);
+
+        // Anneal process noise.
+        // q(n) = q(0) * exp(-n * tau)
+        if (q > qmin) q *= exp(-qtau);
+
+        // Update forgetting factor.
+        if (type == KT_FADINGMEMORY)
+        {
+            lambda = nu * lambda + 1.0 - nu;
+            gamma = 1.0 / (1.0 + lambda / gamma);
+        }
     }
-    // Add process noise.
-    // P = P + Q
-    P.at(0).diagonal() += VectorXd::Constant(sizeState, q);
 
-    // Update state vector.
-    // w =  w + K . xi
-    (*w) += K.at(0) * (*xi);
-
-    // Anneal process noise.
-    // q(n) = q(0) * exp(-n * tau)
-    if (q > qmin) q *= exp(-qtau);
-
-    // Update forgetting factor.
-    if (type == KT_FADINGMEMORY)
-    {
-        lambda = nu * lambda + 1.0 - nu;
-        gamma = 1.0 / (1.0 + lambda / gamma);
-    }
+    // Communicate new weight segments.
+    // ????
 
     numUpdates++;
 
