@@ -21,8 +21,6 @@
 #include <cstdio>    // fprintf, stderr
 #include <cstdlib>   // exit, EXIT_FAILURE, rand, srand
 #include <limits>    // std::numeric_limits
-#include <numeric>   // std::iota
-#include <valarray>  // std::valarray, std::slice
 
 #define EXP_LIMIT 35.0
 
@@ -1157,33 +1155,32 @@ void NeuralNetwork::getNeuronStatistics(long*   count,
     return;
 }
 
-vector<pair<size_t, size_t>> NeuralNetwork::getLayerBoundaries() const
+vector<pair<size_t, size_t>> NeuralNetwork::getLayerLimits() const
 {
-    vector<pair<size_t, size_t>> boundaries;
+    vector<pair<size_t, size_t>> limits;
 
     for (int i = 0; i < numLayers - 2; ++i)
     {
-        boundaries.push_back(make_pair(weightOffset[i],
+        limits.push_back(make_pair(weightOffset[i],
                                        weightOffset[i + 1] - 1));
     }
-    boundaries.push_back(make_pair(weightOffset[numLayers - 2],
+    limits.push_back(make_pair(weightOffset[numLayers - 2],
                                    numConnections - 1));
 
-    return boundaries;
+    return limits;
 }
 
-vector<pair<size_t, size_t>> NeuralNetwork::getNeuronBoundaries() const
+vector<pair<size_t, size_t>> NeuralNetwork::getNeuronLimits() const
 {
+    vector<pair<size_t, size_t>> limits;
 #ifndef ALTERNATIVE_WEIGHT_ORDERING
-    vector<pair<size_t, size_t>> boundaries;
-
     for (int i = 0; i < numLayers - 1; ++i)
     {
-        boundaries.push_back(make_pair(weightOffset[i],
+        limits.push_back(make_pair(weightOffset[i],
                                        biasOffset[i][0]));
         for (int j = 0; j < layers[i+1].numNeurons - 1; ++j)
         {
-            boundaries.push_back(make_pair(biasOffset[i][j] + 1,
+            limits.push_back(make_pair(biasOffset[i][j] + 1,
                                            biasOffset[i][j+1]));
 
         }
@@ -1194,7 +1191,7 @@ vector<pair<size_t, size_t>> NeuralNetwork::getNeuronBoundaries() const
                         "without -DALTERNATIVE_WEIGHT_ORDERING.\n");
 #endif
 
-    return boundaries;
+    return limits;
 }
 
 /*

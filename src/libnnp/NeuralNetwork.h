@@ -393,24 +393,24 @@ public:
      * Counters and summation variables for neuron statistics are reset.
      */
     void                     resetNeuronStatistics();
-    /** Get layer boundaries in combined weight vector (for Kalman filter
+    /** Get layer limits in combined weight vector (for Kalman filter
      * decoupling setup).
      *
-     * @return Vector with layer boundaries as pair (begin, end),
+     * @return Vector with layer limits as pair (begin, end),
      * (numLayers - 1) points.
      */
     std::vector<std::pair<
     std::size_t,
-    std::size_t>>            getLayerBoundaries() const;
-    /** Get neuron boundaries in combined weight vector (for Kalman filter
+    std::size_t>>            getLayerLimits() const;
+    /** Get neuron limits in combined weight vector (for Kalman filter
      * decoupling setup).
      *
-     * @return Vector with neuron boundaries as pair (begin, end),
+     * @return Vector with neuron limits as pair (begin, end),
      * (numNeurons - inputLayer->numNeurons) points.
      */
     std::vector<std::pair<
     std::size_t,
-    std::size_t>>            getNeuronBoundaries() const;
+    std::size_t>>            getNeuronLimits() const;
     //void   writeStatus(int, int);
     long                     getMemoryUsage();
     /** Print neural network architecture.

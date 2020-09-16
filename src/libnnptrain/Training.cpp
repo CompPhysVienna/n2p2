@@ -302,7 +302,8 @@ void Training::initializeWeights()
                               * (maxWeights - minWeights);
             }
 #ifndef ALTERNATIVE_WEIGHT_ORDERING
-            // FIX!!!
+            // To be consistent this should actually be the non-AO version,
+            // but this way results stay comparable.
             elements.at(i).neuralNetwork->setConnectionsAO(&(w.at(i).front()));
 #else
             elements.at(i).neuralNetwork->setConnectionsAO(&(w.at(i).front()));
@@ -1029,14 +1030,11 @@ void Training::setupTraining()
             throw runtime_error("ERROR: Unknown Kalman filter decoupling "
                                 "type.\n");
         }
-        if (decouplingType != DT_GLOBAL &&
-            (parallelMode != PM_TRAIN_ALL || updateStrategy != US_COMBINED))
+        if (decouplingType != DT_GLOBAL && updateStrategy != US_COMBINED)
         {
             throw runtime_error(strpr("ERROR: Kalman filter decoupling works "
-                                      "only in conjunction with"
-                                      "\"parallel_mode %d\" and "
-                                      "\"update_strategy %d\".\n",
-                                      PM_TRAIN_ALL, US_COMBINED));
+                                      "only in conjunction with "
+                                      "update_strategy %d\".\n", US_COMBINED));
         }
     }
 
@@ -1056,57 +1054,62 @@ void Training::setupTraining()
                     (Updater*)new KalmanFilter(numWeightsPerUpdater.at(i),
                                                kalmanType));
                 KalmanFilter* u = dynamic_cast<KalmanFilter*>(updaters.back());
-                u->setupMPI(&comm);
-                vector<int> groupMask(weights.at(i).size(),
-                                      numeric_limits<int>::max());
+                if (parallelMode == PM_TRAIN_ALL)
+                {
+                    u->setupMPI(&comm);
+                }
+                else
+                {
+                    MPI_Group groupWorld;
+                    MPI_Comm_group(comm, &groupWorld);
+                    int const size0 = 1;
+                    int const rank0[1] = {0};
+                    MPI_Group groupRank0;
+                    MPI_Group_incl(groupWorld, size0, rank0, &groupRank0);
+                    MPI_Comm commRank0;
+                    MPI_Comm_create_group(comm, groupRank0, 0, &commRank0);
+                    u->setupMPI(&commRank0);
+                }
+                vector<pair<size_t, size_t>> limits;
                 if (decouplingType == DT_GLOBAL)
                 {
-                    fill(groupMask.begin(), groupMask.end(), 0);
+                    limits.push_back(
+                        make_pair(0, numWeightsPerUpdater.at(i) - 1));
                 }
                 else if (decouplingType == DT_ELEMENT)
                 {
-                    for (size_t i = 0; i < numElements; ++i)
+                    for (size_t j = 0; j < numElements; ++j)
                     {
-                        fill(groupMask.begin() + weightsOffset.at(i),
-                             groupMask.begin() + weightsOffset.at(i)
-                             + elements.at(i).
-                               neuralNetwork->getNumConnections(),
-                             i);
+                        limits.push_back(make_pair(
+                            weightsOffset.at(j),
+                            weightsOffset.at(j) + elements.at(j).
+                                neuralNetwork->getNumConnections() - 1));
                     }
                 }
                 else if (decouplingType == DT_LAYER)
                 {
-                    size_t index = 0;
-                    for (size_t i = 0; i < numElements; ++i)
+                    for (size_t j = 0; j < numElements; ++j)
                     {
-                        for (auto b : elements.at(i).neuralNetwork
-                                      ->getLayerBoundaries())
+                        for (auto l : elements.at(j).neuralNetwork
+                                      ->getLayerLimits())
                         {
-                            fill(groupMask.begin()
-                                    + weightsOffset.at(i) + b.first,
-                                 groupMask.begin()
-                                    + weightsOffset.at(i) + b.second + 1,
-                                 index);
-                            index++;
+                            limits.push_back(make_pair(
+                                weightsOffset.at(j) + l.first,
+                                weightsOffset.at(j) + l.second));
                         }
                     }
                 }
                 else if (decouplingType == DT_NODE)
                 {
 #ifndef ALTERNATIVE_WEIGHT_ORDERING
-                    size_t index = 0;
-                    for (size_t i = 0; i < numElements; ++i)
+                    for (size_t j = 0; j < numElements; ++j)
                     {
-                        for (auto b : elements.at(i).neuralNetwork
-                                      ->getNeuronBoundaries())
+                        for (auto l : elements.at(j).neuralNetwork
+                                      ->getNeuronLimits())
                         {
-                            log << strpr("%zu %zu %zu\n", i, b.first, b.second);
-                            fill(groupMask.begin()
-                                    + weightsOffset.at(i) + b.first,
-                                 groupMask.begin()
-                                    + weightsOffset.at(i) + b.second + 1,
-                                 index);
-                            index++;
+                            limits.push_back(make_pair(
+                                weightsOffset.at(j) + l.first,
+                                weightsOffset.at(j) + l.second));
                         }
                     }
 #else
@@ -1119,14 +1122,12 @@ void Training::setupTraining()
                 }
                 else if (decouplingType == DT_FULL)
                 {
-                    size_t index = 0;
-                    for (auto& m : groupMask)
+                    for (size_t j = 0; j < numWeightsPerUpdater.at(i); ++j)
                     {
-                        m = index;
-                        index++;
+                        limits.push_back(make_pair(j, j));
                     }
                 }
-                u->setupDecoupling(groupMask.data());
+                u->setupDecoupling(limits);
             }
             updaters.back()->setState(&(weights.at(i).front()));
         }
@@ -1551,7 +1552,7 @@ void Training::calculateErrorEpoch()
         fileNameForcesTest = strpr("testforces.%06zu.out", epoch);
     }
 
-    // Calculate RMSE and write comparison files.
+    // Calculate error and write comparison files.
     calculateError(true,
                    identifier,
                    fileNameEnergiesTrain,
@@ -1750,7 +1751,7 @@ void Training::writeNeuronStatistics(string const fileName) const
         vector<string> colInfo;
         vector<size_t> colSize;
         title.push_back("Statistics for individual neurons gathered during "
-                        "RMSE calculation.");
+                        "error calculation.");
         colSize.push_back(10);
         colName.push_back("element");
         colInfo.push_back("Element index.");
@@ -2005,7 +2006,7 @@ void Training::loop()
     else if (errorMetricForces == 1) metric = "MAE";
     if (errorMetricEnergies % 2 == 0) peratom = "per atom ";
 
-    log << "The training loop output covers different RMSEs, update and\n";
+    log << "The training loop output covers different errors, update and\n";
     log << "timing information. The following quantities are organized\n";
     log << "according to the matrix scheme below:\n";
     log << "-------------------------------------------------------------------\n";
@@ -2032,7 +2033,7 @@ void Training::loop()
     log << "Abbreviations:\n";
     log << "  p. u. = physical units.\n";
     log << "  i. u. = internal units.\n";
-    log << "Note: RMSEs in internal units (columns 5 + 6) are only present \n";
+    log << "Note: Errors in internal units (columns 5 + 6) are only present \n";
     log << "      if data set normalization is used.\n";
     log << "-------------------------------------------------------------------\n";
     log << "     1    2             3             4             5             6\n";
