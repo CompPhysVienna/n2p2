@@ -44,6 +44,7 @@ endif
 APP_CORE=nnp-convert \
          nnp-cutoff \
          nnp-dist \
+	 nnp-winit \
          nnp-predict \
          nnp-prune \
          nnp-select \

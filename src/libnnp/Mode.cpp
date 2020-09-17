@@ -758,51 +758,7 @@ void Mode::setupNeuralNetwork()
             {
                 t.numNeuronsPerLayer[i] =
                     atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
-                if (globalActivationFunctions.at(i-1) == "l")
-                {
-                    a = NeuralNetwork::AF_IDENTITY;
-                }
-                else if (globalActivationFunctions.at(i-1) == "t")
-                {
-                    a = NeuralNetwork::AF_TANH;
-                }
-                else if (globalActivationFunctions.at(i-1) == "s")
-                {
-                    a = NeuralNetwork::AF_LOGISTIC;
-                }
-                else if (globalActivationFunctions.at(i-1) == "p")
-                {
-                    a = NeuralNetwork::AF_SOFTPLUS;
-                }
-                else if (globalActivationFunctions.at(i-1) == "r")
-                {
-                    a = NeuralNetwork::AF_RELU;
-                }
-                else if (globalActivationFunctions.at(i-1) == "g")
-                {
-                    a = NeuralNetwork::AF_GAUSSIAN;
-                }
-                else if (globalActivationFunctions.at(i-1) == "c")
-                {
-                    a = NeuralNetwork::AF_COS;
-                }
-                else if (globalActivationFunctions.at(i-1) == "S")
-                {
-                    a = NeuralNetwork::AF_REVLOGISTIC;
-                }
-                else if (globalActivationFunctions.at(i-1) == "e")
-                {
-                    a = NeuralNetwork::AF_EXP;
-                }
-                else if (globalActivationFunctions.at(i-1) == "h")
-                {
-                    a = NeuralNetwork::AF_HARMONIC;
-                }
-                else
-                {
-                    throw runtime_error("ERROR: Unknown activation "
-                                        "function.\n");
-                }
+                a = activationFromString(globalActivationFunctions.at(i-1));
             }
         }
     }

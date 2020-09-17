@@ -480,6 +480,30 @@ private:
     void   propagateLayer(Layer& layer, Layer& layerPrev);
 };
 
+/** Convert string to activation function.
+ *
+ * @param[in] letter Single character representing activation function.
+ *
+ * @return ActivationFunction corresponding to string.
+ */
+NeuralNetwork::ActivationFunction activationFromString(std::string c);
+/** Convert activation function to string.
+ *
+ * @param[in] af Input ActivationFunction type.
+ *
+ * @return Single char representing activation function.
+ */
+std::string stringFromActivation(NeuralNetwork::ActivationFunction af);
+
+/// Simple class for managing neural network settings.
+struct NeuralNetworkTopology
+{
+    int                                numLayers = 0;
+    std::vector<int>                   numNeuronsPerLayer;
+    std::vector<
+    NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
+};
+
 }
 
 #endif

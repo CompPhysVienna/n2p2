@@ -1008,45 +1008,11 @@ vector<string> NeuralNetwork::info() const
                 {
                     s += strpr(" %3s", "G");
                 }
-                else if (layers[j].activationFunction == AF_IDENTITY)
+                else
                 {
-                    s += strpr(" %3s", "l");
-                }
-                else if (layers[j].activationFunction == AF_TANH)
-                {
-                    s += strpr(" %3s", "t");
-                }
-                else if (layers[j].activationFunction == AF_LOGISTIC)
-                {
-                    s += strpr(" %3s", "s");
-                }
-                else if (layers[j].activationFunction == AF_SOFTPLUS)
-                {
-                    s += strpr(" %3s", "p");
-                }
-                else if (layers[j].activationFunction == AF_RELU)
-                {
-                    s += strpr(" %3s", "r");
-                }
-                else if (layers[j].activationFunction == AF_GAUSSIAN)
-                {
-                    s += strpr(" %3s", "g");
-                }
-                else if (layers[j].activationFunction == AF_COS)
-                {
-                    s += strpr(" %3s", "c");
-                }
-                else if (layers[j].activationFunction == AF_REVLOGISTIC)
-                {
-                    s += strpr(" %3s", "S");
-                }
-                else if (layers[j].activationFunction == AF_EXP)
-                {
-                    s += strpr(" %3s", "e");
-                }
-                else if (layers[j].activationFunction == AF_HARMONIC)
-                {
-                    s += strpr(" %3s", "h");
+                    s += strpr(" %3s",
+                               stringFromActivation(
+                                   layers[j].activationFunction).c_str());
                 }
             }
             else
@@ -1058,4 +1024,48 @@ vector<string> NeuralNetwork::info() const
     }
 
     return v;
+}
+
+string nnp::stringFromActivation(NeuralNetwork::ActivationFunction af)
+{
+    string c = "";
+
+    if      (af == NeuralNetwork::AF_IDENTITY)    c = "l";
+    else if (af == NeuralNetwork::AF_TANH)        c = "t";
+    else if (af == NeuralNetwork::AF_LOGISTIC)    c = "s";
+    else if (af == NeuralNetwork::AF_SOFTPLUS)    c = "p";
+    else if (af == NeuralNetwork::AF_RELU)        c = "r";
+    else if (af == NeuralNetwork::AF_GAUSSIAN)    c = "g";
+    else if (af == NeuralNetwork::AF_COS)         c = "c";
+    else if (af == NeuralNetwork::AF_REVLOGISTIC) c = "S";
+    else if (af == NeuralNetwork::AF_EXP)         c = "e";
+    else if (af == NeuralNetwork::AF_HARMONIC)    c = "h";
+    else
+    {
+        throw runtime_error("ERROR: Unknown activation function.\n");
+    }
+
+    return c;
+}
+
+NeuralNetwork::ActivationFunction nnp::activationFromString(string c)
+{
+    NeuralNetwork::ActivationFunction af;
+
+    if      (c == "l") af = NeuralNetwork::AF_IDENTITY;
+    else if (c == "t") af = NeuralNetwork::AF_TANH;
+    else if (c == "s") af = NeuralNetwork::AF_LOGISTIC;
+    else if (c == "p") af = NeuralNetwork::AF_SOFTPLUS;
+    else if (c == "r") af = NeuralNetwork::AF_RELU;
+    else if (c == "g") af = NeuralNetwork::AF_GAUSSIAN;
+    else if (c == "c") af = NeuralNetwork::AF_COS;
+    else if (c == "S") af = NeuralNetwork::AF_REVLOGISTIC;
+    else if (c == "e") af = NeuralNetwork::AF_EXP;
+    else if (c == "h") af = NeuralNetwork::AF_HARMONIC;
+    else
+    {
+        throw runtime_error("ERROR: Unknown activation function.\n");
+    }
+
+    return af;
 }
