@@ -136,7 +136,7 @@ void KalmanFilter::setupDecoupling(vector<pair<size_t, size_t>> groupLimits)
     int quotient = groupLimits.size() / numProcs;
     int remainder = groupLimits.size() % numProcs;
     int groupSum = 0;
-    for (int i = 0; i < numProcs; i++)
+    for (int i = 0; i < numProcs; ++i)
     {
         numGroupsPerProc.at(i) = quotient;
         if (remainder > 0 && i < remainder)
@@ -146,6 +146,23 @@ void KalmanFilter::setupDecoupling(vector<pair<size_t, size_t>> groupLimits)
         groupOffsetPerProc.at(i) = groupSum;
         groupSum += numGroupsPerProc.at(i);
     }
+
+    // Compute state vector segment length and offset for each processor.
+    for (int i = 0; i < numProcs - 1; ++i)
+    {
+        sizeStatePerProc.push_back(
+            groupLimits.at(groupOffsetPerProc.at(i+1)).first -
+            groupLimits.at(groupOffsetPerProc.at(i)).first);
+        offsetStatePerProc.push_back(
+            groupLimits.at(groupOffsetPerProc.at(i)).first);
+    }
+    sizeStatePerProc.push_back(
+        groupLimits.back().second + 1 -
+        groupLimits.at(groupOffsetPerProc.at(numProcs - 1)).first);
+    offsetStatePerProc.push_back(
+        groupLimits.at(groupOffsetPerProc.at(numProcs - 1)).first);
+
+    // Store group index and segment length for this processor.
     for (size_t i = 0; i < numGroupsPerProc.at(myRank); ++i)
     {
         size_t index = groupOffsetPerProc.at(myRank) + i;
@@ -313,7 +330,7 @@ void KalmanFilter::update(size_t const sizeObservation)
     }
 
     // Communicate new weight segments.
-    // ????
+    MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, w->data(), sizeStatePerProc.data(), offsetStatePerProc.data(), MPI_DOUBLE, comm);
 
     numUpdates++;
 
@@ -470,11 +487,24 @@ vector<string> KalmanFilter::info() const
 {
     vector<string> v;
 
+    v.push_back("Extended Kalman Filter (EKF) optimizer:\n");
+    v.push_back(strpr("sizeState       = %zu\n", sizeState));
+    v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
+    v.push_back(strpr("myRank          = %d\n", myRank));
+    v.push_back(strpr("numProcs        = %d\n", numProcs));
+    v.push_back(strpr("OpenMP threads used                    : %d\n",
+                      nbThreads()));
+    v.push_back(strpr("Number of decoupling groups            : %zu\n",
+                      groupLimits.size()));
+    v.push_back(strpr("Number of decoupling groups of proc %3d: %zu\n",
+                      myRank, myGroups.size()));
+    v.push_back(strpr("P matrix size ratio (compared to GEKF) : %6.2f %%\n",
+                      100.0 * sizeP / (sizeState * sizeState)));
+    v.push_back("-----------------------------------------"
+                "--------------------------------------\n");
     if (type == KT_STANDARD)
     {
         v.push_back(strpr("KalmanType::KT_STANDARD (%d)\n", type));
-        v.push_back(strpr("myRank          = %d\n", myRank));
-        v.push_back(strpr("numProcs        = %d\n", numProcs));
         v.push_back(strpr("epsilon         = %12.4E\n", epsilon));
         v.push_back(strpr("q0              = %12.4E\n", q0     ));
         v.push_back(strpr("qtau            = %12.4E\n", qtau   ));
@@ -486,8 +516,6 @@ vector<string> KalmanFilter::info() const
     else if (type == KT_FADINGMEMORY)
     {
         v.push_back(strpr("KalmanType::KT_FADINGMEMORY (%d)\n", type));
-        v.push_back(strpr("sizeState       = %zu\n", sizeState));
-        v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
         v.push_back(strpr("epsilon         = %12.4E\n", epsilon));
         v.push_back(strpr("q0              = %12.4E\n", q0     ));
         v.push_back(strpr("qtau            = %12.4E\n", qtau   ));
@@ -495,26 +523,17 @@ vector<string> KalmanFilter::info() const
         v.push_back(strpr("lambda          = %12.4E\n", lambda));
         v.push_back(strpr("nu              = %12.4E\n", nu    ));
     }
-    v.push_back(strpr("sizeState       = %zu\n", sizeState));
-    v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
-    v.push_back(strpr("OpenMP threads used: %d\n", nbThreads()));
-    v.push_back(strpr("Number of decoupling groups: %zu\n",
-                      groupLimits.size()));
-    v.push_back(strpr("P matrix size ratio (compared to GEKF): %6.2f\n",
-                      100.0 * sizeP / (sizeState * sizeState)));
-    for (size_t i = 0; i < groupLimits.size(); ++i)
-    {
-        v.push_back(strpr(" - group %5zu size: %zu\n",
-                          i,
-                          groupLimits.at(i).second
-                          - groupLimits.at(i).first + 1));
-    }
-    v.push_back(strpr("Number of decoupling groups of proc %d: %zu\n",
-                      myRank, myGroups.size()));
-    for (auto g : myGroups)
-    {
-        v.push_back(strpr(" - group %5zu size: %zu\n", g.first, g.second));
-    }
+    //for (size_t i = 0; i < groupLimits.size(); ++i)
+    //{
+    //    v.push_back(strpr(" - group %5zu size: %zu\n",
+    //                      i,
+    //                      groupLimits.at(i).second
+    //                      - groupLimits.at(i).first + 1));
+    //}
+    //for (auto g : myGroups)
+    //{
+    //    v.push_back(strpr(" - group %5zu size: %zu\n", g.first, g.second));
+    //}
 
     return v;
 }

@@ -242,6 +242,10 @@ private:
     double                             nu;
     /// Forgetting gain factor gamma for fading memory Kalman filter.
     double                             gamma;
+    /// Size of state vector segment handled by each processor.
+    std::vector<int>                   sizeStatePerProc;
+    /// Offset of state vector segment handled by each processor.
+    std::vector<int>                   offsetStatePerProc;
     /// List of (group indices, group sizes) of this processor.
     std::vector<std::pair<
     std::size_t, std::size_t>>         myGroups;

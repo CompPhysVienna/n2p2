@@ -1865,24 +1865,31 @@ void Training::writeUpdaterStatus(bool         append,
 
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        string fileName;
-        if (updateStrategy == US_COMBINED)
+        if (myRank == 0)
         {
-            fileName = strpr(fileNameFormat.c_str(), 0);
+            string fileName;
+            if (updateStrategy == US_COMBINED)
+            {
+                fileName = strpr(fileNameFormat.c_str(), 0);
+            }
+            else if (updateStrategy == US_ELEMENT)
+            {
+                fileName = strpr(fileNameFormat.c_str(),
+                                 elementMap.atomicNumber(i));
+            }
+            if (append) file.open(fileName.c_str(), ofstream::app);
+            else
+            {
+                file.open(fileName.c_str());
+                appendLinesToFile(file, updaters.at(i)->statusHeader());
+            }
+            file << updaters.at(i)->status(epoch);
+            file.close();
         }
-        else if (updateStrategy == US_ELEMENT)
+        else if (parallelMode == PM_TRAIN_ALL)
         {
-            fileName = strpr(fileNameFormat.c_str(),
-                             elementMap.atomicNumber(i));
+            updaters.at(i)->status(epoch);
         }
-        if (append) file.open(fileName.c_str(), ofstream::app);
-        else 
-        {
-            file.open(fileName.c_str());
-            appendLinesToFile(file, updaters.at(i)->statusHeader());
-        }
-        file << updaters.at(i)->status(epoch);
-        file.close();
     }
 
     return;
@@ -2062,8 +2069,9 @@ void Training::loop()
     // Write learning curve.
     if (myRank == 0) writeLearningCurve(false);
 
-    // Write updater status to file.
-    if (myRank == 0) writeUpdaterStatus(false);
+    // Write updater status to file (decoupled KF requires all tasks to execute
+    // the status() function.
+    writeUpdaterStatus(false);
 
     // Write neuron statistics.
     writeNeuronStatisticsEpoch();
@@ -2135,7 +2143,7 @@ void Training::loop()
         if (myRank == 0) writeLearningCurve(true);
 
         // Write updater status to file.
-        if (myRank == 0) writeUpdaterStatus(true);
+        writeUpdaterStatus(true);
 
         // Write neuron statistics.
         writeNeuronStatisticsEpoch();
