@@ -166,11 +166,11 @@ void Training::selectSets()
     {
         if (hasStructures && (numMyForcesTrainPerElement.at(i) == 0))
         {
-            throw runtime_error(strpr("ERROR: Process %d has no atoms of "
-                                      "element %d (%2s).\n",
-                                      myRank,
-                                      i,
-                                      elementMap[i].c_str()));
+            log << strpr("WARNING: Process %d has no atoms of element "
+                         "%d (%2s).\n",
+                         myRank,
+                         i,
+                         elementMap[i].c_str());
         }
     }
     MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTrain, 1, MPI_SIZE_T, MPI_SUM, comm);
