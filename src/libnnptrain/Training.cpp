@@ -40,6 +40,7 @@ Training::Training() : Dataset(),
                        jacobianMode               (JM_SUM         ),
                        updateStrategy             (US_COMBINED    ),
                        selectionMode              (SM_RANDOM      ),
+                       decouplingType             (DT_GLOBAL      ),
                        hasUpdaters                (false          ),
                        hasStructures              (false          ),
                        useForces                  (false          ),
@@ -300,7 +301,13 @@ void Training::initializeWeights()
                 w.at(i).at(j) = minWeights + gsl_rng_uniform(rngGlobal)
                               * (maxWeights - minWeights);
             }
-            elements.at(i).neuralNetwork->setConnections(&(w.at(i).front()));
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+            // To be consistent this should actually be the non-AO version,
+            // but this way results stay comparable.
+            elements.at(i).neuralNetwork->setConnectionsAO(&(w.at(i).front()));
+#else
+            elements.at(i).neuralNetwork->setConnectionsAO(&(w.at(i).front()));
+#endif
         }
         if (settings.keywordExists("nguyen_widrow_weights_short"))
         {
@@ -991,6 +998,44 @@ void Training::setupTraining()
     {
         kalmanType = (KalmanFilter::KalmanType)
                      atoi(settings["kalman_type"].c_str());
+        decouplingType = (DecouplingType)
+                         atoi(settings["decoupling_type"].c_str());
+        if (decouplingType == DT_GLOBAL)
+        {
+            log << strpr("No decoupling (GEKF) selected: DT_GLOBAL (%d).\n",
+                         decouplingType);
+        }
+        else if (decouplingType == DT_ELEMENT)
+        {
+            log << strpr("Per-element decoupling (ED-GEKF) selected: "
+                         "DT_ELEMENT (%d).\n", decouplingType);
+        }
+        else if (decouplingType == DT_LAYER)
+        {
+            log << strpr("Per-layer decoupling selected: "
+                         "DT_LAYER (%d).\n", decouplingType);
+        }
+        else if (decouplingType == DT_NODE)
+        {
+            log << strpr("Per-node decoupling (NDEKF) selected: "
+                         "DT_NODE (%d).\n", decouplingType);
+        }
+        else if (decouplingType == DT_FULL)
+        {
+            log << strpr("Full (per-weight) decoupling selected: "
+                         "DT_FULL (%d).\n", decouplingType);
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown Kalman filter decoupling "
+                                "type.\n");
+        }
+        if (decouplingType != DT_GLOBAL && updateStrategy != US_COMBINED)
+        {
+            throw runtime_error(strpr("ERROR: Kalman filter decoupling works "
+                                      "only in conjunction with "
+                                      "update_strategy %d\".\n", US_COMBINED));
+        }
     }
 
     for (size_t i = 0; i < numUpdaters; ++i)
@@ -1008,6 +1053,81 @@ void Training::setupTraining()
                 updaters.push_back(
                     (Updater*)new KalmanFilter(numWeightsPerUpdater.at(i),
                                                kalmanType));
+                KalmanFilter* u = dynamic_cast<KalmanFilter*>(updaters.back());
+                if (parallelMode == PM_TRAIN_ALL)
+                {
+                    u->setupMPI(&comm);
+                }
+                else
+                {
+                    MPI_Group groupWorld;
+                    MPI_Comm_group(comm, &groupWorld);
+                    int const size0 = 1;
+                    int const rank0[1] = {0};
+                    MPI_Group groupRank0;
+                    MPI_Group_incl(groupWorld, size0, rank0, &groupRank0);
+                    MPI_Comm commRank0;
+                    MPI_Comm_create_group(comm, groupRank0, 0, &commRank0);
+                    u->setupMPI(&commRank0);
+                }
+                vector<pair<size_t, size_t>> limits;
+                if (decouplingType == DT_GLOBAL)
+                {
+                    limits.push_back(
+                        make_pair(0, numWeightsPerUpdater.at(i) - 1));
+                }
+                else if (decouplingType == DT_ELEMENT)
+                {
+                    for (size_t j = 0; j < numElements; ++j)
+                    {
+                        limits.push_back(make_pair(
+                            weightsOffset.at(j),
+                            weightsOffset.at(j) + elements.at(j).
+                                neuralNetwork->getNumConnections() - 1));
+                    }
+                }
+                else if (decouplingType == DT_LAYER)
+                {
+                    for (size_t j = 0; j < numElements; ++j)
+                    {
+                        for (auto l : elements.at(j).neuralNetwork
+                                      ->getLayerLimits())
+                        {
+                            limits.push_back(make_pair(
+                                weightsOffset.at(j) + l.first,
+                                weightsOffset.at(j) + l.second));
+                        }
+                    }
+                }
+                else if (decouplingType == DT_NODE)
+                {
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+                    for (size_t j = 0; j < numElements; ++j)
+                    {
+                        for (auto l : elements.at(j).neuralNetwork
+                                      ->getNeuronLimits())
+                        {
+                            limits.push_back(make_pair(
+                                weightsOffset.at(j) + l.first,
+                                weightsOffset.at(j) + l.second));
+                        }
+                    }
+#else
+                    throw runtime_error("ERROR: Node-decoupled Kalman filter "
+                                        "(NDEFK) training not possible with "
+                                        "alternative (old) weight memory "
+                                        "layout, recompile without "
+                                        "-DALTERNATIVE_WEIGHT_ORDERING.\n");
+#endif
+                }
+                else if (decouplingType == DT_FULL)
+                {
+                    for (size_t j = 0; j < numWeightsPerUpdater.at(i); ++j)
+                    {
+                        limits.push_back(make_pair(j, j));
+                    }
+                }
+                u->setupDecoupling(limits);
             }
             updaters.back()->setState(&(weights.at(i).front()));
         }
@@ -1432,7 +1552,7 @@ void Training::calculateErrorEpoch()
         fileNameForcesTest = strpr("testforces.%06zu.out", epoch);
     }
 
-    // Calculate RMSE and write comparison files.
+    // Calculate error and write comparison files.
     calculateError(true,
                    identifier,
                    fileNameEnergiesTrain,
@@ -1452,7 +1572,9 @@ void Training::writeWeights(string const fileNameFormat) const
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         file.open(fileName.c_str());
-        elements.at(i).neuralNetwork->writeConnections(file);
+        // Attention: need alternative (old) ordering scheme here for
+        // backward compatibility!
+        elements.at(i).neuralNetwork->writeConnectionsAO(file);
         file.close();
     }
 
@@ -1629,7 +1751,7 @@ void Training::writeNeuronStatistics(string const fileName) const
         vector<string> colInfo;
         vector<size_t> colSize;
         title.push_back("Statistics for individual neurons gathered during "
-                        "RMSE calculation.");
+                        "error calculation.");
         colSize.push_back(10);
         colName.push_back("element");
         colInfo.push_back("Element index.");
@@ -1743,24 +1865,31 @@ void Training::writeUpdaterStatus(bool         append,
 
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        string fileName;
-        if (updateStrategy == US_COMBINED)
+        if (myRank == 0)
         {
-            fileName = strpr(fileNameFormat.c_str(), 0);
+            string fileName;
+            if (updateStrategy == US_COMBINED)
+            {
+                fileName = strpr(fileNameFormat.c_str(), 0);
+            }
+            else if (updateStrategy == US_ELEMENT)
+            {
+                fileName = strpr(fileNameFormat.c_str(),
+                                 elementMap.atomicNumber(i));
+            }
+            if (append) file.open(fileName.c_str(), ofstream::app);
+            else
+            {
+                file.open(fileName.c_str());
+                appendLinesToFile(file, updaters.at(i)->statusHeader());
+            }
+            file << updaters.at(i)->status(epoch);
+            file.close();
         }
-        else if (updateStrategy == US_ELEMENT)
+        else if (parallelMode == PM_TRAIN_ALL)
         {
-            fileName = strpr(fileNameFormat.c_str(),
-                             elementMap.atomicNumber(i));
+            updaters.at(i)->status(epoch);
         }
-        if (append) file.open(fileName.c_str(), ofstream::app);
-        else 
-        {
-            file.open(fileName.c_str());
-            appendLinesToFile(file, updaters.at(i)->statusHeader());
-        }
-        file << updaters.at(i)->status(epoch);
-        file.close();
     }
 
     return;
@@ -1884,7 +2013,7 @@ void Training::loop()
     else if (errorMetricForces == 1) metric = "MAE";
     if (errorMetricEnergies % 2 == 0) peratom = "per atom ";
 
-    log << "The training loop output covers different RMSEs, update and\n";
+    log << "The training loop output covers different errors, update and\n";
     log << "timing information. The following quantities are organized\n";
     log << "according to the matrix scheme below:\n";
     log << "-------------------------------------------------------------------\n";
@@ -1911,7 +2040,7 @@ void Training::loop()
     log << "Abbreviations:\n";
     log << "  p. u. = physical units.\n";
     log << "  i. u. = internal units.\n";
-    log << "Note: RMSEs in internal units (columns 5 + 6) are only present \n";
+    log << "Note: Errors in internal units (columns 5 + 6) are only present \n";
     log << "      if data set normalization is used.\n";
     log << "-------------------------------------------------------------------\n";
     log << "     1    2             3             4             5             6\n";
@@ -1940,8 +2069,9 @@ void Training::loop()
     // Write learning curve.
     if (myRank == 0) writeLearningCurve(false);
 
-    // Write updater status to file.
-    if (myRank == 0) writeUpdaterStatus(false);
+    // Write updater status to file (decoupled KF requires all tasks to execute
+    // the status() function.
+    writeUpdaterStatus(false);
 
     // Write neuron statistics.
     writeNeuronStatisticsEpoch();
@@ -2013,7 +2143,7 @@ void Training::loop()
         if (myRank == 0) writeLearningCurve(true);
 
         // Write updater status to file.
-        if (myRank == 0) writeUpdaterStatus(true);
+        writeUpdaterStatus(true);
 
         // Write neuron statistics.
         writeNeuronStatisticsEpoch();
@@ -2280,6 +2410,22 @@ void Training::update(bool force)
             else
             {
                 nn->calculateDEdc(&(dXdc.at(i).front()));
+                //vector<double> temp(dXdc.at(i).size(), 0.0);
+                //vector<double> tempAO(dXdc.at(i).size(), 0.0);
+                //nn->calculateDEdc(&(temp.front()));
+                //ofstream tf("dedc.out");
+                //size_t count;
+                //count = 0;
+                //sort(temp.begin(), temp.end());
+                //for (auto i : temp) tf << strpr("%zu %16.8E\n", count++, i);
+                //tf.close();
+                //nn->calculateDEdcAO(&(tempAO.front()));
+                //tf.open("dedc.out.ao");
+                //count = 0;
+                //sort(tempAO.begin(), tempAO.end());
+                //for (auto i : tempAO) tf << strpr("%zu %16.8E\n", count++, i);
+                //tf.close();
+                //throw runtime_error("END HERE");
             }
             // Finally sum up Jacobian.
             if (updateStrategy == US_ELEMENT) iu = i;
@@ -2715,7 +2861,11 @@ void Training::getWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork const* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->getConnections(&(weights.at(0).at(pos)));
+#else
+            nn->getConnectionsAO(&(weights.at(0).at(pos)));
+#endif
             pos += nn->getNumConnections();
         }
     }
@@ -2724,7 +2874,11 @@ void Training::getWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork const* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->getConnections(&(weights.at(i).front()));
+#else
+            nn->getConnectionsAO(&(weights.at(i).front()));
+#endif
         }
     }
 
@@ -2739,7 +2893,11 @@ void Training::setWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->setConnections(&(weights.at(0).at(pos)));
+#else
+            nn->setConnectionsAO(&(weights.at(0).at(pos)));
+#endif
             pos += nn->getNumConnections();
         }
     }
@@ -2748,7 +2906,11 @@ void Training::setWeights()
         for (size_t i = 0; i < numElements; ++i)
         {
             NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
             nn->setConnections(&(weights.at(i).front()));
+#else
+            nn->setConnectionsAO(&(weights.at(i).front()));
+#endif
         }
     }
 

@@ -17,8 +17,10 @@
 #ifndef NEURALNETWORK_H
 #define NEURALNETWORK_H
 
+#include <cstddef>   // std::size_t
 #include <fstream>   // std::ofstream
 #include <string>    // std::string
+#include <utility>   // std::pair
 #include <vector>    // std::vector
 
 namespace nnp
@@ -184,29 +186,70 @@ public:
      *            @f[
      *              \underbrace{
      *                \overbrace{
-     *                  a^{01}_{00}, \ldots, a^{01}_{0m_1},
-     *                  a^{01}_{10}, \ldots, a^{01}_{1m_1},
-     *                  \ldots,
-     *                  a^{01}_{n_00}, \ldots, a^{01}_{n_0m_1},
-     *                }^{\text{Weights}}
+     *                  a^{01}_{00}, \ldots, a^{01}_{n_00}, b^{1}_{0}
+     *                }^{\text{Neuron}^{1}_{0}}
      *                \overbrace{
-     *                  b^{1}_{0}, \ldots, b^{1}_{m_1}
-     *                }^{\text{Biases}}
+     *                  a^{01}_{01}, \ldots, a^{01}_{n_01}, b^{1}_{1}
+     *                }^{\text{Neuron}^{1}_{1}}
+     *                  \ldots,
+     *                \overbrace{
+     *                  a^{01}_{0n_1}, \ldots, a^{01}_{n_0n_1}, b^{1}_{n_1}
+     *                }^{\text{Neuron}^{1}_{n_1}}
      *              }_{\text{Layer } 0 \rightarrow 1},
      *              \underbrace{
-     *                a^{12}_{00}, \ldots, b^{2}_{m_2}
+     *                a^{12}_{00}, \ldots, b^{2}_{n_2}
      *              }_{\text{Layer } 1 \rightarrow 2},
      *              \ldots,
      *              \underbrace{
-     *                a^{p-1,p}_{00}, \ldots, b^{p}_{m_p}
+     *                a^{p-1,p}_{00}, \ldots, b^{p}_{n_p}
      *              }_{\text{Layer } p-1 \rightarrow p}
      *            @f]
      *            where @f$a^{i-1, i}_{jk}@f$ is the weight connecting neuron
      *            @f$j@f$ in layer @f$i-1@f$ to neuron @f$k@f$ in layer
      *            @f$i@f$ and @f$b^{i}_{k}@f$ is the bias assigned to neuron
      *            @f$k@f$ in layer @f$i@f$.
+     *
+     *  This ordering scheme is used internally to store weights in memory.
+     *  Because all weights and biases connected to a neuron are aligned in a
+     *  continuous block this memory layout simplifies the implementation of
+     *  node-decoupled Kalman filter training (NDEKF). However, for backward
+     *  compatibility reasons this layout is NOT used for storing weights on
+     *  disk (see setConnectionsAO()).
      */
     void                     setConnections(double const* const& connections);
+    /** Set neural network weights and biases (alternative ordering)
+     *
+     * @param[in] connections One-dimensional array with neural network
+     *                        connections in the following order:
+     *            @f[
+     *              \underbrace{
+     *                \overbrace{
+     *                  a^{01}_{00}, \ldots, a^{01}_{0n_1},
+     *                  a^{01}_{10}, \ldots, a^{01}_{1n_1},
+     *                  \ldots,
+     *                  a^{01}_{n_00}, \ldots, a^{01}_{n_0n_1},
+     *                }^{\text{Weights}}
+     *                \overbrace{
+     *                  b^{1}_{0}, \ldots, b^{1}_{n_1}
+     *                }^{\text{Biases}}
+     *              }_{\text{Layer } 0 \rightarrow 1},
+     *              \underbrace{
+     *                a^{12}_{00}, \ldots, b^{2}_{n_2}
+     *              }_{\text{Layer } 1 \rightarrow 2},
+     *              \ldots,
+     *              \underbrace{
+     *                a^{p-1,p}_{00}, \ldots, b^{p}_{n_p}
+     *              }_{\text{Layer } p-1 \rightarrow p}
+     *            @f]
+     *            where @f$a^{i-1, i}_{jk}@f$ is the weight connecting neuron
+     *            @f$j@f$ in layer @f$i-1@f$ to neuron @f$k@f$ in layer
+     *            @f$i@f$ and @f$b^{i}_{k}@f$ is the bias assigned to neuron
+     *            @f$k@f$ in layer @f$i@f$.
+     *
+     *  This memory layout is used when storing weights on disk.
+     */
+    void                     setConnectionsAO(
+                                             double const* const& connections);
     /** Get neural network weights and biases.
      *
      * @param[out] connections One-dimensional array with neural network
@@ -214,6 +257,13 @@ public:
      *                         #setConnections())
      */
     void                     getConnections(double* connections) const;
+    /** Get neural network weights and biases (alternative ordering).
+     *
+     * @param[out] connections One-dimensional array with neural network
+     *                         connections (same order as described in
+     *                         #setConnectionsAO())
+     */
+    void                     getConnectionsAO(double* connections) const;
     /** Initialize connections with random numbers.
      *
      * @param[in] seed Random number generator seed.
@@ -243,14 +293,14 @@ public:
                                          ModificationScheme modificationScheme,
                                          double             parameter1,
                                          double             parameter2);
-    /** Set neural network input layer node values.
+    /** Set neural network input layer neuron values.
      *
-     * @param[in] input Input layer node values.
+     * @param[in] input Input layer neuron values.
      */
     void                     setInput(double const* const& input) const;
-    /** Get neural network output layer node values.
+    /** Get neural network output layer neuron values.
      *
-     * @param[out] output Output layer node values.
+     * @param[out] output Output layer neuron values.
      */
     void                     getOutput(double* output) const;
     /** Get neuron values (activations) for all layers.
@@ -340,9 +390,19 @@ public:
                                            double const* const& dGdxyz) const;
     /** Write connections to file.
      *
+     * __CAUTION__: For compatibility reasons this format is NOT used for
+     * storing NN weights to disk!
+     *
      * @param[in,out] file File stream to write to.
      */
     void                     writeConnections(std::ofstream& file) const;
+    /** Write connections to file (alternative ordering).
+     *
+     * This NN weights ordering layout is used when writing weights to disk.
+     *
+     * @param[in,out] file File stream to write to.
+     */
+    void                     writeConnectionsAO(std::ofstream& file) const;
     /** Return gathered neuron statistics.
      *
      * @param[out] count Number of neuron output value calculations.
@@ -377,6 +437,24 @@ public:
      * Counters and summation variables for neuron statistics are reset.
      */
     void                     resetNeuronStatistics();
+    /** Get layer limits in combined weight vector (for Kalman filter
+     * decoupling setup).
+     *
+     * @return Vector with layer limits as pair (begin, end),
+     * (numLayers - 1) points.
+     */
+    std::vector<std::pair<
+    std::size_t,
+    std::size_t>>            getLayerLimits() const;
+    /** Get neuron limits in combined weight vector (for Kalman filter
+     * decoupling setup).
+     *
+     * @return Vector with neuron limits as pair (begin, end),
+     * (numNeurons - inputLayer->numNeurons) points.
+     */
+    std::vector<std::pair<
+    std::size_t,
+    std::size_t>>            getNeuronLimits() const;
     //void   writeStatus(int, int);
     long                     getMemoryUsage();
     /** Print neural network architecture.
@@ -448,8 +526,13 @@ private:
     int    numHiddenLayers;
     /// Offset adress of weights per layer in combined weights+bias array.
     int*   weightOffset;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    /// Offset adress of each neuron per layer in combined weights+bias array.
+    int**  biasOffset;
+#else
     /// Offset adress of biases per layer in combined weights+bias array.
     int*   biasOffset;
+#endif
     /// Offset adress of biases per layer in bias only array.
     int*   biasOnlyOffset;
     /// Pointer to input layer.

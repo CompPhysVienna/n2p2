@@ -80,12 +80,26 @@ NeuralNetwork(int                              numLayers,
         weightOffset[i] = weightOffset[i-1] +
                           (layers[i-1].numNeurons + 1) * layers[i].numNeurons;
     }
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    biasOffset = new int*[numLayers-1];
+    for (int i = 0; i < numLayers-1; i++)
+    {
+        biasOffset[i] = new int[layers[i+1].numNeurons];
+        for (int j = 0; j < layers[i+1].numNeurons; j++)
+        {
+            biasOffset[i][j] = weightOffset[i]
+                             + (layers[i+1].numNeuronsPrevLayer + 1)
+                             * (j + 1) - 1;
+        }
+    }
+#else
     biasOffset = new int[numLayers-1];
     for (int i = 0; i < numLayers-1; i++)
     {
         biasOffset[i] = weightOffset[i] +
                         layers[i+1].numNeurons * layers[i].numNeurons;
     }
+#endif
     biasOnlyOffset = new int[numLayers-1];
     biasOnlyOffset[0] = 0;
     for (int i = 1; i < numLayers-1; i++)
@@ -106,7 +120,15 @@ NeuralNetwork::~NeuralNetwork()
     }
     delete[] layers;
     delete[] weightOffset;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    for (int i = 0; i < numLayers - 1; i++)
+    {
+        delete[] biasOffset[i];
+    }
     delete[] biasOffset;
+#else
+    delete[] biasOffset;
+#endif
     delete[] biasOnlyOffset;
 }
 
@@ -150,6 +172,27 @@ void NeuralNetwork::setConnections(double const* const& connections)
 
     for (int i = 1; i < numLayers; i++)
     {
+        for (int j = 0; j < layers[i].numNeurons; j++)
+        {
+            for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+            {
+                layers[i].neurons[j].weights[k] = connections[count];
+                count++;
+            }
+            layers[i].neurons[j].bias = connections[count];
+            count++;
+        }
+    }
+
+    return;
+}
+
+void NeuralNetwork::setConnectionsAO(double const* const& connections)
+{
+    int count = 0;
+
+    for (int i = 1; i < numLayers; i++)
+    {
         for (int j = 0; j < layers[i].numNeuronsPrevLayer; j++)
         {
             for (int k = 0; k < layers[i].numNeurons; k++)
@@ -169,6 +212,27 @@ void NeuralNetwork::setConnections(double const* const& connections)
 }
 
 void NeuralNetwork::getConnections(double* connections) const
+{
+    int count = 0;
+
+    for (int i = 1; i < numLayers; i++)
+    {
+        for (int j = 0; j < layers[i].numNeurons; j++)
+        {
+            for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+            {
+                connections[count] = layers[i].neurons[j].weights[k] ;
+                count++;
+            }
+            connections[count] = layers[i].neurons[j].bias;
+            count++;
+        }
+    }
+
+    return;
+}
+
+void NeuralNetwork::getConnectionsAO(double* connections) const
 {
     int count = 0;
 
@@ -547,6 +611,52 @@ void NeuralNetwork::calculateDEdG(double *dEdG) const
 
 void NeuralNetwork::calculateDEdc(double* dEdc) const
 {
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    int count = 0;
+
+    for (int i = 0; i < numConnections; i++)
+    {
+        dEdc[i] = 0.0;
+    }
+
+    for (int i = 0; i < outputLayer->numNeurons; i++)
+    {
+        dEdc[biasOffset[numLayers-2][i]] = outputLayer->neurons[i].dfdx;
+        if (normalizeNeurons)
+        {
+            dEdc[biasOffset[numLayers-2][i]] /=
+                outputLayer->numNeuronsPrevLayer;
+        }
+    }
+
+    for (int i = numLayers - 2; i >= 0; i--)
+    {
+        count = 0;
+        for (int j = 0; j < layers[i+1].numNeurons; j++)
+        {
+            for (int k = 0; k < layers[i].numNeurons; k++)
+            {
+                dEdc[weightOffset[i]+count] = dEdc[biasOffset[i][j]]
+                                            * layers[i].neurons[k].value;
+                count++;
+                if (i >= 1)
+                {
+                    dEdc[biasOffset[i-1][k]] += dEdc[biasOffset[i][j]]
+                        * layers[i+1].neurons[j].weights[k]
+                        * layers[i].neurons[k].dfdx;
+                }
+            }
+            count++;
+        }
+        if (normalizeNeurons && i >= 1)
+        {
+            for (int k = 0; k < layers[i].numNeurons; k++)
+            {
+                dEdc[biasOffset[i-1][k]] /= layers[i].numNeuronsPrevLayer;
+            }
+        }
+    }
+#else
     int count = 0;
 
     for (int i = 0; i < numConnections; i++)
@@ -587,6 +697,7 @@ void NeuralNetwork::calculateDEdc(double* dEdc) const
             }
         }
     }
+#endif
 
     return;
 }
@@ -631,6 +742,67 @@ void NeuralNetwork::calculateDFdc(double*              dFdc,
 }
 
 void NeuralNetwork::writeConnections(std::ofstream& file) const
+{
+    // File header.
+    vector<string> title;
+    vector<string> colName;
+    vector<string> colInfo;
+    vector<size_t> colSize;
+    title.push_back("Neural network connection values (weights and biases).");
+    colSize.push_back(24);
+    colName.push_back("connection");
+    colInfo.push_back("Neural network connection value.");
+    colSize.push_back(1);
+    colName.push_back("t");
+    colInfo.push_back("Connection type (a = weight, b = bias).");
+    colSize.push_back(9);
+    colName.push_back("index");
+    colInfo.push_back("Index enumerating weights.");
+    colSize.push_back(5);
+    colName.push_back("l_s");
+    colInfo.push_back("Starting point layer (end point layer for biases).");
+    colSize.push_back(5);
+    colName.push_back("n_s");
+    colInfo.push_back("Starting point neuron in starting layer (end point "
+                      "neuron for biases).");
+    colSize.push_back(5);
+    colName.push_back("l_e");
+    colInfo.push_back("End point layer.");
+    colSize.push_back(5);
+    colName.push_back("n_e");
+    colInfo.push_back("End point neuron in end layer.");
+    appendLinesToFile(file,
+                      createFileHeader(title, colSize, colName, colInfo));
+
+    int count = 0;
+    for (int i = 1; i < numLayers; i++)
+    {
+        for (int j = 0; j < layers[i].numNeurons; j++)
+        {
+            for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+            {
+                count++;
+                file << strpr("%24.16E a %9d %5d %5d %5d %5d\n",
+                              layers[i].neurons[j].weights[k],
+                              count,
+                              i - 1,
+                              k + 1,
+                              i,
+                              j + 1);
+            }
+            count++;
+            file << strpr("%24.16E b %9d %5d %5d\n",
+                          layers[i].neurons[j].bias,
+                          count,
+                          i,
+                          j + 1);
+        }
+    }
+
+    return;
+}
+
+void NeuralNetwork::writeConnectionsAO(std::ofstream& file) const
 {
     // File header.
     vector<string> title;
@@ -764,6 +936,67 @@ void NeuralNetwork::calculateD2EdGdc(int                  index,
                                      double const* const& dEdb,
                                      double*              d2EdGdc) const
 {
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    int count = 0;
+
+    for (int i = 0; i < outputLayer->numNeurons; i++)
+    {
+        d2EdGdc[biasOffset[numLayers-2][i]] = outputLayer->neurons[i].d2fdx2
+                                            * outputLayer->neurons[i].dxdG;
+        if (normalizeNeurons)
+        {
+            d2EdGdc[biasOffset[numLayers-2][i]] /=
+                outputLayer->numNeuronsPrevLayer;
+        }
+    }
+
+    for (int i = numLayers-2; i >= 0; i--)
+    {
+        count = 0;
+        for (int j = 0; j < layers[i+1].numNeurons; j++)
+        {
+            for (int k = 0; k < layers[i].numNeurons; k++)
+            {
+                if (i == 0)
+                {
+                    d2EdGdc[weightOffset[i]+count] = d2EdGdc[biasOffset[i][j]]
+                        * layers[i].neurons[k].value;
+                    if (k == index)
+                    {
+                        d2EdGdc[weightOffset[i]+count] +=
+                            dEdb[biasOnlyOffset[i]+j];
+                    }
+                }
+                else
+                {
+                    d2EdGdc[weightOffset[i]+count] = d2EdGdc[biasOffset[i][j]]
+                        * layers[i].neurons[k].value
+                        + dEdb[biasOnlyOffset[i]+j] * layers[i].neurons[k].dfdx
+                        * layers[i].neurons[k].dxdG;
+                }
+                count++;
+                if (i >= 1)
+                {
+                    d2EdGdc[biasOffset[i-1][k]] +=
+                        layers[i+1].neurons[j].weights[k]
+                        * (d2EdGdc[biasOffset[i][j]]
+                        * layers[i].neurons[k].dfdx
+                        + dEdb[biasOnlyOffset[i]+j]
+                        * layers[i].neurons[k].d2fdx2
+                        * layers[i].neurons[k].dxdG);
+                }
+            }
+            count++;
+        }
+        for (int k = 0; k < layers[i].numNeurons; k++)
+        {
+            if (normalizeNeurons && i >= 1)
+            {
+                d2EdGdc[biasOffset[i-1][k]] /= layers[i].numNeuronsPrevLayer;
+            }
+        }
+    }
+#else
     int count = 0;
 
     for (int i = 0; i < outputLayer->numNeurons; i++)
@@ -818,6 +1051,7 @@ void NeuralNetwork::calculateD2EdGdc(int                  index,
             }
         }
     }
+#endif
 
     return;
 }
@@ -1040,6 +1274,45 @@ void NeuralNetwork::getNeuronStatistics(long*   count,
     return;
 }
 
+vector<pair<size_t, size_t>> NeuralNetwork::getLayerLimits() const
+{
+    vector<pair<size_t, size_t>> limits;
+
+    for (int i = 0; i < numLayers - 2; ++i)
+    {
+        limits.push_back(make_pair(weightOffset[i],
+                                       weightOffset[i + 1] - 1));
+    }
+    limits.push_back(make_pair(weightOffset[numLayers - 2],
+                                   numConnections - 1));
+
+    return limits;
+}
+
+vector<pair<size_t, size_t>> NeuralNetwork::getNeuronLimits() const
+{
+    vector<pair<size_t, size_t>> limits;
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    for (int i = 0; i < numLayers - 1; ++i)
+    {
+        limits.push_back(make_pair(weightOffset[i],
+                                       biasOffset[i][0]));
+        for (int j = 0; j < layers[i+1].numNeurons - 1; ++j)
+        {
+            limits.push_back(make_pair(biasOffset[i][j] + 1,
+                                           biasOffset[i][j+1]));
+
+        }
+    }
+#else
+    throw runtime_error("ERROR: Neuron boundaries not available with "
+                        "alternative (old) weight memory layout, recompile "
+                        "without -DALTERNATIVE_WEIGHT_ORDERING.\n");
+#endif
+
+    return limits;
+}
+
 /*
 void NeuralNetwork::writeStatus(int element, int epoch)
 {
@@ -1088,7 +1361,15 @@ long NeuralNetwork::getMemoryUsage()
     int  numNeurons = getNumNeurons();
 
     mem += (numLayers - 1) * sizeof(int); // weightOffset
+#ifndef ALTERNATIVE_WEIGHT_ORDERING
+    mem += (numLayers - 1) * sizeof(int*); // biasOffset
+    for (int i = 0; i < numLayers - 1; i++)
+    {
+        mem += layers[i].numNeurons * sizeof(int);
+    }
+#else
     mem += (numLayers - 1) * sizeof(int); // biasOffset
+#endif
     mem += (numLayers - 1) * sizeof(int); // biasOnlyOffset
     mem += numLayers  * sizeof(Layer);    // layers
     mem += numNeurons * sizeof(Neuron);   // neurons

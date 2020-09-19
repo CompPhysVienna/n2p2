@@ -110,6 +110,21 @@ public:
         SM_THRESHOLD
     };
 
+    /// Kalman filter decoupling type (requires UT_KF and US_COMBINED).
+    enum DecouplingType
+    {
+        /// No decoupling, global extended Kalman filter (GEKF).
+        DT_GLOBAL,
+        /// Per-element decoupling, ED-GEKF (doi.org/10.1021/acs.jctc.5b00211).
+        DT_ELEMENT,
+        /// Layer decoupling.
+        DT_LAYER,
+        /// Node decoupling, NDEKF.
+        DT_NODE,
+        /// Full decoupling, FDEKF.
+        DT_FULL
+    };
+
     /// Constructor.
     Training();
     /// Destructor, updater vector needs to be cleaned.
@@ -309,6 +324,8 @@ private:
     UpdateStrategy                updateStrategy;
     /// Selection mode for update candidates.
     SelectionMode                 selectionMode;
+    /// Kalman filter decoupling type if KF training selected.
+    DecouplingType                decouplingType;
     /// If this rank performs weight updates.
     bool                          hasUpdaters;
     /// If this rank holds structure information.
