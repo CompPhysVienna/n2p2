@@ -44,7 +44,6 @@ endif
 APP_CORE=nnp-convert \
          nnp-cutoff \
          nnp-dist \
-	 nnp-winit \
          nnp-predict \
          nnp-prune \
          nnp-select \
@@ -56,7 +55,8 @@ APP_TRAIN=nnp-comp2 \
           nnp-dataset \
           nnp-norm \
           nnp-scaling \
-          nnp-sfclust
+          nnp-sfclust \
+          nnp-winit
 
 # All applications together.
 APP=$(APP_CORE) $(APP_TRAIN) nnp-train

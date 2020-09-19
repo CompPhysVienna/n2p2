@@ -231,36 +231,119 @@ void NeuralNetwork::modifyConnections(ModificationScheme modificationScheme)
             }
         }
     }
-    else if (modificationScheme == MS_FANIN)
+    else if (modificationScheme == MS_FANIN_UNIFORM)
     {
         for (int i = 1; i < numLayers; i++)
         {
-            if(layers[i].activationFunction == AF_TANH)
+            for (int j = 0; j < layers[i].numNeurons; j++)
             {
-                for (int j = 0; j < layers[i].numNeurons; j++)
+                for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
                 {
-                    for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+                    if(layers[i].activationFunction == AF_TANH)
                     {
-                        layers[i].neurons[j].weights[k] /=
-                                           sqrt(layers[i].numNeuronsPrevLayer);
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(3.0 / layers[i].numNeuronsPrevLayer);
+                    }
+                    else if(layers[i].activationFunction == AF_LOGISTIC)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            4.0 * sqrt(3.0 / layers[i].numNeuronsPrevLayer);
+                    }
+                    else if(layers[i].activationFunction == AF_RELU ||
+                            layers[i].activationFunction == AF_SOFTPLUS)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(6.0 / layers[i].numNeuronsPrevLayer);
                     }
                 }
             }
         }
     }
-    else if (modificationScheme == MS_GLOROTBENGIO)
+    else if (modificationScheme == MS_FANIN_NORMAL)
     {
         for (int i = 1; i < numLayers; i++)
         {
-            if(layers[i].activationFunction == AF_TANH)
+            for (int j = 0; j < layers[i].numNeurons; j++)
             {
-                for (int j = 0; j < layers[i].numNeurons; j++)
+                for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
                 {
-                    for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+                    if(layers[i].activationFunction == AF_TANH)
                     {
-                        layers[i].neurons[j].weights[k] *= sqrt(6.0 / (
-                                             layers[i].numNeuronsPrevLayer
-                                           + layers[i].numNeurons));
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(1.0 / layers[i].numNeuronsPrevLayer);
+                    }
+                    else if(layers[i].activationFunction == AF_LOGISTIC)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            4.0 * sqrt(1.0 / layers[i].numNeuronsPrevLayer);
+                    }
+                    else if(layers[i].activationFunction == AF_RELU ||
+                            layers[i].activationFunction == AF_SOFTPLUS)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(2.0 / layers[i].numNeuronsPrevLayer);
+                    }
+                }
+            }
+        }
+    }
+    else if (modificationScheme == MS_GLOROTBENGIO_UNIFORM)
+    {
+        for (int i = 1; i < numLayers; i++)
+        {
+            for (int j = 0; j < layers[i].numNeurons; j++)
+            {
+                for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+                {
+                    if(layers[i].activationFunction == AF_TANH)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(6.0 / (layers[i].numNeuronsPrevLayer
+                                      + layers[i].numNeurons));
+                    }
+                    else if(layers[i].activationFunction == AF_LOGISTIC)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            4.0 * sqrt(6.0 / (layers[i].numNeuronsPrevLayer
+                                            + layers[i].numNeurons));
+                    }
+                    else if(layers[i].activationFunction == AF_RELU ||
+                            layers[i].activationFunction == AF_SOFTPLUS)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(12.0 / (layers[i].numNeuronsPrevLayer
+                                       + layers[i].numNeurons));
+                    }
+                }
+            }
+        }
+    }
+    else if (modificationScheme == MS_GLOROTBENGIO_NORMAL)
+    {
+        for (int i = 1; i < numLayers; i++)
+        {
+            for (int j = 0; j < layers[i].numNeurons; j++)
+            {
+                for (int k = 0; k < layers[i].numNeuronsPrevLayer; k++)
+                {
+                    if(layers[i].activationFunction == AF_TANH)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(2.0 / (layers[i].numNeuronsPrevLayer
+                                      + layers[i].numNeurons));
+                    }
+                    else if(layers[i].activationFunction == AF_LOGISTIC)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            4.0 * sqrt(2.0 / (layers[i].numNeuronsPrevLayer
+                                            + layers[i].numNeurons));
+                    }
+                    else if(layers[i].activationFunction == AF_RELU ||
+                            layers[i].activationFunction == AF_SOFTPLUS)
+                    {
+                        layers[i].neurons[j].weights[k] *=
+                            sqrt(4.0 / (layers[i].numNeuronsPrevLayer
+                                      + layers[i].numNeurons));
                     }
                 }
             }
@@ -366,6 +449,42 @@ void NeuralNetwork::getOutput(double* output) const
     }
 
     return;
+}
+
+vector<vector<double>> NeuralNetwork::getNeuronsPerLayer() const
+{
+    vector<vector<double>> output;
+
+    for (int i = 0; i < numLayers; ++i)
+    {
+        output.push_back(vector<double>());
+        for (int j = 0; j < layers[i].numNeurons; ++j)
+        {
+            output.back().push_back(layers[i].neurons[j].value);
+        }
+    }
+
+    return output;
+}
+
+vector<vector<double>> NeuralNetwork::getGradientsPerLayer() const
+{
+    vector<vector<double>> output;
+
+    double* dEdc = new double[getNumConnections()];
+    calculateDEdc(dEdc);
+
+    for (int i = 0; i < numLayers - 2; ++i)
+    {
+        output.push_back(vector<double>(dEdc + weightOffset[i],
+                                        dEdc + weightOffset[i + 1]));
+    }
+    output.push_back(vector<double>(dEdc + weightOffset[numLayers - 2],
+                                    dEdc + getNumConnections()));
+
+    delete[] dEdc;
+
+    return output;
 }
 
 void NeuralNetwork::propagate()

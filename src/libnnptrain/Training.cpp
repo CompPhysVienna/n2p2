@@ -330,7 +330,7 @@ void Training::initializeWeights()
                  it != elements.end(); ++it)
             {
                 it->neuralNetwork->
-                    modifyConnections(NeuralNetwork::MS_GLOROTBENGIO);
+                    modifyConnections(NeuralNetwork::MS_GLOROTBENGIO_UNIFORM);
                 //it->neuralNetwork->
                 //    modifyConnections(NeuralNetwork::MS_ZEROOUTPUTWEIGHTS);
                 it->neuralNetwork->

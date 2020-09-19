@@ -64,28 +64,60 @@ public:
          *
          * If initial weights are uniformly distributed in
          * @f$\left[-1, 1\right]@f$ they will be scaled to be in
+         * @f$\left[-\sqrt{\frac{3}{n_\text{in}}},
+         * \sqrt{\frac{3}{n_\text{in}}}\right]@f$, where @f$n_\text{in}@f$ is
+         * the number of incoming weights of a neuron. The interval is
+         * valid for #AF_TANH and is slightly modified for #AF_LOGISTIC,
+         * #AF_RELU and #AF_SOFTPLUS. Weights are not modified for other
+         * activation functions.
+         */
+        MS_FANIN_UNIFORM,
+        /** Normalize weights via number of neuron inputs (fan-in).
+         *
+         * If initial weights are uniformly distributed in
+         * @f$\left[-1, 1\right]@f$ they will be scaled to be in
          * @f$\left[\frac{-1}{\sqrt{n_\text{in}}},
          * \frac{1}{\sqrt{n_\text{in}}}\right]@f$, where @f$n_\text{in}@f$ is
-         * the number of incoming weights of a neuron (if activation
-         * function is of type #AF_TANH).
+         * the number of incoming weights of a neuron. The interval is
+         * valid for #AF_TANH and is slightly modified for #AF_LOGISTIC,
+         * #AF_RELU and #AF_SOFTPLUS. Weights are not modified for other
+         * activation functions.
          */
-        MS_FANIN,
+        MS_FANIN_NORMAL,
         /** Normalize connections according to Glorot and Bengio.
          *
          * If initial weights are uniformly distributed in
          * @f$\left[-1, 1\right]@f$ they will be scaled to be in
          * @f$\left[-\sqrt{\frac{6}{n_\text{in} + n_\text{out}}},
          * \sqrt{\frac{6}{n_\text{in} + n_\text{out}}}\right]@f$, where
-         * @f$n_\text{in}@f$ and @f$n_\text{out}@f$ are the number of incoming
-         * and outgoing weights of a neuron, respectively (if activation
-         * function is of type #AF_TANH).
+         * @f$n_\text{in}@f$ is the number of incoming weihghts and
+         * @f$n_\text{out}@f$ is the number of neurons in this layer.
+         * The interval is valid for #AF_TANH and is slightly modified for
+         * #AF_LOGISTIC, #AF_RELU and #AF_SOFTPLUS.
          *
          * For details see:
          *  - X. Glorot and Y. Bengio, "Understanding the difficulty of
          *    training deep feedforward neural networks", International
          *    conference on artificial intelligence and statistics. 2010.
          */
-        MS_GLOROTBENGIO,
+        MS_GLOROTBENGIO_UNIFORM,
+        /** Normalize connections according to Glorot and Bengio.
+         *
+         * If initial weights are normally distributed in
+         * @f$\left[-1, 1\right]@f$ they will be scaled to be in
+         * @f$\left[-\sqrt{\frac{2}{n_\text{in} + n_\text{out}}},
+         * \sqrt{\frac{2}{n_\text{in} + n_\text{out}}}\right]@f$, where
+         * @f$n_\text{in}@f$ is the number of incoming weihghts and
+         * @f$n_\text{out}@f$ is the number of neurons in this layer.
+         * The interval is valid for #AF_TANH and is slightly modified for
+         * #AF_LOGISTIC, #AF_RELU and #AF_SOFTPLUS.
+         *
+         * For details see:
+         *  - X. Glorot and Y. Bengio, "Understanding the difficulty of
+         *    training deep feedforward neural networks", International
+         *    conference on artificial intelligence and statistics. 2010.
+         */
+        MS_GLOROTBENGIO_NORMAL,
         /** Initialize connections according to Nguyen-Widrow scheme.
          *
          * For details see:
@@ -221,6 +253,18 @@ public:
      * @param[out] output Output layer node values.
      */
     void                     getOutput(double* output) const;
+    /** Get neuron values (activations) for all layers.
+     *
+     * @return Vector of neuron values per layer.
+     */
+    std::vector<
+    std::vector<double>>     getNeuronsPerLayer() const;
+    /** Get gradients (derivatives of output w.r.t. weights) for all layers.
+     *
+     * @return Vector of gradients per layer.
+     */
+    std::vector<
+    std::vector<double>>     getGradientsPerLayer() const;
     /** Propagate input information through all layers.
      *
      * With the input data set by #setInput() this will calculate all remaining
