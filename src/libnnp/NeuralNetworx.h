@@ -68,6 +68,10 @@ public:
               std::size_t numNeuronsPrevLayer,
               Activation  activation);
 
+        /// Number of neurons in this layer.
+        std:: size_t    numNeurons;
+        /// Number of neurons in previous layer.
+        std:: size_t    numNeuronsPrevLayer;
         /// Common activation function for all neurons in this layer.
         Activation      fa;
         /// Weights from previous to this layer.
@@ -105,9 +109,141 @@ public:
      * @return Vector of lines for printing.
      */
     std::vector<std::string> info() const;
+    /** Set neural network weights and biases.
+     *
+     * @param[in] connections One-dimensional vector with neural network
+     *                        connections in the following order:
+     *            @f[
+     *              \underbrace{
+     *                \overbrace{
+     *                  a^{01}_{00}, \ldots, a^{01}_{n_00}, b^{1}_{0}
+     *                }^{\text{Neuron}^{1}_{0}}
+     *                \overbrace{
+     *                  a^{01}_{01}, \ldots, a^{01}_{n_01}, b^{1}_{1}
+     *                }^{\text{Neuron}^{1}_{1}}
+     *                  \ldots,
+     *                \overbrace{
+     *                  a^{01}_{0n_1}, \ldots, a^{01}_{n_0n_1}, b^{1}_{n_1}
+     *                }^{\text{Neuron}^{1}_{n_1}}
+     *              }_{\text{Layer } 0 \rightarrow 1},
+     *              \underbrace{
+     *                a^{12}_{00}, \ldots, b^{2}_{n_2}
+     *              }_{\text{Layer } 1 \rightarrow 2},
+     *              \ldots,
+     *              \underbrace{
+     *                a^{p-1,p}_{00}, \ldots, b^{p}_{n_p}
+     *              }_{\text{Layer } p-1 \rightarrow p}
+     *            @f]
+     *            where @f$a^{i-1, i}_{jk}@f$ is the weight connecting neuron
+     *            @f$j@f$ in layer @f$i-1@f$ to neuron @f$k@f$ in layer
+     *            @f$i@f$ and @f$b^{i}_{k}@f$ is the bias assigned to neuron
+     *            @f$k@f$ in layer @f$i@f$.
+     *
+     *  This ordering scheme is used internally to store weights in memory.
+     *  Because all weights and biases connected to a neuron are aligned in a
+     *  continuous block this memory layout simplifies the implementation of
+     *  node-decoupled Kalman filter training (NDEKF). However, for backward
+     *  compatibility reasons this layout is NOT used for storing weights on
+     *  disk (see setConnectionsAO()).
+     */
+    void                     setConnections(std::vector<double> const&
+                                                connections);
+    /** Set neural network weights and biases (alternative ordering)
+     *
+     * @param[in] connections One-dimensional vector with neural network
+     *                        connections in the following order:
+     *            @f[
+     *              \underbrace{
+     *                \overbrace{
+     *                  a^{01}_{00}, \ldots, a^{01}_{0n_1},
+     *                  a^{01}_{10}, \ldots, a^{01}_{1n_1},
+     *                  \ldots,
+     *                  a^{01}_{n_00}, \ldots, a^{01}_{n_0n_1},
+     *                }^{\text{Weights}}
+     *                \overbrace{
+     *                  b^{1}_{0}, \ldots, b^{1}_{n_1}
+     *                }^{\text{Biases}}
+     *              }_{\text{Layer } 0 \rightarrow 1},
+     *              \underbrace{
+     *                a^{12}_{00}, \ldots, b^{2}_{n_2}
+     *              }_{\text{Layer } 1 \rightarrow 2},
+     *              \ldots,
+     *              \underbrace{
+     *                a^{p-1,p}_{00}, \ldots, b^{p}_{n_p}
+     *              }_{\text{Layer } p-1 \rightarrow p}
+     *            @f]
+     *            where @f$a^{i-1, i}_{jk}@f$ is the weight connecting neuron
+     *            @f$j@f$ in layer @f$i-1@f$ to neuron @f$k@f$ in layer
+     *            @f$i@f$ and @f$b^{i}_{k}@f$ is the bias assigned to neuron
+     *            @f$k@f$ in layer @f$i@f$.
+     *
+     *  This memory layout is used when storing weights on disk.
+     */
+    void                     setConnectionsAO(std::vector<double> const&
+                                                  connections);
+    /** Get neural network weights and biases.
+     *
+     * @param[out] connections One-dimensional vector with neural network
+     *                         connections (same order as described in
+     *                         #setConnections())
+     */
+    void                     getConnections(std::vector<double>&
+                                                connections) const;
+    /** Get neural network weights and biases (alternative ordering).
+     *
+     * @param[out] connections One-dimensional vector with neural network
+     *                         connections (same order as described in
+     *                         #setConnectionsAO())
+     */
+    void                     getConnectionsAO(std::vector<double>&
+                                                  connections) const;
+    /** Write connections to file.
+     *
+     * __CAUTION__: For compatibility reasons this format is NOT used for
+     * storing NN weights to disk!
+     *
+     * @param[in,out] file File stream to write to.
+     */
+    void                     writeConnections(std::ofstream& file) const;
+    /** Write connections to file (alternative ordering).
+     *
+     * This NN weights ordering layout is used when writing weights to disk.
+     *
+     * @param[in,out] file File stream to write to.
+     */
+    void                     writeConnectionsAO(std::ofstream& file) const;
+    /// Getter for #numLayers
+    std::size_t              getNumLayers() const;
+    /// Getter for #numConnections
+    std::size_t              getNumConnections() const;
+    /// Getter for #numWeights
+    std::size_t              getNumWeights() const;
+    /// Getter for #numBiases
+    std::size_t              getNumBiases() const;
 
 private:
 
+    /** Class initialization.
+     *
+     * @param[in] numNeuronsPerLayer Array with number of neurons per layer.
+     * @param[in] activationPerLayer Array with activation function type per
+     *                               layer (note: input layer activation 
+     *                               function is mandatory although it is never
+     *                               used).
+     *
+     *  Avoid duplicate code due to overloaded constructor.
+     */
+    void initialize(std::vector<size_t>     numNeuronsPerLayer,
+                    std::vector<Activation> activationPerLayer);
+
+    /// Number of neural network layers.
+    std::size_t        numLayers;
+    /// Number of neural network connections (weights + biases).
+    std::size_t        numConnections;
+    /// Number of neural network weights.
+    std::size_t        numWeights;
+    /// Number of neural network biases.
+    std::size_t        numBiases;
     /// Vector of neural network layers.
     std::vector<Layer> layers;
 
@@ -127,6 +263,22 @@ NeuralNetworx::Activation activationFromString(std::string c);
  * @return String representing activation function.
  */
 std::string stringFromActivation(NeuralNetworx::Activation a);
+
+//////////////////////////////////
+// Inlined function definitions //
+//////////////////////////////////
+
+inline
+std::size_t NeuralNetworx::getNumLayers() const {return numLayers;}
+
+inline
+std::size_t NeuralNetworx::getNumConnections() const {return numConnections;}
+
+inline
+std::size_t NeuralNetworx::getNumWeights() const {return numWeights;}
+
+inline
+std::size_t NeuralNetworx::getNumBiases() const {return numBiases;}
 
 }
 

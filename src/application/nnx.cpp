@@ -26,7 +26,12 @@ using namespace nnp;
 int main(int argc, char* argv[])
 {
     vector<size_t> numNeuronsPerLayer = {10, 15, 15, 3};
-    vector<string> activationPerLayer = {"G", "t", "s", "l"};
+    //vector<string> activationPerLayer = {"G", "t", "s", "l"};
+    //NeuralNetworx nn(numNeuronsPerLayer, activationPerLayer);
+    vector<NeuralNetworx::Activation> activationPerLayer = {NeuralNetworx::Activation::IDENTITY,
+                                                            NeuralNetworx::Activation::TANH,
+                                                            NeuralNetworx::Activation::LOGISTIC,
+                                                            NeuralNetworx::Activation::IDENTITY};
     NeuralNetworx nn(numNeuronsPerLayer, activationPerLayer);
 
     for (auto l : nn.info()) cout << l;

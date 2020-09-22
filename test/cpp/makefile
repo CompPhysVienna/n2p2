@@ -34,7 +34,7 @@ OPTIONS+=$(PROJECT_OPTIONS)
 DEBUG=$(PROJECT_DEBUG) $(PROJECT_TEST)
 
 # Extra include paths for compiling.
-INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain
+INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain -I${PROJECT_EIGEN}
 
 # Extra flags for linking.
 LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lboost_unit_test_framework -lboost_filesystem
