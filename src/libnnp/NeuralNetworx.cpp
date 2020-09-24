@@ -67,8 +67,214 @@ NeuralNetworx::Layer::Layer(size_t numNeurons,
         w.resize(numNeurons, numNeuronsPrevLayer);
         b.resize(numNeurons);
         x.resize(numNeurons);
+        dydx.resize(numNeurons);
+        d2ydx2.resize(numNeurons);
     }
     y.resize(numNeurons);
+}
+
+void NeuralNetworx::Layer::propagate(VectorXd const& yp)
+{
+    x = w * yp + b;
+
+    if (fa == Activation::IDENTITY)
+    {
+        y = x;
+        dydx.setOnes();
+        d2ydx2.setZero();
+    }
+    else if (fa == Activation::TANH)
+    {
+        y = x.array().tanh();
+        dydx = 1.0 - y.array() * y.array();
+        d2ydx2 = -2.0 * y.array() * dydx.array();
+    }
+    else if (fa == Activation::LOGISTIC)
+    {
+        y = x.array().unaryExpr(
+            [](double xi)
+            {
+                if      (xi >  EXP_LIMIT) return 1.0;
+                else if (xi < -EXP_LIMIT) return 0.0;
+                else return 1.0 / (1.0 + exp(-xi));
+            });
+        //dydx = (y.array() <= 0.0 || y.array() >= 1.0).select(
+        //    0.0,
+        //    y.array() * (1.0 - y.array()));
+        dydx = y.array().unaryExpr(
+            [](double yi)
+            {
+                if (yi <= 0.0 || yi >= 1.0) return 0.0;
+                else return yi * (1.0 - yi);
+            });
+        //d2ydx2 = (y.array() <= 0.0 || y.array() >= 1.0).select(
+        //    0.0,
+        //    y.array() * (1.0 - y.array()) * (1.0 - 2.0 * y.array()));
+        d2ydx2 = y.array().unaryExpr(
+            [](double yi)
+            {
+                if (yi <= 0.0 || yi >= 1.0) return 0.0;
+                else return yi * (1.0 - yi) * (1.0 - 2.0 * yi);
+                ;
+            });
+    }
+    else if (fa == Activation::SOFTPLUS)
+    {
+        y = x.array().unaryExpr(
+            [](double xi)
+            {
+                if      (xi >  EXP_LIMIT) return xi;
+                else if (xi < -EXP_LIMIT) return 0.0;
+                else return log(1.0 + exp(xi));
+            });
+        dydx = x.array().unaryExpr(
+            [](double xi)
+            {
+                if      (xi >  EXP_LIMIT) return 1.0;
+                else if (xi < -EXP_LIMIT) return 0.0;
+                else return 1.0 / (1.0 + exp(-xi));
+            });
+        d2ydx2 = x.array().unaryExpr(
+            [](double xi)
+            {
+                if      (xi >  EXP_LIMIT) return 0.0;
+                else if (xi < -EXP_LIMIT) return 0.0;
+                else
+                {
+                    double const tmp = 1.0 / (1.0 + exp(-xi));
+                    return tmp * (1.0 - tmp);
+                }
+                ;
+            });
+    }
+    else if (fa == Activation::RELU)
+    {
+        //y = (x.array() > 0.0).select(x, 0.0);
+        y = x.array().unaryExpr(
+            [](double xi)
+            {
+                if (xi > 0.0) return xi;
+                else return 0.0;
+            });
+        //dydx = (x.array() > 0.0).select(VectorXd::Ones(dydx.size()) 0.0);
+        dydx = x.array().unaryExpr(
+            [](double xi)
+            {
+                if (xi > 0.0) return 1.0;
+                else return 0.0;
+            });
+        d2ydx2.setZero();
+    }
+    else if (fa == Activation::GAUSSIAN)
+    {
+        y = (-0.5 * x.array() * x.array()).exp();
+        dydx = -x.array() * y.array();
+        d2ydx2 = (x.array() * x.array() - 1.0) * y.array();
+    }
+    else if (fa == Activation::COS)
+    {
+        y = x.array().cos();
+        dydx = x.array().sin();
+        d2ydx2 = -y.array();
+    }
+    else if (fa == Activation::REVLOGISTIC)
+    {
+        VectorXd const tmp = 1.0 / (1.0 + (-x.array()).exp());
+        y = 1.0 - tmp.array();
+        dydx = tmp.array() * (tmp.array() - 1.0);
+        d2ydx2 = tmp.array() * (tmp.array() - 1.0) * (1.0 - 2.0 * tmp.array());
+    }
+    else if (fa == Activation::EXP)
+    {
+        y = (-x.array()).exp();
+        dydx = -y.array();
+        d2ydx2 = y.array();
+    }
+    else if (fa == Activation::HARMONIC)
+    {
+        y = x.array() * x.array();
+        dydx = 2.0 * x.array();
+        d2ydx2.setConstant(2.0);
+    }
+
+    return;
+}
+
+void NeuralNetworx::Layer::initializeDerivInput()
+{
+    // Multiply each row of weights (i.e. all weights connected to a neuron
+    // of this layer) with derivative of the activation function.
+    dydyi = dydx.asDiagonal() * w;
+
+    return;
+}
+
+void NeuralNetworx::Layer::propagateDerivInput(MatrixXd const& dypdyi)
+{
+    dydyi = dydx.asDiagonal() * (w * dypdyi);
+
+    return;
+}
+
+void NeuralNetworx::setInput(vector<double> const& input)
+{
+    if (input.size() != layers.at(0).numNeurons)
+    {
+        throw runtime_error("ERROR: Input vector does not match number of "
+                            "input layer neurons.");
+    }
+    Map<VectorXd const> y0(input.data(), input.size());
+    layers.at(0).y = y0;
+
+    return;
+}
+
+void NeuralNetworx::propagate(bool deriv)
+{
+    for (size_t i = 1; i < layers.size(); ++i)
+    {
+        layers.at(i).propagate(layers.at(i - 1).y);
+        if (deriv)
+        {
+            if (i == 1) layers.at(i).initializeDerivInput();
+            else layers.at(i).propagateDerivInput(layers.at(i - 1).dydyi);
+        }
+    }
+
+    return;
+}
+
+void NeuralNetworx::propagate(vector<double> const& input, bool deriv)
+{
+    setInput(input);
+    propagate(deriv);
+
+    return;
+}
+
+void NeuralNetworx::getOutput(vector<double>& output) const
+{
+    output.clear();
+    output.insert(output.begin(),
+                  layers.back().y.data(),
+                  layers.back().y.data() + layers.back().y.size());
+
+    return;
+}
+
+void NeuralNetworx::getDerivInput(vector<vector<double>>& derivInput) const
+{
+    derivInput.clear();
+    derivInput.resize(layers.back().dydyi.rows());
+    for (size_t i = 0; i < derivInput.size(); ++i)
+    {
+        for (size_t j = 0; j < layers.at(0).numNeurons; ++j)
+        {
+            derivInput.at(i).push_back(layers.back().dydyi(i, j));
+        }
+    }
+
+    return;
 }
 
 void NeuralNetworx::setConnections(vector<double> const& connections)
@@ -300,6 +506,22 @@ void NeuralNetworx::writeConnectionsAO(std::ofstream& file) const
     }
 
     return;
+}
+
+map<string, double> NeuralNetworx::getNeuronProperties(size_t layer,
+                                                       size_t neuron) const
+{
+    map<string, double> properties;
+
+    properties["y"] = layers.at(layer).y(neuron);
+    if (layers.at(layer).numNeuronsPrevLayer > 0)
+    {
+        properties["x"]      = layers.at(layer).x(neuron);
+        properties["dydx"]   = layers.at(layer).dydx(neuron);
+        properties["d2ydx2"] = layers.at(layer).d2ydx2(neuron);
+    }
+
+    return properties;
 }
 
 vector<string> NeuralNetworx::info() const

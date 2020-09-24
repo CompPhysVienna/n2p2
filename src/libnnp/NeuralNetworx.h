@@ -18,6 +18,7 @@
 #define NEURALNETWORX_H
 
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 #include <Eigen/Core>
@@ -67,6 +68,19 @@ public:
         Layer(std::size_t numNeurons,
               std::size_t numNeuronsPrevLayer,
               Activation  activation);
+        /** Propagate information through this layer.
+         *
+         * @param[in] yp Neuron values from previous layer.
+         */
+        void propagate(Eigen::VectorXd const& yp);
+        /** Initialize #dydyi in this layer.
+         */
+        void initializeDerivInput();
+        /** Propagate derivative information through this layer.
+         *
+         * @param[in] dypdyi Derivatives from previous layer.
+         */
+        void propagateDerivInput(Eigen::MatrixXd const& dypdyi);
 
         /// Number of neurons in this layer.
         std:: size_t    numNeurons;
@@ -82,6 +96,12 @@ public:
         Eigen::VectorXd x;
         /// Neuron values (activation function applied).
         Eigen::VectorXd y;
+        /// Neuron value derivative w.r.t. activation function argument.
+        Eigen::VectorXd dydx;
+        /// Neuron value second derivative w.r.t. activation function argument.
+        Eigen::VectorXd d2ydx2;
+        /// Derivative of neurons w.r.t. neurons in input layer.
+        Eigen::MatrixXd dydyi;
     };
 
     /** Neural network class constructor.
@@ -104,11 +124,36 @@ public:
      */
     NeuralNetworx(std::vector<size_t>      numNeuronsPerLayer,
                   std::vector<std::string> activationStringPerLayer);
-    /** Printable strings with neural network architecture information.
+    /** Set input layer neuron values.
      *
-     * @return Vector of lines for printing.
+     * @param[in] input Vector with input neuron values.
      */
-    std::vector<std::string> info() const;
+    void                     setInput(std::vector<double> const& input);
+    /** Propagate information through all layers (input already set).
+     *
+     * @param[in] deriv Propagate also derivative of output w.r.t. input
+     *                  neurons.
+     */
+    void                     propagate(bool deriv = false);
+    /** Propagate information through all layers.
+     *
+     * @param[in] input Vector with input neuron values.
+     * @param[in] deriv Propagate also derivative of output w.r.t. input
+     *                  neurons.
+     */
+    void                     propagate(std::vector<double> const& input,
+                                       bool deriv = false);
+    /** Get output layer neuron values.
+     *
+     * @param[out] output Vector with output layer neuron values.
+     */
+    void                     getOutput(std::vector<double>& output) const;
+    /** Get derivative of output layer neurons w.r.t to input neurons.
+     *
+     * @param[out] derivInput Vector with output layer neuron values.
+     */
+    void                     getDerivInput(std::vector<std::vector<
+                                               double>>& derivInput) const;
     /** Set neural network weights and biases.
      *
      * @param[in] connections One-dimensional vector with neural network
@@ -212,6 +257,22 @@ public:
      * @param[in,out] file File stream to write to.
      */
     void                     writeConnectionsAO(std::ofstream& file) const;
+    /** Get properties for a single neuron.
+     *
+     * @param[in] layer Index of layer (starting from 0 = input layer).
+     * @param[in] neuron Index of neuron (starting from 0 = first neuron in
+     *                   layer).
+     *
+     * @return Map from neuron's property (as string) to value.
+     */
+    std::map<
+    std::string, double>     getNeuronProperties(std::size_t layer,
+                                                 std::size_t neuron) const;
+    /** Printable strings with neural network architecture information.
+     *
+     * @return Vector of lines for printing.
+     */
+    std::vector<std::string> info() const;
     /// Getter for #numLayers
     std::size_t              getNumLayers() const;
     /// Getter for #numConnections
