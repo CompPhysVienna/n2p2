@@ -220,8 +220,8 @@ void NeuralNetworx::setInput(vector<double> const& input)
 {
     if (input.size() != layers.at(0).numNeurons)
     {
-        throw runtime_error("ERROR: Input vector does not match number of "
-                            "input layer neurons.");
+        throw runtime_error("ERROR: Input vector size does not match number "
+                            "of input layer neurons.");
     }
     Map<VectorXd const> y0(input.data(), input.size());
     layers.at(0).y = y0;
@@ -524,12 +524,56 @@ map<string, double> NeuralNetworx::getNeuronProperties(size_t layer,
     return properties;
 }
 
+vector<pair<size_t, size_t>> NeuralNetworx::getLayerLimits() const
+{
+    vector<pair<size_t, size_t>> limits;
+
+    for (size_t i = 0; i < numLayers - 2; ++i)
+    {
+        limits.push_back(make_pair(offsetLayer.at(i),
+                                   offsetLayer.at(i + 1) - 1));
+
+    }
+    limits.push_back(make_pair(offsetLayer.at(numLayers - 2),
+                               numConnections - 1));
+
+    return limits;
+}
+
+vector<pair<size_t, size_t>> NeuralNetworx::getNeuronLimits() const
+{
+    vector<pair<size_t, size_t>> limits;
+
+    for (size_t i = 0; i < numLayers - 1; ++i)
+    {
+        size_t const n = layers.at(i + 1).numNeurons;
+        for (size_t j = 0; j < n - 1; ++j)
+        {
+            limits.push_back(make_pair(offsetNeuron.at(i).at(j),
+                                       offsetNeuron.at(i).at(j + 1) - 1));
+        }
+        if (i == numLayers - 1)
+        {
+            limits.push_back(make_pair(offsetNeuron.at(i).at(n - 1),
+                                       numConnections - 1));
+        }
+        else
+        {
+            limits.push_back(make_pair(offsetNeuron.at(i).at(n - 1),
+                                       offsetNeuron.at(i + 1).at(0) - 1));
+        }
+    }
+
+    return limits;
+}
+
 vector<string> NeuralNetworx::info() const
 {
     vector<string> v;
     Eigen::Index maxNeurons = 0;
 
-    v.push_back(strpr("Number of layers     : %6zu\n", layers.size()));
+    v.push_back(strpr("Number of layers     : %6zu\n", numLayers));
+    v.push_back(strpr("Number of neurons    : %6zu\n", numNeurons));
     v.push_back(strpr("Number of connections: %6zu\n", numConnections));
     v.push_back(strpr("Number of weights    : %6zu\n", numWeights));
     v.push_back(strpr("Number of biases     : %6zu\n", numBiases));
@@ -603,14 +647,33 @@ void NeuralNetworx::initialize(vector<size_t>     numNeuronsPerLayer,
     }
 
     // Compute number of connections, weights and biases.
+    numNeurons     = 0;
     numConnections = 0;
     numWeights     = 0;
     numBiases      = 0;
     for (auto const& l : layers)
     {
+        numNeurons     += l.y.size();
         numConnections += l.w.size() + l.b.size();
         numWeights     += l.w.size();
         numBiases      += l.b.size();
+    }
+
+    // Compute layer and neuron offsets for combined connections vector.
+    offsetLayer.resize(numLayers - 1, 0);
+    offsetNeuron.resize(numLayers - 1);
+    size_t count = 0;
+    for (size_t i = 1; i < numLayers; ++i)
+    {
+        offsetLayer.push_back(count);
+        for (size_t j = 0; j < layers.at(i).numNeurons; ++j)
+        {
+            offsetNeuron.at(i - 1).push_back(count);
+            // Weights of neuron j.
+            count += layers.at(i).numNeuronsPrevLayer;
+            // Bias of neuron j.
+            count++;
+        }
     }
 
     return;

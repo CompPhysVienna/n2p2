@@ -37,6 +37,7 @@ BOOST_DATA_TEST_CASE(Initialize_CorrectNetworkArchitecture,
 {
     NeuralNetworx nn(example.numNeuronsPerLayer, example.activationPerLayer);
 
+    BOOST_REQUIRE_EQUAL(nn.getNumLayers(), example.numLayers);
     BOOST_REQUIRE_EQUAL(nn.getNumConnections(), example.numConnections);
     BOOST_REQUIRE_EQUAL(nn.getNumWeights(), example.numWeights);
     BOOST_REQUIRE_EQUAL(nn.getNumBiases(), example.numBiases);
@@ -49,6 +50,7 @@ BOOST_DATA_TEST_CASE(InitializeWithStrings_CorrectNetworkArchitecture,
     NeuralNetworx nn(example.numNeuronsPerLayer,
                      example.activationStringPerLayer);
 
+    BOOST_REQUIRE_EQUAL(nn.getNumLayers(), example.numLayers);
     BOOST_REQUIRE_EQUAL(nn.getNumConnections(), example.numConnections);
     BOOST_REQUIRE_EQUAL(nn.getNumWeights(), example.numWeights);
     BOOST_REQUIRE_EQUAL(nn.getNumBiases(), example.numBiases);
@@ -275,6 +277,30 @@ BOOST_AUTO_TEST_CASE(ComputeInputDerivative_AnalyticNumericDerivativesMatch)
     //    }
     //    cout << "\n";
     //}
+}
+
+BOOST_DATA_TEST_CASE(GetLayerLimits_CorrectLimits,
+                     bdata::make(containerNN.examples),
+                     example)
+{
+    NeuralNetworx nn(example.numNeuronsPerLayer, example.activationPerLayer);
+    auto limits = nn.getLayerLimits();
+    if (example.limitsLayers.size() > 0)
+    {
+        BOOST_REQUIRE_EQUAL(limits.size(), example.limitsLayers.size());
+    }
+}
+
+BOOST_DATA_TEST_CASE(GetNeuronLimits_CorrectLimits,
+                     bdata::make(containerNN.examples),
+                     example)
+{
+    NeuralNetworx nn(example.numNeuronsPerLayer, example.activationPerLayer);
+    auto limits = nn.getNeuronLimits();
+    if (example.limitsNeurons.size() > 0)
+    {
+        //BOOST_REQUIRE_EQUAL(limits.size(), example.limitsNeurons.size());
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

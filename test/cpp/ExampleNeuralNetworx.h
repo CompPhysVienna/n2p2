@@ -2,22 +2,29 @@
 #define EXAMPLENEURALNETWORX_H
 
 #include <vector>
+#include <utility>
 #include "Example.h"
 #include "BoostDataContainer.h"
 #include "NeuralNetworx.h"
 
 struct ExampleNeuralNetworx : public Example
 {
+    std::size_t                                 numLayers;
     std::size_t                                 numConnections;
     std::size_t                                 numWeights;
     std::size_t                                 numBiases;
     std::vector<std::size_t>                    numNeuronsPerLayer;
+    std::vector<std::pair<std::size_t,
+                          std::size_t>>         limitsLayers;
+    std::vector<std::pair<std::size_t,
+                          std::size_t>>         limitsNeurons;
     std::vector<nnp::NeuralNetworx::Activation> activationPerLayer;
     std::vector<std::string>                    activationStringPerLayer;
 
     ExampleNeuralNetworx();
 
-    ExampleNeuralNetworx(std::string name) : numConnections(0),
+    ExampleNeuralNetworx(std::string name) : numLayers     (0),
+                                             numConnections(0),
                                              numWeights    (0),
                                              numBiases     (0)
     {
@@ -33,6 +40,24 @@ void BoostDataContainer<ExampleNeuralNetworx>::setup()
 {
     ExampleNeuralNetworx* e = nullptr;
 
+    examples.push_back(ExampleNeuralNetworx("3-layer, single output"));
+    e = &(examples.back());
+    e->numNeuronsPerLayer = {2, 3, 1};
+    e->activationStringPerLayer = {"l", "t", "p"};
+    e->activationPerLayer = {nnp::NeuralNetworx::Activation::IDENTITY,
+                             nnp::NeuralNetworx::Activation::TANH,
+                             nnp::NeuralNetworx::Activation::SOFTPLUS};
+    e->numLayers = 3;
+    e->numConnections = 13;
+    e->numWeights = 9;
+    e->numBiases = 4;
+    e->limitsLayers.push_back(std::make_pair(0, 8));
+    e->limitsLayers.push_back(std::make_pair(9, 12));
+    e->limitsNeurons.push_back(std::make_pair(0, 2));
+    e->limitsNeurons.push_back(std::make_pair(3, 5));
+    e->limitsNeurons.push_back(std::make_pair(6, 8));
+    e->limitsNeurons.push_back(std::make_pair(9, 12));
+
     examples.push_back(ExampleNeuralNetworx("4-layer, single output"));
     e = &(examples.back());
     e->numNeuronsPerLayer = {10, 20, 15, 1};
@@ -41,9 +66,49 @@ void BoostDataContainer<ExampleNeuralNetworx>::setup()
                              nnp::NeuralNetworx::Activation::TANH,
                              nnp::NeuralNetworx::Activation::SOFTPLUS,
                              nnp::NeuralNetworx::Activation::IDENTITY};
+    e->numLayers = 4;
     e->numConnections = 551;
     e->numWeights = 515;
     e->numBiases = 36;
+    e->limitsLayers.push_back(std::make_pair(0, 219));
+    e->limitsLayers.push_back(std::make_pair(220, 534));
+    e->limitsLayers.push_back(std::make_pair(535, 550));
+    e->limitsNeurons.push_back(std::make_pair(0, 10)); // layer 2
+    e->limitsNeurons.push_back(std::make_pair(11, 21));
+    e->limitsNeurons.push_back(std::make_pair(22, 32));
+    e->limitsNeurons.push_back(std::make_pair(33, 43));
+    e->limitsNeurons.push_back(std::make_pair(44, 54));
+    e->limitsNeurons.push_back(std::make_pair(55, 65));
+    e->limitsNeurons.push_back(std::make_pair(66, 76));
+    e->limitsNeurons.push_back(std::make_pair(77, 87));
+    e->limitsNeurons.push_back(std::make_pair(88, 98));
+    e->limitsNeurons.push_back(std::make_pair(99, 109));
+    e->limitsNeurons.push_back(std::make_pair(110, 120));
+    e->limitsNeurons.push_back(std::make_pair(121, 131));
+    e->limitsNeurons.push_back(std::make_pair(132, 142));
+    e->limitsNeurons.push_back(std::make_pair(143, 153));
+    e->limitsNeurons.push_back(std::make_pair(154, 164));
+    e->limitsNeurons.push_back(std::make_pair(165, 175));
+    e->limitsNeurons.push_back(std::make_pair(176, 186));
+    e->limitsNeurons.push_back(std::make_pair(187, 197));
+    e->limitsNeurons.push_back(std::make_pair(198, 208));
+    e->limitsNeurons.push_back(std::make_pair(209, 219));
+    e->limitsNeurons.push_back(std::make_pair(220, 240)); // layer 3
+    e->limitsNeurons.push_back(std::make_pair(241, 261));
+    e->limitsNeurons.push_back(std::make_pair(262, 282));
+    e->limitsNeurons.push_back(std::make_pair(283, 303));
+    e->limitsNeurons.push_back(std::make_pair(304, 324));
+    e->limitsNeurons.push_back(std::make_pair(325, 345));
+    e->limitsNeurons.push_back(std::make_pair(346, 366));
+    e->limitsNeurons.push_back(std::make_pair(367, 387));
+    e->limitsNeurons.push_back(std::make_pair(388, 408));
+    e->limitsNeurons.push_back(std::make_pair(409, 429));
+    e->limitsNeurons.push_back(std::make_pair(430, 450));
+    e->limitsNeurons.push_back(std::make_pair(451, 471));
+    e->limitsNeurons.push_back(std::make_pair(472, 492));
+    e->limitsNeurons.push_back(std::make_pair(493, 513));
+    e->limitsNeurons.push_back(std::make_pair(514, 534));
+    e->limitsNeurons.push_back(std::make_pair(535, 551)); // layer 4
 
     examples.push_back(ExampleNeuralNetworx("10-layer, multiple output"));
     e = &(examples.back());
@@ -60,6 +125,7 @@ void BoostDataContainer<ExampleNeuralNetworx>::setup()
                              nnp::NeuralNetworx::Activation::REVLOGISTIC,
                              nnp::NeuralNetworx::Activation::SOFTPLUS,
                              nnp::NeuralNetworx::Activation::TANH};
+    e->numLayers = 10;
     e->numConnections = 2036;
     e->numWeights = 1920;
     e->numBiases = 116;

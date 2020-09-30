@@ -20,6 +20,7 @@
 #include <cstddef> // std::size_t
 #include <map>     // std::map
 #include <string>  // std::string
+#include <utility> // std::pair
 #include <vector>  // std::vector
 #include <Eigen/Core>
 
@@ -268,6 +269,24 @@ public:
     std::map<
     std::string, double>     getNeuronProperties(std::size_t layer,
                                                  std::size_t neuron) const;
+    /** Get layer limits in combined weight vector (for Kalman filter
+     * decoupling setup).
+     *
+     * @return Vector with layer limits as pair (begin, end),
+     * (numLayers - 1) points.
+     */
+    std::vector<std::pair<
+    std::size_t,
+    std::size_t>>            getLayerLimits() const;
+    /** Get neuron limits in combined weight vector (for Kalman filter
+     * decoupling setup).
+     *
+     * @return Vector with neuron limits as pair (begin, end),
+     * (numNeurons - inputLayer->numNeurons) points.
+     */
+    std::vector<std::pair<
+    std::size_t,
+    std::size_t>>            getNeuronLimits() const;
     /** Printable strings with neural network architecture information.
      *
      * @return Vector of lines for printing.
@@ -275,6 +294,8 @@ public:
     std::vector<std::string> info() const;
     /// Getter for #numLayers
     std::size_t              getNumLayers() const;
+    /// Getter for #numNeurons
+    std::size_t              getNumNeurons() const;
     /// Getter for #numConnections
     std::size_t              getNumConnections() const;
     /// Getter for #numWeights
@@ -299,12 +320,22 @@ private:
 
     /// Number of neural network layers.
     std::size_t        numLayers;
+    /// Number of neurons.
+    std::size_t        numNeurons;
     /// Number of neural network connections (weights + biases).
     std::size_t        numConnections;
     /// Number of neural network weights.
     std::size_t        numWeights;
     /// Number of neural network biases.
     std::size_t        numBiases;
+    /// Offset of layers in combined connection vector.
+    std::vector<
+    std::size_t>       offsetLayer;
+    /// Offset of neurons in combined connection vector.
+    std::vector<
+    std::vector<
+    std::size_t>>      offsetNeuron;
+    /// Offset of biases in combined connection vector.
     /// Vector of neural network layers.
     std::vector<Layer> layers;
 
@@ -331,6 +362,9 @@ std::string stringFromActivation(NeuralNetworx::Activation a);
 
 inline
 std::size_t NeuralNetworx::getNumLayers() const {return numLayers;}
+
+inline
+std::size_t NeuralNetworx::getNumNeurons() const {return numNeurons;}
 
 inline
 std::size_t NeuralNetworx::getNumConnections() const {return numConnections;}
