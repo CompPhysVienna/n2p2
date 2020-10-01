@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionAngularNarrow.h"
+#include "SymFncAngwExp.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionAngularNarrow::
-SymmetryFunctionAngularNarrow(ElementMap const& elementMap) :
-    SymmetryFunction(3, elementMap),
+SymFncAngwExp::
+SymFncAngwExp(ElementMap const& elementMap) : SymFnc(9, elementMap),
     useIntegerPow(false),
     e1           (0    ),
     e2           (0    ),
@@ -48,13 +47,11 @@ SymmetryFunctionAngularNarrow(ElementMap const& elementMap) :
     parameters.insert("rs");
 }
 
-bool SymmetryFunctionAngularNarrow::
-operator==(SymmetryFunction const& rhs) const
+bool SymFncAngwExp::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionAngularNarrow const& c =
-        dynamic_cast<SymmetryFunctionAngularNarrow const&>(rhs);
+    SymFncAngwExp const& c = dynamic_cast<SymFncAngwExp const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -66,15 +63,13 @@ operator==(SymmetryFunction const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionAngularNarrow::
-operator<(SymmetryFunction const& rhs) const
+bool SymFncAngwExp::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionAngularNarrow const& c =
-        dynamic_cast<SymmetryFunctionAngularNarrow const&>(rhs);
+    SymFncAngwExp const& c = dynamic_cast<SymFncAngwExp const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -96,8 +91,7 @@ operator<(SymmetryFunction const& rhs) const
     return false;
 }
 
-void SymmetryFunctionAngularNarrow::
-     setParameters(string const& parameterString)
+void SymFncAngwExp::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -142,7 +136,7 @@ void SymmetryFunctionAngularNarrow::
     return;
 }
 
-void SymmetryFunctionAngularNarrow::changeLengthUnit(double convLength)
+void SymFncAngwExp::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     eta /= convLength * convLength;
@@ -155,7 +149,7 @@ void SymmetryFunctionAngularNarrow::changeLengthUnit(double convLength)
     return;
 }
 
-string SymmetryFunctionAngularNarrow::getSettingsLine() const
+string SymFncAngwExp::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
                      "%16.8E %16.8E %16.8E\n",
@@ -172,12 +166,10 @@ string SymmetryFunctionAngularNarrow::getSettingsLine() const
     return s;
 }
 
-void SymmetryFunctionAngularNarrow::calculate(Atom&      atom,
-                                              bool const derivatives) const
+void SymFncAngwExp::calculate(Atom& atom, bool const derivatives) const
 {
     double const pnorm  = pow(2.0, 1.0 - zeta);
     double const pzl    = zeta * lambda;
-    double const rc2    = rc * rc;
     double       result = 0.0;
 
     size_t numNeighbors = atom.numNeighbors;
@@ -223,94 +215,79 @@ void SymmetryFunctionAngularNarrow::calculate(Atom&      atom,
                     double const rik = nk.d;
                     if (rik < rc)
                     {
-                        Vec3D drjk = nk.dr - nj.dr;
-                        double rjk = drjk.norm2();;
-                        if (rjk < rc2)
-                        {
-                            // Energy calculation.
+                    // Energy calculation.
 #ifdef NOCFCACHE
-                            double pfcik;
-                            double pdfcik;
-                            fc.fdf(rik, pfcik, pdfcik);
+                        double pfcik;
+                        double pdfcik;
+                        fc.fdf(rik, pfcik, pdfcik);
 #else
-                            double& pfcik = nk.fc;
-                            double& pdfcik = nk.dfc;
-                            if (nk.cutoffType != cutoffType ||
-                                nk.rc != rc ||
-                                nk.cutoffAlpha != cutoffAlpha)
-                            {
-                                fc.fdf(rik, pfcik, pdfcik);
-                                nk.rc = rc;
-                                nk.cutoffType = cutoffType;
-                                nk.cutoffAlpha = cutoffAlpha;
-                            }
+                        double& pfcik = nk.fc;
+                        double& pdfcik = nk.dfc;
+                        if (nk.cutoffType != cutoffType ||
+                            nk.rc != rc ||
+                            nk.cutoffAlpha != cutoffAlpha)
+                        {
+                            fc.fdf(rik, pfcik, pdfcik);
+                            nk.rc = rc;
+                            nk.cutoffType = cutoffType;
+                            nk.cutoffAlpha = cutoffAlpha;
+                        }
 #endif
-                            rjk = sqrt(rjk);
-                            double pfcjk;
-                            double pdfcjk;
-                            fc.fdf(rjk, pfcjk, pdfcjk);
+                        Vec3D drij = nj.dr;
+                        Vec3D drik = nk.dr;
+                        Vec3D drjk = drik - drij;
+                        double costijk = drij * drik;;
+                        double rinvijik = 1.0 / rij / rik;
+                        costijk *= rinvijik;
 
-                            Vec3D drij = nj.dr;
-                            Vec3D drik = nk.dr;
-                            double costijk = drij * drik;;
-                            double rinvijik = 1.0 / rij / rik;
-                            costijk *= rinvijik;
-
-                            double const pfc = pfcij * pfcik * pfcjk;
-                            double const r2ik = rik * rik;
-                            double const rijs = rij - rs;
-                            double const riks = rik - rs;
-                            double const rjks = rjk - rs;
-                            double const pexp = exp(-eta * (rijs * rijs +
-                                                            riks * riks +
-                                                            rjks * rjks));
-                            double const plambda = 1.0 + lambda * costijk;
-                            double       fg = pexp;
-                            if (plambda <= 0.0) fg = 0.0;
+                        double const pfc = pfcij * pfcik;
+                        double const r2ik = rik * rik;
+                        double const rijs = rij - rs;
+                        double const riks = rik - rs;
+                        double const pexp = exp(-eta * (rijs * rijs
+                                                      + riks * riks));
+                        double const plambda = 1.0 + lambda * costijk;
+                        double       fg = pexp;
+                        if (plambda <= 0.0) fg = 0.0;
+                        else
+                        {
+                            if (useIntegerPow)
+                            {
+                                fg *= pow_int(plambda, zetaInt - 1);
+                            }
                             else
                             {
-                                if (useIntegerPow)
-                                {
-                                    fg *= pow_int(plambda, zetaInt - 1);
-                                }
-                                else
-                                {
-                                    fg *= pow(plambda, zeta - 1.0);
-                                }
+                                fg *= pow(plambda, zeta - 1.0);
                             }
-                            result += fg * plambda * pfc;
+                        }
+                        result += fg * plambda * pfc;
 
-                            // Force calculation.
-                            if (!derivatives) continue;
-                            fg       *= pnorm;
-                            rinvijik *= pzl;
-                            costijk  *= pzl;
-                            double const p2etapl = 2.0 * eta * plambda;
-                            double const p1 = fg * (pfc * (rinvijik - costijk
-                                            / r2ij - p2etapl * rijs / rij)
-                                            + pfcik * pfcjk * pdfcij * plambda
-                                            / rij);
-                            double const p2 = fg * (pfc * (rinvijik - costijk
-                                            / r2ik - p2etapl * riks / rik)
-                                            + pfcij * pfcjk * pdfcik * plambda
-                                            / rik);
-                            double const p3 = fg * (pfc * (rinvijik + p2etapl
-                                            * rjks / rjk) - pfcij * pfcik
-                                            * pdfcjk * plambda / rjk);
-                            drij *= p1 * scalingFactor;
-                            drik *= p2 * scalingFactor;
-                            drjk *= p3 * scalingFactor;
+                        // Force calculation.
+                        if (!derivatives) continue;
+                        fg       *= pnorm;
+                        rinvijik *= pzl;
+                        costijk  *= pzl;
+                        double const p2etapl = 2.0 * eta * plambda;
+                        double const p1 = fg * (pfc * (rinvijik - costijk
+                                        / r2ij - p2etapl * rijs / rij) + pfcik
+                                        * pdfcij * plambda / rij);
+                        double const p2 = fg * (pfc * (rinvijik - costijk
+                                        / r2ik - p2etapl * riks / rik) + pfcij
+                                        * pdfcik * plambda / rik);
+                        double const p3 = fg * pfc * rinvijik;
+                        drij *= p1 * scalingFactor;
+                        drik *= p2 * scalingFactor;
+                        drjk *= p3 * scalingFactor;
 
-                            // Save force contributions in Atom storage.
-                            atom.dGdr[index] += drij + drik;
+                        // Save force contributions in Atom storage.
+                        atom.dGdr[index] += drij + drik;
 #ifdef IMPROVED_SFD_MEMORY
-                            nj.dGdr[indexPerElement[nej]] -= drij + drjk;
-                            nk.dGdr[indexPerElement[nek]] -= drik - drjk;
+                        nj.dGdr[indexPerElement[nej]] -= drij + drjk;
+                        nk.dGdr[indexPerElement[nek]] -= drik - drjk;
 #else
-                            nj.dGdr[index] -= drij + drjk;
-                            nk.dGdr[index] -= drik - drjk;
+                        nj.dGdr[index] -= drij + drjk;
+                        nk.dGdr[index] -= drik - drjk;
 #endif
-                        } // rjk <= rc
                     } // rik <= rc
                 } // elem
             } // k
@@ -323,7 +300,7 @@ void SymmetryFunctionAngularNarrow::calculate(Atom&      atom,
     return;
 }
 
-string SymmetryFunctionAngularNarrow::parameterLine() const
+string SymFncAngwExp::parameterLine() const
 {
     return strpr(getPrintFormat().c_str(),
                  index + 1,
@@ -341,9 +318,9 @@ string SymmetryFunctionAngularNarrow::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymmetryFunctionAngularNarrow::parameterInfo() const
+vector<string> SymFncAngwExp::parameterInfo() const
 {
-    vector<string> v = SymmetryFunction::parameterInfo();
+    vector<string> v = SymFnc::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 
@@ -364,21 +341,20 @@ vector<string> SymmetryFunctionAngularNarrow::parameterInfo() const
     return v;
 }
 
-double SymmetryFunctionAngularNarrow::calculateRadialPart(
-                                                         double distance) const
+double SymFncAngwExp::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
-    double const p = exp(-eta * (r - rs) * (r - rs)) * fc.f(r);
+    double const p = exp(-eta * (r - rs) * (r -rs)) * fc.f(r);
 
-    return p * p * p;
+    return p * p;
 }
 
-double SymmetryFunctionAngularNarrow::calculateAngularPart(double angle) const
+double SymFncAngwExp::calculateAngularPart(double angle) const
 {
     return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
 }
 
-bool SymmetryFunctionAngularNarrow::checkRelevantElement(size_t index) const
+bool SymFncAngwExp::checkRelevantElement(size_t index) const
 {
     if (index == e1 || index == e2) return true;
     else return false;

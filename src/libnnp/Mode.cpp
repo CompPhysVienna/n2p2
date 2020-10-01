@@ -415,33 +415,33 @@ void Mode::setupSymmetryFunctionScaling(string const& fileName)
     if (   ( settings.keywordExists("scale_symmetry_functions" ))
         && (!settings.keywordExists("center_symmetry_functions")))
     {
-        scalingType = SymmetryFunction::ST_SCALE;
+        scalingType = SymFnc::ST_SCALE;
         log << strpr("Scaling type::ST_SCALE (%d)\n", scalingType);
         log << "Gs = Smin + (Smax - Smin) * (G - Gmin) / (Gmax - Gmin)\n";
     }
     else if (   (!settings.keywordExists("scale_symmetry_functions" ))
              && ( settings.keywordExists("center_symmetry_functions")))
     {
-        scalingType = SymmetryFunction::ST_CENTER;
+        scalingType = SymFnc::ST_CENTER;
         log << strpr("Scaling type::ST_CENTER (%d)\n", scalingType);
         log << "Gs = G - Gmean\n";
     }
     else if (   ( settings.keywordExists("scale_symmetry_functions" ))
              && ( settings.keywordExists("center_symmetry_functions")))
     {
-        scalingType = SymmetryFunction::ST_SCALECENTER;
+        scalingType = SymFnc::ST_SCALECENTER;
         log << strpr("Scaling type::ST_SCALECENTER (%d)\n", scalingType);
         log << "Gs = Smin + (Smax - Smin) * (G - Gmean) / (Gmax - Gmin)\n";
     }
     else if (settings.keywordExists("scale_symmetry_functions_sigma"))
     {
-        scalingType = SymmetryFunction::ST_SCALESIGMA;
+        scalingType = SymFnc::ST_SCALESIGMA;
         log << strpr("Scaling type::ST_SCALESIGMA (%d)\n", scalingType);
         log << "Gs = Smin + (Smax - Smin) * (G - Gmean) / Gsigma\n";
     }
     else
     {
-        scalingType = SymmetryFunction::ST_NONE;
+        scalingType = SymFnc::ST_NONE;
         log << strpr("Scaling type::ST_NONE (%d)\n", scalingType);
         log << "Gs = G\n";
         log << "WARNING: No symmetry function scaling!\n";
@@ -449,9 +449,9 @@ void Mode::setupSymmetryFunctionScaling(string const& fileName)
 
     double Smin = 0.0;
     double Smax = 0.0;
-    if (scalingType == SymmetryFunction::ST_SCALE ||
-        scalingType == SymmetryFunction::ST_SCALECENTER ||
-        scalingType == SymmetryFunction::ST_SCALESIGMA)
+    if (scalingType == SymFnc::ST_SCALE ||
+        scalingType == SymFnc::ST_SCALECENTER ||
+        scalingType == SymFnc::ST_SCALESIGMA)
     {
         if (settings.keywordExists("scale_min_short"))
         {
@@ -619,7 +619,7 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
                        "--------------------------------------\n";
                 for (auto isf : symmetryFunctionTable.at(i))
                 {
-                    SymmetryFunction const& sf = e.getSymmetryFunction(isf);
+                    SymFnc const& sf = e.getSymmetryFunction(isf);
                     log << sf.parameterLine();
                 }
                 log << "-----------------------------------------"
@@ -647,7 +647,7 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
                    "--------------------------------------\n";
             for (size_t i = 0; i < e.numSymmetryFunctions(); ++i)
             {
-                SymmetryFunction const& sf = e.getSymmetryFunction(i);
+                SymFnc const& sf = e.getSymmetryFunction(i);
                 log << strpr("%4zu", sf.getIndex() + 1);
                 vector<size_t> indexPerElement = sf.getIndexPerElement();
                 for (auto ipe : sf.getIndexPerElement())
@@ -1355,7 +1355,7 @@ vector<size_t> Mode::pruneSymmetryFunctionsRange(double threshold)
     {
         for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
         {
-            SymmetryFunction const& s = it->getSymmetryFunction(i);
+            SymFnc const& s = it->getSymmetryFunction(i);
             if (fabs(s.getGmax() - s.getGmin()) < threshold)
             {
                 prune.push_back(it->getSymmetryFunction(i).getLineNumber());

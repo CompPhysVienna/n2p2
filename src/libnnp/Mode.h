@@ -23,7 +23,7 @@
 #include "Log.h"
 #include "Settings.h"
 #include "Structure.h"
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -464,20 +464,20 @@ public:
     Log        log;
 
 protected:
-    bool                          normalize;
-    bool                          checkExtrapolationWarnings;
-    std::size_t                   numElements;
-    std::vector<std::size_t>      minNeighbors;
-    std::vector<double>           minCutoffRadius;
-    double                        maxCutoffRadius;
-    double                        cutoffAlpha;
-    double                        meanEnergy;
-    double                        convEnergy;
-    double                        convLength;
-    Settings                      settings;
-    SymmetryFunction::ScalingType scalingType;
-    CutoffFunction::CutoffType    cutoffType;
-    std::vector<Element>          elements;
+    bool                       normalize;
+    bool                       checkExtrapolationWarnings;
+    std::size_t                numElements;
+    std::vector<std::size_t>   minNeighbors;
+    std::vector<double>        minCutoffRadius;
+    double                     maxCutoffRadius;
+    double                     cutoffAlpha;
+    double                     meanEnergy;
+    double                     convEnergy;
+    double                     convLength;
+    Settings                   settings;
+    SymFnc::ScalingType        scalingType;
+    CutoffFunction::CutoffType cutoffType;
+    std::vector<Element>       elements;
 };
 
 //////////////////////////////////

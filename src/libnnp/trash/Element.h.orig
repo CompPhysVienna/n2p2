@@ -19,8 +19,8 @@
 
 #include "CutoffFunction.h"
 #include "ElementMap.h"
-#include "SymFnc.h"
-#include "SymFncStatistics.h"
+#include "SymmetryFunction.h"
+#include "SymmetryFunctionStatistics.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -30,7 +30,7 @@ namespace nnp
 
 struct Atom;
 class NeuralNetwork;
-class SymGrp;
+class SymmetryFunctionGroup;
 
 /// Contains element-specific data.
 class Element
@@ -109,14 +109,15 @@ public:
     void                     setScalingNone() const;
     /** Set scaling of all symmetry functions.
      *
-     * @param[in] scalingType Type of scaling, see SymFnc::ScalingType.
+     * @param[in] scalingType Type of scaling, see
+     *                        SymmetryFunction::ScalingType.
      * @param[in] statisticsLine Vector of strings containing statistics for
      *                           all symmetry functions.
      * @param[in] minS Minimum for scaling range.
      * @param[in] maxS Minimum for scaling range.
      */
     void                     setScaling(
-                                SymFnc::ScalingType             scalingType,
+                                SymmetryFunction::ScalingType   scalingType,
                                 std::vector<std::string> const& statisticsLine,
                                 double                          minS,
                                 double                          maxS) const;
@@ -187,12 +188,12 @@ public:
      *
      * @return Symmetry function object.
      */
-    SymFnc const&            getSymmetryFunction(std::size_t index) const;
+    SymmetryFunction const&  getSymmetryFunction(std::size_t index) const;
 
     /// Neural network pointer for this element.
     NeuralNetwork*             neuralNetwork;
     /// Symmetry function statistics.
-    SymFncStatistics           statistics;
+    SymmetryFunctionStatistics statistics;
 
 private:
     /// Copy of element map.
@@ -210,9 +211,9 @@ private:
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
     /// Vector of pointers to symmetry functions.
-    std::vector<SymFnc*>        symmetryFunctions;
+    std::vector<SymmetryFunction*>        symmetryFunctions;
     /// Vector of pointers to symmetry function groups.
-    std::vector<SymGrp*>   symmetryFunctionGroups;
+    std::vector<SymmetryFunctionGroup*>   symmetryFunctionGroups;
 };
 
 //////////////////////////////////
@@ -269,7 +270,7 @@ inline size_t Element::numSymmetryFunctions() const
     return symmetryFunctions.size();
 }
 
-inline SymFnc const& Element::getSymmetryFunction(
+inline SymmetryFunction const& Element::getSymmetryFunction(
                                                        std::size_t index) const
 {
     return *(symmetryFunctions.at(index));
