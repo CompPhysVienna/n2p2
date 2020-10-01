@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Dataset.h"
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include "mpi-extra.h"
 #include "utility.h"
 #include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
@@ -848,8 +848,7 @@ void Dataset::collectSymmetryFunctionStatistics()
         }
         for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
         {
-            SymmetryFunctionStatistics::
-            Container& c = it->statistics.data[i];
+            SymFncStatistics::Container& c = it->statistics.data[i];
             MPI_Allreduce(MPI_IN_PLACE, &(c.count), 1, MPI_SIZE_T, MPI_SUM, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.min  ), 1, MPI_DOUBLE, MPI_MIN, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.max  ), 1, MPI_DOUBLE, MPI_MAX, comm);
@@ -907,8 +906,8 @@ void Dataset::writeSymmetryFunctionScaling(string const& fileName)
         {
             for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
             {
-                SymmetryFunctionStatistics::
-                Container const& c = it->statistics.data.at(i);
+                SymFncStatistics::Container const& c
+                    = it->statistics.data.at(i);
                 size_t n = c.count;
                 sFile << strpr("%10d %10d %24.16E %24.16E %24.16E %24.16E\n",
                                it->getIndex() + 1,
@@ -1027,8 +1026,8 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                 {
                     fprintf(fp, "#SFINFO %s\n", it->c_str());
                 }
-                SymmetryFunctionStatistics::
-                Container const& c = elements.at(e).statistics.data.at(s);
+                SymFncStatistics::Container const& c
+                    = elements.at(e).statistics.data.at(s);
                 size_t n = c.count;
                 fprintf(fp, "#SFINFO min         %15.8E\n", c.min);
                 fprintf(fp, "#SFINFO max         %15.8E\n", c.max);

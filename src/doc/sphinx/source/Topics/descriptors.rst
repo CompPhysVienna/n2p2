@@ -19,14 +19,14 @@ these are the basic radial and angular symmetry functions:
 
 
 * 
-  Radial symmetry function (:class:`nnp::SymmetryFunctionRadial`):
+  Radial symmetry function (:class:`nnp::SymFncRadExp`):
 
   .. math::
 
      G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_s)^2} f_c(r_{ij}) 
 
 * 
-  Angular symmetry function (:class:`nnp::SymmetryFunctionAngularNarrow`):
+  Angular symmetry function (:class:`nnp::SymFncAngnExp`):
 
   .. math::
 
@@ -45,7 +45,7 @@ In 2011 more symmetry functions were presented here:
 Amongst others a variant of the above angular symmetry function was introduced:
 
 
-* Modified angular symmetry function (:class:`nnp::SymmetryFunctionAngularWide`, for
+* Modified angular symmetry function (:class:`nnp::SymFncAngwExp`, for
   historic reasons the type number here is 9):
 
   .. math::
@@ -75,7 +75,7 @@ Here two variants of the original symmetry functions were presented:
 
 
 * 
-  Weighted radial symmetry function (:class:`nnp::SymmetryFunctionWeightedRadial`)
+  Weighted radial symmetry function (:class:`nnp::SymFncRadExpWeighted`)
 
   .. math::
 
@@ -84,7 +84,7 @@ Here two variants of the original symmetry functions were presented:
                 f_c(r_{ij}) 
 
 * 
-  Weighted angular symmetry function (:class:`nnp::SymmetryFunctionWeightedAngular`)
+  Weighted angular symmetry function (:class:`nnp::SymFncAngnExpWeighted`)
 
   .. math::
 

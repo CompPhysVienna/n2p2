@@ -1,5 +1,5 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE SymmetryFunctionGroups
+#define BOOST_TEST_MODULE SymGrps
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
@@ -8,32 +8,30 @@
 #include "Atom.h"
 #include "ElementMap.h"
 #include "Structure.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionRadial.h"
-#include "SymmetryFunctionRadialPoly.h"
-#include "SymmetryFunctionRadialPolyA.h"
-#include "SymmetryFunctionAngularNarrow.h"
-#include "SymmetryFunctionAngularWide.h"
-#include "SymmetryFunctionAngularPolyWide.h"
-#include "SymmetryFunctionAngularPolyOnly.h"
-#include "SymmetryFunctionAngularPolyOnlyNarrow.h"
-#include "SymmetryFunctionAngularPolyAOnly.h"
-#include "SymmetryFunctionAngularPolyAOnlyNarrow.h"
-#include "SymmetryFunctionWeightedRadial.h"
-#include "SymmetryFunctionWeightedAngular.h"
-#include "SymmetryFunctionGroup.h"
-#include "SymmetryFunctionGroupRadial.h"
-#include "SymmetryFunctionGroupRadialPoly.h"
-#include "SymmetryFunctionGroupRadialPolyA.h"
-#include "SymmetryFunctionGroupAngularNarrow.h"
-#include "SymmetryFunctionGroupAngularWide.h"
-#include "SymmetryFunctionGroupAngularPolyWide.h"
-#include "SymmetryFunctionGroupAngularPolyOnly.h"
-#include "SymmetryFunctionGroupAngularPolyOnlyNarrow.h"
-#include "SymmetryFunctionGroupAngularPolyAOnly.h"
-#include "SymmetryFunctionGroupAngularPolyAOnlyNarrow.h"
-#include "SymmetryFunctionGroupWeightedRadial.h"
-#include "SymmetryFunctionGroupWeightedAngular.h"
+#include "SymFnc.h"
+#include "SymFncRadExp.h"
+#include "SymFncRadPoly.h"
+#include "SymFncRadPolyA.h"
+#include "SymFncAngnExp.h"
+#include "SymFncAngwExp.h"
+#include "SymFncAngwPoly.h"
+#include "SymFncAngnPoly.h"
+#include "SymFncAngwPolyA.h"
+#include "SymFncAngnPolyA.h"
+#include "SymFncRadExpWeighted.h"
+#include "SymFncAngnExpWeighted.h"
+#include "SymGrp.h"
+#include "SymGrpRadExp.h"
+#include "SymGrpRadPoly.h"
+#include "SymGrpRadPolyA.h"
+#include "SymGrpAngnExp.h"
+#include "SymGrpAngwExp.h"
+#include "SymGrpAngwPoly.h"
+#include "SymGrpAngnPoly.h"
+#include "SymGrpAngwPolyA.h"
+#include "SymGrpAngnPolyA.h"
+#include "SymGrpRadExpWeighted.h"
+#include "SymGrpAngnExpWeighted.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
 #include <string> // std::string
@@ -47,23 +45,22 @@ namespace bdata = boost::unit_test::data;
 double const accuracy = 1000.0 * numeric_limits<double>::epsilon();
 double const accuracyNumeric = 1E-6;
 
-SymmetryFunction* setupSymmetryFunction(ElementMap   em,
+SymFnc* setupSymmetryFunction(ElementMap   em,
                                         size_t const type,
                                         string const setupLine)
 {
-    SymmetryFunction* sf;
-    if      (type ==  2)  sf = new SymmetryFunctionRadial(em);
-    else if (type ==  3)  sf = new SymmetryFunctionAngularNarrow(em);
-    else if (type ==  9)  sf = new SymmetryFunctionAngularWide(em);
-    else if (type == 12)  sf = new SymmetryFunctionWeightedRadial(em);
-    else if (type == 13)  sf = new SymmetryFunctionWeightedAngular(em);
-    else if (type == 28)  sf = new SymmetryFunctionRadialPoly(em);
-    else if (type == 280) sf = new SymmetryFunctionRadialPolyA(em);
-    else if (type == 29)  sf = new SymmetryFunctionAngularPolyWide(em);
-    else if (type == 89)  sf = new SymmetryFunctionAngularPolyOnly(em);
-    else if (type == 890) sf = new SymmetryFunctionAngularPolyAOnly(em);
-    else if (type == 99)  sf = new SymmetryFunctionAngularPolyOnlyNarrow(em);
-    else if (type == 990) sf = new SymmetryFunctionAngularPolyAOnlyNarrow(em);
+    SymFnc* sf;
+    if      (type ==  2)  sf = new SymFncRadExp(em);
+    else if (type ==  3)  sf = new SymFncAngnExp(em);
+    else if (type ==  9)  sf = new SymFncAngwExp(em);
+    else if (type == 12)  sf = new SymFncRadExpWeighted(em);
+    else if (type == 13)  sf = new SymFncAngnExpWeighted(em);
+    else if (type == 28)  sf = new SymFncRadPoly(em);
+    else if (type == 280) sf = new SymFncRadPolyA(em);
+    else if (type == 89)  sf = new SymFncAngwPoly(em);
+    else if (type == 890) sf = new SymFncAngwPolyA(em);
+    else if (type == 99)  sf = new SymFncAngnPoly(em);
+    else if (type == 990) sf = new SymFncAngnPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -77,28 +74,26 @@ SymmetryFunction* setupSymmetryFunction(ElementMap   em,
     sf->setParameters(setupLine);
     sf->setCutoffFunction(CutoffFunction::CT_TANHU, 0.0);
     string scalingLine = "1 1 0.0 0.0 0.0 0.0";
-    sf->setScalingType(SymmetryFunction::ST_NONE, scalingLine, 0.0, 0.0);
+    sf->setScalingType(SymFnc::ST_NONE, scalingLine, 0.0, 0.0);
 
     return sf;
 }
 
-SymmetryFunctionGroup* setupSymmetryFunctionGroup(ElementMap              em,
-                                                  SymmetryFunction const& sf)
+SymGrp* setupSymmetryFunctionGroup(ElementMap em, SymFnc const& sf)
 {
-    SymmetryFunctionGroup* sfg;
+    SymGrp* sfg;
     size_t const type = sf.getType();
-    if      (type ==  2)  sfg = new SymmetryFunctionGroupRadial(em);
-    else if (type ==  3)  sfg = new SymmetryFunctionGroupAngularNarrow(em);
-    else if (type ==  9)  sfg = new SymmetryFunctionGroupAngularWide(em);
-    else if (type == 12)  sfg = new SymmetryFunctionGroupWeightedRadial(em);
-    else if (type == 13)  sfg = new SymmetryFunctionGroupWeightedAngular(em);
-    else if (type == 28)  sfg = new SymmetryFunctionGroupRadialPoly(em);
-    else if (type == 280) sfg = new SymmetryFunctionGroupRadialPolyA(em);
-    else if (type == 29)  sfg = new SymmetryFunctionGroupAngularPolyWide(em);
-    else if (type == 89)  sfg = new SymmetryFunctionGroupAngularPolyOnly(em);
-    else if (type == 890) sfg = new SymmetryFunctionGroupAngularPolyAOnly(em);
-    else if (type == 99)  sfg = new SymmetryFunctionGroupAngularPolyOnlyNarrow(em);
-    else if (type == 990) sfg = new SymmetryFunctionGroupAngularPolyAOnlyNarrow(em);
+    if      (type ==  2)  sfg = new SymGrpRadExp(em);
+    else if (type ==  3)  sfg = new SymGrpAngnExp(em);
+    else if (type ==  9)  sfg = new SymGrpAngwExp(em);
+    else if (type == 12)  sfg = new SymGrpRadExpWeighted(em);
+    else if (type == 13)  sfg = new SymGrpAngnExpWeighted(em);
+    else if (type == 28)  sfg = new SymGrpRadPoly(em);
+    else if (type == 280) sfg = new SymGrpRadPolyA(em);
+    else if (type == 89)  sfg = new SymGrpAngwPoly(em);
+    else if (type == 890) sfg = new SymGrpAngwPolyA(em);
+    else if (type == 99)  sfg = new SymGrpAngnPoly(em);
+    else if (type == 990) sfg = new SymGrpAngnPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -111,9 +106,9 @@ SymmetryFunctionGroup* setupSymmetryFunctionGroup(ElementMap              em,
     return sfg;
 }
 
-void recalculateSymmetryFunctionGroup(Structure&                   s,
-                                      Atom&                        a,
-                                      SymmetryFunctionGroup const& sfg)
+void recalculateSymmetryFunctionGroup(Structure&    s,
+                                      Atom&         a,
+                                      SymGrp const& sfg)
 {
     s.clearNeighborList();
     s.calculateNeighborList(10.0);
@@ -128,9 +123,9 @@ void compareAnalyticNumericDerivGroup(Structure&   s,
                                       size_t const type,
                                       string const setupLine)
 {
-    SymmetryFunction* sf = setupSymmetryFunction(em, type, setupLine);
+    SymFnc* sf = setupSymmetryFunction(em, type, setupLine);
 
-    SymmetryFunctionGroup* sfg = setupSymmetryFunctionGroup(em, *sf);
+    SymGrp* sfg = setupSymmetryFunctionGroup(em, *sf);
 
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
@@ -187,9 +182,9 @@ void checkAbsoluteValueGroup(Structure&   s,
                              string const setupLine,
                              double const value)
 {
-    SymmetryFunction* sf = setupSymmetryFunction(em, type, setupLine);
+    SymFnc* sf = setupSymmetryFunction(em, type, setupLine);
 
-    SymmetryFunctionGroup* sfg = setupSymmetryFunctionGroup(em, *sf);
+    SymGrp* sfg = setupSymmetryFunctionGroup(em, *sf);
 
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
