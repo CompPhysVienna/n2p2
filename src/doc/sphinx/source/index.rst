@@ -86,12 +86,12 @@ Molecular dynamics simulation
 -----------------------------
 
 Similarly, if you have a working neural network potential setup and would like
-to run an MD simulation with an external MD software (so far only LAMMPS is
-supported), these components are required:
+to run an MD simulation with an external MD software (LAMMPS or CabanaMD), these
+components are required:
 
 * :ref:`libnnp <libnnp>`
 * `libnnpif`
-* :ref:`lammps-nnp <if_lammps>`
+* :ref:`lammps-nnp <if_lammps>` (for LAMMPS)
 
 Training a new neural network potential
 ---------------------------------------
@@ -171,10 +171,16 @@ list of keywords is provided :ref:`here <keywords>`.
    Topics/descriptors
    Topics/keywords
    Topics/cfg_file
-   Topics/if_lammps
-   Topics/pair_nnp
    Topics/training
    Topics/units
+
+.. toctree::
+   :hidden:
+   :caption: Interfaces
+
+   Interfaces/if_lammps
+   Interfaces/pair_nnp
+   Interfaces/if_cabanamd
 
 .. toctree::
    :hidden:

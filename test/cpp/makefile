@@ -70,7 +70,7 @@ clean: clean-coverage
 clean-coverage:
 	$(RM) $(PROJECT_DIR)/src/libnnp/*.gcda
 	$(RM) $(PROJECT_DIR)/src/libnnptrain/*.gcda
-	$(RM) $(PROJECT_DIR)/src/libnnpif/*.gcda
+	$(RM) $(PROJECT_DIR)/src/libnnpif/LAMMPS/*.gcda
 	$(RM) $(PROJECT_DIR)/src/application/*.gcda
 	$(RM) *.gcda *.base *.run *.info
 	$(RM) -r htmlcov

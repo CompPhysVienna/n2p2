@@ -13,6 +13,7 @@ Added
 * Tools for HDNNP data set handling, etc.
 * Python interface (basic functionality).
 * Sphinx documentation.
+* CabanaMD interface (by Saaketh Desai and Sam Reeve)
 
 Changed
 ^^^^^^^
