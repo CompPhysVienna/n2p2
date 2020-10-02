@@ -1,5 +1,6 @@
 // n2p2 - A neural network potential package
 // Copyright (C) 2018 Andreas Singraber (University of Vienna)
+// Copyright (C) 2020 Saaketh Desai and Sam Reeve
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,11 +18,11 @@
 #ifndef ELEMENT_CABANA_H
 #define ELEMENT_CABANA_H
 
-#include <Types_Cabana.h>
+#include "typesCabana.h"
 
-#include <CutoffFunction.h>
-#include <Element.h>
-#include <utility.h>
+#include "CutoffFunction.h"
+#include "Element.h"
+#include "utility.h"
 
 #include <cstddef> // size_t
 #include <string>  // string
@@ -376,6 +377,6 @@ inline double ElementCabana::unscale( int attype, double value, int k,
 
 }
 
-#include <Element_Cabana_impl.h>
+#include "ElementCabana_impl.h"
 
 #endif

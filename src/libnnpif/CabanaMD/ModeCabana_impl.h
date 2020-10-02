@@ -1,5 +1,6 @@
 // n2p2 - A neural network potential package
 // Copyright (C) 2018 Andreas Singraber (University of Vienna)
+// Copyright (C) 2020 Saaketh Desai and Sam Reeve
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <utility.h>
+#include "utility.h"
 
 #include <algorithm> // std::min, std::max
 #include <cstdlib>   // atoi, atof

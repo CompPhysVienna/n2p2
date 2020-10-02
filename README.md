@@ -33,7 +33,10 @@ doc/sphinx/html/index.html
 
 # Authors
 
- - Andreas Singraber (University of Vienna)
+ - Andreas Singraber
+ - Saaketh Desai and Sam Reeve (CabanaMD interface)
+
+See also AUTHORS.rst for a list of contributions.
 
 # License
 

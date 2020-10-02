@@ -1,5 +1,6 @@
 // n2p2 - A neural network potential package
 // Copyright (C) 2018 Andreas Singraber (University of Vienna)
+// Copyright (C) 2020 Saaketh Desai and Sam Reeve
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,16 +18,16 @@
 #ifndef MODE_CABANA_H
 #define MODE_CABANA_H
 
-#include <Element_Cabana.h>
-#include <Types_Cabana.h>
+#include "./ElementCabana.h"
+#include "typesCabana.h"
 
 #include <Cabana_Core.hpp>
 #include <Kokkos_Core.hpp>
 
-#include <CutoffFunction.h>
-#include <Log.h>
-#include <Mode.h>
-#include <Settings.h>
+#include "CutoffFunction.h"
+#include "Log.h"
+#include "Mode.h"
+#include "Settings.h"
 
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -341,6 +342,6 @@ ModeCabana<t_device>::scale(int attype, double value, int k,
 
 }
 
-#include <Mode_Cabana_impl.h>
+#include "ModeCabana_impl.h"
 
 #endif
