@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymFncAngnExpWeighted::
-SymFncAngnExpWeighted(ElementMap const& elementMap) : SymFnc(13, elementMap),
+SymFncAngnExpWeighted::SymFncAngnExpWeighted(ElementMap const& elementMap) :
+    SymFncCutoffBased(13, elementMap),
     useIntegerPow(false),
     zetaInt      (0    ),
     eta          (0.0  ),
@@ -308,7 +308,7 @@ string SymFncAngnExpWeighted::parameterLine() const
 
 vector<string> SymFncAngnExpWeighted::parameterInfo() const
 {
-    vector<string> v = SymFnc::parameterInfo();
+    vector<string> v = SymFncCutoffBased::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 

@@ -9,27 +9,22 @@
 #include "ElementMap.h"
 #include "Structure.h"
 #include "SymFnc.h"
+#include "SymFncCutoffBased.h"
 #include "SymFncRadExp.h"
 #include "SymFncRadPoly.h"
-#include "SymFncRadPolyA.h"
 #include "SymFncAngnExp.h"
 #include "SymFncAngwExp.h"
 #include "SymFncAngwPoly.h"
 #include "SymFncAngnPoly.h"
-#include "SymFncAngwPolyA.h"
-#include "SymFncAngnPolyA.h"
 #include "SymFncRadExpWeighted.h"
 #include "SymFncAngnExpWeighted.h"
 #include "SymGrp.h"
 #include "SymGrpRadExp.h"
 #include "SymGrpRadPoly.h"
-#include "SymGrpRadPolyA.h"
 #include "SymGrpAngnExp.h"
 #include "SymGrpAngwExp.h"
 #include "SymGrpAngwPoly.h"
 #include "SymGrpAngnPoly.h"
-#include "SymGrpAngwPolyA.h"
-#include "SymGrpAngnPolyA.h"
 #include "SymGrpRadExpWeighted.h"
 #include "SymGrpAngnExpWeighted.h"
 #include <cstddef> // std::size_t
@@ -56,11 +51,11 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     else if (type == 12)  sf = new SymFncRadExpWeighted(em);
     else if (type == 13)  sf = new SymFncAngnExpWeighted(em);
     else if (type == 28)  sf = new SymFncRadPoly(em);
-    else if (type == 280) sf = new SymFncRadPolyA(em);
+    //else if (type == 280) sf = new SymFncRadPolyA(em);
     else if (type == 89)  sf = new SymFncAngwPoly(em);
-    else if (type == 890) sf = new SymFncAngwPolyA(em);
+    //else if (type == 890) sf = new SymFncAngwPolyA(em);
     else if (type == 99)  sf = new SymFncAngnPoly(em);
-    else if (type == 990) sf = new SymFncAngnPolyA(em);
+    //else if (type == 990) sf = new SymFncAngnPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -72,7 +67,11 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
         sf->setIndexPerElement(i, 0);
     }
     sf->setParameters(setupLine);
-    sf->setCutoffFunction(CutoffFunction::CT_TANHU, 0.0);
+    SymFncCutoffBased* sfcb = dynamic_cast<SymFncCutoffBased*>(sf);
+    if (sfcb != nullptr)
+    {
+        sfcb->setCutoffFunction(CutoffFunction::CT_TANHU, 0.0);
+    }
     string scalingLine = "1 1 0.0 0.0 0.0 0.0";
     sf->setScalingType(SymFnc::ST_NONE, scalingLine, 0.0, 0.0);
 
@@ -89,11 +88,11 @@ SymGrp* setupSymmetryFunctionGroup(ElementMap em, SymFnc const& sf)
     else if (type == 12)  sfg = new SymGrpRadExpWeighted(em);
     else if (type == 13)  sfg = new SymGrpAngnExpWeighted(em);
     else if (type == 28)  sfg = new SymGrpRadPoly(em);
-    else if (type == 280) sfg = new SymGrpRadPolyA(em);
+    //else if (type == 280) sfg = new SymGrpRadPolyA(em);
     else if (type == 89)  sfg = new SymGrpAngwPoly(em);
-    else if (type == 890) sfg = new SymGrpAngwPolyA(em);
+    //else if (type == 890) sfg = new SymGrpAngwPolyA(em);
     else if (type == 99)  sfg = new SymGrpAngnPoly(em);
-    else if (type == 990) sfg = new SymGrpAngnPolyA(em);
+    //else if (type == 990) sfg = new SymGrpAngnPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");

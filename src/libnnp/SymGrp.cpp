@@ -30,17 +30,13 @@ SymGrp::SymGrp(size_t type, ElementMap const& elementMap) :
     index      (0                      ),
     ec         (0                      ),
     rc         (0.0                    ),
-    cutoffAlpha(0.0                    ),
-    convLength (1.0                    ),
-    cutoffType (CutoffFunction::CT_HARD)
+    convLength (1.0                    )
 {
     // Add standard common parameter IDs to set.
     parametersCommon.insert("index");
     parametersCommon.insert("type");
     parametersCommon.insert("ec");
     parametersCommon.insert("rc");
-    parametersCommon.insert("cutoffType");
-    parametersCommon.insert("cutoffAlpha");
 
     // Add standard member parameter IDs to set.
     parametersMember.insert("lineNumber");

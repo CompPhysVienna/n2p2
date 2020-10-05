@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymGrpAngnExp::
-SymGrpAngnExp(ElementMap const& elementMap) : SymGrp(3, elementMap),
+SymGrpAngnExp::SymGrpAngnExp(ElementMap const& elementMap) :
+    SymGrpCutoffBased(3, elementMap),
     e1(0),
     e2(0)
 {

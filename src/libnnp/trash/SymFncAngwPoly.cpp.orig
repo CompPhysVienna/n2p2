@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionAngularPolyOnly.h"
+#include "SymFncAngwPoly.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionAngularPolyOnly::
-SymmetryFunctionAngularPolyOnly(ElementMap const& elementMap) :
-    SymmetryFunction(89, elementMap),
+SymFncAngwPoly::
+SymFncAngwPoly(ElementMap const& elementMap) : SymFnc(89, elementMap),
     e1           (0    ),
     e2           (0    ),
     rl           (0.0  ),
@@ -44,13 +43,11 @@ SymmetryFunctionAngularPolyOnly(ElementMap const& elementMap) :
     parameters.insert("angleRight");
 }
 
-bool SymmetryFunctionAngularPolyOnly::
-operator==(SymmetryFunction const& rhs) const
+bool SymFncAngwPoly::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionAngularPolyOnly const& c =
-        dynamic_cast<SymmetryFunctionAngularPolyOnly const&>(rhs);
+    SymFncAngwPoly const& c = dynamic_cast<SymFncAngwPoly const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -62,15 +59,13 @@ operator==(SymmetryFunction const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionAngularPolyOnly::
-operator<(SymmetryFunction const& rhs) const
+bool SymFncAngwPoly::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionAngularPolyOnly const& c =
-        dynamic_cast<SymmetryFunctionAngularPolyOnly const&>(rhs);
+    SymFncAngwPoly const& c = dynamic_cast<SymFncAngwPoly const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -90,8 +85,7 @@ operator<(SymmetryFunction const& rhs) const
     return false;
 }
 
-void SymmetryFunctionAngularPolyOnly::
-setParameters(string const& parameterString)
+void SymFncAngwPoly::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -156,7 +150,7 @@ setParameters(string const& parameterString)
     return;
 }
 
-void SymmetryFunctionAngularPolyOnly::changeLengthUnit(double convLength)
+void SymFncAngwPoly::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     rc *= convLength;
@@ -167,7 +161,7 @@ void SymmetryFunctionAngularPolyOnly::changeLengthUnit(double convLength)
     return;
 }
 
-string SymmetryFunctionAngularPolyOnly::getSettingsLine() const
+string SymFncAngwPoly::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
                      "%16.8E %16.8E\n",
@@ -183,20 +177,19 @@ string SymmetryFunctionAngularPolyOnly::getSettingsLine() const
     return s;
 }
 
-bool SymmetryFunctionAngularPolyOnly::getCompactAngle(double x, double& fx, double& dfx) const
+bool SymFncAngwPoly::getCompactAngle(double x, double& fx, double& dfx) const
 {
     bool const stat = ca.fdf(x, fx, dfx);
     return stat;
 }
 
-bool SymmetryFunctionAngularPolyOnly::getCompactRadial(double x, double& fx, double& dfx) const
+bool SymFncAngwPoly::getCompactRadial(double x, double& fx, double& dfx) const
 {
     bool const stat = cr.fdf(x, fx, dfx);
     return stat;
 }
 
-void SymmetryFunctionAngularPolyOnly::calculate(Atom&      atom,
-                                                bool const derivatives) const
+void SymFncAngwPoly::calculate(Atom& atom, bool const derivatives) const
 {
     // TODO double const pnorm  = pow(2.0, 1.0 - zeta);
     // TODO double const pzl    = zeta * lambda;
@@ -306,7 +299,7 @@ void SymmetryFunctionAngularPolyOnly::calculate(Atom&      atom,
     return;
 }
 
-string SymmetryFunctionAngularPolyOnly::parameterLine() const
+string SymFncAngwPoly::parameterLine() const
 {
     int const    izero = 0;
     double const dzero = 0;
@@ -327,9 +320,9 @@ string SymmetryFunctionAngularPolyOnly::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymmetryFunctionAngularPolyOnly::parameterInfo() const
+vector<string> SymFncAngwPoly::parameterInfo() const
 {
-    vector<string> v = SymmetryFunction::parameterInfo();
+    vector<string> v = SymFnc::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 
@@ -347,19 +340,19 @@ vector<string> SymmetryFunctionAngularPolyOnly::parameterInfo() const
     return v;
 }
 
-double SymmetryFunctionAngularPolyOnly::calculateRadialPart(double distance) const
+double SymFncAngwPoly::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
 
     return cr.f(r);
 }
 
-double SymmetryFunctionAngularPolyOnly::calculateAngularPart(double angle) const
+double SymFncAngwPoly::calculateAngularPart(double angle) const
 {
     return ca.f(angle);
 }
 
-bool SymmetryFunctionAngularPolyOnly::checkRelevantElement(size_t index) const
+bool SymFncAngwPoly::checkRelevantElement(size_t index) const
 {
     if (index == e1 || index == e2) return true;
     else return false;

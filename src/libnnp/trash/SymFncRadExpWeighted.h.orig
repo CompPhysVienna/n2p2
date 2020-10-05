@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONWEIGHTEDRADIAL_H
 #define SYMMETRYFUNCTIONWEIGHTEDRADIAL_H
 
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,7 +27,7 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunctionStatistics;
+class SymFncStatistics;
 
 /** Weighted radial symmetry function (type 12)
  *
@@ -46,30 +46,30 @@ class SymmetryFunctionStatistics;
  * - `<rshift> .............` @f$r_\mathrm{s}@f$
  * - `<rcutoff> ............` @f$r_c@f$
  */
-class SymmetryFunctionWeightedRadial : public SymmetryFunction
+class SymFncRadExpWeighted : public SymFnc
 {
 public:
     /** Constructor, sets type = 12
      */
-    SymmetryFunctionWeightedRadial(ElementMap const& elementMap);
+    SymFncRadExpWeighted(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymmetryFunction const& rhs) const;
+    bool         operator==(SymFnc const& rhs) const;
     /** Overload != operator.
      */
-    bool         operator!=(SymmetryFunction const& rhs) const;
+    bool         operator!=(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymmetryFunction const& rhs) const;
+    bool         operator<(SymFnc const& rhs) const;
     /** Overload > operator.
      */
-    bool         operator>(SymmetryFunction const& rhs) const;
+    bool         operator>(SymFnc const& rhs) const;
     /** Overload <= operator.
      */
-    bool         operator<=(SymmetryFunction const& rhs) const;
+    bool         operator<=(SymFnc const& rhs) const;
     /** Overload >= operator.
      */
-    bool         operator>=(SymmetryFunction const& rhs) const;
+    bool         operator>=(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing weighted radial symmetry
@@ -141,36 +141,32 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionWeightedRadial::operator!=(
-                                             SymmetryFunction const& rhs) const
+inline bool SymFncRadExpWeighted::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionWeightedRadial::operator>(
-                                             SymmetryFunction const& rhs) const
+inline bool SymFncRadExpWeighted::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionWeightedRadial::operator<=(
-                                             SymmetryFunction const& rhs) const
+inline bool SymFncRadExpWeighted::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionWeightedRadial::operator>=(
-                                             SymmetryFunction const& rhs) const
+inline bool SymFncRadExpWeighted::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline double SymmetryFunctionWeightedRadial::getEta() const
+inline double SymFncRadExpWeighted::getEta() const
 {
     return eta;
 }
 
-inline double SymmetryFunctionWeightedRadial::getRs() const
+inline double SymFncRadExpWeighted::getRs() const
 {
     return rs;
 }

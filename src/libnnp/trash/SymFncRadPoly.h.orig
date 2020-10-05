@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONRADIALPOLY_H
 #define SYMMETRYFUNCTIONRADIALPOLY_H
 
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include "CompactFunction.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -28,7 +28,7 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunctionStatistics;
+class SymFncStatistics;
 
 /** Radial symmetry function (type 28)
  *
@@ -45,30 +45,30 @@ class SymmetryFunctionStatistics;
  * - `<rl>..................` @f$r_{l}@f$
  * - `<rc>..................` @f$r_{c}@f$
  */
-class SymmetryFunctionRadialPoly : public SymmetryFunction
+class SymFncRadPoly : public SymFnc
 {
 public:
     /** Constructor, sets type = 2
      */
-    SymmetryFunctionRadialPoly(ElementMap const& elementMap);
+    SymFncRadPoly(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymmetryFunction const& rhs) const;
+    bool         operator==(SymFnc const& rhs) const;
     /** Overload != operator.
      */
-    bool         operator!=(SymmetryFunction const& rhs) const;
+    bool         operator!=(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymmetryFunction const& rhs) const;
+    bool         operator<(SymFnc const& rhs) const;
     /** Overload > operator.
      */
-    bool         operator>(SymmetryFunction const& rhs) const;
+    bool         operator>(SymFnc const& rhs) const;
     /** Overload <= operator.
      */
-    bool         operator<=(SymmetryFunction const& rhs) const;
+    bool         operator<=(SymFnc const& rhs) const;
     /** Overload >= operator.
      */
-    bool         operator>=(SymmetryFunction const& rhs) const;
+    bool         operator>=(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing radial symmetry function
@@ -144,36 +144,32 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline
-bool SymmetryFunctionRadialPoly::operator!=(SymmetryFunction const& rhs) const
+inline bool SymFncRadPoly::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline
-bool SymmetryFunctionRadialPoly::operator>(SymmetryFunction const& rhs) const
+inline bool SymFncRadPoly::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline
-bool SymmetryFunctionRadialPoly::operator<=(SymmetryFunction const& rhs) const
+inline bool SymFncRadPoly::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline
-bool SymmetryFunctionRadialPoly::operator>=(SymmetryFunction const& rhs) const
+inline bool SymFncRadPoly::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline std::size_t SymmetryFunctionRadialPoly::getE1() const
+inline std::size_t SymFncRadPoly::getE1() const
 {
     return e1;
 }
 
-inline double SymmetryFunctionRadialPoly::getRl() const
+inline double SymFncRadPoly::getRl() const
 {
     return rl;
 }

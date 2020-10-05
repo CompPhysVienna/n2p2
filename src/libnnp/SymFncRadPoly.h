@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONRADIALPOLY_H
-#define SYMMETRYFUNCTIONRADIALPOLY_H
+#ifndef SYMFNCRADPOLY_H
+#define SYMFNCRADPOLY_H
 
 #include "SymFnc.h"
 #include "CompactFunction.h"

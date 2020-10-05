@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONGROUPWEIGHTEDRADIAL_H
 #define SYMMETRYFUNCTIONGROUPWEIGHTEDRADIAL_H
 
-#include "SymmetryFunctionGroup.h"
+#include "SymGrp.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,8 +27,8 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunction;
-class SymmetryFunctionWeightedRadial;
+class SymFnc;
+class SymFncRadExpWeighted;
 
 /** Weighted radial symmetry function group (type 12)
  *
@@ -42,30 +42,30 @@ class SymmetryFunctionWeightedRadial;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymmetryFunctionGroupWeightedRadial : public SymmetryFunctionGroup
+class SymGrpRadExpWeighted : public SymGrp
 {
 public:
     /** Constructor, sets type = 12
      */
-    SymmetryFunctionGroupWeightedRadial(ElementMap const& elementMap);
+    SymGrpRadExpWeighted(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool operator==(SymmetryFunctionGroup const& rhs) const;
+    bool operator==(SymGrp const& rhs) const;
     /** Overload != operator.
      */
-    bool operator!=(SymmetryFunctionGroup const& rhs) const;
+    bool operator!=(SymGrp const& rhs) const;
     /** Overload < operator.
      */
-    bool operator<(SymmetryFunctionGroup const& rhs) const;
+    bool operator<(SymGrp const& rhs) const;
     /** Overload > operator.
      */
-    bool operator>(SymmetryFunctionGroup const& rhs) const;
+    bool operator>(SymGrp const& rhs) const;
     /** Overload <= operator.
      */
-    bool operator<=(SymmetryFunctionGroup const& rhs) const;
+    bool operator<=(SymGrp const& rhs) const;
     /** Overload >= operator.
      */
-    bool operator>=(SymmetryFunctionGroup const& rhs) const;
+    bool operator>=(SymGrp const& rhs) const;
     /** Potentially add a member to group.
      *
      * @param[in] symmetryFunction Candidate symmetry function.
@@ -74,7 +74,7 @@ public:
      * If symmetry function is compatible with common feature list its pointer
      * will be added to #members.
      */
-    bool addMember(SymmetryFunction const* const symmetryFunction);
+    bool addMember(SymFnc const* const symmetryFunction);
     /** Sort member symmetry functions.
      *
      * Also allocate and precalculate additional stuff.
@@ -99,37 +99,33 @@ public:
 
 private:
     /// Vector of all group member pointers.
-    std::vector<SymmetryFunctionWeightedRadial const*> members;
+    std::vector<SymFncRadExpWeighted const*> members;
     /// Vector containing values of all member symmetry functions.
-    std::vector<double>                                eta;
+    std::vector<double>                      eta;
     /// Vector containing values of all member symmetry functions.
-    std::vector<double>                                rs;
+    std::vector<double>                      rs;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionGroupWeightedRadial::
-operator!=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadExpWeighted::operator!=(SymGrp const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionGroupWeightedRadial::
-operator>(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadExpWeighted::operator>(SymGrp const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionGroupWeightedRadial::
-operator<=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadExpWeighted::operator<=(SymGrp const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionGroupWeightedRadial::
-operator>=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadExpWeighted::operator>=(SymGrp const& rhs) const
 {
     return !((*this) < rhs);
 }

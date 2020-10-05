@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroupRadial.h"
+#include "SymGrpRadExp.h"
 #include "Atom.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionRadial.h"
+#include "SymFnc.h"
+#include "SymFncRadExp.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroupRadial::
-SymmetryFunctionGroupRadial(ElementMap const& elementMap) :
-    SymmetryFunctionGroup(2, elementMap),
+SymGrpRadExp::
+SymGrpRadExp(ElementMap const& elementMap) : SymGrp(2, elementMap),
     e1(0)
 {
     parametersCommon.insert("e1");
@@ -40,13 +39,11 @@ SymmetryFunctionGroupRadial(ElementMap const& elementMap) :
     parametersMember.insert("sfindex");
 }
 
-bool SymmetryFunctionGroupRadial::
-operator==(SymmetryFunctionGroup const& rhs) const
+bool SymGrpRadExp::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionGroupRadial const& c =
-        dynamic_cast<SymmetryFunctionGroupRadial const&>(rhs);
+    SymGrpRadExp const& c = dynamic_cast<SymGrpRadExp const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -54,15 +51,13 @@ operator==(SymmetryFunctionGroup const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionGroupRadial::
-operator<(SymmetryFunctionGroup const& rhs) const
+bool SymGrpRadExp::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionGroupRadial const& c =
-        dynamic_cast<SymmetryFunctionGroupRadial const&>(rhs);
+    SymGrpRadExp const& c = dynamic_cast<SymGrpRadExp const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -74,13 +69,12 @@ operator<(SymmetryFunctionGroup const& rhs) const
     return false;
 }
 
-bool SymmetryFunctionGroupRadial::
-addMember(SymmetryFunction const* const symmetryFunction)
+bool SymGrpRadExp::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymmetryFunctionRadial const* sf =
-        dynamic_cast<SymmetryFunctionRadial const*>(symmetryFunction);
+    SymFncRadExp const* sf =
+        dynamic_cast<SymFncRadExp const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -112,11 +106,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     return true;
 }
 
-void SymmetryFunctionGroupRadial::sortMembers()
+void SymGrpRadExp::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymmetryFunctionRadial const>);
+         comparePointerTargets<SymFncRadExp const>);
 
     for (size_t i = 0; i < members.size(); i++)
     {
@@ -129,7 +123,7 @@ void SymmetryFunctionGroupRadial::sortMembers()
     return;
 }
 
-void SymmetryFunctionGroupRadial::setScalingFactors()
+void SymGrpRadExp::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -146,8 +140,7 @@ void SymmetryFunctionGroupRadial::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minmized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupRadial::calculate(Atom&      atom,
-                                            bool const derivatives) const
+void SymGrpRadExp::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t k = 0; k < members.size(); ++k)
@@ -234,7 +227,7 @@ void SymmetryFunctionGroupRadial::calculate(Atom&      atom,
     return;
 }
 
-vector<string> SymmetryFunctionGroupRadial::parameterLines() const
+vector<string> SymGrpRadExp::parameterLines() const
 {
     vector<string> v;
 

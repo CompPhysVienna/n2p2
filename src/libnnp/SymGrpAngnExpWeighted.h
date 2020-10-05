@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPWEIGHTEDANGULAR_H
-#define SYMMETRYFUNCTIONGROUPWEIGHTEDANGULAR_H
+#ifndef SYMGRPANGNEXPWEIGHTED_H
+#define SYMGRPANGNEXPWEIGHTED_H
 
-#include "SymGrp.h"
+#include "SymGrpCutoffBased.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -46,7 +46,7 @@ class SymFncAngnExpWeighted;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpAngnExpWeighted : public SymGrp
+class SymGrpAngnExpWeighted : public SymGrpCutoffBased
 {
 public:
     /** Constructor, sets type = 13

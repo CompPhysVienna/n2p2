@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPANGULARPOLYONLYNARROW_H
-#define SYMMETRYFUNCTIONGROUPANGULARPOLYONLYNARROW_H
+#ifndef SYMGRPANGNPOLY_H
+#define SYMGRPANGNPOLY_H
 
 #include "CompactFunction.h"
 #include "SymGrp.h"

@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONANGULARPOLYONLYNARROW_H
 #define SYMMETRYFUNCTIONANGULARPOLYONLYNARROW_H
 
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include "CompactFunction.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -28,7 +28,7 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunctionStatistics;
+class SymFncStatistics;
 
 /** Angular symmetry function with polynomials (type 29)
  *
@@ -51,30 +51,30 @@ class SymmetryFunctionStatistics;
  * - `<right> ...............` right angle boundary 
  * - `<rcutoff> .............` upper radial boundary
  */
-class SymmetryFunctionAngularPolyOnlyNarrow : public SymmetryFunction
+class SymFncAngnPoly : public SymFnc
 {
 public:
     /** Constructor, sets type = 99
     */
-    SymmetryFunctionAngularPolyOnlyNarrow(ElementMap const& elementMap);
+    SymFncAngnPoly(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymmetryFunction const& rhs) const;
+    bool         operator==(SymFnc const& rhs) const;
     /** Overload != operator.
      */
-    bool         operator!=(SymmetryFunction const& rhs) const;
+    bool         operator!=(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymmetryFunction const& rhs) const;
+    bool         operator<(SymFnc const& rhs) const;
     /** Overload > operator.
      */
-    bool         operator>(SymmetryFunction const& rhs) const;
+    bool         operator>(SymFnc const& rhs) const;
     /** Overload <= operator.
      */
-    bool         operator<=(SymmetryFunction const& rhs) const;
+    bool         operator<=(SymFnc const& rhs) const;
     /** Overload >= operator.
      */
-    bool         operator>=(SymmetryFunction const& rhs) const;
+    bool         operator>=(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing angular symmetry function
@@ -168,51 +168,47 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionAngularPolyOnlyNarrow::
-operator!=(SymmetryFunction const& rhs) const
+inline bool SymFncAngnPoly::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionAngularPolyOnlyNarrow::
-operator>(SymmetryFunction const& rhs) const
+inline bool SymFncAngnPoly::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionAngularPolyOnlyNarrow::
-operator<=(SymmetryFunction const& rhs) const
+inline bool SymFncAngnPoly::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionAngularPolyOnlyNarrow::
-operator>=(SymmetryFunction const& rhs) const
+inline bool SymFncAngnPoly::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline std::size_t SymmetryFunctionAngularPolyOnlyNarrow::getE1() const
+inline std::size_t SymFncAngnPoly::getE1() const
 {
     return e1;
 }
 
-inline std::size_t SymmetryFunctionAngularPolyOnlyNarrow::getE2() const
+inline std::size_t SymFncAngnPoly::getE2() const
 {
     return e2;
 }
 
-inline double SymmetryFunctionAngularPolyOnlyNarrow::getAngleLeft() const
+inline double SymFncAngnPoly::getAngleLeft() const
 {
     return angleLeft;
 }
 
-inline double SymmetryFunctionAngularPolyOnlyNarrow::getAngleRight() const
+inline double SymFncAngnPoly::getAngleRight() const
 {
     return angleRight;
 }
 
-inline double SymmetryFunctionAngularPolyOnlyNarrow::getRl() const
+inline double SymFncAngnPoly::getRl() const
 {
     return rl;
 }

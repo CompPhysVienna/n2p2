@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPWEIGHTEDRADIAL_H
-#define SYMMETRYFUNCTIONGROUPWEIGHTEDRADIAL_H
+#ifndef SYMGRPRADEXPWEIGHTED_H
+#define SYMGRPRADEXPWEIGHTED_H
 
-#include "SymGrp.h"
+#include "SymGrpCutoffBased.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -42,7 +42,7 @@ class SymFncRadExpWeighted;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpRadExpWeighted : public SymGrp
+class SymGrpRadExpWeighted : public SymGrpCutoffBased
 {
 public:
     /** Constructor, sets type = 12

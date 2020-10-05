@@ -18,7 +18,7 @@
 #define SYMMETRYFUNCTIONGROUPANGULARPOLYONLY_H
 
 #include "CompactFunction.h"
-#include "SymmetryFunctionGroup.h"
+#include "SymGrp.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -28,8 +28,8 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunction;
-class SymmetryFunctionAngularPolyOnly;
+class SymFnc;
+class SymFncAngwPoly;
 
 //TODO /** Angular symmetry function group (type 3)
 //TODO  *
@@ -47,30 +47,30 @@ class SymmetryFunctionAngularPolyOnly;
 //TODO  * - @f$r_c@f$
 //TODO  * - @f$\alpha@f$
 //TODO  */
-class SymmetryFunctionGroupAngularPolyOnly : public SymmetryFunctionGroup
+class SymGrpAngwPoly : public SymGrp
 {
 public:
     /** Constructor, sets type = 89
      */
-    SymmetryFunctionGroupAngularPolyOnly(ElementMap const& elementMap);
+    SymGrpAngwPoly(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool operator==(SymmetryFunctionGroup const& rhs) const;
+    bool operator==(SymGrp const& rhs) const;
     /** Overload != operator.
      */
-    bool operator!=(SymmetryFunctionGroup const& rhs) const;
+    bool operator!=(SymGrp const& rhs) const;
     /** Overload < operator.
      */
-    bool operator<(SymmetryFunctionGroup const& rhs) const;
+    bool operator<(SymGrp const& rhs) const;
     /** Overload > operator.
      */
-    bool operator>(SymmetryFunctionGroup const& rhs) const;
+    bool operator>(SymGrp const& rhs) const;
     /** Overload <= operator.
      */
-    bool operator<=(SymmetryFunctionGroup const& rhs) const;
+    bool operator<=(SymGrp const& rhs) const;
     /** Overload >= operator.
      */
-    bool operator>=(SymmetryFunctionGroup const& rhs) const;
+    bool operator>=(SymGrp const& rhs) const;
     /** Potentially add a member to group.
      *
      * @param[in] symmetryFunction Candidate symmetry function.
@@ -79,7 +79,7 @@ public:
      * If symmetry function is compatible with common feature list its pointer
      * will be added to #members.
      */
-    bool addMember(SymmetryFunction const* const symmetryFunction);
+    bool addMember(SymFnc const* const symmetryFunction);
     /** Sort member symmetry functions.
      *
      * Also allocate and precalculate additional stuff.
@@ -104,41 +104,37 @@ public:
 
 private:
     /// Element index of neighbor atom 1 (common feature).
-    std::size_t                                     e1;
+    std::size_t                        e1;
     /// Element index of neighbor atom 2 (common feature).
-    std::size_t                                     e2;
+    std::size_t                        e2;
     /// Vector of all group member pointers.
-    std::vector<SymmetryFunctionAngularPolyOnly const*> members;
+    std::vector<SymFncAngwPoly const*> members;
     /// Smallest cutoff value within group.
-    double                                          rl; 
+    double                             rl; 
     /// Largest cutoff value within group.
-    double                                          rc;
+    double                             rc;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionGroupAngularPolyOnly::
-operator!=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpAngwPoly::operator!=(SymGrp const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionGroupAngularPolyOnly::
-operator>(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpAngwPoly::operator>(SymGrp const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionGroupAngularPolyOnly::
-operator<=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpAngwPoly::operator<=(SymGrp const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionGroupAngularPolyOnly::
-operator>=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpAngwPoly::operator>=(SymGrp const& rhs) const
 {
     return !((*this) < rhs);
 }

@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroupWeightedRadial.h"
+#include "SymGrpRadExpWeighted.h"
 #include "Atom.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionWeightedRadial.h"
+#include "SymFnc.h"
+#include "SymFncRadExpWeighted.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroupWeightedRadial::
-SymmetryFunctionGroupWeightedRadial(ElementMap const& elementMap) :
-    SymmetryFunctionGroup(12, elementMap)
+SymGrpRadExpWeighted::
+SymGrpRadExpWeighted(ElementMap const& elementMap) : SymGrp(12, elementMap)
 {
     parametersMember.insert("eta");
     parametersMember.insert("rs");
@@ -37,28 +36,26 @@ SymmetryFunctionGroupWeightedRadial(ElementMap const& elementMap) :
     parametersMember.insert("sfindex");
 }
 
-bool SymmetryFunctionGroupWeightedRadial::
-operator==(SymmetryFunctionGroup const& rhs) const
+bool SymGrpRadExpWeighted::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionGroupWeightedRadial const& c =
-        dynamic_cast<SymmetryFunctionGroupWeightedRadial const&>(rhs);
+    SymGrpRadExpWeighted const& c =
+        dynamic_cast<SymGrpRadExpWeighted const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
     return true;
 }
 
-bool SymmetryFunctionGroupWeightedRadial::
-operator<(SymmetryFunctionGroup const& rhs) const
+bool SymGrpRadExpWeighted::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionGroupWeightedRadial const& c =
-        dynamic_cast<SymmetryFunctionGroupWeightedRadial const&>(rhs);
+    SymGrpRadExpWeighted const& c =
+        dynamic_cast<SymGrpRadExpWeighted const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -68,13 +65,12 @@ operator<(SymmetryFunctionGroup const& rhs) const
     return false;
 }
 
-bool SymmetryFunctionGroupWeightedRadial::
-addMember(SymmetryFunction const* const symmetryFunction)
+bool SymGrpRadExpWeighted::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymmetryFunctionWeightedRadial const* sf =
-        dynamic_cast<SymmetryFunctionWeightedRadial const*>(symmetryFunction);
+    SymFncRadExpWeighted const* sf =
+        dynamic_cast<SymFncRadExpWeighted const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -104,11 +100,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     return true;
 }
 
-void SymmetryFunctionGroupWeightedRadial::sortMembers()
+void SymGrpRadExpWeighted::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymmetryFunctionWeightedRadial const>);
+         comparePointerTargets<SymFncRadExpWeighted const>);
 
     for (size_t i = 0; i < members.size(); i++)
     {
@@ -121,7 +117,7 @@ void SymmetryFunctionGroupWeightedRadial::sortMembers()
     return;
 }
 
-void SymmetryFunctionGroupWeightedRadial::setScalingFactors()
+void SymGrpRadExpWeighted::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -138,9 +134,7 @@ void SymmetryFunctionGroupWeightedRadial::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minmized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupWeightedRadial::calculate(
-                                                  Atom&      atom,
-                                                  bool const derivatives) const
+void SymGrpRadExpWeighted::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t k = 0; k < members.size(); ++k)
@@ -229,7 +223,7 @@ void SymmetryFunctionGroupWeightedRadial::calculate(
     return;
 }
 
-vector<string> SymmetryFunctionGroupWeightedRadial::parameterLines() const
+vector<string> SymGrpRadExpWeighted::parameterLines() const
 {
     vector<string> v;
 

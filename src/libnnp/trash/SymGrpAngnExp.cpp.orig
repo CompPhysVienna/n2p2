@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroupAngularNarrow.h"
+#include "SymGrpAngnExp.h"
 #include "Atom.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionAngularNarrow.h"
+#include "SymFnc.h"
+#include "SymFncAngnExp.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroupAngularNarrow::
-SymmetryFunctionGroupAngularNarrow(ElementMap const& elementMap) :
-    SymmetryFunctionGroup(3, elementMap),
+SymGrpAngnExp::
+SymGrpAngnExp(ElementMap const& elementMap) : SymGrp(3, elementMap),
     e1(0),
     e2(0)
 {
@@ -45,13 +44,11 @@ SymmetryFunctionGroupAngularNarrow(ElementMap const& elementMap) :
     parametersMember.insert("calcexp");
 }
 
-bool SymmetryFunctionGroupAngularNarrow::
-operator==(SymmetryFunctionGroup const& rhs) const
+bool SymGrpAngnExp::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionGroupAngularNarrow const& c =
-        dynamic_cast<SymmetryFunctionGroupAngularNarrow const&>(rhs);
+    SymGrpAngnExp const& c = dynamic_cast<SymGrpAngnExp const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -60,15 +57,13 @@ operator==(SymmetryFunctionGroup const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionGroupAngularNarrow::
-operator<(SymmetryFunctionGroup const& rhs) const
+bool SymGrpAngnExp:: operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionGroupAngularNarrow const& c =
-        dynamic_cast<SymmetryFunctionGroupAngularNarrow const&>(rhs);
+    SymGrpAngnExp const& c = dynamic_cast<SymGrpAngnExp const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -82,14 +77,12 @@ operator<(SymmetryFunctionGroup const& rhs) const
     return false;
 }
 
-bool SymmetryFunctionGroupAngularNarrow::
-addMember(SymmetryFunction const* const symmetryFunction)
+bool SymGrpAngnExp::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymmetryFunctionAngularNarrow const* sf =
-        dynamic_cast<SymmetryFunctionAngularNarrow const*>(
-        symmetryFunction);
+    SymFncAngnExp const* sf =
+        dynamic_cast<SymFncAngnExp const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -123,11 +116,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     return true;
 }
 
-void SymmetryFunctionGroupAngularNarrow::sortMembers()
+void SymGrpAngnExp::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymmetryFunctionAngularNarrow const>);
+         comparePointerTargets<SymFncAngnExp const>);
 
     // Members are now sorted with eta changing the slowest.
     for (size_t i = 0; i < members.size(); i++)
@@ -165,7 +158,7 @@ void SymmetryFunctionGroupAngularNarrow::sortMembers()
     return;
 }
 
-void SymmetryFunctionGroupAngularNarrow::setScalingFactors()
+void SymGrpAngnExp::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -183,9 +176,7 @@ void SymmetryFunctionGroupAngularNarrow::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupAngularNarrow::calculate(
-                                                  Atom&      atom,
-                                                  bool const derivatives) const
+void SymGrpAngnExp::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t l = 0; l < members.size(); ++l)
@@ -431,7 +422,7 @@ void SymmetryFunctionGroupAngularNarrow::calculate(
     return;
 }
 
-vector<string> SymmetryFunctionGroupAngularNarrow::parameterLines() const
+vector<string> SymGrpAngnExp::parameterLines() const
 {
     vector<string> v;
 

@@ -28,33 +28,33 @@ namespace nnp
 {
 
 struct Atom;
-class SymmetryFunction;
-class SymmetryFunctionStatistics;
+class SymFnc;
+class SymFncStatistics;
 
-class SymmetryFunctionGroup
+class SymGrp
 {
 public:
     /** Virtual destructor.
      */
-    virtual ~SymmetryFunctionGroup() {};
+    virtual ~SymGrp() {};
     /** Overload == operator.
      */
-    virtual bool operator==(SymmetryFunctionGroup const& rhs) const = 0;
+    virtual bool operator==(SymGrp const& rhs) const = 0;
     /** Overload != operator.
      */
-    virtual bool operator!=(SymmetryFunctionGroup const& rhs) const = 0;
+    virtual bool operator!=(SymGrp const& rhs) const = 0;
     /** Overload < operator.
      */
-    virtual bool operator<(SymmetryFunctionGroup const& rhs) const = 0;
+    virtual bool operator<(SymGrp const& rhs) const = 0;
     /** Overload > operator.
      */
-    virtual bool operator>(SymmetryFunctionGroup const& rhs) const = 0;
+    virtual bool operator>(SymGrp const& rhs) const = 0;
     /** Overload <= operator.
      */
-    virtual bool operator<=(SymmetryFunctionGroup const& rhs) const = 0;
+    virtual bool operator<=(SymGrp const& rhs) const = 0;
     /** Overload >= operator.
      */
-    virtual bool operator>=(SymmetryFunctionGroup const& rhs) const = 0;
+    virtual bool operator>=(SymGrp const& rhs) const = 0;
     /** Potentially add a member to group.
      *
      * @param[in] symmetryFunction Candidate symmetry function.
@@ -63,7 +63,7 @@ public:
      * If symmetry function is compatible with common feature list its pointer
      * will be added to the members vector.
      */
-    virtual bool addMember(SymmetryFunction const* const symmetryFunction) = 0;
+    virtual bool addMember(SymFnc const* const symmetryFunction) = 0;
     /** Sort member symmetry functions.
      *
      * Also allocate and precalculate additional stuff.
@@ -142,7 +142,7 @@ protected:
      * @param[in] type Type of symmetry functions grouped.
      * @param[in] elementMap Element Map used.
      */
-    SymmetryFunctionGroup(std::size_t type, ElementMap const& elementMap);
+    SymGrp(std::size_t type, ElementMap const& elementMap);
     /** Initialize static print format map for all possible parameters.
      */
     static PrintFormat const initializePrintFormat();
@@ -165,23 +165,23 @@ protected:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline void SymmetryFunctionGroup::setIndex(size_t index)
+inline void SymGrp::setIndex(size_t index)
 {
     this->index = index;
     return;
 }
 
-inline std::size_t SymmetryFunctionGroup::getIndex() const
+inline std::size_t SymGrp::getIndex() const
 {
     return index;
 }
 
-inline std::size_t SymmetryFunctionGroup::getType() const
+inline std::size_t SymGrp::getType() const
 {
     return type;
 }
 
-inline std::size_t SymmetryFunctionGroup::getEc() const
+inline std::size_t SymGrp::getEc() const
 {
     return ec;
 }

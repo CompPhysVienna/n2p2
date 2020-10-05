@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONGROUPRADIALPOLY_H
 #define SYMMETRYFUNCTIONGROUPRADIALPOLY_H
 
-#include "SymmetryFunctionGroup.h"
+#include "SymGrp.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,8 +27,8 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunction;
-class SymmetryFunctionRadialPoly;
+class SymFnc;
+class SymFncRadPoly;
 
 /** Radial symmetry function group (type 2)
  *
@@ -43,30 +43,30 @@ class SymmetryFunctionRadialPoly;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymmetryFunctionGroupRadialPoly : public SymmetryFunctionGroup
+class SymGrpRadPoly : public SymGrp
 {
 public:
     /** Constructor, sets type = 2
      */
-    SymmetryFunctionGroupRadialPoly(ElementMap const& elementMap);
+    SymGrpRadPoly(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool operator==(SymmetryFunctionGroup const& rhs) const;
+    bool operator==(SymGrp const& rhs) const;
     /** Overload != operator.
      */
-    bool operator!=(SymmetryFunctionGroup const& rhs) const;
+    bool operator!=(SymGrp const& rhs) const;
     /** Overload < operator.
      */
-    bool operator<(SymmetryFunctionGroup const& rhs) const;
+    bool operator<(SymGrp const& rhs) const;
     /** Overload > operator.
      */
-    bool operator>(SymmetryFunctionGroup const& rhs) const;
+    bool operator>(SymGrp const& rhs) const;
     /** Overload <= operator.
      */
-    bool operator<=(SymmetryFunctionGroup const& rhs) const;
+    bool operator<=(SymGrp const& rhs) const;
     /** Overload >= operator.
      */
-    bool operator>=(SymmetryFunctionGroup const& rhs) const;
+    bool operator>=(SymGrp const& rhs) const;
     /** Potentially add a member to group.
      *
      * @param[in] symmetryFunction Candidate symmetry function.
@@ -75,7 +75,7 @@ public:
      * If symmetry function is compatible with common feature list its pointer
      * will be added to #members.
      */
-    bool addMember(SymmetryFunction const* const symmetryFunction);
+    bool addMember(SymFnc const* const symmetryFunction);
     /** Sort member symmetry functions.
      *
      * Also allocate and precalculate additional stuff.
@@ -100,37 +100,33 @@ public:
 
 private:
     /// Element index of neighbor atom (common feature).
-    std::size_t                                    e1;
+    std::size_t                       e1;
     /// Vector of all group member pointers.
-    std::vector<SymmetryFunctionRadialPoly const*> members;
+    std::vector<SymFncRadPoly const*> members;
     /// Minimum radius within group
-    double                                         rl;
+    double                            rl;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionGroupRadialPoly::
-operator!=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadPoly::operator!=(SymGrp const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionGroupRadialPoly::
-operator>(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadPoly::operator>(SymGrp const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionGroupRadialPoly::
-operator<=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadPoly::operator<=(SymGrp const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionGroupRadialPoly::
-operator>=(SymmetryFunctionGroup const& rhs) const
+inline bool SymGrpRadPoly::operator>=(SymGrp const& rhs) const
 {
     return !((*this) < rhs);
 }

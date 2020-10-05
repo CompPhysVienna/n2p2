@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONWEIGHTEDRADIAL_H
-#define SYMMETRYFUNCTIONWEIGHTEDRADIAL_H
+#ifndef SYMFNCRADEXPWEIGHTED_H
+#define SYMFNCRADEXPWEIGHTED_H
 
-#include "SymFnc.h"
+#include "SymFncCutoffBased.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,7 +27,6 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymFncStatistics;
 
 /** Weighted radial symmetry function (type 12)
  *
@@ -46,7 +45,7 @@ class SymFncStatistics;
  * - `<rshift> .............` @f$r_\mathrm{s}@f$
  * - `<rcutoff> ............` @f$r_c@f$
  */
-class SymFncRadExpWeighted : public SymFnc
+class SymFncRadExpWeighted : public SymFncCutoffBased
 {
 public:
     /** Constructor, sets type = 12

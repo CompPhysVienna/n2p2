@@ -14,20 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroup.h"
+#include "SymGrp.h"
 #include "utility.h"
 
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroup::PrintFormat const
-SymmetryFunctionGroup::printFormat = initializePrintFormat();
+SymGrp::PrintFormat const SymGrp::printFormat = initializePrintFormat();
 
-SymmetryFunctionGroup::PrintOrder const
-SymmetryFunctionGroup::printOrder = initializePrintOrder();
+SymGrp::PrintOrder const SymGrp::printOrder = initializePrintOrder();
 
-SymmetryFunctionGroup::
-SymmetryFunctionGroup(size_t type, ElementMap const& elementMap) :
+SymGrp::SymGrp(size_t type, ElementMap const& elementMap) :
     type       (type                   ),
     elementMap (elementMap             ),
     index      (0                      ),
@@ -49,8 +46,7 @@ SymmetryFunctionGroup(size_t type, ElementMap const& elementMap) :
     parametersMember.insert("lineNumber");
 }
 
-SymmetryFunctionGroup::PrintFormat const
-SymmetryFunctionGroup::initializePrintFormat()
+SymGrp::PrintFormat const SymGrp::initializePrintFormat()
 {
     PrintFormat pf;
 
@@ -77,8 +73,7 @@ SymmetryFunctionGroup::initializePrintFormat()
     return pf;
 }
 
-SymmetryFunctionGroup::PrintOrder const
-SymmetryFunctionGroup::initializePrintOrder()
+SymGrp::PrintOrder const SymGrp::initializePrintOrder()
 {
     vector<string> po;
 
@@ -105,7 +100,7 @@ SymmetryFunctionGroup::initializePrintOrder()
     return po;
 }
 
-string SymmetryFunctionGroup::getPrintFormatCommon() const
+string SymGrp::getPrintFormatCommon() const
 {
     string s;
 
@@ -138,7 +133,7 @@ string SymmetryFunctionGroup::getPrintFormatCommon() const
     return s;
 }
 
-string SymmetryFunctionGroup::getPrintFormatMember() const
+string SymGrp::getPrintFormatMember() const
 {
     string s;
 

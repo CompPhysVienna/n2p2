@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroupWeightedAngular.h"
+#include "SymGrpAngnExpWeighted.h"
 #include "Atom.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionWeightedAngular.h"
+#include "SymFnc.h"
+#include "SymFncAngnExpWeighted.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroupWeightedAngular::
-SymmetryFunctionGroupWeightedAngular(ElementMap const& elementMap) :
-    SymmetryFunctionGroup(13, elementMap)
+SymGrpAngnExpWeighted::
+SymGrpAngnExpWeighted(ElementMap const& elementMap) : SymGrp(13, elementMap)
 {
     parametersMember.insert("eta");
     parametersMember.insert("rs");
@@ -40,28 +39,26 @@ SymmetryFunctionGroupWeightedAngular(ElementMap const& elementMap) :
     parametersMember.insert("calcexp");
 }
 
-bool SymmetryFunctionGroupWeightedAngular::
-operator==(SymmetryFunctionGroup const& rhs) const
+bool SymGrpAngnExpWeighted::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionGroupWeightedAngular const& c =
-        dynamic_cast<SymmetryFunctionGroupWeightedAngular const&>(rhs);
+    SymGrpAngnExpWeighted const& c =
+        dynamic_cast<SymGrpAngnExpWeighted const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
     return true;
 }
 
-bool SymmetryFunctionGroupWeightedAngular::
-operator<(SymmetryFunctionGroup const& rhs) const
+bool SymGrpAngnExpWeighted::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionGroupWeightedAngular const& c =
-        dynamic_cast<SymmetryFunctionGroupWeightedAngular const&>(rhs);
+    SymGrpAngnExpWeighted const& c =
+        dynamic_cast<SymGrpAngnExpWeighted const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -71,14 +68,12 @@ operator<(SymmetryFunctionGroup const& rhs) const
     return false;
 }
 
-bool SymmetryFunctionGroupWeightedAngular::
-addMember(SymmetryFunction const* const symmetryFunction)
+bool SymGrpAngnExpWeighted::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymmetryFunctionWeightedAngular const* sf =
-        dynamic_cast<SymmetryFunctionWeightedAngular const*>(
-        symmetryFunction);
+    SymFncAngnExpWeighted const* sf =
+        dynamic_cast<SymFncAngnExpWeighted const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -108,11 +103,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     return true;
 }
 
-void SymmetryFunctionGroupWeightedAngular::sortMembers()
+void SymGrpAngnExpWeighted::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymmetryFunctionWeightedAngular const>);
+         comparePointerTargets<SymFncAngnExpWeighted const>);
 
     // Members are now sorted with eta changing the slowest.
     for (size_t i = 0; i < members.size(); i++)
@@ -150,7 +145,7 @@ void SymmetryFunctionGroupWeightedAngular::sortMembers()
     return;
 }
 
-void SymmetryFunctionGroupWeightedAngular::setScalingFactors()
+void SymGrpAngnExpWeighted::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -168,9 +163,7 @@ void SymmetryFunctionGroupWeightedAngular::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupWeightedAngular::calculate(
-                                                  Atom&      atom,
-                                                  bool const derivatives) const
+void SymGrpAngnExpWeighted::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t l = 0; l < members.size(); ++l)
@@ -392,7 +385,7 @@ void SymmetryFunctionGroupWeightedAngular::calculate(
     return;
 }
 
-vector<string> SymmetryFunctionGroupWeightedAngular::parameterLines() const
+vector<string> SymGrpAngnExpWeighted::parameterLines() const
 {
     vector<string> v;
 

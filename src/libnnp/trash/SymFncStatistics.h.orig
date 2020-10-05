@@ -25,7 +25,7 @@
 namespace nnp
 {
 
-class SymmetryFunctionStatistics
+class SymFncStatistics
 {
 public:
     /** Struct containing statistics gathered during symmetry function
@@ -90,7 +90,7 @@ public:
      * = `false`, #writeExtrapolationWarnings = `false`,
      * #stopOnExtrapolationWarnings = `false`.
      */
-    SymmetryFunctionStatistics();
+    SymFncStatistics();
     /** Update symmetry function statistics with one value.
      *
      * @param[in] index Symmetry function index.

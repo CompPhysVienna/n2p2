@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPRADIALPOLY_H
-#define SYMMETRYFUNCTIONGROUPRADIALPOLY_H
+#ifndef SYMGRPRADPOLY_H
+#define SYMGRPRADPOLY_H
 
 #include "SymGrp.h"
 #include <cstddef> // std::size_t

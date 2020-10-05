@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONWEIGHTEDANGULAR_H
-#define SYMMETRYFUNCTIONWEIGHTEDANGULAR_H
+#ifndef SYMFNCANGNEXPWEIGHTED_H
+#define SYMFNCANGNEXPWEIGHTED_H
 
-#include "SymFnc.h"
+#include "SymFncCutoffBased.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,7 +27,6 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymFncStatistics;
 
 /** Weighted angular symmetry function (type 13)
  *
@@ -51,7 +50,7 @@ class SymFncStatistics;
  * - `<zeta> ................` @f$\zeta@f$ 
  * - `<rcutoff> .............` @f$r_c@f$
  */
-class SymFncAngnExpWeighted : public SymFnc
+class SymFncAngnExpWeighted : public SymFncCutoffBased
 {
 public:
     /** Constructor, sets type = 13

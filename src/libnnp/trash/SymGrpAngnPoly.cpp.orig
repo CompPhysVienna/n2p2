@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroupAngularPolyOnlyNarrow.h"
+#include "SymGrpAngnPoly.h"
 #include "Atom.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionAngularPolyOnlyNarrow.h"
+#include "SymFnc.h"
+#include "SymFncAngnPoly.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroupAngularPolyOnlyNarrow::
-SymmetryFunctionGroupAngularPolyOnlyNarrow(ElementMap const& elementMap) :
-    SymmetryFunctionGroup(99, elementMap),
+SymGrpAngnPoly::
+SymGrpAngnPoly(ElementMap const& elementMap) : SymGrp(99, elementMap),
     e1(0),
     e2(0)
 {
@@ -44,13 +43,12 @@ SymmetryFunctionGroupAngularPolyOnlyNarrow(ElementMap const& elementMap) :
     parametersMember.insert("sfindex");
 }
 
-bool SymmetryFunctionGroupAngularPolyOnlyNarrow::
-operator==(SymmetryFunctionGroup const& rhs) const
+bool SymGrpAngnPoly::
+operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionGroupAngularPolyOnlyNarrow const& c =
-        dynamic_cast<SymmetryFunctionGroupAngularPolyOnlyNarrow const&>(rhs);
+    SymGrpAngnPoly const& c = dynamic_cast<SymGrpAngnPoly const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (e1          != c.e1         ) return false;
@@ -58,15 +56,13 @@ operator==(SymmetryFunctionGroup const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionGroupAngularPolyOnlyNarrow::
-operator<(SymmetryFunctionGroup const& rhs) const
+bool SymGrpAngnPoly::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionGroupAngularPolyOnlyNarrow const& c =
-        dynamic_cast<SymmetryFunctionGroupAngularPolyOnlyNarrow const&>(rhs);
+    SymGrpAngnPoly const& c = dynamic_cast<SymGrpAngnPoly const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -82,14 +78,12 @@ operator<(SymmetryFunctionGroup const& rhs) const
     return false;
 }
 
-bool SymmetryFunctionGroupAngularPolyOnlyNarrow::
-addMember(SymmetryFunction const* const symmetryFunction)
+bool SymGrpAngnPoly::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymmetryFunctionAngularPolyOnlyNarrow const* sf =
-        dynamic_cast<SymmetryFunctionAngularPolyOnlyNarrow const*>(
-        symmetryFunction);
+    SymFncAngnPoly const* sf =
+        dynamic_cast<SymFncAngnPoly const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -129,11 +123,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     return true;
 }
 
-void SymmetryFunctionGroupAngularPolyOnlyNarrow::sortMembers()
+void SymGrpAngnPoly::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymmetryFunctionAngularPolyOnlyNarrow const>);
+         comparePointerTargets<SymFncAngnPoly const>);
 
     // Members are now sorted, somehow...
     for (size_t i = 0; i < members.size(); i++)
@@ -145,7 +139,7 @@ void SymmetryFunctionGroupAngularPolyOnlyNarrow::sortMembers()
     return;
 }
 
-void SymmetryFunctionGroupAngularPolyOnlyNarrow::setScalingFactors()
+void SymGrpAngnPoly::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -162,8 +156,7 @@ void SymmetryFunctionGroupAngularPolyOnlyNarrow::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupAngularPolyOnlyNarrow::calculate(Atom&      atom,
-                                                     bool const derivatives) const
+void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     double* radij  = new double[members.size()];
@@ -369,7 +362,7 @@ void SymmetryFunctionGroupAngularPolyOnlyNarrow::calculate(Atom&      atom,
     return;
 }
 
-vector<string> SymmetryFunctionGroupAngularPolyOnlyNarrow::parameterLines() const
+vector<string> SymGrpAngnPoly::parameterLines() const
 {
     vector<string> v;
     int const    izero = 0.0;

@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymFncAngwExp::
-SymFncAngwExp(ElementMap const& elementMap) : SymFnc(9, elementMap),
+SymFncAngwExp::SymFncAngwExp(ElementMap const& elementMap) :
+    SymFncCutoffBased(9, elementMap),
     useIntegerPow(false),
     e1           (0    ),
     e2           (0    ),
@@ -320,7 +320,7 @@ string SymFncAngwExp::parameterLine() const
 
 vector<string> SymFncAngwExp::parameterInfo() const
 {
-    vector<string> v = SymFnc::parameterInfo();
+    vector<string> v = SymFncCutoffBased::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 

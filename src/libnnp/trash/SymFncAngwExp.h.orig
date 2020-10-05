@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONANGULARWIDE_H
 #define SYMMETRYFUNCTIONANGULARWIDE_H
 
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,7 +27,7 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunctionStatistics;
+class SymFncStatistics;
 
 /** Angular symmetry function (type 9)
  *
@@ -51,30 +51,30 @@ class SymmetryFunctionStatistics;
  * - `<rcutoff> .............` @f$r_c@f$
  * - `<<rshift>> ............` @f$r_s@f$ (optional, default @f$r_s = 0@f$)
  */
-class SymmetryFunctionAngularWide : public SymmetryFunction
+class SymFncAngwExp : public SymFnc
 {
 public:
     /** Constructor, sets type = 9
      */
-    SymmetryFunctionAngularWide(ElementMap const& elementMap);
+    SymFncAngwExp(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymmetryFunction const& rhs) const;
+    bool         operator==(SymFnc const& rhs) const;
     /** Overload != operator.
      */
-    bool         operator!=(SymmetryFunction const& rhs) const;
+    bool         operator!=(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymmetryFunction const& rhs) const;
+    bool         operator<(SymFnc const& rhs) const;
     /** Overload > operator.
      */
-    bool         operator>(SymmetryFunction const& rhs) const;
+    bool         operator>(SymFnc const& rhs) const;
     /** Overload <= operator.
      */
-    bool         operator<=(SymmetryFunction const& rhs) const;
+    bool         operator<=(SymFnc const& rhs) const;
     /** Overload >= operator.
      */
-    bool         operator>=(SymmetryFunction const& rhs) const;
+    bool         operator>=(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing angular symmetry function
@@ -176,66 +176,62 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionAngularWide::
-operator!=(SymmetryFunction const& rhs) const
+inline bool SymFncAngwExp::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionAngularWide::
-operator>(SymmetryFunction const& rhs) const
+inline bool SymFncAngwExp::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionAngularWide::
-operator<=(SymmetryFunction const& rhs) const
+inline bool SymFncAngwExp::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionAngularWide::
-operator>=(SymmetryFunction const& rhs) const
+inline bool SymFncAngwExp::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline bool SymmetryFunctionAngularWide::getUseIntegerPow() const
+inline bool SymFncAngwExp::getUseIntegerPow() const
 {
     return useIntegerPow;
 }
 
-inline std::size_t SymmetryFunctionAngularWide::getE1() const
+inline std::size_t SymFncAngwExp::getE1() const
 {
     return e1;
 }
 
-inline std::size_t SymmetryFunctionAngularWide::getE2() const
+inline std::size_t SymFncAngwExp::getE2() const
 {
     return e2;
 }
 
-inline int SymmetryFunctionAngularWide::getZetaInt() const
+inline int SymFncAngwExp::getZetaInt() const
 {
     return zetaInt;
 }
 
-inline double SymmetryFunctionAngularWide::getLambda() const
+inline double SymFncAngwExp::getLambda() const
 {
     return lambda;
 }
 
-inline double SymmetryFunctionAngularWide::getEta() const
+inline double SymFncAngwExp::getEta() const
 {
     return eta;
 }
 
-inline double SymmetryFunctionAngularWide::getZeta() const
+inline double SymFncAngwExp::getZeta() const
 {
     return zeta;
 }
 
-inline double SymmetryFunctionAngularWide::getRs() const
+inline double SymFncAngwExp::getRs() const
 {
     return rs;
 }

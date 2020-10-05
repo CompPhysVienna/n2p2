@@ -14,12 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "Atom.h"
 #include "SymFnc.h"
-#include "SymFncStatistics.h"
 #include "utility.h"
 #include <cstdlib>   // atof, atoi
-#include <iostream>  // std::cerr
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error, std::out_of_range
 
@@ -48,23 +45,8 @@ vector<string> SymFnc::parameterInfo() const
     v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[ec].c_str()));
     s = "rc";
     v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rc / convLength));
-    s = "cutoffType";
-    v.push_back(strpr((pad(s, w) + "%d"    ).c_str(), (int)cutoffType));
-    s = "cutoffAlpha";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), cutoffAlpha));
 
     return v;
-}
-
-void SymFnc::setCutoffFunction(CutoffFunction::CutoffType cutoffType,
-                               double                     cutoffAlpha)
-{
-    this->cutoffType = cutoffType;
-    this->cutoffAlpha = cutoffAlpha;
-    fc.setCutoffType(cutoffType);
-    fc.setCutoffParameter(cutoffAlpha);
-
-    return;
 }
 
 void SymFnc::setScalingType(ScalingType scalingType,
@@ -129,9 +111,7 @@ SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
     Gsigma       (0.0                    ),
     rc           (0.0                    ),
     scalingFactor(1.0                    ),
-    cutoffAlpha  (0.0                    ),
     convLength   (1.0                    ),
-    cutoffType   (CutoffFunction::CT_HARD),
     scalingType  (ST_NONE                )
 {
     // Add standard parameter IDs to set.
@@ -139,8 +119,6 @@ SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
     parameters.insert("ec");
     parameters.insert("type");
     parameters.insert("rc");
-    parameters.insert("cutoffType");
-    parameters.insert("cutoffAlpha");
     parameters.insert("lineNumber");
 
     // Initialize per-element index vector, use max to indicate

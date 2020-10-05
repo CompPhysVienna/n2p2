@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionRadialPoly.h"
+#include "SymFncRadPoly.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -26,8 +26,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionRadialPoly::SymmetryFunctionRadialPoly(ElementMap const& elementMap) :
-    SymmetryFunction(28, elementMap),
+SymFncRadPoly::SymFncRadPoly(ElementMap const& elementMap) :
+    SymFnc(28, elementMap),
     e1              (0  ),
     rl              (0.0)
 {
@@ -36,26 +36,24 @@ SymmetryFunctionRadialPoly::SymmetryFunctionRadialPoly(ElementMap const& element
     parameters.insert("rl");
 }
 
-bool SymmetryFunctionRadialPoly::operator==(SymmetryFunction const& rhs) const
+bool SymFncRadPoly::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionRadialPoly const& c =
-        dynamic_cast<SymmetryFunctionRadialPoly const&>(rhs);
+    SymFncRadPoly const& c = dynamic_cast<SymFncRadPoly const&>(rhs);
     if (rl          != c.rl         ) return false;
     if (rc          != c.rc         ) return false;
     if (e1          != c.e1         ) return false;
     return true;
 }
 
-bool SymmetryFunctionRadialPoly::operator<(SymmetryFunction const& rhs) const
+bool SymFncRadPoly::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionRadialPoly const& c =
-        dynamic_cast<SymmetryFunctionRadialPoly const&>(rhs);
+    SymFncRadPoly const& c = dynamic_cast<SymFncRadPoly const&>(rhs);
     // TODO: We don't need these! if      (cutoffType  < c.cutoffType ) return true;
     // TODO: We don't need these! else if (cutoffType  > c.cutoffType ) return false;
     // TODO: We don't need these! if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -69,7 +67,7 @@ bool SymmetryFunctionRadialPoly::operator<(SymmetryFunction const& rhs) const
     return false;
 }
 
-void SymmetryFunctionRadialPoly::setParameters(string const& parameterString)
+void SymFncRadPoly::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -103,7 +101,7 @@ void SymmetryFunctionRadialPoly::setParameters(string const& parameterString)
     return;
 }
 
-void SymmetryFunctionRadialPoly::changeLengthUnit(double convLength)
+void SymFncRadPoly::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     rl *= convLength;
@@ -115,7 +113,7 @@ void SymmetryFunctionRadialPoly::changeLengthUnit(double convLength)
     return;
 }
 
-string SymmetryFunctionRadialPoly::getSettingsLine() const
+string SymFncRadPoly::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %16.8E %16.8E\n",
                      elementMap[ec].c_str(),
@@ -127,14 +125,13 @@ string SymmetryFunctionRadialPoly::getSettingsLine() const
     return s;
 }
 
-bool SymmetryFunctionRadialPoly::getCompactOnly(double x, double& fx, double& dfx) const
+bool SymFncRadPoly::getCompactOnly(double x, double& fx, double& dfx) const
 {
     bool const stat = c.fdf(x, fx, dfx);
     return stat;
 }
 
-void SymmetryFunctionRadialPoly::calculate(Atom&  atom,
-                                       bool const derivatives) const
+void SymFncRadPoly::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
 
@@ -170,7 +167,7 @@ void SymmetryFunctionRadialPoly::calculate(Atom&  atom,
     return;
 }
 
-string SymmetryFunctionRadialPoly::parameterLine() const
+string SymFncRadPoly::parameterLine() const
 {
     int const    izero = 0;
     double const dzero = 0;
@@ -186,9 +183,9 @@ string SymmetryFunctionRadialPoly::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymmetryFunctionRadialPoly::parameterInfo() const
+vector<string> SymFncRadPoly::parameterInfo() const
 {
-    vector<string> v = SymmetryFunction::parameterInfo();
+    vector<string> v = SymFnc::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 
@@ -202,19 +199,19 @@ vector<string> SymmetryFunctionRadialPoly::parameterInfo() const
     return v;
 }
 
-double SymmetryFunctionRadialPoly::calculateRadialPart(double distance) const
+double SymFncRadPoly::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
 
     return c.f(r);
 }
 
-double SymmetryFunctionRadialPoly::calculateAngularPart(double /* angle */) const
+double SymFncRadPoly::calculateAngularPart(double /* angle */) const
 {
     return 1.0;
 }
 
-bool SymmetryFunctionRadialPoly::checkRelevantElement(size_t index) const
+bool SymFncRadPoly::checkRelevantElement(size_t index) const
 {
     if (index == e1) return true;
     else return false;

@@ -26,8 +26,8 @@
 using namespace std;
 using namespace nnp;
 
-SymFncRadExpWeighted::
-SymFncRadExpWeighted(ElementMap const& elementMap) : SymFnc(12, elementMap),
+SymFncRadExpWeighted::SymFncRadExpWeighted(ElementMap const& elementMap) :
+    SymFncCutoffBased(12, elementMap),
     eta             (0.0),
     rs              (0.0)
 {
@@ -189,7 +189,7 @@ string SymFncRadExpWeighted::parameterLine() const
 
 vector<string> SymFncRadExpWeighted::parameterInfo() const
 {
-    vector<string> v = SymFnc::parameterInfo();
+    vector<string> v = SymFncCutoffBased::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 

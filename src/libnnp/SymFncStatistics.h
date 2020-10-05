@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONSTATISTICS
-#define SYMMETRYFUNCTIONSTATISTICS
+#ifndef SYMFNCSTATISTICS
+#define SYMFNCSTATISTICS
 
 #include <cstddef> // std::size_t
 #include <map>     // std::map

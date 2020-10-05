@@ -18,27 +18,22 @@
 #include "Element.h"
 #include "NeuralNetwork.h"
 #include "SymFnc.h"
+#include "SymFncCutoffBased.h"
 #include "SymFncRadExp.h"
 #include "SymFncRadPoly.h"
-#include "SymFncRadPolyA.h"
 #include "SymFncAngnExp.h"
 #include "SymFncAngwExp.h"
 #include "SymFncAngwPoly.h"
 #include "SymFncAngnPoly.h"
-#include "SymFncAngwPolyA.h"
-#include "SymFncAngnPolyA.h"
 #include "SymFncRadExpWeighted.h"
 #include "SymFncAngnExpWeighted.h"
 #include "SymGrp.h"
 #include "SymGrpRadExp.h"
 #include "SymGrpRadPoly.h"
-#include "SymGrpRadPolyA.h"
 #include "SymGrpAngnExp.h"
 #include "SymGrpAngwExp.h"
 #include "SymGrpAngwPoly.h"
 #include "SymGrpAngnPoly.h"
-#include "SymGrpAngwPolyA.h"
-#include "SymGrpAngnPolyA.h"
 #include "SymGrpRadExpWeighted.h"
 #include "SymGrpAngnExpWeighted.h"
 #include "utility.h"
@@ -112,25 +107,13 @@ void Element::addSymmetryFunction(string const& parameters,
     {
         symmetryFunctions.push_back(new SymFncRadPoly(elementMap));
     }
-    else if (type == 280)
-    {
-        symmetryFunctions.push_back(new SymFncRadPolyA(elementMap));
-    }
     else if (type == 89)
     {
         symmetryFunctions.push_back(new SymFncAngwPoly(elementMap));
     }
-    else if (type == 890)
-    {
-        symmetryFunctions.push_back(new SymFncAngwPolyA(elementMap));
-    }
     else if (type == 99)
     {
         symmetryFunctions.push_back(new SymFncAngnPoly(elementMap));
-    }
-    else if (type == 990)
-    {
-        symmetryFunctions.push_back(new SymFncAngnPolyA(elementMap));
     }
     else
     {
@@ -242,30 +225,15 @@ void Element::setupSymmetryFunctionGroups()
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpRadPoly(elementMap));
             }
-            else if ((*sf)->getType() == 280)
-            {
-                symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpRadPolyA(elementMap));
-            }
             else if ((*sf)->getType() == 89)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpAngwPoly(elementMap));
             }
-            else if ((*sf)->getType() == 890)
-            {
-                symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngwPolyA(elementMap));
-            }
             else if ((*sf)->getType() == 99)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpAngnPoly(elementMap));
-            }
-            else if ((*sf)->getType() == 990)
-            {
-                symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngnPolyA(elementMap));
             }
             else
             {
@@ -333,7 +301,11 @@ void Element::setCutoffFunction(CutoffFunction::CutoffType const cutoffType,
     for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
-        (*it)->setCutoffFunction(cutoffType, cutoffAlpha);
+        SymFncCutoffBased* sfcb = dynamic_cast<SymFncCutoffBased*>(*it);
+        if (sfcb != nullptr)
+        {
+            sfcb->setCutoffFunction(cutoffType, cutoffAlpha);
+        }
     }
 
     return;

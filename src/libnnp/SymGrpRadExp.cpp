@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymGrpRadExp::
-SymGrpRadExp(ElementMap const& elementMap) : SymGrp(2, elementMap),
+SymGrpRadExp::SymGrpRadExp(ElementMap const& elementMap) :
+    SymGrpCutoffBased(2, elementMap),
     e1(0)
 {
     parametersCommon.insert("e1");

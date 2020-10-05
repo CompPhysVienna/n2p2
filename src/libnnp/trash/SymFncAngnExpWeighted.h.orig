@@ -17,7 +17,7 @@
 #ifndef SYMMETRYFUNCTIONWEIGHTEDANGULAR_H
 #define SYMMETRYFUNCTIONWEIGHTEDANGULAR_H
 
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,7 +27,7 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymmetryFunctionStatistics;
+class SymFncStatistics;
 
 /** Weighted angular symmetry function (type 13)
  *
@@ -51,30 +51,30 @@ class SymmetryFunctionStatistics;
  * - `<zeta> ................` @f$\zeta@f$ 
  * - `<rcutoff> .............` @f$r_c@f$
  */
-class SymmetryFunctionWeightedAngular : public SymmetryFunction
+class SymFncAngnExpWeighted : public SymFnc
 {
 public:
     /** Constructor, sets type = 13
      */
-    SymmetryFunctionWeightedAngular(ElementMap const& elementMap);
+    SymFncAngnExpWeighted(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymmetryFunction const& rhs) const;
+    bool         operator==(SymFnc const& rhs) const;
     /** Overload != operator.
      */
-    bool         operator!=(SymmetryFunction const& rhs) const;
+    bool         operator!=(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymmetryFunction const& rhs) const;
+    bool         operator<(SymFnc const& rhs) const;
     /** Overload > operator.
      */
-    bool         operator>(SymmetryFunction const& rhs) const;
+    bool         operator>(SymFnc const& rhs) const;
     /** Overload <= operator.
      */
-    bool         operator<=(SymmetryFunction const& rhs) const;
+    bool         operator<=(SymFnc const& rhs) const;
     /** Overload >= operator.
      */
-    bool         operator>=(SymmetryFunction const& rhs) const;
+    bool         operator>=(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing weighted angular symmetry
@@ -166,56 +166,56 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymmetryFunctionWeightedAngular::
-operator!=(SymmetryFunction const& rhs) const
+inline bool SymFncAngnExpWeighted::
+operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymmetryFunctionWeightedAngular::
-operator>(SymmetryFunction const& rhs) const
+inline bool SymFncAngnExpWeighted::
+operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymmetryFunctionWeightedAngular::
-operator<=(SymmetryFunction const& rhs) const
+inline bool SymFncAngnExpWeighted::
+operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymmetryFunctionWeightedAngular::
-operator>=(SymmetryFunction const& rhs) const
+inline bool SymFncAngnExpWeighted::
+operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline bool SymmetryFunctionWeightedAngular::getUseIntegerPow() const
+inline bool SymFncAngnExpWeighted::getUseIntegerPow() const
 {
     return useIntegerPow;
 }
 
-inline int SymmetryFunctionWeightedAngular::getZetaInt() const
+inline int SymFncAngnExpWeighted::getZetaInt() const
 {
     return zetaInt;
 }
 
-inline double SymmetryFunctionWeightedAngular::getEta() const
+inline double SymFncAngnExpWeighted::getEta() const
 {
     return eta;
 }
 
-inline double SymmetryFunctionWeightedAngular::getRs() const
+inline double SymFncAngnExpWeighted::getRs() const
 {
     return rs;
 }
 
-inline double SymmetryFunctionWeightedAngular::getLambda() const
+inline double SymFncAngnExpWeighted::getLambda() const
 {
     return lambda;
 }
 
-inline double SymmetryFunctionWeightedAngular::getZeta() const
+inline double SymFncAngnExpWeighted::getZeta() const
 {
     return zeta;
 }

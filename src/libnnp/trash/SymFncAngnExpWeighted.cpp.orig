@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionWeightedAngular.h"
+#include "SymFncAngnExpWeighted.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionWeightedAngular::
-SymmetryFunctionWeightedAngular(ElementMap const& elementMap) :
-    SymmetryFunction(13, elementMap),
+SymFncAngnExpWeighted::
+SymFncAngnExpWeighted(ElementMap const& elementMap) : SymFnc(13, elementMap),
     useIntegerPow(false),
     zetaInt      (0    ),
     eta          (0.0  ),
@@ -44,13 +43,12 @@ SymmetryFunctionWeightedAngular(ElementMap const& elementMap) :
     parameters.insert("lambda");
 }
 
-bool SymmetryFunctionWeightedAngular::
-operator==(SymmetryFunction const& rhs) const
+bool SymFncAngnExpWeighted::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionWeightedAngular const& c =
-        dynamic_cast<SymmetryFunctionWeightedAngular const&>(rhs);
+    SymFncAngnExpWeighted const& c =
+        dynamic_cast<SymFncAngnExpWeighted const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -61,15 +59,14 @@ operator==(SymmetryFunction const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionWeightedAngular::
-operator<(SymmetryFunction const& rhs) const
+bool SymFncAngnExpWeighted::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionWeightedAngular const& c =
-        dynamic_cast<SymmetryFunctionWeightedAngular const&>(rhs);
+    SymFncAngnExpWeighted const& c =
+        dynamic_cast<SymFncAngnExpWeighted const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -87,8 +84,7 @@ operator<(SymmetryFunction const& rhs) const
     return false;
 }
 
-void SymmetryFunctionWeightedAngular::
-     setParameters(string const& parameterString)
+void SymFncAngnExpWeighted::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -120,7 +116,7 @@ void SymmetryFunctionWeightedAngular::
     return;
 }
 
-void SymmetryFunctionWeightedAngular::changeLengthUnit(double convLength)
+void SymFncAngnExpWeighted::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     eta /= convLength * convLength;
@@ -133,7 +129,7 @@ void SymmetryFunctionWeightedAngular::changeLengthUnit(double convLength)
     return;
 }
 
-string SymmetryFunctionWeightedAngular::getSettingsLine() const
+string SymFncAngnExpWeighted::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %16.8E %16.8E %16.8E "
                      "%16.8E %16.8E\n",
@@ -148,8 +144,7 @@ string SymmetryFunctionWeightedAngular::getSettingsLine() const
     return s;
 }
 
-void SymmetryFunctionWeightedAngular::calculate(Atom&      atom,
-                                                bool const derivatives) const
+void SymFncAngnExpWeighted::calculate(Atom& atom, bool const derivatives) const
 {
     double const pnorm  = pow(2.0, 1.0 - zeta);
     double const pzl    = zeta * lambda;
@@ -295,7 +290,7 @@ void SymmetryFunctionWeightedAngular::calculate(Atom&      atom,
     return;
 }
 
-string SymmetryFunctionWeightedAngular::parameterLine() const
+string SymFncAngnExpWeighted::parameterLine() const
 {
     return strpr(getPrintFormat().c_str(),
                  index + 1,
@@ -311,9 +306,9 @@ string SymmetryFunctionWeightedAngular::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymmetryFunctionWeightedAngular::parameterInfo() const
+vector<string> SymFncAngnExpWeighted::parameterInfo() const
 {
-    vector<string> v = SymmetryFunction::parameterInfo();
+    vector<string> v = SymFnc::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 
@@ -330,8 +325,7 @@ vector<string> SymmetryFunctionWeightedAngular::parameterInfo() const
     return v;
 }
 
-double SymmetryFunctionWeightedAngular::calculateRadialPart(
-                                                         double distance) const
+double SymFncAngnExpWeighted::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
     double const p = exp(-eta * (r - rs) * (r - rs)) * fc.f(r);
@@ -339,13 +333,12 @@ double SymmetryFunctionWeightedAngular::calculateRadialPart(
     return p * p * p;
 }
 
-double SymmetryFunctionWeightedAngular::calculateAngularPart(double angle) const
+double SymFncAngnExpWeighted::calculateAngularPart(double angle) const
 {
     return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
 }
 
-bool SymmetryFunctionWeightedAngular::checkRelevantElement(
-                                                        size_t /*index*/) const
+bool SymFncAngnExpWeighted::checkRelevantElement(size_t /*index*/) const
 {
     return true;
 }

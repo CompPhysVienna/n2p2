@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONANGULARWIDE_H
-#define SYMMETRYFUNCTIONANGULARWIDE_H
+#ifndef SYMFNCANGWEXP_H
+#define SYMFNCANGWEXP_H
 
-#include "SymFnc.h"
+#include "SymFncCutoffBased.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -27,7 +27,6 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymFncStatistics;
 
 /** Angular symmetry function (type 9)
  *
@@ -51,7 +50,7 @@ class SymFncStatistics;
  * - `<rcutoff> .............` @f$r_c@f$
  * - `<<rshift>> ............` @f$r_s@f$ (optional, default @f$r_s = 0@f$)
  */
-class SymFncAngwExp : public SymFnc
+class SymFncAngwExp : public SymFncCutoffBased
 {
 public:
     /** Constructor, sets type = 9

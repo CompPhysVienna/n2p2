@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionAngularWide.h"
+#include "SymFncAngwExp.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionAngularWide::
-SymmetryFunctionAngularWide(ElementMap const& elementMap) :
-    SymmetryFunction(9, elementMap),
+SymFncAngwExp::
+SymFncAngwExp(ElementMap const& elementMap) : SymFnc(9, elementMap),
     useIntegerPow(false),
     e1           (0    ),
     e2           (0    ),
@@ -48,13 +47,11 @@ SymmetryFunctionAngularWide(ElementMap const& elementMap) :
     parameters.insert("rs");
 }
 
-bool SymmetryFunctionAngularWide::
-operator==(SymmetryFunction const& rhs) const
+bool SymFncAngwExp::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionAngularWide const& c =
-        dynamic_cast<SymmetryFunctionAngularWide const&>(rhs);
+    SymFncAngwExp const& c = dynamic_cast<SymFncAngwExp const&>(rhs);
     if (cutoffType  != c.cutoffType ) return false;
     if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -66,15 +63,13 @@ operator==(SymmetryFunction const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionAngularWide::
-operator<(SymmetryFunction const& rhs) const
+bool SymFncAngwExp::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionAngularWide const& c =
-        dynamic_cast<SymmetryFunctionAngularWide const&>(rhs);
+    SymFncAngwExp const& c = dynamic_cast<SymFncAngwExp const&>(rhs);
     if      (cutoffType  < c.cutoffType ) return true;
     else if (cutoffType  > c.cutoffType ) return false;
     if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -96,8 +91,7 @@ operator<(SymmetryFunction const& rhs) const
     return false;
 }
 
-void SymmetryFunctionAngularWide::
-setParameters(string const& parameterString)
+void SymFncAngwExp::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -142,7 +136,7 @@ setParameters(string const& parameterString)
     return;
 }
 
-void SymmetryFunctionAngularWide::changeLengthUnit(double convLength)
+void SymFncAngwExp::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     eta /= convLength * convLength;
@@ -155,7 +149,7 @@ void SymmetryFunctionAngularWide::changeLengthUnit(double convLength)
     return;
 }
 
-string SymmetryFunctionAngularWide::getSettingsLine() const
+string SymFncAngwExp::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
                      "%16.8E %16.8E %16.8E\n",
@@ -172,8 +166,7 @@ string SymmetryFunctionAngularWide::getSettingsLine() const
     return s;
 }
 
-void SymmetryFunctionAngularWide::calculate(Atom&      atom,
-                                            bool const derivatives) const
+void SymFncAngwExp::calculate(Atom& atom, bool const derivatives) const
 {
     double const pnorm  = pow(2.0, 1.0 - zeta);
     double const pzl    = zeta * lambda;
@@ -307,7 +300,7 @@ void SymmetryFunctionAngularWide::calculate(Atom&      atom,
     return;
 }
 
-string SymmetryFunctionAngularWide::parameterLine() const
+string SymFncAngwExp::parameterLine() const
 {
     return strpr(getPrintFormat().c_str(),
                  index + 1,
@@ -325,9 +318,9 @@ string SymmetryFunctionAngularWide::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymmetryFunctionAngularWide::parameterInfo() const
+vector<string> SymFncAngwExp::parameterInfo() const
 {
-    vector<string> v = SymmetryFunction::parameterInfo();
+    vector<string> v = SymFnc::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 
@@ -348,7 +341,7 @@ vector<string> SymmetryFunctionAngularWide::parameterInfo() const
     return v;
 }
 
-double SymmetryFunctionAngularWide::calculateRadialPart(double distance) const
+double SymFncAngwExp::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
     double const p = exp(-eta * (r - rs) * (r -rs)) * fc.f(r);
@@ -356,12 +349,12 @@ double SymmetryFunctionAngularWide::calculateRadialPart(double distance) const
     return p * p;
 }
 
-double SymmetryFunctionAngularWide::calculateAngularPart(double angle) const
+double SymFncAngwExp::calculateAngularPart(double angle) const
 {
     return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
 }
 
-bool SymmetryFunctionAngularWide::checkRelevantElement(size_t index) const
+bool SymFncAngwExp::checkRelevantElement(size_t index) const
 {
     if (index == e1 || index == e2) return true;
     else return false;

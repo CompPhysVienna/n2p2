@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPRADIAL_H
-#define SYMMETRYFUNCTIONGROUPRADIAL_H
+#ifndef SYMGRPRADEXP_H
+#define SYMGRPRADEXP_H
 
-#include "SymGrp.h"
+#include "SymGrpCutoffBased.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -43,7 +43,7 @@ class SymFncRadExp;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpRadExp : public SymGrp
+class SymGrpRadExp : public SymGrpCutoffBased
 {
 public:
     /** Constructor, sets type = 2

@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymmetryFunctionGroupRadialPoly.h"
+#include "SymGrpRadPoly.h"
 #include "Atom.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionRadialPoly.h"
+#include "SymFnc.h"
+#include "SymFncRadPoly.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,9 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymmetryFunctionGroupRadialPoly::
-SymmetryFunctionGroupRadialPoly(ElementMap const& elementMap) :
-    SymmetryFunctionGroup(28, elementMap),
+SymGrpRadPoly::
+SymGrpRadPoly(ElementMap const& elementMap) : SymGrp(28, elementMap),
     e1(0),
     rl(0)
 {
@@ -40,13 +39,11 @@ SymmetryFunctionGroupRadialPoly(ElementMap const& elementMap) :
     parametersMember.insert("sfindex");
 }
 
-bool SymmetryFunctionGroupRadialPoly::
-operator==(SymmetryFunctionGroup const& rhs) const
+bool SymGrpRadPoly::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymmetryFunctionGroupRadialPoly const& c =
-        dynamic_cast<SymmetryFunctionGroupRadialPoly const&>(rhs);
+    SymGrpRadPoly const& c = dynamic_cast<SymGrpRadPoly const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rl          != c.rl         ) return false;
@@ -55,15 +52,13 @@ operator==(SymmetryFunctionGroup const& rhs) const
     return true;
 }
 
-bool SymmetryFunctionGroupRadialPoly::
-operator<(SymmetryFunctionGroup const& rhs) const
+bool SymGrpRadPoly::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymmetryFunctionGroupRadialPoly const& c =
-        dynamic_cast<SymmetryFunctionGroupRadialPoly const&>(rhs);
+    SymGrpRadPoly const& c = dynamic_cast<SymGrpRadPoly const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -77,13 +72,12 @@ operator<(SymmetryFunctionGroup const& rhs) const
     return false;
 }
 
-bool SymmetryFunctionGroupRadialPoly::
-addMember(SymmetryFunction const* const symmetryFunction)
+bool SymGrpRadPoly::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymmetryFunctionRadialPoly const* sf =
-        dynamic_cast<SymmetryFunctionRadialPoly const*>(symmetryFunction);
+    SymFncRadPoly const* sf =
+        dynamic_cast<SymFncRadPoly const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -116,11 +110,11 @@ addMember(SymmetryFunction const* const symmetryFunction)
     return true;
 }
 
-void SymmetryFunctionGroupRadialPoly::sortMembers()
+void SymGrpRadPoly::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymmetryFunctionRadialPoly const>);
+         comparePointerTargets<SymFncRadPoly const>);
 
     for (size_t i = 0; i < members.size(); i++)
     {
@@ -131,7 +125,7 @@ void SymmetryFunctionGroupRadialPoly::sortMembers()
     return;
 }
 
-void SymmetryFunctionGroupRadialPoly::setScalingFactors()
+void SymGrpRadPoly::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -148,8 +142,7 @@ void SymmetryFunctionGroupRadialPoly::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minmized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymmetryFunctionGroupRadialPoly::calculate(Atom&      atom,
-                                            bool const derivatives) const
+void SymGrpRadPoly::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t k = 0; k < members.size(); ++k)
@@ -219,7 +212,7 @@ void SymmetryFunctionGroupRadialPoly::calculate(Atom&      atom,
     return;
 }
 
-vector<string> SymmetryFunctionGroupRadialPoly::parameterLines() const
+vector<string> SymGrpRadPoly::parameterLines() const
 {
     vector<string> v;
 
