@@ -1,7 +1,8 @@
 n2p2 - The neural network potential package
 ===========================================
 
-[![DOI](https://zenodo.org/badge/142296892.svg)](https://zenodo.org/badge/latestdoi/142296892)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1344446.svg)](https://doi.org/10.5281/zenodo.1344446)
+[![GitHub release](https://img.shields.io/github/release/CompPhysVienna/n2p2.svg)](https://GitHub.com/CompPhysVienna/n2p2/releases/)
 [![Build Status](https://travis-ci.org/CompPhysVienna/n2p2.svg?branch=master)](https://travis-ci.org/CompPhysVienna/n2p2)
 [![Coverage](https://codecov.io/gh/CompPhysVienna/n2p2/branch/master/graph/badge.svg)](https://codecov.io/gh/CompPhysVienna/n2p2)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
