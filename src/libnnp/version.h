@@ -17,7 +17,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define NNP_VERSION "2.0.0rc"
+#define NNP_VERSION "2.0.0"
 #define NNP_GIT_REV ""
 #define NNP_GIT_REV_SHORT ""
 #define NNP_GIT_BRANCH ""
