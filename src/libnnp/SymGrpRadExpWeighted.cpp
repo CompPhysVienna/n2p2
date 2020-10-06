@@ -31,7 +31,7 @@ SymGrpRadExpWeighted::SymGrpRadExpWeighted(ElementMap const& elementMap) :
     SymGrpCutoffBased(12, elementMap)
 {
     parametersMember.insert("eta");
-    parametersMember.insert("rs");
+    parametersMember.insert("rs/rl");
     parametersMember.insert("mindex");
     parametersMember.insert("sfindex");
 }
@@ -75,6 +75,7 @@ bool SymGrpRadExpWeighted::addMember(SymFnc const* const symmetryFunction)
     if (members.empty())
     {
         cutoffType  = sf->getCutoffType();
+        subtype     = sf->getSubtype();
         cutoffAlpha = sf->getCutoffAlpha();
         ec          = sf->getEc();
         rc          = sf->getRc();
@@ -231,8 +232,8 @@ vector<string> SymGrpRadExpWeighted::parameterLines() const
                       index + 1,
                       elementMap[ec].c_str(),
                       type,
+                      subtype.c_str(),
                       rc / convLength,
-                      (int)cutoffType,
                       cutoffAlpha));
 
     for (size_t i = 0; i < members.size(); ++i)

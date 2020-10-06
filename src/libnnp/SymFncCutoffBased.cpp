@@ -16,6 +16,7 @@
 
 #include "SymFncCutoffBased.h"
 #include "utility.h"
+#include <string>
 
 using namespace std;
 using namespace nnp;
@@ -26,9 +27,9 @@ vector<string> SymFncCutoffBased::parameterInfo() const
     string s;
     size_t w = sfinfoWidth;
 
-    s = "cutoffType";
-    v.push_back(strpr((pad(s, w) + "%d"    ).c_str(), (int)cutoffType));
-    s = "cutoffAlpha";
+    s = "subtype";
+    v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), subtype.c_str()));
+    s = "alpha";
     v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), cutoffAlpha));
 
     return v;
@@ -42,6 +43,7 @@ void SymFncCutoffBased::setCutoffFunction(
     this->cutoffAlpha = cutoffAlpha;
     fc.setCutoffType(cutoffType);
     fc.setCutoffParameter(cutoffAlpha);
+    this->subtype = string("ct") + strpr("%d", static_cast<int>(cutoffType));
 
     return;
 }
@@ -50,9 +52,10 @@ SymFncCutoffBased::SymFncCutoffBased(size_t type,
                                      ElementMap const& elementMap) :
     SymFnc(type, elementMap),
     cutoffAlpha  (0.0                    ),
+    subtype      ("ct0"                  ),
     cutoffType   (CutoffFunction::CT_HARD)
 {
     // Add cutoff-related parameter IDs to set.
-    parameters.insert("cutoffType");
-    parameters.insert("cutoffAlpha");
+    parameters.insert("subtype");
+    parameters.insert("alpha");
 }

@@ -52,6 +52,9 @@ public:
     /** Get private #cutoffAlpha member variable.
      */
     double                   getCutoffAlpha() const;
+    /** Get private #subtype member variable.
+     */
+    std::string              getSubtype() const;
     /** Get private #cutoffType member variable.
      */
     CutoffFunction::
@@ -60,6 +63,8 @@ public:
 protected:
     /// Cutoff parameter @f$\alpha@f$.
     double                     cutoffAlpha;
+    /// Subtype string (specifies cutoff type).
+    std::string                subtype;
     /// Cutoff function used by this symmetry function.
     CutoffFunction             fc;
     /// Cutoff type used by this symmetry function.
@@ -77,6 +82,11 @@ protected:
 inline double SymFncCutoffBased::getCutoffAlpha() const
 {
     return cutoffAlpha;
+}
+
+inline std::string SymFncCutoffBased::getSubtype() const
+{
+    return subtype;
 }
 
 inline CutoffFunction::CutoffType SymFncCutoffBased::getCutoffType() const

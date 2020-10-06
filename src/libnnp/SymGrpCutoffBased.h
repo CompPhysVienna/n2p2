@@ -33,6 +33,8 @@ public:
 protected:
     /// Cutoff function parameter @f$\alpha@f$ (common feature).
     double                                 cutoffAlpha;
+    /// Subtype string (specifies cutoff type) (common feature).
+    std::string                            subtype;
     /// Cutoff function used by this symmetry function group.
     CutoffFunction                         fc;
     /// Cutoff type used by this symmetry function group (common feature).

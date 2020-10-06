@@ -44,7 +44,7 @@ SymFncAngnExp::SymFncAngnExp(ElementMap const& elementMap) :
     parameters.insert("eta");
     parameters.insert("zeta");
     parameters.insert("lambda");
-    parameters.insert("rs");
+    parameters.insert("rs/rl");
 }
 
 bool SymFncAngnExp::operator==(SymFnc const& rhs) const
@@ -322,14 +322,14 @@ string SymFncAngnExp::parameterLine() const
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
+                 subtype.c_str(),
                  elementMap[e1].c_str(),
                  elementMap[e2].c_str(),
                  eta * convLength * convLength,
                  rs / convLength,
+                 rc / convLength,
                  lambda,
                  zeta,
-                 rc / convLength,
-                 (int)cutoffType,
                  cutoffAlpha,
                  lineNumber + 1);
 }

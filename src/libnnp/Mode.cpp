@@ -330,19 +330,19 @@ void Mode::setupSymmetryFunctions()
     log << "--------------\n";
     log << "ind .... Symmetry function index.\n";
     log << "ec ..... Central atom element.\n";
-    log << "ty ..... Symmetry function type.\n";
+    log << "tp ..... Symmetry function type.\n";
+    log << "sbtp ... Symmetry function subtype (e.g. cutoff type).\n";
     log << "e1 ..... Neighbor 1 element.\n";
     log << "e2 ..... Neighbor 2 element.\n";
     log << "eta .... Gaussian width eta.\n";
-    log << "rs ..... Shift distance of Gaussian.\n";
-    log << "la ..... Angle prefactor lambda.\n";
-    log << "zeta ... Angle term exponent zeta.\n";
-    log << "rl ..... Left cutoff radius for polynomial.\n";
+    log << "rs/rl... Shift distance of Gaussian or left cutoff radius "
+           "for polynomial.\n";
     log << "angl.... Left cutoff angle for polynomial.\n";
     log << "angr.... Right cutoff angle for polynomial.\n";
+    log << "la ..... Angle prefactor lambda.\n";
+    log << "zeta ... Angle term exponent zeta.\n";
     log << "rc ..... Cutoff radius / right cutoff radius for polynomial.\n";
-    log << "ct ..... Cutoff type.\n";
-    log << "ca ..... Cutoff alpha.\n";
+    log << "a ...... Free parameter alpha (e.g. cutoff alpha).\n";
     log << "ln ..... Line number in settings file.\n";
     log << "\n";
     maxCutoffRadius = 0.0;
@@ -357,8 +357,8 @@ void Mode::setupSymmetryFunctions()
                      it->getSymbol().c_str());
         log << "--------------------------------------------------"
                "-----------------------------------------------\n";
-        log << " ind ec ty e1 e2       eta        rs la zeta"
-               "         rl   angl   angr         rc ct   ca    ln\n";
+        log << " ind ec tp sbtp e1 e2       eta      rl/rs         "
+               "rc   angl   angr la zeta    a    ln\n";
         log << "--------------------------------------------------"
                "-----------------------------------------------\n";
         log << it->infoSymmetryFunctionParameters();
@@ -543,21 +543,21 @@ void Mode::setupSymmetryFunctionGroups()
 
     log << "Abbreviations:\n";
     log << "--------------\n";
-    log << "ind .... Symmetry function group index.\n";
+    log << "ind .... Symmetry function index.\n";
     log << "ec ..... Central atom element.\n";
-    log << "ty ..... Symmetry function type.\n";
+    log << "tp ..... Symmetry function type.\n";
+    log << "sbtp ... Symmetry function subtype (e.g. cutoff type).\n";
     log << "e1 ..... Neighbor 1 element.\n";
     log << "e2 ..... Neighbor 2 element.\n";
     log << "eta .... Gaussian width eta.\n";
-    log << "rs ..... Shift distance of Gaussian.\n";
-    log << "la ..... Angle prefactor lambda.\n";
-    log << "zeta ... Angle term exponent zeta.\n";
-    log << "rl ..... Left cutoff radius for polynomial.\n";
+    log << "rs/rl... Shift distance of Gaussian or left cutoff radius "
+           "for polynomial.\n";
     log << "angl.... Left cutoff angle for polynomial.\n";
     log << "angr.... Right cutoff angle for polynomial.\n";
-    log << "rc ..... Cutoff radius.\n";
-    log << "ct ..... Cutoff type.\n";
-    log << "ca ..... Cutoff alpha.\n";
+    log << "la ..... Angle prefactor lambda.\n";
+    log << "zeta ... Angle term exponent zeta.\n";
+    log << "rc ..... Cutoff radius / right cutoff radius for polynomial.\n";
+    log << "a ...... Free parameter alpha (e.g. cutoff alpha).\n";
     log << "ln ..... Line number in settings file.\n";
     log << "mi ..... Member index.\n";
     log << "sfi .... Symmetry function index.\n";
@@ -571,8 +571,8 @@ void Mode::setupSymmetryFunctionGroups()
                      "element %2s :\n", it->getSymbol().c_str());
         log << "------------------------------------------------------"
                "----------------------------------------------------\n";
-        log << " ind ec ty e1 e2       eta        rs la "
-               "zeta         rl   angl   angr         rc ct   ca    ln   mi  sfi e\n";
+        log << " ind ec tp sbtp e1 e2       eta      rl/rs         "
+               "rc   angl   angr la zeta    a    ln   mi  sfi e\n";
         log << "------------------------------------------------------"
                "----------------------------------------------------\n";
         log << it->infoSymmetryFunctionGroups();

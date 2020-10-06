@@ -37,7 +37,7 @@ SymFncAngnExpWeighted::SymFncAngnExpWeighted(ElementMap const& elementMap) :
     zeta         (0.0  )
 {
     minNeighbors = 2;
-    parameters.insert("rs");
+    parameters.insert("rs/rl");
     parameters.insert("eta");
     parameters.insert("zeta");
     parameters.insert("lambda");
@@ -296,12 +296,12 @@ string SymFncAngnExpWeighted::parameterLine() const
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
+                 subtype.c_str(),
                  eta * convLength * convLength,
                  rs / convLength,
+                 rc / convLength,
                  lambda,
                  zeta,
-                 rc / convLength,
-                 (int)cutoffType,
                  cutoffAlpha,
                  lineNumber + 1);
 }

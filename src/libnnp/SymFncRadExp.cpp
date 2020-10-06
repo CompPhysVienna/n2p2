@@ -35,7 +35,7 @@ SymFncRadExp::SymFncRadExp(ElementMap const& elementMap) :
     minNeighbors = 1;
     parameters.insert("e1");
     parameters.insert("eta");
-    parameters.insert("rs");
+    parameters.insert("rs/rl");
 }
 
 bool SymFncRadExp::operator==(SymFnc const& rhs) const
@@ -183,11 +183,11 @@ string SymFncRadExp::parameterLine() const
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
+                 subtype.c_str(),
                  elementMap[e1].c_str(),
                  eta * convLength * convLength,
                  rs / convLength,
                  rc / convLength,
-                 (int)cutoffType,
                  cutoffAlpha,
                  lineNumber + 1);
 }

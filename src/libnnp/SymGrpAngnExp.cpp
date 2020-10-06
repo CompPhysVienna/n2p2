@@ -36,7 +36,7 @@ SymGrpAngnExp::SymGrpAngnExp(ElementMap const& elementMap) :
     parametersCommon.insert("e2");
 
     parametersMember.insert("eta");
-    parametersMember.insert("rs");
+    parametersMember.insert("rs/rl");
     parametersMember.insert("lambda");
     parametersMember.insert("zeta");
     parametersMember.insert("mindex");
@@ -87,6 +87,7 @@ bool SymGrpAngnExp::addMember(SymFnc const* const symmetryFunction)
     if (members.empty())
     {
         cutoffType  = sf->getCutoffType();
+        subtype     = sf->getSubtype();
         cutoffAlpha = sf->getCutoffAlpha();
         ec          = sf->getEc();
         rc          = sf->getRc();
@@ -430,10 +431,10 @@ vector<string> SymGrpAngnExp::parameterLines() const
                       index + 1,
                       elementMap[ec].c_str(),
                       type,
+                      subtype.c_str(),
                       elementMap[e1].c_str(),
                       elementMap[e2].c_str(),
                       rc / convLength,
-                      (int)cutoffType,
                       cutoffAlpha));
 
     for (size_t i = 0; i < members.size(); ++i)

@@ -98,21 +98,21 @@ void SymFnc::setScalingType(ScalingType scalingType,
 }
 
 SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
-    type         (type                   ),
-    elementMap   (elementMap             ),
-    index        (0                      ),
-    ec           (0                      ),
-    minNeighbors (0                      ),
-    Smin         (0.0                    ),
-    Smax         (0.0                    ),
-    Gmin         (0.0                    ),
-    Gmax         (0.0                    ),
-    Gmean        (0.0                    ),
-    Gsigma       (0.0                    ),
-    rc           (0.0                    ),
-    scalingFactor(1.0                    ),
-    convLength   (1.0                    ),
-    scalingType  (ST_NONE                )
+    type         (type      ),
+    elementMap   (elementMap),
+    index        (0         ),
+    ec           (0         ),
+    minNeighbors (0         ),
+    Smin         (0.0       ),
+    Smax         (0.0       ),
+    Gmin         (0.0       ),
+    Gmax         (0.0       ),
+    Gmean        (0.0       ),
+    Gsigma       (0.0       ),
+    rc           (0.0       ),
+    scalingFactor(1.0       ),
+    convLength   (1.0       ),
+    scalingType  (ST_NONE   )
 {
     // Add standard parameter IDs to set.
     parameters.insert("index");
@@ -200,22 +200,21 @@ SymFnc::PrintFormat const SymFnc::initializePrintFormat()
 {
     PrintFormat pf;
 
-    pf["index"]       = make_pair("%4zu"  , string(4, ' '));
-    pf["ec"]          = make_pair("%2s"   , string(2, ' '));
-    pf["type"]        = make_pair("%2zu"  , string(2, ' '));
-    pf["e1"]          = make_pair("%2s"   , string(2, ' '));
-    pf["e2"]          = make_pair("%2s"   , string(2, ' '));
-    pf["eta"]         = make_pair("%9.3E" , string(9, ' '));
-    pf["rs"]          = make_pair("%9.3E" , string(9, ' '));
-    pf["lambda"]      = make_pair("%2.0f" , string(2, ' '));
-    pf["zeta"]        = make_pair("%4.1f" , string(4, ' '));
-    pf["rl"]          = make_pair("%10.3E", string(10, ' '));
-    pf["angleLeft"]   = make_pair("%6.1f" , string(6, ' '));
-    pf["angleRight"]  = make_pair("%6.1f" , string(6, ' '));
+    pf["index"]       = make_pair("%4zu"  , string(4,  ' '));
+    pf["ec"]          = make_pair("%2s"   , string(2,  ' '));
+    pf["type"]        = make_pair("%2zu"  , string(2,  ' '));
+    pf["subtype"]     = make_pair("%4s"   , string(4,  ' '));
+    pf["e1"]          = make_pair("%2s"   , string(2,  ' '));
+    pf["e2"]          = make_pair("%2s"   , string(2,  ' '));
+    pf["eta"]         = make_pair("%9.3E" , string(9,  ' '));
+    pf["rs/rl"]       = make_pair("%10.3E", string(10, ' '));
     pf["rc"]          = make_pair("%10.3E", string(10, ' '));
-    pf["cutoffType"]  = make_pair("%2d"   , string(2, ' '));
-    pf["cutoffAlpha"] = make_pair("%4.2f" , string(4, ' '));
-    pf["lineNumber"]  = make_pair("%5zu"  , string(5, ' '));
+    pf["angleLeft"]   = make_pair("%6.1f" , string(6,  ' '));
+    pf["angleRight"]  = make_pair("%6.1f" , string(6,  ' '));
+    pf["lambda"]      = make_pair("%2.0f" , string(2,  ' '));
+    pf["zeta"]        = make_pair("%4.1f" , string(4,  ' '));
+    pf["alpha"]       = make_pair("%4.2f" , string(4,  ' '));
+    pf["lineNumber"]  = make_pair("%5zu"  , string(5,  ' '));
 
     return pf;
 }
@@ -224,22 +223,21 @@ SymFnc::PrintOrder const SymFnc::initializePrintOrder()
 {
     vector<string> po;
 
-    po.push_back("index"      );
-    po.push_back("ec"         );
-    po.push_back("type"       );
-    po.push_back("e1"         );
-    po.push_back("e2"         );
-    po.push_back("eta"        );
-    po.push_back("rs"         );
-    po.push_back("lambda"     );
-    po.push_back("zeta"       );
-    po.push_back("rl"         );
-    po.push_back("angleLeft"  );
-    po.push_back("angleRight" );
-    po.push_back("rc"         );
-    po.push_back("cutoffType" );
-    po.push_back("cutoffAlpha");
-    po.push_back("lineNumber" );
+    po.push_back("index"     );
+    po.push_back("ec"        );
+    po.push_back("type"      );
+    po.push_back("subtype"   );
+    po.push_back("e1"        );
+    po.push_back("e2"        );
+    po.push_back("eta"       );
+    po.push_back("rs/rl"     );
+    po.push_back("rc"        );
+    po.push_back("angleLeft" );
+    po.push_back("angleRight");
+    po.push_back("lambda"    );
+    po.push_back("zeta"      );
+    po.push_back("alpha"     );
+    po.push_back("lineNumber");
 
     return po;
 }

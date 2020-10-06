@@ -23,9 +23,11 @@ using namespace nnp;
 SymGrpCutoffBased::SymGrpCutoffBased(size_t type, ElementMap const& elementMap) :
     SymGrp(type, elementMap),
     cutoffAlpha(0.0                    ),
+    subtype    ("ct0"                  ),
     cutoffType (CutoffFunction::CT_HARD)
 {
     // Add standard common parameter IDs to set.
-    parametersCommon.insert("cutoffType");
-    parametersCommon.insert("cutoffAlpha");
+    parametersCommon.insert("subtype");
+    parametersCommon.insert("rc");
+    parametersCommon.insert("alpha");
 }

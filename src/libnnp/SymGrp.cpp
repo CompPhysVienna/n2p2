@@ -36,7 +36,6 @@ SymGrp::SymGrp(size_t type, ElementMap const& elementMap) :
     parametersCommon.insert("index");
     parametersCommon.insert("type");
     parametersCommon.insert("ec");
-    parametersCommon.insert("rc");
 
     // Add standard member parameter IDs to set.
     parametersMember.insert("lineNumber");
@@ -46,25 +45,24 @@ SymGrp::PrintFormat const SymGrp::initializePrintFormat()
 {
     PrintFormat pf;
 
-    pf["index"]       = make_pair("%4zu"  , string(4, ' '));
-    pf["ec"]          = make_pair("%2s"   , string(2, ' '));
-    pf["type"]        = make_pair("%2zu"  , string(2, ' '));
-    pf["e1"]          = make_pair("%2s"   , string(2, ' '));
-    pf["e2"]          = make_pair("%2s"   , string(2, ' '));
-    pf["eta"]         = make_pair("%9.3E" , string(9, ' '));
-    pf["rs"]          = make_pair("%9.3E" , string(9, ' '));
-    pf["lambda"]      = make_pair("%2.0f" , string(2, ' '));
-    pf["zeta"]        = make_pair("%4.1f" , string(4, ' '));
-    pf["rl"]          = make_pair("%10.3E", string(10, ' '));
-    pf["angleLeft"]   = make_pair("%6.1f" , string(6, ' '));
-    pf["angleRight"]  = make_pair("%6.1f" , string(6, ' '));
+    pf["index"]       = make_pair("%4zu"  , string(4,  ' '));
+    pf["ec"]          = make_pair("%2s"   , string(2,  ' '));
+    pf["type"]        = make_pair("%2zu"  , string(2,  ' '));
+    pf["subtype"]     = make_pair("%4s"   , string(4,  ' '));
+    pf["e1"]          = make_pair("%2s"   , string(2,  ' '));
+    pf["e2"]          = make_pair("%2s"   , string(2,  ' '));
+    pf["eta"]         = make_pair("%9.3E" , string(9,  ' '));
+    pf["rs/rl"]       = make_pair("%10.3E", string(10, ' '));
     pf["rc"]          = make_pair("%10.3E", string(10, ' '));
-    pf["cutoffType"]  = make_pair("%2d"   , string(2, ' '));
-    pf["cutoffAlpha"] = make_pair("%4.2f" , string(4, ' '));
-    pf["lineNumber"]  = make_pair("%5zu"  , string(5, ' '));
-    pf["mindex"]      = make_pair("%4zu"  , string(4, ' '));
-    pf["sfindex"]     = make_pair("%4zu"  , string(4, ' '));
-    pf["calcexp"]     = make_pair("%1d"   , string(1, ' '));
+    pf["angleLeft"]   = make_pair("%6.1f" , string(6,  ' '));
+    pf["angleRight"]  = make_pair("%6.1f" , string(6,  ' '));
+    pf["lambda"]      = make_pair("%2.0f" , string(2,  ' '));
+    pf["zeta"]        = make_pair("%4.1f" , string(4,  ' '));
+    pf["alpha"]       = make_pair("%4.2f" , string(4,  ' '));
+    pf["lineNumber"]  = make_pair("%5zu"  , string(5,  ' '));
+    pf["mindex"]      = make_pair("%4zu"  , string(4,  ' '));
+    pf["sfindex"]     = make_pair("%4zu"  , string(4,  ' '));
+    pf["calcexp"]     = make_pair("%1d"   , string(1,  ' '));
 
     return pf;
 }
@@ -73,25 +71,24 @@ SymGrp::PrintOrder const SymGrp::initializePrintOrder()
 {
     vector<string> po;
 
-    po.push_back("index"      );
-    po.push_back("ec"         );
-    po.push_back("type"       );
-    po.push_back("e1"         );
-    po.push_back("e2"         );
-    po.push_back("eta"        );
-    po.push_back("rs"         );
-    po.push_back("lambda"     );
-    po.push_back("zeta"       );
-    po.push_back("rl"         );
-    po.push_back("angleLeft"  );
-    po.push_back("angleRight" );
-    po.push_back("rc"         );
-    po.push_back("cutoffType" );
-    po.push_back("cutoffAlpha");
-    po.push_back("lineNumber" );
-    po.push_back("mindex"     );
-    po.push_back("sfindex"    );
-    po.push_back("calcexp"    );
+    po.push_back("index"     );
+    po.push_back("ec"        );
+    po.push_back("type"      );
+    po.push_back("subtype"   );
+    po.push_back("e1"        );
+    po.push_back("e2"        );
+    po.push_back("eta"       );
+    po.push_back("rs/rl"     );
+    po.push_back("rc"        );
+    po.push_back("angleLeft" );
+    po.push_back("angleRight");
+    po.push_back("lambda"    );
+    po.push_back("zeta"      );
+    po.push_back("alpha"     );
+    po.push_back("lineNumber");
+    po.push_back("mindex"    );
+    po.push_back("sfindex"   );
+    po.push_back("calcexp"   );
 
     return po;
 }

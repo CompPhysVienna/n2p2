@@ -33,7 +33,7 @@ SymFncRadExpWeighted::SymFncRadExpWeighted(ElementMap const& elementMap) :
 {
     minNeighbors = 1;
     parameters.insert("eta");
-    parameters.insert("rs");
+    parameters.insert("rs/rl");
 }
 
 bool SymFncRadExpWeighted::operator==(SymFnc const& rhs) const
@@ -179,10 +179,10 @@ string SymFncRadExpWeighted::parameterLine() const
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
+                 subtype.c_str(),
                  eta * convLength * convLength,
                  rs / convLength,
                  rc / convLength,
-                 (int)cutoffType,
                  cutoffAlpha,
                  lineNumber + 1);
 }
