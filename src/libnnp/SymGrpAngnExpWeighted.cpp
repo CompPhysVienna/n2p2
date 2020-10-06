@@ -28,7 +28,7 @@ using namespace std;
 using namespace nnp;
 
 SymGrpAngnExpWeighted::SymGrpAngnExpWeighted(ElementMap const& elementMap) :
-    SymGrpCutoffBased(13, elementMap)
+    SymGrpBaseCutoff(13, elementMap)
 {
     parametersMember.insert("eta");
     parametersMember.insert("rs/rl");

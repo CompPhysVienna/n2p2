@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymGrpAngnPoly.h"
+#include "SymGrpAngwComp.h"
 #include "Atom.h"
 #include "SymFnc.h"
-#include "SymFncAngnPoly.h"
+#include "SymFncAngwComp.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymGrpAngnPoly::
-SymGrpAngnPoly(ElementMap const& elementMap) : SymGrp(99, elementMap),
+SymGrpAngwComp::
+SymGrpAngwComp(ElementMap const& elementMap) : SymGrp(89, elementMap),
     e1(0),
     e2(0)
 {
@@ -43,12 +43,11 @@ SymGrpAngnPoly(ElementMap const& elementMap) : SymGrp(99, elementMap),
     parametersMember.insert("sfindex");
 }
 
-bool SymGrpAngnPoly::
-operator==(SymGrp const& rhs) const
+bool SymGrpAngwComp::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymGrpAngnPoly const& c = dynamic_cast<SymGrpAngnPoly const&>(rhs);
+    SymGrpAngwComp const& c = dynamic_cast<SymGrpAngwComp const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (e1          != c.e1         ) return false;
@@ -56,13 +55,13 @@ operator==(SymGrp const& rhs) const
     return true;
 }
 
-bool SymGrpAngnPoly::operator<(SymGrp const& rhs) const
+bool SymGrpAngwComp::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymGrpAngnPoly const& c = dynamic_cast<SymGrpAngnPoly const&>(rhs);
+    SymGrpAngwComp const& c = dynamic_cast<SymGrpAngwComp const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -78,12 +77,12 @@ bool SymGrpAngnPoly::operator<(SymGrp const& rhs) const
     return false;
 }
 
-bool SymGrpAngnPoly::addMember(SymFnc const* const symmetryFunction)
+bool SymGrpAngwComp::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymFncAngnPoly const* sf =
-        dynamic_cast<SymFncAngnPoly const*>(symmetryFunction);
+    SymFncAngwComp const* sf =
+        dynamic_cast<SymFncAngwComp const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -123,11 +122,11 @@ bool SymGrpAngnPoly::addMember(SymFnc const* const symmetryFunction)
     return true;
 }
 
-void SymGrpAngnPoly::sortMembers()
+void SymGrpAngwComp::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymFncAngnPoly const>);
+         comparePointerTargets<SymFncAngwComp const>);
 
     // Members are now sorted, somehow...
     for (size_t i = 0; i < members.size(); i++)
@@ -139,7 +138,7 @@ void SymGrpAngnPoly::sortMembers()
     return;
 }
 
-void SymGrpAngnPoly::setScalingFactors()
+void SymGrpAngwComp::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -156,7 +155,7 @@ void SymGrpAngnPoly::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
+void SymGrpAngwComp::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     double* radij  = new double[members.size()];
@@ -210,15 +209,8 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
                         double const dr31 = dr2[1] - dr1[1];
                         double const dr32 = dr2[2] - dr1[2];
 
-                        double rjk = dr30 * dr30
-                                   + dr31 * dr31
-                                   + dr32 * dr32;
-                        double radjk;
-                        double dradjk;
-                        rjk = sqrt(rjk);
-                        if (rjk >= rc || rjk <= rl) continue;
-
                         // Energy calculation.
+
                         double const rinvijik = 1.0 / rij / rik;
                         // SIMPLE EXPRESSIONS:
                         double const costijk = (dr1[0] * dr2[0] +
@@ -233,13 +225,11 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
 
                         double const rinvij   = rinvijik * rik;
                         double const rinvik   = rinvijik * rij;
-                        double const rinvjk   = 1.0 / rjk;
                         double const phiijik0 = rinvij * (rinvik - rinvij*costijk);
                         double const phiikij0 = rinvik * (rinvij - rinvik*costijk);
                         double dacostijk;
                         double chiij;
                         double chiik;
-                        double chijk;
                         if (derivatives)
                         {
                             dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
@@ -255,9 +245,8 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
                             if (radij[l] == 0.0) continue;
                             if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
                             if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
-                            if (!members[l]->getCompactRadial(rjk,     radjk, dradjk)) continue;
 
-                            double rad = radij[l] * radik * radjk;
+                            double rad = radij[l] * radik;
                             double radang = rad * ang;
                             result[l] += radang;
             
@@ -269,9 +258,8 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
                             double const phiikij = phiikij0 * dang;
                             double const psiijik = rinvijik * dang;
 
-                            chiij =  rinvij * dradij[l] *  radik *  radjk;
-                            chiik =  rinvik * radij[l]  * dradik *  radjk;
-                            chijk = -rinvjk * radij[l]  *  radik * dradjk;
+                            chiij = rinvij * radik * dradij[l];
+                            chiik = rinvik * radij[l] * dradik;
 
                             double p1;
                             double p2;
@@ -283,7 +271,7 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
                                 ang  *= scalingFactors[l];
                                 p1 = rad * phiijik +  ang * chiij;
                                 p2 = rad * phiikij +  ang * chiik;
-                                p3 = rad * psiijik +  ang * chijk;
+                                p3 = rad * psiijik;
                             }
                             else if (ang != 0.0)
                             {
@@ -291,7 +279,7 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
 
                                 p1 = ang * chiij;
                                 p2 = ang * chiik;
-                                p3 = ang * chijk;
+                                p3 = 0.0;
                             }
                             else continue;
 
@@ -362,7 +350,7 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
     return;
 }
 
-vector<string> SymGrpAngnPoly::parameterLines() const
+vector<string> SymGrpAngwComp::parameterLines() const
 {
     vector<string> v;
     int const    izero = 0.0;

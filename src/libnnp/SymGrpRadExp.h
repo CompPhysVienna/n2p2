@@ -17,7 +17,7 @@
 #ifndef SYMGRPRADEXP_H
 #define SYMGRPRADEXP_H
 
-#include "SymGrpCutoffBased.h"
+#include "SymGrpBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -43,7 +43,7 @@ class SymFncRadExp;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpRadExp : public SymGrpCutoffBased
+class SymGrpRadExp : public SymGrpBaseCutoff
 {
 public:
     /** Constructor, sets type = 2

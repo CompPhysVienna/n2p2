@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymFncCutoffBased.h"
+#include "SymFncBaseComp.h"
 #include "utility.h"
 #include <string>
 
 using namespace std;
 using namespace nnp;
 
-vector<string> SymFncCutoffBased::parameterInfo() const
+vector<string> SymFncBaseComp::parameterInfo() const
 {
     vector<string> v = SymFnc::parameterInfo();
     string s;
@@ -29,33 +29,19 @@ vector<string> SymFncCutoffBased::parameterInfo() const
 
     s = "subtype";
     v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), subtype.c_str()));
-    s = "alpha";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), cutoffAlpha));
+    s = "rl";
+    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rl / convLength));
 
     return v;
 }
 
-void SymFncCutoffBased::setCutoffFunction(
-                                        CutoffFunction::CutoffType cutoffType,
-                                        double                     cutoffAlpha)
-{
-    this->cutoffType = cutoffType;
-    this->cutoffAlpha = cutoffAlpha;
-    fc.setCutoffType(cutoffType);
-    fc.setCutoffParameter(cutoffAlpha);
-    this->subtype = string("ct") + strpr("%d", static_cast<int>(cutoffType));
-
-    return;
-}
-
-SymFncCutoffBased::SymFncCutoffBased(size_t type,
-                                     ElementMap const& elementMap) :
+SymFncBaseComp::SymFncBaseComp(size_t type,
+                               ElementMap const& elementMap) :
     SymFnc(type, elementMap),
-    cutoffAlpha  (0.0                    ),
-    subtype      ("ct0"                  ),
-    cutoffType   (CutoffFunction::CT_HARD)
+    rl           (0.0),
+    subtype      ("p2")
 {
-    // Add cutoff-related parameter IDs to set.
+    // Add polynomial-related parameter IDs to set.
+    parameters.insert("rs/rl");
     parameters.insert("subtype");
-    parameters.insert("alpha");
 }

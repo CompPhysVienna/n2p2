@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymFncAngnPoly.h"
+#include "SymFncAngwComp.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymFncAngnPoly::
-SymFncAngnPoly(ElementMap const& elementMap) : SymFnc(99, elementMap),
+SymFncAngwComp::
+SymFncAngwComp(ElementMap const& elementMap) : SymFnc(89, elementMap),
     e1           (0    ),
     e2           (0    ),
     rl           (0.0  ),
@@ -43,11 +43,11 @@ SymFncAngnPoly(ElementMap const& elementMap) : SymFnc(99, elementMap),
     parameters.insert("angleRight");
 }
 
-bool SymFncAngnPoly::operator==(SymFnc const& rhs) const
+bool SymFncAngwComp::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymFncAngnPoly const& c = dynamic_cast<SymFncAngnPoly const&>(rhs);
+    SymFncAngwComp const& c = dynamic_cast<SymFncAngwComp const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rc          != c.rc         ) return false;
@@ -59,13 +59,13 @@ bool SymFncAngnPoly::operator==(SymFnc const& rhs) const
     return true;
 }
 
-bool SymFncAngnPoly::operator<(SymFnc const& rhs) const
+bool SymFncAngwComp::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymFncAngnPoly const& c = dynamic_cast<SymFncAngnPoly const&>(rhs);
+    SymFncAngwComp const& c = dynamic_cast<SymFncAngwComp const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -85,7 +85,7 @@ bool SymFncAngnPoly::operator<(SymFnc const& rhs) const
     return false;
 }
 
-void SymFncAngnPoly::setParameters(string const& parameterString)
+void SymFncAngwComp::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -150,7 +150,7 @@ void SymFncAngnPoly::setParameters(string const& parameterString)
     return;
 }
 
-void SymFncAngnPoly::changeLengthUnit(double convLength)
+void SymFncAngwComp::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     rc *= convLength;
@@ -161,7 +161,7 @@ void SymFncAngnPoly::changeLengthUnit(double convLength)
     return;
 }
 
-string SymFncAngnPoly::getSettingsLine() const
+string SymFncAngwComp::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
                      "%16.8E %16.8E\n",
@@ -177,19 +177,19 @@ string SymFncAngnPoly::getSettingsLine() const
     return s;
 }
 
-bool SymFncAngnPoly::getCompactAngle(double x, double& fx, double& dfx) const
+bool SymFncAngwComp::getCompactAngle(double x, double& fx, double& dfx) const
 {
     bool const stat = ca.fdf(x, fx, dfx);
     return stat;
 }
 
-bool SymFncAngnPoly::getCompactRadial(double x, double& fx, double& dfx) const
+bool SymFncAngwComp::getCompactRadial(double x, double& fx, double& dfx) const
 {
     bool const stat = cr.fdf(x, fx, dfx);
     return stat;
 }
 
-void SymFncAngnPoly::calculate(Atom& atom, bool const derivatives) const
+void SymFncAngwComp::calculate(Atom& atom, bool const derivatives) const
 {
     // TODO double const pnorm  = pow(2.0, 1.0 - zeta);
     // TODO double const pzl    = zeta * lambda;
@@ -230,15 +230,7 @@ void SymFncAngnPoly::calculate(Atom& atom, bool const derivatives) const
 
                         Vec3D drij = nj.dr;
                         Vec3D drik = nk.dr;
-                        Vec3D drjk = nk.dr - nj.dr;
-                        double rjk = drjk.norm2();
-                        rjk        = sqrt(rjk);
- 
-                        if (rjk >= rc || rjk <= rl) continue;
-                        double radjk;
-                        double dradjk;
-                        if (!cr.fdf(rjk, radjk, dradjk)) continue;
-
+                        Vec3D drjk = drik - drij;
                         double costijk = drij * drik;
                         double rinvijik = 1.0 / rij / rik;
                         costijk *= rinvijik;
@@ -254,7 +246,7 @@ void SymFncAngnPoly::calculate(Atom& atom, bool const derivatives) const
                         double dang = 0.0;
                         if (!ca.fdf(acostijk, ang, dang)) continue;
 
-                        double const rad  = radij * radik * radjk; // product of cutoff fcts
+                        double const rad  = radij * radik; // product of cutoff fcts
                         result += rad*ang;
 
                         // Force calculation.
@@ -265,23 +257,21 @@ void SymFncAngnPoly::calculate(Atom& atom, bool const derivatives) const
 
                         double const rinvij  = rinvijik * rik;
                         double const rinvik  = rinvijik * rij;
-                        double const rinvjk  = 1.0 / rjk;
-                        double phiijik =   rinvij * ( rinvik - rinvij*costijk);
-                        double phiikij =   rinvik * ( rinvij - rinvik*costijk);
-                        double psiijik =   rinvijik; // careful: sign flip w.r.t. notes due to nj.dGd...
+                        double phiijik = rinvij * (rinvik - rinvij*costijk);
+                        double phiikij = rinvik * (rinvij - rinvik*costijk);
+                        double psiijik = rinvijik; // careful: sign flip w.r.t. notes due to nj.dGd...
                         phiijik *= dang;
                         phiikij *= dang;
                         psiijik *= dang;
 
                         // Cutoff function might be a divide by zero, but we screen that case before
-                        double const chiij =  rinvij * dradij *  radik *  radjk;
-                        double const chiik =  rinvik *  radij * dradik *  radjk;
-                        double const chijk = -rinvjk *  radij *  radik * dradjk;
+                        double const chiij = rinvij * radik * dradij;
+                        double const chiik = rinvik * radij * dradik;
 
                         // rijs/rij due to the shifted radial part of the Gaussian                        
                         double const p1 = rad * phiijik +  ang * chiij;
                         double const p2 = rad * phiikij +  ang * chiik;
-                        double const p3 = rad * psiijik +  ang * chijk;
+                        double const p3 = rad * psiijik;
                         drij *= p1 * scalingFactor;
                         drik *= p2 * scalingFactor;
                         drjk *= p3 * scalingFactor;
@@ -309,7 +299,7 @@ void SymFncAngnPoly::calculate(Atom& atom, bool const derivatives) const
     return;
 }
 
-string SymFncAngnPoly::parameterLine() const
+string SymFncAngwComp::parameterLine() const
 {
     int const    izero = 0;
     double const dzero = 0;
@@ -330,7 +320,7 @@ string SymFncAngnPoly::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymFncAngnPoly::parameterInfo() const
+vector<string> SymFncAngwComp::parameterInfo() const
 {
     vector<string> v = SymFnc::parameterInfo();
     string s;
@@ -350,19 +340,19 @@ vector<string> SymFncAngnPoly::parameterInfo() const
     return v;
 }
 
-double SymFncAngnPoly::calculateRadialPart(double distance) const
+double SymFncAngwComp::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
 
     return cr.f(r);
 }
 
-double SymFncAngnPoly::calculateAngularPart(double angle) const
+double SymFncAngwComp::calculateAngularPart(double angle) const
 {
     return ca.f(angle);
 }
 
-bool SymFncAngnPoly::checkRelevantElement(size_t index) const
+bool SymFncAngwComp::checkRelevantElement(size_t index) const
 {
     if (index == e1 || index == e2) return true;
     else return false;

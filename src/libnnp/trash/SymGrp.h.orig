@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUP_H
-#define SYMMETRYFUNCTIONGROUP_H
+#ifndef SYMGRP_H
+#define SYMGRP_H
 
-#include "CutoffFunction.h"
 #include "ElementMap.h"
 #include <cstddef> // std::size_t
 #include <set>     // std::set
@@ -29,7 +28,6 @@ namespace nnp
 
 struct Atom;
 class SymFnc;
-class SymFncStatistics;
 
 class SymGrp
 {
@@ -114,14 +112,8 @@ protected:
     std::size_t                            ec;
     /// Cutoff radius @f$r_c@f$ (common feature).
     double                                 rc;
-    /// Cutoff function parameter @f$\alpha@f$ (common feature).
-    double                                 cutoffAlpha;
     /// Data set normalization length conversion factor.
     double                                 convLength;
-    /// Cutoff function used by this symmetry function group.
-    CutoffFunction                         fc;
-    /// Cutoff type used by this symmetry function group (common feature).
-    CutoffFunction::CutoffType             cutoffType;
     /// Vector containing indices of all member symmetry functions.
     std::vector<size_t>                    memberIndex;
     /// Scaling factors of all member symmetry functions.

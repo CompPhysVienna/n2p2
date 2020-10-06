@@ -28,7 +28,7 @@ using namespace std;
 using namespace nnp;
 
 SymGrpRadExpWeighted::SymGrpRadExpWeighted(ElementMap const& elementMap) :
-    SymGrpCutoffBased(12, elementMap)
+    SymGrpBaseCutoff(12, elementMap)
 {
     parametersMember.insert("eta");
     parametersMember.insert("rs/rl");

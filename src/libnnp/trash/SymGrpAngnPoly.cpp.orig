@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymGrpAngnPoly.h"
+#include "SymGrpAngnComp.h"
 #include "Atom.h"
 #include "SymFnc.h"
-#include "SymFncAngnPoly.h"
+#include "SymFncAngnComp.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymGrpAngnPoly::
-SymGrpAngnPoly(ElementMap const& elementMap) : SymGrp(99, elementMap),
+SymGrpAngnComp::
+SymGrpAngnComp(ElementMap const& elementMap) : SymGrp(99, elementMap),
     e1(0),
     e2(0)
 {
@@ -43,12 +43,12 @@ SymGrpAngnPoly(ElementMap const& elementMap) : SymGrp(99, elementMap),
     parametersMember.insert("sfindex");
 }
 
-bool SymGrpAngnPoly::
+bool SymGrpAngnComp::
 operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymGrpAngnPoly const& c = dynamic_cast<SymGrpAngnPoly const&>(rhs);
+    SymGrpAngnComp const& c = dynamic_cast<SymGrpAngnComp const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (e1          != c.e1         ) return false;
@@ -56,13 +56,13 @@ operator==(SymGrp const& rhs) const
     return true;
 }
 
-bool SymGrpAngnPoly::operator<(SymGrp const& rhs) const
+bool SymGrpAngnComp::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymGrpAngnPoly const& c = dynamic_cast<SymGrpAngnPoly const&>(rhs);
+    SymGrpAngnComp const& c = dynamic_cast<SymGrpAngnComp const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -78,12 +78,12 @@ bool SymGrpAngnPoly::operator<(SymGrp const& rhs) const
     return false;
 }
 
-bool SymGrpAngnPoly::addMember(SymFnc const* const symmetryFunction)
+bool SymGrpAngnComp::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymFncAngnPoly const* sf =
-        dynamic_cast<SymFncAngnPoly const*>(symmetryFunction);
+    SymFncAngnComp const* sf =
+        dynamic_cast<SymFncAngnComp const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -123,11 +123,11 @@ bool SymGrpAngnPoly::addMember(SymFnc const* const symmetryFunction)
     return true;
 }
 
-void SymGrpAngnPoly::sortMembers()
+void SymGrpAngnComp::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymFncAngnPoly const>);
+         comparePointerTargets<SymFncAngnComp const>);
 
     // Members are now sorted, somehow...
     for (size_t i = 0; i < members.size(); i++)
@@ -139,7 +139,7 @@ void SymGrpAngnPoly::sortMembers()
     return;
 }
 
-void SymGrpAngnPoly::setScalingFactors()
+void SymGrpAngnComp::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -156,7 +156,7 @@ void SymGrpAngnPoly::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
+void SymGrpAngnComp::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     double* radij  = new double[members.size()];
@@ -362,7 +362,7 @@ void SymGrpAngnPoly::calculate(Atom& atom, bool const derivatives) const
     return;
 }
 
-vector<string> SymGrpAngnPoly::parameterLines() const
+vector<string> SymGrpAngnComp::parameterLines() const
 {
     vector<string> v;
     int const    izero = 0.0;

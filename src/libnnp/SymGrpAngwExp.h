@@ -17,7 +17,7 @@
 #ifndef SYMGRPANGWEXP_H
 #define SYMGRPANGWEXP_H
 
-#include "SymGrpCutoffBased.h"
+#include "SymGrpBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -46,7 +46,7 @@ class SymFncAngwExp;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpAngwExp : public SymGrpCutoffBased
+class SymGrpAngwExp : public SymGrpBaseCutoff
 {
 public:
     /** Constructor, sets type = 3

@@ -20,31 +20,13 @@
 using namespace std;
 using namespace nnp;
 
-CompactFunction::CompactFunction() : type  (Type::POLY2),
-                                     center(0.0        ),
-                                     width (0.0        ),
-                                     left  (0.0        ),
-                                     right (0.0        ),
-                                     scale (0.0        )
+CompactFunction::CompactFunction() : center(0.0),
+                                     width (0.0),
+                                     left  (0.0),
+                                     right (0.0),
+                                     scale (0.0)
 {
     core.setType(CoreFunction::Type::POLY2);
-}
-
-void CompactFunction::setType(Type const type)
-{
-    this->type = type;
-    
-    if      (type == Type::POLY1) core.setType(CoreFunction::Type::POLY1);
-    else if (type == Type::POLY2) core.setType(CoreFunction::Type::POLY2);
-    else if (type == Type::POLY3) core.setType(CoreFunction::Type::POLY3);
-    else if (type == Type::POLY4) core.setType(CoreFunction::Type::POLY4);
-    else if (type == Type::POLYA) core.setType(CoreFunction::Type::POLYA);
-    else
-    {
-        throw invalid_argument("ERROR: Unknown compact function type.\n");
-    }
-
-    return;
 }
 
 void CompactFunction::setCenterWidth(double center, double width)

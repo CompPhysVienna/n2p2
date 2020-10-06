@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymFncCutoffBased.h"
+#include "SymFncBaseCutoff.h"
 #include "utility.h"
 #include <string>
 
 using namespace std;
 using namespace nnp;
 
-vector<string> SymFncCutoffBased::parameterInfo() const
+vector<string> SymFncBaseCutoff::parameterInfo() const
 {
     vector<string> v = SymFnc::parameterInfo();
     string s;
@@ -35,7 +35,7 @@ vector<string> SymFncCutoffBased::parameterInfo() const
     return v;
 }
 
-void SymFncCutoffBased::setCutoffFunction(
+void SymFncBaseCutoff::setCutoffFunction(
                                         CutoffFunction::CutoffType cutoffType,
                                         double                     cutoffAlpha)
 {
@@ -48,7 +48,7 @@ void SymFncCutoffBased::setCutoffFunction(
     return;
 }
 
-SymFncCutoffBased::SymFncCutoffBased(size_t type,
+SymFncBaseCutoff::SymFncBaseCutoff(size_t type,
                                      ElementMap const& elementMap) :
     SymFnc(type, elementMap),
     cutoffAlpha  (0.0                    ),

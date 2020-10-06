@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMFNCANGNPOLY_H
-#define SYMFNCANGNPOLY_H
+#ifndef SYMFNCANGNCOMP_H
+#define SYMFNCANGNCOMP_H
 
 #include "SymFnc.h"
 #include "CompactFunction.h"
@@ -51,12 +51,12 @@ class SymFncStatistics;
  * - `<right> ...............` right angle boundary 
  * - `<rcutoff> .............` upper radial boundary
  */
-class SymFncAngnPoly : public SymFnc
+class SymFncAngnComp : public SymFnc
 {
 public:
     /** Constructor, sets type = 99
     */
-    SymFncAngnPoly(ElementMap const& elementMap);
+    SymFncAngnComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool         operator==(SymFnc const& rhs) const;
@@ -168,47 +168,47 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymFncAngnPoly::operator!=(SymFnc const& rhs) const
+inline bool SymFncAngnComp::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymFncAngnPoly::operator>(SymFnc const& rhs) const
+inline bool SymFncAngnComp::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymFncAngnPoly::operator<=(SymFnc const& rhs) const
+inline bool SymFncAngnComp::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymFncAngnPoly::operator>=(SymFnc const& rhs) const
+inline bool SymFncAngnComp::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline std::size_t SymFncAngnPoly::getE1() const
+inline std::size_t SymFncAngnComp::getE1() const
 {
     return e1;
 }
 
-inline std::size_t SymFncAngnPoly::getE2() const
+inline std::size_t SymFncAngnComp::getE2() const
 {
     return e2;
 }
 
-inline double SymFncAngnPoly::getAngleLeft() const
+inline double SymFncAngnComp::getAngleLeft() const
 {
     return angleLeft;
 }
 
-inline double SymFncAngnPoly::getAngleRight() const
+inline double SymFncAngnComp::getAngleRight() const
 {
     return angleRight;
 }
 
-inline double SymFncAngnPoly::getRl() const
+inline double SymFncAngnComp::getRl() const
 {
     return rl;
 }

@@ -17,7 +17,7 @@
 #ifndef SYMFNCANGWEXP_H
 #define SYMFNCANGWEXP_H
 
-#include "SymFncCutoffBased.h"
+#include "SymFncBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -50,7 +50,7 @@ class ElementMap;
  * - `<rcutoff> .............` @f$r_c@f$
  * - `<<rshift>> ............` @f$r_s@f$ (optional, default @f$r_s = 0@f$)
  */
-class SymFncAngwExp : public SymFncCutoffBased
+class SymFncAngwExp : public SymFncBaseCutoff
 {
 public:
     /** Constructor, sets type = 9

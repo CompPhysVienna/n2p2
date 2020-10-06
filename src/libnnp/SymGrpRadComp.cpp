@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymGrpRadPoly.h"
+#include "SymGrpRadComp.h"
 #include "Atom.h"
 #include "SymFnc.h"
-#include "SymFncRadPoly.h"
+#include "SymFncRadComp.h"
 #include "Vec3D.h"
 #include "utility.h"
 #include <algorithm> // std::sort
@@ -27,8 +27,8 @@
 using namespace std;
 using namespace nnp;
 
-SymGrpRadPoly::
-SymGrpRadPoly(ElementMap const& elementMap) : SymGrp(28, elementMap),
+SymGrpRadComp::
+SymGrpRadComp(ElementMap const& elementMap) : SymGrp(28, elementMap),
     e1(0),
     rl(0)
 {
@@ -39,11 +39,11 @@ SymGrpRadPoly(ElementMap const& elementMap) : SymGrp(28, elementMap),
     parametersMember.insert("sfindex");
 }
 
-bool SymGrpRadPoly::operator==(SymGrp const& rhs) const
+bool SymGrpRadComp::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymGrpRadPoly const& c = dynamic_cast<SymGrpRadPoly const&>(rhs);
+    SymGrpRadComp const& c = dynamic_cast<SymGrpRadComp const&>(rhs);
     // if (cutoffType  != c.cutoffType ) return false;
     // if (cutoffAlpha != c.cutoffAlpha) return false;
     if (rl          != c.rl         ) return false;
@@ -52,13 +52,13 @@ bool SymGrpRadPoly::operator==(SymGrp const& rhs) const
     return true;
 }
 
-bool SymGrpRadPoly::operator<(SymGrp const& rhs) const
+bool SymGrpRadComp::operator<(SymGrp const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymGrpRadPoly const& c = dynamic_cast<SymGrpRadPoly const&>(rhs);
+    SymGrpRadComp const& c = dynamic_cast<SymGrpRadComp const&>(rhs);
     // if      (cutoffType  < c.cutoffType ) return true;
     // else if (cutoffType  > c.cutoffType ) return false;
     // if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -72,12 +72,12 @@ bool SymGrpRadPoly::operator<(SymGrp const& rhs) const
     return false;
 }
 
-bool SymGrpRadPoly::addMember(SymFnc const* const symmetryFunction)
+bool SymGrpRadComp::addMember(SymFnc const* const symmetryFunction)
 {
     if (symmetryFunction->getType() != type) return false;
 
-    SymFncRadPoly const* sf =
-        dynamic_cast<SymFncRadPoly const*>(symmetryFunction);
+    SymFncRadComp const* sf =
+        dynamic_cast<SymFncRadComp const*>(symmetryFunction);
 
     if (members.empty())
     {
@@ -110,11 +110,11 @@ bool SymGrpRadPoly::addMember(SymFnc const* const symmetryFunction)
     return true;
 }
 
-void SymGrpRadPoly::sortMembers()
+void SymGrpRadComp::sortMembers()
 {
     sort(members.begin(),
          members.end(),
-         comparePointerTargets<SymFncRadPoly const>);
+         comparePointerTargets<SymFncRadComp const>);
 
     for (size_t i = 0; i < members.size(); i++)
     {
@@ -125,7 +125,7 @@ void SymGrpRadPoly::sortMembers()
     return;
 }
 
-void SymGrpRadPoly::setScalingFactors()
+void SymGrpRadComp::setScalingFactors()
 {
     scalingFactors.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
@@ -142,7 +142,7 @@ void SymGrpRadPoly::setScalingFactors()
 // operations have been rewritten in simple C array style and the use of
 // temporary objects has been minmized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
-void SymGrpRadPoly::calculate(Atom& atom, bool const derivatives) const
+void SymGrpRadComp::calculate(Atom& atom, bool const derivatives) const
 {
     double* result = new double[members.size()];
     for (size_t k = 0; k < members.size(); ++k)
@@ -212,7 +212,7 @@ void SymGrpRadPoly::calculate(Atom& atom, bool const derivatives) const
     return;
 }
 
-vector<string> SymGrpRadPoly::parameterLines() const
+vector<string> SymGrpRadComp::parameterLines() const
 {
     vector<string> v;
 

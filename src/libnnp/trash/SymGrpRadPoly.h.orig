@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPRADIALPOLY_H
-#define SYMMETRYFUNCTIONGROUPRADIALPOLY_H
+#ifndef SYMGRPRADPOLY_H
+#define SYMGRPRADPOLY_H
 
 #include "SymGrp.h"
 #include <cstddef> // std::size_t
@@ -28,7 +28,7 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymFnc;
-class SymFncRadPoly;
+class SymFncRadComp;
 
 /** Radial symmetry function group (type 2)
  *
@@ -43,12 +43,12 @@ class SymFncRadPoly;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpRadPoly : public SymGrp
+class SymGrpRadComp : public SymGrp
 {
 public:
     /** Constructor, sets type = 2
      */
-    SymGrpRadPoly(ElementMap const& elementMap);
+    SymGrpRadComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool operator==(SymGrp const& rhs) const;
@@ -102,7 +102,7 @@ private:
     /// Element index of neighbor atom (common feature).
     std::size_t                       e1;
     /// Vector of all group member pointers.
-    std::vector<SymFncRadPoly const*> members;
+    std::vector<SymFncRadComp const*> members;
     /// Minimum radius within group
     double                            rl;
 };
@@ -111,22 +111,22 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymGrpRadPoly::operator!=(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator!=(SymGrp const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymGrpRadPoly::operator>(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator>(SymGrp const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymGrpRadPoly::operator<=(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator<=(SymGrp const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymGrpRadPoly::operator>=(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator>=(SymGrp const& rhs) const
 {
     return !((*this) < rhs);
 }

@@ -17,32 +17,25 @@
 #include "Atom.h"
 #include "Element.h"
 #include "NeuralNetwork.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionRadial.h"
-#include "SymmetryFunctionRadialPoly.h"
-#include "SymmetryFunctionRadialPolyA.h"
-#include "SymmetryFunctionAngularNarrow.h"
-#include "SymmetryFunctionAngularWide.h"
-#include "SymmetryFunctionAngularPolyWide.h"
-#include "SymmetryFunctionAngularPolyOnly.h"
-#include "SymmetryFunctionAngularPolyOnlyNarrow.h"
-#include "SymmetryFunctionAngularPolyAOnly.h"
-#include "SymmetryFunctionAngularPolyAOnlyNarrow.h"
-#include "SymmetryFunctionWeightedRadial.h"
-#include "SymmetryFunctionWeightedAngular.h"
-#include "SymmetryFunctionGroup.h"
-#include "SymmetryFunctionGroupRadial.h"
-#include "SymmetryFunctionGroupRadialPoly.h"
-#include "SymmetryFunctionGroupRadialPolyA.h"
-#include "SymmetryFunctionGroupAngularNarrow.h"
-#include "SymmetryFunctionGroupAngularWide.h"
-#include "SymmetryFunctionGroupAngularPolyWide.h"
-#include "SymmetryFunctionGroupAngularPolyOnly.h"
-#include "SymmetryFunctionGroupAngularPolyOnlyNarrow.h"
-#include "SymmetryFunctionGroupAngularPolyAOnly.h"
-#include "SymmetryFunctionGroupAngularPolyAOnlyNarrow.h"
-#include "SymmetryFunctionGroupWeightedRadial.h"
-#include "SymmetryFunctionGroupWeightedAngular.h"
+#include "SymFnc.h"
+#include "SymFncCutoffBased.h"
+#include "SymFncRadExp.h"
+#include "SymFncRadPoly.h"
+#include "SymFncAngnExp.h"
+#include "SymFncAngwExp.h"
+#include "SymFncAngwPoly.h"
+#include "SymFncAngnPoly.h"
+#include "SymFncRadExpWeighted.h"
+#include "SymFncAngnExpWeighted.h"
+#include "SymGrp.h"
+#include "SymGrpRadExp.h"
+#include "SymGrpRadPoly.h"
+#include "SymGrpAngnExp.h"
+#include "SymGrpAngwExp.h"
+#include "SymGrpAngwPoly.h"
+#include "SymGrpAngnPoly.h"
+#include "SymGrpRadExpWeighted.h"
+#include "SymGrpAngnExpWeighted.h"
 #include "utility.h"
 #include <iostream>  // std::cerr
 #include <cstdlib>   // atoi
@@ -65,13 +58,13 @@ Element::Element(size_t const index, ElementMap const& elementMap) :
 
 Element::~Element()
 {
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
         delete *it;
     }
 
-    for (vector<SymmetryFunctionGroup*>::const_iterator
+    for (vector<SymGrp*>::const_iterator
          it = symmetryFunctionGroups.begin();
          it != symmetryFunctionGroups.end(); ++it)
     {
@@ -92,63 +85,35 @@ void Element::addSymmetryFunction(string const& parameters,
 
     if (type == 2)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionRadial(elementMap));
+        symmetryFunctions.push_back(new SymFncRadExp(elementMap));
     }
     else if (type == 3)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularNarrow(elementMap));
+        symmetryFunctions.push_back(new SymFncAngnExp(elementMap));
     }
     else if (type == 9)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularWide(elementMap));
+        symmetryFunctions.push_back(new SymFncAngwExp(elementMap));
     }
     else if (type == 12)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionWeightedRadial(elementMap));
+        symmetryFunctions.push_back(new SymFncRadExpWeighted(elementMap));
     }
     else if (type == 13)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionWeightedAngular(elementMap));
+        symmetryFunctions.push_back(new SymFncAngnExpWeighted(elementMap));
     }
     else if (type == 28)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionRadialPoly(elementMap));
-    }
-    else if (type == 280)
-    {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionRadialPolyA(elementMap));
-    }
-    else if (type == 29)
-    {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularPolyWide(elementMap));
+        symmetryFunctions.push_back(new SymFncRadPoly(elementMap));
     }
     else if (type == 89)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularPolyOnly(elementMap));
-    }
-    else if (type == 890)
-    {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularPolyAOnly(elementMap));
+        symmetryFunctions.push_back(new SymFncAngwPoly(elementMap));
     }
     else if (type == 99)
     {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularPolyOnlyNarrow(elementMap));
-    }
-    else if (type == 990)
-    {
-        symmetryFunctions.push_back(
-            new SymmetryFunctionAngularPolyAOnlyNarrow(elementMap));
+        symmetryFunctions.push_back(new SymFncAngnPoly(elementMap));
     }
     else
     {
@@ -163,7 +128,7 @@ void Element::addSymmetryFunction(string const& parameters,
 
 void Element::changeLengthUnitSymmetryFunctions(double convLength)
 {
-    for (vector<SymmetryFunction*>::iterator it = symmetryFunctions.begin();
+    for (vector<SymFnc*>::iterator it = symmetryFunctions.begin();
          it != symmetryFunctions.end(); ++it)
     {
         (*it)->changeLengthUnit(convLength);
@@ -176,7 +141,7 @@ void Element::sortSymmetryFunctions()
 {
     sort(symmetryFunctions.begin(),
          symmetryFunctions.end(),
-         comparePointerTargets<SymmetryFunction>);
+         comparePointerTargets<SymFnc>);
 
     for (size_t i = 0; i < symmetryFunctions.size(); ++i)
     {
@@ -190,7 +155,7 @@ vector<string> Element::infoSymmetryFunctionParameters() const
 {
     vector<string> v;
 
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          sf = symmetryFunctions.begin(); sf != symmetryFunctions.end(); ++sf)
     {
         v.push_back((*sf)->parameterLine());
@@ -203,7 +168,7 @@ vector<string> Element::infoSymmetryFunctionScaling() const
 {
     vector<string> v;
 
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          sf = symmetryFunctions.begin(); sf != symmetryFunctions.end(); ++sf)
     {
         v.push_back((*sf)->scalingLine());
@@ -214,11 +179,11 @@ vector<string> Element::infoSymmetryFunctionScaling() const
 
 void Element::setupSymmetryFunctionGroups()
 {
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          sf = symmetryFunctions.begin(); sf != symmetryFunctions.end(); ++sf)
     {
         bool createNewGroup = true;
-        for (vector<SymmetryFunctionGroup*>::const_iterator
+        for (vector<SymGrp*>::const_iterator
              sfg = symmetryFunctionGroups.begin();
              sfg != symmetryFunctionGroups.end(); ++sfg)
         {
@@ -232,63 +197,43 @@ void Element::setupSymmetryFunctionGroups()
         {
             if ((*sf)->getType() == 2)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupRadial(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpRadExp(elementMap));
             }
             else if ((*sf)->getType() == 3)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularNarrow(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpAngnExp(elementMap));
             }
             else if ((*sf)->getType() == 9)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularWide(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpAngwExp(elementMap));
             }
             else if ((*sf)->getType() == 12)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupWeightedRadial(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpRadExpWeighted(elementMap));
             }
             else if ((*sf)->getType() == 13)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupWeightedAngular(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpAngnExpWeighted(elementMap));
             }
             else if ((*sf)->getType() == 28)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupRadialPoly(elementMap));
-            }
-            else if ((*sf)->getType() == 280)
-            {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupRadialPolyA(elementMap));
-            }
-            else if ((*sf)->getType() == 29)
-            {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularPolyWide(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpRadPoly(elementMap));
             }
             else if ((*sf)->getType() == 89)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularPolyOnly(elementMap));
-            }
-            else if ((*sf)->getType() == 890)
-            {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularPolyAOnly(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpAngwPoly(elementMap));
             }
             else if ((*sf)->getType() == 99)
             {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularPolyOnlyNarrow(elementMap));
-            }
-            else if ((*sf)->getType() == 990)
-            {
-                symmetryFunctionGroups.push_back((SymmetryFunctionGroup*)
-                    new SymmetryFunctionGroupAngularPolyAOnlyNarrow(elementMap));
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpAngnPoly(elementMap));
             }
             else
             {
@@ -301,7 +246,7 @@ void Element::setupSymmetryFunctionGroups()
 
     sort(symmetryFunctionGroups.begin(),
          symmetryFunctionGroups.end(),
-         comparePointerTargets<SymmetryFunctionGroup>);
+         comparePointerTargets<SymGrp>);
 
     for (size_t i = 0; i < symmetryFunctionGroups.size(); ++i)
     {
@@ -339,7 +284,7 @@ vector<string> Element::infoSymmetryFunctionGroups() const
 {
     vector<string> v;
 
-    for (vector<SymmetryFunctionGroup*>::const_iterator
+    for (vector<SymGrp*>::const_iterator
          it = symmetryFunctionGroups.begin();
          it != symmetryFunctionGroups.end(); ++it)
     {
@@ -353,10 +298,14 @@ vector<string> Element::infoSymmetryFunctionGroups() const
 void Element::setCutoffFunction(CutoffFunction::CutoffType const cutoffType,
                                 double const                     cutoffAlpha)
 {
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
-        (*it)->setCutoffFunction(cutoffType, cutoffAlpha);
+        SymFncCutoffBased* sfcb = dynamic_cast<SymFncCutoffBased*>(*it);
+        if (sfcb != nullptr)
+        {
+            sfcb->setCutoffFunction(cutoffType, cutoffAlpha);
+        }
     }
 
     return;
@@ -369,7 +318,7 @@ void Element::setScalingNone() const
         string scalingLine = strpr("%d %d 0.0 0.0 0.0 0.0",
                                    symmetryFunctions.at(i)->getEc(),
                                    i + 1);
-        symmetryFunctions.at(i)->setScalingType(SymmetryFunction::ST_NONE,
+        symmetryFunctions.at(i)->setScalingType(SymFnc::ST_NONE,
                                                 scalingLine,
                                                 0.0,
                                                 0.0);
@@ -382,7 +331,7 @@ void Element::setScalingNone() const
     return;
 }
 
-void Element::setScaling(SymmetryFunction::ScalingType scalingType,
+void Element::setScaling(SymFnc::ScalingType scalingType,
                          vector<string> const&         statisticsLine,
                          double                        Smin,
                          double                        Smax) const
@@ -406,7 +355,7 @@ size_t Element::getMinNeighbors() const
 {
     size_t minNeighbors = 0;
 
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
         minNeighbors = max((*it)->getMinNeighbors(), minNeighbors);
@@ -423,7 +372,7 @@ double Element::getMinCutoffRadius() const
     //      Exploit the fact that all allowed symmetry functions are either
     //      defined for a domain > 0 or have to be symmetric around 0.
 
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
         minCutoffRadius = min((*it)->getRc(), minCutoffRadius);
@@ -436,7 +385,7 @@ double Element::getMaxCutoffRadius() const
 {
     double maxCutoffRadius = 0.0;
 
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
         maxCutoffRadius = max((*it)->getRc(), maxCutoffRadius);
@@ -448,7 +397,7 @@ double Element::getMaxCutoffRadius() const
 void Element::calculateSymmetryFunctions(Atom&      atom,
                                          bool const derivatives) const
 {
-    for (vector<SymmetryFunction*>::const_iterator
+    for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin();
          it != symmetryFunctions.end(); ++it)
     {
@@ -461,7 +410,7 @@ void Element::calculateSymmetryFunctions(Atom&      atom,
 void Element::calculateSymmetryFunctionGroups(Atom&      atom,
                                               bool const derivatives) const
 {
-    for (vector<SymmetryFunctionGroup*>::const_iterator
+    for (vector<SymGrp*>::const_iterator
          it = symmetryFunctionGroups.begin();
          it != symmetryFunctionGroups.end(); ++it)
     {

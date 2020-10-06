@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMGRPANGWPOLY_H
-#define SYMGRPANGWPOLY_H
+#ifndef SYMGRPRADCOMP_H
+#define SYMGRPRADCOMP_H
 
-#include "CompactFunction.h"
 #include "SymGrp.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -29,30 +28,27 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymFnc;
-class SymFncAngwPoly;
+class SymFncRadComp;
 
-//TODO /** Angular symmetry function group (type 3)
-//TODO  *
-//TODO  * @f[
-//TODO    G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
-//TODO            \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-//TODO            \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
-//TODO            f_c(r_{ij}) f_c(r_{ik}) 
-//TODO  * @f]
-//TODO  * Common features:
-//TODO  * - element of central atom
-//TODO  * - element of neighbor atom 1
-//TODO  * - element of neighbor atom 2
-//TODO  * - cutoff type
-//TODO  * - @f$r_c@f$
-//TODO  * - @f$\alpha@f$
-//TODO  */
-class SymGrpAngwPoly : public SymGrp
+/** Radial symmetry function group (type 2)
+ *
+ * @f[
+ * G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
+ *         f_c(r_{ij}) 
+ * @f]
+ * Common features:
+ * - element of central atom
+ * - element of neighbor atom
+ * - cutoff type
+ * - @f$r_c@f$
+ * - @f$\alpha@f$
+ */
+class SymGrpRadComp : public SymGrp
 {
 public:
-    /** Constructor, sets type = 89
+    /** Constructor, sets type = 2
      */
-    SymGrpAngwPoly(ElementMap const& elementMap);
+    SymGrpRadComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool operator==(SymGrp const& rhs) const;
@@ -103,38 +99,34 @@ public:
          parameterLines() const;
 
 private:
-    /// Element index of neighbor atom 1 (common feature).
-    std::size_t                        e1;
-    /// Element index of neighbor atom 2 (common feature).
-    std::size_t                        e2;
+    /// Element index of neighbor atom (common feature).
+    std::size_t                       e1;
     /// Vector of all group member pointers.
-    std::vector<SymFncAngwPoly const*> members;
-    /// Smallest cutoff value within group.
-    double                             rl; 
-    /// Largest cutoff value within group.
-    double                             rc;
+    std::vector<SymFncRadComp const*> members;
+    /// Minimum radius within group
+    double                            rl;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymGrpAngwPoly::operator!=(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator!=(SymGrp const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymGrpAngwPoly::operator>(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator>(SymGrp const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymGrpAngwPoly::operator<=(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator<=(SymGrp const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymGrpAngwPoly::operator>=(SymGrp const& rhs) const
+inline bool SymGrpRadComp::operator>=(SymGrp const& rhs) const
 {
     return !((*this) < rhs);
 }

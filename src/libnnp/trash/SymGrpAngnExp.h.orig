@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONGROUPANGULARNARROW_H
-#define SYMMETRYFUNCTIONGROUPANGULARNARROW_H
+#ifndef SYMGRPANGNEXP_H
+#define SYMGRPANGNEXP_H
 
-#include "SymGrp.h"
+#include "SymGrpBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -47,7 +47,7 @@ class SymFncAngnExp;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpAngnExp : public SymGrp
+class SymGrpAngnExp : public SymGrpBaseCutoff
 {
 public:
     /** Constructor, sets type = 3

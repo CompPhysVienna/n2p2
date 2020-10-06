@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymFncRadPoly.h"
+#include "SymFncRadComp.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -26,34 +26,32 @@
 using namespace std;
 using namespace nnp;
 
-SymFncRadPoly::SymFncRadPoly(ElementMap const& elementMap) :
-    SymFnc(28, elementMap),
-    e1              (0  ),
-    rl              (0.0)
+SymFncRadComp::SymFncRadComp(ElementMap const& elementMap) :
+    SymFncBaseComp(28, elementMap),
+    e1(0)
 {
     minNeighbors = 1;
     parameters.insert("e1");
-    parameters.insert("rl");
 }
 
-bool SymFncRadPoly::operator==(SymFnc const& rhs) const
+bool SymFncRadComp::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymFncRadPoly const& c = dynamic_cast<SymFncRadPoly const&>(rhs);
+    SymFncRadComp const& c = dynamic_cast<SymFncRadComp const&>(rhs);
     if (rl          != c.rl         ) return false;
     if (rc          != c.rc         ) return false;
     if (e1          != c.e1         ) return false;
     return true;
 }
 
-bool SymFncRadPoly::operator<(SymFnc const& rhs) const
+bool SymFncRadComp::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymFncRadPoly const& c = dynamic_cast<SymFncRadPoly const&>(rhs);
+    SymFncRadComp const& c = dynamic_cast<SymFncRadComp const&>(rhs);
     // TODO: We don't need these! if      (cutoffType  < c.cutoffType ) return true;
     // TODO: We don't need these! else if (cutoffType  > c.cutoffType ) return false;
     // TODO: We don't need these! if      (cutoffAlpha < c.cutoffAlpha) return true;
@@ -67,7 +65,7 @@ bool SymFncRadPoly::operator<(SymFnc const& rhs) const
     return false;
 }
 
-void SymFncRadPoly::setParameters(string const& parameterString)
+void SymFncRadComp::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -101,7 +99,7 @@ void SymFncRadPoly::setParameters(string const& parameterString)
     return;
 }
 
-void SymFncRadPoly::changeLengthUnit(double convLength)
+void SymFncRadComp::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     rl *= convLength;
@@ -113,7 +111,7 @@ void SymFncRadPoly::changeLengthUnit(double convLength)
     return;
 }
 
-string SymFncRadPoly::getSettingsLine() const
+string SymFncRadComp::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %16.8E %16.8E\n",
                      elementMap[ec].c_str(),
@@ -125,13 +123,13 @@ string SymFncRadPoly::getSettingsLine() const
     return s;
 }
 
-bool SymFncRadPoly::getCompactOnly(double x, double& fx, double& dfx) const
+bool SymFncRadComp::getCompactOnly(double x, double& fx, double& dfx) const
 {
     bool const stat = c.fdf(x, fx, dfx);
     return stat;
 }
 
-void SymFncRadPoly::calculate(Atom& atom, bool const derivatives) const
+void SymFncRadComp::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
 
@@ -167,7 +165,7 @@ void SymFncRadPoly::calculate(Atom& atom, bool const derivatives) const
     return;
 }
 
-string SymFncRadPoly::parameterLine() const
+string SymFncRadComp::parameterLine() const
 {
     int const    izero = 0;
     double const dzero = 0;
@@ -183,35 +181,31 @@ string SymFncRadPoly::parameterLine() const
                  lineNumber + 1);
 }
 
-vector<string> SymFncRadPoly::parameterInfo() const
+vector<string> SymFncRadComp::parameterInfo() const
 {
     vector<string> v = SymFnc::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 
     s = "e1";
-    v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[e1].c_str()));
-    s = "rl";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rl / convLength));
-    s = "rc";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rc / convLength));
+    v.push_back(strpr((pad(s, w) + "%s").c_str(), elementMap[e1].c_str()));
 
     return v;
 }
 
-double SymFncRadPoly::calculateRadialPart(double distance) const
+double SymFncRadComp::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
 
     return c.f(r);
 }
 
-double SymFncRadPoly::calculateAngularPart(double /* angle */) const
+double SymFncRadComp::calculateAngularPart(double /* angle */) const
 {
     return 1.0;
 }
 
-bool SymFncRadPoly::checkRelevantElement(size_t index) const
+bool SymFncRadComp::checkRelevantElement(size_t index) const
 {
     if (index == e1) return true;
     else return false;

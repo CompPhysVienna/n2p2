@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMFNCRADPOLY_H
-#define SYMFNCRADPOLY_H
+#ifndef SYMFNCANGWCOMP_H
+#define SYMFNCANGWCOMP_H
 
 #include "SymFnc.h"
 #include "CompactFunction.h"
@@ -30,27 +30,33 @@ struct Atom;
 class ElementMap;
 class SymFncStatistics;
 
-/** Radial symmetry function (type 28)
+/** Angular symmetry function with polynomials (type 29)
  *
  * @f[
- * G^2_i = \text{Polynomial goes here}
+   G^{29}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
+              C_{\text{poly}}(\theta_{ijk})
+              \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
+              f_c(r_{ij}) f_c(r_{ik}) 
  * @f]
  * Parameter string:
  * ```
- * <element-central> 28 <element-neighbor> <rl> <rc>
+ * <element-central> 89 <element-neighbor1> <element-neighbor2> <rlow> <left> <right> <rcutoff>
  * ```
  * where
- * - `<element-central> ....` element symbol of central atom
- * - `<element-neighbor> ...` element symbol of neighbor atom
- * - `<rl>..................` @f$r_{l}@f$
- * - `<rc>..................` @f$r_{c}@f$
+ * - `<element-central> .....` element symbol of central atom
+ * - `<element-neighbor1> ...` element symbol of neighbor atom 1
+ * - `<element-neighbor2> ...` element symbol of neighbor atom 2
+ * - `<rlow>.................` lower radial boundary
+ * - `<left> ................` left angle boundary 
+ * - `<right> ...............` right angle boundary 
+ * - `<rcutoff> .............` upper radial boundary
  */
-class SymFncRadPoly : public SymFnc
+class SymFncAngwComp : public SymFnc
 {
 public:
-    /** Constructor, sets type = 2
+    /** Constructor, sets type = 89
      */
-    SymFncRadPoly(ElementMap const& elementMap);
+    SymFncAngwComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool         operator==(SymFnc const& rhs) const;
@@ -71,7 +77,7 @@ public:
     bool         operator>=(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
-     * @param[in] parameterString String containing radial symmetry function
+     * @param[in] parameterString String containing angular symmetry function
      *                            parameters.
      */
     void         setParameters(std::string const& parameterString);
@@ -92,8 +98,9 @@ public:
      *                        calculated and saved.
      */
     void         calculate(Atom& atom, bool const derivatives) const;
-    // Access core fct. for groups
-    bool         getCompactOnly(double x, double& fx, double& dfx) const;
+    // Core fcts
+    bool         getCompactAngle(double x, double& fx, double& dfx) const;
+    bool         getCompactRadial(double x, double& fx, double& dfx) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
@@ -108,13 +115,22 @@ public:
     /** Get private #e1 member variable.
      */
     std::size_t  getE1() const;
+    /** Get private #e2 member variable.
+     */
+    std::size_t  getE2() const;
+    /** Get private #angleLeft member variable.
+     */
+    double       getAngleLeft() const;
+    /** Get private #angleRight member variable.
+     */
+    double       getAngleRight() const;
     /** Get private #rl member variable.
      */
     double       getRl() const;
-    /** Calculate (partial) symmetry function value for one given distance.
+    /** Get private #rs member variable.
      *
      * @param[in] distance Distance between two atoms.
-     * @return @f$ e^{-\eta (r - r_s)^2} f_c(r)@f$
+     * @return @f$\left(e^{-\eta r^2} f_c(r)\right)^2@f$
      */
     double       calculateRadialPart(double distance) const;
     /** Calculate (partial) symmetry function value for one given angle.
@@ -132,44 +148,67 @@ public:
     bool         checkRelevantElement(std::size_t index) const;
 
 private:
-    /// Element index of neighbor atom.
-    std::size_t e1;
-    /// Lower bound of polynomial, @f$r_{l}@f$.
-    double      rl;
-    /// Compact function member.
-    CompactFunction c;
+    /// Element index of neighbor atom 1.
+    std::size_t     e1;
+    /// Element index of neighbor atom 2.
+    std::size_t     e2;
+    /// Lower boundary @f$r_l@f$ of radial component.
+    double          rl;
+    /// Left angle boundary.
+    double          angleLeft;
+    /// Right angle boundary.
+    double          angleRight;
+    /// Compact function member; radial.
+    CompactFunction cr;
+    /// Compact function member; angular.
+    CompactFunction ca;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymFncRadPoly::operator!=(SymFnc const& rhs) const
+inline bool SymFncAngwComp::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymFncRadPoly::operator>(SymFnc const& rhs) const
+inline bool SymFncAngwComp::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymFncRadPoly::operator<=(SymFnc const& rhs) const
+inline bool SymFncAngwComp::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymFncRadPoly::operator>=(SymFnc const& rhs) const
+inline bool SymFncAngwComp::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline std::size_t SymFncRadPoly::getE1() const
+inline std::size_t SymFncAngwComp::getE1() const
 {
     return e1;
 }
 
-inline double SymFncRadPoly::getRl() const
+inline std::size_t SymFncAngwComp::getE2() const
+{
+    return e2;
+}
+
+inline double SymFncAngwComp::getAngleLeft() const
+{
+    return angleLeft;
+}
+
+inline double SymFncAngwComp::getAngleRight() const
+{
+    return angleRight;
+}
+
+inline double SymFncAngwComp::getRl() const
 {
     return rl;
 }

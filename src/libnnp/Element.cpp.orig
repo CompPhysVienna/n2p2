@@ -301,7 +301,7 @@ void Element::setCutoffFunction(CutoffFunction::CutoffType const cutoffType,
     for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
-        SymFncBaseCutoff* sfcb = dynamic_cast<SymFncBaseCutoff*>(*it);
+        SymFncCutoffBased* sfcb = dynamic_cast<SymFncCutoffBased*>(*it);
         if (sfcb != nullptr)
         {
             sfcb->setCutoffFunction(cutoffType, cutoffAlpha);

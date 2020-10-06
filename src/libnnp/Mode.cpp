@@ -357,7 +357,7 @@ void Mode::setupSymmetryFunctions()
                      it->getSymbol().c_str());
         log << "--------------------------------------------------"
                "-----------------------------------------------\n";
-        log << " ind ec tp sbtp e1 e2       eta      rl/rs         "
+        log << " ind ec tp sbtp e1 e2       eta      rs/rl         "
                "rc   angl   angr la zeta    a    ln\n";
         log << "--------------------------------------------------"
                "-----------------------------------------------\n";
@@ -571,7 +571,7 @@ void Mode::setupSymmetryFunctionGroups()
                      "element %2s :\n", it->getSymbol().c_str());
         log << "------------------------------------------------------"
                "----------------------------------------------------\n";
-        log << " ind ec tp sbtp e1 e2       eta      rl/rs         "
+        log << " ind ec tp sbtp e1 e2       eta      rs/rl         "
                "rc   angl   angr la zeta    a    ln   mi  sfi e\n";
         log << "------------------------------------------------------"
                "----------------------------------------------------\n";

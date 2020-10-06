@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTION_H
-#define SYMMETRYFUNCTION_H
+#ifndef SYMFNC_H
+#define SYMFNC_H
 
-#include "CutoffFunction.h"
 #include "ElementMap.h"
 #include <cstddef> // std::size_t
 #include <map>     // std::map
@@ -128,15 +127,6 @@ public:
      */
     virtual std::vector<std::string>
                         parameterInfo() const;
-    /** Set cutoff function type and parameter.
-     *
-     * @param[in] cutoffType Desired cutoff function for this symmetry
-     *                       function.
-     * @param[in] cutoffAlpha Cutoff function parameter @f$\alpha@f$.
-     */
-    void                setCutoffFunction(CutoffFunction::
-                                          CutoffType cutoffType,
-                                          double     cutoffAlpha);
     /** Set symmetry function scaling type.
      *
      * @param[in] scalingType Desired symmetry function scaling type.
@@ -188,16 +178,9 @@ public:
     /** Get private #scalingFactor member variable.
      */
     double              getScalingFactor() const;
-    /** Get private #cutoffAlpha member variable.
-     */
-    double              getCutoffAlpha() const;
     /** Get private #convLength member variable.
      */
     double              getConvLength() const;
-    /** Get private #cutoffType member variable.
-     */
-    CutoffFunction::
-    CutoffType          getCutoffType() const;
     /** Get private #parameters member variable.
      */
     std::set<
@@ -288,14 +271,8 @@ protected:
     double                     rc;
     /// Scaling factor.
     double                     scalingFactor;
-    /// Cutoff parameter @f$\alpha@f$.
-    double                     cutoffAlpha;
     /// Data set normalization length conversion factor.
     double                     convLength;
-    /// Cutoff function used by this symmetry function.
-    CutoffFunction             fc;
-    /// Cutoff type used by this symmetry function.
-    CutoffFunction::CutoffType cutoffType;
     /// Symmetry function scaling type used by this symmetry function.
     ScalingType                scalingType;
     /// Set with symmetry function parameter IDs (lookup for printing).
@@ -374,11 +351,6 @@ inline double SymFnc::getScalingFactor() const
     return scalingFactor;
 }
 
-inline double SymFnc::getCutoffAlpha() const
-{
-    return cutoffAlpha;
-}
-
 inline double SymFnc::getConvLength() const
 {
     return convLength;
@@ -394,11 +366,6 @@ inline void SymFnc::setLineNumber(std::size_t lineNumber)
 {
     this->lineNumber = lineNumber;
     return;
-}
-
-inline CutoffFunction::CutoffType SymFnc::getCutoffType() const
-{
-    return cutoffType;
 }
 
 inline std::set<std::string> SymFnc::getParameters() const

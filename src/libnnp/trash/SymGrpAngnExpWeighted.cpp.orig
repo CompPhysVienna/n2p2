@@ -27,11 +27,11 @@
 using namespace std;
 using namespace nnp;
 
-SymGrpAngnExpWeighted::
-SymGrpAngnExpWeighted(ElementMap const& elementMap) : SymGrp(13, elementMap)
+SymGrpAngnExpWeighted::SymGrpAngnExpWeighted(ElementMap const& elementMap) :
+    SymGrpBaseCutoff(13, elementMap)
 {
     parametersMember.insert("eta");
-    parametersMember.insert("rs");
+    parametersMember.insert("rs/rl");
     parametersMember.insert("lambda");
     parametersMember.insert("zeta");
     parametersMember.insert("mindex");
@@ -78,6 +78,7 @@ bool SymGrpAngnExpWeighted::addMember(SymFnc const* const symmetryFunction)
     if (members.empty())
     {
         cutoffType  = sf->getCutoffType();
+        subtype     = sf->getSubtype();
         cutoffAlpha = sf->getCutoffAlpha();
         ec          = sf->getEc();
         rc          = sf->getRc();
@@ -393,8 +394,8 @@ vector<string> SymGrpAngnExpWeighted::parameterLines() const
                       index + 1,
                       elementMap[ec].c_str(),
                       type,
+                      subtype.c_str(),
                       rc / convLength,
-                      (int)cutoffType,
                       cutoffAlpha));
 
     for (size_t i = 0; i < members.size(); ++i)

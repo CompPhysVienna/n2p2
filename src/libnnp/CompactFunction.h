@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef WINDOWFUNCTION_H
-#define WINDOWFUNCTION_H
+#ifndef COMPACTFUNCTION_H
+#define COMPACTFUNCTION_H
 
 #include "CoreFunction.h"
 
@@ -26,32 +26,14 @@ namespace nnp
 class CompactFunction
 {
 public:
-    /// List of available function types with compact support.
-    enum class Type
-    {
-        /** @f$f(x) = (2x - 3)x^2 + 1@f$
-         */
-        POLY1,
-        /** @f$f(x) = ((15 - 6x)x - 10) x^3 + 1@f$
-         */
-        POLY2,
-        /** @f$f(x) = (x(x(20x - 70) + 84) - 35)x^4 + 1@f$
-         */
-        POLY3,
-        /** @f$f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1@f$
-         */
-        POLY4,
-        POLYA
-    };
-
-    /** Constructor, initializes to ´POLY2´.
+    /** Constructor, initializes to #CoreFunction::Type::POLY2.
      */
     CompactFunction();
     /** Set type.
      *
-     * @param[in] type Type of compact function.
+     * @param[in] type Type of core function to use.
      */
-    void setType(Type const type);
+    void               setCoreFunction(CoreFunction::Type const type);
     /** Set center and width.
      *
      * @param[in] center Center of compact function.
@@ -59,7 +41,7 @@ public:
      *
      * @note Either use setCenterWidth() or setLeftRight() to initialize.
      */
-    void setCenterWidth(double center, double width);
+    void               setCenterWidth(double center, double width);
     /** Set left and right boundary.
      *
      * @param[in] left Left boundary of compact function.
@@ -67,55 +49,53 @@ public:
      *
      * @note Either use setCenterWidth() or setLeftRight() to initialize.
      */
-    void setLeftRight(double left, double right);
+    void               setLeftRight(double left, double right);
     /** Getter for #type.
      *
      * @return Type used.
      */
-    Type getType() const;
+    CoreFunction::Type getCoreFunctionType() const;
     /** Getter for #center.
      *
      * @return Center of compact function.
      */
-    double     getCenter() const;
+    double             getCenter() const;
     /** Getter for #width.
      *
      * @return Width of compact function.
      */
-    double     getWidth() const;
+    double             getWidth() const;
     /** Getter for #left.
      *
      * @return Left boundary of compact function.
      */
-    double     getLeft() const;
+    double             getLeft() const;
     /** Getter for #right.
      *
      * @return Right boundary of compact function.
      */
-    double     getRight() const;
+    double             getRight() const;
     /** Compact function @f$f_c@f$.
      *
      * @param[in] a Function argument.
      * @return Function value.
      */
-    double     f(double a) const;
+    double             f(double a) const;
     /** Derivative of compact function @f$\frac{d f_c}{d a}@f$.
      *
      * @param[in] a Function argument.
      * @return Value of function derivative.
      */
-    double     df(double a) const;
+    double             df(double a) const;
     /** Calculate compact function and derivative at once.
      *
      * @param[in] a Function argument.
      * @param[out] fa Cutoff function value.
      * @param[out] dfa Value of cutoff function derivative.
      */
-    bool       fdf(double a, double& fa, double& dfa) const;
+    bool               fdf(double a, double& fa, double& dfa) const;
 
 private:
-    /// Compact function type.
-    Type         type;
     /// Center of compact function.
     double       center;
     /// Width of compact function.
@@ -126,7 +106,7 @@ private:
     double       right;
     /// Inverse width.
     double       scale;
-    /// Core functions used by POLYN, if any.
+    /// Core function to be used on either side of compact function.
     CoreFunction core;
 
 };
@@ -135,9 +115,16 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline CompactFunction::Type CompactFunction::getType() const
+inline void CompactFunction::setCoreFunction(CoreFunction::Type const type)
 {
-    return type;
+    core.setType(type);
+
+    return;
+}
+
+inline CoreFunction::Type CompactFunction::getCoreFunctionType() const
+{
+    return core.getType();
 }
 
 inline double CompactFunction::getCenter() const

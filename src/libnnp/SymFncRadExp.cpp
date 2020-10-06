@@ -27,7 +27,7 @@ using namespace std;
 using namespace nnp;
 
 SymFncRadExp::SymFncRadExp(ElementMap const& elementMap) :
-    SymFncCutoffBased(2, elementMap),
+    SymFncBaseCutoff(2, elementMap),
     e1              (0  ),
     eta             (0.0),
     rs              (0.0)
@@ -194,7 +194,7 @@ string SymFncRadExp::parameterLine() const
 
 vector<string> SymFncRadExp::parameterInfo() const
 {
-    vector<string> v = SymFncCutoffBased::parameterInfo();
+    vector<string> v = SymFncBaseCutoff::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 

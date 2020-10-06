@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMMETRYFUNCTIONRADIALPOLY_H
-#define SYMMETRYFUNCTIONRADIALPOLY_H
+#ifndef SYMFNCRADPOLY_H
+#define SYMFNCRADPOLY_H
 
-#include "SymFnc.h"
+#include "SymFncBaseComp.h"
 #include "CompactFunction.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -45,12 +45,12 @@ class SymFncStatistics;
  * - `<rl>..................` @f$r_{l}@f$
  * - `<rc>..................` @f$r_{c}@f$
  */
-class SymFncRadPoly : public SymFnc
+class SymFncRadComp : public SymFncBaseComp
 {
 public:
     /** Constructor, sets type = 2
      */
-    SymFncRadPoly(ElementMap const& elementMap);
+    SymFncRadComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool         operator==(SymFnc const& rhs) const;
@@ -134,44 +134,35 @@ public:
 private:
     /// Element index of neighbor atom.
     std::size_t e1;
-    /// Lower bound of polynomial, @f$r_{l}@f$.
-    double      rl;
-    /// Compact function member.
-    CompactFunction c;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymFncRadPoly::operator!=(SymFnc const& rhs) const
+inline bool SymFncRadComp::operator!=(SymFnc const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymFncRadPoly::operator>(SymFnc const& rhs) const
+inline bool SymFncRadComp::operator>(SymFnc const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymFncRadPoly::operator<=(SymFnc const& rhs) const
+inline bool SymFncRadComp::operator<=(SymFnc const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymFncRadPoly::operator>=(SymFnc const& rhs) const
+inline bool SymFncRadComp::operator>=(SymFnc const& rhs) const
 {
     return !((*this) < rhs);
 }
 
-inline std::size_t SymFncRadPoly::getE1() const
+inline std::size_t SymFncRadComp::getE1() const
 {
     return e1;
-}
-
-inline double SymFncRadPoly::getRl() const
-{
-    return rl;
 }
 
 }

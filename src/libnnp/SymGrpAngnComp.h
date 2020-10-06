@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMGRPANGNPOLY_H
-#define SYMGRPANGNPOLY_H
+#ifndef SYMGRPANGNCOMP_H
+#define SYMGRPANGNCOMP_H
 
 #include "CompactFunction.h"
 #include "SymGrp.h"
@@ -29,7 +29,7 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymFnc;
-class SymFncAngnPoly;
+class SymFncAngnComp;
 
 //TODO /** Angular symmetry function group (type 3)
 //TODO  *
@@ -47,12 +47,12 @@ class SymFncAngnPoly;
 //TODO  * - @f$r_c@f$
 //TODO  * - @f$\alpha@f$
 //TODO  */
-class SymGrpAngnPoly : public SymGrp
+class SymGrpAngnComp : public SymGrp
 {
 public:
     /** Constructor, sets type = 99
      */
-    SymGrpAngnPoly(ElementMap const& elementMap);
+    SymGrpAngnComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
     bool operator==(SymGrp const& rhs) const;
@@ -108,7 +108,7 @@ private:
     /// Element index of neighbor atom 2 (common feature).
     std::size_t                        e2;
     /// Vector of all group member pointers.
-    std::vector<SymFncAngnPoly const*> members;
+    std::vector<SymFncAngnComp const*> members;
     /// Smallest cutoff value within group.
     double                             rl; 
     /// Largest cutoff value within group.
@@ -119,22 +119,22 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymGrpAngnPoly::operator!=(SymGrp const& rhs) const
+inline bool SymGrpAngnComp::operator!=(SymGrp const& rhs) const
 {
     return !((*this) == rhs);
 }
 
-inline bool SymGrpAngnPoly::operator>(SymGrp const& rhs) const
+inline bool SymGrpAngnComp::operator>(SymGrp const& rhs) const
 {
     return rhs < (*this);
 }
 
-inline bool SymGrpAngnPoly::operator<=(SymGrp const& rhs) const
+inline bool SymGrpAngnComp::operator<=(SymGrp const& rhs) const
 {
     return !((*this) > rhs);
 }
 
-inline bool SymGrpAngnPoly::operator>=(SymGrp const& rhs) const
+inline bool SymGrpAngnComp::operator>=(SymGrp const& rhs) const
 {
     return !((*this) < rhs);
 }

@@ -17,7 +17,7 @@
 #ifndef SYMGRPANGNEXPWEIGHTED_H
 #define SYMGRPANGNEXPWEIGHTED_H
 
-#include "SymGrpCutoffBased.h"
+#include "SymGrpBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -46,7 +46,7 @@ class SymFncAngnExpWeighted;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpAngnExpWeighted : public SymGrpCutoffBased
+class SymGrpAngnExpWeighted : public SymGrpBaseCutoff
 {
 public:
     /** Constructor, sets type = 13

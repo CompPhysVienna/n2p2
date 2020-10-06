@@ -17,7 +17,7 @@
 #ifndef SYMFNCANGNEXPWEIGHTED_H
 #define SYMFNCANGNEXPWEIGHTED_H
 
-#include "SymFncCutoffBased.h"
+#include "SymFncBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -50,7 +50,7 @@ class ElementMap;
  * - `<zeta> ................` @f$\zeta@f$ 
  * - `<rcutoff> .............` @f$r_c@f$
  */
-class SymFncAngnExpWeighted : public SymFncCutoffBased
+class SymFncAngnExpWeighted : public SymFncBaseCutoff
 {
 public:
     /** Constructor, sets type = 13

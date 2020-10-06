@@ -55,120 +55,16 @@ void CoreFunction::setType(Type const type)
          dfPtr = &CoreFunction:: dfPOLY4;
         fdfPtr = &CoreFunction::fdfPOLY4;
     }
-    else if (type == Type::POLYA)
-    {
-          fPtr = &CoreFunction::  fPOLYA;
-         dfPtr = &CoreFunction:: dfPOLYA;
-        fdfPtr = &CoreFunction::fdfPOLYA;
-    }
+    //else if (type == Type::POLYA)
+    //{
+    //      fPtr = &CoreFunction::  fPOLYA;
+    //     dfPtr = &CoreFunction:: dfPOLYA;
+    //    fdfPtr = &CoreFunction::fdfPOLYA;
+    //}
     else
     {
-        throw invalid_argument("ERROR: Unknown function.\n");
+        throw invalid_argument("ERROR: Unknown core function.\n");
     }
 
-    return;
-}
-
-double CoreFunction::fPOLY1(double x) const
-{
-    return (2.0 * x - 3.0) * x * x + 1.0;
-}
-
-double CoreFunction::dfPOLY1(double x) const
-{
-    return x * (6.0 * x - 6.0);
-}
-
-void CoreFunction::fdfPOLY1(double x, double& fx, double& dfx) const
-{
-    fx = (2.0 * x - 3.0) * x * x + 1.0;
-    dfx = x * (6.0 * x - 6.0);
-    return;
-}
-
-double CoreFunction::fPOLY2(double x) const
-{
-    return ((15.0 - 6.0 * x) * x - 10.0) * x * x * x + 1.0;
-}
-
-double CoreFunction::dfPOLY2(double x) const
-{
-    return x * x * ((60.0 - 30.0 * x) * x - 30.0);
-}
-
-void CoreFunction::fdfPOLY2(double x, double& fx, double& dfx) const
-{
-    double const x2 = x * x;
-    fx = ((15.0 - 6.0 * x) * x - 10.0) * x * x2 + 1.0;
-    dfx = x2 * ((60.0 - 30.0 * x) * x - 30.0);
-    return;
-}
-
-double CoreFunction::fPOLY3(double x) const
-{
-    double const x2 = x * x;
-    return (x * (x * (20.0 * x - 70.0) + 84.0) - 35.0) * x2 * x2 + 1.0;
-}
-
-double CoreFunction::dfPOLY3(double x) const
-{
-    return x * x * x * (x * (x * (140.0 * x - 420.0) + 420.0) - 140.0);
-}
-
-void CoreFunction::fdfPOLY3(double x, double& fx, double& dfx) const
-{
-    double const x2 = x * x;
-    fx = (x * (x * (20.0 * x - 70.0) + 84.0) - 35.0) * x2 * x2 + 1.0;
-    dfx = x2 * x * (x * (x * (140.0 * x - 420.0) + 420.0) - 140.0);
-    return;
-}
-
-double CoreFunction::fPOLY4(double x) const
-{
-    double const x2 = x * x;
-    return (x * (x * ((315.0 - 70.0 * x) * x - 540.0) + 420.0) - 126.0) *
-           x2 * x2 * x + 1.0;
-}
-
-double CoreFunction::dfPOLY4(double x) const
-{
-    double const x2 = x * x;
-    return x2 * x2 *
-           (x * (x * ((2520.0 - 630.0 * x) * x - 3780.0) + 2520.0) - 630.0);
-}
-
-void CoreFunction::fdfPOLY4(double x, double& fx, double& dfx) const
-{
-    double x4 = x * x;
-    x4 *= x4;
-    fx = (x * (x * ((315.0 - 70.0 * x) * x - 540.0) + 420.0) - 126.0) *
-         x * x4 + 1.0;
-    dfx = x4 *
-          (x * (x * ((2520.0 - 630.0 * x) * x - 3780.0) + 2520.0) - 630.0);
-    return;
-}
-
-double CoreFunction::fPOLYA(double x) const
-{
-    double const p = 2.0 * x - x * x;
-    return ((15.0 - 6.0 * p) * p - 10.0) * p * p * p + 1.0;
-}
-
-double CoreFunction::dfPOLYA(double x) const
-{
-    double const p  = 2.0 * x - x * x;
-    double const dp =     2.0 - 2.0 * x;
-    double const dx = p * p * ((60.0 - 30.0 * p) * p - 30.0);
-    return dx * dp;
-}
-
-void CoreFunction::fdfPOLYA(double x, double& fx, double& dfx) const
-{
-    double const p  = 2.0 * x - x * x;
-    double const p2 = p * p;
-    double const dp = 2.0 - 2.0 * x;
-    double const dx = p2 * ((60.0 - 30.0 * p) * p - 30.0);
-    fx = ((15.0 - 6.0 * p) * p - 10.0) * p * p2 + 1.0;
-    dfx = dx * dp;
     return;
 }

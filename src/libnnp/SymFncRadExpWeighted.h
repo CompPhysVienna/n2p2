@@ -17,7 +17,7 @@
 #ifndef SYMFNCRADEXPWEIGHTED_H
 #define SYMFNCRADEXPWEIGHTED_H
 
-#include "SymFncCutoffBased.h"
+#include "SymFncBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -45,7 +45,7 @@ class ElementMap;
  * - `<rshift> .............` @f$r_\mathrm{s}@f$
  * - `<rcutoff> ............` @f$r_c@f$
  */
-class SymFncRadExpWeighted : public SymFncCutoffBased
+class SymFncRadExpWeighted : public SymFncBaseCutoff
 {
 public:
     /** Constructor, sets type = 12

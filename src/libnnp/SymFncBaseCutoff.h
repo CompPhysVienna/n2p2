@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMFUNCCUTOFFBASED_H
-#define SYMFUNCCUTOFFBASED_H
+#ifndef SYMFNCBASECUTOFF_H
+#define SYMFNCBASECUTOFF_H
 
 #include "SymFnc.h"
 #include "CutoffFunction.h"
@@ -31,7 +31,7 @@ namespace nnp
  * Actual symmetry functions which make use of a dedicated cutoff function
  * derive from this class.
  */
-class SymFncCutoffBased : public SymFnc
+class SymFncBaseCutoff : public SymFnc
 {
 public:
     /** Get description with parameter names and values.
@@ -72,24 +72,24 @@ protected:
 
     /** Constructor, initializes #type.
      */
-    SymFncCutoffBased(std::size_t type, ElementMap const&);
+    SymFncBaseCutoff(std::size_t type, ElementMap const&);
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline double SymFncCutoffBased::getCutoffAlpha() const
+inline double SymFncBaseCutoff::getCutoffAlpha() const
 {
     return cutoffAlpha;
 }
 
-inline std::string SymFncCutoffBased::getSubtype() const
+inline std::string SymFncBaseCutoff::getSubtype() const
 {
     return subtype;
 }
 
-inline CutoffFunction::CutoffType SymFncCutoffBased::getCutoffType() const
+inline CutoffFunction::CutoffType SymFncBaseCutoff::getCutoffType() const
 {
     return cutoffType;
 }

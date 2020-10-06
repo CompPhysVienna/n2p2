@@ -17,7 +17,7 @@
 #ifndef SYMGRPRADEXPWEIGHTED_H
 #define SYMGRPRADEXPWEIGHTED_H
 
-#include "SymGrpCutoffBased.h"
+#include "SymGrpBaseCutoff.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -42,7 +42,7 @@ class SymFncRadExpWeighted;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpRadExpWeighted : public SymGrpCutoffBased
+class SymGrpRadExpWeighted : public SymGrpBaseCutoff
 {
 public:
     /** Constructor, sets type = 12
