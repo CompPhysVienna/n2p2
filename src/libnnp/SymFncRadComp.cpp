@@ -21,13 +21,14 @@
 #include "Vec3D.h"
 #include <cstdlib>   // atof, atoi
 #include <cmath>     // exp
+#include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 
 using namespace std;
 using namespace nnp;
 
 SymFncRadComp::SymFncRadComp(ElementMap const& elementMap) :
-    SymFncBaseComp(28, elementMap),
+    SymFncBaseComp(20, elementMap),
     e1(0)
 {
     minNeighbors = 1;
@@ -39,9 +40,10 @@ bool SymFncRadComp::operator==(SymFnc const& rhs) const
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
     SymFncRadComp const& c = dynamic_cast<SymFncRadComp const&>(rhs);
-    if (rl          != c.rl         ) return false;
-    if (rc          != c.rc         ) return false;
-    if (e1          != c.e1         ) return false;
+    if (subtype     != c.getSubtype()) return false;
+    if (e1          != c.e1          ) return false;
+    if (rc          != c.rc          ) return false;
+    if (rl          != c.rl          ) return false;
     return true;
 }
 
@@ -52,16 +54,14 @@ bool SymFncRadComp::operator<(SymFnc const& rhs) const
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
     SymFncRadComp const& c = dynamic_cast<SymFncRadComp const&>(rhs);
-    // TODO: We don't need these! if      (cutoffType  < c.cutoffType ) return true;
-    // TODO: We don't need these! else if (cutoffType  > c.cutoffType ) return false;
-    // TODO: We don't need these! if      (cutoffAlpha < c.cutoffAlpha) return true;
-    // TODO: We don't need these! else if (cutoffAlpha > c.cutoffAlpha) return false;
-    if      (rl          < c.rl         ) return true;
-    else if (rl          > c.rl         ) return false;
-    if      (rc          < c.rc         ) return true;
-    else if (rc          > c.rc         ) return false;
-    if      (e1          < c.e1         ) return true;
-    else if (e1          > c.e1         ) return false;
+    if      (subtype     < c.getSubtype()) return true;
+    else if (subtype     > c.getSubtype()) return false;
+    if      (e1          < c.e1          ) return true;
+    else if (e1          > c.e1          ) return false;
+    if      (rc          < c.rc          ) return true;
+    else if (rc          > c.rc          ) return false;
+    if      (rl          < c.rl          ) return true;
+    else if (rl          > c.rl          ) return false;
     return false;
 }
 
@@ -74,27 +74,25 @@ void SymFncRadComp::setParameters(string const& parameterString)
         throw runtime_error("ERROR: Incorrect symmetry function type.\n");
     }
 
-    ec   = elementMap[splitLine.at(0)];
-    e1   = elementMap[splitLine.at(2)];
-    rl   = atof(splitLine.at(3).c_str());
-    rc   = atof(splitLine.at(4).c_str());
+    ec      = elementMap[splitLine.at(0)];
+    e1      = elementMap[splitLine.at(2)];
+    rl      = atof(splitLine.at(3).c_str());
+    rc      = atof(splitLine.at(4).c_str());
+    subtype = splitLine.at(5);
 
     if (rl > rc)
     {
-        throw runtime_error("ERROR: Lower radial boundary >= upper radial boundary.\n");
+        throw runtime_error("ERROR: Lower radial boundary >= upper "
+                            "radial boundary.\n");
     }
-    else if (rl < 0.0 && (rl + rc) != 0.0)
-    {
-        fprintf(stderr, "WARNING: Radial function not symmetric w.r.t origin.\n");
-    }
+    //if (rl < 0.0 && abs(rl + rc) > numeric_limits<double>::epsilon())
+    //{
+    //    throw runtime_error("ERROR: Radial function not symmetric "
+    //                        "w.r.t. origin.\n");
+    //}
    
-    c.setType(CompactFunction::Type::POLY2);
-    c.setLeftRight(rl,rc);
-
-    // TODO: Get rid of fc at all, or replace it by its compact counterpart
-    // fc.setCutoffRadius(rc);
-    // fc.setCutoffParameter(cutoffAlpha);
-    // TODO: For now, just make sure we never use FC!
+    setCompactFunction(subtype);
+    cr.setLeftRight(rl,rc);
 
     return;
 }
@@ -105,27 +103,27 @@ void SymFncRadComp::changeLengthUnit(double convLength)
     rl *= convLength;
     rc *= convLength;
    
-    c.setType(CompactFunction::Type::POLY2);
-    c.setLeftRight(rl,rc);
+    cr.setLeftRight(rl,rc);
 
     return;
 }
 
 string SymFncRadComp::getSettingsLine() const
 {
-    string s = strpr("symfunction_short %2s %2zu %2s %16.8E %16.8E\n",
+    string s = strpr("symfunction_short %2s %2zu %2s %16.8E %16.8E %s\n",
                      elementMap[ec].c_str(),
                      type,
                      elementMap[e1].c_str(),
                      rl / convLength,
-                     rc / convLength);
+                     rc / convLength,
+                     subtype.c_str());
 
     return s;
 }
 
 bool SymFncRadComp::getCompactOnly(double x, double& fx, double& dfx) const
 {
-    bool const stat = c.fdf(x, fx, dfx);
+    bool const stat = cr.fdf(x, fx, dfx);
     return stat;
 }
 
@@ -143,7 +141,7 @@ void SymFncRadComp::calculate(Atom& atom, bool const derivatives) const
 
             double rad;
             double drad;
-            c.fdf(rij, rad, drad);
+            cr.fdf(rij, rad, drad);
             result += rad;
 
             // Force calculation.
@@ -167,17 +165,14 @@ void SymFncRadComp::calculate(Atom& atom, bool const derivatives) const
 
 string SymFncRadComp::parameterLine() const
 {
-    int const    izero = 0;
-    double const dzero = 0;
     return strpr(getPrintFormat().c_str(),
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
+                 subtype.c_str(),
                  elementMap[e1].c_str(),
                  rl / convLength,
                  rc / convLength,
-                 izero,
-                 dzero,
                  lineNumber + 1);
 }
 
@@ -197,7 +192,7 @@ double SymFncRadComp::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
 
-    return c.f(r);
+    return cr.f(r);
 }
 
 double SymFncRadComp::calculateAngularPart(double /* angle */) const

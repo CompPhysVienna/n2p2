@@ -23,36 +23,29 @@
 #include <algorithm> // std::sort
 #include <cmath>     // exp
 #include <stdexcept> // std::runtime_error
-#include <iostream>
 using namespace std;
 using namespace nnp;
 
 SymGrpAngnComp::
-SymGrpAngnComp(ElementMap const& elementMap) : SymGrp(99, elementMap),
+SymGrpAngnComp(ElementMap const& elementMap) :
+    SymGrpBaseComp(21, elementMap),
     e1(0),
     e2(0)
 {
     parametersCommon.insert("e1");
     parametersCommon.insert("e2");
 
-    parametersMember.insert("rl");
     parametersMember.insert("angleLeft");
     parametersMember.insert("angleRight");
-    parametersMember.insert("rc");
-    parametersMember.insert("mindex");
-    parametersMember.insert("sfindex");
 }
 
-bool SymGrpAngnComp::
-operator==(SymGrp const& rhs) const
+bool SymGrpAngnComp::operator==(SymGrp const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
     SymGrpAngnComp const& c = dynamic_cast<SymGrpAngnComp const&>(rhs);
-    // if (cutoffType  != c.cutoffType ) return false;
-    // if (cutoffAlpha != c.cutoffAlpha) return false;
-    if (e1          != c.e1         ) return false;
-    if (e2          != c.e2         ) return false;
+    if (e1 != c.e1) return false;
+    if (e2 != c.e2) return false;
     return true;
 }
 
@@ -63,18 +56,10 @@ bool SymGrpAngnComp::operator<(SymGrp const& rhs) const
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
     SymGrpAngnComp const& c = dynamic_cast<SymGrpAngnComp const&>(rhs);
-    // if      (cutoffType  < c.cutoffType ) return true;
-    // else if (cutoffType  > c.cutoffType ) return false;
-    // if      (cutoffAlpha < c.cutoffAlpha) return true;
-    // else if (cutoffAlpha > c.cutoffAlpha) return false;
-    if      (rl          < c.rl         ) return true;
-    else if (rl          > c.rl         ) return false;
-    if      (rc          < c.rc         ) return true;
-    else if (rc          > c.rc         ) return false;
-    if      (e1          < c.e1         ) return true;
-    else if (e1          > c.e1         ) return false;
-    if      (e2          < c.e2         ) return true;
-    else if (e2          > c.e2         ) return false;
+    if      (e1 < c.e1) return true;
+    else if (e1 > c.e1) return false;
+    if      (e2 < c.e2) return true;
+    else if (e2 > c.e2) return false;
     return false;
 }
 
@@ -87,20 +72,12 @@ bool SymGrpAngnComp::addMember(SymFnc const* const symmetryFunction)
 
     if (members.empty())
     {
-        // cutoffType  = sf->getCutoffType();
-        // cutoffAlpha = sf->getCutoffAlpha();
         ec          = sf->getEc();
         e1          = sf->getE1();
         e2          = sf->getE2();
         convLength  = sf->getConvLength();
-
-        // fc.setCutoffType(cutoffType);
-        // fc.setCutoffRadius(rc);
-        // fc.setCutoffParameter(cutoffAlpha);
     }
 
-    // if (sf->getCutoffType()  != cutoffType ) return false;
-    // if (sf->getCutoffAlpha() != cutoffAlpha) return false;
     if (sf->getEc()          != ec         ) return false;
     if (sf->getE1()          != e1         ) return false;
     if (sf->getE2()          != e2         ) return false;
@@ -110,13 +87,8 @@ bool SymGrpAngnComp::addMember(SymFnc const* const symmetryFunction)
                             "with different conversion factors.\n");
     }
 
-    // We do not parse angles or the like, since they are fast to calculate.
-    // The only expensive part remaining is the cosine of the angle, which anyway
-    // we cannot get rid of. Therefore, we assemble all symmetry functions of one
-    // type within a single group. This can be changed later.
-
-    rl = min( rl, sf->getRl() );
-    rc = max( rc, sf->getRc() );
+    rmin = min( rmin, sf->getRl() );
+    rmax = max( rmax, sf->getRc() );
 
     members.push_back(sf);
 
@@ -129,7 +101,6 @@ void SymGrpAngnComp::sortMembers()
          members.end(),
          comparePointerTargets<SymFncAngnComp const>);
 
-    // Members are now sorted, somehow...
     for (size_t i = 0; i < members.size(); i++)
     {
         memberIndex.push_back(members[i]->getIndex());
@@ -178,7 +149,7 @@ void SymGrpAngnComp::calculate(Atom& atom, bool const derivatives) const
         size_t const nej = nj.element;
         double const rij = nj.d;
 
-        if ((e1 == nej || e2 == nej) && rij < rc && rij > rl)
+        if ((e1 == nej || e2 == nej) && rij < rmax && rij > rmin)
         {
 
             // Precalculate the radial part for ij
@@ -200,7 +171,7 @@ void SymGrpAngnComp::calculate(Atom& atom, bool const derivatives) const
                     (e2 == nej && e1 == nek))
                 {
                     double const rik = nk.d;
-                    if (rik < rc && rik > rl)
+                    if (rik < rmax && rik > rmin)
                     {
                         // SIMPLE EXPRESSIONS:
                         //Vec3D drik(atom.neighbors[k].dr);
@@ -216,7 +187,7 @@ void SymGrpAngnComp::calculate(Atom& atom, bool const derivatives) const
                         double radjk;
                         double dradjk;
                         rjk = sqrt(rjk);
-                        if (rjk >= rc || rjk <= rl) continue;
+                        if (rjk >= rmax || rjk <= rmin) continue;
 
                         // Energy calculation.
                         double const rinvijik = 1.0 / rij / rik;
@@ -365,8 +336,6 @@ void SymGrpAngnComp::calculate(Atom& atom, bool const derivatives) const
 vector<string> SymGrpAngnComp::parameterLines() const
 {
     vector<string> v;
-    int const    izero = 0.0;
-    double const dzero = 0.0;
 
     v.push_back(strpr(getPrintFormatCommon().c_str(),
                       index + 1,
@@ -374,20 +343,20 @@ vector<string> SymGrpAngnComp::parameterLines() const
                       type,
                       elementMap[e1].c_str(),
                       elementMap[e2].c_str(),
-                      dzero,
-                      izero,
-                      dzero));
+                      rmin / convLength,
+                      rmax / convLength));
 
     for (size_t i = 0; i < members.size(); ++i)
     {
         v.push_back(strpr(getPrintFormatMember().c_str(),
+                          members[i]->getSubtype().c_str(),
                           members[i]->getRl() / convLength,
+                          members[i]->getRc() / convLength,
                           members[i]->getAngleLeft(),
                           members[i]->getAngleRight(),
-                          members[i]->getRc() / convLength,
                           members[i]->getLineNumber(),
                           i + 1,
-                          members[i]->getIndex() + 1 ));
+                          members[i]->getIndex() + 1));
     }
 
     return v;

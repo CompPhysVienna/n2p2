@@ -37,17 +37,17 @@ vector<string> SymFncBaseComp::parameterInfo() const
 
 void SymFncBaseComp::setCompactFunction(string subtype)
 {
-    if (subtype.size() < 2 || subtype.size() > 3)
+    if (subtype.size() < 1 || subtype.size() > 3)
     {
         throw runtime_error(strpr("ERROR: Invalid compact function type "
                                   "specification: \"%s\".\n",
                                   subtype.c_str()));
     }
 
+    using CFT = CoreFunction::Type;
     // Check for polynomials.
     if (subtype.front() == 'p')
     {
-        using CFT = CoreFunction::Type;
         if      (subtype.at(1) == '1') cr.setCoreFunction(CFT::POLY1);
         else if (subtype.at(1) == '2') cr.setCoreFunction(CFT::POLY2);
         else if (subtype.at(1) == '3') cr.setCoreFunction(CFT::POLY3);
@@ -57,12 +57,24 @@ void SymFncBaseComp::setCompactFunction(string subtype)
             throw runtime_error(strpr("ERROR: Invalid polynom type: \"%s\".\n",
                                       subtype.c_str()));
         }
-        if (subtype.size() == 3 && subtype.at(2) == 'a') asymmetric = true;
-        else
+        if (subtype.size() == 3)
         {
-            throw runtime_error(strpr("ERROR: Invalid polynom specifier: "
-                                      "\"%s\".\n", subtype.c_str()));
+            if (subtype.at(2) == 'a') asymmetric = true;
+            else
+            {
+                throw runtime_error(strpr("ERROR: Invalid polynom specifier: "
+                                          "\"%s\".\n", subtype.c_str()));
+            }
         }
+    }
+    else if (subtype.front() == 'e')
+    {
+        cr.setCoreFunction(CFT::EXP);
+    }
+    else
+    {
+        throw runtime_error(strpr("ERROR: Unknown compact SF type: \"%s\".\n",
+                                  subtype.c_str()));
     }
 
     return;
@@ -73,7 +85,7 @@ SymFncBaseComp::SymFncBaseComp(size_t type,
     SymFnc(type, elementMap),
     asymmetric(false),
     rl        (0.0),
-    subtype   ("p2")
+    subtype   ("")
 {
     // Add polynomial-related parameter IDs to set.
     parameters.insert("rs/rl");

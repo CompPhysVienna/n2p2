@@ -103,17 +103,17 @@ void Element::addSymmetryFunction(string const& parameters,
     {
         symmetryFunctions.push_back(new SymFncAngnExpWeighted(elementMap));
     }
-    else if (type == 28)
+    else if (type == 20)
     {
         symmetryFunctions.push_back(new SymFncRadComp(elementMap));
     }
-    else if (type == 89)
-    {
-        symmetryFunctions.push_back(new SymFncAngwComp(elementMap));
-    }
-    else if (type == 99)
+    else if (type == 21)
     {
         symmetryFunctions.push_back(new SymFncAngnComp(elementMap));
+    }
+    else if (type == 22)
+    {
+        symmetryFunctions.push_back(new SymFncAngwComp(elementMap));
     }
     else
     {
@@ -220,20 +220,20 @@ void Element::setupSymmetryFunctionGroups()
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpAngnExpWeighted(elementMap));
             }
-            else if ((*sf)->getType() == 28)
+            else if ((*sf)->getType() == 20)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpRadComp(elementMap));
             }
-            else if ((*sf)->getType() == 89)
-            {
-                symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngwComp(elementMap));
-            }
-            else if ((*sf)->getType() == 99)
+            else if ((*sf)->getType() == 21)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpAngnComp(elementMap));
+            }
+            else if ((*sf)->getType() == 22)
+            {
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpAngwComp(elementMap));
             }
             else
             {

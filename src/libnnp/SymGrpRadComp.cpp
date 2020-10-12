@@ -28,15 +28,11 @@ using namespace std;
 using namespace nnp;
 
 SymGrpRadComp::
-SymGrpRadComp(ElementMap const& elementMap) : SymGrp(28, elementMap),
-    e1(0),
-    rl(0)
+SymGrpRadComp(ElementMap const& elementMap) :
+    SymGrpBaseComp(20, elementMap),
+    e1(0)
 {
     parametersCommon.insert("e1");
-    parametersMember.insert("rl");
-    parametersMember.insert("rc");
-    parametersMember.insert("mindex");
-    parametersMember.insert("sfindex");
 }
 
 bool SymGrpRadComp::operator==(SymGrp const& rhs) const
@@ -44,11 +40,7 @@ bool SymGrpRadComp::operator==(SymGrp const& rhs) const
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
     SymGrpRadComp const& c = dynamic_cast<SymGrpRadComp const&>(rhs);
-    // if (cutoffType  != c.cutoffType ) return false;
-    // if (cutoffAlpha != c.cutoffAlpha) return false;
-    if (rl          != c.rl         ) return false;
-    if (rc          != c.rc         ) return false;
-    if (e1          != c.e1         ) return false;
+    if (e1 != c.e1) return false;
     return true;
 }
 
@@ -59,16 +51,8 @@ bool SymGrpRadComp::operator<(SymGrp const& rhs) const
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
     SymGrpRadComp const& c = dynamic_cast<SymGrpRadComp const&>(rhs);
-    // if      (cutoffType  < c.cutoffType ) return true;
-    // else if (cutoffType  > c.cutoffType ) return false;
-    // if      (cutoffAlpha < c.cutoffAlpha) return true;
-    // else if (cutoffAlpha > c.cutoffAlpha) return false;
-    if      (rl          < c.rl         ) return true;
-    else if (rl          > c.rl         ) return false;
-    if      (rc          < c.rc         ) return true;
-    else if (rc          > c.rc         ) return false;
-    if      (e1          < c.e1         ) return true;
-    else if (e1          > c.e1         ) return false;
+    if      (e1 < c.e1) return true;
+    else if (e1 > c.e1) return false;
     return false;
 }
 
@@ -81,19 +65,11 @@ bool SymGrpRadComp::addMember(SymFnc const* const symmetryFunction)
 
     if (members.empty())
     {
-        // cutoffType  = sf->getCutoffType();
-        // cutoffAlpha = sf->getCutoffAlpha();
         ec          = sf->getEc();
         e1          = sf->getE1();
         convLength  = sf->getConvLength();
-
-        // fc.setCutoffType(cutoffType);
-        // fc.setCutoffRadius(rcr);
-        // fc.setCutoffParameter(cutoffAlpha);
     }
 
-    // if (sf->getCutoffType()  != cutoffType ) return false;
-    // if (sf->getCutoffAlpha() != cutoffAlpha) return false;
     if (sf->getEc()          != ec         ) return false;
     if (sf->getE1()          != e1         ) return false;
     if (sf->getConvLength()  != convLength )
@@ -102,8 +78,8 @@ bool SymGrpRadComp::addMember(SymFnc const* const symmetryFunction)
                             "with different conversion factors.\n");
     }
 
-    rl = min( rl, sf->getRl() );
-    rc = max( rc, sf->getRc() );
+    rmin = min( rmin, sf->getRl() );
+    rmax = max( rmax, sf->getRc() );
 
     members.push_back(sf);
 
@@ -140,7 +116,7 @@ void SymGrpRadComp::setScalingFactors()
 // time-critical when predicting new structures (e.g. in MD simulations). Thus,
 // lots of optimizations were used sacrificing some readablity. Vec3D
 // operations have been rewritten in simple C array style and the use of
-// temporary objects has been minmized. Some of the originally coded
+// temporary objects has been minimized. Some of the originally coded
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
 void SymGrpRadComp::calculate(Atom& atom, bool const derivatives) const
 {
@@ -153,8 +129,8 @@ void SymGrpRadComp::calculate(Atom& atom, bool const derivatives) const
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
-        if ( (e1 == n.element && n.d < rc) ||
-             (e1 == n.element && n.d > rl) )
+        if ( (e1 == n.element && n.d < rmax) ||
+             (e1 == n.element && n.d > rmin) )
         {
             // Energy calculation.
             double const rij = n.d;
@@ -216,21 +192,18 @@ vector<string> SymGrpRadComp::parameterLines() const
 {
     vector<string> v;
 
-    int const    izero = 0;
-    double const dzero = 0.0;
-    // TODO
     v.push_back(strpr(getPrintFormatCommon().c_str(),
                       index + 1,
                       elementMap[ec].c_str(),
                       type,
                       elementMap[e1].c_str(),
-                      dzero,
-                      izero,
-                      dzero));
+                      rmin / convLength,
+                      rmax / convLength));
 
     for (size_t i = 0; i < members.size(); ++i)
     {
         v.push_back(strpr(getPrintFormatMember().c_str(),
+                          members[i]->getSubtype().c_str(),
                           members[i]->getRl() / convLength,
                           members[i]->getRc() / convLength,
                           members[i]->getLineNumber(),
@@ -240,4 +213,3 @@ vector<string> SymGrpRadComp::parameterLines() const
 
     return v;
 }
-

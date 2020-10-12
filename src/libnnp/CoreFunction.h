@@ -17,6 +17,8 @@
 #ifndef COREFUNCTION_H
 #define COREFUNCTION_H
 
+#include <cmath>
+
 namespace nnp
 {
 
@@ -37,7 +39,10 @@ public:
         POLY3,
         /** @f$f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1@f$
          */
-        POLY4
+        POLY4,
+        /** @f$f(x) = e^{1 - \frac{1}{1 - x^2}}@f$
+         */
+        EXP
     };
 
     /** Constructor, initializes to #Type::POLY2.
@@ -74,6 +79,7 @@ public:
     void   fdf(double x, double& fx, double& dfx) const;
 
 private:
+    static double const E;
     /// Core function type.
     Type       type;
     /// Function pointer to f.
@@ -102,9 +108,9 @@ private:
     double  dfPOLY4(double x) const;
     void   fdfPOLY4(double x, double& fx, double& dfx) const;
 
-    double   fPOLYA(double x) const;
-    double  dfPOLYA(double x) const;
-    void   fdfPOLYA(double x, double& fx, double& dfx) const;
+    double   fEXP(double x) const;
+    double  dfEXP(double x) const;
+    void   fdfEXP(double x, double& fx, double& dfx) const;
 };
 
 //////////////////////////////////
@@ -210,6 +216,27 @@ inline void CoreFunction::fdfPOLY4(double x, double& fx, double& dfx) const
           (x * (x * ((2520.0 - 630.0 * x) * x - 3780.0) + 2520.0) - 630.0);
     return;
 }
+
+inline double CoreFunction::fEXP(double x) const
+{
+    return E * exp(1.0 / (x * x - 1.0));
+}
+
+inline double CoreFunction::dfEXP(double x) const
+{
+    double const temp = 1.0 / (x * x - 1.0);
+    return -2.0 * E * x * temp * temp * exp(temp);
+}
+
+inline void CoreFunction::fdfEXP(double x, double& fc, double& dfc) const
+{
+    double const temp = 1.0 / (x * x - 1.0);
+    double const temp2 = exp(temp);
+    fc = E * temp2;
+    dfc = -2.0 * E * x * temp * temp * temp2;
+    return;
+}
+
 
 //inline double CoreFunction::fPOLYA(double x) const
 //{

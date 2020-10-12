@@ -20,6 +20,8 @@
 using namespace std;
 using namespace nnp;
 
+double const CoreFunction::E = exp(1.0);
+
 CoreFunction::CoreFunction() : type  (Type::POLY2            ),
                                fPtr  (&CoreFunction::  fPOLY2),
                                dfPtr (&CoreFunction:: dfPOLY2),
@@ -55,12 +57,12 @@ void CoreFunction::setType(Type const type)
          dfPtr = &CoreFunction:: dfPOLY4;
         fdfPtr = &CoreFunction::fdfPOLY4;
     }
-    //else if (type == Type::POLYA)
-    //{
-    //      fPtr = &CoreFunction::  fPOLYA;
-    //     dfPtr = &CoreFunction:: dfPOLYA;
-    //    fdfPtr = &CoreFunction::fdfPOLYA;
-    //}
+    else if (type == Type::EXP)
+    {
+          fPtr = &CoreFunction::  fEXP;
+         dfPtr = &CoreFunction:: dfEXP;
+        fdfPtr = &CoreFunction::fdfEXP;
+    }
     else
     {
         throw invalid_argument("ERROR: Unknown core function.\n");

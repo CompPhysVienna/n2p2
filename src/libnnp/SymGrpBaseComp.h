@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SYMGRPBASECUTOFF_H
-#define SYMGRPBASECUTOFF_H
+#ifndef SYMGRPBASECOMP_H
+#define SYMGRPBASECOMP_H
 
 #include "SymGrp.h"
 #include "CutoffFunction.h"
@@ -26,31 +26,41 @@
 namespace nnp
 {
 
-class SymGrpBaseCutoff : public SymGrp
+class SymGrpBaseComp : public SymGrp
 {
 public:
-    /// Get private #rc member variable.
-    double getRc() const;
+    /// Getter for #rmin.
+    double getRmin() const;
+    /// Getter for #rmax.
+    double getRmax() const;
 
 protected:
-    /// Cutoff radius @f$r_c@f$ (common feature).
-    double                     rc;
-    /// Cutoff function parameter @f$\alpha@f$ (common feature).
-    double                     cutoffAlpha;
-    /// Subtype string (specifies cutoff type) (common feature).
-    std::string                subtype;
-    /// Cutoff function used by this symmetry function group.
-    CutoffFunction             fc;
-    /// Cutoff type used by this symmetry function group (common feature).
-    CutoffFunction::CutoffType cutoffType;
+    /// Minimum radius within group.
+    double rmin;
+    /// Maximum radius within group.
+    double rmax;
 
     /** Constructor, sets type.
      *
      * @param[in] type Type of symmetry functions grouped.
      * @param[in] elementMap Element Map used.
      */
-    SymGrpBaseCutoff(std::size_t type, ElementMap const& elementMap);
+    SymGrpBaseComp(std::size_t type, ElementMap const& elementMap);
 };
+
+//////////////////////////////////
+// Inlined function definitions //
+//////////////////////////////////
+
+inline double SymGrpBaseComp::getRmin() const
+{
+    return rmin;
+}
+
+inline double SymGrpBaseComp::getRmax() const
+{
+    return rmax;
+}
 
 }
 

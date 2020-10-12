@@ -110,8 +110,6 @@ protected:
     std::size_t                            index;
     /// Element index of center atom (common feature).
     std::size_t                            ec;
-    /// Cutoff radius @f$r_c@f$ (common feature).
-    double                                 rc;
     /// Data set normalization length conversion factor.
     double                                 convLength;
     /// Vector containing indices of all member symmetry functions.

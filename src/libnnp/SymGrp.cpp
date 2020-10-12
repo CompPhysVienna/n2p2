@@ -25,12 +25,11 @@ SymGrp::PrintFormat const SymGrp::printFormat = initializePrintFormat();
 SymGrp::PrintOrder const SymGrp::printOrder = initializePrintOrder();
 
 SymGrp::SymGrp(size_t type, ElementMap const& elementMap) :
-    type       (type                   ),
-    elementMap (elementMap             ),
-    index      (0                      ),
-    ec         (0                      ),
-    rc         (0.0                    ),
-    convLength (1.0                    )
+    type       (type      ),
+    elementMap (elementMap),
+    index      (0         ),
+    ec         (0         ),
+    convLength (1.0       )
 {
     // Add standard common parameter IDs to set.
     parametersCommon.insert("index");

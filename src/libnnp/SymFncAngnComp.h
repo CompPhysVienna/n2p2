@@ -17,7 +17,7 @@
 #ifndef SYMFNCANGNCOMP_H
 #define SYMFNCANGNCOMP_H
 
-#include "SymFnc.h"
+#include "SymFncBaseComp.h"
 #include "CompactFunction.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -28,7 +28,6 @@ namespace nnp
 
 struct Atom;
 class ElementMap;
-class SymFncStatistics;
 
 /** Angular symmetry function with polynomials (type 29)
  *
@@ -51,10 +50,10 @@ class SymFncStatistics;
  * - `<right> ...............` right angle boundary 
  * - `<rcutoff> .............` upper radial boundary
  */
-class SymFncAngnComp : public SymFnc
+class SymFncAngnComp : public SymFncBaseComp
 {
 public:
-    /** Constructor, sets type = 99
+    /** Constructor, sets type = 21
     */
     SymFncAngnComp(ElementMap const& elementMap);
     /** Overload == operator.
@@ -124,10 +123,7 @@ public:
     /** Get private #angleRight member variable.
      */
     double       getAngleRight() const;
-    /** Get private #rl member variable.
-     */
-    double       getRl() const;
-    /** Get private #rs member variable.
+    /** Calculate (partial) symmetry function value for one given distance.
      *
      * @param[in] distance Distance between two atoms.
      * @return @f$\left(e^{-\eta r^2} f_c(r)\right)^2@f$
@@ -152,15 +148,11 @@ private:
     std::size_t     e1;
     /// Element index of neighbor atom 2.
     std::size_t     e2;
-    /// Lower boundary @f$r_l@f$ of radial component.
-    double          rl;
     /// Left angle boundary.
     double          angleLeft;
     /// Right angle boundary.
     double          angleRight;
-    /// Compact function member; radial.
-    CompactFunction cr;
-    /// Compact function member; angular.
+    /// Compact function member for angular part.
     CompactFunction ca;
 };
 
@@ -206,11 +198,6 @@ inline double SymFncAngnComp::getAngleLeft() const
 inline double SymFncAngnComp::getAngleRight() const
 {
     return angleRight;
-}
-
-inline double SymFncAngnComp::getRl() const
-{
-    return rl;
 }
 
 }

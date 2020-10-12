@@ -171,13 +171,9 @@ private:
     double  dfTANH (double r) const;
     void   fdfTANH (double r, double& fc, double& dfc) const;
 
-    double   fPOLYN(double r) const;
-    double  dfPOLYN(double r) const;
-    void   fdfPOLYN(double r, double& fc, double& dfc) const;
-
-    double   fEXP  (double r) const;
-    double  dfEXP  (double r) const;
-    void   fdfEXP  (double r, double& fc, double& dfc) const;
+    double   fCORE (double r) const;
+    double  dfCORE (double r) const;
+    void   fdfCORE (double r, double& fc, double& dfc) const;
 };
 
 //////////////////////////////////

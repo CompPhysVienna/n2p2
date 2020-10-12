@@ -26,9 +26,9 @@
 namespace nnp
 {
 
-/** Symmetry function base class based for polynomial SFs.
+/** Symmetry function base class for SFs with compact support.
  *
- * Actual polynomial symmetry functions derive from this class.
+ * Actual compact symmetry functions derive from this class.
  */
 class SymFncBaseComp : public SymFnc
 {
@@ -54,9 +54,9 @@ public:
 protected:
     /// If asymmetric version of polynomials should be used.
     bool            asymmetric;
-    /// Lower bound of polynomial, @f$r_{l}@f$.
+    /// Lower bound of compact function, @f$r_{l}@f$.
     double          rl;
-    /// Subtype string (specifies polynom type).
+    /// Subtype string (specifies e.g. polynom type).
     std::string     subtype;
     /// Compact function for radial part.
     CompactFunction cr;

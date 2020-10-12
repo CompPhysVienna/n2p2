@@ -14,21 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymGrpBaseCutoff.h"
+#include "SymGrpBaseComp.h"
 #include "utility.h"
 
 using namespace std;
 using namespace nnp;
 
-SymGrpBaseCutoff::SymGrpBaseCutoff(size_t type, ElementMap const& elementMap) :
+SymGrpBaseComp::SymGrpBaseComp(size_t type, ElementMap const& elementMap) :
     SymGrp(type, elementMap),
-    rc         (0.0                    ),
-    cutoffAlpha(0.0                    ),
-    subtype    ("ct0"                  ),
-    cutoffType (CutoffFunction::CT_HARD)
+    rmin(0.0),
+    rmax(0.0)
 {
-    // Add standard common parameter IDs to set.
-    parametersCommon.insert("subtype");
+    parametersCommon.insert("rs/rl");
     parametersCommon.insert("rc");
-    parametersCommon.insert("alpha");
+
+    parametersMember.insert("subtype");
+    parametersMember.insert("rs/rl");
+    parametersMember.insert("rc");
+    parametersMember.insert("mindex");
+    parametersMember.insert("sfindex");
 }

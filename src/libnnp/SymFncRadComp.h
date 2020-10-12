@@ -18,7 +18,6 @@
 #define SYMFNCRADCOMP_H
 
 #include "SymFncBaseComp.h"
-#include "CompactFunction.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -108,9 +107,6 @@ public:
     /** Get private #e1 member variable.
      */
     std::size_t  getE1() const;
-    /** Get private #rl member variable.
-     */
-    double       getRl() const;
     /** Calculate (partial) symmetry function value for one given distance.
      *
      * @param[in] distance Distance between two atoms.

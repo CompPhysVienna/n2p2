@@ -17,7 +17,7 @@
 #ifndef SYMGRPRADCOMP_H
 #define SYMGRPRADCOMP_H
 
-#include "SymGrp.h"
+#include "SymGrpBaseComp.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -43,10 +43,10 @@ class SymFncRadComp;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpRadComp : public SymGrp
+class SymGrpRadComp : public SymGrpBaseComp
 {
 public:
-    /** Constructor, sets type = 2
+    /** Constructor, sets type = 20
      */
     SymGrpRadComp(ElementMap const& elementMap);
     /** Overload == operator.
@@ -103,8 +103,6 @@ private:
     std::size_t                       e1;
     /// Vector of all group member pointers.
     std::vector<SymFncRadComp const*> members;
-    /// Minimum radius within group
-    double                            rl;
 };
 
 //////////////////////////////////

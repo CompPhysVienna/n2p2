@@ -17,8 +17,7 @@
 #ifndef SYMGRPANGWCOMP_H
 #define SYMGRPANGWCOMP_H
 
-#include "CompactFunction.h"
-#include "SymGrp.h"
+#include "SymGrpBaseComp.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -47,10 +46,10 @@ class SymFncAngwComp;
 //TODO  * - @f$r_c@f$
 //TODO  * - @f$\alpha@f$
 //TODO  */
-class SymGrpAngwComp : public SymGrp
+class SymGrpAngwComp : public SymGrpBaseComp
 {
 public:
-    /** Constructor, sets type = 89
+    /** Constructor, sets type = 22
      */
     SymGrpAngwComp(ElementMap const& elementMap);
     /** Overload == operator.
@@ -109,10 +108,6 @@ private:
     std::size_t                        e2;
     /// Vector of all group member pointers.
     std::vector<SymFncAngwComp const*> members;
-    /// Smallest cutoff value within group.
-    double                             rl; 
-    /// Largest cutoff value within group.
-    double                             rc;
 };
 
 //////////////////////////////////

@@ -28,17 +28,16 @@ using namespace std;
 using namespace nnp;
 
 SymFncAngwComp::
-SymFncAngwComp(ElementMap const& elementMap) : SymFnc(89, elementMap),
-    e1           (0    ),
-    e2           (0    ),
-    rl           (0.0  ),
-    angleLeft    (0.0  ),
-    angleRight   (0.0  )
+SymFncAngwComp(ElementMap const& elementMap) :
+    SymFncBaseComp(22, elementMap),
+    e1           (0  ),
+    e2           (0  ),
+    angleLeft    (0.0),
+    angleRight   (0.0)
 {
     minNeighbors = 2;
     parameters.insert("e1");
     parameters.insert("e2");
-    parameters.insert("rl");
     parameters.insert("angleLeft");
     parameters.insert("angleRight");
 }
@@ -48,14 +47,13 @@ bool SymFncAngwComp::operator==(SymFnc const& rhs) const
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
     SymFncAngwComp const& c = dynamic_cast<SymFncAngwComp const&>(rhs);
-    // if (cutoffType  != c.cutoffType ) return false;
-    // if (cutoffAlpha != c.cutoffAlpha) return false;
-    if (rc          != c.rc         ) return false;
-    if (rl          != c.rl         ) return false;
-    if (angleLeft   != c.angleLeft  ) return false;
-    if (angleRight  != c.angleRight ) return false;
-    if (e1          != c.e1         ) return false;
-    if (e2          != c.e2         ) return false;
+    if (subtype     != c.getSubtype()) return false;
+    if (e1          != c.e1          ) return false;
+    if (e2          != c.e2          ) return false;
+    if (rc          != c.rc          ) return false;
+    if (rl          != c.rl          ) return false;
+    if (angleLeft   != c.angleLeft   ) return false;
+    if (angleRight  != c.angleRight  ) return false;
     return true;
 }
 
@@ -66,22 +64,20 @@ bool SymFncAngwComp::operator<(SymFnc const& rhs) const
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
     SymFncAngwComp const& c = dynamic_cast<SymFncAngwComp const&>(rhs);
-    // if      (cutoffType  < c.cutoffType ) return true;
-    // else if (cutoffType  > c.cutoffType ) return false;
-    // if      (cutoffAlpha < c.cutoffAlpha) return true;
-    // else if (cutoffAlpha > c.cutoffAlpha) return false;
-    if      (rc          < c.rc         ) return true;
-    else if (rc          > c.rc         ) return false;
-    if      (rl          < c.rl         ) return true;
-    else if (rl          > c.rl         ) return false;
-    if      (angleLeft   < c.angleLeft  ) return true;
-    else if (angleLeft   > c.angleLeft  ) return false;
-    if      (angleRight  < c.angleRight ) return true;
-    else if (angleRight  > c.angleRight ) return false;
-    if      (e1          < c.e1         ) return true;
-    else if (e1          > c.e1         ) return false;
-    if      (e2          < c.e2         ) return true;
-    else if (e2          > c.e2         ) return false;
+    if      (subtype     < c.getSubtype()) return true;
+    else if (subtype     > c.getSubtype()) return false;
+    if      (e1          < c.e1          ) return true;
+    else if (e1          > c.e1          ) return false;
+    if      (e2          < c.e2          ) return true;
+    else if (e2          > c.e2          ) return false;
+    if      (rc          < c.rc          ) return true;
+    else if (rc          > c.rc          ) return false;
+    if      (rl          < c.rl          ) return true;
+    else if (rl          > c.rl          ) return false;
+    if      (angleLeft   < c.angleLeft   ) return true;
+    else if (angleLeft   > c.angleLeft   ) return false;
+    if      (angleRight  < c.angleRight  ) return true;
+    else if (angleRight  > c.angleRight  ) return false;
     return false;
 }
 
@@ -98,12 +94,10 @@ void SymFncAngwComp::setParameters(string const& parameterString)
     e1         = elementMap[splitLine.at(2)];
     e2         = elementMap[splitLine.at(3)];
     rl         = atof(splitLine.at(4).c_str());
-    angleLeft  = atof(splitLine.at(5).c_str());
-    angleRight = atof(splitLine.at(6).c_str());
-    rc         = atof(splitLine.at(7).c_str());
-
-    // TODO (structure) fc.setCutoffRadius(rc);
-    // TODO (structure) fc.setCutoffParameter(cutoffAlpha);
+    rc         = atof(splitLine.at(5).c_str());
+    angleLeft  = atof(splitLine.at(6).c_str());
+    angleRight = atof(splitLine.at(7).c_str());
+    subtype    = splitLine.at(8);
 
     if (e1 > e2)
     {
@@ -112,20 +106,22 @@ void SymFncAngwComp::setParameters(string const& parameterString)
         e2         = tmp;
     }
 
-    // Radial part
+    // Radial part.
     if (rl > rc)
     {
-        throw runtime_error("ERROR: Lower radial boundary >= upper radial boundary.\n");
+        throw runtime_error("ERROR: Lower radial boundary >= upper "
+                            "radial boundary.\n");
     }
-    else if (rl < 0.0 && (rl + rc) != 0.0)
-    {
-        throw runtime_error("ERROR: Radial function not symmetric w.r.t origin.\n");
-    }
+    //if (rl < 0.0 && abs(rl + rc) > numeric_limits<double>::epsilon())
+    //{
+    //    throw runtime_error("ERROR: Radial function not symmetric "
+    //                        "w.r.t. origin.\n");
+    //}
    
-    cr.setType(CompactFunction::Type::POLY2);
+    setCompactFunction(subtype);
     cr.setLeftRight(rl,rc);
 
-    // Angular part
+    // Angular part.
     if (angleLeft >= angleRight)
     {
         throw runtime_error("ERROR: Left angle boundary right of or equal to "
@@ -136,15 +132,16 @@ void SymFncAngwComp::setParameters(string const& parameterString)
     if ( (angleLeft  <   0.0 && center != 0.0) ||
          (angleRight > 180.0 && center != 180.0) )
     {
-        throw runtime_error("ERROR: Angle boundary out of [0,180] "
-                            "and center of angular function /= 0 or /= 180.\n");
+        throw runtime_error("ERROR: Angle boundary out of [0,180] and "
+                            "center of angular function /= 0 or /= 180.\n");
     }
     if (angleRight - angleLeft > 360.0)
     {
-        throw runtime_error("ERROR: Periodic symmetry function cannot spread over domain > 360 degrees\n");
+        throw runtime_error("ERROR: Periodic symmetry function cannot spread "
+                            "over domain > 360 degrees\n");
     }
 
-    ca.setType(CompactFunction::Type::POLY2);
+    ca.setCoreFunction(cr.getCoreFunctionType());
     ca.setLeftRight(angleLeft * M_PI / 180.0, angleRight * M_PI / 180.0);
 
     return;
@@ -164,15 +161,16 @@ void SymFncAngwComp::changeLengthUnit(double convLength)
 string SymFncAngwComp::getSettingsLine() const
 {
     string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
-                     "%16.8E %16.8E\n",
+                     "%16.8E %16.8E %s\n",
                      elementMap[ec].c_str(),
                      type,
                      elementMap[e1].c_str(),
                      elementMap[e2].c_str(),
                      rl / convLength,
+                     rc / convLength,
                      angleLeft,
                      angleRight,
-                     rc / convLength);
+                     subtype.c_str());
 
     return s;
 }
@@ -301,22 +299,17 @@ void SymFncAngwComp::calculate(Atom& atom, bool const derivatives) const
 
 string SymFncAngwComp::parameterLine() const
 {
-    int const    izero = 0;
-    double const dzero = 0;
     return strpr(getPrintFormat().c_str(),
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
+                 subtype.c_str(),
                  elementMap[e1].c_str(),
                  elementMap[e2].c_str(),
                  rl / convLength,
+                 rc / convLength,
                  angleLeft,
                  angleRight,
-                 rc / convLength,
-                 // TODO
-                 izero,
-                 dzero,
-                 // END TODO
                  lineNumber + 1);
 }
 
@@ -330,8 +323,6 @@ vector<string> SymFncAngwComp::parameterInfo() const
     v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[e1].c_str()));
     s = "e2";
     v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[e2].c_str()));
-    s = "rl";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rl));
     s = "angleLeft";
     v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), angleLeft));
     s = "angleRight";
