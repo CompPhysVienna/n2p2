@@ -70,21 +70,21 @@ public:
     /** Overload == operator.
      */
     virtual bool        operator==(SymFnc const& rhs) const = 0;
-    /** Overload != operator.
-     */
-    virtual bool        operator!=(SymFnc const& rhs) const = 0;
     /** Overload < operator.
      */
     virtual bool        operator<(SymFnc const& rhs) const = 0;
+    /** Overload != operator.
+     */
+    bool                operator!=(SymFnc const& rhs) const;
     /** Overload > operator.
      */
-    virtual bool        operator>(SymFnc const& rhs) const = 0;
+    bool                operator>(SymFnc const& rhs) const;
     /** Overload <= operator.
      */
-    virtual bool        operator<=(SymFnc const& rhs) const = 0;
+    bool                operator<=(SymFnc const& rhs) const;
     /** Overload >= operator.
      */
-    virtual bool        operator>=(SymFnc const& rhs) const = 0;
+    bool                operator>=(SymFnc const& rhs) const;
     /** Set parameters.
      *
      * @param[in] parameterString String containing all parameters for this
@@ -306,55 +306,36 @@ protected:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline std::size_t SymFnc::getType() const
+inline bool SymFnc::operator!=(SymFnc const& rhs) const
 {
-    return type;
+    return !((*this) == rhs);
 }
 
-inline std::size_t SymFnc::getEc() const
+inline bool SymFnc::operator>(SymFnc const& rhs) const
 {
-    return ec;
+    return rhs < (*this);
 }
 
-inline std::size_t SymFnc::getIndex() const
+inline bool SymFnc::operator<=(SymFnc const& rhs) const
 {
-    return index;
+    return !((*this) > rhs);
 }
 
-inline std::size_t SymFnc::getLineNumber() const
+inline bool SymFnc::operator>=(SymFnc const& rhs) const
 {
-    return lineNumber;
+    return !((*this) < rhs);
 }
 
-inline std::size_t SymFnc::getMinNeighbors() const
-{
-    return minNeighbors;
-}
-
-inline double SymFnc::getRc() const
-{
-    return rc;
-}
-
-inline double SymFnc::getGmin() const
-{
-    return Gmin;
-}
-
-inline double SymFnc::getGmax() const
-{
-    return Gmax;
-}
-
-inline double SymFnc::getScalingFactor() const
-{
-    return scalingFactor;
-}
-
-inline double SymFnc::getConvLength() const
-{
-    return convLength;
-}
+inline std::size_t SymFnc::getType() const { return type; }
+inline std::size_t SymFnc::getEc() const { return ec; }
+inline std::size_t SymFnc::getIndex() const { return index; }
+inline std::size_t SymFnc::getLineNumber() const { return lineNumber; }
+inline std::size_t SymFnc::getMinNeighbors() const { return minNeighbors; }
+inline double SymFnc::getRc() const { return rc; }
+inline double SymFnc::getGmin() const { return Gmin; }
+inline double SymFnc::getGmax() const { return Gmax; }
+inline double SymFnc::getScalingFactor() const { return scalingFactor; }
+inline double SymFnc::getConvLength() const { return convLength; }
 
 inline void SymFnc::setIndex(std::size_t index)
 {
@@ -379,7 +360,7 @@ inline std::vector<std::size_t> SymFnc::getIndexPerElement() const
 }
 
 inline void SymFnc::setIndexPerElement(std::size_t elementIndex,
-                                                 std::size_t index)
+                                       std::size_t index)
 {
     indexPerElement.at(elementIndex) = index;
     return;

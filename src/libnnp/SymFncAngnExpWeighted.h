@@ -58,166 +58,111 @@ public:
     SymFncAngnExpWeighted(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymFnc const& rhs) const;
-    /** Overload != operator.
-     */
-    bool         operator!=(SymFnc const& rhs) const;
+    virtual bool        operator==(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymFnc const& rhs) const;
-    /** Overload > operator.
-     */
-    bool         operator>(SymFnc const& rhs) const;
-    /** Overload <= operator.
-     */
-    bool         operator<=(SymFnc const& rhs) const;
-    /** Overload >= operator.
-     */
-    bool         operator>=(SymFnc const& rhs) const;
+    virtual bool        operator<(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing weighted angular symmetry
      *                            function parameters.
      */
-    void         setParameters(std::string const& parameterString);
+    virtual void        setParameters(std::string const& parameterString);
     /** Change length unit.
      *
      * @param[in] convLength Multiplicative length unit conversion factor.
      */
-    void         changeLengthUnit(double convLength);
+    virtual void        changeLengthUnit(double convLength);
     /** Get settings file line from currently set parameters.
      *
      * @return Settings file string ("symfunction_short ...").
      */
-    std::string  getSettingsLine() const;
+    virtual std::string getSettingsLine() const;
     /** Calculate symmetry function for one atom.
      *
      * @param[in,out] atom Atom for which the symmetry function is caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
      */
-    void         calculate(Atom& atom, bool const derivatives) const;
+    virtual void        calculate(Atom& atom, bool const derivatives) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
      */
-    std::string  parameterLine() const;
+    virtual std::string parameterLine() const;
     /** Get description with parameter names and values.
      *
      * @return Vector of parameter description strings.
      */
-    std::vector<
-    std::string> parameterInfo() const;
+    virtual std::vector<
+    std::string>        parameterInfo() const;
     /** Get private #useIntegerPow member variable.
      */
-    bool         getUseIntegerPow() const;
+    bool                getUseIntegerPow() const;
     /** Get private #zetaInt member variable.
      */
-    int          getZetaInt() const;
+    int                 getZetaInt() const;
     /** Get private #eta member variable.
      */
-    double       getEta() const;
+    double              getEta() const;
     /** Get private #rs member variable.
      */
-    double       getRs() const;
+    double              getRs() const;
     /** Get private #lambda member variable.
      */
-    double       getLambda() const;
+    double              getLambda() const;
     /** Get private #zeta member variable.
      */
-    double       getZeta() const;
+    double              getZeta() const;
     /** Calculate (partial) symmetry function value for one given distance.
      *
      * @param[in] distance Distance between two atoms.
      * @return @f$\left(e^{-\eta (r - r_s)^2} f_c(r)\right)^3@f$
      */
-    double       calculateRadialPart(double distance) const;
+    virtual double      calculateRadialPart(double distance) const;
     /** Calculate (partial) symmetry function value for one given angle.
      *
      * @param[in] angle Angle between triplet of atoms (in radians).
      * @return @f$1@f$
      */
-    double       calculateAngularPart(double angle) const;
+    virtual double      calculateAngularPart(double angle) const;
     /** Check whether symmetry function is relevant for given element.
      *
      * @param[in] index Index of given element.
      * @return True if symmetry function is sensitive to given element, false
      *         otherwise.
      */
-    bool         checkRelevantElement(std::size_t index) const;
+    virtual bool        checkRelevantElement(std::size_t index) const;
 
 private:
     /// Whether to use integer version of power function (faster).
-    bool        useIntegerPow;
+    bool   useIntegerPow;
     /// Integer version of @f$\zeta@f$.
-    int         zetaInt;
+    int    zetaInt;
     /// Width @f$\eta@f$ of gaussian.
-    double      eta;
+    double eta;
     /// Shift @f$r_s@f$ of gaussian.
-    double      rs;
+    double rs;
     /// Cosine shift factor.
-    double      lambda;
+    double lambda;
     /// Exponent @f$\zeta@f$ of cosine term.
-    double      zeta;
+    double zeta;
 };
 
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymFncAngnExpWeighted::
-operator!=(SymFnc const& rhs) const
-{
-    return !((*this) == rhs);
-}
-
-inline bool SymFncAngnExpWeighted::
-operator>(SymFnc const& rhs) const
-{
-    return rhs < (*this);
-}
-
-inline bool SymFncAngnExpWeighted::
-operator<=(SymFnc const& rhs) const
-{
-    return !((*this) > rhs);
-}
-
-inline bool SymFncAngnExpWeighted::
-operator>=(SymFnc const& rhs) const
-{
-    return !((*this) < rhs);
-}
-
 inline bool SymFncAngnExpWeighted::getUseIntegerPow() const
 {
     return useIntegerPow;
 }
 
-inline int SymFncAngnExpWeighted::getZetaInt() const
-{
-    return zetaInt;
-}
-
-inline double SymFncAngnExpWeighted::getEta() const
-{
-    return eta;
-}
-
-inline double SymFncAngnExpWeighted::getRs() const
-{
-    return rs;
-}
-
-inline double SymFncAngnExpWeighted::getLambda() const
-{
-    return lambda;
-}
-
-inline double SymFncAngnExpWeighted::getZeta() const
-{
-    return zeta;
-}
+inline int SymFncAngnExpWeighted::getZetaInt() const { return zetaInt; }
+inline double SymFncAngnExpWeighted::getEta() const { return eta; }
+inline double SymFncAngnExpWeighted::getRs() const { return rs; }
+inline double SymFncAngnExpWeighted::getLambda() const { return lambda; }
+inline double SymFncAngnExpWeighted::getZeta() const { return zeta; }
 
 }
 

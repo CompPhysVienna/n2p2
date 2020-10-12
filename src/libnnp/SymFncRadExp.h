@@ -53,84 +53,72 @@ public:
     SymFncRadExp(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool         operator==(SymFnc const& rhs) const;
-    /** Overload != operator.
-     */
-    bool         operator!=(SymFnc const& rhs) const;
+    virtual bool        operator==(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    bool         operator<(SymFnc const& rhs) const;
-    /** Overload > operator.
-     */
-    bool         operator>(SymFnc const& rhs) const;
-    /** Overload <= operator.
-     */
-    bool         operator<=(SymFnc const& rhs) const;
-    /** Overload >= operator.
-     */
-    bool         operator>=(SymFnc const& rhs) const;
+    virtual bool        operator<(SymFnc const& rhs) const;
     /** Set symmetry function parameters.
      *
      * @param[in] parameterString String containing radial symmetry function
      *                            parameters.
      */
-    void         setParameters(std::string const& parameterString);
+    virtual void        setParameters(std::string const& parameterString);
     /** Change length unit.
      *
      * @param[in] convLength Multiplicative length unit conversion factor.
      */
-    void         changeLengthUnit(double convLength);
+    virtual void        changeLengthUnit(double convLength);
     /** Get settings file line from currently set parameters.
      *
      * @return Settings file string ("symfunction_short ...").
      */
-    std::string  getSettingsLine() const;
+    virtual std::string getSettingsLine() const;
     /** Calculate symmetry function for one atom.
      *
      * @param[in,out] atom Atom for which the symmetry function is caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
      */
-    void         calculate(Atom& atom, bool const derivatives) const;
+    virtual void        calculate(Atom& atom, bool const derivatives) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
      */
-    std::string  parameterLine() const;
+    virtual std::string parameterLine() const;
     /** Get description with parameter names and values.
      *
      * @return Vector of parameter description strings.
      */
-    std::vector<
-    std::string> parameterInfo() const;
+    virtual std::vector<
+    std::string>        parameterInfo() const;
     /** Get private #e1 member variable.
      */
-    std::size_t  getE1() const;
+    std::size_t         getE1() const;
     /** Get private #eta member variable.
      */
-    double       getEta() const;
+    double              getEta() const;
     /** Get private #rs member variable.
      */
-    double       getRs() const;
+    double              getRs() const;
     /** Calculate (partial) symmetry function value for one given distance.
      *
      * @param[in] distance Distance between two atoms.
      * @return @f$ e^{-\eta (r - r_s)^2} f_c(r)@f$
      */
-    double       calculateRadialPart(double distance) const;
+    virtual double      calculateRadialPart(double distance) const;
     /** Calculate (partial) symmetry function value for one given angle.
      *
      * @param[in] angle Angle between triplet of atoms (in radians).
      * @return @f$1@f$
      */
-    double       calculateAngularPart(double angle) const;
+    virtual double      calculateAngularPart(double angle) const;
     /** Check whether symmetry function is relevant for given element.
      *
      * @param[in] index Index of given element.
      * @return True if symmetry function is sensitive to given element, false
      *         otherwise.
      */
-    bool         checkRelevantElement(std::size_t index) const;
+    virtual bool        checkRelevantElement(std::size_t index) const;
 
 private:
     /// Element index of neighbor atom.
@@ -145,40 +133,9 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline bool SymFncRadExp::operator!=(SymFnc const& rhs) const
-{
-    return !((*this) == rhs);
-}
-
-inline bool SymFncRadExp::operator>(SymFnc const& rhs) const
-{
-    return rhs < (*this);
-}
-
-inline bool SymFncRadExp::operator<=(SymFnc const& rhs) const
-{
-    return !((*this) > rhs);
-}
-
-inline bool SymFncRadExp::operator>=(SymFnc const& rhs) const
-{
-    return !((*this) < rhs);
-}
-
-inline std::size_t SymFncRadExp::getE1() const
-{
-    return e1;
-}
-
-inline double SymFncRadExp::getEta() const
-{
-    return eta;
-}
-
-inline double SymFncRadExp::getRs() const
-{
-    return rs;
-}
+inline std::size_t SymFncRadExp::getE1() const { return e1; }
+inline double SymFncRadExp::getEta() const { return eta; }
+inline double SymFncRadExp::getRs() const { return rs; }
 
 }
 
