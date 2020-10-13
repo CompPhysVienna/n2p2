@@ -38,21 +38,21 @@ public:
     /** Overload == operator.
      */
     virtual bool operator==(SymGrp const& rhs) const = 0;
-    /** Overload != operator.
-     */
-    virtual bool operator!=(SymGrp const& rhs) const = 0;
     /** Overload < operator.
      */
     virtual bool operator<(SymGrp const& rhs) const = 0;
+    /** Overload != operator.
+     */
+    bool         operator!=(SymGrp const& rhs) const;
     /** Overload > operator.
      */
-    virtual bool operator>(SymGrp const& rhs) const = 0;
+    bool         operator>(SymGrp const& rhs) const;
     /** Overload <= operator.
      */
-    virtual bool operator<=(SymGrp const& rhs) const = 0;
+    bool         operator<=(SymGrp const& rhs) const;
     /** Overload >= operator.
      */
-    virtual bool operator>=(SymGrp const& rhs) const = 0;
+    bool         operator>=(SymGrp const& rhs) const;
     /** Potentially add a member to group.
      *
      * @param[in] symmetryFunction Candidate symmetry function.
@@ -155,26 +155,35 @@ protected:
 // Inlined function definitions //
 //////////////////////////////////
 
+inline bool SymGrp::operator!=(SymGrp const& rhs) const
+{
+    return !((*this) == rhs);
+}
+
+inline bool SymGrp::operator>(SymGrp const& rhs) const
+{
+    return rhs < (*this);
+}
+
+inline bool SymGrp::operator<=(SymGrp const& rhs) const
+{
+    return !((*this) > rhs);
+}
+
+inline bool SymGrp::operator>=(SymGrp const& rhs) const
+{
+    return !((*this) < rhs);
+}
+
 inline void SymGrp::setIndex(size_t index)
 {
     this->index = index;
     return;
 }
 
-inline std::size_t SymGrp::getIndex() const
-{
-    return index;
-}
-
-inline std::size_t SymGrp::getType() const
-{
-    return type;
-}
-
-inline std::size_t SymGrp::getEc() const
-{
-    return ec;
-}
+inline std::size_t SymGrp::getIndex() const { return index; }
+inline std::size_t SymGrp::getType() const { return type; }
+inline std::size_t SymGrp::getEc() const { return ec; }
 
 }
 

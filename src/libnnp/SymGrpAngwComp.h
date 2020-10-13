@@ -54,22 +54,10 @@ public:
     SymGrpAngwComp(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    bool operator==(SymGrp const& rhs) const;
-    /** Overload != operator.
-     */
-    bool operator!=(SymGrp const& rhs) const;
+    virtual bool operator==(SymGrp const& rhs) const;
     /** Overload < operator.
      */
-    bool operator<(SymGrp const& rhs) const;
-    /** Overload > operator.
-     */
-    bool operator>(SymGrp const& rhs) const;
-    /** Overload <= operator.
-     */
-    bool operator<=(SymGrp const& rhs) const;
-    /** Overload >= operator.
-     */
-    bool operator>=(SymGrp const& rhs) const;
+    virtual bool operator<(SymGrp const& rhs) const;
     /** Potentially add a member to group.
      *
      * @param[in] symmetryFunction Candidate symmetry function.
@@ -78,28 +66,28 @@ public:
      * If symmetry function is compatible with common feature list its pointer
      * will be added to #members.
      */
-    bool addMember(SymFnc const* const symmetryFunction);
+    virtual bool addMember(SymFnc const* const symmetryFunction);
     /** Sort member symmetry functions.
      *
      * Also allocate and precalculate additional stuff.
      */
-    void sortMembers();
+    virtual void sortMembers();
     /** Fill #scalingFactors with values from member symmetry functions.
      */
-    void setScalingFactors();
+    virtual void setScalingFactors();
     /** Calculate all symmetry functions of this group for one atom.
      *
      * @param[in,out] atom Atom for which symmetry functions are caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
      */
-    void calculate(Atom& atom, bool const derivatives) const;
+    virtual void calculate(Atom& atom, bool const derivatives) const;
     /** Give symmetry function group parameters on multiple lines.
      *
      * @return Vector of string containing symmetry function parameters lines.
      */
-    std::vector<std::string>
-         parameterLines() const;
+    virtual std::vector<std::string>
+                 parameterLines() const;
 
 private:
     /// Element index of neighbor atom 1 (common feature).
@@ -109,30 +97,6 @@ private:
     /// Vector of all group member pointers.
     std::vector<SymFncAngwComp const*> members;
 };
-
-//////////////////////////////////
-// Inlined function definitions //
-//////////////////////////////////
-
-inline bool SymGrpAngwComp::operator!=(SymGrp const& rhs) const
-{
-    return !((*this) == rhs);
-}
-
-inline bool SymGrpAngwComp::operator>(SymGrp const& rhs) const
-{
-    return rhs < (*this);
-}
-
-inline bool SymGrpAngwComp::operator<=(SymGrp const& rhs) const
-{
-    return !((*this) > rhs);
-}
-
-inline bool SymGrpAngwComp::operator>=(SymGrp const& rhs) const
-{
-    return !((*this) < rhs);
-}
 
 }
 
