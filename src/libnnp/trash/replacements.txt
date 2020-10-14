@@ -1,7 +1,0 @@
-SymFncAngnPoly SymFncAngnComp
-SymFncAngwPoly SymFncAngwComp
-SymFncBasePoly SymFncBaseComp
-SymFncRadPoly SymFncRadComp
-SymGrpAngnPoly SymGrpAngnComp
-SymGrpAngwPoly SymGrpAngwComp
-SymGrpRadPoly SymGrpRadComp

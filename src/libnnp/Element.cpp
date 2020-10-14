@@ -19,23 +19,23 @@
 #include "NeuralNetwork.h"
 #include "SymFnc.h"
 #include "SymFncBaseCutoff.h"
-#include "SymFncRadExp.h"
-#include "SymFncRadComp.h"
-#include "SymFncAngnExp.h"
-#include "SymFncAngwExp.h"
-#include "SymFncAngwComp.h"
-#include "SymFncAngnComp.h"
-#include "SymFncRadExpWeighted.h"
-#include "SymFncAngnExpWeighted.h"
+#include "SymFncExpRad.h"
+#include "SymFncCompRad.h"
+#include "SymFncExpAngn.h"
+#include "SymFncExpAngw.h"
+#include "SymFncCompAngw.h"
+#include "SymFncCompAngn.h"
+#include "SymFncExpRadWeighted.h"
+#include "SymFncExpAngnWeighted.h"
 #include "SymGrp.h"
-#include "SymGrpRadExp.h"
-#include "SymGrpRadComp.h"
-#include "SymGrpAngnExp.h"
-#include "SymGrpAngwExp.h"
-#include "SymGrpAngwComp.h"
-#include "SymGrpAngnComp.h"
-#include "SymGrpRadExpWeighted.h"
-#include "SymGrpAngnExpWeighted.h"
+#include "SymGrpExpRad.h"
+#include "SymGrpCompRad.h"
+#include "SymGrpExpAngn.h"
+#include "SymGrpExpAngw.h"
+#include "SymGrpCompAngw.h"
+#include "SymGrpCompAngn.h"
+#include "SymGrpExpRadWeighted.h"
+#include "SymGrpExpAngnWeighted.h"
 #include "utility.h"
 #include <iostream>  // std::cerr
 #include <cstdlib>   // atoi
@@ -85,35 +85,35 @@ void Element::addSymmetryFunction(string const& parameters,
 
     if (type == 2)
     {
-        symmetryFunctions.push_back(new SymFncRadExp(elementMap));
+        symmetryFunctions.push_back(new SymFncExpRad(elementMap));
     }
     else if (type == 3)
     {
-        symmetryFunctions.push_back(new SymFncAngnExp(elementMap));
+        symmetryFunctions.push_back(new SymFncExpAngn(elementMap));
     }
     else if (type == 9)
     {
-        symmetryFunctions.push_back(new SymFncAngwExp(elementMap));
+        symmetryFunctions.push_back(new SymFncExpAngw(elementMap));
     }
     else if (type == 12)
     {
-        symmetryFunctions.push_back(new SymFncRadExpWeighted(elementMap));
+        symmetryFunctions.push_back(new SymFncExpRadWeighted(elementMap));
     }
     else if (type == 13)
     {
-        symmetryFunctions.push_back(new SymFncAngnExpWeighted(elementMap));
+        symmetryFunctions.push_back(new SymFncExpAngnWeighted(elementMap));
     }
     else if (type == 20)
     {
-        symmetryFunctions.push_back(new SymFncRadComp(elementMap));
+        symmetryFunctions.push_back(new SymFncCompRad(elementMap));
     }
     else if (type == 21)
     {
-        symmetryFunctions.push_back(new SymFncAngnComp(elementMap));
+        symmetryFunctions.push_back(new SymFncCompAngn(elementMap));
     }
     else if (type == 22)
     {
-        symmetryFunctions.push_back(new SymFncAngwComp(elementMap));
+        symmetryFunctions.push_back(new SymFncCompAngw(elementMap));
     }
     else
     {
@@ -198,42 +198,42 @@ void Element::setupSymmetryFunctionGroups()
             if ((*sf)->getType() == 2)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpRadExp(elementMap));
+                    new SymGrpExpRad(elementMap));
             }
             else if ((*sf)->getType() == 3)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngnExp(elementMap));
+                    new SymGrpExpAngn(elementMap));
             }
             else if ((*sf)->getType() == 9)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngwExp(elementMap));
+                    new SymGrpExpAngw(elementMap));
             }
             else if ((*sf)->getType() == 12)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpRadExpWeighted(elementMap));
+                    new SymGrpExpRadWeighted(elementMap));
             }
             else if ((*sf)->getType() == 13)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngnExpWeighted(elementMap));
+                    new SymGrpExpAngnWeighted(elementMap));
             }
             else if ((*sf)->getType() == 20)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpRadComp(elementMap));
+                    new SymGrpCompRad(elementMap));
             }
             else if ((*sf)->getType() == 21)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngnComp(elementMap));
+                    new SymGrpCompAngn(elementMap));
             }
             else if ((*sf)->getType() == 22)
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
-                    new SymGrpAngwComp(elementMap));
+                    new SymGrpCompAngw(elementMap));
             }
             else
             {
