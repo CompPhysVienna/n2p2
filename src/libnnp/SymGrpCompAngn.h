@@ -17,7 +17,8 @@
 #ifndef SYMGRPCOMPANGN_H
 #define SYMGRPCOMPANGN_H
 
-#include "SymGrpBaseComp.h"
+#include "SymGrpBaseCompAng.h"
+#include "SymFncCompAngn.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -28,7 +29,6 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymFnc;
-class SymFncCompAngn;
 
 //TODO /** Angular symmetry function group (type 3)
 //TODO  *
@@ -46,7 +46,7 @@ class SymFncCompAngn;
 //TODO  * - @f$r_c@f$
 //TODO  * - @f$\alpha@f$
 //TODO  */
-class SymGrpCompAngn : public SymGrpBaseComp
+class SymGrpCompAngn : public SymGrpBaseCompAng
 {
 public:
     /** Constructor, sets type = 21
@@ -72,9 +72,6 @@ public:
      * Also allocate and precalculate additional stuff.
      */
     virtual void sortMembers();
-    /** Fill #scalingFactors with values from member symmetry functions.
-     */
-    virtual void setScalingFactors();
     /** Calculate all symmetry functions of this group for one atom.
      *
      * @param[in,out] atom Atom for which symmetry functions are caluclated.
@@ -82,21 +79,29 @@ public:
      *                        calculated and saved.
      */
     virtual void calculate(Atom& atom, bool const derivatives) const;
-    /** Give symmetry function group parameters on multiple lines.
-     *
-     * @return Vector of string containing symmetry function parameters lines.
-     */
-    virtual std::vector<std::string>
-                 parameterLines() const;
 
 private:
-    /// Element index of neighbor atom 1 (common feature).
-    std::size_t                        e1;
-    /// Element index of neighbor atom 2 (common feature).
-    std::size_t                        e2;
+    /** Get symmetry function members.
+     *
+     * @return Vector of pointers casted to base class.
+     */
+    virtual std::vector<SymFncBaseCompAng const*> getMembers() const;
+
     /// Vector of all group member pointers.
     std::vector<SymFncCompAngn const*> members;
 };
+
+inline std::vector<SymFncBaseCompAng const*> SymGrpCompAngn::getMembers() const
+{
+    std::vector<SymFncBaseCompAng const*> cast;
+
+    for (auto p : members)
+    {
+        cast.push_back(dynamic_cast<SymFncBaseCompAng const*>(p));
+    }
+
+    return cast;
+}
 
 }
 

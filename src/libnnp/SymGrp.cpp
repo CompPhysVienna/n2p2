@@ -38,6 +38,8 @@ SymGrp::SymGrp(size_t type, ElementMap const& elementMap) :
 
     // Add standard member parameter IDs to set.
     parametersMember.insert("lineNumber");
+    parametersMember.insert("mindex");
+    parametersMember.insert("sfindex");
 }
 
 SymGrp::PrintFormat const SymGrp::initializePrintFormat()

@@ -17,7 +17,8 @@
 #ifndef SYMGRPEXPANGW_H
 #define SYMGRPEXPANGW_H
 
-#include "SymGrpBaseCutoff.h"
+#include "SymGrpBaseExpAng.h"
+#include "SymFncExpAngw.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -28,7 +29,6 @@ namespace nnp
 struct Atom;
 class ElementMap;
 class SymFnc;
-class SymFncExpAngw;
 
 /** Angular symmetry function group (type 3)
  *
@@ -46,7 +46,7 @@ class SymFncExpAngw;
  * - @f$r_c@f$
  * - @f$\alpha@f$
  */
-class SymGrpExpAngw : public SymGrpBaseCutoff
+class SymGrpExpAngw : public SymGrpBaseExpAng
 {
 public:
     /** Constructor, sets type = 3
@@ -72,9 +72,6 @@ public:
      * Also allocate and precalculate additional stuff.
      */
     virtual void sortMembers();
-    /** Fill #scalingFactors with values from member symmetry functions.
-     */
-    virtual void setScalingFactors();
     /** Calculate all symmetry functions of this group for one atom.
      *
      * @param[in,out] atom Atom for which symmetry functions are caluclated.
@@ -82,41 +79,29 @@ public:
      *                        calculated and saved.
      */
     virtual void calculate(Atom& atom, bool const derivatives) const;
-    /** Give symmetry function group parameters on multiple lines.
-     *
-     * @return Vector of string containing symmetry function parameters lines.
-     */
-    virtual std::vector<std::string>
-                 parameterLines() const;
 
 private:
-    /// Element index of neighbor atom 1 (common feature).
-    std::size_t                       e1;
-    /// Element index of neighbor atom 2 (common feature).
-    std::size_t                       e2;
+    /** Get symmetry function members.
+     *
+     * @return Vector of pointers casted to base class.
+     */
+    virtual std::vector<SymFncBaseExpAng const*> getMembers() const;
+
     /// Vector of all group member pointers.
     std::vector<SymFncExpAngw const*> members;
-    /// Vector indicating whether exponential term needs to be calculated.
-    std::vector<bool>                 calculateExp;
-    /// Vector containing precalculated normalizing factor for each zeta.
-    std::vector<double>               factorNorm;
-    /// Vector containing precalculated normalizing factor for derivatives.
-    std::vector<double>               factorDeriv;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<bool>                 useIntegerPow;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<int>                  zetaInt;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>               eta;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>               zeta;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>               lambda;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>               zetaLambda;
-    /// Vector containing values of all member symmetry functions.
-    std::vector<double>               rs;
 };
+
+inline std::vector<SymFncBaseExpAng const*> SymGrpExpAngw::getMembers() const
+{
+    std::vector<SymFncBaseExpAng const*> cast;
+
+    for (auto p : members)
+    {
+        cast.push_back(dynamic_cast<SymFncBaseExpAng const*>(p));
+    }
+
+    return cast;
+}
 
 }
 

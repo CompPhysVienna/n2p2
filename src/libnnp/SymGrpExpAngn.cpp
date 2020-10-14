@@ -28,20 +28,8 @@ using namespace std;
 using namespace nnp;
 
 SymGrpExpAngn::SymGrpExpAngn(ElementMap const& elementMap) :
-    SymGrpBaseCutoff(3, elementMap),
-    e1(0),
-    e2(0)
+    SymGrpBaseExpAng(3, elementMap)
 {
-    parametersCommon.insert("e1");
-    parametersCommon.insert("e2");
-
-    parametersMember.insert("eta");
-    parametersMember.insert("rs/rl");
-    parametersMember.insert("lambda");
-    parametersMember.insert("zeta");
-    parametersMember.insert("mindex");
-    parametersMember.insert("sfindex");
-    parametersMember.insert("calcexp");
 }
 
 bool SymGrpExpAngn::operator==(SymGrp const& rhs) const
@@ -154,18 +142,6 @@ void SymGrpExpAngn::sortMembers()
         lambda.push_back(members[i]->getLambda());
         zetaLambda.push_back(members[i]->getZeta() * members[i]->getLambda());
         memberIndexPerElement.push_back(members[i]->getIndexPerElement());
-    }
-
-    return;
-}
-
-void SymGrpExpAngn::setScalingFactors()
-{
-    scalingFactors.resize(members.size(), 0.0);
-    for (size_t i = 0; i < members.size(); i++)
-    {
-        scalingFactors.at(i) = members[i]->getScalingFactor();
-        factorNorm.at(i) *= scalingFactors.at(i);
     }
 
     return;
@@ -421,34 +397,4 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
     delete[] result;
 
     return;
-}
-
-vector<string> SymGrpExpAngn::parameterLines() const
-{
-    vector<string> v;
-
-    v.push_back(strpr(getPrintFormatCommon().c_str(),
-                      index + 1,
-                      elementMap[ec].c_str(),
-                      type,
-                      subtype.c_str(),
-                      elementMap[e1].c_str(),
-                      elementMap[e2].c_str(),
-                      rc / convLength,
-                      cutoffAlpha));
-
-    for (size_t i = 0; i < members.size(); ++i)
-    {
-        v.push_back(strpr(getPrintFormatMember().c_str(),
-                          members[i]->getEta() * convLength * convLength,
-                          members[i]->getRs() / convLength,
-                          members[i]->getLambda(),
-                          members[i]->getZeta(),
-                          members[i]->getLineNumber(),
-                          i + 1,
-                          members[i]->getIndex() + 1,
-                          (int)calculateExp[i]));
-    }
-
-    return v;
 }

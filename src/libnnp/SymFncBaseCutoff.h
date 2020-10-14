@@ -79,15 +79,8 @@ protected:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline double SymFncBaseCutoff::getCutoffAlpha() const
-{
-    return cutoffAlpha;
-}
-
-inline std::string SymFncBaseCutoff::getSubtype() const
-{
-    return subtype;
-}
+inline double SymFncBaseCutoff::getCutoffAlpha() const { return cutoffAlpha; }
+inline std::string SymFncBaseCutoff::getSubtype() const { return subtype; } 
 
 inline CutoffFunction::CutoffType SymFncBaseCutoff::getCutoffType() const
 {

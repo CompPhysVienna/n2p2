@@ -17,7 +17,7 @@
 #ifndef SYMFNCEXPANGN_H
 #define SYMFNCEXPANGN_H
 
-#include "SymFncBaseCutoff.h"
+#include "SymFncBaseExpAng.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -51,7 +51,7 @@ class ElementMap;
  * - `<rcutoff> .............` @f$r_c@f$
  * - `<<rshift>> ............` @f$r_s@f$ (optional, default @f$r_s = 0@f$)
  */
-class SymFncExpAngn : public SymFncBaseCutoff
+class SymFncExpAngn : public SymFncBaseExpAng
 {
 public:
     /** Constructor, sets type = 3
@@ -59,119 +59,18 @@ public:
     SymFncExpAngn(ElementMap const& elementMap);
     /** Overload == operator.
      */
-    virtual bool        operator==(SymFnc const& rhs) const;
+    virtual bool operator==(SymFnc const& rhs) const;
     /** Overload < operator.
      */
-    virtual bool        operator<(SymFnc const& rhs) const;
-    /** Set symmetry function parameters.
-     *
-     * @param[in] parameterString String containing angular symmetry function
-     *                            parameters.
-     */
-    virtual void        setParameters(std::string const& parameterString);
-    /** Change length unit.
-     *
-     * @param[in] convLength Multiplicative length unit conversion factor.
-     */
-    virtual void        changeLengthUnit(double convLength);
-    /** Get settings file line from currently set parameters.
-     *
-     * @return Settings file string ("symfunction_short ...").
-     */
-    virtual std::string getSettingsLine() const;
+    virtual bool operator<(SymFnc const& rhs) const;
     /** Calculate symmetry function for one atom.
      *
      * @param[in,out] atom Atom for which the symmetry function is caluclated.
      * @param[in] derivatives If also symmetry function derivatives will be
      *                        calculated and saved.
      */
-    virtual void        calculate(Atom& atom, bool const derivatives) const;
-    /** Give symmetry function parameters in one line.
-     *
-     * @return String containing symmetry function parameter values.
-     */
-    virtual std::string parameterLine() const;
-    /** Get description with parameter names and values.
-     *
-     * @return Vector of parameter description strings.
-     */
-    virtual std::vector<
-    std::string>        parameterInfo() const;
-    /** Get private #useIntegerPow member variable.
-     */
-    bool                getUseIntegerPow() const;
-    /** Get private #e1 member variable.
-     */
-    std::size_t         getE1() const;
-    /** Get private #e2 member variable.
-     */
-    std::size_t         getE2() const;
-    /** Get private #zetaInt member variable.
-     */
-    int                 getZetaInt() const;
-    /** Get private #lambda member variable.
-     */
-    double              getLambda() const;
-    /** Get private #eta member variable.
-     */
-    double              getEta() const;
-    /** Get private #zeta member variable.
-     */
-    double              getZeta() const;
-    /** Get private #rs member variable.
-     */
-    double              getRs() const;
-    /** Calculate (partial) symmetry function value for one given distance.
-     *
-     * @param[in] distance Distance between two atoms.
-     * @return @f$\left(e^{-\eta r^2} f_c(r)\right)^3@f$
-     */
-    virtual double      calculateRadialPart(double distance) const;
-    /** Calculate (partial) symmetry function value for one given angle.
-     *
-     * @param[in] angle Angle between triplet of atoms (in radians).
-     * @return @f$1@f$
-     */
-    virtual double      calculateAngularPart(double angle) const;
-    /** Check whether symmetry function is relevant for given element.
-     *
-     * @param[in] index Index of given element.
-     * @return True if symmetry function is sensitive to given element, false
-     *         otherwise.
-     */
-    virtual bool        checkRelevantElement(std::size_t index) const;
-
-private:
-    /// Whether to use integer version of power function (faster).
-    bool        useIntegerPow;
-    /// Element index of neighbor atom 1.
-    std::size_t e1;
-    /// Element index of neighbor atom 2.
-    std::size_t e2;
-    /// Integer version of @f$\zeta@f$.
-    int         zetaInt;
-    /// Cosine shift factor.
-    double      lambda;
-    /// Width @f$\eta@f$ of gaussian.
-    double      eta;
-    /// Exponent @f$\zeta@f$ of cosine term.
-    double      zeta;
-    /// Shift @f$r_s@f$ of gaussian.
-    double      rs;
+    virtual void calculate(Atom& atom, bool const derivatives) const;
 };
-
-//////////////////////////////////
-// Inlined function definitions //
-//////////////////////////////////
-
-inline bool SymFncExpAngn::getUseIntegerPow() const { return useIntegerPow; }
-inline std::size_t SymFncExpAngn::getE1() const { return e1; }
-inline std::size_t SymFncExpAngn::getE2() const { return e2; }
-inline int SymFncExpAngn::getZetaInt() const { return zetaInt; }
-inline double SymFncExpAngn::getLambda() const { return lambda; }
-inline double SymFncExpAngn::getEta() const { return eta; }
-inline double SymFncExpAngn::getZeta() const { return zeta; }
-inline double SymFncExpAngn::getRs() const { return rs; }
 
 }
 

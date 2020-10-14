@@ -28,15 +28,8 @@ using namespace nnp;
 
 SymGrpCompAngn::
 SymGrpCompAngn(ElementMap const& elementMap) :
-    SymGrpBaseComp(21, elementMap),
-    e1(0),
-    e2(0)
+    SymGrpBaseCompAng(21, elementMap)
 {
-    parametersCommon.insert("e1");
-    parametersCommon.insert("e2");
-
-    parametersMember.insert("angleLeft");
-    parametersMember.insert("angleRight");
 }
 
 bool SymGrpCompAngn::operator==(SymGrp const& rhs) const
@@ -105,17 +98,6 @@ void SymGrpCompAngn::sortMembers()
     {
         memberIndex.push_back(members[i]->getIndex());
         memberIndexPerElement.push_back(members[i]->getIndexPerElement());
-    }
-
-    return;
-}
-
-void SymGrpCompAngn::setScalingFactors()
-{
-    scalingFactors.resize(members.size(), 0.0);
-    for (size_t i = 0; i < members.size(); i++)
-    {
-        scalingFactors.at(i) = members[i]->getScalingFactor();
     }
 
     return;
@@ -331,33 +313,4 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
     delete[] dradij;
 
     return;
-}
-
-vector<string> SymGrpCompAngn::parameterLines() const
-{
-    vector<string> v;
-
-    v.push_back(strpr(getPrintFormatCommon().c_str(),
-                      index + 1,
-                      elementMap[ec].c_str(),
-                      type,
-                      elementMap[e1].c_str(),
-                      elementMap[e2].c_str(),
-                      rmin / convLength,
-                      rmax / convLength));
-
-    for (size_t i = 0; i < members.size(); ++i)
-    {
-        v.push_back(strpr(getPrintFormatMember().c_str(),
-                          members[i]->getSubtype().c_str(),
-                          members[i]->getRl() / convLength,
-                          members[i]->getRc() / convLength,
-                          members[i]->getAngleLeft(),
-                          members[i]->getAngleRight(),
-                          members[i]->getLineNumber(),
-                          i + 1,
-                          members[i]->getIndex() + 1));
-    }
-
-    return v;
 }

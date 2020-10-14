@@ -28,23 +28,8 @@ using namespace std;
 using namespace nnp;
 
 SymFncExpAngn::SymFncExpAngn(ElementMap const& elementMap) :
-    SymFncBaseCutoff(3, elementMap),
-    useIntegerPow(false),
-    e1           (0    ),
-    e2           (0    ),
-    zetaInt      (0    ),
-    lambda       (0.0  ),
-    eta          (0.0  ),
-    zeta         (0.0  ),
-    rs           (0.0  )
+    SymFncBaseExpAng(3, elementMap)
 {
-    minNeighbors = 2;
-    parameters.insert("e1");
-    parameters.insert("e2");
-    parameters.insert("eta");
-    parameters.insert("zeta");
-    parameters.insert("lambda");
-    parameters.insert("rs/rl");
 }
 
 bool SymFncExpAngn::operator==(SymFnc const& rhs) const
@@ -89,81 +74,6 @@ bool SymFncExpAngn::operator<(SymFnc const& rhs) const
     if      (e2          < c.e2         ) return true;
     else if (e2          > c.e2         ) return false;
     return false;
-}
-
-void SymFncExpAngn::setParameters(string const& parameterString)
-{
-    vector<string> splitLine = split(reduce(parameterString));
-
-    if (type != (size_t)atoi(splitLine.at(1).c_str()))
-    {
-        throw runtime_error("ERROR: Incorrect symmetry function type.\n");
-    }
-
-    ec     = elementMap[splitLine.at(0)];
-    e1     = elementMap[splitLine.at(2)];
-    e2     = elementMap[splitLine.at(3)];
-    eta    = atof(splitLine.at(4).c_str());
-    lambda = atof(splitLine.at(5).c_str());
-    zeta   = atof(splitLine.at(6).c_str());
-    rc     = atof(splitLine.at(7).c_str());
-    // Shift parameter is optional.
-    if (splitLine.size() > 8)
-    {
-        rs = atof(splitLine.at(8).c_str());
-    }
-
-    fc.setCutoffRadius(rc);
-    fc.setCutoffParameter(cutoffAlpha);
-
-    if (e1 > e2)
-    {
-        size_t tmp = e1;
-        e1         = e2;
-        e2         = tmp;
-    }
-
-    zetaInt = round(zeta);
-    if (fabs(zeta - zetaInt) <= numeric_limits<double>::min())
-    {
-        useIntegerPow = true;
-    }
-    else
-    {
-        useIntegerPow = false;
-    }
-
-    return;
-}
-
-void SymFncExpAngn::changeLengthUnit(double convLength)
-{
-    this->convLength = convLength;
-    eta /= convLength * convLength;
-    rc *= convLength;
-    rs *= convLength;
-
-    fc.setCutoffRadius(rc);
-    fc.setCutoffParameter(cutoffAlpha);
-
-    return;
-}
-
-string SymFncExpAngn::getSettingsLine() const
-{
-    string s = strpr("symfunction_short %2s %2zu %2s %2s %16.8E %16.8E "
-                     "%16.8E %16.8E %16.8E\n",
-                     elementMap[ec].c_str(),
-                     type,
-                     elementMap[e1].c_str(),
-                     elementMap[e2].c_str(),
-                     eta * convLength * convLength,
-                     lambda,
-                     zeta,
-                     rc / convLength,
-                     rs / convLength);
-
-    return s;
 }
 
 void SymFncExpAngn::calculate(Atom& atom, bool const derivatives) const
@@ -314,64 +224,4 @@ void SymFncExpAngn::calculate(Atom& atom, bool const derivatives) const
     atom.G[index] = scale(result);
 
     return;
-}
-
-string SymFncExpAngn::parameterLine() const
-{
-    return strpr(getPrintFormat().c_str(),
-                 index + 1,
-                 elementMap[ec].c_str(),
-                 type,
-                 subtype.c_str(),
-                 elementMap[e1].c_str(),
-                 elementMap[e2].c_str(),
-                 eta * convLength * convLength,
-                 rs / convLength,
-                 rc / convLength,
-                 lambda,
-                 zeta,
-                 cutoffAlpha,
-                 lineNumber + 1);
-}
-
-vector<string> SymFncExpAngn::parameterInfo() const
-{
-    vector<string> v = SymFncBaseCutoff::parameterInfo();
-    string s;
-    size_t w = sfinfoWidth;
-
-    s = "e1";
-    v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[e1].c_str()));
-    s = "e2";
-    v.push_back(strpr((pad(s, w) + "%s"    ).c_str(), elementMap[e2].c_str()));
-    s = "eta";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(),
-                      eta * convLength * convLength));
-    s = "lambda";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), lambda));
-    s = "zeta";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), zeta));
-    s = "rs";
-    v.push_back(strpr((pad(s, w) + "%14.8E").c_str(), rs / convLength));
-
-    return v;
-}
-
-double SymFncExpAngn::calculateRadialPart(double distance) const
-{
-    double const& r = distance * convLength;
-    double const p = exp(-eta * (r - rs) * (r - rs)) * fc.f(r);
-
-    return p * p * p;
-}
-
-double SymFncExpAngn::calculateAngularPart(double angle) const
-{
-    return 2.0 * pow((1.0 + lambda * cos(angle)) / 2.0, zeta);
-}
-
-bool SymFncExpAngn::checkRelevantElement(size_t index) const
-{
-    if (index == e1 || index == e2) return true;
-    else return false;
 }

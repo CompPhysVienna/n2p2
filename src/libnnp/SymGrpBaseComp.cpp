@@ -31,6 +31,4 @@ SymGrpBaseComp::SymGrpBaseComp(size_t type, ElementMap const& elementMap) :
     parametersMember.insert("subtype");
     parametersMember.insert("rs/rl");
     parametersMember.insert("rc");
-    parametersMember.insert("mindex");
-    parametersMember.insert("sfindex");
 }
