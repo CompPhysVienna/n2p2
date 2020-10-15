@@ -28,26 +28,30 @@ namespace nnp
 struct Atom;
 class ElementMap;
 
-/** Angular symmetry function with polynomials (type 29)
+/** Angular symmetry function with polynomials (type 22)
  *
  * @f[
-   G^{29}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
-              C_{\text{poly}}(\theta_{ijk})
-              \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
-              f_c(r_{ij}) f_c(r_{ik}) 
+   G^{22}_i = \sum_{\substack{j,k\neq i \\ j < k}}
+              C_{\text{rad}}(r_{ij})
+              C_{\text{rad}}(r_{ik})
+              C_{\text{ang}}(\theta_{ijk})
  * @f]
  * Parameter string:
  * ```
- * <element-central> 89 <element-neighbor1> <element-neighbor2> <rlow> <left> <right> <rcutoff>
+ * <element-central> 22 <element-neighbor1> <element-neighbor2> <rlow> <left> <right> <rcutoff>
  * ```
  * where
  * - `<element-central> .....` element symbol of central atom
  * - `<element-neighbor1> ...` element symbol of neighbor atom 1
  * - `<element-neighbor2> ...` element symbol of neighbor atom 2
  * - `<rlow>.................` lower radial boundary
+ * - `<rcutoff> .............` upper radial boundary
  * - `<left> ................` left angle boundary 
  * - `<right> ...............` right angle boundary 
- * - `<rcutoff> .............` upper radial boundary
+ * - `<subtype> .............` compact function specifier 
+ *
+ * See the description of SymFncBaseComp::setCompactFunction() for possible
+ * values of the `<subtype>` argument.
  */
 class SymFncCompAngw : public SymFncBaseCompAng
 {

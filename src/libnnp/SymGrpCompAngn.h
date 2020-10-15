@@ -30,22 +30,20 @@ struct Atom;
 class ElementMap;
 class SymFnc;
 
-//TODO /** Angular symmetry function group (type 3)
-//TODO  *
-//TODO  * @f[
-//TODO    G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
-//TODO            \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-//TODO            \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
-//TODO            f_c(r_{ij}) f_c(r_{ik}) 
-//TODO  * @f]
-//TODO  * Common features:
-//TODO  * - element of central atom
-//TODO  * - element of neighbor atom 1
-//TODO  * - element of neighbor atom 2
-//TODO  * - cutoff type
-//TODO  * - @f$r_c@f$
-//TODO  * - @f$\alpha@f$
-//TODO  */
+/** Angular symmetry function with polynomials (type 21)
+ *
+ * @f[
+   G^{21}_i = \sum_{\substack{j,k\neq i \\ j < k}}
+              C_{\text{rad}}(r_{ij})
+              C_{\text{rad}}(r_{ik})
+              C_{\text{rad}}(r_{jk})
+              C_{\text{ang}}(\theta_{ijk})
+ * @f]
+ * Common features:
+ * - element of central atom
+ * - element of neighbor atom 1
+ * - element of neighbor atom 2
+ */
 class SymGrpCompAngn : public SymGrpBaseCompAng
 {
 public:

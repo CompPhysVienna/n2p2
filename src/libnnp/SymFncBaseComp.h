@@ -26,10 +26,7 @@
 namespace nnp
 {
 
-/** Symmetry function base class for SFs with compact support.
- *
- * Actual compact symmetry functions derive from this class.
- */
+/// Symmetry function base class for SFs with compact support.
 class SymFncBaseComp : public SymFnc
 {
 public:
@@ -42,6 +39,16 @@ public:
     /** Set radial compact function.
      *
      * @param[in] subtype Core function specification.
+     *
+     * The subtype argument determines which CoreFunction::Type is used to
+     * generate the CompactFunction used by symmetry functions. The following
+     * strings are accepted (without the apostrophes):
+     * - "e": CoreFunction::Type::EXP
+     * - "pN", where "N" is one of "1,2,3,4", corresponding to the
+     *    polynomial CoreFunction::Type POLYN, respectively. "pN" can
+     *    be followed by the letter "a", which will enable the asymmetric
+     *    version of the compact function, i.e. @f$2x - x^2@f$ is used as
+     *    argument. Examples: "p2", "p3a", "p4".
      */
     void                     setCompactFunction(std::string subtype);
     /** Get private #subtype member variable.

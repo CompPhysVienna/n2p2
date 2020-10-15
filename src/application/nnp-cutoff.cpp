@@ -25,7 +25,7 @@ using namespace std;
 using namespace nnp;
 
 CutoffFunction fc;
-Log log;
+Log nnplog;
 ofstream logFile;
 Stopwatch swf;
 Stopwatch swdf;
@@ -48,7 +48,7 @@ void runTest(bool write)
         __asm__ __volatile__("");
     }
     tlf = swf.stop();
-    if (write) log << strpr(" %10.2E %6.1f       ", tlf, tlf / tlf);
+    if (write) nnplog << strpr(" %10.2E %6.1f       ", tlf, tlf / tlf);
 
     swdf.reset();
     swdf.start();
@@ -57,7 +57,7 @@ void runTest(bool write)
         __asm__ __volatile__("");
     }
     tldf = swdf.stop();
-    if (write) log << strpr(" %10.2E %6.1f       ", tldf, tldf / tldf);
+    if (write) nnplog << strpr(" %10.2E %6.1f       ", tldf, tldf / tldf);
 
     swfdf.reset();
     swfdf.start();
@@ -66,7 +66,7 @@ void runTest(bool write)
         __asm__ __volatile__("");
     }
     tlfdf = swfdf.stop();
-    if (write) log << strpr(" %10.2E %6.1f        %10.2E %9.1f\n",
+    if (write) nnplog << strpr(" %10.2E %6.1f        %10.2E %9.1f\n",
                             tlfdf,
                             tlfdf / tlfdf,
                             tlfdf - (tlf + tldf),
@@ -85,7 +85,7 @@ void runTest(CutoffFunction::CutoffType cutoffType)
     }
     double tf = swf.stop();
     if (cutoffType == CutoffFunction::CT_HARD) tbf = tf;
-    log << strpr(" %10.2E %6.1f %6.1f", tf, tf / tlf, tf / tbf);
+    nnplog << strpr(" %10.2E %6.1f %6.1f", tf, tf / tlf, tf / tbf);
 
     swdf.reset();
     swdf.start();
@@ -95,7 +95,7 @@ void runTest(CutoffFunction::CutoffType cutoffType)
     }
     double tdf = swdf.stop();
     if (cutoffType == CutoffFunction::CT_HARD) tbdf = tdf;
-    log << strpr(" %10.2E %6.1f %6.1f", tdf, tdf / tldf, tdf / tbdf);
+    nnplog << strpr(" %10.2E %6.1f %6.1f", tdf, tdf / tldf, tdf / tbdf);
 
     swfdf.reset();
     swfdf.start();
@@ -108,7 +108,7 @@ void runTest(CutoffFunction::CutoffType cutoffType)
     double tfdf = swfdf.stop();
     if (cutoffType == CutoffFunction::CT_HARD) tbfdf = tfdf;
 
-    log << strpr(" %10.2E %6.1f %6.1f %10.2E %9.1f\n",
+    nnplog << strpr(" %10.2E %6.1f %6.1f %10.2E %9.1f\n",
                  tfdf,
                  tfdf / tlfdf,
                  tfdf / tbfdf,
@@ -119,60 +119,60 @@ void runTest(CutoffFunction::CutoffType cutoffType)
 int main()
 {
     logFile.open("nnp-cutoff.log");
-    log.registerStreamPointer(&logFile);
+    nnplog.registerStreamPointer(&logFile);
 
-    log << "-------------------------------------------------------------------------------------------------------------\n";
-    log << "Speed test tool for cutoff functions:\n";
-    log << "-------------------------------------------------------------------------------------------------------------\n";
-    log << "Column f     : Time for calling f   (no derivatives  ).\n";
-    log << "Column df    : Time for calling df  (only derivatives).\n";
-    log << "Column fdf   : Time for calling fdf (f and df at once).\n";
-    log << "Column compL : Time compared to LOOP ONLY.\n";
-    log << "Column compH : Time compared to CT_HARD.\n";
-    log << "Column diff  : Time difference between calling f + df (separately) and fdf.\n";
-    log << "Column ratio : Ratio time(fdf) / (time(f) + time(df)) in %.\n";
-    log << "-------------------------------------------------------------------------------------------------------------\n";
-    log << "CutoffType :       f [s]  compL  compH     df [s]  compL  compH     fdf[s]  compL  compH   diff [s] ratio [%]\n";
-    log << "-------------------------------------------------------------------------------------------------------------\n";
+    nnplog << "-------------------------------------------------------------------------------------------------------------\n";
+    nnplog << "Speed test tool for cutoff functions:\n";
+    nnplog << "-------------------------------------------------------------------------------------------------------------\n";
+    nnplog << "Column f     : Time for calling f   (no derivatives  ).\n";
+    nnplog << "Column df    : Time for calling df  (only derivatives).\n";
+    nnplog << "Column fdf   : Time for calling fdf (f and df at once).\n";
+    nnplog << "Column compL : Time compared to LOOP ONLY.\n";
+    nnplog << "Column compH : Time compared to CT_HARD.\n";
+    nnplog << "Column diff  : Time difference between calling f + df (separately) and fdf.\n";
+    nnplog << "Column ratio : Ratio time(fdf) / (time(f) + time(df)) in %.\n";
+    nnplog << "-------------------------------------------------------------------------------------------------------------\n";
+    nnplog << "CutoffType :       f [s]  compL  compH     df [s]  compL  compH     fdf[s]  compL  compH   diff [s] ratio [%]\n";
+    nnplog << "-------------------------------------------------------------------------------------------------------------\n";
 
     // Initialize...
     runTest(false);
 
-    log << "LOOP ONLY  : ";
+    nnplog << "LOOP ONLY  : ";
     runTest(true);
 
     fc.setCutoffRadius(1.0);
 
-    log << "CT_HARD    : ";
+    nnplog << "CT_HARD    : ";
     runTest(CutoffFunction::CT_HARD);
 
-    log << "CT_COS     : ";
+    nnplog << "CT_COS     : ";
     fc.setCutoffParameter(0.0);
     runTest(CutoffFunction::CT_COS);
 
-    log << "CT_TANHU   : ";
+    nnplog << "CT_TANHU   : ";
     runTest(CutoffFunction::CT_TANHU);
 
-    log << "CT_TANH    : ";
+    nnplog << "CT_TANH    : ";
     runTest(CutoffFunction::CT_TANH);
 
-    log << "CT_EXP     : ";
+    nnplog << "CT_EXP     : ";
     fc.setCutoffParameter(0.0);
     runTest(CutoffFunction::CT_EXP);
 
-    log << "CT_POLY1   : ";
+    nnplog << "CT_POLY1   : ";
     fc.setCutoffParameter(0.0);
     runTest(CutoffFunction::CT_POLY1);
 
-    log << "CT_POLY2   : ";
+    nnplog << "CT_POLY2   : ";
     fc.setCutoffParameter(0.0);
     runTest(CutoffFunction::CT_POLY2);
 
-    log << "CT_POLY3   : ";
+    nnplog << "CT_POLY3   : ";
     fc.setCutoffParameter(0.0);
     runTest(CutoffFunction::CT_POLY3);
 
-    log << "CT_POLY4   : ";
+    nnplog << "CT_POLY4   : ";
     fc.setCutoffParameter(0.0);
     runTest(CutoffFunction::CT_POLY4);
 

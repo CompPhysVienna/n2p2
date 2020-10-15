@@ -28,25 +28,30 @@ namespace nnp
 struct Atom;
 class ElementMap;
 
-/** Radial symmetry function (type 28)
+/** Radial symmetry function (type 20)
  *
  * @f[
- * G^2_i = \text{Polynomial goes here}
+   G^{20}_i = \sum_{\substack{j \neq i}}
+              C_{\text{rad}}(r_{ij})
  * @f]
  * Parameter string:
  * ```
- * <element-central> 28 <element-neighbor> <rl> <rc>
+ * <element-central> 20 <element-neighbor> <rl> <rc> <subtype>
  * ```
  * where
  * - `<element-central> ....` element symbol of central atom
  * - `<element-neighbor> ...` element symbol of neighbor atom
- * - `<rl>..................` @f$r_{l}@f$
- * - `<rc>..................` @f$r_{c}@f$
+ * - `<rl> .................` @f$r_{l}@f$
+ * - `<rc> .................` @f$r_{c}@f$
+ * - `<subtype> ............` compact function specifier
+ *
+ * See the description of SymFncBaseComp::setCompactFunction() for possible
+ * values of the `<subtype>` argument.
  */
 class SymFncCompRad : public SymFncBaseComp
 {
 public:
-    /** Constructor, sets type = 2
+    /** Constructor, sets type = 20
      */
     SymFncCompRad(ElementMap const& elementMap);
     /** Overload == operator.

@@ -25,11 +25,7 @@
 namespace nnp
 {
 
-/** Symmetry function class based on cutoff functions.
- *
- * Actual symmetry functions which make use of a dedicated cutoff function
- * derive from this class.
- */
+/// Intermediate class for angular SFs based on cutoffs and exponentials.
 class SymFncBaseExpAng : public SymFncBaseCutoff
 {
 public:

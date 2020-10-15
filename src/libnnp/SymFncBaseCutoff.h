@@ -26,11 +26,7 @@
 namespace nnp
 {
 
-/** Symmetry function class based on cutoff functions.
- *
- * Actual symmetry functions which make use of a dedicated cutoff function
- * derive from this class.
- */
+/// Intermediate class for SFs based on cutoff functions.
 class SymFncBaseCutoff : public SymFnc
 {
 public:

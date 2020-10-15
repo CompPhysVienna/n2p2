@@ -30,18 +30,15 @@ class ElementMap;
 class SymFnc;
 class SymFncCompRad;
 
-/** Radial symmetry function group (type 2)
+/** Radial symmetry function (type 20)
  *
  * @f[
- * G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
- *         f_c(r_{ij}) 
+   G^{20}_i = \sum_{\substack{j \neq i}}
+              C_{\text{rad}}(r_{ij})
  * @f]
  * Common features:
  * - element of central atom
  * - element of neighbor atom
- * - cutoff type
- * - @f$r_c@f$
- * - @f$\alpha@f$
  */
 class SymGrpCompRad : public SymGrpBaseComp
 {
