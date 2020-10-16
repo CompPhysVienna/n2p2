@@ -45,6 +45,7 @@ APP_CORE=nnp-convert \
          nnp-cutoff \
          nnp-dist \
          nnp-predict \
+         nnp-bench \
          nnp-prune \
          nnp-select \
          nnp-symfunc

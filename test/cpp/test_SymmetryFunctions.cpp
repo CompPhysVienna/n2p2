@@ -9,15 +9,15 @@
 #include "ElementMap.h"
 #include "Structure.h"
 #include "SymFnc.h"
-#include "SymFncCutoffBased.h"
-#include "SymFncRadExp.h"
-#include "SymFncRadPoly.h"
-#include "SymFncAngnExp.h"
-#include "SymFncAngwExp.h"
-#include "SymFncAngwPoly.h"
-#include "SymFncAngnPoly.h"
-#include "SymFncRadExpWeighted.h"
-#include "SymFncAngnExpWeighted.h"
+#include "SymFncBaseCutoff.h"
+#include "SymFncExpRad.h"
+#include "SymFncCompRad.h"
+#include "SymFncExpAngn.h"
+#include "SymFncExpAngw.h"
+#include "SymFncCompAngw.h"
+#include "SymFncCompAngn.h"
+#include "SymFncExpRadWeighted.h"
+#include "SymFncExpAngnWeighted.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
 #include <string> // std::string
@@ -36,17 +36,17 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
                               string const setupLine)
 {
     SymFnc* sf;
-    if      (type ==  2)  sf = new SymFncRadExp(em);
-    else if (type ==  3)  sf = new SymFncAngnExp(em);
-    else if (type ==  9)  sf = new SymFncAngwExp(em);
-    else if (type == 12)  sf = new SymFncRadExpWeighted(em);
-    else if (type == 13)  sf = new SymFncAngnExpWeighted(em);
-    else if (type == 28)  sf = new SymFncRadPoly(em);
+    if      (type ==  2)  sf = new SymFncExpRad(em);
+    else if (type ==  3)  sf = new SymFncExpAngn(em);
+    else if (type ==  9)  sf = new SymFncExpAngw(em);
+    else if (type == 12)  sf = new SymFncExpRadWeighted(em);
+    else if (type == 13)  sf = new SymFncExpAngnWeighted(em);
+    else if (type == 20)  sf = new SymFncCompRad(em);
     //else if (type == 280) sf = new SymFncRadPolyA(em);
-    else if (type == 89)  sf = new SymFncAngwPoly(em);
-    //else if (type == 890) sf = new SymFncAngwPolyA(em);
-    else if (type == 99)  sf = new SymFncAngnPoly(em);
+    else if (type == 21)  sf = new SymFncCompAngn(em);
     //else if (type == 990) sf = new SymFncAngnPolyA(em);
+    else if (type == 22)  sf = new SymFncCompAngw(em);
+    //else if (type == 890) sf = new SymFncAngwPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -58,7 +58,7 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
         sf->setIndexPerElement(i, 0);
     }
     sf->setParameters(setupLine);
-    SymFncCutoffBased* sfcb = dynamic_cast<SymFncCutoffBased*>(sf);
+    SymFncBaseCutoff* sfcb = dynamic_cast<SymFncBaseCutoff*>(sf);
     if (sfcb != nullptr)
     {
         sfcb->setCutoffFunction(CutoffFunction::CT_TANHU, 0.0);

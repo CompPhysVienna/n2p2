@@ -168,8 +168,9 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                                    + dr32 * dr32;
                         double radjk;
                         double dradjk;
+                        if (rjk >= rmax * rmax || rjk <= rmin * rmin) continue;
                         rjk = sqrt(rjk);
-                        if (rjk >= rmax || rjk <= rmin) continue;
+                        //if (rjk >= rmax || rjk <= rmin) continue;
 
                         // Energy calculation.
                         double const rinvijik = 1.0 / rij / rik;

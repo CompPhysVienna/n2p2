@@ -9,24 +9,24 @@
 #include "ElementMap.h"
 #include "Structure.h"
 #include "SymFnc.h"
-#include "SymFncCutoffBased.h"
-#include "SymFncRadExp.h"
-#include "SymFncRadPoly.h"
-#include "SymFncAngnExp.h"
-#include "SymFncAngwExp.h"
-#include "SymFncAngwPoly.h"
-#include "SymFncAngnPoly.h"
-#include "SymFncRadExpWeighted.h"
-#include "SymFncAngnExpWeighted.h"
+#include "SymFncBaseCutoff.h"
+#include "SymFncExpRad.h"
+#include "SymFncExpAngn.h"
+#include "SymFncExpAngw.h"
+#include "SymFncExpRadWeighted.h"
+#include "SymFncExpAngnWeighted.h"
+#include "SymFncCompRad.h"
+#include "SymFncCompAngw.h"
+#include "SymFncCompAngn.h"
 #include "SymGrp.h"
-#include "SymGrpRadExp.h"
-#include "SymGrpRadPoly.h"
-#include "SymGrpAngnExp.h"
-#include "SymGrpAngwExp.h"
-#include "SymGrpAngwPoly.h"
-#include "SymGrpAngnPoly.h"
-#include "SymGrpRadExpWeighted.h"
-#include "SymGrpAngnExpWeighted.h"
+#include "SymGrpExpRad.h"
+#include "SymGrpExpAngn.h"
+#include "SymGrpExpAngw.h"
+#include "SymGrpExpRadWeighted.h"
+#include "SymGrpExpAngnWeighted.h"
+#include "SymGrpCompRad.h"
+#include "SymGrpCompAngw.h"
+#include "SymGrpCompAngn.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
 #include <string> // std::string
@@ -45,17 +45,17 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
                                         string const setupLine)
 {
     SymFnc* sf;
-    if      (type ==  2)  sf = new SymFncRadExp(em);
-    else if (type ==  3)  sf = new SymFncAngnExp(em);
-    else if (type ==  9)  sf = new SymFncAngwExp(em);
-    else if (type == 12)  sf = new SymFncRadExpWeighted(em);
-    else if (type == 13)  sf = new SymFncAngnExpWeighted(em);
-    else if (type == 28)  sf = new SymFncRadPoly(em);
+    if      (type ==  2)  sf = new SymFncExpRad(em);
+    else if (type ==  3)  sf = new SymFncExpAngn(em);
+    else if (type ==  9)  sf = new SymFncExpAngw(em);
+    else if (type == 12)  sf = new SymFncExpRadWeighted(em);
+    else if (type == 13)  sf = new SymFncExpAngnWeighted(em);
+    else if (type == 20)  sf = new SymFncCompRad(em);
     //else if (type == 280) sf = new SymFncRadPolyA(em);
-    else if (type == 89)  sf = new SymFncAngwPoly(em);
-    //else if (type == 890) sf = new SymFncAngwPolyA(em);
-    else if (type == 99)  sf = new SymFncAngnPoly(em);
+    else if (type == 21)  sf = new SymFncCompAngn(em);
     //else if (type == 990) sf = new SymFncAngnPolyA(em);
+    else if (type == 22)  sf = new SymFncCompAngw(em);
+    //else if (type == 890) sf = new SymFncAngwPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -67,7 +67,7 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
         sf->setIndexPerElement(i, 0);
     }
     sf->setParameters(setupLine);
-    SymFncCutoffBased* sfcb = dynamic_cast<SymFncCutoffBased*>(sf);
+    SymFncBaseCutoff* sfcb = dynamic_cast<SymFncBaseCutoff*>(sf);
     if (sfcb != nullptr)
     {
         sfcb->setCutoffFunction(CutoffFunction::CT_TANHU, 0.0);
@@ -82,17 +82,17 @@ SymGrp* setupSymmetryFunctionGroup(ElementMap em, SymFnc const& sf)
 {
     SymGrp* sfg;
     size_t const type = sf.getType();
-    if      (type ==  2)  sfg = new SymGrpRadExp(em);
-    else if (type ==  3)  sfg = new SymGrpAngnExp(em);
-    else if (type ==  9)  sfg = new SymGrpAngwExp(em);
-    else if (type == 12)  sfg = new SymGrpRadExpWeighted(em);
-    else if (type == 13)  sfg = new SymGrpAngnExpWeighted(em);
-    else if (type == 28)  sfg = new SymGrpRadPoly(em);
+    if      (type ==  2)  sfg = new SymGrpExpRad(em);
+    else if (type ==  3)  sfg = new SymGrpExpAngn(em);
+    else if (type ==  9)  sfg = new SymGrpExpAngw(em);
+    else if (type == 12)  sfg = new SymGrpExpRadWeighted(em);
+    else if (type == 13)  sfg = new SymGrpExpAngnWeighted(em);
+    else if (type == 20)  sfg = new SymGrpCompRad(em);
     //else if (type == 280) sfg = new SymGrpRadPolyA(em);
-    else if (type == 89)  sfg = new SymGrpAngwPoly(em);
-    //else if (type == 890) sfg = new SymGrpAngwPolyA(em);
-    else if (type == 99)  sfg = new SymGrpAngnPoly(em);
+    else if (type == 21)  sfg = new SymGrpCompAngn(em);
     //else if (type == 990) sfg = new SymGrpAngnPolyA(em);
+    else if (type == 22)  sfg = new SymGrpCompAngw(em);
+    //else if (type == 890) sfg = new SymGrpAngwPolyA(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
