@@ -80,7 +80,8 @@ bool SymGrpCompAngn::addMember(SymFnc const* const symmetryFunction)
                             "with different conversion factors.\n");
     }
 
-    rmin = min( rmin, sf->getRl() );
+    if (sf->getRl() <= 0.0) rmin = 0.0;
+    else rmin = min( rmin, sf->getRl() );
     rmax = max( rmax, sf->getRc() );
 
     members.push_back(sf);
@@ -120,6 +121,9 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
         radij[l]  = 0.0;
         dradij[l] = 0.0;
     }
+
+    double r2min = rmin * rmin;
+    double r2max = rmax * rmax;
 
     size_t numNeighbors = atom.numNeighbors;
     // Prevent problematic condition in loop test below (j < numNeighbors - 1).
@@ -166,14 +170,11 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                         double rjk = dr30 * dr30
                                    + dr31 * dr31
                                    + dr32 * dr32;
-                        double radjk;
-                        double dradjk;
-                        if (rjk >= rmax * rmax || rjk <= rmin * rmin) continue;
+                        if ((rjk >= r2max) || (rjk <= r2min)) continue;
                         rjk = sqrt(rjk);
-                        //if (rjk >= rmax || rjk <= rmin) continue;
 
                         // Energy calculation.
-                        double const rinvijik = 1.0 / rij / rik;
+                        double const rinvijik = 1.0 / (rij * rik);
                         // SIMPLE EXPRESSIONS:
                         double const costijk = (dr1[0] * dr2[0] +
                                                 dr1[1] * dr2[1] +
@@ -188,32 +189,30 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                         double const rinvij   = rinvijik * rik;
                         double const rinvik   = rinvijik * rij;
                         double const rinvjk   = 1.0 / rjk;
-                        double const phiijik0 = rinvij * (rinvik - rinvij*costijk);
-                        double const phiikij0 = rinvik * (rinvij - rinvik*costijk);
+                        double const phiijik0 = rinvij * (rinvik - rinvij * costijk);
+                        double const phiikij0 = rinvik * (rinvij - rinvik * costijk);
                         double dacostijk;
-                        double chiij;
-                        double chiik;
-                        double chijk;
                         if (derivatives)
                         {
                             dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
                         }
 
-                        double ang    = 0.0;
-                        double dang   = 0.0;
-                        double radik  = 0.0;
-                        double dradik = 0.0;
+                        double ang;
+                        double dang;
+                        double radik;
+                        double dradik;
+                        double radjk;
+                        double dradjk;
 
                         for (size_t l = 0; l < members.size(); ++l)
                         {
                             if (radij[l] == 0.0) continue;
-                            if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
-                            if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
                             if (!members[l]->getCompactRadial(rjk,     radjk, dradjk)) continue;
+                            if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
+                            if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
 
                             double rad = radij[l] * radik * radjk;
-                            double radang = rad * ang;
-                            result[l] += radang;
+                            result[l] += rad * ang;
             
                             // Force calculation.
                             if (!derivatives) continue;
@@ -223,9 +222,9 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                             double const phiikij = phiikij0 * dang;
                             double const psiijik = rinvijik * dang;
 
-                            chiij =  rinvij * dradij[l] *  radik *  radjk;
-                            chiik =  rinvik * radij[l]  * dradik *  radjk;
-                            chijk = -rinvjk * radij[l]  *  radik * dradjk;
+                            double const chiij =  rinvij * dradij[l] *  radik *  radjk;
+                            double const chiik =  rinvik * radij[l]  * dradik *  radjk;
+                            double const chijk = -rinvjk * radij[l]  *  radik * dradjk;
 
                             double p1;
                             double p2;

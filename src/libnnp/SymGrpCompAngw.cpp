@@ -80,7 +80,8 @@ bool SymGrpCompAngw::addMember(SymFnc const* const symmetryFunction)
                             "with different conversion factors.\n");
     }
 
-    rmin = min( rmin, sf->getRl() );
+    if (sf->getRl() <= 0.0) rmin = 0.0;
+    else rmin = min( rmin, sf->getRl() );
     rmax = max( rmax, sf->getRc() );
 
     members.push_back(sf);
