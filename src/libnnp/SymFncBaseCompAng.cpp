@@ -199,3 +199,22 @@ bool SymFncBaseCompAng::checkRelevantElement(size_t index) const
     if (index == e1 || index == e2) return true;
     else return false;
 }
+
+#ifndef NOSFCACHE
+vector<string> SymFncBaseCompAng::getCacheIdentifiers() const
+{
+    vector<string> v;
+    string s("");
+
+    s += subtype;
+    s += " ";
+    s += strpr("rl = %16.8E", rl / convLength);
+    s += " ";
+    s += strpr("rc = %16.8E", rc / convLength);
+
+    v.push_back(strpr("%zu ", e1) + s);
+    if (e1 != e2) v.push_back(strpr("%zu ", e2) + s);
+
+    return v;
+}
+#endif

@@ -342,3 +342,24 @@ bool SymFncExpAngnWeighted::checkRelevantElement(size_t /*index*/) const
 {
     return true;
 }
+
+#ifndef NOSFCACHE
+vector<string> SymFncExpAngnWeighted::getCacheIdentifiers() const
+{
+    vector<string> v;
+    string s("");
+
+    s += subtype;
+    s += " ";
+    s += strpr("alpha = %16.8E", cutoffAlpha);
+    s += " ";
+    s += strpr("rc = %16.8E", rc / convLength);
+
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        v.push_back(strpr("%zu ", i) + s);
+    }
+
+    return v;
+}
+#endif

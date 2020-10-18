@@ -57,14 +57,6 @@ public:
     /** Get private #rl member variable.
      */
     double                   getRl() const;
-#ifndef NOSFCACHE
-    /** Get unique cache identifier.
-     *
-     * @return String identifying the type of cache this symmetry function
-     *         requires.
-     */
-    virtual std::string      getCacheIdentifier() const;
-#endif
 
 protected:
     /// If asymmetric version of polynomials should be used.

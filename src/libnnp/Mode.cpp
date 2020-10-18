@@ -26,6 +26,7 @@
 #include <fstream>   // std::ifstream
 #ifndef NOSFCACHE
 #include <map>       // std::multimap
+#include <cstdlib>   // atoi
 #endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
@@ -693,29 +694,61 @@ void Mode::setupSymmetryFunctionCache()
            "--------------------------------------\n";
     for (size_t i = 0; i < numElements; ++i)
     {
-        multimap<string, size_t> cacheMap;
+        vector<multimap<string, size_t>> cacheMap(numElements);
         Element& e = elements.at(i);
         for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
         {
             SymFnc const& s = e.getSymmetryFunction(j);
-            string identifier = s.getCacheIdentifier();
-            cacheMap.insert(pair<string, size_t>(identifier, s.getIndex()));
+            for (auto identifier : s.getCacheIdentifiers())
+            {
+                size_t ne = atoi(split(identifier)[0].c_str());
+                if (identifier != "")
+                {
+                    cacheMap.at(ne).insert(pair<string, size_t>(identifier,
+                                                                s.getIndex()));
+                }
+            }
         }
         log << strpr("Multiple cache identifiers for element %2s:\n\n",
                      e.getSymbol().c_str());
-        for (auto it = cacheMap.begin(); it != cacheMap.end();)
+        vector<vector<vector<size_t>>> cacheList;
+        for (size_t j = 0; j < numElements; ++j)
         {
-            string key = it->first;
-            size_t count = cacheMap.count(it->first);
-            if (count > 1)
+            cacheList.push_back(vector<vector<size_t>>());
+            for (auto it = cacheMap.at(j).begin(); it != cacheMap.at(j).end();)
             {
-                log << strpr("Count: %3zu, Identifier: \"%s\"\n",
-                             count, key.c_str());
-            }
-            do
-            {
+                string key = it->first;
+                size_t count = cacheMap.at(j).count(it->first);
+                if (count > 1)
+                {
+                    log << strpr("Neighbor %2s, Count: %3zu, "
+                                 "Identifier: \"%s\"\n",
+                                 elementMap[j].c_str(),
+                                 count,
+                                 key.c_str());
+                    cacheList.back().push_back(vector<size_t>());
+                    cacheList.back().back().push_back(it->second);
+                }
                 ++it;
-            } while (it != cacheMap.end() && key == it->first);
+                while (it != cacheMap.at(j).end() && key == it->first)
+                {
+                    cacheList.back().back().push_back(it->second);
+                    ++it;
+                }
+            }
+        }
+        for (size_t j = 0; j < numElements; ++j)
+        {
+            log << strpr("Neighbor %2s:\n", elementMap[j].c_str());
+            for (size_t k = 0; k < cacheList.at(j).size(); ++k)
+            {
+                log << strpr("Cache %zu: SF", k);
+                for (auto si : cacheList.at(j).at(k))
+                {
+                    log << strpr(" %zu", si);
+                }
+                log << "\n";
+            }
         }
         log << "-----------------------------------------"
                "--------------------------------------\n";

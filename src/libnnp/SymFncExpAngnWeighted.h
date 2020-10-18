@@ -133,6 +133,15 @@ public:
      *         otherwise.
      */
     virtual bool        checkRelevantElement(std::size_t index) const;
+#ifndef NOSFCACHE
+    /** Get unique cache identifiers.
+     *
+     * @return Vector of string identifying the type of cache this symmetry
+     *         function requires.
+     */
+    virtual std::vector<
+    std::string>        getCacheIdentifiers() const;
+#endif
 
 private:
     /// Whether to use integer version of power function (faster).

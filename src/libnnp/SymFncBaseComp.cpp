@@ -80,21 +80,6 @@ void SymFncBaseComp::setCompactFunction(string subtype)
     return;
 }
 
-#ifndef NOSFCACHE
-string SymFncBaseComp::getCacheIdentifier() const
-{
-    string s("");
-
-    s += subtype;
-    s += " ";
-    s += strpr("rl = %16.8E", rl / convLength);
-    s += " ";
-    s += strpr("rc = %16.8E", rc / convLength);
-
-    return s;
-}
-#endif
-
 SymFncBaseComp::SymFncBaseComp(size_t type,
                                ElementMap const& elementMap) :
     SymFnc(type, elementMap),

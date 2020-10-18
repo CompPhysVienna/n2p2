@@ -239,12 +239,13 @@ public:
      */
     virtual bool        checkRelevantElement(std::size_t index) const = 0;
 #ifndef NOSFCACHE
-    /** Get unique cache identifier.
+    /** Get unique cache identifiers.
      *
-     * @return String identifying the type of cache this symmetry function
-     *         requires.
+     * @return Vector of string identifying the type of cache this symmetry
+     *         function requires.
      */
-    virtual std::string getCacheIdentifier() const = 0;
+    virtual std::vector<
+    std::string>        getCacheIdentifiers() const = 0;
 #endif
 
 protected:

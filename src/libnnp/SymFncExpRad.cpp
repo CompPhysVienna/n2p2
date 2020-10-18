@@ -226,3 +226,21 @@ bool SymFncExpRad::checkRelevantElement(size_t index) const
     if (index == e1) return true;
     else return false;
 }
+
+#ifndef NOSFCACHE
+vector<string> SymFncExpRad::getCacheIdentifiers() const
+{
+    vector<string> v;
+    string s("");
+
+    s += subtype;
+    s += " ";
+    s += strpr("alpha = %16.8E", cutoffAlpha);
+    s += " ";
+    s += strpr("rc = %16.8E", rc / convLength);
+
+    v.push_back(strpr("%zu ", e1) + s);
+
+    return v;
+}
+#endif
