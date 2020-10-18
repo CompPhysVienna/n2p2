@@ -37,6 +37,7 @@ SymGrpBaseCompAng(size_t type, ElementMap const& elementMap) :
 
     parametersMember.insert("angleLeft");
     parametersMember.insert("angleRight");
+    parametersMember.insert("calcexp");
 }
 
 void SymGrpBaseCompAng::setScalingFactors()
@@ -75,7 +76,8 @@ vector<string> SymGrpBaseCompAng::parameterLines() const
                           members[i]->getAngleRight(),
                           members[i]->getLineNumber(),
                           i + 1,
-                          members[i]->getIndex() + 1));
+                          members[i]->getIndex() + 1,
+                          calculateComp[i]));
     }
 
     return v;

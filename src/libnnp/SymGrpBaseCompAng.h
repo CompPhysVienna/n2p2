@@ -57,6 +57,8 @@ protected:
     std::size_t         e1;
     /// Element index of neighbor atom 2 (common feature).
     std::size_t         e2;
+    /// Vector indicating whether compact function needs to be recalculated.
+    std::vector<bool>   calculateComp;
 };
 
 }

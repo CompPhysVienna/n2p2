@@ -48,6 +48,21 @@ void SymFncBaseCutoff::setCutoffFunction(
     return;
 }
 
+#ifndef NOSFCACHE
+string SymFncBaseCutoff::getCacheIdentifier() const
+{
+    string s("");
+
+    s += subtype;
+    s += " ";
+    s += strpr("alpha = %16.8E", cutoffAlpha);
+    s += " ";
+    s += strpr("rc = %16.8E", rc / convLength);
+
+    return s;
+}
+#endif
+
 SymFncBaseCutoff::SymFncBaseCutoff(size_t type,
                                      ElementMap const& elementMap) :
     SymFnc(type, elementMap),

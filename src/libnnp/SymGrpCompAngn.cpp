@@ -99,6 +99,22 @@ void SymGrpCompAngn::sortMembers()
     {
         memberIndex.push_back(members[i]->getIndex());
         memberIndexPerElement.push_back(members[i]->getIndexPerElement());
+        if (i == 0)
+        {
+            calculateComp.push_back(true);
+        }
+        else
+        {
+            if ( members[i - 1]->getRc() != members[i]->getRc() ||
+                 members[i - 1]->getRl()  != members[i]->getRl() )
+            {
+                calculateComp.push_back(true);
+            }
+            else
+            {
+                calculateComp.push_back(false);
+            }
+        }
     }
 
     return;
@@ -197,6 +213,7 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                             dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
                         }
 
+                        bool skip;
                         double ang;
                         double dang;
                         double radik;
@@ -207,8 +224,14 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                         for (size_t l = 0; l < members.size(); ++l)
                         {
                             if (radij[l] == 0.0) continue;
-                            if (!members[l]->getCompactRadial(rjk,     radjk, dradjk)) continue;
-                            if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
+                            if (calculateComp[l])
+                            {
+                                skip = !members[l]->getCompactRadial(rjk, radjk, dradjk);
+                                if (skip) continue;
+                                skip = !members[l]->getCompactRadial(rik, radik, dradik);
+                                if (skip) continue;
+                            }
+                            if (skip) continue;
                             if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
 
                             double rad = radij[l] * radik * radjk;

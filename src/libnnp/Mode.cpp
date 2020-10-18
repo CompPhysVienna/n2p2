@@ -24,6 +24,9 @@
 #include <algorithm> // std::min, std::max
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
+#ifndef NOSFCACHE
+#include <map>       // std::multimap
+#endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 
@@ -92,6 +95,9 @@ void Mode::setupGeneric()
 #endif
 #ifndef NOSFGROUPS
     setupSymmetryFunctionGroups();
+#endif
+#ifndef NOSFCACHE
+    setupSymmetryFunctionCache();
 #endif
     setupNeuralNetwork();
 
@@ -674,6 +680,53 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
 
     return;
 }
+
+#ifndef NOSFCACHE
+void Mode::setupSymmetryFunctionCache()
+{
+    log << "\n";
+    log << "*** SETUP: SYMMETRY FUNCTION CACHE ******"
+           "**************************************\n";
+    log << "\n";
+
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        multimap<string, size_t> cacheMap;
+        Element& e = elements.at(i);
+        for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
+        {
+            SymFnc const& s = e.getSymmetryFunction(j);
+            string identifier = s.getCacheIdentifier();
+            cacheMap.insert(pair<string, size_t>(identifier, s.getIndex()));
+        }
+        log << strpr("Multiple cache identifiers for element %2s:\n\n",
+                     e.getSymbol().c_str());
+        for (auto it = cacheMap.begin(); it != cacheMap.end();)
+        {
+            string key = it->first;
+            size_t count = cacheMap.count(it->first);
+            if (count > 1)
+            {
+                log << strpr("Count: %3zu, Identifier: \"%s\"\n",
+                             count, key.c_str());
+            }
+            do
+            {
+                ++it;
+            } while (it != cacheMap.end() && key == it->first);
+        }
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+#endif
 
 void Mode::setupSymmetryFunctionStatistics(bool collectStatistics,
                                            bool collectExtrapolationWarnings,

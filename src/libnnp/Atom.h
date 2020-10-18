@@ -52,6 +52,10 @@ struct Atom
         CutoffFunction::CutoffType cutoffType;
         /// Distance vector to neighbor atom.
         Vec3D                      dr;
+#ifndef NOSFCACHE
+        /// Symmetry function cache (e.g. for cutoffs, compact functions).
+        std::vector<double>        cache;
+#endif
         /** Derivatives of symmetry functions with respect to neighbor
          * coordinates.
          *

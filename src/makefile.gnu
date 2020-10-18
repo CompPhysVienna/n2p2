@@ -33,6 +33,9 @@ PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 # Do not use cutoff function cache.
 #PROJECT_OPTIONS+= -DNOCFCACHE
 
+# Do not use symmetry function cache.
+#PROJECT_OPTIONS+= -DNOSFCACHE
+
 # Build with dummy Stopwatch class.
 #PROJECT_OPTIONS+= -DNOTIME
 

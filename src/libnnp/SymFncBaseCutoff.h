@@ -55,6 +55,14 @@ public:
      */
     CutoffFunction::
     CutoffType               getCutoffType() const;
+#ifndef NOSFCACHE
+    /** Get unique cache identifier.
+     *
+     * @return String identifying the type of cache this symmetry function
+     *         requires.
+     */
+    virtual std::string      getCacheIdentifier() const;
+#endif
 
 protected:
     /// Cutoff parameter @f$\alpha@f$.

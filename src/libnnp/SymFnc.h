@@ -238,6 +238,14 @@ public:
      *         otherwise.
      */
     virtual bool        checkRelevantElement(std::size_t index) const = 0;
+#ifndef NOSFCACHE
+    /** Get unique cache identifier.
+     *
+     * @return String identifying the type of cache this symmetry function
+     *         requires.
+     */
+    virtual std::string getCacheIdentifier() const = 0;
+#endif
 
 protected:
     typedef std::map<std::string,
