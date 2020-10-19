@@ -26,7 +26,6 @@
 #include <fstream>   // std::ifstream
 #ifndef NOSFCACHE
 #include <map>       // std::multimap
-#include <cstdlib>   // atoi
 #endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
@@ -711,10 +710,11 @@ void Mode::setupSymmetryFunctionCache()
         }
         log << strpr("Multiple cache identifiers for element %2s:\n\n",
                      e.getSymbol().c_str());
-        vector<vector<vector<size_t>>> cacheList;
+        using SFCacheList = Element::SFCacheList;
+        vector<vector<SFCacheList>> cacheLists;
         for (size_t j = 0; j < numElements; ++j)
         {
-            cacheList.push_back(vector<vector<size_t>>());
+            cacheLists.push_back(vector<SFCacheList>());
             for (auto it = cacheMap.at(j).begin(); it != cacheMap.at(j).end();)
             {
                 string key = it->first;
@@ -726,13 +726,14 @@ void Mode::setupSymmetryFunctionCache()
                                  elementMap[j].c_str(),
                                  count,
                                  key.c_str());
-                    cacheList.back().push_back(vector<size_t>());
-                    cacheList.back().back().push_back(it->second);
+                    cacheLists.back().push_back(SFCacheList());
+                    cacheLists.back().back().first = key;
+                    cacheLists.back().back().second.push_back(it->second);
                 }
                 ++it;
                 while (it != cacheMap.at(j).end() && key == it->first)
                 {
-                    cacheList.back().back().push_back(it->second);
+                    cacheLists.back().back().second.push_back(it->second);
                     ++it;
                 }
             }
@@ -740,16 +741,18 @@ void Mode::setupSymmetryFunctionCache()
         for (size_t j = 0; j < numElements; ++j)
         {
             log << strpr("Neighbor %2s:\n", elementMap[j].c_str());
-            for (size_t k = 0; k < cacheList.at(j).size(); ++k)
+            for (size_t k = 0; k < cacheLists.at(j).size(); ++k)
             {
-                log << strpr("Cache %zu: SF", k);
-                for (auto si : cacheList.at(j).at(k))
+                log << strpr("Cache %zu, Identifier \"%s\", SF",
+                             k, cacheLists.at(j).at(k).first.c_str());
+                for (auto si : cacheLists.at(j).at(k).second)
                 {
                     log << strpr(" %zu", si);
                 }
                 log << "\n";
             }
         }
+        e.setCacheIndices(cacheLists);
         log << "-----------------------------------------"
                "--------------------------------------\n";
     }

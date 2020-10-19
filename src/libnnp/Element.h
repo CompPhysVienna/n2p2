@@ -23,6 +23,7 @@
 #include "SymFncStatistics.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
+#include <utility> // std::pair
 #include <vector>  // std::vector
 
 namespace nnp
@@ -36,6 +37,11 @@ class SymGrp;
 class Element
 {
 public:
+
+#ifndef NOSFCACHE
+    using SFCacheList = std::pair<std::string, std::vector<std::size_t>>;
+#endif
+
     /** Constructor using index.
      */
     Element(std::size_t const index, ElementMap const& elementMap);
@@ -188,6 +194,16 @@ public:
      * @return Symmetry function object.
      */
     SymFnc const&            getSymmetryFunction(std::size_t index) const;
+#ifndef NOSFCACHE
+    /** Set cache indices for all symmetry functions of this element.
+     *
+     * @param[in] cacheLists List of cache identifier strings and corresponding
+     *                       SF indices for each neighbor element.
+     */
+    void                     setCacheIndices(
+                                         std::vector<
+                                         std::vector<SFCacheList>> cacheLists);
+#endif
 
     /// Neural network pointer for this element.
     NeuralNetwork*             neuralNetwork;
@@ -210,9 +226,9 @@ private:
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
     /// Vector of pointers to symmetry functions.
-    std::vector<SymFnc*>        symmetryFunctions;
+    std::vector<SymFnc*>                  symmetryFunctions;
     /// Vector of pointers to symmetry function groups.
-    std::vector<SymGrp*>   symmetryFunctionGroups;
+    std::vector<SymGrp*>                  symmetryFunctionGroups;
 };
 
 //////////////////////////////////

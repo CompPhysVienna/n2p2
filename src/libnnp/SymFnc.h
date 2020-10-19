@@ -246,6 +246,15 @@ public:
      */
     virtual std::vector<
     std::string>        getCacheIdentifiers() const = 0;
+    /** Add one cache index for given neighbor element and check identifier.
+     *
+     * @param[in] element Index of neighbor atom element.
+     * @param[in] cacheIndex Cache index in Atom::Neighbor.
+     * @param[in] cacheIdentifier Cache identifier for checking.
+     */
+    void                addCacheIndex(std::size_t element,
+                                      std::size_t cacheIndex,
+                                      std::string cacheIdentifier);
 #endif
 
 protected:
@@ -288,6 +297,11 @@ protected:
     std::set<std::string>      parameters;
     /// Per-element index for derivative memory in Atom::Neighbor::dGdr arrays.
     std::vector<std::size_t>   indexPerElement;
+#ifndef NOSFCACHE
+    /// Cache indices for each element.
+    std::vector<
+    std::vector<std::size_t>>  cacheIndices;
+#endif
     /// Width of the SFINFO parameter description field (see #parameterInfo()).
     static std::size_t const   sfinfoWidth;
     /// Map of parameter format strings and empty strings.

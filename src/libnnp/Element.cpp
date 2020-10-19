@@ -491,3 +491,23 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
 
     return countExtrapolationWarnings;
 }
+
+#ifndef NOSFCACHE
+void Element::setCacheIndices(vector<vector<SFCacheList>> cacheLists)
+{
+    for (size_t i = 0; i < cacheLists.size(); ++i)
+    {
+        for (size_t j = 0; j < cacheLists.at(i).size(); ++j)
+        {
+            SFCacheList const& list = cacheLists.at(i).at(j);
+            for (size_t k = 0; k < list.second.size(); ++k)
+            {
+                SymFnc*& sf = symmetryFunctions.at(list.second.at(k));
+                sf->addCacheIndex(i, j, list.first);
+            }
+        }
+    }
+
+    return;
+}
+#endif

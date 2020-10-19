@@ -97,6 +97,30 @@ void SymFnc::setScalingType(ScalingType scalingType,
     return;
 }
 
+#ifndef NOSFCACHE
+void SymFnc::addCacheIndex(size_t element,
+                           size_t cacheIndex,
+                           string cacheIdentifier)
+{
+    // Check if provided cache identifier is identical to the originally
+    // supplied one.
+    vector<vector<string>> identifiersPerElement(elementMap.size());
+    for (string id : getCacheIdentifiers())
+    {
+        size_t ne = atoi(split(id)[0].c_str());
+        identifiersPerElement.at(ne).push_back(id);
+    }
+    size_t current = cacheIndices.at(element).size();
+    if (identifiersPerElement.at(element).at(current) != cacheIdentifier)
+    {
+        throw runtime_error("ERROR: Cache identifiers do no match.\n");
+    }
+    cacheIndices.at(element).push_back(cacheIndex);
+
+    return;
+}
+#endif
+
 SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
     type         (type      ),
     elementMap   (elementMap),
@@ -124,6 +148,9 @@ SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
     // Initialize per-element index vector, use max to indicate
     // "uninitialized" state.
     indexPerElement.resize(elementMap.size(), numeric_limits<size_t>::max());
+
+    // Initialize cache indices vector.
+    cacheIndices.resize(elementMap.size(), vector<size_t>());
 }
 
 double SymFnc::scale(double value) const
