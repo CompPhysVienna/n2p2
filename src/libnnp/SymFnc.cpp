@@ -98,6 +98,11 @@ void SymFnc::setScalingType(ScalingType scalingType,
 }
 
 #ifndef NOSFCACHE
+vector<string> SymFnc::getCacheIdentifiers() const
+{
+    return vector<string>();
+}
+
 void SymFnc::addCacheIndex(size_t element,
                            size_t cacheIndex,
                            string cacheIdentifier)
@@ -113,15 +118,25 @@ void SymFnc::addCacheIndex(size_t element,
     size_t current = cacheIndices.at(element).size();
     if (identifiersPerElement.at(element).at(current) != cacheIdentifier)
     {
-        throw runtime_error("ERROR: Cache identifiers do no match.\n");
+        throw runtime_error(strpr("ERROR: Cache identifiers do no match:\n"
+                                  "%s\n"
+                                  "    !=\n"
+                                  "%s\n",
+                                  identifiersPerElement.at(element)
+                                  .at(current).c_str(),
+                                  cacheIdentifier.c_str()));
     }
     cacheIndices.at(element).push_back(cacheIndex);
+    unique = false;
 
     return;
 }
 #endif
 
 SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
+#ifndef NOSFCACHE
+    unique       (true      ),
+#endif
     type         (type      ),
     elementMap   (elementMap),
     index        (0         ),
@@ -149,8 +164,10 @@ SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
     // "uninitialized" state.
     indexPerElement.resize(elementMap.size(), numeric_limits<size_t>::max());
 
+#ifndef NOSFCACHE
     // Initialize cache indices vector.
     cacheIndices.resize(elementMap.size(), vector<size_t>());
+#endif
 }
 
 double SymFnc::scale(double value) const

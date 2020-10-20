@@ -245,7 +245,7 @@ public:
      *         function requires.
      */
     virtual std::vector<
-    std::string>        getCacheIdentifiers() const = 0;
+    std::string>        getCacheIdentifiers() const;
     /** Add one cache index for given neighbor element and check identifier.
      *
      * @param[in] element Index of neighbor atom element.
@@ -255,12 +255,20 @@ public:
     void                addCacheIndex(std::size_t element,
                                       std::size_t cacheIndex,
                                       std::string cacheIdentifier);
+    /** Getter for #cacheIndices.
+     */
+    std::vector<std::vector<
+    std::size_t>>       getCacheIndices() const;
 #endif
 
 protected:
     typedef std::map<std::string,
                      std::pair<std::string, std::string> > PrintFormat;
     typedef std::vector<std::string>                       PrintOrder;
+#ifndef NOSFCACHE
+    /// If this symmetry function is unique (i.e. no cache is ever reused).
+    bool                       unique;
+#endif
     /// Symmetry function type.
     std::size_t                type;
     /// Copy of element map.
@@ -388,6 +396,13 @@ inline void SymFnc::setIndexPerElement(std::size_t elementIndex,
     indexPerElement.at(elementIndex) = index;
     return;
 }
+
+#ifndef NOSFCACHE
+inline std::vector<std::vector<std::size_t>> SymFnc::getCacheIndices() const
+{
+    return cacheIndices;
+}
+#endif
 
 }
 

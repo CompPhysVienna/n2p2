@@ -21,7 +21,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <algorithm> // std::min, std::max
+#include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
 #ifndef NOSFCACHE
@@ -693,7 +693,8 @@ void Mode::setupSymmetryFunctionCache()
            "--------------------------------------\n";
     for (size_t i = 0; i < numElements; ++i)
     {
-        vector<multimap<string, size_t>> cacheMap(numElements);
+        using SFCacheList = Element::SFCacheList;
+        vector<vector<SFCacheList>> cacheLists(numElements);
         Element& e = elements.at(i);
         for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
         {
@@ -701,51 +702,42 @@ void Mode::setupSymmetryFunctionCache()
             for (auto identifier : s.getCacheIdentifiers())
             {
                 size_t ne = atoi(split(identifier)[0].c_str());
-                if (identifier != "")
+                bool unknown = true;
+                for (auto& c : cacheLists.at(ne))
                 {
-                    cacheMap.at(ne).insert(pair<string, size_t>(identifier,
-                                                                s.getIndex()));
+                    if (identifier == c.identifier)
+                    {
+                        c.indices.push_back(s.getIndex());
+                        unknown = false;
+                        break;
+                    }
+                }
+                if (unknown)
+                {
+                    cacheLists.at(ne).push_back(SFCacheList());
+                    cacheLists.at(ne).back().element = ne;
+                    cacheLists.at(ne).back().identifier = identifier;
+                    cacheLists.at(ne).back().indices.push_back(s.getIndex());
                 }
             }
         }
         log << strpr("Multiple cache identifiers for element %2s:\n\n",
                      e.getSymbol().c_str());
-        using SFCacheList = Element::SFCacheList;
-        vector<vector<SFCacheList>> cacheLists;
-        for (size_t j = 0; j < numElements; ++j)
-        {
-            cacheLists.push_back(vector<SFCacheList>());
-            for (auto it = cacheMap.at(j).begin(); it != cacheMap.at(j).end();)
-            {
-                string key = it->first;
-                size_t count = cacheMap.at(j).count(it->first);
-                if (count > 1)
-                {
-                    log << strpr("Neighbor %2s, Count: %3zu, "
-                                 "Identifier: \"%s\"\n",
-                                 elementMap[j].c_str(),
-                                 count,
-                                 key.c_str());
-                    cacheLists.back().push_back(SFCacheList());
-                    cacheLists.back().back().first = key;
-                    cacheLists.back().back().second.push_back(it->second);
-                }
-                ++it;
-                while (it != cacheMap.at(j).end() && key == it->first)
-                {
-                    cacheLists.back().back().second.push_back(it->second);
-                    ++it;
-                }
-            }
-        }
         for (size_t j = 0; j < numElements; ++j)
         {
             log << strpr("Neighbor %2s:\n", elementMap[j].c_str());
-            for (size_t k = 0; k < cacheLists.at(j).size(); ++k)
+            vector<SFCacheList>& c = cacheLists.at(j);
+            c.erase(remove_if(c.begin(),
+                              c.end(),
+                              [](SFCacheList l)
+                              {
+                                  return l.indices.size() <= 1;
+                              }), c.end());
+            for (size_t k = 0; k < c.size(); ++k)
             {
-                log << strpr("Cache %zu, Identifier \"%s\", SF",
-                             k, cacheLists.at(j).at(k).first.c_str());
-                for (auto si : cacheLists.at(j).at(k).second)
+                log << strpr("Cache %zu, Identifier \"%s\", Symmetry functions",
+                             k, c.at(k).identifier.c_str());
+                for (auto si : c.at(k).indices)
                 {
                     log << strpr(" %zu", si);
                 }
@@ -753,6 +745,32 @@ void Mode::setupSymmetryFunctionCache()
             }
         }
         e.setCacheIndices(cacheLists);
+        for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
+        {
+            SymFnc const& sf = e.getSymmetryFunction(j);
+            auto indices = sf.getCacheIndices();
+            size_t count = 0;
+            for (size_t k = 0; k < numElements; ++k)
+            {
+                count += indices.at(k).size();
+            }
+            if (count > 0)
+            {
+                log << strpr("SF %4zu:\n", sf.getIndex());
+            }
+            for (size_t k = 0; k < numElements; ++k)
+            {
+                if (indices.at(k).size() > 0)
+                {
+                    log << strpr("- Neighbor %2s:", elementMap[k].c_str());
+                    for (size_t l = 0; l < indices.at(k).size(); ++l)
+                    {
+                        log << strpr(" %zu", indices.at(k).at(l));
+                    }
+                    log << "\n";
+                }
+            }
+        }
         log << "-----------------------------------------"
                "--------------------------------------\n";
     }
@@ -1018,6 +1036,9 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
+#ifndef NOSFCACHE
+        a->cacheSizePerElement = e->getCacheSizes();
+#endif
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
@@ -1092,6 +1113,9 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
+#ifndef NOSFCACHE
+        a->cacheSizePerElement = e->getCacheSizes();
+#endif
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.

@@ -176,24 +176,33 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
             double const r2ij = rij * rij;
 
             // Calculate cutoff function and derivative.
-#ifdef NOCFCACHE
+//#ifdef NOCFCACHE
+//            double pfcij;
+//            double pdfcij;
+//            fc.fdf(rij, pfcij, pdfcij);
+//#else
+//            // If cutoff radius matches with the one in the neighbor storage
+//            // we can use the previously calculated value.
+//            double& pfcij = nj.fc;
+//            double& pdfcij = nj.dfc;
+//            if (nj.cutoffType != cutoffType ||
+//                nj.rc != rc ||
+//                nj.cutoffAlpha != cutoffAlpha)
+//            {
+//                fc.fdf(rij, pfcij, pdfcij);
+//                nj.rc = rc;
+//                nj.cutoffType = cutoffType;
+//                nj.cutoffAlpha = cutoffAlpha;
+//            }
+//#endif
+#ifdef NOSFCACHE
             double pfcij;
             double pdfcij;
             fc.fdf(rij, pfcij, pdfcij);
 #else
-            // If cutoff radius matches with the one in the neighbor storage
-            // we can use the previously calculated value.
-            double& pfcij = nj.fc;
-            double& pdfcij = nj.dfc;
-            if (nj.cutoffType != cutoffType ||
-                nj.rc != rc ||
-                nj.cutoffAlpha != cutoffAlpha)
-            {
-                fc.fdf(rij, pfcij, pdfcij);
-                nj.rc = rc;
-                nj.cutoffType = cutoffType;
-                nj.cutoffAlpha = cutoffAlpha;
-            }
+            double& pfcij = nj.cache[0];
+            double& pdfcij = nj.cache[1];
+            if (pfcij < 0.0) fc.fdf(rij, pfcij, pdfcij);
 #endif
             // SIMPLE EXPRESSIONS:
             //Vec3D const drij(atom.neighbors[j].dr);
@@ -225,22 +234,31 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
                         if (rjk < rc2)
                         {
                             // Energy calculation.
-#ifdef NOCFCACHE
+//#ifdef NOCFCACHE
+//                            double pfcik;
+//                            double pdfcik;
+//                            fc.fdf(rik, pfcik, pdfcik);
+//#else
+//                            double& pfcik = nk.fc;
+//                            double& pdfcik = nk.dfc;
+//                            if (nk.cutoffType != cutoffType ||
+//                                nk.rc != rc ||
+//                                nk.cutoffAlpha != cutoffAlpha)
+//                            {
+//                                fc.fdf(rik, pfcik, pdfcik);
+//                                nk.rc = rc;
+//                                nk.cutoffType = cutoffType;
+//                                nk.cutoffAlpha = cutoffAlpha;
+//                            }
+//#endif
+#ifdef NOSFCACHE
                             double pfcik;
                             double pdfcik;
                             fc.fdf(rik, pfcik, pdfcik);
 #else
-                            double& pfcik = nk.fc;
-                            double& pdfcik = nk.dfc;
-                            if (nk.cutoffType != cutoffType ||
-                                nk.rc != rc ||
-                                nk.cutoffAlpha != cutoffAlpha)
-                            {
-                                fc.fdf(rik, pfcik, pdfcik);
-                                nk.rc = rc;
-                                nk.cutoffType = cutoffType;
-                                nk.cutoffAlpha = cutoffAlpha;
-                            }
+                            double& pfcik = nk.cache[0];
+                            double& pdfcik = nk.cache[1];
+                            if (pfcik < 0.0) fc.fdf(rik, pfcik, pdfcik);
 #endif
                             rjk = sqrt(rjk);
 

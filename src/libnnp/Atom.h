@@ -131,6 +131,10 @@ struct Atom
     std::vector<std::size_t> numNeighborsPerElement;
     /// Number of neighbor atom symmetry function derivatives per element.
     std::vector<std::size_t> numSymmetryFunctionDerivatives;
+#ifndef NOSFCACHE
+    /// Cache size for each element.
+    std::vector<std::size_t> cacheSizePerElement;
+#endif
     /// Symmetry function values
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.

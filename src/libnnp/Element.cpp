@@ -495,19 +495,31 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
 #ifndef NOSFCACHE
 void Element::setCacheIndices(vector<vector<SFCacheList>> cacheLists)
 {
+    this->cacheLists = cacheLists;
     for (size_t i = 0; i < cacheLists.size(); ++i)
     {
         for (size_t j = 0; j < cacheLists.at(i).size(); ++j)
         {
-            SFCacheList const& list = cacheLists.at(i).at(j);
-            for (size_t k = 0; k < list.second.size(); ++k)
+            SFCacheList const& c = cacheLists.at(i).at(j);
+            for (size_t k = 0; k < c.indices.size(); ++k)
             {
-                SymFnc*& sf = symmetryFunctions.at(list.second.at(k));
-                sf->addCacheIndex(i, j, list.first);
+                SymFnc*& sf = symmetryFunctions.at(c.indices.at(k));
+                sf->addCacheIndex(c.element, j, c.identifier);
             }
         }
     }
 
     return;
+}
+
+vector<size_t> Element::getCacheSizes() const
+{
+    vector<size_t> cacheSizes;
+    for (auto const& c : cacheLists)
+    {
+        cacheSizes.push_back(c.size());
+    }
+
+    return cacheSizes;
 }
 #endif

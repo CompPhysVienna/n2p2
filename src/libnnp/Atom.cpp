@@ -16,6 +16,7 @@
 
 #include "Atom.h"
 #include "utility.h"
+#include <limits>    // std::numeric_limits
 #include <stdexcept> // std::range_error
 
 using namespace std;
@@ -163,6 +164,9 @@ void Atom::allocate(bool all)
     for (vector<Neighbor>::iterator it = neighbors.begin();
          it != neighbors.end(); ++it)
     {
+#ifndef NOSFCACHE
+        it->cache.clear();
+#endif
         it->dGdr.clear();
     }
 
@@ -189,6 +193,10 @@ void Atom::allocate(bool all)
         for (vector<Neighbor>::iterator it = neighbors.begin();
              it != neighbors.end(); ++it)
         {
+#ifndef NOSFCACHE
+            it->cache.resize(cacheSizePerElement.at(it->element),
+                             -numeric_limits<double>::max());
+#endif
 #ifdef IMPROVED_SFD_MEMORY
             it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
 #else
@@ -220,6 +228,10 @@ void Atom::free(bool all)
     for (vector<Neighbor>::iterator it = neighbors.begin();
          it != neighbors.end(); ++it)
     {
+#ifndef NOSFCACHE
+        it->cache.clear();
+        vector<double>(it->cache).swap(it->cache);
+#endif
         it->dGdr.clear();
         vector<Vec3D>(it->dGdr).swap(it->dGdr);
     }
@@ -335,6 +347,16 @@ vector<string> Atom::info() const
     {
         v.push_back(strpr("%29d  : %d\n", i, numSymmetryFunctionDerivatives.at(i)));
     }
+#ifndef NOSFCACHE
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("cacheSizePerElement        [*] : %d\n", cacheSizePerElement.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < cacheSizePerElement.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %d\n", i, cacheSizePerElement.at(i)));
+    }
+#endif
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("G                          [*] : %d\n", G.size()));
@@ -431,6 +453,16 @@ vector<string> Atom::Neighbor::info() const
     v.push_back(strpr("cutoffType                     : %d\n", (int)cutoffType));
     v.push_back(strpr("dr                             : %16.8E %16.8E %16.8E\n", dr[0], dr[1], dr[2]));
     v.push_back(strpr("--------------------------------\n"));
+#ifndef NOSFCACHE
+    v.push_back(strpr("cache                      [*] : %d\n", cache.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < cache.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %16.8E\n", i, cache.at(i)));
+    }
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+#endif
     v.push_back(strpr("dGdr                       [*] : %d\n", dGdr.size()));
     v.push_back(strpr("--------------------------------\n"));
     for (size_t i = 0; i < dGdr.size(); ++i)

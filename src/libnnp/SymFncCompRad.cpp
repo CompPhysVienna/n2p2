@@ -212,13 +212,13 @@ vector<string> SymFncCompRad::getCacheIdentifiers() const
     vector<string> v;
     string s("");
 
-    //s += subtype;
-    //s += " ";
-    //s += strpr("rl = %16.8E", rl / convLength);
-    //s += " ";
-    //s += strpr("rc = %16.8E", rc / convLength);
+    s += subtype;
+    s += " ";
+    s += strpr("rl = %16.8E", rl / convLength);
+    s += " ";
+    s += strpr("rc = %16.8E", rc / convLength);
 
-    //v.push_back(strpr("%zu ", e1) + s);
+    v.push_back(strpr("%zu ", e1) + s);
 
     return v;
 }

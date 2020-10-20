@@ -212,8 +212,10 @@ vector<string> SymFncBaseCompAng::getCacheIdentifiers() const
     s += " ";
     s += strpr("rc = %16.8E", rc / convLength);
 
-    v.push_back(strpr("%zu ", e1) + s);
-    if (e1 != e2) v.push_back(strpr("%zu ", e2) + s);
+    v.push_back(strpr("%zu f ", e1) + s);
+    v.push_back(strpr("%zu df ", e1) + s);
+    if (e1 != e2) v.push_back(strpr("%zu f ", e2) + s);
+    if (e1 != e2) v.push_back(strpr("%zu df ", e2) + s);
 
     return v;
 }

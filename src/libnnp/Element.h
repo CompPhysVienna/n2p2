@@ -39,7 +39,13 @@ class Element
 public:
 
 #ifndef NOSFCACHE
-    using SFCacheList = std::pair<std::string, std::vector<std::size_t>>;
+    /// List of symmetry functions corresponding to one cache identifier.
+    struct SFCacheList
+    {
+        std::size_t              element;
+        std::string              identifier;
+        std::vector<std::size_t> indices;
+    };
 #endif
 
     /** Constructor using index.
@@ -203,6 +209,11 @@ public:
     void                     setCacheIndices(
                                          std::vector<
                                          std::vector<SFCacheList>> cacheLists);
+    /** Get cache sizes for each neighbor atom element.
+     *
+     * @return Vector with cache sizes.
+     */
+    std::vector<std::size_t> getCacheSizes() const;
 #endif
 
     /// Neural network pointer for this element.
@@ -225,6 +236,10 @@ private:
     std::vector<std::size_t>              symmetryFunctionNumTable;
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
+#ifndef NOSFCACHE
+    /// Symmetry function cache lists.
+    std::vector<std::vector<SFCacheList>> cacheLists;
+#endif
     /// Vector of pointers to symmetry functions.
     std::vector<SymFnc*>                  symmetryFunctions;
     /// Vector of pointers to symmetry function groups.

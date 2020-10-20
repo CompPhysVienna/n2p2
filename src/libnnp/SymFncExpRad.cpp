@@ -239,7 +239,8 @@ vector<string> SymFncExpRad::getCacheIdentifiers() const
     s += " ";
     s += strpr("rc = %16.8E", rc / convLength);
 
-    v.push_back(strpr("%zu ", e1) + s);
+    v.push_back(strpr("%zu f ", e1) + s);
+    v.push_back(strpr("%zu df ", e1) + s);
 
     return v;
 }

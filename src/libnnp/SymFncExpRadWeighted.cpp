@@ -233,7 +233,8 @@ vector<string> SymFncExpRadWeighted::getCacheIdentifiers() const
 
     for (size_t i = 0; i < elementMap.size(); ++i)
     {
-        v.push_back(strpr("%zu ", i) + s);
+        v.push_back(strpr("%zu f ", i) + s);
+        v.push_back(strpr("%zu df ", i) + s);
     }
 
     return v;
