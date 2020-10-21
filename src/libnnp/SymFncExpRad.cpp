@@ -124,6 +124,17 @@ string SymFncExpRad::getSettingsLine() const
 void SymFncExpRad::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
+#ifndef NOSFCACHE
+    bool unique = true;
+    size_t c0 = 0;
+    size_t c1 = 0;
+    if (cacheIndices.at(e1).size() > 0)
+    {
+        unique = false;
+        c0 = cacheIndices.at(e1).at(0);
+        c1 = cacheIndices.at(e1).at(1);
+    }
+#endif
 
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
@@ -135,26 +146,21 @@ void SymFncExpRad::calculate(Atom& atom, bool const derivatives) const
             double const pexp = exp(-eta * (rij - rs) * (rij - rs));
 
             // Calculate cutoff function and derivative.
-#ifdef NOCFCACHE
             double pfc;
             double pdfc;
-            fc.fdf(rij, pfc, pdfc);
-#else
-            // If cutoff radius matches with the one in the neighbor storage
-            // we can use the previously calculated value.
-            double& pfc = n.fc;
-            double& pdfc = n.dfc;
-            if (n.cutoffType != cutoffType ||
-                n.rc != rc ||
-                n.cutoffAlpha != cutoffAlpha)
+#ifndef NOSFCACHE
+            if (unique) fc.fdf(rij, pfc, pdfc);
+            else
             {
-                fc.fdf(rij, pfc, pdfc);
-                n.rc = rc;
-                n.cutoffType = cutoffType;
-                n.cutoffAlpha = cutoffAlpha;
+                double& cfc = n.cache[c0];
+                double& cdfc = n.cache[c1];
+                if (cfc < 0) fc.fdf(rij, cfc, cdfc);
+                pfc = cfc;
+                pdfc = cdfc;
             }
+#else
+            fc.fdf(rij, pfc, pdfc);
 #endif
-
             result += pexp * pfc;
             // Force calculation.
             if (!derivatives) continue;

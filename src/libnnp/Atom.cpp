@@ -90,8 +90,6 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
              it != neighbors.end(); ++it)
         {
             it->d *= convLength;
-            it->dfc /= convLength;
-            it->rc *= convLength;
             it->dr *= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
@@ -130,8 +128,6 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
              it != neighbors.end(); ++it)
         {
             it->d /= convLength;
-            it->dfc *= convLength;
-            it->rc /= convLength;
             it->dr /= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
@@ -410,12 +406,7 @@ vector<string> Atom::info() const
 Atom::Neighbor::Neighbor() : index      (0                      ),
                              tag        (0                      ),
                              element    (0                      ),
-                             d          (0.0                    ),
-                             fc         (0.0                    ),
-                             dfc        (0.0                    ),
-                             rc         (0.0                    ),
-                             cutoffAlpha(0.0                    ),
-                             cutoffType (CutoffFunction::CT_HARD)
+                             d          (0.0                    )
 {
 }
 
@@ -446,11 +437,6 @@ vector<string> Atom::Neighbor::info() const
     v.push_back(strpr("tag                            : %d\n", tag));
     v.push_back(strpr("element                        : %d\n", element));
     v.push_back(strpr("d                              : %16.8E\n", d));
-    v.push_back(strpr("rc                             : %16.8E\n", rc));
-    v.push_back(strpr("cutoffAlpha                    : %16.8E\n", cutoffAlpha));
-    v.push_back(strpr("fc                             : %16.8E\n", fc));
-    v.push_back(strpr("dfc                            : %16.8E\n", dfc));
-    v.push_back(strpr("cutoffType                     : %d\n", (int)cutoffType));
     v.push_back(strpr("dr                             : %16.8E %16.8E %16.8E\n", dr[0], dr[1], dr[2]));
     v.push_back(strpr("--------------------------------\n"));
 #ifndef NOSFCACHE

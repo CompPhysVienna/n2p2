@@ -143,6 +143,20 @@ void SymGrpExpRad::setScalingFactors()
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
 void SymGrpExpRad::calculate(Atom& atom, bool const derivatives) const
 {
+#ifndef NOSFCACHE
+    // Can use cache indices of any member because this group is defined via
+    // identical symmetry function type, neighbors and cutoff functions.
+    auto cacheIndices = members.at(0)->getCacheIndices();
+    bool unique = true;
+    size_t c0 = 0;
+    size_t c1 = 0;
+    if (cacheIndices.at(e1).size() > 0)
+    {
+        unique = false;
+        c0 = cacheIndices.at(e1).at(0);
+        c1 = cacheIndices.at(e1).at(1);
+    }
+#endif
     double* result = new double[members.size()];
     for (size_t k = 0; k < members.size(); ++k)
     {
@@ -158,24 +172,20 @@ void SymGrpExpRad::calculate(Atom& atom, bool const derivatives) const
             double const rij = n.d;
 
             // Calculate cutoff function and derivative.
-#ifdef NOCFCACHE
             double pfc;
             double pdfc;
-            fc.fdf(rij, pfc, pdfc);
-#else
-            // If cutoff radius matches with the one in the neighbor storage
-            // we can use the previously calculated value.
-            double& pfc = n.fc;
-            double& pdfc = n.dfc;
-            if (n.cutoffType != cutoffType ||
-                n.rc != rc ||
-                n.cutoffAlpha != cutoffAlpha)
+#ifndef NOSFCACHE
+            if (unique) fc.fdf(rij, pfc, pdfc);
+            else
             {
-                fc.fdf(rij, pfc, pdfc);
-                n.rc = rc;
-                n.cutoffType = cutoffType;
-                n.cutoffAlpha = cutoffAlpha;
+                double& cfc = n.cache[c0];
+                double& cdfc = n.cache[c1];
+                if (cfc < 0) fc.fdf(rij, cfc, cdfc);
+                pfc = cfc;
+                pdfc = cdfc;
             }
+#else
+            fc.fdf(rij, pfc, pdfc);
 #endif
             double const* const d1 = n.dr.r;
             for (size_t k = 0; k < members.size(); ++k)

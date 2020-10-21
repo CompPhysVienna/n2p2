@@ -28,10 +28,7 @@ PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 ###############################################################################
 
 # Do not use symmetry function groups.
-#PROJECT_OPTIONS+= -DNOSFGROUPS
-
-# Do not use cutoff function cache.
-#PROJECT_OPTIONS+= -DNOCFCACHE
+PROJECT_OPTIONS+= -DNOSFGROUPS
 
 # Do not use symmetry function cache.
 #PROJECT_OPTIONS+= -DNOSFCACHE

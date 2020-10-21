@@ -137,6 +137,11 @@ void SymGrpExpRadWeighted::setScalingFactors()
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
 void SymGrpExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
 {
+#ifndef NOSFCACHE
+    // Can use cache indices of any member because this group is defined via
+    // identical symmetry function type and cutoff functions.
+    auto cacheIndices = members.at(0)->getCacheIndices();
+#endif
     double* result = new double[members.size()];
     for (size_t k = 0; k < members.size(); ++k)
     {
@@ -153,24 +158,20 @@ void SymGrpExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
             size_t const nej = n.element;
 
             // Calculate cutoff function and derivative.
-#ifdef NOCFCACHE
             double pfc;
             double pdfc;
-            fc.fdf(rij, pfc, pdfc);
-#else
-            // If cutoff radius matches with the one in the neighbor storage
-            // we can use the previously calculated value.
-            double& pfc = n.fc;
-            double& pdfc = n.dfc;
-            if (n.cutoffType != cutoffType ||
-                n.rc != rc ||
-                n.cutoffAlpha != cutoffAlpha)
+#ifndef NOSFCACHE
+            if (cacheIndices[nej].size() == 0) fc.fdf(rij, pfc, pdfc);
+            else
             {
-                fc.fdf(rij, pfc, pdfc);
-                n.rc = rc;
-                n.cutoffType = cutoffType;
-                n.cutoffAlpha = cutoffAlpha;
+                double& cfc = n.cache[cacheIndices[nej][0]];
+                double& cdfc = n.cache[cacheIndices[nej][1]];
+                if (cfc < 0) fc.fdf(rij, cfc, cdfc);
+                pfc = cfc;
+                pdfc = cdfc;
             }
+#else
+            fc.fdf(rij, pfc, pdfc);
 #endif
             double const* const d1 = n.dr.r;
             for (size_t k = 0; k < members.size(); ++k)

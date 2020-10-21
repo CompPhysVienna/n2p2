@@ -66,10 +66,14 @@ int main(int argc, char* argv[])
     //prediction.predict();
     s.calculateNeighborList(prediction.getMaxCutoffRadius());
     Stopwatch sw;
-    for (size_t i = 0; i < 100; ++i)
+    for (size_t i = 0; i < 10; ++i)
     {
         sw.start();
+#ifndef NOSFGROUPS
         prediction.calculateSymmetryFunctionGroups(s, true);
+#else
+        prediction.calculateSymmetryFunctions(s, true);
+#endif
         sw.stop();
         s.freeAtoms(true);
     }

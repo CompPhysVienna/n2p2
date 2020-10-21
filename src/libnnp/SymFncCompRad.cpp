@@ -130,6 +130,17 @@ bool SymFncCompRad::getCompactOnly(double x, double& fx, double& dfx) const
 void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
+#ifndef NOSFCACHE
+    bool unique = true;
+    size_t c0 = 0;
+    size_t c1 = 0;
+    if (cacheIndices.at(e1).size() > 0)
+    {
+        unique = false;
+        c0 = cacheIndices.at(e1).at(0);
+        c1 = cacheIndices.at(e1).at(1);
+    }
+#endif
 
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
@@ -142,6 +153,19 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
             double rad;
             double drad;
             cr.fdf(rij, rad, drad);
+#ifndef NOSFCACHE
+            if (unique) cr.fdf(rij, rad, drad);
+            else
+            {
+                double& crad = n.cache[c0];
+                double& cdrad = n.cache[c1];
+                if (crad < 0) cr.fdf(rij, crad, cdrad);
+                rad = crad;
+                drad = cdrad;
+            }
+#else
+            cr.fdf(rij, rad, drad);
+#endif
             result += rad;
 
             // Force calculation.
@@ -218,7 +242,8 @@ vector<string> SymFncCompRad::getCacheIdentifiers() const
     s += " ";
     s += strpr("rc = %16.8E", rc / convLength);
 
-    v.push_back(strpr("%zu ", e1) + s);
+    v.push_back(strpr("%zu f ", e1) + s);
+    v.push_back(strpr("%zu df ", e1) + s);
 
     return v;
 }

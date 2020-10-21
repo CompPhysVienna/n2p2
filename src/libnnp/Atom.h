@@ -17,7 +17,6 @@
 #ifndef ATOM_H
 #define ATOM_H
 
-#include "CutoffFunction.h"
 #include "Vec3D.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -40,16 +39,6 @@ struct Atom
         std::size_t                element;
         /// Distance to neighbor atom.
         double                     d;
-        /// Cutoff function value.
-        double                     fc;
-        /// Derivative of cutoff function.
-        double                     dfc;
-        /// Cutoff radius for which cutoff and its derivative is cached.
-        double                     rc;
-        /// Cutoff @f$\alpha@f$ for which cutoff and its derivative is cached.
-        double                     cutoffAlpha;
-        /// Cutoff type of cached cutoff values.
-        CutoffFunction::CutoffType cutoffType;
         /// Distance vector to neighbor atom.
         Vec3D                      dr;
 #ifndef NOSFCACHE

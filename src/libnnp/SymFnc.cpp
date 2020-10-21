@@ -127,16 +127,12 @@ void SymFnc::addCacheIndex(size_t element,
                                   cacheIdentifier.c_str()));
     }
     cacheIndices.at(element).push_back(cacheIndex);
-    unique = false;
 
     return;
 }
 #endif
 
 SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
-#ifndef NOSFCACHE
-    unique       (true      ),
-#endif
     type         (type      ),
     elementMap   (elementMap),
     index        (0         ),

@@ -96,24 +96,20 @@ void SymFncExpAngw::calculate(Atom& atom, bool const derivatives) const
             double const r2ij   = rij * rij;
 
             // Calculate cutoff function and derivative.
-#ifdef NOCFCACHE
             double pfcij;
             double pdfcij;
-            fc.fdf(rij, pfcij, pdfcij);
-#else
-            // If cutoff radius matches with the one in the neighbor storage
-            // we can use the previously calculated value.
-            double& pfcij = nj.fc;
-            double& pdfcij = nj.dfc;
-            if (nj.cutoffType != cutoffType ||
-                nj.rc != rc ||
-                nj.cutoffAlpha != cutoffAlpha)
+#ifndef NOSFCACHE
+            if (cacheIndices[nej].size() == 0) fc.fdf(rij, pfcij, pdfcij);
+            else
             {
-                fc.fdf(rij, pfcij, pdfcij);
-                nj.rc = rc;
-                nj.cutoffType = cutoffType;
-                nj.cutoffAlpha = cutoffAlpha;
+                double& cfc = nj.cache[cacheIndices[nej][0]];
+                double& cdfc = nj.cache[cacheIndices[nej][1]];
+                if (cfc < 0) fc.fdf(rij, cfc, cdfc);
+                pfcij = cfc;
+                pdfcij = cdfc;
             }
+#else
+            fc.fdf(rij, pfcij, pdfcij);
 #endif
             for (size_t k = j + 1; k < numNeighbors; k++)
             {
@@ -125,23 +121,24 @@ void SymFncExpAngw::calculate(Atom& atom, bool const derivatives) const
                     double const rik = nk.d;
                     if (rik < rc)
                     {
-                    // Energy calculation.
-#ifdef NOCFCACHE
+                        // Energy calculation.
                         double pfcik;
                         double pdfcik;
-                        fc.fdf(rik, pfcik, pdfcik);
-#else
-                        double& pfcik = nk.fc;
-                        double& pdfcik = nk.dfc;
-                        if (nk.cutoffType != cutoffType ||
-                            nk.rc != rc ||
-                            nk.cutoffAlpha != cutoffAlpha)
+#ifndef NOSFCACHE
+                        if (cacheIndices[nej].size() == 0)
                         {
                             fc.fdf(rik, pfcik, pdfcik);
-                            nk.rc = rc;
-                            nk.cutoffType = cutoffType;
-                            nk.cutoffAlpha = cutoffAlpha;
                         }
+                        else
+                        {
+                            double& cfc = nk.cache[cacheIndices[nek][0]];
+                            double& cdfc = nk.cache[cacheIndices[nek][1]];
+                            if (cfc < 0) fc.fdf(rik, cfc, cdfc);
+                            pfcik = cfc;
+                            pdfcik = cdfc;
+                        }
+#else
+                        fc.fdf(rik, pfcik, pdfcik);
 #endif
                         Vec3D drij = nj.dr;
                         Vec3D drik = nk.dr;

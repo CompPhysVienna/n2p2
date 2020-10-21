@@ -131,26 +131,21 @@ void SymFncExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
                               * exp(-eta * (rij - rs) * (rij - rs));
 
             // Calculate cutoff function and derivative.
-#ifdef NOCFCACHE
             double pfc;
             double pdfc;
-            fc.fdf(rij, pfc, pdfc);
-#else
-            // If cutoff radius matches with the one in the neighbor storage
-            // we can use the previously calculated value.
-            double& pfc = n.fc;
-            double& pdfc = n.dfc;
-            if (n.cutoffType != cutoffType ||
-                n.rc != rc ||
-                n.cutoffAlpha != cutoffAlpha)
+#ifndef NOSFCACHE
+            if (cacheIndices[n.element].size() == 0) fc.fdf(rij, pfc, pdfc);
+            else
             {
-                fc.fdf(rij, pfc, pdfc);
-                n.rc = rc;
-                n.cutoffType = cutoffType;
-                n.cutoffAlpha = cutoffAlpha;
+                double& cfc = n.cache[cacheIndices[n.element][0]];
+                double& cdfc = n.cache[cacheIndices[n.element][1]];
+                if (cfc < 0) fc.fdf(rij, cfc, cdfc);
+                pfc = cfc;
+                pdfc = cdfc;
             }
+#else
+            fc.fdf(rij, pfc, pdfc);
 #endif
-
             result += pexp * pfc;
             // Force calculation.
             if (!derivatives) continue;
