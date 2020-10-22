@@ -93,7 +93,7 @@ public:
      * @param[out] fa Cutoff function value.
      * @param[out] dfa Value of cutoff function derivative.
      */
-    bool               fdf(double a, double& fa, double& dfa) const;
+    void               fdf(double a, double& fa, double& dfa) const;
 
 private:
     /// Center of compact function.
@@ -127,25 +127,32 @@ inline CoreFunction::Type CompactFunction::getCoreFunctionType() const
     return core.getType();
 }
 
-inline double CompactFunction::getCenter() const
+inline double CompactFunction::getCenter() const { return center; }
+inline double CompactFunction::getWidth() const { return width; }
+inline double CompactFunction::getLeft() const { return left; }
+inline double CompactFunction::getRight() const { return right; }
+
+inline double CompactFunction::f(double a) const
 {
-    return center;
+    a = (a - center) * scale;
+    return core.f(std::abs(a));
 }
 
-inline double CompactFunction::getWidth() const
+inline double CompactFunction::df(double a) const
 {
-    return width;
+    a = (a - center) * scale;
+    return copysign(scale * core.df(std::abs(a)), a);
 }
 
-inline double CompactFunction::getLeft() const
+inline void CompactFunction::fdf(double a, double& fa, double& dfa) const
 {
-    return left;
+    a = (a - center) * scale;
+    core.fdf(std::abs(a), fa, dfa);
+    dfa *= copysign(scale, a);
+
+    return;
 }
 
-inline double CompactFunction::getRight() const
-{
-    return right;
-}
 
 }
 

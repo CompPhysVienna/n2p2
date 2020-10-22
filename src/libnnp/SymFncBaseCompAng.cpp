@@ -30,10 +30,12 @@ using namespace nnp;
 SymFncBaseCompAng::
 SymFncBaseCompAng(size_t type, ElementMap const& elementMap) :
     SymFncBaseComp(type, elementMap),
-    e1           (0  ),
-    e2           (0  ),
-    angleLeft    (0.0),
-    angleRight   (0.0)
+    e1               (0  ),
+    e2               (0  ),
+    angleLeft        (0.0),
+    angleRight       (0.0),
+    angleLeftRadians (0.0),
+    angleRightRadians(0.0)
 {
     minNeighbors = 2;
     parameters.insert("e1");
@@ -103,7 +105,9 @@ void SymFncBaseCompAng::setParameters(string const& parameterString)
     }
 
     ca.setCoreFunction(cr.getCoreFunctionType());
-    ca.setLeftRight(angleLeft * M_PI / 180.0, angleRight * M_PI / 180.0);
+    angleLeftRadians = angleLeft * M_PI / 180.0;
+    angleRightRadians = angleRight * M_PI / 180.0;
+    ca.setLeftRight(angleLeftRadians, angleRightRadians);
 
     return;
 }
@@ -134,18 +138,6 @@ string SymFncBaseCompAng::getSettingsLine() const
                      subtype.c_str());
 
     return s;
-}
-
-bool SymFncBaseCompAng::getCompactAngle(double x, double& fx, double& dfx) const
-{
-    bool const stat = ca.fdf(x, fx, dfx);
-    return stat;
-}
-
-bool SymFncBaseCompAng::getCompactRadial(double x, double& fx, double& dfx) const
-{
-    bool const stat = cr.fdf(x, fx, dfx);
-    return stat;
 }
 
 string SymFncBaseCompAng::parameterLine() const

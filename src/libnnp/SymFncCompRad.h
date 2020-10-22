@@ -84,9 +84,9 @@ public:
      */
     virtual void        calculate(Atom& atom, bool const derivatives) const;
     // Access core fct. for groups
-    bool                getCompactOnly(double  x,
-                                       double& fx,
-                                       double& dfx) const;
+    void                getCompactOnly(double const x,
+                                       double&      fx,
+                                       double&      dfx) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
@@ -140,6 +140,14 @@ private:
 //////////////////////////////////
 
 inline std::size_t SymFncCompRad::getE1() const { return e1; }
+
+inline void SymFncCompRad::getCompactOnly(double const x,
+                                          double&      fx,
+                                          double&      dfx) const
+{
+    cr.fdf(x, fx, dfx);
+    return;
+}
 
 }
 

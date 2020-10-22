@@ -99,6 +99,22 @@ void SymGrpCompRad::sortMembers()
         memberIndexPerElement.push_back(members[i]->getIndexPerElement());
     }
 
+    mrl.resize(members.size(), 0.0);
+    mrc.resize(members.size(), 0.0);
+    for (size_t i = 0; i < members.size(); i++)
+    {
+        mrl.at(i) = members[i]->getRl();
+        mrc.at(i) = members[i]->getRc();
+    }
+
+#ifndef NOSFCACHE
+    mci.resize(members.size());
+    for (size_t k = 0; k < members.size(); ++k)
+    {
+        mci.at(k) = members.at(k)->getCacheIndices()[e1];
+    }
+#endif
+
     return;
 }
 
@@ -130,18 +146,30 @@ void SymGrpCompRad::calculate(Atom& atom, bool const derivatives) const
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
-        if ( (e1 == n.element && n.d < rmax) ||
-             (e1 == n.element && n.d > rmin) )
+        double const rij = n.d;
+        if (e1 == n.element && rij < rmax && rij > rmin)
         {
             // Energy calculation.
-            double const rij = n.d;
-
             double const* const d1 = n.dr.r;
             for (size_t k = 0; k < members.size(); ++k)
             {
+                SymFncCompRad const& sf = *(members[k]);
+                if (rij <= mrl[k] || rij >= mrc[k]) continue;
                 double rad;
                 double drad;
-                if (!members[k]->getCompactOnly(rij, rad, drad)) continue;
+#ifndef NOSFCACHE
+                if (mci[k].size() == 0) sf.getCompactOnly(rij, rad, drad);
+                else
+                {
+                    double& crad = n.cache[mci[k][0]];
+                    double& cdrad = n.cache[mci[k][1]];
+                    if (crad < 0) sf.getCompactOnly(rij, crad, cdrad);
+                    rad = crad;
+                    drad = cdrad;
+                }
+#else
+                sf.getCompactOnly(rij, rad, drad);
+#endif
                 result[k] += rad;
 
                 // Force calculation.

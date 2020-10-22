@@ -198,8 +198,8 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                         for (size_t l = 0; l < members.size(); ++l)
                         {
                             if (radij[l] == 0.0) continue;
-                            if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
-                            if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
+                            //if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
+                            //if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
 
                             double rad = radij[l] * radik;
                             double radang = rad * ang;

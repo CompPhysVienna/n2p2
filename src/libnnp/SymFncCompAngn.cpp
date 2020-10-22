@@ -156,9 +156,11 @@ void SymFncCompAngn::calculate(Atom& atom, bool const derivatives) const
                         // Regroup later: Get acos(cos)
                         double const acostijk = acos(costijk);
                         // Only go on if we are within our compact support
+                        if (acostijk < angleLeftRadians ||
+                            acostijk > angleRightRadians) continue;
                         double ang  = 0.0;
                         double dang = 0.0;
-                        if (!ca.fdf(acostijk, ang, dang)) continue;
+                        ca.fdf(acostijk, ang, dang);
 
                         double const rad  = radij * radik * radjk; // product of cutoff fcts
                         result += rad*ang;
@@ -172,8 +174,8 @@ void SymFncCompAngn::calculate(Atom& atom, bool const derivatives) const
                         double const rinvij = rinvijik * rik;
                         double const rinvik = rinvijik * rij;
                         double const rinvjk = 1.0 / rjk;
-                        double phiijik = rinvij * ( rinvik - rinvij*costijk);
-                        double phiikij = rinvik * ( rinvij - rinvik*costijk);
+                        double phiijik = rinvij * (rinvik - rinvij*costijk);
+                        double phiikij = rinvik * (rinvij - rinvik*costijk);
                         double psiijik = rinvijik; // careful: sign flip w.r.t. notes due to nj.dGd...
                         phiijik *= dang;
                         phiikij *= dang;

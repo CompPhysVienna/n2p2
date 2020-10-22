@@ -74,8 +74,6 @@ bool SymFncCompAngw::operator<(SymFnc const& rhs) const
 
 void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
 {
-    // TODO double const pnorm  = pow(2.0, 1.0 - zeta);
-    // TODO double const pzl    = zeta * lambda;
     double       result = 0.0;
 
     size_t numNeighbors = atom.numNeighbors;
@@ -89,12 +87,21 @@ void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
         double const rij = nj.d;
         if ((e1 == nej || e2 == nej) && rij < rc && rij > rl)
         {
-
-            // Is one part of the product == zero?
             double radij;
             double dradij;
-            if (!cr.fdf(rij, radij, dradij)) continue;
-
+#ifndef NOSFCACHE
+            if (cacheIndices[nej].size() == 0) cr.fdf(rij, radij, dradij);
+            else
+            {
+                double& crad = nj.cache[cacheIndices[nej][0]];
+                double& cdrad = nj.cache[cacheIndices[nej][1]];
+                if (crad < 0) cr.fdf(rij, crad, cdrad);
+                radij = crad;
+                dradij = cdrad;
+            }
+#else
+            cr.fdf(rij, radij, dradij);
+#endif
             for (size_t k = j + 1; k < numNeighbors; k++)
             {
                 Atom::Neighbor& nk = atom.neighbors[k];
@@ -105,11 +112,25 @@ void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
                     double const rik = nk.d;
                     if (rik < rc && rik > rl)
                     {
-                    // Energy calculation.
-
+                        // Energy calculation.
                         double radik;
                         double dradik;
-                        if (!cr.fdf(rik, radik, dradik)) continue;
+#ifndef NOSFCACHE
+                        if (cacheIndices[nek].size() == 0)
+                        {
+                            cr.fdf(rik, radik, dradik);
+                        }
+                        else
+                        {
+                            double& crad = nk.cache[cacheIndices[nek][0]];
+                            double& cdrad = nk.cache[cacheIndices[nek][1]];
+                            if (crad < 0) cr.fdf(rik, crad, cdrad);
+                            radik = crad;
+                            dradik = cdrad;
+                        }
+#else
+                        cr.fdf(rik, radik, dradik);
+#endif
 
                         Vec3D drij = nj.dr;
                         Vec3D drik = nk.dr;
@@ -125,9 +146,11 @@ void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
                         // Regroup later: Get acos(cos)
                         double const acostijk = acos(costijk);
                         // Only go on if we are within our compact support
+                        if (acostijk < angleLeftRadians ||
+                            acostijk > angleRightRadians) continue;
                         double ang  = 0.0;
                         double dang = 0.0;
-                        if (!ca.fdf(acostijk, ang, dang)) continue;
+                        ca.fdf(acostijk, ang, dang);
 
                         double const rad  = radij * radik; // product of cutoff fcts
                         result += rad*ang;
@@ -135,13 +158,14 @@ void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
                         // Force calculation.
                         if (!derivatives) continue;
 
-                        double const dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
+                        double const dacostijk = -1.0
+                                               / sqrt(1.0 - costijk * costijk);
                         dang *= dacostijk;
 
-                        double const rinvij  = rinvijik * rik;
-                        double const rinvik  = rinvijik * rij;
-                        double phiijik = rinvij * (rinvik - rinvij*costijk);
-                        double phiikij = rinvik * (rinvij - rinvik*costijk);
+                        double const rinvij = rinvijik * rik;
+                        double const rinvik = rinvijik * rij;
+                        double phiijik = rinvij * (rinvik - rinvij * costijk);
+                        double phiikij = rinvik * (rinvij - rinvik * costijk);
                         double psiijik = rinvijik; // careful: sign flip w.r.t. notes due to nj.dGd...
                         phiijik *= dang;
                         phiikij *= dang;
@@ -173,9 +197,6 @@ void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
             } // k
         } // rij <= rc
     } // j
-
-    // TODO result *= pnorm;
-    // supposed to disappear
 
     atom.G[index] = scale(result);
 

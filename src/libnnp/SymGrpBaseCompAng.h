@@ -54,11 +54,24 @@ protected:
     virtual std::vector<SymFncBaseCompAng const*> getMembers() const = 0;
 
     /// Element index of neighbor atom 1 (common feature).
-    std::size_t         e1;
+    std::size_t                e1;
     /// Element index of neighbor atom 2 (common feature).
-    std::size_t         e2;
+    std::size_t                e2;
     /// Vector indicating whether compact function needs to be recalculated.
-    std::vector<bool>   calculateComp;
+    std::vector<bool>          calculateComp;
+    /// Member rl.
+    std::vector<double>        mrl;
+    /// Member rc.
+    std::vector<double>        mrc;
+    /// Member angleLeft.
+    std::vector<double>        mal;
+    /// Member angleRight.
+    std::vector<double>        mar;
+#ifndef NOSFCACHE
+    /// Member cache indices for actual neighbor element.
+    std::vector<std::vector<
+    std::vector<std::size_t>>> mci;
+#endif
 };
 
 }

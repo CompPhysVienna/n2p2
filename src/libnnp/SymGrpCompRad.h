@@ -85,9 +85,17 @@ public:
 
 private:
     /// Element index of neighbor atom (common feature).
-    std::size_t                       e1;
+    std::size_t                           e1;
     /// Vector of all group member pointers.
-    std::vector<SymFncCompRad const*> members;
+    std::vector<SymFncCompRad const*>     members;
+    /// Member rl.
+    std::vector<double>                   mrl;
+    /// Member rc.
+    std::vector<double>                   mrc;
+#ifndef NOSFCACHE
+    /// Member cache indices for actual neighbor element.
+    std::vector<std::vector<std::size_t>> mci;
+#endif
 };
 
 }

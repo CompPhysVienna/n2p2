@@ -46,12 +46,12 @@ public:
      */
     virtual std::string getSettingsLine() const;
     // Core fcts
-    bool                getCompactAngle(double  x,
-                                        double& fx,
-                                        double& dfx) const;
-    bool                getCompactRadial(double  x,
-                                         double& fx,
-                                         double& dfx) const;
+    void                getCompactAngle(double const x,
+                                        double&      fx,
+                                        double&      dfx) const;
+    void                getCompactRadial(double const x,
+                                         double&      fx,
+                                         double&      dfx) const;
     /** Give symmetry function parameters in one line.
      *
      * @return String containing symmetry function parameter values.
@@ -113,6 +113,10 @@ protected:
     double          angleLeft;
     /// Right angle boundary.
     double          angleRight;
+    /// Left angle boundary in radians.
+    double          angleLeftRadians;
+    /// Right angle boundary in radians.
+    double          angleRightRadians;
     /// Compact function member for angular part.
     CompactFunction ca;
 
@@ -129,6 +133,22 @@ inline std::size_t SymFncBaseCompAng::getE1() const { return e1; }
 inline std::size_t SymFncBaseCompAng::getE2() const { return e2; }
 inline double SymFncBaseCompAng::getAngleLeft() const { return angleLeft; }
 inline double SymFncBaseCompAng::getAngleRight() const { return angleRight; }
+
+inline void SymFncBaseCompAng::getCompactAngle(double const x,
+                                               double&      fx,
+                                               double&      dfx) const
+{
+    ca.fdf(x, fx, dfx);
+    return;
+}
+
+inline void SymFncBaseCompAng::getCompactRadial(double const x,
+                                                double&      fx,
+                                                double&      dfx) const
+{
+    cr.fdf(x, fx, dfx);
+    return;
+}
 
 }
 

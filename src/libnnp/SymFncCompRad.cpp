@@ -121,12 +121,6 @@ string SymFncCompRad::getSettingsLine() const
     return s;
 }
 
-bool SymFncCompRad::getCompactOnly(double x, double& fx, double& dfx) const
-{
-    bool const stat = cr.fdf(x, fx, dfx);
-    return stat;
-}
-
 void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
