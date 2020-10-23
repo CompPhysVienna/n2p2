@@ -307,9 +307,12 @@ void SymGrpCompAngn::calculate(Atom& atom, bool const derivatives) const
                             double const phiikij = phiikij0 * dang;
                             double const psiijik = rinvijik * dang;
 
-                            double const chiij =  rinvij * dradij[l] *  radik *  radjk;
-                            double const chiik =  rinvik * radij[l]  * dradik *  radjk;
-                            double const chijk = -rinvjk * radij[l]  *  radik * dradjk;
+                            double const chiij =  rinvij * dradij[l]
+                                               *  radik  * radjk;
+                            double const chiik =  rinvik * radij[l]
+                                               *  dradik * radjk;
+                            double const chijk = -rinvjk * radij[l]
+                                               *  radik  * dradjk;
 
                             double p1;
                             double p2;

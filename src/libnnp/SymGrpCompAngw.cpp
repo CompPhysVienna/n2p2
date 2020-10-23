@@ -95,15 +95,34 @@ void SymGrpCompAngw::sortMembers()
          members.end(),
          comparePointerTargets<SymFncCompAngw const>);
 
+    mrl.resize(members.size(), 0.0);
+    mrc.resize(members.size(), 0.0);
+    mal.resize(members.size(), 0.0);
+    mar.resize(members.size(), 0.0);
     for (size_t i = 0; i < members.size(); i++)
     {
+        mrl.at(i) = members[i]->getRl();
+        mrc.at(i) = members[i]->getRc();
+        mal.at(i) = members[i]->getAngleLeft() * M_PI / 180.0;
+        mar.at(i) = members[i]->getAngleRight() * M_PI / 180.0;
         memberIndex.push_back(members[i]->getIndex());
         memberIndexPerElement.push_back(members[i]->getIndexPerElement());
     }
 
+#ifndef NOSFCACHE
+    mci.resize(members.size());
+    for (size_t k = 0; k < members.size(); ++k)
+    {
+        mci.at(k) = members.at(k)->getCacheIndices();
+    }
+#endif
+
     return;
 }
 
+// TODO: Check if untested optimizations work correctly!
+// TODO: Eventually change SF ordering, so angular compact function can be
+//       cached.
 // Depending on chosen symmetry functions this function may be very
 // time-critical when predicting new structures (e.g. in MD simulations). Thus,
 // lots of optimizations were used sacrificing some readablity. Vec3D
@@ -134,12 +153,31 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
 
         if ((e1 == nej || e2 == nej) && rij < rmax && rij > rmin)
         {
-
             // Precalculate the radial part for ij
             // Supposedly saves quite a number of operations
             for (size_t l = 0; l < members.size(); ++l)
             {
-                members[l]->getCompactRadial( rij, radij[l], dradij[l] );
+                if (rij > mrl[l] && rij < mrc[l])
+                {
+                    SymFncCompAngw const& sf = *(members[l]);
+#ifndef NOSFCACHE
+                    if (mci[l][nej].size() == 0)
+                    {
+                        sf.getCompactRadial(rij, radij[l], dradij[l]);
+                    }
+                    else
+                    {
+                        double& crad = nj.cache[mci[l][nej][0]];
+                        double& cdrad = nj.cache[mci[l][nej][1]];
+                        if (crad < 0) sf.getCompactRadial(rij, crad, cdrad);
+                        radij[l] = crad;
+                        dradij[l] = cdrad;
+                    }
+#else
+                    sf.getCompactRadial(rij, radij[l], dradij[l]);
+#endif
+                }
+                else radij[l] = 0.0;
             }
 
             // SIMPLE EXPRESSIONS:
@@ -165,9 +203,7 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                         double const dr32 = dr2[2] - dr1[2];
 
                         // Energy calculation.
-
-                        double const rinvijik = 1.0 / rij / rik;
-                        // SIMPLE EXPRESSIONS:
+                        double const rinvijik = 1.0 / (rij * rik);
                         double const costijk = (dr1[0] * dr2[0] +
                                                 dr1[1] * dr2[1] +
                                                 dr1[2] * dr2[2]) * rinvijik;
@@ -180,30 +216,52 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
 
                         double const rinvij   = rinvijik * rik;
                         double const rinvik   = rinvijik * rij;
-                        double const phiijik0 = rinvij * (rinvik - rinvij*costijk);
-                        double const phiikij0 = rinvik * (rinvij - rinvik*costijk);
-                        double dacostijk;
-                        double chiij;
-                        double chiik;
+                        double const phiijik0 = rinvij
+                                              * (rinvik - rinvij * costijk);
+                        double const phiikij0 = rinvik
+                                              * (rinvij - rinvik * costijk);
+                        double dacostijk = 0.0;
                         if (derivatives)
                         {
-                            dacostijk = -1.0 / sqrt(1.0 - costijk*costijk);
+                            dacostijk = -1.0 / sqrt(1.0 - costijk * costijk);
                         }
 
-                        double ang    = 0.0;
-                        double dang   = 0.0;
-                        double radik  = 0.0;
-                        double dradik = 0.0;
+                        double ang;
+                        double dang;
+                        double radik;
+                        double dradik;
 
                         for (size_t l = 0; l < members.size(); ++l)
                         {
-                            if (radij[l] == 0.0) continue;
-                            //if (!members[l]->getCompactAngle(acostijk, ang,   dang  )) continue;
-                            //if (!members[l]->getCompactRadial(rik,     radik, dradik)) continue;
+                            // Break conditions.
+                            if (radij[l] == 0.0 ||
+                                rik <= mrl[l] || rik >= mrc[l] ||
+                                acostijk <= mal[l] || acostijk >= mar[l])
+                            {
+                                continue;
+                            }
+
+                            SymFncCompAngw const& sf = *(members[l]);
+#ifndef NOSFCACHE
+                            if (mci[l][nek].size() == 0)
+                            {
+                                sf.getCompactRadial(rik, radik, dradik);
+                            }
+                            else
+                            {
+                                double& crad = nk.cache[mci[l][nek][0]];
+                                double& cdrad = nk.cache[mci[l][nek][1]];
+                                if (crad < 0) sf.getCompactRadial(rik, crad, cdrad);
+                                radik = crad;
+                                dradik = cdrad;
+                            }
+#else
+                            sf.getCompactRadial(rik, radik, dradik);
+#endif
+                            sf.getCompactAngle(acostijk, ang, dang);
 
                             double rad = radij[l] * radik;
-                            double radang = rad * ang;
-                            result[l] += radang;
+                            result[l] += rad * ang;
             
                             // Force calculation.
                             if (!derivatives) continue;
@@ -213,8 +271,8 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                             double const phiikij = phiikij0 * dang;
                             double const psiijik = rinvijik * dang;
 
-                            chiij = rinvij * radik * dradij[l];
-                            chiik = rinvik * radij[l] * dradik;
+                            double const chiij = rinvij * radik    * dradij[l];
+                            double const chiik = rinvik * radij[l] * dradik;
 
                             double p1;
                             double p2;

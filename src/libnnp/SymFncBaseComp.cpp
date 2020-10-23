@@ -59,7 +59,17 @@ void SymFncBaseComp::setCompactFunction(string subtype)
         }
         if (subtype.size() == 3)
         {
-            if (subtype.at(2) == 'a') asymmetric = true;
+            if (subtype.at(2) == 'a')
+            {
+#ifndef NOASYMPOLY
+                asymmetric = true;
+                cr.setAsymmetric(true);
+#else
+                throw runtime_error("ERROR: Compiled without support for "
+                                    "asymmetric polynomial symmetry functions "
+                                    "(-DNOASYMPOLY).\n");
+#endif
+            }
             else
             {
                 throw runtime_error(strpr("ERROR: Invalid polynom specifier: "
@@ -84,8 +94,8 @@ SymFncBaseComp::SymFncBaseComp(size_t type,
                                ElementMap const& elementMap) :
     SymFnc(type, elementMap),
     asymmetric(false),
-    rl        (0.0),
-    subtype   ("")
+    rl        (0.0  ),
+    subtype   (""   )
 {
     // Add compact-related parameter IDs to set.
     parameters.insert("rs/rl");

@@ -20,14 +20,28 @@
 using namespace std;
 using namespace nnp;
 
-CompactFunction::CompactFunction() : center(0.0),
-                                     width (0.0),
-                                     left  (0.0),
-                                     right (0.0),
-                                     scale (0.0)
+CompactFunction::CompactFunction() : center    (0.0  ),
+                                     width     (0.0  ),
+                                     left      (0.0  ),
+                                     right     (0.0  ),
+                                     scale     (0.0  )
 {
     core.setType(CoreFunction::Type::POLY2);
 }
+
+#ifndef NOASYMPOLY
+bool CompactFunction::getAsymmetric() const
+{
+    return core.getAsymmetric();
+}
+
+void CompactFunction::setAsymmetric(bool asymmetric)
+{
+    core.setAsymmetric(asymmetric);
+
+    return;
+}
+#endif
 
 void CompactFunction::setCenterWidth(double center, double width)
 {

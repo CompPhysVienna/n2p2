@@ -22,10 +22,13 @@ using namespace nnp;
 
 double const CoreFunction::E = exp(1.0);
 
-CoreFunction::CoreFunction() : type  (Type::POLY2            ),
-                               fPtr  (&CoreFunction::  fPOLY2),
-                               dfPtr (&CoreFunction:: dfPOLY2),
-                               fdfPtr(&CoreFunction::fdfPOLY2)
+CoreFunction::CoreFunction() : type      (Type::POLY2            ),
+#ifndef NOASYMPOLY
+                               asymmetric(false                  ),
+#endif
+                               fPtr      (&CoreFunction::  fPOLY2),
+                               dfPtr     (&CoreFunction:: dfPOLY2),
+                               fdfPtr    (&CoreFunction::fdfPOLY2)
 {
 }
 

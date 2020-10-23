@@ -33,6 +33,9 @@ PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 # Do not use symmetry function cache.
 #PROJECT_OPTIONS+= -DNOSFCACHE
 
+# Disable asymmetric polynomial symmetry functions.
+#PROJECT_OPTIONS+= -DNOASYMPOLY
+
 # Build with dummy Stopwatch class.
 #PROJECT_OPTIONS+= -DNOTIME
 

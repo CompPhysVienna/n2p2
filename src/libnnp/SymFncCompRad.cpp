@@ -146,19 +146,26 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
 
             double rad;
             double drad;
-            cr.fdf(rij, rad, drad);
+            double r = rij;
+            if (asymmetric) r = 2.0 * r - r * r;
 #ifndef NOSFCACHE
-            if (unique) cr.fdf(rij, rad, drad);
+            if (unique)
+            {
+                cr.fdf(r, rad, drad);
+                if (asymmetric) drad *= (2.0 - 2.0 * rij);
+            }
             else
             {
                 double& crad = n.cache[c0];
                 double& cdrad = n.cache[c1];
-                if (crad < 0) cr.fdf(rij, crad, cdrad);
+                if (crad < 0) cr.fdf(r, crad, cdrad);
+                if (asymmetric) cdrad *= (2.0 - 2.0 * rij);
                 rad = crad;
                 drad = cdrad;
             }
 #else
-            cr.fdf(rij, rad, drad);
+            cr.fdf(r, rad, drad);
+            if (asymmetric) drad *= (2.0 - 2.0 * rij);
 #endif
             result += rad;
 

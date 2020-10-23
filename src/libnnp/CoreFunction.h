@@ -58,6 +58,18 @@ public:
      * @return Type used.
      */
     Type   getType() const;
+#ifndef NOASYMPOLY
+    /** Set asymmetric property.
+     *
+     * @param[in] asymmetric Whether asymmetry should be activated.
+     */
+    void   setAsymmetric(bool asymmetric);
+    /** Getter for #asymmetric.
+     *
+     * @return Whether asymmetry is activated.
+     */
+    bool   getAsymmetric() const;
+#endif
     /** Calculate function value @f$f(x)@f$.
      *
      * @param[in] x Function argument.
@@ -81,7 +93,11 @@ public:
 private:
     static double const E;
     /// Core function type.
-    Type       type;
+    Type                type;
+#ifndef NOASYMPOLY
+    /// Enables asymmetry modification (use with polynomials).
+    bool                asymmetric;
+#endif
     /// Function pointer to f.
     double     (CoreFunction::*fPtr)(double x) const;
     /// Function pointer to df.
@@ -122,19 +138,50 @@ inline CoreFunction::Type CoreFunction::getType() const
     return type;
 }
 
+#ifndef NOASYMPOLY
+inline void CoreFunction::setAsymmetric(bool asymmetric)
+{
+    this->asymmetric = asymmetric;
+
+    return;
+}
+
+inline bool CoreFunction::getAsymmetric() const
+{
+    return asymmetric;
+}
+#endif
+
 inline double CoreFunction::f(double x) const
 {
+#ifndef NOASYMPOLY
+    if (asymmetric) x = (2.0 - x) * x;
+#endif
     return (this->*fPtr)(x);
 }
 
 inline double CoreFunction::df(double x) const
 {
+#ifndef NOASYMPOLY
+    if (asymmetric) return (2.0 - 2.0 * x) * (this->*dfPtr)((2.0 - x) * x);
+    else return (this->*dfPtr)(x);
+#else
     return (this->*dfPtr)(x);
+#endif
 }
 
 inline void CoreFunction::fdf(double x, double& fx, double& dfx) const
 {
+#ifndef NOASYMPOLY
+    if (asymmetric)
+    {
+        (this->*fdfPtr)((2.0 - x) * x, fx, dfx);
+        dfx *= 2.0 - 2.0 * x;
+    }
+    else (this->*fdfPtr)(x, fx, dfx);
+#else
     (this->*fdfPtr)(x, fx, dfx);
+#endif
     return;
 }
 
@@ -236,32 +283,6 @@ inline void CoreFunction::fdfEXP(double x, double& fc, double& dfc) const
     dfc = -2.0 * E * x * temp * temp * temp2;
     return;
 }
-
-
-//inline double CoreFunction::fPOLYA(double x) const
-//{
-//    double const p = 2.0 * x - x * x;
-//    return ((15.0 - 6.0 * p) * p - 10.0) * p * p * p + 1.0;
-//}
-//
-//inline double CoreFunction::dfPOLYA(double x) const
-//{
-//    double const p  = 2.0 * x - x * x;
-//    double const dp =     2.0 - 2.0 * x;
-//    double const dx = p * p * ((60.0 - 30.0 * p) * p - 30.0);
-//    return dx * dp;
-//}
-//
-//inline void CoreFunction::fdfPOLYA(double x, double& fx, double& dfx) const
-//{
-//    double const p  = 2.0 * x - x * x;
-//    double const p2 = p * p;
-//    double const dp = 2.0 - 2.0 * x;
-//    double const dx = p2 * ((60.0 - 30.0 * p) * p - 30.0);
-//    fx = ((15.0 - 6.0 * p) * p - 10.0) * p * p2 + 1.0;
-//    dfx = dx * dp;
-//    return;
-//}
 
 }
 

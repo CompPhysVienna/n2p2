@@ -55,6 +55,18 @@ public:
      * @return Type used.
      */
     CoreFunction::Type getCoreFunctionType() const;
+#ifndef NOASYMPOLY
+    /** Set asymmetric property in core function.
+     *
+     * @param[in] asymmetric Whether asymmetry should be activated.
+     */
+    void               setAsymmetric(bool asymmetric);
+    /** Check if asymmetry is enabled in core function.
+     *
+     * @return Whether asymmetry is activated.
+     */
+    bool               getAsymmetric() const;
+#endif
     /** Getter for #center.
      *
      * @return Center of compact function.

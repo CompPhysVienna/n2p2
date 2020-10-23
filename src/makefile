@@ -145,8 +145,8 @@ lammps-nnp: libnnpif
 	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
 clean-lammps-nnp:
-	cd interface && $(MAKE) $@
-	#cd interface && $(MAKE) clean-lammps-nnp-keep-file
+	#cd interface && $(MAKE) $@
+	cd interface && $(MAKE) clean-lammps-nnp-keep-file
 
 #########
 # pynnp #
