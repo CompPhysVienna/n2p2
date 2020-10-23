@@ -29,10 +29,10 @@ PROJECT_LDFLAGS_BLAS=-lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm 
 ###############################################################################
 
 # Do not use symmetry function groups.
-#PROJECT_OPTIONS+= -DNOSFGROUPS
+PROJECT_OPTIONS+= -DNOSFGROUPS
 
 # Do not use symmetry function cache.
-#PROJECT_OPTIONS+= -DNOSFCACHE
+PROJECT_OPTIONS+= -DNOSFCACHE
 
 # Disable asymmetric polynomial symmetry functions.
 #PROJECT_OPTIONS+= -DNOASYMPOLY
@@ -41,7 +41,7 @@ PROJECT_LDFLAGS_BLAS=-lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm 
 #PROJECT_OPTIONS+= -DNOTIME
 
 # Disable check for low number of neighbors.
-#PROJECT_OPTIONS+= -DNONEIGHCHECK
+PROJECT_OPTIONS+= -DNONEIGHCHECK
 
 # Compile without MPI support.
 #PROJECT_OPTIONS+= -DNOMPI

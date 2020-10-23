@@ -161,6 +161,7 @@ void Dataset::setupRandomNumberGenerator()
     return;
 }
 
+// TODO: Add SF cache to buffer.
 int Dataset::calculateBufferSize(Structure const& structure) const
 {
     int              bs  = 0;         // Send buffer size.
@@ -222,7 +223,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
              it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
         {
             // Neighbor
-            bs += 3 * ss + 5 * ds + is + 3 * ds;
+            bs += 3 * ss + ds + 3 * ds;
 
             // Neighbor.dGdr
             bs += ss;
@@ -386,11 +387,6 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                     MPI_Pack(&(it2->tag        ), 1, MPI_SIZE_T, buf, bs, &p, comm);
                     MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T, buf, bs, &p, comm);
                     MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->fc         ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->dfc        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->rc         ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->cutoffAlpha), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->cutoffType ), 1, MPI_INT   , buf, bs, &p, comm);
                     MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
 
                     // Neighbor.dGdr
@@ -599,11 +595,6 @@ int Dataset::recvStructure(Structure* const structure, int src)
                     MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_SIZE_T, comm);
                     MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T, comm);
                     MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->fc         ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->dfc        ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->rc         ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->cutoffAlpha), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->cutoffType ), 1, MPI_INT   , comm);
                     MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
 
                     // Neighbor.dGdr
