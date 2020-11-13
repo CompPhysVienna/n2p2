@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "SymFncCompRad.h"
+#include "SymFncCompRadWeighted.h"
 #include "Atom.h"
 #include "ElementMap.h"
 #include "utility.h"
@@ -27,37 +27,34 @@
 using namespace std;
 using namespace nnp;
 
-SymFncCompRad::SymFncCompRad(ElementMap const& elementMap) :
-    SymFncBaseComp(20, elementMap),
-    e1(0)
+SymFncCompRadWeighted::SymFncCompRadWeighted(ElementMap const& elementMap) :
+    SymFncBaseComp(23, elementMap)
 {
     minNeighbors = 1;
-    parameters.insert("e1");
 }
 
-bool SymFncCompRad::operator==(SymFnc const& rhs) const
+bool SymFncCompRadWeighted::operator==(SymFnc const& rhs) const
 {
     if (ec   != rhs.getEc()  ) return false;
     if (type != rhs.getType()) return false;
-    SymFncCompRad const& c = dynamic_cast<SymFncCompRad const&>(rhs);
+    SymFncCompRadWeighted const& c
+        = dynamic_cast<SymFncCompRadWeighted const&>(rhs);
     if (subtype     != c.getSubtype()) return false;
-    if (e1          != c.e1          ) return false;
     if (rc          != c.rc          ) return false;
     if (rl          != c.rl          ) return false;
     return true;
 }
 
-bool SymFncCompRad::operator<(SymFnc const& rhs) const
+bool SymFncCompRadWeighted::operator<(SymFnc const& rhs) const
 {
     if      (ec   < rhs.getEc()  ) return true;
     else if (ec   > rhs.getEc()  ) return false;
     if      (type < rhs.getType()) return true;
     else if (type > rhs.getType()) return false;
-    SymFncCompRad const& c = dynamic_cast<SymFncCompRad const&>(rhs);
+    SymFncCompRadWeighted const& c
+        = dynamic_cast<SymFncCompRadWeighted const&>(rhs);
     if      (subtype     < c.getSubtype()) return true;
     else if (subtype     > c.getSubtype()) return false;
-    if      (e1          < c.e1          ) return true;
-    else if (e1          > c.e1          ) return false;
     if      (rc          < c.rc          ) return true;
     else if (rc          > c.rc          ) return false;
     if      (rl          < c.rl          ) return true;
@@ -65,7 +62,7 @@ bool SymFncCompRad::operator<(SymFnc const& rhs) const
     return false;
 }
 
-void SymFncCompRad::setParameters(string const& parameterString)
+void SymFncCompRadWeighted::setParameters(string const& parameterString)
 {
     vector<string> splitLine = split(reduce(parameterString));
 
@@ -75,10 +72,9 @@ void SymFncCompRad::setParameters(string const& parameterString)
     }
 
     ec      = elementMap[splitLine.at(0)];
-    e1      = elementMap[splitLine.at(2)];
-    rl      = atof(splitLine.at(3).c_str());
-    rc      = atof(splitLine.at(4).c_str());
-    subtype = splitLine.at(5);
+    rl      = atof(splitLine.at(2).c_str());
+    rc      = atof(splitLine.at(3).c_str());
+    subtype = splitLine.at(4);
 
     if (rl > rc)
     {
@@ -92,12 +88,12 @@ void SymFncCompRad::setParameters(string const& parameterString)
     //}
 
     setCompactFunction(subtype);
-    cr.setLeftRight(rl, rc);
+    cr.setLeftRight(rl,rc);
 
     return;
 }
 
-void SymFncCompRad::changeLengthUnit(double convLength)
+void SymFncCompRadWeighted::changeLengthUnit(double convLength)
 {
     this->convLength = convLength;
     rl *= convLength;
@@ -108,12 +104,11 @@ void SymFncCompRad::changeLengthUnit(double convLength)
     return;
 }
 
-string SymFncCompRad::getSettingsLine() const
+string SymFncCompRadWeighted::getSettingsLine() const
 {
-    string s = strpr("symfunction_short %2s %2zu %2s %16.8E %16.8E %s\n",
+    string s = strpr("symfunction_short %2s %2zu %16.8E %16.8E %s\n",
                      elementMap[ec].c_str(),
                      type,
-                     elementMap[e1].c_str(),
                      rl / convLength,
                      rc / convLength,
                      subtype.c_str());
@@ -121,27 +116,17 @@ string SymFncCompRad::getSettingsLine() const
     return s;
 }
 
-void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
+void SymFncCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
-#ifndef NOSFCACHE
-    bool unique = true;
-    size_t c0 = 0;
-    size_t c1 = 0;
-    if (cacheIndices.at(e1).size() > 0)
-    {
-        unique = false;
-        c0 = cacheIndices.at(e1).at(0);
-        c1 = cacheIndices.at(e1).at(1);
-    }
-#endif
 
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
-        if (e1 == n.element && n.d < rc)
+        if (n.d < rc)
         {
             // Energy calculation.
+            size_t const ne = n.element;
             double const rij = n.d;
 
             double rad;
@@ -149,15 +134,15 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
             double r = rij;
             if (asymmetric) r = 2.0 * r - r * r;
 #ifndef NOSFCACHE
-            if (unique)
+            if (cacheIndices[ne].size() == 0)
             {
                 cr.fdf(r, rad, drad);
                 if (asymmetric) drad *= (2.0 - 2.0 * rij);
             }
             else
             {
-                double& crad = n.cache[c0];
-                double& cdrad = n.cache[c1];
+                double& crad = n.cache[cacheIndices[ne][0]];
+                double& cdrad = n.cache[cacheIndices[ne][1]];
                 if (crad < 0) cr.fdf(r, crad, cdrad);
                 if (asymmetric) cdrad *= (2.0 - 2.0 * rij);
                 rad = crad;
@@ -167,16 +152,17 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
             cr.fdf(r, rad, drad);
             if (asymmetric) drad *= (2.0 - 2.0 * rij);
 #endif
-            result += rad;
+            result += rad * elementMap.atomicNumber(ne);
 
             // Force calculation.
             if (!derivatives) continue;
-            double const p1 = scalingFactor * drad / rij;
+            double const p1 = scalingFactor * elementMap.atomicNumber(ne)
+                            * drad / rij;
             Vec3D dij = p1 * n.dr;
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
 #ifdef IMPROVED_SFD_MEMORY
-            n.dGdr[indexPerElement[e1]] -= dij;
+            n.dGdr[indexPerElement[ne]] -= dij;
 #else
             n.dGdr[index] -= dij;
 #endif
@@ -188,51 +174,44 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
     return;
 }
 
-string SymFncCompRad::parameterLine() const
+string SymFncCompRadWeighted::parameterLine() const
 {
     return strpr(getPrintFormat().c_str(),
                  index + 1,
                  elementMap[ec].c_str(),
                  type,
                  subtype.c_str(),
-                 elementMap[e1].c_str(),
                  rl / convLength,
                  rc / convLength,
                  lineNumber + 1);
 }
 
-vector<string> SymFncCompRad::parameterInfo() const
+vector<string> SymFncCompRadWeighted::parameterInfo() const
 {
     vector<string> v = SymFncBaseComp::parameterInfo();
-    string s;
-    size_t w = sfinfoWidth;
-
-    s = "e1";
-    v.push_back(strpr((pad(s, w) + "%s").c_str(), elementMap[e1].c_str()));
 
     return v;
 }
 
-double SymFncCompRad::calculateRadialPart(double distance) const
+double SymFncCompRadWeighted::calculateRadialPart(double distance) const
 {
     double const& r = distance * convLength;
 
     return cr.f(r);
 }
 
-double SymFncCompRad::calculateAngularPart(double /* angle */) const
+double SymFncCompRadWeighted::calculateAngularPart(double /* angle */) const
 {
     return 1.0;
 }
 
-bool SymFncCompRad::checkRelevantElement(size_t index) const
+bool SymFncCompRadWeighted::checkRelevantElement(size_t /*index*/) const
 {
-    if (index == e1) return true;
-    else return false;
+    return true;
 }
 
 #ifndef NOSFCACHE
-vector<string> SymFncCompRad::getCacheIdentifiers() const
+vector<string> SymFncCompRadWeighted::getCacheIdentifiers() const
 {
     vector<string> v;
     string s("");
@@ -243,8 +222,11 @@ vector<string> SymFncCompRad::getCacheIdentifiers() const
     s += " ";
     s += strpr("rc = %16.8E", rc / convLength);
 
-    v.push_back(strpr("%zu f ", e1) + s);
-    v.push_back(strpr("%zu df ", e1) + s);
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        v.push_back(strpr("%zu f ", i) + s);
+        v.push_back(strpr("%zu df ", i) + s);
+    }
 
     return v;
 }

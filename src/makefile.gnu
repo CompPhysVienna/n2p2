@@ -40,7 +40,7 @@ PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 #PROJECT_OPTIONS+= -DNOTIME
 
 # Disable check for low number of neighbors.
-PROJECT_OPTIONS+= -DNONEIGHCHECK
+#PROJECT_OPTIONS+= -DNONEIGHCHECK
 
 # Compile without MPI support.
 #PROJECT_OPTIONS+= -DNOMPI

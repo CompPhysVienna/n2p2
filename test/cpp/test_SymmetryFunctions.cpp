@@ -18,7 +18,10 @@
 #include "SymFncCompAngn.h"
 #include "SymFncExpRadWeighted.h"
 #include "SymFncExpAngnWeighted.h"
+#include "SymFncCompRadWeighted.h"
+#include "utility.h"
 #include <cstddef> // std::size_t
+//#include <iostream> // std::cerr
 #include <limits> // std::numeric_limits
 #include <string> // std::string
 #include <vector> // std::vector
@@ -30,6 +33,8 @@ namespace bdata = boost::unit_test::data;
 
 double const accuracy = 1000.0 * numeric_limits<double>::epsilon();
 double const accuracyNumeric = 1E-6;
+size_t const maxElements = 3;
+size_t const maxCacheSize = 2;
 
 SymFnc* setupSymmetryFunction(ElementMap   em,
                               size_t const type,
@@ -42,11 +47,9 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     else if (type == 12)  sf = new SymFncExpRadWeighted(em);
     else if (type == 13)  sf = new SymFncExpAngnWeighted(em);
     else if (type == 20)  sf = new SymFncCompRad(em);
-    //else if (type == 280) sf = new SymFncRadPolyA(em);
     else if (type == 21)  sf = new SymFncCompAngn(em);
-    //else if (type == 990) sf = new SymFncAngnPolyA(em);
     else if (type == 22)  sf = new SymFncCompAngw(em);
-    //else if (type == 890) sf = new SymFncAngwPolyA(em);
+    else if (type == 23)  sf = new SymFncCompRadWeighted(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -65,6 +68,16 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     }
     string scalingLine = "1 1 0.0 0.0 0.0 0.0";
     sf->setScalingType(SymFnc::ST_NONE, scalingLine, 0.0, 0.0);
+#ifndef NOSFCACHE
+    auto ci = sf->getCacheIdentifiers();
+    vector<size_t> count(em.size());
+    for (size_t i = 0; i < ci.size(); ++i)
+    {
+        size_t ne = atoi(split(ci.at(i))[0].c_str());
+        sf->addCacheIndex(ne, count.at(ne), ci.at(i));
+        count.at(ne)++;
+    }
+#endif
 
     return sf;
 }
@@ -91,6 +104,10 @@ void compareAnalyticNumericDeriv(Structure&   s,
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
     s.atoms.at(0).numSymmetryFunctionDerivatives = vector<size_t>(em.size(), 1);
+#ifndef NOSFCACHE
+    s.atoms.at(0).cacheSizePerElement = vector<size_t>(maxElements,
+                                                       maxCacheSize);
+#endif
     s.atoms.at(0).allocate(true);
 
     double h = 1.0E-7;
@@ -147,11 +164,16 @@ void checkAbsoluteValue(Structure&   s,
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
     s.atoms.at(0).numSymmetryFunctionDerivatives = vector<size_t>(em.size(), 1);
+#ifndef NOSFCACHE
+    s.atoms.at(0).cacheSizePerElement = vector<size_t>(maxElements,
+                                                       maxCacheSize);
+#endif
     s.atoms.at(0).allocate(true);
 
     // Calculate symmetry function for atom 0.
     recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
 
+//    cerr << strpr("%24.16E\n", s.atoms.at(0).G.at(0));
     BOOST_REQUIRE_SMALL(s.atoms.at(0).G.at(0) - value, accuracy);
 
     delete sf;
@@ -164,6 +186,15 @@ BOOST_AUTO_TEST_SUITE(IntegrationTests)
 BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
                        CompareAnalyticNumericDerivMono_EqualResults,
                        bdata::make(typesMono) ^ bdata::make(setupLinesMono),
+                       type,
+                       setupLine)
+{
+    compareAnalyticNumericDeriv(s, em, type, setupLine);
+}
+
+BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsDual,
+                       CompareAnalyticNumericDerivDual_EqualResults,
+                       bdata::make(typesDual) ^ bdata::make(setupLinesDual),
                        type,
                        setupLine)
 {
@@ -184,6 +215,18 @@ BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
                        bdata::make(typesMono)
                        ^ bdata::make(setupLinesMono)
                        ^ bdata::make(valuesMono),
+                       type,
+                       setupLine,
+                       value)
+{
+    checkAbsoluteValue(s, em, type, setupLine, value);
+}
+
+BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsDual,
+                       CheckAbsoluteValuesDual_CorrectResults,
+                       bdata::make(typesDual)
+                       ^ bdata::make(setupLinesDual)
+                       ^ bdata::make(valuesDual),
                        type,
                        setupLine,
                        value)

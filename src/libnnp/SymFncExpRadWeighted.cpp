@@ -126,6 +126,7 @@ void SymFncExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
         if (n.d < rc)
         {
             // Energy calculation.
+            size_t const ne = n.element;
             double const rij = n.d;
             double const pexp = elementMap.atomicNumber(n.element)
                               * exp(-eta * (rij - rs) * (rij - rs));
@@ -134,11 +135,11 @@ void SymFncExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
             double pfc;
             double pdfc;
 #ifndef NOSFCACHE
-            if (cacheIndices[n.element].size() == 0) fc.fdf(rij, pfc, pdfc);
+            if (cacheIndices[ne].size() == 0) fc.fdf(rij, pfc, pdfc);
             else
             {
-                double& cfc = n.cache[cacheIndices[n.element][0]];
-                double& cdfc = n.cache[cacheIndices[n.element][1]];
+                double& cfc = n.cache[cacheIndices[ne][0]];
+                double& cdfc = n.cache[cacheIndices[ne][1]];
                 if (cfc < 0) fc.fdf(rij, cfc, cdfc);
                 pfc = cfc;
                 pdfc = cdfc;
@@ -156,7 +157,7 @@ void SymFncExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
 #ifdef IMPROVED_SFD_MEMORY
-            n.dGdr[indexPerElement[n.element]] -= dij;
+            n.dGdr[indexPerElement[ne]] -= dij;
 #else
             n.dGdr[index] -= dij;
 #endif

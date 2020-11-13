@@ -158,7 +158,7 @@ string SymFncBaseCompAng::parameterLine() const
 
 vector<string> SymFncBaseCompAng::parameterInfo() const
 {
-    vector<string> v = SymFnc::parameterInfo();
+    vector<string> v = SymFncBaseComp::parameterInfo();
     string s;
     size_t w = sfinfoWidth;
 

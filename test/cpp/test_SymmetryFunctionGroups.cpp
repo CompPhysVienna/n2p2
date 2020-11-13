@@ -18,6 +18,7 @@
 #include "SymFncCompRad.h"
 #include "SymFncCompAngw.h"
 #include "SymFncCompAngn.h"
+#include "SymFncCompRadWeighted.h"
 #include "SymGrp.h"
 #include "SymGrpExpRad.h"
 #include "SymGrpExpAngn.h"
@@ -27,6 +28,8 @@
 #include "SymGrpCompRad.h"
 #include "SymGrpCompAngw.h"
 #include "SymGrpCompAngn.h"
+#include "SymGrpCompRadWeighted.h"
+#include "utility.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
 #include <string> // std::string
@@ -39,6 +42,8 @@ namespace bdata = boost::unit_test::data;
 
 double const accuracy = 1000.0 * numeric_limits<double>::epsilon();
 double const accuracyNumeric = 1E-6;
+size_t const maxElements = 3;
+size_t const maxCacheSize = 2;
 
 SymFnc* setupSymmetryFunction(ElementMap   em,
                                         size_t const type,
@@ -51,11 +56,9 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     else if (type == 12)  sf = new SymFncExpRadWeighted(em);
     else if (type == 13)  sf = new SymFncExpAngnWeighted(em);
     else if (type == 20)  sf = new SymFncCompRad(em);
-    //else if (type == 280) sf = new SymFncRadPolyA(em);
     else if (type == 21)  sf = new SymFncCompAngn(em);
-    //else if (type == 990) sf = new SymFncAngnPolyA(em);
     else if (type == 22)  sf = new SymFncCompAngw(em);
-    //else if (type == 890) sf = new SymFncAngwPolyA(em);
+    else if (type == 23)  sf = new SymFncCompRadWeighted(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -74,6 +77,16 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     }
     string scalingLine = "1 1 0.0 0.0 0.0 0.0";
     sf->setScalingType(SymFnc::ST_NONE, scalingLine, 0.0, 0.0);
+#ifndef NOSFCACHE
+    auto ci = sf->getCacheIdentifiers();
+    vector<size_t> count(em.size());
+    for (size_t i = 0; i < ci.size(); ++i)
+    {
+        size_t ne = atoi(split(ci.at(i))[0].c_str());
+        sf->addCacheIndex(ne, count.at(ne), ci.at(i));
+        count.at(ne)++;
+    }
+#endif
 
     return sf;
 }
@@ -88,11 +101,9 @@ SymGrp* setupSymmetryFunctionGroup(ElementMap em, SymFnc const& sf)
     else if (type == 12)  sfg = new SymGrpExpRadWeighted(em);
     else if (type == 13)  sfg = new SymGrpExpAngnWeighted(em);
     else if (type == 20)  sfg = new SymGrpCompRad(em);
-    //else if (type == 280) sfg = new SymGrpRadPolyA(em);
     else if (type == 21)  sfg = new SymGrpCompAngn(em);
-    //else if (type == 990) sfg = new SymGrpAngnPolyA(em);
     else if (type == 22)  sfg = new SymGrpCompAngw(em);
-    //else if (type == 890) sfg = new SymGrpAngwPolyA(em);
+    else if (type == 23)  sfg = new SymGrpCompRadWeighted(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -129,6 +140,10 @@ void compareAnalyticNumericDerivGroup(Structure&   s,
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
     s.atoms.at(0).numSymmetryFunctionDerivatives = vector<size_t>(em.size(), 1);
+#ifndef NOSFCACHE
+    s.atoms.at(0).cacheSizePerElement = vector<size_t>(maxElements,
+                                                       maxCacheSize);
+#endif
     s.atoms.at(0).allocate(true);
 
     double h = 1.0E-7;
@@ -188,6 +203,10 @@ void checkAbsoluteValueGroup(Structure&   s,
     // Allocate symmetry function arrays.
     s.atoms.at(0).numSymmetryFunctions = 1;
     s.atoms.at(0).numSymmetryFunctionDerivatives = vector<size_t>(em.size(), 1);
+#ifndef NOSFCACHE
+    s.atoms.at(0).cacheSizePerElement = vector<size_t>(maxElements,
+                                                       maxCacheSize);
+#endif
     s.atoms.at(0).allocate(true);
 
     // Calculate symmetry function for atom 0.
@@ -211,6 +230,15 @@ BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
     compareAnalyticNumericDerivGroup(s, em, type, setupLine);
 }
 
+BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsDual,
+                       CompareAnalyticNumericDerivDual_EqualResults,
+                       bdata::make(typesDual) ^ bdata::make(setupLinesDual),
+                       type,
+                       setupLine)
+{
+    compareAnalyticNumericDerivGroup(s, em, type, setupLine);
+}
+
 BOOST_DATA_TEST_CASE_F(FixtureFourAtomsMixed,
                        CompareAnalyticNumericDerivMixed_EqualResults,
                        bdata::make(typesMixed) ^ bdata::make(setupLinesMixed),
@@ -225,6 +253,18 @@ BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
                        bdata::make(typesMono)
                        ^ bdata::make(setupLinesMono)
                        ^ bdata::make(valuesMono),
+                       type,
+                       setupLine,
+                       value)
+{
+    checkAbsoluteValueGroup(s, em, type, setupLine, value);
+}
+
+BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsDual,
+                       CheckAbsoluteValuesDual_CorrectResults,
+                       bdata::make(typesDual)
+                       ^ bdata::make(setupLinesDual)
+                       ^ bdata::make(valuesDual),
                        type,
                        setupLine,
                        value)
