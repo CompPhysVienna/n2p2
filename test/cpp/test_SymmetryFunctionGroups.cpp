@@ -19,6 +19,8 @@
 #include "SymFncCompAngw.h"
 #include "SymFncCompAngn.h"
 #include "SymFncCompRadWeighted.h"
+#include "SymFncCompAngnWeighted.h"
+#include "SymFncCompAngwWeighted.h"
 #include "SymGrp.h"
 #include "SymGrpExpRad.h"
 #include "SymGrpExpAngn.h"
@@ -29,6 +31,8 @@
 #include "SymGrpCompAngw.h"
 #include "SymGrpCompAngn.h"
 #include "SymGrpCompRadWeighted.h"
+#include "SymGrpCompAngnWeighted.h"
+#include "SymGrpCompAngwWeighted.h"
 #include "utility.h"
 #include <cstddef> // std::size_t
 #include <limits> // std::numeric_limits
@@ -59,6 +63,8 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     else if (type == 21)  sf = new SymFncCompAngn(em);
     else if (type == 22)  sf = new SymFncCompAngw(em);
     else if (type == 23)  sf = new SymFncCompRadWeighted(em);
+    else if (type == 24)  sf = new SymFncCompAngnWeighted(em);
+    else if (type == 25)  sf = new SymFncCompAngwWeighted(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -104,6 +110,8 @@ SymGrp* setupSymmetryFunctionGroup(ElementMap em, SymFnc const& sf)
     else if (type == 21)  sfg = new SymGrpCompAngn(em);
     else if (type == 22)  sfg = new SymGrpCompAngw(em);
     else if (type == 23)  sfg = new SymGrpCompRadWeighted(em);
+    else if (type == 24)  sfg = new SymGrpCompAngnWeighted(em);
+    else if (type == 25)  sfg = new SymGrpCompAngwWeighted(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -168,6 +176,8 @@ void compareAnalyticNumericDerivGroup(Structure&   s,
     // Calculate symmetry function for atom 0.
     recalculateSymmetryFunctionGroup(s, s.atoms.at(0), *sfg);
 
+    BOOST_TEST_INFO(string("Symmetry function derivatives, type ")
+                    << type << "\n");
     for (size_t ic = 0; ic < 3; ++ic)
     {
         BOOST_REQUIRE_SMALL(s.atoms.at(0).dGdr.at(0)[ic]
@@ -212,6 +222,8 @@ void checkAbsoluteValueGroup(Structure&   s,
     // Calculate symmetry function for atom 0.
     recalculateSymmetryFunctionGroup(s, s.atoms.at(0), *sfg);
 
+    BOOST_TEST_INFO(string("Symmetry function values, type ")
+                    << type << "\n");
     BOOST_REQUIRE_SMALL(s.atoms.at(0).G.at(0) - value, accuracy);
 
     delete sf;

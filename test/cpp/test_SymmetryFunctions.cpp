@@ -19,6 +19,8 @@
 #include "SymFncExpRadWeighted.h"
 #include "SymFncExpAngnWeighted.h"
 #include "SymFncCompRadWeighted.h"
+#include "SymFncCompAngnWeighted.h"
+#include "SymFncCompAngwWeighted.h"
 #include "utility.h"
 #include <cstddef> // std::size_t
 //#include <iostream> // std::cerr
@@ -50,6 +52,8 @@ SymFnc* setupSymmetryFunction(ElementMap   em,
     else if (type == 21)  sf = new SymFncCompAngn(em);
     else if (type == 22)  sf = new SymFncCompAngw(em);
     else if (type == 23)  sf = new SymFncCompRadWeighted(em);
+    else if (type == 24)  sf = new SymFncCompAngnWeighted(em);
+    else if (type == 25)  sf = new SymFncCompAngwWeighted(em);
     else
     {
         throw runtime_error("ERROR: Unknown symmetry function type.\n");
@@ -132,6 +136,8 @@ void compareAnalyticNumericDeriv(Structure&   s,
     // Calculate symmetry function for atom 0.
     recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
 
+    BOOST_TEST_INFO(string("Symmetry function derivatives, type ")
+                    << type << "\n");
     for (size_t ic = 0; ic < 3; ++ic)
     {
         BOOST_REQUIRE_SMALL(s.atoms.at(0).dGdr.at(0)[ic]
@@ -173,6 +179,8 @@ void checkAbsoluteValue(Structure&   s,
     // Calculate symmetry function for atom 0.
     recalculateSymmetryFunction(s, s.atoms.at(0), *sf);
 
+    BOOST_TEST_INFO(string("Symmetry function values, type ")
+                    << type << "\n");
 //    cerr << strpr("%24.16E\n", s.atoms.at(0).G.at(0));
     BOOST_REQUIRE_SMALL(s.atoms.at(0).G.at(0) - value, accuracy);
 

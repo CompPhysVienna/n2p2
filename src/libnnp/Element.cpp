@@ -28,6 +28,8 @@
 #include "SymFncExpRadWeighted.h"
 #include "SymFncExpAngnWeighted.h"
 #include "SymFncCompRadWeighted.h"
+#include "SymFncCompAngnWeighted.h"
+#include "SymFncCompAngwWeighted.h"
 #include "SymGrp.h"
 #include "SymGrpExpRad.h"
 #include "SymGrpCompRad.h"
@@ -38,6 +40,8 @@
 #include "SymGrpExpRadWeighted.h"
 #include "SymGrpExpAngnWeighted.h"
 #include "SymGrpCompRadWeighted.h"
+#include "SymGrpCompAngnWeighted.h"
+#include "SymGrpCompAngwWeighted.h"
 #include "utility.h"
 #include <iostream>  // std::cerr
 #include <cstdlib>   // atoi
@@ -120,6 +124,14 @@ void Element::addSymmetryFunction(string const& parameters,
     else if (type == 23)
     {
         symmetryFunctions.push_back(new SymFncCompRadWeighted(elementMap));
+    }
+    else if (type == 24)
+    {
+        symmetryFunctions.push_back(new SymFncCompAngnWeighted(elementMap));
+    }
+    else if (type == 25)
+    {
+        symmetryFunctions.push_back(new SymFncCompAngwWeighted(elementMap));
     }
     else
     {
@@ -245,6 +257,16 @@ void Element::setupSymmetryFunctionGroups()
             {
                 symmetryFunctionGroups.push_back((SymGrp*)
                     new SymGrpCompRadWeighted(elementMap));
+            }
+            else if ((*sf)->getType() == 24)
+            {
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpCompAngnWeighted(elementMap));
+            }
+            else if ((*sf)->getType() == 25)
+            {
+                symmetryFunctionGroups.push_back((SymGrp*)
+                    new SymGrpCompAngwWeighted(elementMap));
             }
             else
             {

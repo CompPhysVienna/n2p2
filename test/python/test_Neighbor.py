@@ -72,42 +72,6 @@ class Test_d:
         n1.d = c
         assert n1.d == c, "Wrong attribute setter or getter."
 
-class Test_fc:
-    def test_correct_type(self, n1):
-        assert isinstance(n1.fc, float), "Wrong attribute type."
-    def test_set_and_get(self, n1):
-        with pytest.raises(TypeError):
-            n1.fc = b
-        n1.fc = c
-        assert n1.fc == c, "Wrong attribute setter or getter."
-
-class Test_dfc:
-    def test_correct_type(self, n1):
-        assert isinstance(n1.dfc, float), "Wrong attribute type."
-    def test_set_and_get(self, n1):
-        with pytest.raises(TypeError):
-            n1.dfc = b
-        n1.dfc = c
-        assert n1.dfc == c, "Wrong attribute setter or getter."
-
-class Test_cutoffAlpha:
-    def test_correct_type(self, n1):
-        assert isinstance(n1.cutoffAlpha, float), "Wrong attribute type."
-    def test_set_and_get(self, n1):
-        with pytest.raises(TypeError):
-            n1.cutoffAlpha = b
-        n1.cutoffAlpha = c
-        assert n1.cutoffAlpha == c, "Wrong attribute setter or getter."
-
-class Test_cutoffType:
-    def test_correct_type(self, n1):
-        assert isinstance(n1.cutoffType, int), "Wrong attribute type."
-    def test_set_and_get(self, n1):
-        with pytest.raises(TypeError):
-            n1.cutoffType = b
-        n1.cutoffType = a
-        assert n1.cutoffType == a, "Wrong attribute setter or getter."
-
 class Test_dr:
     def test_correct_type(self, n1):
         assert isinstance(n1.dr, Vec3D), "Wrong attribute type."

@@ -153,7 +153,7 @@ void SymFncCompAngw::calculate(Atom& atom, bool const derivatives) const
                         ca.fdf(acostijk, ang, dang);
 
                         double const rad  = radij * radik; // product of cutoff fcts
-                        result += rad*ang;
+                        result += rad * ang;
 
                         // Force calculation.
                         if (!derivatives) continue;
