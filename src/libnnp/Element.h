@@ -222,8 +222,10 @@ public:
     std::vector<std::size_t> getCacheSizes() const;
 #endif
 
-    /// Neural network pointer for this element.
-    NeuralNetwork*             neuralNetwork;
+    /// Neural network pointer for this element (short-range NN).
+    NeuralNetwork*             neuralNetworkShort;
+    /// Neural network pointer for this element (charge NN).
+    NeuralNetwork*             neuralNetworkCharge;
     /// Symmetry function statistics.
     SymFncStatistics           statistics;
 

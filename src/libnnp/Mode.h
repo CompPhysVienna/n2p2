@@ -82,6 +82,14 @@ namespace nnp
 class Mode
 {
 public:
+    enum class NNPType
+    {
+        /// Short range NNP only.
+        SHORT_ONLY,
+        /// Short range NNP with additional charge NN (M. Bircher).
+        SHORT_CHARGE_NN
+    };
+
     Mode();
     /** Write welcome message with version information.
      */
@@ -203,15 +211,21 @@ public:
     virtual void             setupNeuralNetwork();
     /** Set up neural network weights from files.
      *
-     * @param[in] fileNameFormat Format for weights file name. The string must
-     *                           contain one placeholder for the atomic number.
+     * @param[in] fileNameFormatShort Format for weights file name. The string
+     *                                must contain one placeholder for the
+     *                                atomic number.
+     * @param[in] fileNameFormatCharge Format for charge NN weights file name.
+     *                                 The string must contain one placeholder
+     *                                 for the atomic number.
      *
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     virtual void             setupNeuralNetworkWeights(
-                                 std::string const& fileNameFormat
-                                                       = "weights.%03zu.data");
+                                std::string const& fileNameFormatShort
+                                                      = "weights.%03zu.data",
+                                std::string const& fileNameFormatCharge
+                                                      = "weightse.%03zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -474,8 +488,10 @@ public:
     Log        log;
 
 protected:
+    NNPType                    nnpType;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
+    bool                       useChargeNN;
     std::size_t                numElements;
     std::vector<std::size_t>   minNeighbors;
     std::vector<double>        minCutoffRadius;

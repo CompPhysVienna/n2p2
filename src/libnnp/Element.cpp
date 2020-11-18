@@ -53,12 +53,13 @@ using namespace std;
 using namespace nnp;
 
 Element::Element(size_t const index, ElementMap const& elementMap) :
-    neuralNetwork     (NULL                          ),
-    elementMap        (elementMap                    ),
-    index             (index                         ),
-    atomicNumber      (elementMap.atomicNumber(index)),
-    atomicEnergyOffset(0.0                           ),
-    symbol            (elementMap.symbol(index)      )
+    neuralNetworkShort (NULL                          ),
+    neuralNetworkCharge(NULL                          ),
+    elementMap         (elementMap                    ),
+    index              (index                         ),
+    atomicNumber       (elementMap.atomicNumber(index)),
+    atomicEnergyOffset (0.0                           ),
+    symbol             (elementMap.symbol(index)      )
 {
 }
 
@@ -77,9 +78,14 @@ Element::~Element()
         delete *it;
     }
 
-    if (neuralNetwork != NULL)
+    if (neuralNetworkShort != NULL)
     {
-        delete neuralNetwork;
+        delete neuralNetworkShort;
+    }
+
+    if (neuralNetworkCharge != NULL)
+    {
+        delete neuralNetworkCharge;
     }
 }
 

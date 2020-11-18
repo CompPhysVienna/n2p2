@@ -45,6 +45,7 @@ map<string, string> const createKnownKeywordsMap()
     m["mean_energy"                   ] = "";
     m["conv_length"                   ] = "";
     m["conv_energy"                   ] = "";
+    m["nnp_type"                      ] = "";
 
     // Training keywords.
     m["random_seed"                   ] = "";
