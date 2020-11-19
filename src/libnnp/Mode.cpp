@@ -988,6 +988,8 @@ void Mode::setupNeuralNetwork()
         NeuralNetworkTopology& t = nnt.at(i);
 
         t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
+        // Need one extra neuron for atomic charge.
+        if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
         e.neuralNetworkShort = new NeuralNetwork(
                                          t.numLayers,
                                          t.numNeuronsPerLayer.data(),
@@ -1087,6 +1089,9 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
         if (a->hasSymmetryFunctionDerivatives) continue;
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
+        // Inform atom if extra charge neuron is present in short-range NN.
+        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
         a->numSymmetryFunctions = e->numSymmetryFunctions();
@@ -1164,6 +1169,9 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
         if (a->hasSymmetryFunctionDerivatives) continue;
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
+        // Inform atom if extra charge neuron is present in short-range NN.
+        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
         a->numSymmetryFunctions = e->numSymmetryFunctions();
@@ -1223,17 +1231,44 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                                          bool const derivatives) const
 {
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    if (nnpType == NNPType::SHORT_ONLY)
     {
-        Element const& e = elements.at(it->element);
-        e.neuralNetworkShort->setInput(&((it->G).front()));
-        e.neuralNetworkShort->propagate();
-        if (derivatives)
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
         {
-            e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+            Element const& e = elements.at(it->element);
+            e.neuralNetworkShort->setInput(&((it->G).front()));
+            e.neuralNetworkShort->propagate();
+            if (derivatives)
+            {
+                e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+            }
+            e.neuralNetworkShort->getOutput(&(it->energy));
         }
-        e.neuralNetworkShort->getOutput(&(it->energy));
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            Element const& e = elements.at(it->element);
+            // First the charge NN.
+            e.neuralNetworkCharge->setInput(&((it->G).front()));
+            e.neuralNetworkCharge->propagate();
+            if (derivatives)
+            {
+                e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+            }
+            e.neuralNetworkShort->getOutput(&(it->energy));
+
+            e.neuralNetworkShort->setInput(&((it->G).front()));
+            e.neuralNetworkShort->propagate();
+            if (derivatives)
+            {
+                e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+            }
+            e.neuralNetworkShort->getOutput(&(it->energy));
+        }
     }
 
     return;

@@ -25,6 +25,7 @@ using namespace nnp;
 Atom::Atom() : hasNeighborList               (false),
                hasSymmetryFunctions          (false),
                hasSymmetryFunctionDerivatives(false),
+               useChargeNeuron               (false),
                index                         (0    ),
                indexStructure                (0    ),
                tag                           (0    ),
@@ -33,7 +34,8 @@ Atom::Atom() : hasNeighborList               (false),
                numNeighborsUnique            (0    ),
                numSymmetryFunctions          (0    ),
                energy                        (0.0  ),
-               charge                        (0.0  )
+               charge                        (0.0  ),
+               chargeRef                     (0.0  )
 {
 }
 
@@ -82,6 +84,8 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
             dGdxia.at(i) /= convLength;
 #endif
         }
+        // Take care of extra charge neuron.
+        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
     }
 
     if (hasNeighborList)
@@ -120,6 +124,8 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
             dGdxia.at(i) *= convLength;
 #endif
         }
+        // Take care of extra charge neuron.
+        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
     }
 
     if (hasNeighborList)
@@ -153,6 +159,7 @@ void Atom::allocate(bool all)
     // Clear all symmetry function related vectors (also for derivatives).
     G.clear();
     dEdG.clear();
+    dQdG.clear();
 #ifdef NNP_FULL_SFD_MEMORY
     dGdxia.clear();
 #endif
@@ -181,7 +188,9 @@ void Atom::allocate(bool all)
                               " unset, cannot allocate.\n");
         }
 #endif
-        dEdG.resize(numSymmetryFunctions, 0.0);
+        if (useChargeNeuron) dEdG.resize(numSymmetryFunctions + 1, 0.0);
+        else                 dEdG.resize(numSymmetryFunctions, 0.0);
+        dQdG.resize(numSymmetryFunctions, 0.0);
 #ifdef NNP_FULL_SFD_MEMORY
         dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
@@ -226,6 +235,8 @@ void Atom::free(bool all)
 
     dEdG.clear();
     vector<double>(dEdG).swap(dEdG);
+    dQdG.clear();
+    vector<double>(dQdG).swap(dQdG);
 #ifdef NNP_FULL_SFD_MEMORY
     dGdxia.clear();
     vector<double>(dGdxia).swap(dGdxia);
@@ -315,6 +326,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("hasNeighborList                : %d\n", hasNeighborList));
     v.push_back(strpr("hasSymmetryFunctions           : %d\n", hasSymmetryFunctions));
     v.push_back(strpr("hasSymmetryFunctionDerivatives : %d\n", hasSymmetryFunctionDerivatives));
+    v.push_back(strpr("useChargeNeuron                : %d\n", useChargeNeuron));
     v.push_back(strpr("index                          : %d\n", index));
     v.push_back(strpr("indexStructure                 : %d\n", indexStructure));
     v.push_back(strpr("tag                            : %d\n", tag));
@@ -324,6 +336,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("numSymmetryFunctions           : %d\n", numSymmetryFunctions));
     v.push_back(strpr("energy                         : %16.8E\n", energy));
     v.push_back(strpr("charge                         : %16.8E\n", charge));
+    v.push_back(strpr("chargeRef                      : %16.8E\n", chargeRef));
     v.push_back(strpr("r                              : %16.8E %16.8E %16.8E\n", r[0], r[1], r[2]));
     v.push_back(strpr("f                              : %16.8E %16.8E %16.8E\n", f[0], f[1], f[2]));
     v.push_back(strpr("fRef                           : %16.8E %16.8E %16.8E\n", fRef[0], fRef[1], fRef[2]));
@@ -375,6 +388,14 @@ vector<string> Atom::info() const
     for (size_t i = 0; i < dEdG.size(); ++i)
     {
         v.push_back(strpr("%29d  : %16.8E\n", i, dEdG.at(i)));
+    }
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("dQdG                       [*] : %d\n", dQdG.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < dQdG.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %16.8E\n", i, dQdG.at(i)));
     }
     v.push_back(strpr("--------------------------------\n"));
 #ifdef NNP_FULL_SFD_MEMORY

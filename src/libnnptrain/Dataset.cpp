@@ -176,7 +176,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     MPI_Pack_size(1, MPI_CHAR  , comm, &cs);
 
     // Structure
-    bs += 5 * cs + 4 * ss + 4 * is + 4 * ds;
+    bs += 5 * cs + 4 * ss + 4 * is + 5 * ds;
     // Structure.comment
     bs += ss;
     bs += (s.comment.length() + 1) * cs;
@@ -189,7 +189,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     bs += s.numAtomsPerElement.size() * ss;
     // Structure.atoms
     bs += ss;
-    bs += s.atoms.size() * (3 * cs + 7 * ss + 2 * ds + 3 * 3 * ds);
+    bs += s.atoms.size() * (3 * cs + 7 * ss + 3 * ds + 3 * 3 * ds);
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
@@ -266,6 +266,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
     MPI_Pack(&(s.pbc                           ), 3, MPI_INT   , buf, bs, &p, comm);
     MPI_Pack(&(s.energy                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.energyRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
+    MPI_Pack(&(s.charge                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.chargeRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.volume                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.sampleType                    ), 1, MPI_INT   , buf, bs, &p, comm);
@@ -316,6 +317,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             MPI_Pack(&(it->numSymmetryFunctions          ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->energy                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->charge                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
+            MPI_Pack(&(it->chargeRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->r.r                           ), 3, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->f.r                           ), 3, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->fRef.r                        ), 3, MPI_DOUBLE, buf, bs, &p, comm);
@@ -472,6 +474,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
     MPI_Unpack(buf, bs, &p, &(s->pbc                           ), 3, MPI_INT   , comm);
     MPI_Unpack(buf, bs, &p, &(s->energy                        ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->energyRef                     ), 1, MPI_DOUBLE, comm);
+    MPI_Unpack(buf, bs, &p, &(s->charge                        ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->chargeRef                     ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->volume                        ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->sampleType                    ), 1, MPI_INT   , comm);
@@ -529,6 +532,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
             MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctions          ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->energy                        ), 1, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->charge                        ), 1, MPI_DOUBLE, comm);
+            MPI_Unpack(buf, bs, &p, &(it->chargeRef                     ), 1, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->r.r                           ), 3, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->f.r                           ), 3, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->fRef.r                        ), 3, MPI_DOUBLE, comm);

@@ -75,6 +75,8 @@ struct Structure
     double                   energy;
     /// Reference potential energy.
     double                   energyRef;
+    /// Charge determined by neural network potential.
+    double                   charge;
     /// Reference charge.
     double                   chargeRef;
     /// Simulation box volume.

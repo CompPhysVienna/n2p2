@@ -90,6 +90,8 @@ struct Atom
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for this atom.
     bool                     hasSymmetryFunctionDerivatives;
+    /// If an additional charge neuron in the short-range NN is present.
+    bool                     useChargeNeuron;
     /// Index number of this atom.
     std::size_t              index;
     /// Index number of structure this atom belongs to.
@@ -108,6 +110,8 @@ struct Atom
     double                   energy;
     /// Atomic charge determined by neural network.
     double                   charge;
+    /// Atomic reference charge.
+    double                   chargeRef;
     /// Cartesian coordinates
     Vec3D                    r;
     /// Force vector calculated by neural network.
@@ -128,6 +132,8 @@ struct Atom
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.
     std::vector<double>      dEdG;
+    /// Derivative of atomic charge with respect to symmetry functions.
+    std::vector<double>      dQdG;
 #ifdef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
