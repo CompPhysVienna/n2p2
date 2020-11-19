@@ -151,6 +151,7 @@ cdef extern from "Atom.h" namespace "nnp":
         bool             hasNeighborList
         bool             hasSymmetryFunctions
         bool             hasSymmetryFunctionDerivatives
+        bool             useChargeNeuron
         size_t           index
         size_t           indexStructure
         size_t           tag
@@ -160,6 +161,7 @@ cdef extern from "Atom.h" namespace "nnp":
         size_t           numSymmetryFunctions
         double           energy
         double           charge
+        double           chargeRef
         Vec3D            r
         Vec3D            f
         Vec3D            fRef
@@ -169,6 +171,7 @@ cdef extern from "Atom.h" namespace "nnp":
         vector[size_t]   cacheSizePerElement;
         vector[double]   G
         vector[double]   dEdG
+        vector[double]   dQdG
         #vector[double]   dGdxia
         vector[Vec3D]    dGdr
         vector[Neighbor] neighbors

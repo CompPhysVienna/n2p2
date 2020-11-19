@@ -147,6 +147,13 @@ cdef class Atom:
     @hasSymmetryFunctionDerivatives.setter
     def hasSymmetryFunctionDerivatives(self, value):
         deref(self.thisptr).hasSymmetryFunctionDerivatives = value
+    # useChargeNeuron
+    @property
+    def useChargeNeuron(self):
+        return deref(self.thisptr).useChargeNeuron
+    @useChargeNeuron.setter
+    def useChargeNeuron(self, value):
+        deref(self.thisptr).useChargeNeuron = value
     # index
     @property
     def index(self):
@@ -210,6 +217,13 @@ cdef class Atom:
     @charge.setter
     def charge(self, value):
         deref(self.thisptr).charge = value
+    #chargeRef
+    @property
+    def chargeRef(self):
+        return deref(self.thisptr).chargeRef
+    @chargeRef.setter
+    def chargeRef(self, value):
+        deref(self.thisptr).chargeRef = value
     # r
     @property
     def r(self):
@@ -279,6 +293,13 @@ cdef class Atom:
     @dEdG.setter
     def dEdG(self, value):
         deref(self.thisptr).dEdG = value
+    # dQdG
+    @property
+    def dQdG(self):
+        return deref(self.thisptr).dQdG
+    @dQdG.setter
+    def dQdG(self, value):
+        deref(self.thisptr).dQdG = value
     ## dGdxia
     #@property
     #def dGdxia(self):

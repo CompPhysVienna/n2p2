@@ -277,6 +277,14 @@ public:
      * stored in Structure::energy.
      */
     void                     calculateEnergy(Structure& structure) const;
+    /** Calculate total charge a given structure.
+     *
+     * @param[in] structure Input structure.
+     *
+     * Sum up charge from atomic charge contributions. Result is
+     * stored in Structure::charge.
+     */
+    void                     calculateCharge(Structure& structure) const;
     /** Calculate forces for all atoms in given structure.
      *
      * @param[in] structure Input structure.

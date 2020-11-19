@@ -1257,11 +1257,17 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             e.neuralNetworkCharge->propagate();
             if (derivatives)
             {
-                e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+                e.neuralNetworkCharge->calculateDEdG(&((it->dQdG).front()));
             }
-            e.neuralNetworkShort->getOutput(&(it->energy));
+            e.neuralNetworkCharge->getOutput(&(it->charge));
 
-            e.neuralNetworkShort->setInput(&((it->G).front()));
+            // Now the short-range NN (have to set input neurons individually).
+            for (size_t i = 0; i < it->G.size(); ++i)
+            {
+                e.neuralNetworkShort->setInput(i, it->G.at(i));
+            }
+            // Set additional charge neuron.
+            e.neuralNetworkShort->setInput(it->G.size(), it->charge);
             e.neuralNetworkShort->propagate();
             if (derivatives)
             {
@@ -1282,6 +1288,19 @@ void Mode::calculateEnergy(Structure& structure) const
          it != structure.atoms.end(); ++it)
     {
         structure.energy += it->energy;
+    }
+
+    return;
+}
+
+void Mode::calculateCharge(Structure& structure) const
+{
+    // Loop over all atoms and add atomic charge contributions to total charge.
+    structure.charge = 0.0;
+    for (vector<Atom>::iterator it = structure.atoms.begin();
+         it != structure.atoms.end(); ++it)
+    {
+        structure.charge += it->charge;
     }
 
     return;

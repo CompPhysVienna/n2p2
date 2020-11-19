@@ -189,7 +189,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     bs += s.numAtomsPerElement.size() * ss;
     // Structure.atoms
     bs += ss;
-    bs += s.atoms.size() * (3 * cs + 7 * ss + 3 * ds + 3 * 3 * ds);
+    bs += s.atoms.size() * (4 * cs + 7 * ss + 3 * ds + 3 * 3 * ds);
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
@@ -213,6 +213,9 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.dEdG
         bs += ss;
         bs += it->dEdG.size() * ds;
+        // Atom.dQdG
+        bs += ss;
+        bs += it->dQdG.size() * ds;
 #ifdef NNP_FULL_SFD_MEMORY
         // Atom.dGdxia
         bs += ss;
@@ -308,6 +311,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             MPI_Pack(&(it->hasNeighborList               ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->hasSymmetryFunctions          ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR  , buf, bs, &p, comm);
+            MPI_Pack(&(it->useChargeNeuron               ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->index                         ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->indexStructure                ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->tag                           ), 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -370,6 +374,14 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             if (ts2 > 0)
             {
                 MPI_Pack(&(it->dEdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
+            }
+
+            // Atom.dQdG
+            ts2 = it->dQdG.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->dQdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
 
 #ifdef NNP_FULL_SFD_MEMORY
@@ -523,6 +535,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
             MPI_Unpack(buf, bs, &p, &(it->hasNeighborList               ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctions          ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR  , comm);
+            MPI_Unpack(buf, bs, &p, &(it->useChargeNeuron               ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->index                         ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->indexStructure                ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->tag                           ), 1, MPI_SIZE_T, comm);
@@ -597,6 +610,16 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 it->dEdG.clear();
                 it->dEdG.resize(ts2, 0.0);
                 MPI_Unpack(buf, bs, &p, &(it->dEdG.front()), ts2, MPI_DOUBLE, comm);
+            }
+
+            // Atom.dQdG
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->dQdG.clear();
+                it->dQdG.resize(ts2, 0.0);
+                MPI_Unpack(buf, bs, &p, &(it->dQdG.front()), ts2, MPI_DOUBLE, comm);
             }
 
 #ifdef NNP_FULL_SFD_MEMORY

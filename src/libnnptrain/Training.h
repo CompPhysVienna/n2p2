@@ -132,6 +132,11 @@ public:
      */
     void                  initializeWeightsMemory(UpdateStrategy updateStrategy
                                                       = US_COMBINED);
+    /** Set training stage (if multiple stages are needed for NNP type).
+     *
+     * @param[in] stage Training stage to set.
+     */
+    void                  setStage(std::size_t stage);
     /** General training settings and setup of weight update routine.
      */
     void                  setupTraining();
@@ -321,10 +326,14 @@ private:
     bool                          freeMemory;
     /// Whether training log file is written.
     bool                          writeTrainingLog;
+    /// Training stage.
+    std::size_t                   stage;
     /// Number of updaters (depends on update strategy).
     std::size_t                   numUpdaters;
     /// Number of energies in training set.
     std::size_t                   numEnergiesTrain;
+    /// Number of charges in training set.
+    std::size_t                   numChargesTrain;
     /// Number of forces in training set.
     std::size_t                   numForcesTrain;
     /// Number of epochs requested.
@@ -424,6 +433,8 @@ private:
 #endif
     /// Vector with indices of training structures.
     std::vector<UpdateCandidate>  updateCandidatesEnergy;
+    /// Vector with indices of training charges.
+    std::vector<UpdateCandidate>  updateCandidatesCharge;
     /// Vector with indices of training forces.
     std::vector<UpdateCandidate>  updateCandidatesForce;
     /// Weights per task per updater for energy updates.

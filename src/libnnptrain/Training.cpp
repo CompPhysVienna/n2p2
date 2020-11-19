@@ -46,6 +46,7 @@ Training::Training() : Dataset(),
                        reapeatedEnergyUpdates     (false          ),
                        freeMemory                 (false          ),
                        writeTrainingLog           (false          ),
+                       stage                      (0              ),
                        numUpdaters                (0              ),
                        numEnergiesTrain           (0              ),
                        numForcesTrain             (0              ),
@@ -117,74 +118,130 @@ void Training::selectSets()
 
     size_t numMyEnergiesTrain = 0;
     size_t numMyEnergiesTest  = 0;
+    size_t numMyChargesTrain  = 0;
+    size_t numMyChargesTest   = 0;
     size_t numMyForcesTrain   = 0;
     size_t numMyForcesTest    = 0;
+    vector<size_t> numMyChargesTrainPerElement;
+    numMyChargesTrainPerElement.resize(numElements, 0);
     vector<size_t> numMyForcesTrainPerElement;
     numMyForcesTrainPerElement.resize(numElements, 0);
     double testSetFraction = atof(settings["test_fraction"].c_str());
     log << strpr("Desired test set ratio      : %f\n", testSetFraction);
-    //for (vector<Structure>::iterator it = structures.begin();
-    //     it != structures.end(); ++it)
     if (structures.size() > 0) hasStructures = true;
     else hasStructures = false;
-    for (size_t i = 0; i < structures.size(); ++i)
+
+    if ( nnpType == NNPType::SHORT_ONLY ||
+        (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
     {
-        Structure& s = structures.at(i);
-        if (gsl_rng_uniform(rng) < testSetFraction)
+        for (size_t i = 0; i < structures.size(); ++i)
         {
-            s.sampleType = Structure::ST_TEST;
-            numMyEnergiesTest++;
-            numMyForcesTest += 3 * s.numAtoms;
-        }
-        else
-        {
-            s.sampleType = Structure::ST_TRAINING;
-            numMyEnergiesTrain++;
-            numMyForcesTrain += 3 * s.numAtoms;
-            for (size_t j = 0; j < numElements; ++j)
+            Structure& s = structures.at(i);
+            if (gsl_rng_uniform(rng) < testSetFraction)
             {
-                numMyForcesTrainPerElement.at(j) +=
-                                                3 * s.numAtomsPerElement.at(j);
+                s.sampleType = Structure::ST_TEST;
+                numMyEnergiesTest++;
+                numMyForcesTest += 3 * s.numAtoms;
             }
-            updateCandidatesEnergy.push_back(UpdateCandidate());
-            updateCandidatesEnergy.back().s = i;
-            for (vector<Atom>::const_iterator it = s.atoms.begin();
-                 it != s.atoms.end(); ++it)
+            else
             {
-                for (size_t j = 0; j < 3; ++j)
+                s.sampleType = Structure::ST_TRAINING;
+                numMyEnergiesTrain++;
+                numMyForcesTrain += 3 * s.numAtoms;
+                for (size_t j = 0; j < numElements; ++j)
                 {
-                    updateCandidatesForce.push_back(UpdateCandidate());
-                    updateCandidatesForce.back().s = i;
-                    updateCandidatesForce.back().a = it->index;
-                    updateCandidatesForce.back().c = j;
+                    numMyForcesTrainPerElement.at(j) +=
+                        3 * s.numAtomsPerElement.at(j);
+                }
+                updateCandidatesEnergy.push_back(UpdateCandidate());
+                updateCandidatesEnergy.back().s = i;
+                for (vector<Atom>::const_iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    for (size_t j = 0; j < 3; ++j)
+                    {
+                        updateCandidatesForce.push_back(UpdateCandidate());
+                        updateCandidatesForce.back().s = i;
+                        updateCandidatesForce.back().a = it->index;
+                        updateCandidatesForce.back().c = j;
+                    }
                 }
             }
         }
-    }
-    for (size_t i = 0; i < numElements; ++i)
-    {
-        if (hasStructures && (numMyForcesTrainPerElement.at(i) == 0))
+        for (size_t i = 0; i < numElements; ++i)
         {
-            log << strpr("WARNING: Process %d has no atoms of element "
-                         "%d (%2s).\n",
-                         myRank,
-                         i,
-                         elementMap[i].c_str());
+            if (hasStructures && (numMyForcesTrainPerElement.at(i) == 0))
+            {
+                log << strpr("WARNING: Process %d has no atoms of element "
+                             "%d (%2s).\n",
+                             myRank,
+                             i,
+                             elementMap[i].c_str());
+            }
         }
+        MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTrain, 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTest , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTrain  , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTest   , 1, MPI_SIZE_T, MPI_SUM, comm);
+        numEnergiesTrain = numMyEnergiesTrain;
+        numForcesTrain = numMyForcesTrain;
+        log << strpr("Total number of energies    : %d\n", numStructures);
+        log << strpr("Number of training energies : %d\n", numMyEnergiesTrain);
+        log << strpr("Number of test     energies : %d\n", numMyEnergiesTest);
+        log << strpr("Number of training forces   : %d\n", numMyForcesTrain);
+        log << strpr("Number of test     forces   : %d\n", numMyForcesTest);
+        log << strpr("Actual test set fraction    : %f\n",
+                     numMyEnergiesTest / double(numStructures));
     }
-    MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTrain, 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTest , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTrain  , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTest   , 1, MPI_SIZE_T, MPI_SUM, comm);
-    numEnergiesTrain = numMyEnergiesTrain;
-    numForcesTrain = numMyForcesTrain;
-    log << strpr("Total number of energies    : %d\n", numStructures);
-    log << strpr("Number of training energies : %d\n", numMyEnergiesTrain);
-    log << strpr("Number of test     energies : %d\n", numMyEnergiesTest);
-    log << strpr("Number of training forces   : %d\n", numMyForcesTrain);
-    log << strpr("Number of test     forces   : %d\n", numMyForcesTest);
-    log << strpr("Actual test set fraction    : %f\n",
-                 numMyEnergiesTest / double(numStructures));
+    else if ((nnpType == NNPType::SHORT_CHARGE_NN && stage == 1))
+    {
+        for (size_t i = 0; i < structures.size(); ++i)
+        {
+            Structure& s = structures.at(i);
+            if (gsl_rng_uniform(rng) < testSetFraction)
+            {
+                s.sampleType = Structure::ST_TEST;
+                numMyChargesTest += s.numAtoms;
+            }
+            else
+            {
+                s.sampleType = Structure::ST_TRAINING;
+                numMyChargesTrain += s.numAtoms;
+                for (size_t j = 0; j < numElements; ++j)
+                {
+                    numMyChargesTrainPerElement.at(j) +=
+                        s.numAtomsPerElement.at(j);
+                }
+                for (vector<Atom>::const_iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    updateCandidatesCharge.push_back(UpdateCandidate());
+                    updateCandidatesCharge.back().s = i;
+                    updateCandidatesCharge.back().a = it->index;
+                }
+            }
+        }
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            if (hasStructures && (numMyChargesTrainPerElement.at(i) == 0))
+            {
+                log << strpr("WARNING: Process %d has no atoms of element "
+                             "%d (%2s).\n",
+                             myRank,
+                             i,
+                             elementMap[i].c_str());
+            }
+        }
+        MPI_Allreduce(MPI_IN_PLACE, &numMyChargesTrain , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &numMyChargesTest  , 1, MPI_SIZE_T, MPI_SUM, comm);
+        numChargesTrain = numMyChargesTrain;
+        log << strpr("Total number of energies    : %d\n", numStructures);
+        log << strpr("Number of training charges  : %d\n", numMyChargesTrain);
+        log << strpr("Number of test     charges  : %d\n", numMyChargesTest);
+        log << strpr("Actual test set fraction    : %f\n",
+                     numMyChargesTest / double(numMyChargesTrain
+                                             + numMyChargesTest));
+    }
 
     log << "*****************************************"
            "**************************************\n";
@@ -393,12 +450,27 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
     return;
 }
 
+void Training::setStage(size_t stage)
+{
+    this->stage = stage;
+
+    return;
+}
+
 void Training::setupTraining()
 {
     log << "\n";
     log << "*** SETUP: TRAINING *********************"
            "**************************************\n";
     log << "\n";
+
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        log << strpr("Running stage %zu of training:", stage);
+        if      (stage == 1) log << "charge NN fitting.\n";
+        else if (stage == 2) log << "short-range NN fitting.\n";
+        else throw runtime_error("\nERROR: Unknown training stage.\n");
+    }
 
     useForces = settings.keywordExists("use_short_forces");
     if (useForces)
@@ -508,7 +580,7 @@ void Training::setupTraining()
         log << strpr("Gradient summation only selected: "
                      "JacobianMode::JM_SUM (%d)\n", jacobianMode);
         log << "No Jacobi matrix, gradients of all training candidates are "
-               "summed up instead.\n"; 
+               "summed up instead.\n";
     }
     else if (jacobianMode == JM_TASK)
     {
@@ -935,12 +1007,12 @@ void Training::setupTraining()
               (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
             jacobianMode != JM_SUM)
         {
-            size *= errorsGlobalEnergy;            
+            size *= errorsGlobalEnergy;
         }
         else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
                  jacobianMode != JM_SUM)
         {
-            size *= errorsPerTaskEnergy.at(myRank);            
+            size *= errorsPerTaskEnergy.at(myRank);
         }
         errorE.at(i).resize(size, 0.0);
         jacobianE.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
@@ -961,12 +1033,12 @@ void Training::setupTraining()
                  (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
                 jacobianMode != JM_SUM)
             {
-                size *= errorsGlobalForce;            
+                size *= errorsGlobalForce;
             }
             else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
                      jacobianMode != JM_SUM)
             {
-                size *= errorsPerTaskForce.at(myRank);            
+                size *= errorsPerTaskForce.at(myRank);
             }
             errorF.at(i).resize(size, 0.0);
             jacobianF.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
@@ -1312,7 +1384,6 @@ void Training::calculateError(bool const   writeCompFiles,
             {
                 fileEnergiesTrain << it->getEnergyLine();
             }
-            
         }
         else if (it->sampleType == Structure::ST_TEST)
         {
@@ -1480,7 +1551,7 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     ofstream file;
 
     if (append) file.open(fileName.c_str(), ofstream::app);
-    else 
+    else
     {
         file.open(fileName.c_str());
 
@@ -1758,7 +1829,7 @@ void Training::writeUpdaterStatus(bool         append,
                              elementMap.atomicNumber(i));
         }
         if (append) file.open(fileName.c_str(), ofstream::app);
-        else 
+        else
         {
             file.open(fileName.c_str());
             appendLinesToFile(file, updaters.at(i)->statusHeader());
@@ -2203,7 +2274,7 @@ void Training::update(bool force)
         ///////////////////////////////////////////////////////////////////////
         // PART 2: Compute error vector and Jacobian
         ///////////////////////////////////////////////////////////////////////
- 
+
         //log << strpr("%zu %s", b, force ? "F" : "E");
         //if (force)
         //{
@@ -2216,7 +2287,7 @@ void Training::update(bool force)
         //                 posUpdateCandidatesEnergy,
         //                 c->s, rmseFractionBest);
         //}
- 
+
         Structure& s = structures.at(c->s);
         // Temporary storage for derivative contributions of atoms (dXdc stores
         // dEdc or dFdc for energy or force update, respectively.
@@ -2260,7 +2331,7 @@ void Training::update(bool force)
             // respect to coordinate.
 #ifndef NNP_FULL_SFD_MEMORY
             if (force) collectDGdxia((*it), c->a, c->c);
-#else 
+#else
             if (force) it->collectDGdxia(c->a, c->c);
 #endif
             size_t i = it->element;
@@ -2276,7 +2347,7 @@ void Training::update(bool force)
 #ifndef NNP_FULL_SFD_MEMORY
                 nn->calculateDFdc(&(dXdc.at(i).front()),
                                   &(dGdxia.front()));
-#else 
+#else
                 nn->calculateDFdc(&(dXdc.at(i).front()),
                                   &(it->dGdxia.front()));
 #endif
@@ -2293,7 +2364,7 @@ void Training::update(bool force)
                 jacobian->at(iu).at(offset.at(i) + j) += dXdc.at(i).at(j);
             }
         }
- 
+
         // Sum up total potential energy or calculate force.
         if (force)
         {
@@ -2327,7 +2398,7 @@ void Training::update(bool force)
             //log << strpr("os 5: %zu ", offset2);
         }
         //log << strpr(" final os: %zu\n", offset2);
-        
+
 
         // Compute error vector (depends on update strategy).
         if (updateStrategy == US_COMBINED)
@@ -2460,7 +2531,7 @@ void Training::update(bool force)
         updaters.at(i)->setError(&(error->at(i).front()), error->at(i).size());
         updaters.at(i)->setJacobian(&(jacobian->at(i).front()),
                                     error->at(i).size());
-        if (updaterType == UT_KF) 
+        if (updaterType == UT_KF)
         {
             KalmanFilter* kf = dynamic_cast<KalmanFilter*>(updaters.at(i));
             kf->setSizeObservation(error->at(i).size());
@@ -2499,7 +2570,7 @@ void Training::update(bool force)
 
         if (myRank == 0)
         {
-            currentUpdateCandidatesPerTask.resize(numProcs, 0); 
+            currentUpdateCandidatesPerTask.resize(numProcs, 0);
             currentUpdateCandidatesPerTask.at(0) = myCurrentUpdateCandidates;
         }
         if (myRank == 0) MPI_Gather(MPI_IN_PLACE                , 1, MPI_INT, &(currentUpdateCandidatesPerTask.front()),  1, MPI_INT, 0, comm);
@@ -2514,10 +2585,10 @@ void Training::update(bool force)
                 totalUpdateCandidates += currentUpdateCandidatesPerTask.at(i);
             }
             procUpdateCandidate.resize(totalUpdateCandidates, 0);
-            indexStructure.resize(totalUpdateCandidates, 0); 
-            indexStructureGlobal.resize(totalUpdateCandidates, 0); 
-            indexAtom.resize(totalUpdateCandidates, 0); 
-            indexCoordinate.resize(totalUpdateCandidates, 0); 
+            indexStructure.resize(totalUpdateCandidates, 0);
+            indexStructureGlobal.resize(totalUpdateCandidates, 0);
+            indexAtom.resize(totalUpdateCandidates, 0);
+            indexCoordinate.resize(totalUpdateCandidates, 0);
             // Increase size of this vectors (only rank 0).
             currentRmseFraction.resize(totalUpdateCandidates, 0.0);
             thresholdLoopCount.resize(totalUpdateCandidates, 0.0);
@@ -2525,10 +2596,10 @@ void Training::update(bool force)
         else
         {
             procUpdateCandidate.resize(myCurrentUpdateCandidates, 0);
-            indexStructure.resize(myCurrentUpdateCandidates, 0); 
-            indexStructureGlobal.resize(myCurrentUpdateCandidates, 0); 
-            indexAtom.resize(myCurrentUpdateCandidates, 0); 
-            indexCoordinate.resize(myCurrentUpdateCandidates, 0); 
+            indexStructure.resize(myCurrentUpdateCandidates, 0);
+            indexStructureGlobal.resize(myCurrentUpdateCandidates, 0);
+            indexAtom.resize(myCurrentUpdateCandidates, 0);
+            indexCoordinate.resize(myCurrentUpdateCandidates, 0);
         }
         for (int i = 0; i < myCurrentUpdateCandidates; ++i)
         {
@@ -2676,7 +2747,7 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
     {
 #ifndef NNP_FULL_SFD_MEMORY
         collectDGdxia((*it), atom, component);
-#else 
+#else
         it->collectDGdxia(atom, component);
 #endif
         size_t i = it->element;
@@ -2686,7 +2757,7 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
         nn->getOutput(&(it->energy));
 #ifndef NNP_FULL_SFD_MEMORY
         nn->calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
-#else 
+#else
         nn->calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
 #endif
         for (size_t j = 0; j < dfdc.at(i).size(); ++j)

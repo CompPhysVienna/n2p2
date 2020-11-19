@@ -17,6 +17,7 @@
 #include "Training.h"
 #include "utility.h"
 #include <mpi.h>
+#include <cstddef> // std::size_t
 #include <cstdlib> // atoi
 #include <fstream>
 
@@ -27,7 +28,13 @@ int main(int argc, char* argv[])
 {
     int numProcs = 0;
     int myRank   = 0;
+    size_t stage = 0;
     ofstream myLog;
+ 
+    if (argc > 1)
+    {
+        stage = (size_t)atoi(argv[1]);
+    }
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
@@ -41,6 +48,7 @@ int main(int argc, char* argv[])
     training.setupMPI();
     training.initialize();
     training.loadSettingsFile();
+    training.setStage(stage);
     training.setupGeneric();
     training.setupSymmetryFunctionScaling();
     training.setupSymmetryFunctionStatistics(false, false, false, false);
