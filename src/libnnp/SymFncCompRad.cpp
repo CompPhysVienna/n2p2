@@ -139,7 +139,7 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
-        if (e1 == n.element && n.d < rc)
+        if (e1 == n.element && n.d > rl && n.d < rc)
         {
             // Energy calculation.
             double const rij = n.d;
@@ -147,25 +147,18 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
             double rad;
             double drad;
             double r = rij;
-            if (asymmetric) r = 2.0 * r - r * r;
 #ifndef NOSFCACHE
-            if (unique)
-            {
-                cr.fdf(r, rad, drad);
-                if (asymmetric) drad *= (2.0 - 2.0 * rij);
-            }
+            if (unique) cr.fdf(r, rad, drad);
             else
             {
                 double& crad = n.cache[c0];
                 double& cdrad = n.cache[c1];
                 if (crad < 0) cr.fdf(r, crad, cdrad);
-                if (asymmetric) cdrad *= (2.0 - 2.0 * rij);
                 rad = crad;
                 drad = cdrad;
             }
 #else
             cr.fdf(r, rad, drad);
-            if (asymmetric) drad *= (2.0 - 2.0 * rij);
 #endif
             result += rad;
 

@@ -123,7 +123,7 @@ void SymFncCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
     for (size_t j = 0; j < atom.numNeighbors; ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
-        if (n.d < rc)
+        if (n.d > rl && n.d < rc)
         {
             // Energy calculation.
             size_t const ne = n.element;
@@ -132,25 +132,18 @@ void SymFncCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
             double rad;
             double drad;
             double r = rij;
-            if (asymmetric) r = 2.0 * r - r * r;
 #ifndef NOSFCACHE
-            if (cacheIndices[ne].size() == 0)
-            {
-                cr.fdf(r, rad, drad);
-                if (asymmetric) drad *= (2.0 - 2.0 * rij);
-            }
+            if (cacheIndices[ne].size() == 0) cr.fdf(r, rad, drad);
             else
             {
                 double& crad = n.cache[cacheIndices[ne][0]];
                 double& cdrad = n.cache[cacheIndices[ne][1]];
                 if (crad < 0) cr.fdf(r, crad, cdrad);
-                if (asymmetric) cdrad *= (2.0 - 2.0 * rij);
                 rad = crad;
                 drad = cdrad;
             }
 #else
             cr.fdf(r, rad, drad);
-            if (asymmetric) drad *= (2.0 - 2.0 * rij);
 #endif
             result += rad * elementMap.atomicNumber(ne);
 
