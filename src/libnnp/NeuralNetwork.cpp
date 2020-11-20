@@ -914,7 +914,7 @@ void NeuralNetwork::getNeuronStatistics(long*   count,
                                         double* min,
                                         double* max,
                                         double* sum,
-                                        double* sum2)
+                                        double* sum2) const
 {
     int iNeuron = 0;
 

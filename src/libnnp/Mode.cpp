@@ -29,6 +29,7 @@
 #endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
+#include <utility>   // std::piecewise_construct, std::forward_as_tuple
 
 using namespace std;
 using namespace nnp;
@@ -86,12 +87,12 @@ void Mode::loadSettingsFile(string const& fileName)
 
     if (nnpType == NNPType::SHORT_ONLY)
     {
-        log << "This setting file defines a short-range only NNP.\n";
+        log << "This settings file defines a short-range only NNP.\n";
     }
     else if (nnpType == NNPType::SHORT_CHARGE_NN)
     {
-        log << "This setting file defines a short-range NNP with additional "
-               "charge NN (M. Bircher).\n";
+        log << "This settings file defines a short-range NNP with additional "
+               "charge NN (method by M. Bircher).\n";
         useChargeNN = true;
     }
     else
@@ -990,26 +991,32 @@ void Mode::setupNeuralNetwork()
         t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
         // Need one extra neuron for atomic charge.
         if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
-        e.neuralNetworkShort = new NeuralNetwork(
-                                         t.numLayers,
-                                         t.numNeuronsPerLayer.data(),
-                                         t.activationFunctionsPerLayer.data());
-        e.neuralNetworkShort->setNormalizeNeurons(normalizeNeurons);
+        e.neuralNetworks.emplace(piecewise_construct,
+                                 forward_as_tuple("short"),
+                                 forward_as_tuple(
+                                     t.numLayers,
+                                     t.numNeuronsPerLayer.data(),
+                                     t.activationFunctionsPerLayer.data()));
+        e.neuralNetworks.at("short").setNormalizeNeurons(normalizeNeurons);
         log << strpr("Atomic short range NN for "
                      "element %2s :\n", e.getSymbol().c_str());
-        log << e.neuralNetworkShort->info();
+        log << e.neuralNetworks.at("short").info();
         log << "-----------------------------------------"
                "--------------------------------------\n";
         if (useChargeNN)
         {
-            e.neuralNetworkCharge = new NeuralNetwork(
-                                         t.numLayers,
-                                         t.numNeuronsPerLayer.data(),
-                                         t.activationFunctionsPerLayer.data());
-            e.neuralNetworkCharge->setNormalizeNeurons(normalizeNeurons);
+            e.neuralNetworks.emplace(
+                                    piecewise_construct,
+                                    forward_as_tuple("charge"),
+                                    forward_as_tuple(
+                                        t.numLayers,
+                                        t.numNeuronsPerLayer.data(),
+                                        t.activationFunctionsPerLayer.data()));
+            e.neuralNetworks.at("charge")
+                .setNormalizeNeurons(normalizeNeurons);
             log << strpr("Atomic charge NN for "
                          "element %2s :\n", e.getSymbol().c_str());
-            log << e.neuralNetworkCharge->info();
+            log << e.neuralNetworks.at("charge").info();
             log << "-----------------------------------------"
                    "--------------------------------------\n";
         }
@@ -1031,35 +1038,12 @@ void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
 
     log << strpr("Short  NN weight file name format: %s\n",
                  fileNameFormatShort.c_str());
+    readNeuralNetworkWeights("short", fileNameFormatShort);
     if (useChargeNN)
     {
         log << strpr("Charge NN weight file name format: %s\n",
                      fileNameFormatCharge.c_str());
-    }
-    for (vector<Element>::iterator it = elements.begin();
-         it != elements.end(); ++it)
-    {
-        string fileName = strpr(fileNameFormatShort.c_str(),
-                                it->getAtomicNumber());
-        log << strpr("Short  NN: Weight file for element %2s: %s\n",
-                     it->getSymbol().c_str(),
-                     fileName.c_str());
-        vector<double> weights = readColumnsFromFile(fileName,
-                                                     vector<size_t>(1, 0)
-                                                    ).at(0);
-        it->neuralNetworkShort->setConnections(&(weights.front()));
-        if (useChargeNN)
-        {
-            fileName = strpr(fileNameFormatCharge.c_str(),
-                             it->getAtomicNumber());
-            log << strpr("Charge NN: Weight file for element %2s: %s\n",
-                         it->getSymbol().c_str(),
-                         fileName.c_str());
-            weights = readColumnsFromFile(fileName,
-                                          vector<size_t>(1, 0)
-                                         ).at(0);
-            it->neuralNetworkCharge->setConnections(&(weights.front()));
-        }
+        readNeuralNetworkWeights("charge", fileNameFormatCharge);
     }
 
     log << "*****************************************"
@@ -1229,21 +1213,22 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 }
 
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
-                                         bool const derivatives) const
+                                         bool const derivatives)
 {
     if (nnpType == NNPType::SHORT_ONLY)
     {
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
-            Element const& e = elements.at(it->element);
-            e.neuralNetworkShort->setInput(&((it->G).front()));
-            e.neuralNetworkShort->propagate();
+            NeuralNetwork& nn = elements.at(it->element)
+                                .neuralNetworks.at("short");
+            nn.setInput(&((it->G).front()));
+            nn.propagate();
             if (derivatives)
             {
-                e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+                nn.calculateDEdG(&((it->dEdG).front()));
             }
-            e.neuralNetworkShort->getOutput(&(it->energy));
+            nn.getOutput(&(it->energy));
         }
     }
     else if (nnpType == NNPType::SHORT_CHARGE_NN)
@@ -1251,29 +1236,32 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
-            Element const& e = elements.at(it->element);
             // First the charge NN.
-            e.neuralNetworkCharge->setInput(&((it->G).front()));
-            e.neuralNetworkCharge->propagate();
+            NeuralNetwork& nnCharge = elements.at(it->element)
+                                      .neuralNetworks.at("charge");
+            nnCharge.setInput(&((it->G).front()));
+            nnCharge.propagate();
             if (derivatives)
             {
-                e.neuralNetworkCharge->calculateDEdG(&((it->dQdG).front()));
+                nnCharge.calculateDEdG(&((it->dQdG).front()));
             }
-            e.neuralNetworkCharge->getOutput(&(it->charge));
+            nnCharge.getOutput(&(it->charge));
 
             // Now the short-range NN (have to set input neurons individually).
+            NeuralNetwork& nnShort = elements.at(it->element)
+                                     .neuralNetworks.at("short");
             for (size_t i = 0; i < it->G.size(); ++i)
             {
-                e.neuralNetworkShort->setInput(i, it->G.at(i));
+                nnShort.setInput(i, it->G.at(i));
             }
             // Set additional charge neuron.
-            e.neuralNetworkShort->setInput(it->G.size(), it->charge);
-            e.neuralNetworkShort->propagate();
+            nnShort.setInput(it->G.size(), it->charge);
+            nnShort.propagate();
             if (derivatives)
             {
-                e.neuralNetworkShort->calculateDEdG(&((it->dEdG).front()));
+                nnShort.calculateDEdG(&((it->dEdG).front()));
             }
-            e.neuralNetworkShort->getOutput(&(it->energy));
+            nnShort.getOutput(&(it->energy));
         }
     }
 
@@ -1442,7 +1430,7 @@ double Mode::getEnergyWithOffset(Structure const& structure, bool ref) const
 
 double Mode::normalizedEnergy(double energy) const
 {
-    return energy * convEnergy; 
+    return energy * convEnergy;
 }
 
 double Mode::normalizedEnergy(Structure const& structure, bool ref) const
@@ -1450,12 +1438,12 @@ double Mode::normalizedEnergy(Structure const& structure, bool ref) const
     if (ref)
     {
         return (structure.energyRef - structure.numAtoms * meanEnergy)
-               * convEnergy; 
+               * convEnergy;
     }
     else
     {
         return (structure.energy - structure.numAtoms * meanEnergy)
-               * convEnergy; 
+               * convEnergy;
     }
 }
 
@@ -1466,7 +1454,7 @@ double Mode::normalizedForce(double force) const
 
 double Mode::physicalEnergy(double energy) const
 {
-    return energy / convEnergy; 
+    return energy / convEnergy;
 }
 
 double Mode::physicalEnergy(Structure const& structure, bool ref) const
@@ -1474,11 +1462,11 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
     if (ref)
     {
         return structure.energyRef / convEnergy + structure.numAtoms
-               * meanEnergy; 
+               * meanEnergy;
     }
     else
     {
-        return structure.energy / convEnergy + structure.numAtoms * meanEnergy; 
+        return structure.energy / convEnergy + structure.numAtoms * meanEnergy;
     }
 }
 
@@ -1614,4 +1602,34 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
     }
 
     return prune;
+}
+
+void Mode::readNeuralNetworkWeights(string const& type,
+                                    string const& fileNameFormat)
+{
+    string s = "";
+    if      (type == "short" ) s = "short  NN";
+    else if (type == "charge") s = "charge NN";
+    else
+    {
+        throw runtime_error("ERROR: Unknown neural network type.\n");
+    }
+
+    for (vector<Element>::iterator it = elements.begin();
+         it != elements.end(); ++it)
+    {
+        string fileName = strpr(fileNameFormat.c_str(),
+                                it->getAtomicNumber());
+        log << strpr("Setting %s weights for element %2s from file: %s\n",
+                     s.c_str(),
+                     it->getSymbol().c_str(),
+                     fileName.c_str());
+        vector<double> weights = readColumnsFromFile(fileName,
+                                                     vector<size_t>(1, 0)
+                                                    ).at(0);
+        NeuralNetwork& nn = it->neuralNetworks.at(type);
+        nn.setConnections(&(weights.front()));
+    }
+
+    return;
 }

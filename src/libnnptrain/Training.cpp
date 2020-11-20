@@ -313,9 +313,6 @@ void Training::writeSetsToFiles()
 
 void Training::initializeWeights()
 {
-    // Local weights array (actual weights array depends on update strategy).
-    vector<vector<double> > w;
-
     log << "\n";
     log << "*** WEIGHT INITIALIZATION ***************"
            "**************************************\n";
@@ -328,74 +325,39 @@ void Training::initializeWeights()
                             " initialization are incompatible\n");
     }
 
-    // Create per-element connections vectors.
-    for (size_t i = 0; i < numElements; ++i)
+    // Charge NN.
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
     {
-        w.push_back(vector<double>());
-        w.at(i).resize(elements.at(i).neuralNetworkShort->getNumConnections(),
-                       0.0);
+        log << "Setting up charge neural networks:\n";
+        if ((stage == 1 && settings.keywordExists("use_old_weights_charge")) ||
+            (stage == 2))
+        {
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights("charge", "weightse.%03zu.data");
+        }
+        else randomizeNeuralNetworkWeights("charge");
     }
 
-    if (settings.keywordExists("use_old_weights_short"))
+    // Short-range NN.
+    if(nnpType == NNPType::SHORT_ONLY)
     {
-        log << "Reading old weights from files.\n";
-        log << "Calling standard weight initialization routine...\n";
-        log << "*****************************************"
-               "**************************************\n";
-        setupNeuralNetworkWeights("weights.%03zu.data");
-        return;
+        log << "Setting up short-range neural networks:\n";
+        if (settings.keywordExists("use_old_weights_short"))
+        {
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights("short", "weights.%03zu.data");
+        }
+        else randomizeNeuralNetworkWeights("short");
     }
-    else
+    else if(nnpType == NNPType::SHORT_CHARGE_NN && stage == 2)
     {
-        double minWeights = atof(settings["weights_min"].c_str());
-        double maxWeights = atof(settings["weights_max"].c_str());
-        log << strpr("Initial weights selected randomly in interval "
-                     "[%f, %f).\n", minWeights, maxWeights);
-        for (size_t i = 0; i < numElements; ++i)
+        log << "Setting up short-range neural networks:\n";
+        if (settings.keywordExists("use_old_weights_short"))
         {
-            for (size_t j = 0; j < w.at(i).size(); ++j)
-            {
-                w.at(i).at(j) = minWeights + gsl_rng_uniform(rngGlobal)
-                              * (maxWeights - minWeights);
-            }
-            elements.at(i).neuralNetworkShort->
-                setConnections(&(w.at(i).front()));
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights("short", "weights.%03zu.data");
         }
-        if (settings.keywordExists("nguyen_widrow_weights_short"))
-        {
-            log << "Weights modified according to Nguyen Widrow scheme.\n";
-            for (vector<Element>::iterator it = elements.begin();
-                 it != elements.end(); ++it)
-            {
-                it->neuralNetworkShort->
-                    modifyConnections(NeuralNetwork::MS_NGUYENWIDROW);
-            }
-        }
-        else if (settings.keywordExists("precondition_weights"))
-        {
-            throw runtime_error("ERROR: Preconditioning of weights not yet"
-                                " implemented.\n");
-            //it->neuralNetworkShort->
-            //    modifyConnections(NeuralNetwork::MS_PRECONDITIONOUTPUT,
-            //                      mean,
-            //                      sigma);
-        }
-        else
-        {
-            log << "Weights modified accoring to Glorot Bengio scheme.\n";
-            //log << "Weights connected to output layer node set to zero.\n";
-            log << "Biases set to zero.\n";
-            for (vector<Element>::iterator it = elements.begin();
-                 it != elements.end(); ++it)
-            {
-                it->neuralNetworkShort->
-                    modifyConnections(NeuralNetwork::MS_GLOROTBENGIO);
-                //it->neuralNetwork->
-                //    modifyConnections(NeuralNetwork::MS_ZEROOUTPUTWEIGHTS);
-                it->neuralNetworkShort->
-                    modifyConnections(NeuralNetwork::MS_ZEROBIAS);
-            }
-        }
+        else randomizeNeuralNetworkWeights("short");
     }
 
     log << "*****************************************"
@@ -417,8 +379,8 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         for (size_t i = 0; i < numElements; ++i)
         {
             weightsOffset.push_back(numWeights);
-            numWeights +=
-                elements.at(i).neuralNetworkShort->getNumConnections();
+            numWeights += elements.at(i).neuralNetworks.at("short")
+                          .getNumConnections();
         }
         weights.resize(numUpdaters);
         weights.at(0).resize(numWeights, 0.0);
@@ -434,7 +396,8 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         weights.resize(numUpdaters);
         for (size_t i = 0; i < numUpdaters; ++i)
         {
-            size_t n = elements.at(i).neuralNetworkShort->getNumConnections();
+            size_t n = elements.at(i).neuralNetworks.at("short")
+                       .getNumConnections();
             weights.at(i).resize(n, 0.0);
             numWeightsPerUpdater.push_back(n);
             log << strpr("Fit parameters for element %2s: %zu\n",
@@ -1526,7 +1489,7 @@ void Training::writeWeights(string const fileNameFormat) const
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         file.open(fileName.c_str());
-        elements.at(i).neuralNetworkShort->writeConnections(file);
+        elements.at(i).neuralNetworks.at("short").writeConnections(file);
         file.close();
     }
 
@@ -1731,13 +1694,13 @@ void Training::writeNeuronStatistics(string const fileName) const
 
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetworkShort->getNumNeurons();
+        size_t n = elements.at(i).neuralNetworks.at("short").getNumNeurons();
         vector<long>   count(n, 0);
         vector<double> min(n, 0.0);
         vector<double> max(n, 0.0);
         vector<double> mean(n, 0.0);
         vector<double> sigma(n, 0.0);
-        elements.at(i).neuralNetworkShort->
+        elements.at(i).neuralNetworks.at("short").
             getNeuronStatistics(&(count.front()),
                                 &(min.front()),
                                 &(max.front()),
@@ -1801,12 +1764,12 @@ void Training::writeNeuronStatisticsEpoch() const
     return;
 }
 
-void Training::resetNeuronStatistics() const
+void Training::resetNeuronStatistics()
 {
-    for (vector<Element>::const_iterator it = elements.begin();
+    for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        it->neuralNetworkShort->resetNeuronStatistics();
+        it->neuralNetworks.at("short").resetNeuronStatistics();
     }
     return;
 }
@@ -2295,7 +2258,8 @@ void Training::update(bool force)
         dXdc.resize(numElements);
         for (size_t i = 0; i < numElements; ++i)
         {
-            size_t n = elements.at(i).neuralNetworkShort->getNumConnections();
+            size_t n = elements.at(i).neuralNetworks.at("short")
+                       .getNumConnections();
             dXdc.at(i).resize(n, 0.0);
         }
         // Precalculate offset in Jacobian array.
@@ -2335,26 +2299,26 @@ void Training::update(bool force)
             if (force) it->collectDGdxia(c->a, c->c);
 #endif
             size_t i = it->element;
-            NeuralNetwork* const& nn = elements.at(i).neuralNetworkShort;
-            nn->setInput(&((it->G).front()));
-            nn->propagate();
-            if (force) nn->calculateDEdG(&((it->dEdG).front()));
-            nn->getOutput(&(it->energy));
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+            nn.setInput(&((it->G).front()));
+            nn.propagate();
+            if (force) nn.calculateDEdG(&((it->dEdG).front()));
+            nn.getOutput(&(it->energy));
             // Compute derivative of output node with respect to all neural
             // network connections (weights + biases).
             if (force)
             {
 #ifndef NNP_FULL_SFD_MEMORY
-                nn->calculateDFdc(&(dXdc.at(i).front()),
-                                  &(dGdxia.front()));
+                nn.calculateDFdc(&(dXdc.at(i).front()),
+                                 &(dGdxia.front()));
 #else
-                nn->calculateDFdc(&(dXdc.at(i).front()),
-                                  &(it->dGdxia.front()));
+                nn.calculateDFdc(&(dXdc.at(i).front()),
+                                 &(it->dGdxia.front()));
 #endif
             }
             else
             {
-                nn->calculateDEdc(&(dXdc.at(i).front()));
+                nn.calculateDEdc(&(dXdc.at(i).front()));
             }
             // Finally sum up Jacobian.
             if (updateStrategy == US_ELEMENT) iu = i;
@@ -2697,7 +2661,8 @@ vector<double> > Training::calculateWeightDerivatives(Structure* structure)
     dedc.resize(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetworkShort->getNumConnections();
+        size_t n = elements.at(i).neuralNetworks.at("short")
+                   .getNumConnections();
         dEdc.at(i).resize(n, 0.0);
         dedc.at(i).resize(n, 0.0);
     }
@@ -2705,11 +2670,11 @@ vector<double> > Training::calculateWeightDerivatives(Structure* structure)
          it != s.atoms.end(); ++it)
     {
         size_t i = it->element;
-        NeuralNetwork* const& nn = elements.at(i).neuralNetworkShort;
-        nn->setInput(&((it->G).front()));
-        nn->propagate();
-        nn->getOutput(&(it->energy));
-        nn->calculateDEdc(&(dedc.at(i).front()));
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+        nn.setInput(&((it->G).front()));
+        nn.propagate();
+        nn.getOutput(&(it->energy));
+        nn.calculateDEdc(&(dedc.at(i).front()));
         for (size_t j = 0; j < dedc.at(i).size(); ++j)
         {
             dEdc.at(i).at(j) += dedc.at(i).at(j);
@@ -2738,7 +2703,8 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
     dfdc.resize(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetworkShort->getNumConnections();
+        size_t n = elements.at(i).neuralNetworks.at("short")
+                   .getNumConnections();
         dFdc.at(i).resize(n, 0.0);
         dfdc.at(i).resize(n, 0.0);
     }
@@ -2751,14 +2717,14 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
         it->collectDGdxia(atom, component);
 #endif
         size_t i = it->element;
-        NeuralNetwork* const& nn = elements.at(i).neuralNetworkShort;
-        nn->setInput(&((it->G).front()));
-        nn->propagate();
-        nn->getOutput(&(it->energy));
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+        nn.setInput(&((it->G).front()));
+        nn.propagate();
+        nn.getOutput(&(it->energy));
 #ifndef NNP_FULL_SFD_MEMORY
-        nn->calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
+        nn.calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
 #else
-        nn->calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
+        nn.calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
 #endif
         for (size_t j = 0; j < dfdc.at(i).size(); ++j)
         {
@@ -2789,17 +2755,19 @@ void Training::getWeights()
         size_t pos = 0;
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork const* const& nn = elements.at(i).neuralNetworkShort;
-            nn->getConnections(&(weights.at(0).at(pos)));
-            pos += nn->getNumConnections();
+            NeuralNetwork const& nn = elements.at(i)
+                                      .neuralNetworks.at("short");
+            nn.getConnections(&(weights.at(0).at(pos)));
+            pos += nn.getNumConnections();
         }
     }
     else if (updateStrategy == US_ELEMENT)
     {
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork const* const& nn = elements.at(i).neuralNetworkShort;
-            nn->getConnections(&(weights.at(i).front()));
+            NeuralNetwork const& nn = elements.at(i)
+                                      .neuralNetworks.at("short");
+            nn.getConnections(&(weights.at(i).front()));
         }
     }
 
@@ -2813,17 +2781,17 @@ void Training::setWeights()
         size_t pos = 0;
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork* const& nn = elements.at(i).neuralNetworkShort;
-            nn->setConnections(&(weights.at(0).at(pos)));
-            pos += nn->getNumConnections();
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+            nn.setConnections(&(weights.at(0).at(pos)));
+            pos += nn.getNumConnections();
         }
     }
     else if (updateStrategy == US_ELEMENT)
     {
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork* const& nn = elements.at(i).neuralNetworkShort;
-            nn->setConnections(&(weights.at(i).front()));
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+            nn.setConnections(&(weights.at(i).front()));
         }
     }
 
@@ -2898,3 +2866,62 @@ void Training::collectDGdxia(Atom const& atom,
     return;
 }
 #endif
+
+void Training::randomizeNeuralNetworkWeights(string const& type)
+{
+    string keywordNW = "";
+    if      (type == "short" ) keywordNW = "nguyen_widrow_weights_short";
+    else if (type == "charge") keywordNW = "nguyen_widrow_weights_charge";
+    else
+    {
+        throw runtime_error("ERROR: Unknown neural network type.\n");
+    }
+
+    double minWeights = atof(settings["weights_min"].c_str());
+    double maxWeights = atof(settings["weights_max"].c_str());
+    log << strpr("Initial weights selected randomly in interval "
+                 "[%f, %f).\n", minWeights, maxWeights);
+    vector<double> w;
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at(type);
+        w.resize(nn.getNumConnections(), 0);
+        for (size_t j = 0; j < w.size(); ++j)
+        {
+            w.at(j) = minWeights + gsl_rng_uniform(rngGlobal)
+                    * (maxWeights - minWeights);
+        }
+        nn.setConnections(&(w.front()));
+    }
+    if (settings.keywordExists(keywordNW))
+    {
+        log << "Weights modified according to Nguyen Widrow scheme.\n";
+        for (vector<Element>::iterator it = elements.begin();
+             it != elements.end(); ++it)
+        {
+            NeuralNetwork& nn = it->neuralNetworks.at(type);
+            nn.modifyConnections(NeuralNetwork::MS_NGUYENWIDROW);
+        }
+    }
+    else if (settings.keywordExists("precondition_weights"))
+    {
+        throw runtime_error("ERROR: Preconditioning of weights not yet"
+                            " implemented.\n");
+    }
+    else
+    {
+        log << "Weights modified accoring to Glorot Bengio scheme.\n";
+        //log << "Weights connected to output layer node set to zero.\n";
+        log << "Biases set to zero.\n";
+        for (vector<Element>::iterator it = elements.begin();
+             it != elements.end(); ++it)
+        {
+            NeuralNetwork& nn = it->neuralNetworks.at(type);
+            nn.modifyConnections(NeuralNetwork::MS_GLOROTBENGIO);
+            //nn->modifyConnections(NeuralNetwork::MS_ZEROOUTPUTWEIGHTS);
+            nn.modifyConnections(NeuralNetwork::MS_ZEROBIAS);
+        }
+    }
+
+    return;
+}

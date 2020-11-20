@@ -202,7 +202,7 @@ public:
     void                  writeNeuronStatisticsEpoch() const;
     /** Reset neuron statistics for all elements.
      */
-    void                  resetNeuronStatistics() const;
+    void                  resetNeuronStatistics();
     /** Write updater information to file.
      *
      * @param[in] append If true, append to file, otherwise create new file.
@@ -538,6 +538,11 @@ private:
                        std::size_t indexAtom,
                        std::size_t indexComponent);
 #endif
+    /** Randomly initialize specificy neural network weights.
+     *
+     * @param[in] type Actual network type to initialize ("short" or "charge").
+     */
+    void randomizeNeuralNetworkWeights(std::string const& type);
 };
 
 //////////////////////////////////

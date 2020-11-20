@@ -124,6 +124,9 @@ public:
                 int const* const&                numNeuronsPerLayer,
                 ActivationFunction const* const& activationFunctionsPerLayer);
     ~NeuralNetwork();
+    // Prevent copying.
+    //NeuralNetwork(const NeuralNetwork&) = delete;
+    //NeuralNetwork(NeuralNetwork&&) = delete;
     /** Turn on/off neuron normalization.
      *
      * @param[in] normalizeNeurons true or false (default: false).
@@ -334,7 +337,7 @@ public:
                                                  double* min,
                                                  double* max,
                                                  double* sum,
-                                                 double* sum2);
+                                                 double* sum2) const;
     /** Reset neuron statistics.
      *
      * Counters and summation variables for neuron statistics are reset.

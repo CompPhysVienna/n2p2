@@ -267,8 +267,8 @@ public:
      * energy offset (keyword `atom_energy`) is also added at this point.
      */
     void                     calculateAtomicNeuralNetworks(
-                                                 Structure& structure,
-                                                 bool const derivatives) const;
+                                                       Structure& structure,
+                                                       bool const derivatives);
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.
@@ -512,6 +512,14 @@ protected:
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
     std::vector<Element>       elements;
+
+    /** Read in weights for a specific type of neural network.
+     *
+     * @param[in] type Actual network type to initialize ("short" or "charge").
+     * @param[in] fileNameFormat Weights file name format.
+     */
+    void readNeuralNetworkWeights(std::string const& type,
+                                  std::string const& fileName);
 };
 
 //////////////////////////////////

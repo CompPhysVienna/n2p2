@@ -22,6 +22,7 @@
 #include "SymFnc.h"
 #include "SymFncStatistics.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <utility> // std::pair
 #include <vector>  // std::vector
@@ -222,12 +223,10 @@ public:
     std::vector<std::size_t> getCacheSizes() const;
 #endif
 
-    /// Neural network pointer for this element (short-range NN).
-    NeuralNetwork*             neuralNetworkShort;
-    /// Neural network pointer for this element (charge NN).
-    NeuralNetwork*             neuralNetworkCharge;
+    /// Neural networks for this element.
+    std::map<std::string, NeuralNetwork> neuralNetworks;
     /// Symmetry function statistics.
-    SymFncStatistics           statistics;
+    SymFncStatistics                     statistics;
 
 protected:
     /// Copy of element map.
