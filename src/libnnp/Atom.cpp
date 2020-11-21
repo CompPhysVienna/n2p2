@@ -186,13 +186,16 @@ void Atom::allocate(bool all)
         dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
         dGdr.resize(numSymmetryFunctions);
-        for (vector<Neighbor>::iterator it = neighbors.begin();
-             it != neighbors.end(); ++it)
-        {
+    }
+    for (vector<Neighbor>::iterator it = neighbors.begin();
+         it != neighbors.end(); ++it)
+    {
 #ifndef NOSFCACHE
-            it->cache.resize(cacheSizePerElement.at(it->element),
-                             -numeric_limits<double>::max());
+        it->cache.resize(cacheSizePerElement.at(it->element),
+                         -numeric_limits<double>::max());
 #endif
+        if (all)
+        {
 #ifdef IMPROVED_SFD_MEMORY
             it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
 #else
@@ -211,6 +214,14 @@ void Atom::free(bool all)
         G.clear();
         vector<double>(G).swap(G);
         hasSymmetryFunctions = false;
+#ifndef NOSFCACHE
+        for (vector<Neighbor>::iterator it = neighbors.begin();
+             it != neighbors.end(); ++it)
+        {
+            it->cache.clear();
+            vector<double>(it->cache).swap(it->cache);
+        }
+#endif
     }
 
     dEdG.clear();
@@ -224,10 +235,6 @@ void Atom::free(bool all)
     for (vector<Neighbor>::iterator it = neighbors.begin();
          it != neighbors.end(); ++it)
     {
-#ifndef NOSFCACHE
-        it->cache.clear();
-        vector<double>(it->cache).swap(it->cache);
-#endif
         it->dGdr.clear();
         vector<Vec3D>(it->dGdr).swap(it->dGdr);
     }

@@ -192,7 +192,7 @@ symfunction_short  H   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
 symfunction_short  H   24   5.00E+00  1.50E+01    0.00  360.00 p2a
 symfunction_short  H   24   5.00E+00  1.50E+01    0.00  180.00 p2a
 symfunction_short  H   24   5.00E+00  1.50E+01    0.00  110.00 p2a
-symfunction_short  H   24   5.00E+00  1.50E+01   60.00  180.00 p2a
+# symfunction_short  H   24   5.00E+00  1.50E+01   60.00  180.00 p2a
 symfunction_short  H   24   5.00E+00  1.50E+01   49.10  169.10 p2a
 
 symfunction_short  C   25  -1.50E+01  1.50E+01 -180.00  180.00 p2
@@ -231,12 +231,12 @@ symfunction_short  C   24   2.50E+00  1.25E+01    0.00  180.00 p2a
 symfunction_short  C   24   2.50E+00  1.25E+01    0.00  110.00 p2a
 symfunction_short  C   24   2.50E+00  1.25E+01   60.00  180.00 p2a
 symfunction_short  C   24   2.50E+00  1.25E+01   49.10  169.10 p2a
-symfunction_short  C   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
-symfunction_short  C   24   5.00E+00  1.50E+01    0.00  360.00 p2a
-symfunction_short  C   24   5.00E+00  1.50E+01    0.00  180.00 p2a
-symfunction_short  C   24   5.00E+00  1.50E+01    0.00  110.00 p2a
-symfunction_short  C   24   5.00E+00  1.50E+01   60.00  180.00 p2a
-symfunction_short  C   24   5.00E+00  1.50E+01   49.10  169.10 p2a
+# symfunction_short  C   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
+# symfunction_short  C   24   5.00E+00  1.50E+01    0.00  360.00 p2a
+# symfunction_short  C   24   5.00E+00  1.50E+01    0.00  180.00 p2a
+# symfunction_short  C   24   5.00E+00  1.50E+01    0.00  110.00 p2a
+# symfunction_short  C   24   5.00E+00  1.50E+01   60.00  180.00 p2a
+# symfunction_short  C   24   5.00E+00  1.50E+01   49.10  169.10 p2a
 
 symfunction_short  N   25  -1.50E+01  1.50E+01 -180.00  180.00 p2
 symfunction_short  N   25  -1.50E+01  1.50E+01    0.00  360.00 p2
@@ -274,12 +274,12 @@ symfunction_short  N   24   2.50E+00  1.25E+01    0.00  180.00 p2a
 symfunction_short  N   24   2.50E+00  1.25E+01    0.00  110.00 p2a
 symfunction_short  N   24   2.50E+00  1.25E+01   60.00  180.00 p2a
 symfunction_short  N   24   2.50E+00  1.25E+01   49.10  169.10 p2a
-symfunction_short  N   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
-symfunction_short  N   24   5.00E+00  1.50E+01    0.00  360.00 p2a
-symfunction_short  N   24   5.00E+00  1.50E+01    0.00  180.00 p2a
-symfunction_short  N   24   5.00E+00  1.50E+01    0.00  110.00 p2a
-symfunction_short  N   24   5.00E+00  1.50E+01   60.00  180.00 p2a
-symfunction_short  N   24   5.00E+00  1.50E+01   49.10  169.10 p2a
+# symfunction_short  N   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
+# symfunction_short  N   24   5.00E+00  1.50E+01    0.00  360.00 p2a
+# symfunction_short  N   24   5.00E+00  1.50E+01    0.00  180.00 p2a
+# symfunction_short  N   24   5.00E+00  1.50E+01    0.00  110.00 p2a
+# symfunction_short  N   24   5.00E+00  1.50E+01   60.00  180.00 p2a
+# symfunction_short  N   24   5.00E+00  1.50E+01   49.10  169.10 p2a
 
 symfunction_short  O   25  -1.50E+01  1.50E+01 -180.00  180.00 p2
 symfunction_short  O   25  -1.50E+01  1.50E+01    0.00  360.00 p2
@@ -317,12 +317,12 @@ symfunction_short  O   24   2.50E+00  1.25E+01    0.00  180.00 p2a
 symfunction_short  O   24   2.50E+00  1.25E+01    0.00  110.00 p2a
 symfunction_short  O   24   2.50E+00  1.25E+01   60.00  180.00 p2a
 symfunction_short  O   24   2.50E+00  1.25E+01   49.10  169.10 p2a
-symfunction_short  O   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
-symfunction_short  O   24   5.00E+00  1.50E+01    0.00  360.00 p2a
-symfunction_short  O   24   5.00E+00  1.50E+01    0.00  180.00 p2a
-symfunction_short  O   24   5.00E+00  1.50E+01    0.00  110.00 p2a
-symfunction_short  O   24   5.00E+00  1.50E+01   60.00  180.00 p2a
-symfunction_short  O   24   5.00E+00  1.50E+01   49.10  169.10 p2a
+# symfunction_short  O   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
+# symfunction_short  O   24   5.00E+00  1.50E+01    0.00  360.00 p2a
+# symfunction_short  O   24   5.00E+00  1.50E+01    0.00  180.00 p2a
+# symfunction_short  O   24   5.00E+00  1.50E+01    0.00  110.00 p2a
+# symfunction_short  O   24   5.00E+00  1.50E+01   60.00  180.00 p2a
+# symfunction_short  O   24   5.00E+00  1.50E+01   49.10  169.10 p2a
 
 symfunction_short  F   25  -1.50E+01  1.50E+01 -180.00  180.00 p2
 symfunction_short  F   25  -1.50E+01  1.50E+01    0.00  360.00 p2
@@ -360,10 +360,10 @@ symfunction_short  F   24   2.50E+00  1.25E+01    0.00  180.00 p2a
 symfunction_short  F   24   2.50E+00  1.25E+01    0.00  110.00 p2a
 symfunction_short  F   24   2.50E+00  1.25E+01   60.00  180.00 p2a
 symfunction_short  F   24   2.50E+00  1.25E+01   49.10  169.10 p2a
-symfunction_short  F   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
-symfunction_short  F   24   5.00E+00  1.50E+01    0.00  360.00 p2a
-symfunction_short  F   24   5.00E+00  1.50E+01    0.00  180.00 p2a
-symfunction_short  F   24   5.00E+00  1.50E+01    0.00  110.00 p2a
-symfunction_short  F   24   5.00E+00  1.50E+01   60.00  180.00 p2a
-symfunction_short  F   24   5.00E+00  1.50E+01   49.10  169.10 p2a
+# symfunction_short  F   24   5.00E+00  1.50E+01 -180.00  180.00 p2a
+# symfunction_short  F   24   5.00E+00  1.50E+01    0.00  360.00 p2a
+# symfunction_short  F   24   5.00E+00  1.50E+01    0.00  180.00 p2a
+# symfunction_short  F   24   5.00E+00  1.50E+01    0.00  110.00 p2a
+# symfunction_short  F   24   5.00E+00  1.50E+01   60.00  180.00 p2a
+# symfunction_short  F   24   5.00E+00  1.50E+01   49.10  169.10 p2a
 
