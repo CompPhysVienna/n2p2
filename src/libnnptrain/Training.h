@@ -158,7 +158,7 @@ public:
      */
     void                  calculateError(
                                         bool const        writeCompFiles,
-                                        std::string const identifier           
+                                        std::string const identifier
                                             = "",
                                         std::string const fileNameEnergiesTrain
                                             = "energies-train.comp",
@@ -304,175 +304,149 @@ private:
         bool operator<(UpdateCandidate const& rhs) const;
     };
 
+    /// Specific training quantity (e.g. energies, forces, charges).
+    struct Property
+    {
+        /// Constructor.
+        Property(std::string const& property);
+
+        /// If this property is actually used during training.
+        bool                         use;
+        /// Copy of identifier within Property map.
+        std::string                  property;
+        /// Selection mode for update candidates.
+        SelectionMode                selectionMode;
+        /// Number of training patterns in set.
+        std::size_t                  numTrainPatterns;
+        /// Batch size for each MPI task.
+        std::size_t                  taskBatchSize;
+        /// Write comparison every this many epochs.
+        std::size_t                  writeCompEvery;
+        /// Up to this epoch comparison is written every epoch.
+        std::size_t                  writeCompAlways;
+        /// Current position in update candidate list (SM_SORT).
+        std::size_t                  posUpdateCandidates;
+        /// Maximum trials for SM_THRESHOLD selection mode.
+        std::size_t                  rmseThresholdTrials;
+        /// Number of updates per epoch.
+        std::size_t                  countUpdates;
+        /// Patterns used per update.
+        std::size_t                  patternsPerUpdate;
+        /// Patterns used per update (summed over all MPI tasks).
+        std::size_t                  patternsPerUpdateGlobal;
+        /// Global number of errors per update.
+        std::size_t                  numErrorsGlobal;
+        /// Error metric index for display.
+        std::size_t                  errorMetric;
+        /// Desired update fraction per epoch.
+        double                       epochFraction;
+        /// RMSE threshold for update candidates.
+        double                       rmseThreshold;
+        /// Errors per task for each update.
+        std::vector<int>             errorsPerTask;
+        /// Offset for combined error per task.
+        std::vector<int>             offsetPerTask;
+        /// Current error metrics of training patterns.
+        std::vector<double>          errorTrain;
+        /// Current error metrics of test patterns.
+        std::vector<double>          errorTest;
+        /// Vector with indices of training patterns.
+        std::vector<UpdateCandidate> updateCandidates;
+        /// Weights per task per updater.
+        std::vector<
+        std::vector<int> >           weightsPerTask;
+        /// Stride for Jacobians per task per updater.
+        std::vector<
+        std::vector<int> >           offsetJacobian;
+        /// Global error vector (per updater).
+        std::vector<
+        std::vector<double> >        error;
+        /// Global Jacobian (per updater).
+        std::vector<
+        std::vector<double> >        jacobian;
+        /// Schedule for varying selection mode.
+        std::map<
+        std::size_t, SelectionMode>  selectionModeSchedule;
+    };
+
+    /// Map of all training properties.
+    struct PropertyMap : std::map<std::string, Property>
+    {
+        /// Overload [] operator to simplify access.
+        Property& operator[](std::string const& key) {return this->at(key);};
+    };
+
     /// Updater type used.
-    UpdaterType                   updaterType;
+    UpdaterType              updaterType;
     /// Parallelization mode used.
-    ParallelMode                  parallelMode;
+    ParallelMode             parallelMode;
     /// Jacobian mode used.
-    JacobianMode                  jacobianMode;
+    JacobianMode             jacobianMode;
     /// Update strategy used.
-    UpdateStrategy                updateStrategy;
-    /// Selection mode for update candidates.
-    SelectionMode                 selectionMode;
+    UpdateStrategy           updateStrategy;
     /// If this rank performs weight updates.
-    bool                          hasUpdaters;
+    bool                     hasUpdaters;
     /// If this rank holds structure information.
-    bool                          hasStructures;
+    bool                     hasStructures;
     /// Use forces for training.
-    bool                          useForces;
+    bool                     useForces;
     /// After force update perform energy update for corresponding structure.
-    bool                          reapeatedEnergyUpdates;
+    bool                     reapeatedEnergyUpdates;
     /// Free symmetry function memory after calculation.
-    bool                          freeMemory;
+    bool                     freeMemory;
     /// Whether training log file is written.
-    bool                          writeTrainingLog;
+    bool                     writeTrainingLog;
     /// Training stage.
-    std::size_t                   stage;
+    std::size_t              stage;
     /// Number of updaters (depends on update strategy).
-    std::size_t                   numUpdaters;
-    /// Number of energies in training set.
-    std::size_t                   numEnergiesTrain;
-    /// Number of charges in training set.
-    std::size_t                   numChargesTrain;
-    /// Number of forces in training set.
-    std::size_t                   numForcesTrain;
+    std::size_t              numUpdaters;
     /// Number of epochs requested.
-    std::size_t                   numEpochs;
-    /// Batch size for each MPI task (energies).
-    std::size_t                   taskBatchSizeEnergy;
-    /// Batch size for each MPI task (forces).
-    std::size_t                   taskBatchSizeForce;
+    std::size_t              numEpochs;
     /// Current epoch.
-    std::size_t                   epoch;
-    /// Write energy comparison every this many epochs.
-    std::size_t                   writeEnergiesEvery;
-    /// Write force comparison every this many epochs.
-    std::size_t                   writeForcesEvery;
+    std::size_t              epoch;
     /// Write weights every this many epochs.
-    std::size_t                   writeWeightsEvery;
-    /// Write neuron statistics every this many epochs.
-    std::size_t                   writeNeuronStatisticsEvery;
-    /// Up to this epoch energy comparison is written every epoch.
-    std::size_t                   writeEnergiesAlways;
-    /// Up to this epoch force comparison is written every epoch.
-    std::size_t                   writeForcesAlways;
+    std::size_t              writeWeightsEvery;
     /// Up to this epoch weights are written every epoch.
-    std::size_t                   writeWeightsAlways;
+    std::size_t              writeWeightsAlways;
+    /// Write neuron statistics every this many epochs.
+    std::size_t              writeNeuronStatisticsEvery;
     /// Up to this epoch neuron statistics are written every epoch.
-    std::size_t                   writeNeuronStatisticsAlways;
-    /// Current position in energy update candidate list (SM_SORT).
-    std::size_t                   posUpdateCandidatesEnergy;
-    /// Current position in force update candidate list (SM_SORT).
-    std::size_t                   posUpdateCandidatesForce;
-    /// Maximum trials for SM_THRESHOLD selection mode.
-    std::size_t                   rmseThresholdTrials;
-    /// Update counter.
-    std::size_t                   countUpdates;
-    /// Number of energy updates per epoch.
-    std::size_t                   energyUpdates;
-    /// Number of force updates per epoch.
-    std::size_t                   forceUpdates;
-    /// Energies used per update.
-    std::size_t                   energiesPerUpdate;
-    /// Energies used per update (summed over all MPI tasks).
-    std::size_t                   energiesPerUpdateGlobal;
-    /// Global number of energy errors per update.
-    std::size_t                   errorsGlobalEnergy;
-    /// Forces used per update.
-    std::size_t                   forcesPerUpdate;
-    /// Forces used per update (summed over all MPI tasks).
-    std::size_t                   forcesPerUpdateGlobal;
-    /// Global number of force errors per update.
-    std::size_t                   errorsGlobalForce;
+    std::size_t              writeNeuronStatisticsAlways;
+    /// Update counter (for all training quantities together).
+    std::size_t              countUpdatesTotal;
     /// Total number of weights.
-    std::size_t                   numWeights;
-    /// Error metric index for energies.
-    std::size_t                   errorMetricEnergies;
-    /// Error metric index for forces.
-    std::size_t                   errorMetricForces;
-    /// Desired energy update fraction per epoch.
-    double                        epochFractionEnergies;
-    /// Desired force update fraction per epoch.
-    double                        epochFractionForces;
-    /// RMSE threshold for energy update candidates.
-    double                        rmseThresholdEnergy;
-    /// RMSE threshold for force update candidates.
-    double                        rmseThresholdForce;
+    std::size_t              numWeights;
     /// Force update weight.
-    double                        forceWeight;
+    double                   forceWeight;
     /// File name for training log.
-    std::string                   trainingLogFileName;
+    std::string              trainingLogFileName;
     /// Training log file.
-    std::ofstream                 trainingLog;
+    std::ofstream            trainingLog;
     /// Update schedule epoch (false = energy update, true = force update).
-    std::vector<int>              epochSchedule;
-    /// Errors per task for each energy update.
-    std::vector<int>              errorsPerTaskEnergy;
-    /// Errors per task for each force update.
-    std::vector<int>              errorsPerTaskForce;
-    /// Offset for combined energy error per task.
-    std::vector<int>              offsetPerTaskEnergy;
-    /// Offset for combined force error per task.
-    std::vector<int>              offsetPerTaskForce;
+    std::vector<int>         epochSchedule;
     /// Number of weights per updater.
-    std::vector<std::size_t>      numWeightsPerUpdater;
+    std::vector<std::size_t> numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
-    std::vector<std::size_t>      weightsOffset;
-    /// Current error metrics of training energies.
-    std::vector<double>           errorEnergiesTrain;
-    /// Current error metrics of test energies.
-    std::vector<double>           errorEnergiesTest;
-    /// Current error metrics of training forces.
-    std::vector<double>           errorForcesTrain;
-    /// Current error metrics of test forces.
-    std::vector<double>           errorForcesTest;
+    std::vector<std::size_t> weightsOffset;
+    /// Vector of training properties (keys of PropertyMap).
+    std::vector<std::string> properties;
 #ifndef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
-    std::vector<double>           dGdxia;
+    std::vector<double>      dGdxia;
 #endif
-    /// Vector with indices of training structures.
-    std::vector<UpdateCandidate>  updateCandidatesEnergy;
-    /// Vector with indices of training charges.
-    std::vector<UpdateCandidate>  updateCandidatesCharge;
-    /// Vector with indices of training forces.
-    std::vector<UpdateCandidate>  updateCandidatesForce;
-    /// Weights per task per updater for energy updates.
-    std::vector<
-    std::vector<int> >            weightsPerTaskEnergy;
-    /// Stride for Jacobians per task per updater for energy updates.
-    std::vector<
-    std::vector<int> >            offsetJacobianEnergy;
-    /// Weights per task per updater for force updates.
-    std::vector<
-    std::vector<int> >            weightsPerTaskForce;
-    /// Stride for Jacobians per task per updater for force updates.
-    std::vector<
-    std::vector<int> >            offsetJacobianForce;
     /// Neural network weights and biases for each element.
     std::vector<
-    std::vector<double> >         weights;
-    /// Global error vector for energies (per updater).
-    std::vector<
-    std::vector<double> >         errorE;
-    /// Global error vector for forces (per updater).
-    std::vector<
-    std::vector<double> >         errorF;
-    /// Global Jacobian for energies (per updater).
-    std::vector<
-    std::vector<double> >         jacobianE;
-    /// Global Jacobian for forces (per updater).
-    std::vector<
-    std::vector<double> >         jacobianF;
+    std::vector<double> >    weights;
     /// Weight updater (combined or for each element).
-    std::vector<Updater*>         updaters;
-    /// Schedule for varying selection mode.
-    std::map<std::size_t,
-             SelectionMode>       selectionModeSchedule;
+    std::vector<Updater*>    updaters;
     /// Per-task random number generator.
-    std::mt19937_64               rngNew;
+    std::mt19937_64          rngNew;
     /// Global random number generator.
-    std::mt19937_64               rngGlobalNew;
+    std::mt19937_64          rngGlobalNew;
+    /// Actual training settings.
+    PropertyMap              p;
+
 
     /** Check if training loop should be continued.
      *
@@ -493,11 +467,11 @@ private:
      * @param[in] is Local structure index.
      * @param[in] isg Global structure index.
      */
-    void addTrainingLogEntry(int                 proc,
-                             std::size_t         il,
-                             double              f,
-                             std::size_t         isg,
-                             std::size_t         is);
+    void addTrainingLogEntry(int         proc,
+                             std::size_t il,
+                             double      f,
+                             std::size_t isg,
+                             std::size_t is);
     /** Write force update data to training log file.
      *
      * @param[in] proc Processor which provided update candidate.
@@ -508,13 +482,13 @@ private:
      * @param[in] ia Atom index.
      * @param[in] ic Component index.
      */
-    void addTrainingLogEntry(int                 proc,
-                             std::size_t         il,
-                             double              f,
-                             std::size_t         isg,
-                             std::size_t         is,
-                             std::size_t         ia,
-                             std::size_t         ic);
+    void addTrainingLogEntry(int         proc,
+                             std::size_t il,
+                             double      f,
+                             std::size_t isg,
+                             std::size_t is,
+                             std::size_t ia,
+                             std::size_t ic);
 #ifndef NNP_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
@@ -543,6 +517,11 @@ private:
      * @param[in] type Actual network type to initialize ("short" or "charge").
      */
     void randomizeNeuralNetworkWeights(std::string const& type);
+    /** Set selection mode for specific training property.
+     *
+     * @param[in] property Training property (uses corresponding keyword).
+     */
+    void setSelectionMode(std::string const& property);
 };
 
 //////////////////////////////////

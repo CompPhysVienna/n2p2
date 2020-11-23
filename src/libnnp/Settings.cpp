@@ -54,7 +54,14 @@ map<string, string> const createKnownKeywordsMap()
     m["use_short_forces"              ] = "";
     m["short_energy_error_threshold"  ] = "";
     m["short_force_error_threshold"   ] = "";
+    m["rmse_threshold"                ] = ""; // Replacement for "short_..._error_threshold".
+    m["rmse_threshold_energy"         ] = "";
+    m["rmse_threshold_force"          ] = "";
+    m["rmse_threshold_charge"         ] = "";
     m["rmse_threshold_trials"         ] = "";
+    m["rmse_threshold_trials_energy"  ] = "";
+    m["rmse_threshold_trials_force"   ] = "";
+    m["rmse_threshold_trials_charge"  ] = "";
     m["short_energy_fraction"         ] = "";
     m["short_force_fraction"          ] = "";
     m["use_old_weights_short"         ] = "";
@@ -74,6 +81,9 @@ map<string, string> const createKnownKeywordsMap()
     m["jacobian_mode"                 ] = "";
     m["update_strategy"               ] = "";
     m["selection_mode"                ] = "";
+    m["selection_mode_energy"         ] = "";
+    m["selection_mode_force"          ] = "";
+    m["selection_mode_charge"         ] = "";
     m["task_batch_size_energy"        ] = "";
     m["task_batch_size_force"         ] = "";
     m["gradient_type"                 ] = "";

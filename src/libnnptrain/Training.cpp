@@ -30,6 +30,7 @@
 #include <gsl/gsl_rng.h>
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error, std::range_error
+#include <utility>   // std::piecewise_construct, std::forward_as_tuple
 
 using namespace std;
 using namespace nnp;
@@ -39,7 +40,6 @@ Training::Training() : Dataset(),
                        parallelMode               (PM_TRAIN_RK0   ),
                        jacobianMode               (JM_SUM         ),
                        updateStrategy             (US_COMBINED    ),
-                       selectionMode              (SM_RANDOM      ),
                        hasUpdaters                (false          ),
                        hasStructures              (false          ),
                        useForces                  (false          ),
@@ -48,47 +48,16 @@ Training::Training() : Dataset(),
                        writeTrainingLog           (false          ),
                        stage                      (0              ),
                        numUpdaters                (0              ),
-                       numEnergiesTrain           (0              ),
-                       numForcesTrain             (0              ),
                        numEpochs                  (0              ),
-                       taskBatchSizeEnergy        (0              ),
-                       taskBatchSizeForce         (0              ),
                        epoch                      (0              ),
-                       writeEnergiesEvery         (0              ),
-                       writeForcesEvery           (0              ),
                        writeWeightsEvery          (0              ),
-                       writeNeuronStatisticsEvery (0              ),
-                       writeEnergiesAlways        (0              ),
-                       writeForcesAlways          (0              ),
                        writeWeightsAlways         (0              ),
+                       writeNeuronStatisticsEvery (0              ),
                        writeNeuronStatisticsAlways(0              ),
-                       posUpdateCandidatesEnergy  (0              ),
-                       posUpdateCandidatesForce   (0              ),
-                       rmseThresholdTrials        (0              ),
-                       countUpdates               (0              ),
-                       energyUpdates              (0              ),
-                       forceUpdates               (0              ),
-                       energiesPerUpdate          (0              ),
-                       energiesPerUpdateGlobal    (0              ),
-                       errorsGlobalEnergy         (0              ),
-                       forcesPerUpdate            (0              ),
-                       forcesPerUpdateGlobal      (0              ),
-                       errorsGlobalForce          (0              ),
                        numWeights                 (0              ),
-                       errorMetricEnergies        (0              ),
-                       errorMetricForces          (0              ),
-                       epochFractionEnergies      (0.0            ),
-                       epochFractionForces        (0.0            ),
-                       rmseThresholdEnergy        (0.0            ),
-                       rmseThresholdForce         (0.0            ),
                        forceWeight                (0.0            ),
                        trainingLogFileName        ("train-log.out")
 {
-    // Set up error metrics
-    errorEnergiesTrain.resize(4, 0.0);
-    errorEnergiesTest.resize(4, 0.0);
-    errorForcesTrain.resize(2, 0.0);
-    errorForcesTest.resize(2, 0.0);
 }
 
 Training::~Training()
@@ -183,8 +152,8 @@ void Training::selectSets()
         MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTest , 1, MPI_SIZE_T, MPI_SUM, comm);
         MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTrain  , 1, MPI_SIZE_T, MPI_SUM, comm);
         MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTest   , 1, MPI_SIZE_T, MPI_SUM, comm);
-        numEnergiesTrain = numMyEnergiesTrain;
-        numForcesTrain = numMyForcesTrain;
+        numTrain["energy"] = numMyEnergiesTrain;
+        numTrain["force"] = numMyForcesTrain;
         log << strpr("Total number of energies    : %d\n", numStructures);
         log << strpr("Number of training energies : %d\n", numMyEnergiesTrain);
         log << strpr("Number of test     energies : %d\n", numMyEnergiesTest);
@@ -234,7 +203,7 @@ void Training::selectSets()
         }
         MPI_Allreduce(MPI_IN_PLACE, &numMyChargesTrain , 1, MPI_SIZE_T, MPI_SUM, comm);
         MPI_Allreduce(MPI_IN_PLACE, &numMyChargesTest  , 1, MPI_SIZE_T, MPI_SUM, comm);
-        numChargesTrain = numMyChargesTrain;
+        numTrain["charge"] = numMyChargesTrain;
         log << strpr("Total number of energies    : %d\n", numStructures);
         log << strpr("Number of training charges  : %d\n", numMyChargesTrain);
         log << strpr("Number of test     charges  : %d\n", numMyChargesTest);
@@ -417,6 +386,34 @@ void Training::setStage(size_t stage)
 {
     this->stage = stage;
 
+    // Initialize training properties (all, even if not needed).
+    properties = {"energy", "force", "charge"};
+    auto initP = [this](string key) {p.emplace(piecewise_construct,
+                                               forward_as_tuple(key),
+                                               forward_as_tuple(key));
+                 };
+    for (auto property : properties)
+    {
+        initP(property);
+    }
+    if (nnpType == NNPType::SHORT_ONLY)
+    {
+        p["energy"].use = true;
+        if (settings.keywordExists("use_short_forces")) p["force"].use = true;
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        if (stage == 1) p["charge"].use = true;
+        else if (stage == 2)
+        {
+            p["energy"].use = true;
+            if (settings.keywordExists("use_short_forces"))
+            {
+                p["force"].use = true;
+            }
+        }
+    }
+
     return;
 }
 
@@ -435,47 +432,54 @@ void Training::setupTraining()
         else throw runtime_error("\nERROR: Unknown training stage.\n");
     }
 
-    useForces = settings.keywordExists("use_short_forces");
-    if (useForces)
+    if (nnpType == NNPType::SHORT_ONLY)
     {
-        log << "Forces will be used for training.\n";
-        if (settings.keywordExists("force_weight"))
+        useForces = settings.keywordExists("use_short_forces");
+        if (useForces)
         {
-            forceWeight = atof(settings["force_weight"].c_str());
+            log << "Forces will be used for training.\n";
+            if (settings.keywordExists("force_weight"))
+            {
+                forceWeight = atof(settings["force_weight"].c_str());
+            }
+            else
+            {
+                log << "WARNING: Force weight not set, using default value.\n";
+                forceWeight = 1.0;
+            }
+            log << strpr("Force update weight: %10.2E\n", forceWeight);
         }
         else
         {
-            log << "WARNING: Force weight not set, using default value.\n";
-            forceWeight = 1.0;
+            log << "Only energies will used for training.\n";
         }
-        log << strpr("Force update weight: %10.2E\n", forceWeight);
-    }
-    else
-    {
-        log << "Only energies will used for training.\n";
     }
 
     if (settings.keywordExists("main_error_metric"))
     {
         if (settings["main_error_metric"] == "RMSEpa")
         {
-            errorMetricEnergies = 0;
-            errorMetricForces = 0;
+            p["energy"].errorMetric = 0;
+            p["force"].errorMetric = 0;
+            p["charge"].errorMetric = 0;
         }
         else if (settings["main_error_metric"] == "RMSE")
         {
-            errorMetricEnergies = 1;
-            errorMetricForces = 0;
+            p["energy"].errorMetric = 1;
+            p["force"].errorMetric = 0;
+            p["charge"].errorMetric = 0;
         }
         else if (settings["main_error_metric"] == "MAEpa")
         {
-            errorMetricEnergies = 2;
-            errorMetricForces = 1;
+            p["energy"].errorMetric = 2;
+            p["force"].errorMetric = 1;
+            p["charge"].errorMetric = 1;
         }
         else if (settings["main_error_metric"] == "MAE")
         {
-            errorMetricEnergies = 3;
-            errorMetricForces = 1;
+            p["energy"].errorMetric = 3;
+            p["force"].errorMetric = 1;
+            p["charge"].errorMetric = 1;
         }
         else
         {
@@ -484,8 +488,9 @@ void Training::setupTraining()
     }
     else
     {
-        errorMetricEnergies = 0;
-        errorMetricForces = 0;
+        p["energy"].errorMetric = 0;
+        p["force"].errorMetric = 0;
+        p["charge"].errorMetric = 0;
     }
 
     updaterType = (UpdaterType)atoi(settings["updater_type"].c_str());
@@ -580,60 +585,13 @@ void Training::setupTraining()
     // from the neural network.
     getWeights();
 
-    vector<string> selectionModeArgs = split(settings["selection_mode"]);
-    if (selectionModeArgs.size() % 2 != 1)
+    // Set up update candidate selection modes.
+    if (settings.keywordExists("selection_mode")) setSelectionMode("all");
+    for (auto property : properties)
     {
-        throw runtime_error("ERROR: Incorrect selection mode format.\n");
+        string keyword = "selection_mode_" + property;
+        if (settings.keywordExists(keyword)) setSelectionMode(property);
     }
-    selectionModeSchedule[0] =
-                          (SelectionMode)atoi(selectionModeArgs.at(0).c_str());
-    for (size_t i = 1; i < selectionModeArgs.size(); i = i + 2)
-    {
-        selectionModeSchedule[(size_t)atoi(selectionModeArgs.at(i).c_str())] =
-                      (SelectionMode)atoi(selectionModeArgs.at(i + 1).c_str());
-    }
-    for (map<size_t, SelectionMode>::const_iterator it =
-         selectionModeSchedule.begin();
-         it != selectionModeSchedule.end(); ++it)
-    {
-        log << strpr("Selection mode starting with epoch %zu:\n", it->first);
-        if (it->second == SM_RANDOM)
-        {
-            log << strpr("Random selection of update candidates: "
-                         "SelectionMode::SM_RANDOM (%d)\n", it->second);
-        }
-        else if (it->second == SM_SORT)
-        {
-            log << strpr("Update candidates selected according to error: "
-                         "SelectionMode::SM_SORT (%d)\n", it->second);
-        }
-        else if (it->second == SM_THRESHOLD)
-        {
-            log << strpr("Update candidates chosen randomly above RMSE "
-                         "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
-                         it->second);
-            rmseThresholdEnergy
-                      = atof(settings["short_energy_error_threshold"].c_str());
-            rmseThresholdForce
-                       = atof(settings["short_force_error_threshold"].c_str());
-            rmseThresholdTrials
-                             = atof(settings["rmse_threshold_trials"].c_str());
-            log << strpr("Energy threshold: %.2f * RMSE(Energy)\n",
-                         rmseThresholdEnergy);
-            if (useForces)
-            {
-                log << strpr("Force  threshold: %.2f * RMSE(Force)\n",
-                             rmseThresholdForce);
-            }
-            log << strpr("Maximum number of update candidate trials: %zu\n",
-                         rmseThresholdTrials);
-        }
-        else
-        {
-            throw runtime_error("ERROR: Unknown selection mode.\n");
-        }
-    }
-    selectionMode = selectionModeSchedule[0];
 
     log << "-----------------------------------------"
            "--------------------------------------\n";
@@ -2924,4 +2882,145 @@ void Training::randomizeNeuralNetworkWeights(string const& type)
     }
 
     return;
+}
+
+void Training::setSelectionMode(string const& property)
+{
+    if (!(property == "all" ||
+          property == "energy" ||
+          property == "force" ||
+          property == "charge"))
+    {
+        throw runtime_error("ERROR: Unknown property for selection mode"
+                            " setup.\n");
+    }
+
+    if (property == "all")
+    {
+        log << "Global selection mode settings:\n";
+    }
+    else
+    {
+        log << "Selection mode settings specific to property \""
+            << property << "\":\n";
+    }
+    bool useThreshold = false;
+    string keyword = "selection_mode_";
+    if (property == "all") keyword = "selection_mode";
+    else keyword += property;
+    vector<SelectionMode> schedule;
+    vector<string> args = split(settings[keyword]);
+    if (args.size() % 2 != 1)
+    {
+        throw runtime_error("ERROR: Incorrect selection mode format.\n");
+    }
+    schedule[0] = (SelectionMode)atoi(args.at(0).c_str());
+    for (size_t i = 1; i < args.size(); i = i + 2)
+    {
+        schedule[(size_t)atoi(args.at(i).c_str())] =
+            (SelectionMode)atoi(args.at(i + 1).c_str());
+    }
+    for (map<size_t, SelectionMode>::const_iterator it = schedule.begin();
+         it != schedule.end(); ++it)
+    {
+        log << strpr("Selection mode starting with epoch %zu:\n", it->first);
+        if (it->second == SM_RANDOM)
+        {
+            log << strpr("Random selection of update candidates: "
+                         "SelectionMode::SM_RANDOM (%d)\n", it->second);
+        }
+        else if (it->second == SM_SORT)
+        {
+            log << strpr("Update candidates selected according to error: "
+                         "SelectionMode::SM_SORT (%d)\n", it->second);
+        }
+        else if (it->second == SM_THRESHOLD)
+        {
+            log << strpr("Update candidates chosen randomly above RMSE "
+                         "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
+                         it->second);
+            useThreshold = true;
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown selection mode.\n");
+        }
+    }
+    if (property == "all")
+    {
+        for (auto& ip : p)
+        {
+            ip.second.selectionModeSchedule = schedule;
+            ip.second.selectionMode = schedule[0];
+        }
+    }
+    else
+    {
+        p[property].selectionModeSchedule = schedule;
+        p[property].selectionMode = schedule[0];
+    }
+
+    //TODO: continue here!
+    if (!useThreshold) return;
+    if (property == "all") keyword = "rmse_threshold";
+
+    keyword = "short_" + property + 
+    p[property].rmseThreshold = 
+    rmseThresholdEnergy
+              = atof(settings["short_energy_error_threshold"].c_str());
+    rmseThresholdForce
+               = atof(settings["short_force_error_threshold"].c_str());
+    rmseThresholdTrials
+                     = atof(settings["rmse_threshold_trials"].c_str());
+    log << strpr("Energy threshold: %.2f * RMSE(Energy)\n",
+                 rmseThresholdEnergy);
+    if (useForces)
+    {
+        log << strpr("Force  threshold: %.2f * RMSE(Force)\n",
+                     rmseThresholdForce);
+    }
+    log << strpr("Maximum number of update candidate trials: %zu\n",
+                 rmseThresholdTrials);
+
+    return;
+}
+
+Training::Property(string const& property) :
+    use                    (false    ),
+    property               (property ),
+    selectionMode          (SM_RANDOM),
+    numTrainPatterns       (0        ),
+    taskBatchSize          (0        ),
+    writeCompEvery         (0        ),
+    writeCompAlways        (0        ),
+    posUpdateCandidates    (0        ),
+    rmseThresholdTrials    (0        ),
+    countUpdates           (0        ),
+    patternsPerUpdate      (0        ),
+    patternsPerUpdateGlobal(0        ),
+    numErrorsGlobal        (0        ),
+    errorMetric            (0        ),
+    epochFraction          (0.0      ),
+    rmseThreshold          (1.0      )
+{
+    // Set up error metrics
+    if (key == "energy")
+    {
+        errorTrain.resize(4, 0.0);
+        errorTest.resize(4, 0.0);
+    }
+    else if (key == "force")
+    {
+        errorTrain.resize(2, 0.0);
+        errorTest.resize(2, 0.0);
+    }
+    else if (key == "charge")
+    {
+        errorTrain.resize(2, 0.0);
+        errorTest.resize(2, 0.0);
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown training property.\n");
+    }
 }
