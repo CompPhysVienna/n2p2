@@ -2960,7 +2960,20 @@ void Training::setSelectionMode(string const& property)
         p[property].selectionMode = schedule[0];
     }
 
-    //TODO: continue here!
+    double rmseThreshold = 0.0;
+    size_t rmseThresholdTrials = 0.0;
+    if (property == "all")
+    {
+        if (settings.keywordExists("rmse_threshold"))
+        {
+            rmseThreshold = settings["rmse_threshold"];
+        }
+        if (settings.keywordExists("rmse_threshold_trials"))
+        {
+            rmseThresholdTrials = settings["rmse_threshold_trials"];
+        }
+    }
+
     if (!useThreshold) return;
     if (property == "all") keyword = "rmse_threshold";
 
@@ -3001,7 +3014,7 @@ Training::Property(string const& property) :
     numErrorsGlobal        (0        ),
     errorMetric            (0        ),
     epochFraction          (0.0      ),
-    rmseThreshold          (1.0      )
+    rmseThreshold          (0.0      )
 {
     // Set up error metrics
     if (key == "energy")
