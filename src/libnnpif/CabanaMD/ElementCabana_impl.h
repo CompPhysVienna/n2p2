@@ -311,7 +311,7 @@ void ElementCabana::setupSymmetryFunctionGroups( t_SF SF,
                                                  h_t_int h_numSFGperElem,
                                                  int maxSFperElem )
 {
-    int num_group = h_numSFperElem.extent( 0 ) * 2;
+    int num_group = h_numSFperElem.extent( 0 );
     h_t_int h_numGR( "RadialCounter", num_group );
     h_t_int h_numGA( "AngularCounter", num_group );
     int SFindex;
@@ -366,12 +366,16 @@ void ElementCabana::setupSymmetryFunctionGroups( t_SF SF,
             if ( SF( attype, SFindex, 1 ) == 2 )
             {
                 SFGmemberlist( attype, l, 0 ) = SFindex;
+                if ( l >= (int)h_numGR.extent( 0 ) )
+                    Kokkos::resize( h_numGR, l+1 );
                 h_numGR( l ) = 1;
                 SFGmemberlist( attype, l, maxSFperElem )++;
             }
             else if ( SF( attype, SFindex, 1 ) == 3 )
             {
                 SFGmemberlist( attype, l, 0 ) = SFindex;
+                if ( l >= (int)h_numGA.extent( 0 ) )
+                    Kokkos::resize( h_numGA, l+1 );
                 h_numGA( l ) = 1;
                 SFGmemberlist( attype, l, maxSFperElem )++;
             }
