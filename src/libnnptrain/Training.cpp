@@ -586,11 +586,10 @@ void Training::setupTraining()
     getWeights();
 
     // Set up update candidate selection modes.
-    if (settings.keywordExists("selection_mode")) setSelectionMode("all");
+    setSelectionMode("all");
     for (auto property : properties)
     {
-        string keyword = "selection_mode_" + property;
-        if (settings.keywordExists(keyword)) setSelectionMode(property);
+        if (p[property].use) setSelectionMode(property);
     }
 
     log << "-----------------------------------------"
@@ -2895,87 +2894,96 @@ void Training::setSelectionMode(string const& property)
                             " setup.\n");
     }
 
+
     if (property == "all")
     {
+        if (!(settings.keywordExists("selection_mode") ||
+              settings.keywordExists("rmse_threshold") ||
+              settings.keywordExists("rmse_threshold_trial"))) return;
         log << "Global selection mode settings:\n";
     }
     else
     {
+        if (!(settings.keywordExists("selection_mode_" + property) ||
+              settings.keywordExists("rmse_threshold_" + property) ||
+              settings.keywordExists("rmse_threshold_trial_" + property)
+              settings.keywordExists("short_" + property
+                                     + "_error_threshold"))) return;
         log << "Selection mode settings specific to property \""
             << property << "\":\n";
     }
-    bool useThreshold = false;
     string keyword = "selection_mode_";
     if (property == "all") keyword = "selection_mode";
     else keyword += property;
-    vector<SelectionMode> schedule;
-    vector<string> args = split(settings[keyword]);
-    if (args.size() % 2 != 1)
+
+    if (settings.keywordExists(keyword))
     {
-        throw runtime_error("ERROR: Incorrect selection mode format.\n");
-    }
-    schedule[0] = (SelectionMode)atoi(args.at(0).c_str());
-    for (size_t i = 1; i < args.size(); i = i + 2)
-    {
-        schedule[(size_t)atoi(args.at(i).c_str())] =
-            (SelectionMode)atoi(args.at(i + 1).c_str());
-    }
-    for (map<size_t, SelectionMode>::const_iterator it = schedule.begin();
-         it != schedule.end(); ++it)
-    {
-        log << strpr("Selection mode starting with epoch %zu:\n", it->first);
-        if (it->second == SM_RANDOM)
+        vector<SelectionMode> schedule;
+        vector<string> args = split(settings[keyword]);
+        if (args.size() % 2 != 1)
         {
-            log << strpr("Random selection of update candidates: "
-                         "SelectionMode::SM_RANDOM (%d)\n", it->second);
+            throw runtime_error("ERROR: Incorrect selection mode format.\n");
         }
-        else if (it->second == SM_SORT)
+        schedule[0] = (SelectionMode)atoi(args.at(0).c_str());
+        for (size_t i = 1; i < args.size(); i = i + 2)
         {
-            log << strpr("Update candidates selected according to error: "
-                         "SelectionMode::SM_SORT (%d)\n", it->second);
+            schedule[(size_t)atoi(args.at(i).c_str())] =
+                (SelectionMode)atoi(args.at(i + 1).c_str());
         }
-        else if (it->second == SM_THRESHOLD)
+        for (map<size_t, SelectionMode>::const_iterator it = schedule.begin();
+             it != schedule.end(); ++it)
         {
-            log << strpr("Update candidates chosen randomly above RMSE "
-                         "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
-                         it->second);
-            useThreshold = true;
+            log << strpr("Selection mode starting with epoch %zu:\n",
+                         it->first);
+            if (it->second == SM_RANDOM)
+            {
+                log << strpr("Random selection of update candidates: "
+                             "SelectionMode::SM_RANDOM (%d)\n", it->second);
+            }
+            else if (it->second == SM_SORT)
+            {
+                log << strpr("Update candidates selected according to error: "
+                             "SelectionMode::SM_SORT (%d)\n", it->second);
+            }
+            else if (it->second == SM_THRESHOLD)
+            {
+                log << strpr("Update candidates chosen randomly above RMSE "
+                             "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
+                             it->second);
+                useThreshold = true;
+            }
+            else
+            {
+                throw runtime_error("ERROR: Unknown selection mode.\n");
+            }
+        }
+        if (property == "all")
+        {
+            for (auto& ip : p)
+            {
+                ip.second.selectionModeSchedule = schedule;
+                ip.second.selectionMode = schedule[0];
+            }
         }
         else
         {
-            throw runtime_error("ERROR: Unknown selection mode.\n");
-        }
-    }
-    if (property == "all")
-    {
-        for (auto& ip : p)
-        {
-            ip.second.selectionModeSchedule = schedule;
-            ip.second.selectionMode = schedule[0];
-        }
-    }
-    else
-    {
-        p[property].selectionModeSchedule = schedule;
-        p[property].selectionMode = schedule[0];
-    }
-
-    double rmseThreshold = 0.0;
-    size_t rmseThresholdTrials = 0.0;
-    if (property == "all")
-    {
-        if (settings.keywordExists("rmse_threshold"))
-        {
-            rmseThreshold = settings["rmse_threshold"];
-        }
-        if (settings.keywordExists("rmse_threshold_trials"))
-        {
-            rmseThresholdTrials = settings["rmse_threshold_trials"];
+            p[property].selectionModeSchedule = schedule;
+            p[property].selectionMode = schedule[0];
         }
     }
 
-    if (!useThreshold) return;
-    if (property == "all") keyword = "rmse_threshold";
+    string keywordAlt;
+    if (property == "all")
+    {
+        keyword = "rmse_threshold";
+        keywordAlt = keyword;
+    else 
+    {
+        keyword = "rmse_threshold_" + property;
+        keywordAlt = "short_" + property + "_error_threshold";
+    }
+
+    if (settings.keywordExists(
 
     keyword = "short_" + property + 
     p[property].rmseThreshold = 

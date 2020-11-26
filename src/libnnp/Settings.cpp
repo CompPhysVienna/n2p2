@@ -18,13 +18,19 @@
 #include "utility.h"
 #include <fstream>   // std::ifstream
 #include <stdexcept> // std::runtime_error
+#include <tuple>     // std::tie
 
 using namespace std;
 using namespace nnp;
 
-map<string, string> const createKnownKeywordsMap()
+map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
 {
+    // Main keyword names and descriptions.
     map<string, string> m;
+    // Alternative names.
+    map<string, vector<string>> a;
+    // Complete keyword map to return.
+    map<string, shared_ptr<Settings::Key>> r;
 
     // Required for prediction.
     m["number_of_elements"            ] = "";
@@ -52,9 +58,7 @@ map<string, string> const createKnownKeywordsMap()
     m["test_fraction"                 ] = "";
     m["epochs"                        ] = "";
     m["use_short_forces"              ] = "";
-    m["short_energy_error_threshold"  ] = "";
-    m["short_force_error_threshold"   ] = "";
-    m["rmse_threshold"                ] = ""; // Replacement for "short_..._error_threshold".
+    m["rmse_threshold"                ] = "";
     m["rmse_threshold_energy"         ] = "";
     m["rmse_threshold_force"          ] = "";
     m["rmse_threshold_charge"         ] = "";
@@ -105,49 +109,117 @@ map<string, string> const createKnownKeywordsMap()
     m["memorize_symfunc_results"      ] = "";
     m["force_weight"                  ] = "";
 
-    return m;
+    // Alternative keyword names.
+    a["nnp_type"]              = {"nn_type"};
+    a["rmse_threshold_energy"] = {"short_energy_error_threshold"};
+    a["rmse_threshold_force" ] = {"short_force_error_threshold"};
+
+    for (auto im : m)
+    {
+        // Check if keyword was already inserted.
+        if (r.find(im.first) != r.end())
+        {
+            throw runtime_error("ERROR: Multiple definition of keyword.\n");
+        }
+        // Insert new shared pointer to a Key object.
+        r[im.first] = make_shared<Settings::Key>();
+        // Add main keyword as first entry in alternatives list.
+        r.at(im.first)->words.push_back(im.first);
+        // Add description text.
+        r.at(im.first)->description = im.second;
+        // Check if alternative keywords exist.
+        if (a.find(im.first) != a.end())
+        {
+            // Loop over all alternative keywords.
+            for (auto alt : a.at(im.first))
+            {
+                // Check if alternative keyword is already inserted.
+                if (r.find(alt) != r.end())
+                {
+                    throw runtime_error("ERROR: Multiple definition of "
+                                        "alternative keyword.\n");
+                }
+                // Set map entry, i.e. shared pointer, to Key object.
+                r[alt] = r.at(im.first);
+                // Add alternative keyword to list.
+                r[alt]->words.push_back(alt);
+            }
+        }
+    }
+
+    return r;
 }
 
-map<string, string> const Settings::knownKeywords = createKnownKeywordsMap();
+Settings::KeywordList Settings::knownKeywords = createKnownKeywordsMap();
 
 string Settings::operator[](string const& keyword) const
 {
     return getValue(keyword);
 }
 
-void Settings::loadFile(string const& fileName)
+size_t Settings::loadFile(string const& fileName)
 {
     this->fileName = fileName;
 
     readFile();
-    parseLines();
+    return parseLines();
 }
 
-bool Settings::keywordExists(string const& keyword) const
+bool Settings::keywordExists(string const& keyword, bool exact) const
 {
-    return (contents.find(keyword) != contents.end());
+    if (exact || knownKeywords.at(keyword)->isUnique())
+    {
+        return (contents.find(keyword) != contents.end());
+    }
+    else
+    {
+        for (auto alternative : knownKeywords.at(keyword)->words)
+        {
+            if (contents.find(alternative) != contents.end()) return true;
+        }
+    }
+
+    return false;
+}
+
+string Settings::keywordCheck(string const& keyword) const
+{
+    bool exists = keywordExists(keyword, false);
+    bool unique = knownKeywords.at(keyword)->isUnique();
+    if (!exists)
+    {
+        if (unique)
+        {
+            throw std::runtime_error("ERROR: Keyword \"" + keyword
+                                     + "\" not found.\n");
+        }
+        else
+        {
+            throw std::runtime_error("ERROR: Neither keyword \"" + keyword
+                                     + "\" nor alternative keywords found.\n");
+        }
+    }
+
+    bool exact = keywordExists(keyword, true);
+    if (!exact)
+    {
+        for (auto alt : knownKeywords.at(keyword)->words)
+        {
+            if (contents.find(alt) != contents.end()) return alt;
+        }
+    }
+
+    return keyword;
 }
 
 string Settings::getValue(string const& keyword) const
 {
-    if (!Settings::keywordExists(keyword))
-    {
-        throw std::runtime_error("ERROR: Keyword \"" + keyword
-                                 + "\" not found.\n");
-    }
-
-    return contents.find(keyword)->second.first;
+    return contents.find(keywordCheck(keyword))->second.first;
 }
 
 Settings::KeyRange Settings::getValues(string const& keyword) const
 {
-    if (!Settings::keywordExists(keyword))
-    {
-        throw std::runtime_error("ERROR: Keyword \"" + keyword
-                                 + "\" not found.\n");
-    }
-
-    return contents.equal_range(keyword);
+    return contents.equal_range(keywordCheck(keyword));
 }
 
 vector<string> Settings::info() const
@@ -180,7 +252,7 @@ void Settings::readFile()
 
     file.close();
 
-    log.push_back(strpr("Read %d lines.\n", lines.size()));
+    log.push_back(strpr("Read %zu lines.\n", lines.size()));
 
     return;
 }
@@ -201,7 +273,7 @@ void Settings::writeSettingsFile(ofstream* const& file) const
     return;
 }
 
-void Settings::parseLines()
+size_t Settings::parseLines()
 {
     for (size_t i = 0; i < lines.size(); ++i)
     {
@@ -255,20 +327,24 @@ void Settings::parseLines()
         contents.insert(pair<string, pair<string, size_t> >(key, value));
     }
 
-    size_t numProblems = sanityCheck();
+    size_t numProblems = 0;
+    size_t numCritical = 0;
+    tie(numProblems, numCritical) = sanityCheck();
     if (numProblems > 0)
     {
-        log.push_back(strpr("WARNING: %d problems detected.\n", numProblems));
+        log.push_back(strpr("WARNING: %zu problems detected (%zu critical).\n",
+                            numProblems, numCritical));
     }
 
-    log.push_back(strpr("Found %d lines with keywords.\n", contents.size()));
+    log.push_back(strpr("Found %zu lines with keywords.\n", contents.size()));
 
-    return;
+    return numCritical;
 }
 
-size_t Settings::sanityCheck()
+pair<size_t, size_t> Settings::sanityCheck()
 {
     size_t countProblems = 0;
+    size_t countCritical = 0;
 
     // check for unknown keywords
     for (multimap<string, pair<string, size_t> >::const_iterator
@@ -285,7 +361,7 @@ size_t Settings::sanityCheck()
     }
 
     // check for multiple instances of known keywords (with exceptions)
-    for (multimap<string, string>::const_iterator it = knownKeywords.begin();
+    for (KeywordList::const_iterator it = knownKeywords.begin();
          it != knownKeywords.end(); ++it)
     {
         if (contents.count((*it).first) > 1
@@ -294,11 +370,40 @@ size_t Settings::sanityCheck()
             && (*it).first != "element_nodes_short")
         {
             countProblems++;
+            countCritical++;
             log.push_back(strpr(
-                "WARNING: Multiple instances of \"%s\" detected.\n",
+                "WARNING (CRITICAL): Multiple instances of \"%s\" detected.\n",
                 (*it).first.c_str()));
         }
     }
 
-    return countProblems;
+    // Check for usage of multiple keyword versions.
+    for (KeywordList::const_iterator it = knownKeywords.begin();
+         it != knownKeywords.end(); ++it)
+    {
+        if (it->second->isUnique()) continue;
+        vector<string> duplicates;
+        for (auto keyword : it->second->words)
+        {
+            if (contents.find(keyword) != contents.end())
+            {
+                duplicates.push_back(keyword);
+            }
+        }
+        if (duplicates.size() > 1)
+        {
+            countProblems++;
+            countCritical++;
+            log.push_back(strpr(
+                "WARNING (CRITICAL): Multiple alternative versions of keyword "
+                "\"%s\" detected:.\n", (*it).first.c_str()));
+            for (auto d : duplicates)
+            {
+                log.push_back(strpr(
+                    "                    - \"%s\"\n", d.c_str()));
+            }
+        }
+    }
+
+    return make_pair(countProblems, countCritical);
 }

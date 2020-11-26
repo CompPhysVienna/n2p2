@@ -77,8 +77,13 @@ void Mode::loadSettingsFile(string const& fileName)
            "**************************************\n";
     log << "\n";
 
-    settings.loadFile(fileName);
+    size_t numCriticalProblems = settings.loadFile(fileName);
     log << settings.info();
+    if (numCriticalProblems > 0)
+    {
+        throw runtime_error(strpr("ERROR: %zu critical problem(s) were found "
+                                  "in settings file.\n", numCriticalProblems));
+    }
 
     if (settings.keywordExists("nnp_type"))
     {
