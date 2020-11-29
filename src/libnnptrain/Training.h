@@ -310,14 +310,14 @@ private:
         /// Constructor.
         Property(std::string const& property);
 
-        /// If this property is actually used during training.
-        bool                         use;
         /// Copy of identifier within Property map.
         std::string                  property;
         /// Selection mode for update candidates.
         SelectionMode                selectionMode;
         /// Number of training patterns in set.
         std::size_t                  numTrainPatterns;
+        /// Number of training patterns in set.
+        std::size_t                  numTestPatterns;
         /// Batch size for each MPI task.
         std::size_t                  taskBatchSize;
         /// Write comparison every this many epochs.
@@ -329,7 +329,7 @@ private:
         /// Maximum trials for SM_THRESHOLD selection mode.
         std::size_t                  rmseThresholdTrials;
         /// Number of updates per epoch.
-        std::size_t                  countUpdates;
+        std::size_t                  numUpdates;
         /// Patterns used per update.
         std::size_t                  patternsPerUpdate;
         /// Patterns used per update (summed over all MPI tasks).
@@ -374,6 +374,11 @@ private:
     {
         /// Overload [] operator to simplify access.
         Property& operator[](std::string const& key) {return this->at(key);};
+        /// Check if property is present.
+        bool exists(std::string const& key)
+        {
+            return (this->find(key) != this->end());
+        }
     };
 
     /// Updater type used.
@@ -391,7 +396,7 @@ private:
     /// Use forces for training.
     bool                     useForces;
     /// After force update perform energy update for corresponding structure.
-    bool                     reapeatedEnergyUpdates;
+    bool                     repeatedEnergyUpdates;
     /// Free symmetry function memory after calculation.
     bool                     freeMemory;
     /// Whether training log file is written.
@@ -413,7 +418,7 @@ private:
     /// Up to this epoch neuron statistics are written every epoch.
     std::size_t              writeNeuronStatisticsAlways;
     /// Update counter (for all training quantities together).
-    std::size_t              countUpdatesTotal;
+    std::size_t              countUpdates;
     /// Total number of weights.
     std::size_t              numWeights;
     /// Force update weight.
@@ -428,8 +433,8 @@ private:
     std::vector<std::size_t> numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
     std::vector<std::size_t> weightsOffset;
-    /// Vector of training properties (keys of PropertyMap).
-    std::vector<std::string> properties;
+    /// Vector of actually used training properties.
+    std::vector<std::string> pk;
 #ifndef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
@@ -521,7 +526,22 @@ private:
      *
      * @param[in] property Training property (uses corresponding keyword).
      */
-    void setSelectionMode(std::string const& property);
+    void setupSelectionMode(std::string const& property);
+    /** Set file output intervals for properties and other quantities.
+     *
+     * @param[in] type Training property or `weights` or `neuron-stats`.
+     */
+    void setupFileOutput(std::string const& type);
+    /** Set up how often properties are updated.
+     *
+     * @param[in] property Training property (uses corresponding keyword).
+     */
+    void setupUpdatePlan(std::string const& property);
+    /** Allocate error and Jacobian arrays for given property.
+     *
+     * @param[in] property Training property.
+     */
+    void allocateArrays(std::string const& property);
 };
 
 //////////////////////////////////

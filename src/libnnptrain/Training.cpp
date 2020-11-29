@@ -24,7 +24,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <algorithm> // std::sort, std::fill
+#include <algorithm> // std::sort, std::fill, std::find
 #include <cmath>     // fabs
 #include <cstdlib>   // atoi
 #include <gsl/gsl_rng.h>
@@ -43,7 +43,7 @@ Training::Training() : Dataset(),
                        hasUpdaters                (false          ),
                        hasStructures              (false          ),
                        useForces                  (false          ),
-                       reapeatedEnergyUpdates     (false          ),
+                       repeatedEnergyUpdates      (false          ),
                        freeMemory                 (false          ),
                        writeTrainingLog           (false          ),
                        stage                      (0              ),
@@ -85,131 +85,97 @@ void Training::selectSets()
            "**************************************\n";
     log << "\n";
 
-    size_t numMyEnergiesTrain = 0;
-    size_t numMyEnergiesTest  = 0;
-    size_t numMyChargesTrain  = 0;
-    size_t numMyChargesTest   = 0;
-    size_t numMyForcesTrain   = 0;
-    size_t numMyForcesTest    = 0;
-    vector<size_t> numMyChargesTrainPerElement;
-    numMyChargesTrainPerElement.resize(numElements, 0);
-    vector<size_t> numMyForcesTrainPerElement;
-    numMyForcesTrainPerElement.resize(numElements, 0);
+    vector<string> pCheck = {"force", "charge"};
+    bool check = false;
+    for (auto k : pk)
+    {
+        check |= (find(pCheck.begin(), pCheck.end(), k) != pCheck.end());
+    }
+    vector<size_t> numAtomsPerElement(numElements, 0);
+
     double testSetFraction = atof(settings["test_fraction"].c_str());
     log << strpr("Desired test set ratio      : %f\n", testSetFraction);
     if (structures.size() > 0) hasStructures = true;
     else hasStructures = false;
 
-    if ( nnpType == NNPType::SHORT_ONLY ||
-        (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+    string k;
+    for (size_t i = 0; i < structures.size(); ++i)
     {
-        for (size_t i = 0; i < structures.size(); ++i)
+        Structure& s = structures.at(i);
+        if (gsl_rng_uniform(rng) < testSetFraction)
         {
-            Structure& s = structures.at(i);
-            if (gsl_rng_uniform(rng) < testSetFraction)
+            s.sampleType = Structure::ST_TEST;
+            size_t const& na = s.numAtoms;
+            k = "energy"; if (p.exists(k)) p[k].numTestPatterns++;
+            k = "force";  if (p.exists(k)) p[k].numTestPatterns += 3 * na;
+            k = "charge"; if (p.exists(k)) p[k].numTestPatterns += na;
+        }
+        else
+        {
+            s.sampleType = Structure::ST_TRAINING;
+            for (size_t j = 0; j < numElements; ++j)
             {
-                s.sampleType = Structure::ST_TEST;
-                numMyEnergiesTest++;
-                numMyForcesTest += 3 * s.numAtoms;
+                numAtomsPerElement.at(j) += s.numAtomsPerElement.at(j);
             }
-            else
+
+            k = "energy";
+            if (p.exists(k))
             {
-                s.sampleType = Structure::ST_TRAINING;
-                numMyEnergiesTrain++;
-                numMyForcesTrain += 3 * s.numAtoms;
-                for (size_t j = 0; j < numElements; ++j)
-                {
-                    numMyForcesTrainPerElement.at(j) +=
-                        3 * s.numAtomsPerElement.at(j);
-                }
-                updateCandidatesEnergy.push_back(UpdateCandidate());
-                updateCandidatesEnergy.back().s = i;
+                p[k].numTrainPatterns++;
+                p[k].updateCandidates.push_back(UpdateCandidate());
+                p[k].updateCandidates.back().s = i;
+            }
+            k = "force";
+            if (p.exists(k))
+            {
+                p[k].numTrainPatterns += 3 * s.numAtoms;
                 for (vector<Atom>::const_iterator it = s.atoms.begin();
                      it != s.atoms.end(); ++it)
                 {
                     for (size_t j = 0; j < 3; ++j)
                     {
-                        updateCandidatesForce.push_back(UpdateCandidate());
-                        updateCandidatesForce.back().s = i;
-                        updateCandidatesForce.back().a = it->index;
-                        updateCandidatesForce.back().c = j;
+                        p[k].updateCandidates.push_back(UpdateCandidate());
+                        p[k].updateCandidates.back().s = i;
+                        p[k].updateCandidates.back().a = it->index;
+                        p[k].updateCandidates.back().c = j;
                     }
                 }
             }
-        }
-        for (size_t i = 0; i < numElements; ++i)
-        {
-            if (hasStructures && (numMyForcesTrainPerElement.at(i) == 0))
+            k = "charge";
+            if (p.exists(k))
             {
-                log << strpr("WARNING: Process %d has no atoms of element "
-                             "%d (%2s).\n",
-                             myRank,
-                             i,
-                             elementMap[i].c_str());
-            }
-        }
-        MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTrain, 1, MPI_SIZE_T, MPI_SUM, comm);
-        MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTest , 1, MPI_SIZE_T, MPI_SUM, comm);
-        MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTrain  , 1, MPI_SIZE_T, MPI_SUM, comm);
-        MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTest   , 1, MPI_SIZE_T, MPI_SUM, comm);
-        numTrain["energy"] = numMyEnergiesTrain;
-        numTrain["force"] = numMyForcesTrain;
-        log << strpr("Total number of energies    : %d\n", numStructures);
-        log << strpr("Number of training energies : %d\n", numMyEnergiesTrain);
-        log << strpr("Number of test     energies : %d\n", numMyEnergiesTest);
-        log << strpr("Number of training forces   : %d\n", numMyForcesTrain);
-        log << strpr("Number of test     forces   : %d\n", numMyForcesTest);
-        log << strpr("Actual test set fraction    : %f\n",
-                     numMyEnergiesTest / double(numStructures));
-    }
-    else if ((nnpType == NNPType::SHORT_CHARGE_NN && stage == 1))
-    {
-        for (size_t i = 0; i < structures.size(); ++i)
-        {
-            Structure& s = structures.at(i);
-            if (gsl_rng_uniform(rng) < testSetFraction)
-            {
-                s.sampleType = Structure::ST_TEST;
-                numMyChargesTest += s.numAtoms;
-            }
-            else
-            {
-                s.sampleType = Structure::ST_TRAINING;
-                numMyChargesTrain += s.numAtoms;
-                for (size_t j = 0; j < numElements; ++j)
-                {
-                    numMyChargesTrainPerElement.at(j) +=
-                        s.numAtomsPerElement.at(j);
-                }
+                p[k].numTrainPatterns += s.numAtoms;
                 for (vector<Atom>::const_iterator it = s.atoms.begin();
                      it != s.atoms.end(); ++it)
                 {
-                    updateCandidatesCharge.push_back(UpdateCandidate());
-                    updateCandidatesCharge.back().s = i;
-                    updateCandidatesCharge.back().a = it->index;
+                    p[k].updateCandidates.push_back(UpdateCandidate());
+                    p[k].updateCandidates.back().s = i;
+                    p[k].updateCandidates.back().a = it->index;
                 }
             }
         }
-        for (size_t i = 0; i < numElements; ++i)
+    }
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        if (hasStructures && (numAtomsPerElement.at(i) == 0))
         {
-            if (hasStructures && (numMyChargesTrainPerElement.at(i) == 0))
-            {
-                log << strpr("WARNING: Process %d has no atoms of element "
-                             "%d (%2s).\n",
-                             myRank,
-                             i,
-                             elementMap[i].c_str());
-            }
+            log << strpr("WARNING: Process %d has no atoms of element "
+                         "%d (%2s).\n",
+                         myRank,
+                         i,
+                         elementMap[i].c_str());
         }
-        MPI_Allreduce(MPI_IN_PLACE, &numMyChargesTrain , 1, MPI_SIZE_T, MPI_SUM, comm);
-        MPI_Allreduce(MPI_IN_PLACE, &numMyChargesTest  , 1, MPI_SIZE_T, MPI_SUM, comm);
-        numTrain["charge"] = numMyChargesTrain;
-        log << strpr("Total number of energies    : %d\n", numStructures);
-        log << strpr("Number of training charges  : %d\n", numMyChargesTrain);
-        log << strpr("Number of test     charges  : %d\n", numMyChargesTest);
-        log << strpr("Actual test set fraction    : %f\n",
-                     numMyChargesTest / double(numMyChargesTrain
-                                             + numMyChargesTest));
+    }
+    for (auto k : pk)
+    {
+        MPI_Allreduce(MPI_IN_PLACE, &(p[k].numTrainPatterns), 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(p[k].numTestPatterns) , 1, MPI_SIZE_T, MPI_SUM, comm);
+        double sum = p[k].numTrainPatterns + p[k].numTestPatterns;
+        log << "Training/test split of data set for property \"" + k + "\":\n";
+        log << strpr("- Total    patterns : %d\n", sum);
+        log << strpr("- Training patterns : %d\n", p[k].numTrainPatterns);
+        log << strpr("- Test     patterns : %d\n", p[k].numTestPatterns);
+        log << strpr("- Test set fraction : %f\n", p[k].numTestPatterns / sum);
     }
 
     log << "*****************************************"
@@ -386,33 +352,35 @@ void Training::setStage(size_t stage)
 {
     this->stage = stage;
 
-    // Initialize training properties (all, even if not needed).
-    properties = {"energy", "force", "charge"};
+    // NNP of type SHORT_ONLY requires:
+    // * "energy" (optionally: "force")
+    if (nnpType == NNPType::SHORT_ONLY)
+    {
+        pk.push_back("energy");
+        if (settings.keywordExists("use_short_forces")) pk.push_back("force");
+    }
+    // NNP of type SHORT_CHARGE_NN requires:
+    // * stage 1: "charge"
+    // * stage 2: "energy" (optionally: "force")
+    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        if (stage == 1) pk.push_back("charge");
+        else if (stage == 2)
+        {
+            pk.push_back("energy");
+            if (settings.keywordExists("use_short_forces"))
+            {
+                pk.push_back("force");
+            }
+        }
+    }
+
+    // Initialize all training properties which will be used.
     auto initP = [this](string key) {p.emplace(piecewise_construct,
                                                forward_as_tuple(key),
                                                forward_as_tuple(key));
                  };
-    for (auto property : properties)
-    {
-        initP(property);
-    }
-    if (nnpType == NNPType::SHORT_ONLY)
-    {
-        p["energy"].use = true;
-        if (settings.keywordExists("use_short_forces")) p["force"].use = true;
-    }
-    else if (nnpType == NNPType::SHORT_CHARGE_NN)
-    {
-        if (stage == 1) p["charge"].use = true;
-        else if (stage == 2)
-        {
-            p["energy"].use = true;
-            if (settings.keywordExists("use_short_forces"))
-            {
-                p["force"].use = true;
-            }
-        }
-    }
+    for (auto k : pk) initP(k);
 
     return;
 }
@@ -586,16 +554,13 @@ void Training::setupTraining()
     getWeights();
 
     // Set up update candidate selection modes.
-    setSelectionMode("all");
-    for (auto property : properties)
-    {
-        if (p[property].use) setSelectionMode(property);
-    }
+    setupSelectionMode("all");
+    for (auto k : pk) setupSelectionMode(k);
 
     log << "-----------------------------------------"
            "--------------------------------------\n";
-    reapeatedEnergyUpdates = settings.keywordExists("repeated_energy_update");
-    if (useForces && reapeatedEnergyUpdates)
+    repeatedEnergyUpdates = settings.keywordExists("repeated_energy_update");
+    if (useForces && repeatedEnergyUpdates)
     {
         throw runtime_error("ERROR: Repeated energy updates are not correctly"
                             " implemented at the moment.\n");
@@ -616,100 +581,12 @@ void Training::setupTraining()
     numEpochs = (size_t)atoi(settings["epochs"].c_str());
     log << strpr("Training will be stopped after %zu epochs.\n", numEpochs);
 
-    // Check how often energy comparison files should be written.
-    if (settings.keywordExists("write_trainpoints"))
-    {
-        writeEnergiesEvery = 1;
-        vector<string> v = split(reduce(settings["write_trainpoints"]));
-        if (v.size() == 1)
-        {
-            writeEnergiesEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeEnergiesEvery = (size_t)atoi(v.at(0).c_str());
-            writeEnergiesAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        log << strpr("Energy comparison will be written every %d epochs.\n",
-                     writeEnergiesEvery);
-        if (writeEnergiesAlways > 0)
-        {
-            log << strpr("Up to epoch %d energy comparison will be written"
-                         " every epoch.\n", writeEnergiesAlways);
-        }
-    }
-
-    // Check how often force comparison files should be written.
-    if (settings.keywordExists("write_trainforces"))
-    {
-        writeForcesEvery = 1;
-        vector<string> v = split(reduce(settings["write_trainforces"]));
-        if (v.size() == 1)
-        {
-            writeForcesEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeForcesEvery = (size_t)atoi(v.at(0).c_str());
-            writeForcesAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        if (useForces)
-        {
-            log << strpr("Force comparison will be written every %d epochs.\n",
-                         writeForcesEvery);
-        }
-        if (writeForcesAlways > 0 && useForces)
-        {
-            log << strpr("Up to epoch %d force comparison will be written"
-                         " every epoch.\n", writeForcesAlways);
-        }
-    }
-
-    // Check how often energy comparison files should be written.
-    if (settings.keywordExists("write_weights_epoch"))
-    {
-        writeWeightsEvery = 1;
-        vector<string> v = split(reduce(settings["write_weights_epoch"]));
-        if (v.size() == 1)
-        {
-            writeWeightsEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeWeightsEvery = (size_t)atoi(v.at(0).c_str());
-            writeWeightsAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        log << strpr("Weights will be written every %d epochs.\n",
-                     writeWeightsEvery);
-        if (writeWeightsAlways > 0)
-        {
-            log << strpr("Up to epoch %d weights will be written"
-                         " every epoch.\n", writeWeightsAlways);
-        }
-    }
-
-    // Check how often neuron statistics should be written.
-    if (settings.keywordExists("write_neuronstats"))
-    {
-        writeNeuronStatisticsEvery = 1;
-        vector<string> v = split(reduce(settings["write_neuronstats"]));
-        if (v.size() == 1)
-        {
-            writeNeuronStatisticsEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeNeuronStatisticsEvery = (size_t)atoi(v.at(0).c_str());
-            writeNeuronStatisticsAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        log << strpr("Neuron statistics will be written every %d epochs.\n",
-                     writeNeuronStatisticsEvery);
-        if (writeNeuronStatisticsAlways > 0)
-        {
-            log << strpr("Up to epoch %d neuron statistics will be written"
-                         " every epoch.\n", writeNeuronStatisticsAlways);
-        }
-    }
+    // Set up how often comparison output files should be written.
+    for (auto k : pk) setupFileOutput(k);
+    // Set up how often weight files should be written.
+    setupFileOutput("weights_epoch");
+    // Set up how often neuron statistics files should be written.
+    setupFileOutput("neuronstats");
 
     // Prepare training log header.
     writeTrainingLog = settings.keywordExists("write_trainlog");
@@ -727,7 +604,7 @@ void Training::setupTraining()
         title.push_back("Detailed information on each weight update.");
         colSize.push_back(3);
         colName.push_back("U");
-        colInfo.push_back("Update type (E = energy, F = force).");
+        colInfo.push_back("Update type (E = energy, F = force, Q = charge).");
         colSize.push_back(5);
         colName.push_back("epoch");
         colInfo.push_back("Current training epoch.");
@@ -761,212 +638,35 @@ void Training::setupTraining()
                           createFileHeader(title, colSize, colName, colInfo));
     }
 
-    // Compute number of updates and energies/forces per update.
+    // Compute number of updates and properties per update.
     log << "-----------------------------------------"
            "--------------------------------------\n";
-    epochFractionEnergies = atof(settings["short_energy_fraction"].c_str());
-    taskBatchSizeEnergy
-        = (size_t)atoi(settings["task_batch_size_energy"].c_str());
-    if (taskBatchSizeEnergy == 0)
+    for (auto k : pk) setupUpdatePlan(k);
+    if (p.exists("energy") && p.exists("force"))
     {
-        energiesPerUpdate = static_cast<size_t>(updateCandidatesEnergy.size()
-                                                * epochFractionEnergies);
-        energyUpdates = 1;
-    }
-    else
-    {
-        energiesPerUpdate = taskBatchSizeEnergy;
-        energyUpdates = static_cast<size_t>((numEnergiesTrain
-                                            * epochFractionEnergies)
-                                            / taskBatchSizeEnergy / numProcs);
-    }
-    energiesPerUpdateGlobal = energiesPerUpdate;
-    MPI_Allreduce(MPI_IN_PLACE, &energiesPerUpdateGlobal, 1, MPI_SIZE_T, MPI_SUM, comm);
-    errorsPerTaskEnergy.resize(numProcs, 0);
-    if (jacobianMode == JM_FULL)
-    {
-        errorsPerTaskEnergy.at(myRank) = static_cast<int>(energiesPerUpdate);
-    }
-    else
-    {
-        errorsPerTaskEnergy.at(myRank) = 1;
-    }
-    MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskEnergy.front()), 1, MPI_INT, comm);
-    if (jacobianMode == JM_FULL)
-    {
-        weightsPerTaskEnergy.resize(numUpdaters);
-        for (size_t i = 0; i < numUpdaters; ++i)
-        {
-            weightsPerTaskEnergy.at(i).resize(numProcs, 0);
-            for (int j = 0; j < numProcs; ++j)
-            {
-                weightsPerTaskEnergy.at(i).at(j) = errorsPerTaskEnergy.at(j)
-                                                 * numWeightsPerUpdater.at(i);
-            }
-        }
-    }
-    errorsGlobalEnergy = 0;
-    for (size_t i = 0; i < errorsPerTaskEnergy.size(); ++i)
-    {
-        offsetPerTaskEnergy.push_back(errorsGlobalEnergy);
-        errorsGlobalEnergy += errorsPerTaskEnergy.at(i);
-    }
-    offsetJacobianEnergy.resize(numUpdaters);
-    for (size_t i = 0; i < numUpdaters; ++i)
-    {
-        for (size_t j = 0; j < offsetPerTaskEnergy.size(); ++j)
-        {
-            offsetJacobianEnergy.at(i).push_back(offsetPerTaskEnergy.at(j) *
-                                                 numWeightsPerUpdater.at(i));
-        }
-    }
-    log << strpr("Per-task batch size for energies             : %zu\n",
-                 taskBatchSizeEnergy);
-    log << strpr("Fraction of energies used per epoch          : %.4f\n",
-                 epochFractionEnergies);
-    log << strpr("Energy updates per epoch                     : %zu\n",
-                 energyUpdates);
-    log << strpr("Energies used per update (rank %3d / global) : %10zu / %zu\n",
-                 myRank, energiesPerUpdate, energiesPerUpdateGlobal);
-
-    if (useForces)
-    {
-        log << "----------------------------------------------\n";
-        epochFractionForces = atof(settings["short_force_fraction"].c_str());
-        taskBatchSizeForce
-            = (size_t)atoi(settings["task_batch_size_force"].c_str());
-        if (taskBatchSizeForce == 0)
-        {
-            forcesPerUpdate = static_cast<size_t>(updateCandidatesForce.size()
-                                                  * epochFractionForces);
-            forceUpdates = 1;
-        }
-        else
-        {
-            forcesPerUpdate = taskBatchSizeForce;
-            forceUpdates = static_cast<size_t>((numForcesTrain
-                                                * epochFractionForces)
-                                                / taskBatchSizeForce
-                                                / numProcs);
-        }
-        forcesPerUpdateGlobal = forcesPerUpdate;
-        MPI_Allreduce(MPI_IN_PLACE, &forcesPerUpdateGlobal, 1, MPI_SIZE_T, MPI_SUM, comm);
-        errorsPerTaskForce.resize(numProcs, 0);
-        if (jacobianMode == JM_FULL)
-        {
-            errorsPerTaskForce.at(myRank) = static_cast<int>(forcesPerUpdate);
-        }
-        else
-        {
-            errorsPerTaskForce.at(myRank) = 1;
-        }
-        MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskForce.front()), 1, MPI_INT, comm);
-        if (jacobianMode == JM_FULL)
-        {
-            weightsPerTaskForce.resize(numUpdaters);
-            for (size_t i = 0; i < numUpdaters; ++i)
-            {
-                weightsPerTaskForce.at(i).resize(numProcs, 0);
-                for (int j = 0; j < numProcs; ++j)
-                {
-                    weightsPerTaskForce.at(i).at(j) =
-                        errorsPerTaskForce.at(j) * numWeightsPerUpdater.at(i);
-                }
-            }
-        }
-        errorsGlobalForce = 0;
-        for (size_t i = 0; i < errorsPerTaskForce.size(); ++i)
-        {
-            offsetPerTaskForce.push_back(errorsGlobalForce);
-            errorsGlobalForce += errorsPerTaskForce.at(i);
-        }
-        offsetJacobianForce.resize(numUpdaters);
-        for (size_t i = 0; i < numUpdaters; ++i)
-        {
-            for (size_t j = 0; j < offsetPerTaskForce.size(); ++j)
-            {
-                offsetJacobianForce.at(i).push_back(
-                                                   offsetPerTaskForce.at(j) *
-                                                   numWeightsPerUpdater.at(i));
-            }
-        }
-        log << strpr("Per-task batch size for forces               : %zu\n",
-                     taskBatchSizeForce);
-        log << strpr("Fraction of forces used per epoch            : %.4f\n",
-                     epochFractionForces);
-        log << strpr("Force updates per epoch                      : %zu\n",
-                     forceUpdates);
-        log << strpr("Forces used per update (rank %3d / global)   : %10zu / "
-                     "%zu\n", myRank, forcesPerUpdate, forcesPerUpdateGlobal);
-        log << "----------------------------------------------\n";
+        Property& pe = p["energy"];
+        Property& pf = p["force"];
         log << strpr("Energy to force ratio                        : "
                      "     1 : %5.1f\n",
-                     static_cast<double>(forceUpdates * forcesPerUpdateGlobal)
-                     / (energyUpdates * energiesPerUpdateGlobal));
+                     static_cast<double>(
+                         pf.numUpdates * pf.patternsPerUpdateGlobal)
+                         / (pe.numUpdates * pe.patternsPerUpdateGlobal));
         log << strpr("Energy to force percentages                  : "
                      "%5.1f%% : %5.1f%%\n",
-                     energyUpdates * energiesPerUpdateGlobal * 100.0 /
-                     (energyUpdates * energiesPerUpdateGlobal
-                     + forceUpdates * forcesPerUpdateGlobal),
-                     forceUpdates * forcesPerUpdateGlobal * 100.0 /
-                     (energyUpdates * energiesPerUpdateGlobal
-                     + forceUpdates * forcesPerUpdateGlobal));
+                     pe.numUpdates * pe.patternsPerUpdateGlobal * 100.0 /
+                     (pe.numUpdates * pe.patternsPerUpdateGlobal
+                     + pf.numUpdates * pf.patternsPerUpdateGlobal),
+                     pf.numUpdates * pf.patternsPerUpdateGlobal * 100.0 /
+                     (pe.numUpdates * pe.patternsPerUpdateGlobal
+                     + pf.numUpdates * pf.patternsPerUpdateGlobal));
     }
-    double totalUpdates = energyUpdates + forceUpdates;
+    double totalUpdates = 0.0;
+    for (auto k : pk) totalUpdates += p[k].numUpdates;
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
     // Allocate error and Jacobian arrays.
-    log << "Allocating memory for energy error vector and Jacobian.\n";
-    errorE.resize(numUpdaters);
-    jacobianE.resize(numUpdaters);
-    for (size_t i = 0; i < numUpdaters; ++i)
-    {
-        size_t size = 1;
-        if (( parallelMode == PM_TRAIN_ALL ||
-              (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
-            jacobianMode != JM_SUM)
-        {
-            size *= errorsGlobalEnergy;
-        }
-        else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
-                 jacobianMode != JM_SUM)
-        {
-            size *= errorsPerTaskEnergy.at(myRank);
-        }
-        errorE.at(i).resize(size, 0.0);
-        jacobianE.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
-        log << strpr("Updater %3zu:\n", i);
-        log << strpr(" - Error    size: %zu\n", errorE.at(i).size());
-        log << strpr(" - Jacobian size: %zu\n", jacobianE.at(i).size());
-    }
-    if (useForces)
-    {
-        log << "------------------------------------------------------\n";
-        log << "Allocating memory for force error vector and Jacobian.\n";
-        errorF.resize(numUpdaters);
-        jacobianF.resize(numUpdaters);
-        for (size_t i = 0; i < numUpdaters; ++i)
-        {
-            size_t size = 1;
-            if ((parallelMode == PM_TRAIN_ALL ||
-                 (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
-                jacobianMode != JM_SUM)
-            {
-                size *= errorsGlobalForce;
-            }
-            else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
-                     jacobianMode != JM_SUM)
-            {
-                size *= errorsPerTaskForce.at(myRank);
-            }
-            errorF.at(i).resize(size, 0.0);
-            jacobianF.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
-            log << strpr("Updater %3zu:\n", i);
-            log << strpr(" - Error    size: %zu\n", errorF.at(i).size());
-            log << strpr(" - Jacobian size: %zu\n", jacobianF.at(i).size());
-        }
-    }
+    for (auto k : pk) allocateArrays(k);
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
@@ -1119,12 +819,10 @@ void Training::setupTraining()
             {
                 log << "Note: During training loop the actual observation\n";
                 log << "      size corresponds to error vector size:\n";
-                log << strpr("sizeObservation = %zu (energy updates)\n",
-                             errorE.at(i).size());
-                if (useForces)
+                for (auto k : pk)
                 {
-                    log << strpr("sizeObservation = %zu (force  updates)\n",
-                                 errorF.at(i).size());
+                    log << strpr("sizeObservation = %zu (%s updates)\n",
+                                 p[k].error.at(i).size(), k.c_str());
                 }
             }
             log << "-----------------------------------------"
@@ -2885,17 +2583,15 @@ void Training::randomizeNeuralNetworkWeights(string const& type)
 
 void Training::setSelectionMode(string const& property)
 {
-    if (!(property == "all" ||
-          property == "energy" ||
-          property == "force" ||
-          property == "charge"))
+    bool all = (property == "all");
+    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    if (!(all || isProperty))
     {
         throw runtime_error("ERROR: Unknown property for selection mode"
                             " setup.\n");
     }
 
-
-    if (property == "all")
+    if (all)
     {
         if (!(settings.keywordExists("selection_mode") ||
               settings.keywordExists("rmse_threshold") ||
@@ -2906,15 +2602,14 @@ void Training::setSelectionMode(string const& property)
     {
         if (!(settings.keywordExists("selection_mode_" + property) ||
               settings.keywordExists("rmse_threshold_" + property) ||
-              settings.keywordExists("rmse_threshold_trial_" + property)
-              settings.keywordExists("short_" + property
-                                     + "_error_threshold"))) return;
+              settings.keywordExists("rmse_threshold_trial_"
+                                     + property))) return;
         log << "Selection mode settings specific to property \""
             << property << "\":\n";
     }
-    string keyword = "selection_mode_";
-    if (property == "all") keyword = "selection_mode";
-    else keyword += property;
+    string keyword;
+    if (all) keyword = "selection_mode";
+    else keyword = "selection_mode_" += property;
 
     if (settings.keywordExists(keyword))
     {
@@ -2933,21 +2628,21 @@ void Training::setSelectionMode(string const& property)
         for (map<size_t, SelectionMode>::const_iterator it = schedule.begin();
              it != schedule.end(); ++it)
         {
-            log << strpr("Selection mode starting with epoch %zu:\n",
+            log << strpr("- Selection mode starting with epoch %zu:\n",
                          it->first);
             if (it->second == SM_RANDOM)
             {
-                log << strpr("Random selection of update candidates: "
+                log << strpr("  Random selection of update candidates: "
                              "SelectionMode::SM_RANDOM (%d)\n", it->second);
             }
             else if (it->second == SM_SORT)
             {
-                log << strpr("Update candidates selected according to error: "
+                log << strpr("  Update candidates selected according to error: "
                              "SelectionMode::SM_SORT (%d)\n", it->second);
             }
             else if (it->second == SM_THRESHOLD)
             {
-                log << strpr("Update candidates chosen randomly above RMSE "
+                log << strpr("  Update candidates chosen randomly above RMSE "
                              "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
                              it->second);
                 useThreshold = true;
@@ -2957,12 +2652,12 @@ void Training::setSelectionMode(string const& property)
                 throw runtime_error("ERROR: Unknown selection mode.\n");
             }
         }
-        if (property == "all")
+        if (all)
         {
-            for (auto& ip : p)
+            for (auto& i : p)
             {
-                ip.second.selectionModeSchedule = schedule;
-                ip.second.selectionMode = schedule[0];
+                i.second.selectionModeSchedule = schedule;
+                i.second.selectionMode = schedule[0];
             }
         }
         else
@@ -2972,51 +2667,221 @@ void Training::setSelectionMode(string const& property)
         }
     }
 
-    string keywordAlt;
-    if (property == "all")
+    if (all) keyword = "rmse_threshold";
+    else keyword = "rmse_threshold_" + property;
+    if (settings.keywordExists(keyword))
     {
-        keyword = "rmse_threshold";
-        keywordAlt = keyword;
-    else 
-    {
-        keyword = "rmse_threshold_" + property;
-        keywordAlt = "short_" + property + "_error_threshold";
+        double t = atof(settings[keyword].c_str());
+        log << strpr("- RMSE selection threshold: %.2f * RMSE\n", t);
+        if (all) for (auto& i : p) i.second.rmseThreshold = t;
+        else p[property].rmseThreshold = t;
     }
 
-    if (settings.keywordExists(
-
-    keyword = "short_" + property + 
-    p[property].rmseThreshold = 
-    rmseThresholdEnergy
-              = atof(settings["short_energy_error_threshold"].c_str());
-    rmseThresholdForce
-               = atof(settings["short_force_error_threshold"].c_str());
-    rmseThresholdTrials
-                     = atof(settings["rmse_threshold_trials"].c_str());
-    log << strpr("Energy threshold: %.2f * RMSE(Energy)\n",
-                 rmseThresholdEnergy);
-    if (useForces)
+    if (all) keyword = "rmse_threshold_trials";
+    else keyword = "rmse_threshold_trials_" + property;
+    if (settings.keywordExists(keyword))
     {
-        log << strpr("Force  threshold: %.2f * RMSE(Force)\n",
-                     rmseThresholdForce);
+        size_t t = atoi(settings[keyword].c_str());
+        log << strpr("- RMSE selection trials   : %zu\n", t);
+        if (all) for (auto& i : p) i.second.rmseThresholdTrials = t;
+        else p[property].rmseThresholdTrials = t;
     }
-    log << strpr("Maximum number of update candidate trials: %zu\n",
-                 rmseThresholdTrials);
+
+    return;
+}
+
+void Training::setupFileOutput(string const& type)
+{
+    string keyword = "write_";
+    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    if      (type == "energy"       ) keyword += "trainpoints";
+    else if (type == "force"        ) keyword += "trainforces";
+    else if (type == "charge"       ) keyword += "traincharges";
+    else if (type == "weights_epoch") keyword += type;
+    else if (type == "neuronstats"  ) keyword += type;
+    else
+    {
+        throw runtime_error("ERROR: Invalid type for file output setup.\n");
+    }
+
+    // Check how often energy comparison files should be written.
+    if (settings.keywordExists(keyword))
+    {
+        size_t* writeEvery = nullptr;
+        size_t* writeAlways = nullptr;
+        string message;
+        if (isProperty)
+        {
+            writeEvery = &(p[type].writeCompEvery);
+            writeAlways = &(p[type].writeCompAlways);
+            message = type + " comparison";
+            message.at(0) = toupper(message.at(0));
+        }
+        else if (type == "weights_epoch")
+        {
+            writeEvery = &writeWeightsEvery;
+            writeAlways = &writeWeightsAlways;
+            message = "Weight";
+        }
+        else if (type == "neuronstats")
+        {
+            writeEvery = &writeNeuronStatisticsEvery;
+            writeAlways = &writeNeuronStatisticsAlways;
+            message = "Neuron statistics";
+        }
+
+        *writeEvery = 1;
+        vector<string> v = split(reduce(settings[keyword]));
+        if (v.size() == 1) *writeEnergiesEvery = (size_t)atoi(v.at(0).c_str());
+        else if (v.size() == 2)
+        {
+            *writeEvery = (size_t)atoi(v.at(0).c_str());
+            *writeAlways = (size_t)atoi(v.at(1).c_str());
+        }
+        log << strpr(message + " files will be written every %zu epochs.\n",
+                     *writeEvery);
+        if (*writeAlways > 0)
+        {
+            log << strpr(message + " files will always be written up to epoch"
+                                   " %zu.\n", *writeAlways);
+        }
+    }
+
+    return;
+}
+
+void Training::setupUpdatePlan(string const& property)
+{
+    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    if (!isProperty)
+    {
+        throw runtime_error("ERROR: Unknown property for update plan"
+                            " setup.\n");
+    }
+
+    // Actual property modified here.
+    Property& pa = p[property];
+    string keyword = property + "_fraction";
+    pa.epochFraction = atof(settings[keyword].c_str());
+    keyword = "task_batch_size_" + k;
+    pa.taskBatchSize = (size_t)atoi(settings[keyword].c_str());
+    if (pa.taskBatchSize == 0)
+    {
+        pa.patternsPerUpdate =
+            static_cast<size_t>(pa.updateCandidates.size() * pa.epochFraction);
+        pa.numUpdates = 1;
+    }
+    else
+    {
+        pa.patternsPerUpdate = pa.taskBatchSize;
+        pa.numUpdates =
+            static_cast<size_t>((pa.numTrainPatterns * pa.epochFraction)
+                                / pa.taskBatchSize / numProcs);
+    }
+    pa.patternsPerUpdateGlobal = pa.patternsPerUpdate;
+    MPI_Allreduce(MPI_IN_PLACE, &(pa.patternsPerUpdateGlobal), 1, MPI_SIZE_T, MPI_SUM, comm);
+    pa.errorsPerTask.resize(numProcs, 0);
+    if (jacobianMode == JM_FULL)
+    {
+        pa.errorsPerTask.at(myRank) = static_cast<int>(pa.patternsPerUpdate);
+    }
+    else
+    {
+        pa.errorsPerTask.at(myRank) = 1;
+    }
+    MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(pa.errorsPerTask.front()), 1, MPI_INT, comm);
+    if (jacobianMode == JM_FULL)
+    {
+        pa.weightsPerTask.resize(numUpdaters);
+        for (size_t i = 0; i < numUpdaters; ++i)
+        {
+            pa.weightsPerTask.at(i).resize(numProcs, 0);
+            for (int j = 0; j < numProcs; ++j)
+            {
+                pa.weightsPerTask.at(i).at(j) = pa.errorsPerTask.at(j)
+                                              * numWeightsPerUpdater.at(i);
+            }
+        }
+    }
+    pa.numErrorsGlobal = 0;
+    for (size_t i = 0; i < pa.errorsPerTask.size(); ++i)
+    {
+        pa.offsetPerTask.push_back(pa.numErrorsGlobal);
+        pa.errorsGlobal += pa.errorsPerTask.at(i);
+    }
+    pa.offsetJacobian.resize(numUpdaters);
+    for (size_t i = 0; i < numUpdaters; ++i)
+    {
+        for (size_t j = 0; j < pa.offsetPerTask.size(); ++j)
+        {
+            pa.offsetJacobian.at(i).push_back(pa.offsetPerTask.at(j) *
+                                              numWeightsPerUpdater.at(i));
+        }
+    }
+    log << "Update plan for property \"" + property + "\":\n";
+    log << strpr("- Per-task batch size                          : %zu\n",
+                 pa.taskBatchSize);
+    log << strpr("- Fraction of patterns used per epoch          : %.4f\n",
+                 pa.epochFraction);
+    log << strpr("- Updates per epoch                            : %zu\n",
+                 pa.numUpdates);
+    log << strpr("- Patterns used per update (rank %3d / global) : "
+                 "%10zu / %zu\n",
+                 myRank, pa.patternsPerUpdate, pa.patternsPerUpdateGlobal);
+    log << "----------------------------------------------\n";
+
+    return;
+}
+
+void Training::allocateArrays(string const& property)
+{
+    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    if (!isProperty)
+    {
+        throw runtime_error("ERROR: Unknown property for array allocation.\n");
+    }
+
+    log << "Allocating memory for " + property +
+           " error vector and Jacobian.\n";
+    Property& pa = p[property];
+    pa.error.resize(numUpdaters);
+    pa.jacobian.resize(numUpdaters);
+    for (size_t i = 0; i < numUpdaters; ++i)
+    {
+        size_t size = 1;
+        if (( parallelMode == PM_TRAIN_ALL ||
+              (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
+            jacobianMode != JM_SUM)
+        {
+            size *= pa.numErrorsGlobal;
+        }
+        else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
+                 jacobianMode != JM_SUM)
+        {
+            size *= pa.errorsPerTask.at(myRank);
+        }
+        pa.error.at(i).resize(size, 0.0);
+        pa.jacobian.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
+        log << strpr("Updater %3zu:\n", i);
+        log << strpr(" - Error    size: %zu\n", pa.error.at(i).size());
+        log << strpr(" - Jacobian size: %zu\n", pa.jacobian.at(i).size());
+    }
+    log << "----------------------------------------------\n";
 
     return;
 }
 
 Training::Property(string const& property) :
-    use                    (false    ),
     property               (property ),
     selectionMode          (SM_RANDOM),
     numTrainPatterns       (0        ),
+    numTestPatterns        (0        ),
     taskBatchSize          (0        ),
     writeCompEvery         (0        ),
     writeCompAlways        (0        ),
     posUpdateCandidates    (0        ),
     rmseThresholdTrials    (0        ),
-    countUpdates           (0        ),
+    numUpdates             (0        ),
     patternsPerUpdate      (0        ),
     patternsPerUpdateGlobal(0        ),
     numErrorsGlobal        (0        ),

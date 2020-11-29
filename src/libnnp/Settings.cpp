@@ -66,8 +66,9 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["rmse_threshold_trials_energy"  ] = "";
     m["rmse_threshold_trials_force"   ] = "";
     m["rmse_threshold_trials_charge"  ] = "";
-    m["short_energy_fraction"         ] = "";
-    m["short_force_fraction"          ] = "";
+    m["energy_fraction"               ] = "";
+    m["force_fraction"                ] = "";
+    m["charge_fraction"               ] = "";
     m["use_old_weights_short"         ] = "";
     m["weights_min"                   ] = "";
     m["weights_max"                   ] = "";
@@ -113,6 +114,8 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     a["nnp_type"]              = {"nn_type"};
     a["rmse_threshold_energy"] = {"short_energy_error_threshold"};
     a["rmse_threshold_force" ] = {"short_force_error_threshold"};
+    a["energy_fraction"      ] = {"short_energy_fraction"};
+    a["force_fraction"       ] = {"short_force_fraction"};
 
     for (auto im : m)
     {
