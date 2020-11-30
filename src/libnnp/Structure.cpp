@@ -599,6 +599,17 @@ void Structure::updateErrorForces(vector<double>& error, size_t& count) const
     return;
 }
 
+void Structure::updateErrorCharges(vector<double>& error, size_t& count) const
+{
+    for (vector<Atom>::const_iterator it = atoms.begin();
+         it != atoms.end(); ++it)
+    {
+        it->updateErrorCharges(error, count);
+    }
+
+    return;
+}
+
 string Structure::getEnergyLine() const
 {
     return strpr("%10zu %16.8E %16.8E\n",

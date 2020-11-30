@@ -265,6 +265,20 @@ struct Structure
     void                     updateErrorForces(
                                              std::vector<double>& error,
                                              std::size_t&         count) const;
+    /** Update charge error metrices with all atoms of this structure.
+     *
+     * @param[in,out] error Input error metric vector to be updated.
+     * @param[in,out] count Input counter to be updated.
+     *
+     * The error metric vector stores temporary sums for the following
+     * metrices:
+     *
+     * index 0: RMSE of charges
+     * index 1: MAE  of charges
+     */
+    void                     updateErrorCharges(
+                                             std::vector<double>& error,
+                                             std::size_t&         count) const;
     /** Get reference and NN energy.
      *
      * @return String with #index, #energyRef and #energy values.

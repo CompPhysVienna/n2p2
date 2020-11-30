@@ -16,6 +16,7 @@
 
 #include "Atom.h"
 #include "utility.h"
+#include <cmath>     // fabs
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::range_error
 
@@ -295,6 +296,15 @@ size_t Atom::getNumNeighbors(double cutoffRadius) const
 void Atom::updateErrorForces(vector<double>& error, size_t& count) const
 {
     count += 3;
+    error.at(0) += (chargeRef - charge) * (chargeRef - charge);
+    error.at(1) += fabs(chargeRef - charge);
+
+    return;
+}
+
+void Atom::updateErrorCharges(vector<double>& error, size_t& count) const
+{
+    count++;
     error.at(0) += (fRef - f).norm2();
     error.at(1) += (fRef - f).l1norm();
 

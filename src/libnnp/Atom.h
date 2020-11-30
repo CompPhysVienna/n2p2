@@ -231,7 +231,15 @@ struct Atom
      * @param[in,out] count Input counter to be updated.
      */
     void                     updateErrorForces(
-                                             std::vector<double>& rmse,
+                                             std::vector<double>& error,
+                                             std::size_t&         count) const;
+    /** Update charge error metrices with charges of this atom.
+     *
+     * @param[in,out] error Input error metric vector to be updated.
+     * @param[in,out] count Input counter to be updated.
+     */
+    void                     updateErrorCharges(
+                                             std::vector<double>& error,
                                              std::size_t&         count) const;
     /** Get reference and NN forces for this atoms.
      *

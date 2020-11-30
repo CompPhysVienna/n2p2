@@ -870,87 +870,72 @@ void Training::calculateNeighborLists()
     return;
 }
 
-void Training::calculateError(bool const   writeCompFiles,
-                              string const identifier,
-                              string const fileNameEnergiesTrain,
-                              string const fileNameEnergiesTest,
-                              string const fileNameForcesTrain,
-                              string const fileNameForcesTest)
+void Training::calculateError(
+                            string const                            identifier,
+                            map<string, pair<string, string>> const fileNames)
 {
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
     omp_set_num_threads(1);
 #endif
-    bool     energiesTrain = true;
-    if (fileNameEnergiesTrain == "") energiesTrain = false;
-    bool     energiesTest = true;
-    if (fileNameEnergiesTest == "") energiesTest = false;
-    bool     forcesTrain = true;
-    if (fileNameForcesTrain == "") forcesTrain = false;
-    bool     forcesTest = true;
-    if (fileNameForcesTest == "") forcesTest = false;
-    size_t   countEnergiesTrain = 0;
-    size_t   countEnergiesTest  = 0;
-    size_t   countForcesTrain   = 0;
-    size_t   countForcesTest    = 0;
-    ofstream fileEnergiesTrain;
-    ofstream fileEnergiesTest;
-    ofstream fileForcesTrain;
-    ofstream fileForcesTest;
+    vector<string> write;
+    for (auto i : fileNames)
+    {
+        if (i.second.first.size() == 0 || i.second.second.size() == 0)
+        {
+            throw runtime_error("ERROR: No filename provided for comparison "
+                                "files.\n");
+        }
+        write.push_back(i.first);
+    }
+
+    map<string, size_t> countTrain;
+    map<string, size_t> countTest;
+    for (auto k : pk) countTrain[k] = 0;
+    for (auto k : pk) countTest[k]  = 0;
+
+    map<string, ofstream> filesTrain;
+    map<string, ofstream> filesTest;
 
     // Reset current error metrics.
-    fill(errorEnergiesTrain.begin(), errorEnergiesTrain.end(), 0.0);
-    fill(errorEnergiesTest.begin() , errorEnergiesTest.end() , 0.0);
-    fill(errorForcesTrain.begin()  , errorForcesTrain.end()  , 0.0);
-    fill(errorForcesTest.begin()   , errorForcesTest.end()   , 0.0);
-
-    if (writeCompFiles)
+    for (auto k : pk)
     {
+        fill(p[k].errorTrain.begin(), p[k].errorTrain.end(), 0.0);
+        fill(p[k].errorTest.begin(), p[k].errorTest.end(), 0.0);
+    }
+
+    for (auto k : write)
+    {
+        filesTrain[k].open(strpr("%s.%04d",
+                                 fileNames.at(k).first.c_str(),
+                                 myRank).c_str());
+        filesTest[k].open(strpr("%s.%04d",
+                                fileNames.at(k).second.c_str(),
+                                myRank).c_str());
         // File header.
         vector<string> header;
-        vector<string> title;
-        vector<string> colName;
-        vector<string> colInfo;
-        vector<size_t> colSize;
-        if (myRank == 0 && (energiesTrain || energiesTest))
+        if (myRank == 0)
         {
-            title.push_back("Energy comparison.");
-            colSize.push_back(10);
-            colName.push_back("index");
-            colInfo.push_back("Structure index.");
-            colSize.push_back(16);
-            colName.push_back("Eref");
-            colInfo.push_back("Reference potential energy per atom "
-                              "(training units).");
-            colSize.push_back(16);
-            colName.push_back("Ennp");
-            colInfo.push_back("NNP potential energy per atom "
-                              "(training units).");
-            header = createFileHeader(title, colSize, colName, colInfo);
-        }
-
-        if (energiesTrain)
-        {
-            fileEnergiesTrain.open(strpr("%s.%04d",
-                                         fileNameEnergiesTrain.c_str(),
-                                         myRank).c_str());
-            if (myRank == 0) appendLinesToFile(fileEnergiesTrain, header);
-        }
-        if (energiesTest)
-        {
-            fileEnergiesTest.open(strpr("%s.%04d",
-                                        fileNameEnergiesTest.c_str(),
-                                        myRank).c_str());
-            if (myRank == 0) appendLinesToFile(fileEnergiesTest, header);
-        }
-        if (useForces)
-        {
-            header.clear();
-            title.clear();
-            colName.clear();
-            colInfo.clear();
-            colSize.clear();
-            if (myRank == 0 && (forcesTrain || forcesTest))
+            vector<string> title;
+            vector<string> colName;
+            vector<string> colInfo;
+            vector<size_t> colSize;
+            if (k == "energy")
+            {
+                title.push_back("Energy comparison.");
+                colSize.push_back(10);
+                colName.push_back("index");
+                colInfo.push_back("Structure index.");
+                colSize.push_back(16);
+                colName.push_back("Eref");
+                colInfo.push_back("Reference potential energy per atom "
+                                  "(training units).");
+                colSize.push_back(16);
+                colName.push_back("Ennp");
+                colInfo.push_back("NNP potential energy per atom "
+                                  "(training units).");
+            }
+            else if (k == "force")
             {
                 title.push_back("Force comparison.");
                 colSize.push_back(10);
@@ -966,22 +951,26 @@ void Training::calculateError(bool const   writeCompFiles,
                 colSize.push_back(16);
                 colName.push_back("Fnnp");
                 colInfo.push_back("NNP force (training units).");
-                header = createFileHeader(title, colSize, colName, colInfo);
             }
-            if (forcesTrain)
+            else if (k == "charge")
             {
-                fileForcesTrain.open(strpr("%s.%04d",
-                                           fileNameForcesTrain.c_str(),
-                                           myRank).c_str());
-                if (myRank == 0) appendLinesToFile(fileForcesTrain, header);
+                title.push_back("Charge comparison.");
+                colSize.push_back(10);
+                colName.push_back("index_s");
+                colInfo.push_back("Structure index.");
+                colSize.push_back(10);
+                colName.push_back("index_a");
+                colInfo.push_back("Atom index.");
+                colSize.push_back(16);
+                colName.push_back("Qref");
+                colInfo.push_back("Reference charge.");
+                colSize.push_back(16);
+                colName.push_back("Qnnp");
+                colInfo.push_back("NNP charge.");
             }
-            if (forcesTest)
-            {
-                fileForcesTest.open(strpr("%s.%04d",
-                                          fileNameForcesTest.c_str(),
-                                          myRank).c_str());
-                if (myRank == 0) appendLinesToFile(fileForcesTest, header);
-            }
+            header = createFileHeader(title, colSize, colName, colInfo);
+            appendLinesToFile(filesTrain.at(k), header);
+            appendLinesToFile(filesTest.at(k), header);
         }
     }
 
@@ -995,6 +984,38 @@ void Training::calculateError(bool const   writeCompFiles,
 #endif
         calculateAtomicNeuralNetworks((*it), useForces);
         calculateEnergy((*it));
+        for (auto k : pk)
+        {
+            vector<double>* error = nullptr;
+            size_t* count = nullptr;
+            if (it->sampleType == Structure::ST_TRAINING)
+            {
+                error = &(p[k].errorTrain);
+                count = &(countTrain[k]);
+            }
+            else if (it->sampleType == Structure::ST_TEST)
+            {
+                error = &(p[k].errorTest);
+                count = &(countTest[k]);
+            }
+
+            if (k == "energy")
+            {
+                it->updateErrorEnergy(*error, *count);
+            }
+            else if (k == "force")
+            {
+                it->updateErrorForces(*error, *count);
+            }
+            else if (k == "charge")
+            {
+                it->updateErrorCharges(*error, *count);
+            }
+
+            else if (it->sampleType == Structure::ST_TEST)
+            {
+            }
+        }
         if (it->sampleType == Structure::ST_TRAINING)
         {
             it->updateErrorEnergy(errorEnergiesTrain, countEnergiesTrain);
@@ -1103,34 +1124,31 @@ void Training::calculateError(bool const   writeCompFiles,
 
 void Training::calculateErrorEpoch()
 {
-    // Check whether energy/force comparison files should be written for
+    // Check whether property comparison files should be written for
     // this epoch.
     string identifier = strpr("%d", epoch);
-    string fileNameEnergiesTrain = "";
-    string fileNameEnergiesTest = "";
-    string fileNameForcesTrain = "";
-    string fileNameForcesTest = "";
-    if (writeEnergiesEvery > 0 &&
-        (epoch % writeEnergiesEvery == 0 || epoch <= writeEnergiesAlways))
+    map<string> fileNames;
+
+    for (auto const& ip : p)
     {
-        fileNameEnergiesTrain = strpr("trainpoints.%06zu.out", epoch);
-        fileNameEnergiesTest = strpr("testpoints.%06zu.out", epoch);
-    }
-    if (useForces &&
-        writeForcesEvery > 0 &&
-        (epoch % writeForcesEvery == 0 || epoch <= writeForcesAlways))
-    {
-        fileNameForcesTrain = strpr("trainforces.%06zu.out", epoch);
-        fileNameForcesTest = strpr("testforces.%06zu.out", epoch);
+        string const& k = ip.first; // key
+        Property const& d = ip.second; // data
+        if (d.writeCompEvery > 0 &&
+            (epoch % d.writeCompEvery == 0 || epoch <= d.writeCompAlways))
+        {
+            string middle;
+            if      (k == "energy") middle = "points";
+            else if (k == "force" ) middle = "forces";
+            else if (k == "charge") middle = "charges";
+            fileNames[k] = make_pair(strpr("train%s.%06zu.out",
+                                           middle.c_str(), epoch),
+                                     strpr("test%s.%06zu.out",
+                                           middle.c_str(), epoch));
+        }
     }
 
-    // Calculate RMSE and write comparison files.
-    calculateError(true,
-                   identifier,
-                   fileNameEnergiesTrain,
-                   fileNameEnergiesTest,
-                   fileNameForcesTrain,
-                   fileNameForcesTest);
+    // Calculate errors and write comparison files.
+    calculateError(identifier, fileNames);
 
     return;
 }

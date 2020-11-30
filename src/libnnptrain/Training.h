@@ -145,29 +145,17 @@ public:
     void                  calculateNeighborLists();
     /** Calculate error metrics for all structures.
      *
-     * @param[in] writeCompFiles Write NN and reference energies and forces to
-     *                           comparison files.
      * @param[in] identifier String added to "ENERGY" and "FORCES" log line.
-     * @param[in] fileNameEnergiesTrain File name for training energies
-     *                                  comparison file.
-     * @param[in] fileNameEnergiesTest File name for test energies comparison
-     *                                 file.
-     * @param[in] fileNameForcesTrain File name for training forces comparison
-     *                                file.
-     * @param[in] fileNameForcesTest File name for test forces comparison file.
+     * @param[in] fileNames Map of properties to file names for training/test
+     *                      comparison files.
+     *
+     * If fileNames map is empty, no files will be written.
      */
     void                  calculateError(
-                                        bool const        writeCompFiles,
-                                        std::string const identifier
-                                            = "",
-                                        std::string const fileNameEnergiesTrain
-                                            = "energies-train.comp",
-                                        std::string const fileNameEnergiesTest
-                                            = "energies-test.comp",
-                                        std::string const fileNameForcesTrain
-                                            = "forces-train.comp",
-                                        std::string const fileNameForcesTest
-                                            = "forces-test.comp");
+                              std::string const                identifier,
+                              std::map<std::string,
+                              std::pair<
+                              std::string, std::string>> const fileNames);
     /** Calculate error metrics per epoch for all structures with file names
      * used in training loop.
      *
