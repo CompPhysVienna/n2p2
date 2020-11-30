@@ -51,6 +51,7 @@ File output:
 ------------
 
 * ``output.data``\ : The requested subset of training structures.
+* ``reject.data``\ : The rejected configurations, i.e. all data minus ``output.data``.
 * ``nnp-select.log`` : Log file (copy of screen output).
 
 Examples:
