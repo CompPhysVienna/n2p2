@@ -329,13 +329,15 @@ public:
     double                   getEnergyWithOffset(
                                             Structure const& structure,
                                             bool             ref = true) const;
-    /** Apply normalization to given energy.
+    /** Apply normalization to given property.
      *
-     * @param[in] energy Input energy in physical units.
+     * @param[in] property One of "energy", "force".
+     * @param[in] value Input property value in physical units.
      *
-     * @return Energy in normalized units.
+     * @return Property in normalized units.
      */
-    double                   normalizedEnergy(double energy) const;
+    double                   normalized(std::string const& property,
+                                        double             value) const;
     /** Apply normalization to given energy of structure.
      *
      * @param[in] structure Input structure with energy in physical units.
@@ -346,20 +348,15 @@ public:
     double                   normalizedEnergy(
                                             Structure const& structure,
                                             bool             ref = true) const;
-    /** Apply normalization to given force.
+    /** Undo normalization for a given property.
      *
-     * @param[in] force Input force in physical units.
+     * @param[in] property One of "energy", "force".
+     * @param[in] value Input property value in normalized units.
      *
-     * @return Force in normalized units.
+     * @return Property in physical units.
      */
-    double                   normalizedForce(double force) const;
-    /** Undo normalization for a given energy.
-     *
-     * @param[in] energy Input energy in normalized units.
-     *
-     * @return Energy in physical units.
-     */
-    double                   physicalEnergy(double energy) const;
+    double                   physical(std::string const& property,
+                                      double             value) const;
     /** Undo normalization for a given energy of structure.
      *
      * @param[in] structure Input structure with energy in normalized units.
@@ -369,13 +366,6 @@ public:
      */
     double                   physicalEnergy(Structure const& structure,
                                             bool             ref = true) const;
-    /** Undo normalization for a given force.
-     *
-     * @param[in] force Input force in normalized units.
-     *
-     * @return Force in physical units.
-     */
-    double                   physicalForce(double force) const;
     /** Convert one structure to normalized units.
      *
      * @param[in,out] structure Input structure.

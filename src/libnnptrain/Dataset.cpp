@@ -1559,28 +1559,34 @@ void Dataset::writeAtomicEnvironmentFile(
     return;
 }
 
-void Dataset::collectErrorEnergies(vector<double>& error, size_t& count) const
+void Dataset::collectError(string const&        property,
+                           map<string, double>& error,
+                           size_t&              count) const
 {
-    MPI_Allreduce(MPI_IN_PLACE, &count         , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &(error.at(0)) , 1, MPI_DOUBLE, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &(error.at(1)) , 1, MPI_DOUBLE, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &(error.at(2)) , 1, MPI_DOUBLE, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &(error.at(3)) , 1, MPI_DOUBLE, MPI_SUM, comm);
-    error.at(0) = sqrt(error.at(0) / count);
-    error.at(1) = sqrt(error.at(1) / count);
-    error.at(2) = error.at(2) / count;
-    error.at(3) = error.at(3) / count;
-
-    return;
-}
-
-void Dataset::collectErrorForces(vector<double>& error, size_t& count) const
-{
-    MPI_Allreduce(MPI_IN_PLACE, &count         , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &(error.at(0)) , 1, MPI_DOUBLE, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &(error.at(1)) , 1, MPI_DOUBLE, MPI_SUM, comm);
-    error.at(0) = sqrt(error.at(0) / count);
-    error.at(1) = error.at(1) / count;
+    if (property == "energy")
+    {
+        MPI_Allreduce(MPI_IN_PLACE, &count               , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("RMSEpa")), 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("RMSE"))  , 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("MAEpa")) , 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("MAE"))   , 1, MPI_DOUBLE, MPI_SUM, comm);
+        error.at("RMSEpa") = sqrt(error.at("RMSEpa") / count);
+        error.at("RMSE") = sqrt(error.at("RMSE") / count);
+        error.at("MAEpa") = error.at("MAEpa") / count;
+        error.at("MAE") = error.at("MAE") / count;
+    }
+    else if (property == "force" || property == "charge")
+    {
+        MPI_Allreduce(MPI_IN_PLACE, &count             , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("RMSE")), 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("MAE")) , 1, MPI_DOUBLE, MPI_SUM, comm);
+        error.at("RMSE") = sqrt(error.at("RMSE") / count);
+        error.at("MAE") = error.at("MAE") / count;
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown property for error collection.\n");
+    }
 
     return;
 }

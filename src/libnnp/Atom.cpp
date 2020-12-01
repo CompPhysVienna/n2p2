@@ -293,20 +293,26 @@ size_t Atom::getNumNeighbors(double cutoffRadius) const
     return numNeighborsLocal;
 }
 
-void Atom::updateErrorForces(vector<double>& error, size_t& count) const
+void Atom::updateError(string const&        property,
+                       map<string, double>& error,
+                       size_t&              count) const
 {
-    count += 3;
-    error.at(0) += (chargeRef - charge) * (chargeRef - charge);
-    error.at(1) += fabs(chargeRef - charge);
-
-    return;
-}
-
-void Atom::updateErrorCharges(vector<double>& error, size_t& count) const
-{
-    count++;
-    error.at(0) += (fRef - f).norm2();
-    error.at(1) += (fRef - f).l1norm();
+    if (property == "force")
+    {
+        count += 3;
+        error.at("RMSE") += (fRef - f).norm2();
+        error.at("MAE") += (fRef - f).l1norm();
+    }
+    else if (property == "charge")
+    {
+        count++;
+        error.at("RMSE") += (chargeRef - charge) * (chargeRef - charge);
+        error.at("MAE") += fabs(chargeRef - charge);
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown property for error update.\n");
+    }
 
     return;
 }
@@ -324,6 +330,15 @@ vector<string> Atom::getForcesLines() const
     }
 
     return v;
+}
+
+string Atom::getChargeLine() const
+{
+    return strpr("%10zu %10zu %16.8E %16.8E\n",
+                 indexStructure,
+                 index,
+                 chargeRef,
+                 charge);
 }
 
 vector<string> Atom::info() const

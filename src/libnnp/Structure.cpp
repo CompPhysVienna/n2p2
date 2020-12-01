@@ -575,36 +575,31 @@ void Structure::clearNeighborList()
     return;
 }
 
-void Structure::updateErrorEnergy(vector<double>& error, size_t& count) const
+void Structure::updateError(string const&        property,
+                            map<string, double>& error,
+                            size_t&              count) const
 {
-    count++;
-    double diff = energyRef - energy;
-    error.at(0) += diff * diff / (numAtoms * numAtoms);
-    error.at(1) += diff * diff;
-    diff = fabs(diff);
-    error.at(2) += diff / numAtoms;
-    error.at(3) += diff;
-
-    return;
-}
-
-void Structure::updateErrorForces(vector<double>& error, size_t& count) const
-{
-    for (vector<Atom>::const_iterator it = atoms.begin();
-         it != atoms.end(); ++it)
+    if (property == "energy")
     {
-        it->updateErrorForces(error, count);
+        count++;
+        double diff = energyRef - energy;
+        error.at("RMSEpa") += diff * diff / (numAtoms * numAtoms);
+        error.at("RMSE") += diff * diff;
+        diff = fabs(diff);
+        error.at("MAEpa") += diff / numAtoms;
+        error.at("MAE") += diff;
     }
-
-    return;
-}
-
-void Structure::updateErrorCharges(vector<double>& error, size_t& count) const
-{
-    for (vector<Atom>::const_iterator it = atoms.begin();
-         it != atoms.end(); ++it)
+    else if (property == "force" || property == "charge")
     {
-        it->updateErrorCharges(error, count);
+        for (vector<Atom>::const_iterator it = atoms.begin();
+             it != atoms.end(); ++it)
+        {
+            it->updateError(property, error, count);
+        }
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown property for error update.\n");
     }
 
     return;
@@ -626,6 +621,18 @@ vector<string> Structure::getForcesLines() const
     {
         vector<string> va = it->getForcesLines();
         v.insert(v.end(), va.begin(), va.end());
+    }
+
+    return v;
+}
+
+vector<string> Structure::getChargesLines() const
+{
+    vector<string> v;
+    for (vector<Atom>::const_iterator it = atoms.begin();
+         it != atoms.end(); ++it)
+    {
+        v.push_back(it->getChargeLine());
     }
 
     return v;

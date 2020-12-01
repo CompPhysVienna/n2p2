@@ -427,27 +427,27 @@ void Training::setupTraining()
     {
         if (settings["main_error_metric"] == "RMSEpa")
         {
-            p["energy"].errorMetric = 0;
-            p["force"].errorMetric = 0;
-            p["charge"].errorMetric = 0;
+            p["energy"].displayMetric = "RMSEpa";
+            p["force"].displayMetric = "RMSE";
+            p["charge"].displayMetric = "RMSE";
         }
         else if (settings["main_error_metric"] == "RMSE")
         {
-            p["energy"].errorMetric = 1;
-            p["force"].errorMetric = 0;
-            p["charge"].errorMetric = 0;
+            p["energy"].displayMetric = "RMSE";
+            p["force"].displayMetric = "RMSE";
+            p["charge"].displayMetric = "RMSE";
         }
         else if (settings["main_error_metric"] == "MAEpa")
         {
-            p["energy"].errorMetric = 2;
-            p["force"].errorMetric = 1;
-            p["charge"].errorMetric = 1;
+            p["energy"].displayMetric = "MAEpa";
+            p["force"].displayMetric = "MAE";
+            p["charge"].displayMetric = "MAE";
         }
         else if (settings["main_error_metric"] == "MAE")
         {
-            p["energy"].errorMetric = 3;
-            p["force"].errorMetric = 1;
-            p["charge"].errorMetric = 1;
+            p["energy"].displayMetric = "MAE";
+            p["force"].displayMetric = "MAE";
+            p["charge"].displayMetric = "MAE";
         }
         else
         {
@@ -456,9 +456,9 @@ void Training::setupTraining()
     }
     else
     {
-        p["energy"].errorMetric = 0;
-        p["force"].errorMetric = 0;
-        p["charge"].errorMetric = 0;
+        p["energy"].displayMetric = "RMSEpa";
+        p["force"].displayMetric = "RMSE";
+        p["charge"].displayMetric = "RMSE";
     }
 
     updaterType = (UpdaterType)atoi(settings["updater_type"].c_str());
@@ -888,6 +888,12 @@ void Training::calculateError(
         }
         write.push_back(i.first);
     }
+    auto doWrite = [&write](string key){
+                       return find(write.begin(),
+                                   write.end(),
+                                   key) != write.end();
+                   };
+
 
     map<string, size_t> countTrain;
     map<string, size_t> countTest;
@@ -900,8 +906,8 @@ void Training::calculateError(
     // Reset current error metrics.
     for (auto k : pk)
     {
-        fill(p[k].errorTrain.begin(), p[k].errorTrain.end(), 0.0);
-        fill(p[k].errorTest.begin(), p[k].errorTest.end(), 0.0);
+        for (auto& m : p[k].errorTrain) m.second = 0.0;
+        for (auto& m : p[k].errorTest) m.second = 0.0;
     }
 
     for (auto k : write)
@@ -986,135 +992,68 @@ void Training::calculateError(
         calculateEnergy((*it));
         for (auto k : pk)
         {
-            vector<double>* error = nullptr;
+            map<string, double>* error = nullptr;
             size_t* count = nullptr;
+            ofstream* file = nullptr;
             if (it->sampleType == Structure::ST_TRAINING)
             {
                 error = &(p[k].errorTrain);
-                count = &(countTrain[k]);
+                count = &(countTrain.at(k));
+                file = &(filesTrain.at(k));
             }
             else if (it->sampleType == Structure::ST_TEST)
             {
                 error = &(p[k].errorTest);
-                count = &(countTest[k]);
+                count = &(countTest.at(k));
+                file = &(filesTest.at(k));
             }
 
-            if (k == "energy")
+            it->updateError(k, *error, *count);
+            if (doWrite(k))
             {
-                it->updateErrorEnergy(*error, *count);
-            }
-            else if (k == "force")
-            {
-                it->updateErrorForces(*error, *count);
-            }
-            else if (k == "charge")
-            {
-                it->updateErrorCharges(*error, *count);
-            }
-
-            else if (it->sampleType == Structure::ST_TEST)
-            {
-            }
-        }
-        if (it->sampleType == Structure::ST_TRAINING)
-        {
-            it->updateErrorEnergy(errorEnergiesTrain, countEnergiesTrain);
-            if (writeCompFiles && energiesTrain)
-            {
-                fileEnergiesTrain << it->getEnergyLine();
-            }
-        }
-        else if (it->sampleType == Structure::ST_TEST)
-        {
-            it->updateErrorEnergy(errorEnergiesTest, countEnergiesTest);
-            if (writeCompFiles && energiesTest)
-            {
-                fileEnergiesTest << it->getEnergyLine();
-            }
-        }
-        if (useForces)
-        {
-            calculateForces((*it));
-            if (it->sampleType == Structure::ST_TRAINING)
-            {
-                it->updateErrorForces(errorForcesTrain, countForcesTrain);
-                if (writeCompFiles && forcesTrain)
+                if      (k == "energy") (*file) << it->getEnergyLine();
+                else if (k == "force")
                 {
-                    vector<string> v = it->getForcesLines();
-                    for (vector<string>::const_iterator it2 = v.begin();
-                         it2 != v.end(); ++it2)
-                    {
-                        fileForcesTrain << (*it2);
-                    }
+                    for (auto l : it->getForcesLines()) (*file) << l;
                 }
-            }
-            else if (it->sampleType == Structure::ST_TEST)
-            {
-                it->updateErrorForces(errorForcesTest, countForcesTest);
-                if (writeCompFiles && forcesTest)
+                else if (k == "charge")
                 {
-                    vector<string> v = it->getForcesLines();
-                    for (vector<string>::const_iterator it2 = v.begin();
-                         it2 != v.end(); ++it2)
-                    {
-                        fileForcesTest << (*it2);
-                    }
+                    for (auto l : it->getChargesLines()) (*file) << l;
                 }
             }
         }
         if (freeMemory) it->freeAtoms(true);
     }
 
-    collectErrorEnergies(errorEnergiesTrain, countEnergiesTrain);
-    collectErrorEnergies(errorEnergiesTest , countEnergiesTest );
-    log << strpr("ENERGY %4s", identifier.c_str());
-    if (normalize)
+    for (auto k : pk)
     {
-        log << strpr(
-                    " %13.5E %13.5E",
-                    physicalEnergy(errorEnergiesTrain.at(errorMetricEnergies)),
-                    physicalEnergy(errorEnergiesTest.at(errorMetricEnergies)));
-    }
-    log << strpr(" %13.5E %13.5E\n",
-                 errorEnergiesTrain.at(errorMetricEnergies),
-                 errorEnergiesTest.at(errorMetricEnergies));
-    if (useForces)
-    {
-        collectErrorForces(errorForcesTrain, countForcesTrain);
-        collectErrorForces(errorForcesTest , countForcesTest );
-        log << strpr("FORCES %4s", identifier.c_str());
+        collectError(k, p[k].errorTrain, countTrain.at(k));
+        collectError(k, p[k].errorTest, countTest.at(k));
+        if (k == "energy") log << strpr("ENERGY %4s", identifier.c_str());
+        if (k == "force")  log << strpr("FORCES %4s", identifier.c_str());
+        if (k == "charge") log << strpr("CHARGE %4s", identifier.c_str());
         if (normalize)
         {
             log << strpr(" %13.5E %13.5E",
-                         physicalForce(errorForcesTrain.at(errorMetricForces)),
-                         physicalForce(errorForcesTest.at(errorMetricForces)));
+                         physical(k, p[k].errorTrain.at(p[k].displayMetric)),
+                         physical(k, p[k].errorTest.at(p[k].displayMetric)));
         }
         log << strpr(" %13.5E %13.5E\n",
-                     errorForcesTrain.at(errorMetricForces),
-                     errorForcesTest.at(errorMetricForces));
-    }
-
-    if (writeCompFiles)
-    {
-        if (energiesTrain) fileEnergiesTrain.close();
-        if (energiesTest) fileEnergiesTest.close();
-        if (useForces)
+                     p[k].errorTrain.at(p[k].displayMetric),
+                     p[k].errorTest.at(p[k].displayMetric));
+        if (doWrite(k))
         {
-            if (forcesTrain) fileForcesTrain.close();
-            if (forcesTest) fileForcesTest.close();
-        }
-        MPI_Barrier(comm);
-        if (myRank == 0)
-        {
-            if (energiesTrain) combineFiles(fileNameEnergiesTrain);
-            if (energiesTest) combineFiles(fileNameEnergiesTest);
-            if (useForces)
+            filesTrain.at(k).close();
+            filesTest.at(k).close();
+            MPI_Barrier(comm);
+            if (myRank == 0)
             {
-                if (forcesTrain) combineFiles(fileNameForcesTrain);
-                if (forcesTest) combineFiles(fileNameForcesTest);
+                combineFiles(fileNames.at(k).first);
+                combineFiles(fileNames.at(k).second);
             }
         }
     }
+
 #ifdef _OPENMP
     omp_set_num_threads(num_threads);
 #endif
@@ -1127,7 +1066,7 @@ void Training::calculateErrorEpoch()
     // Check whether property comparison files should be written for
     // this epoch.
     string identifier = strpr("%d", epoch);
-    map<string> fileNames;
+    map<string, pair<string, string>> fileNames;
 
     for (auto const& ip : p)
     {
@@ -1153,7 +1092,8 @@ void Training::calculateErrorEpoch()
     return;
 }
 
-void Training::writeWeights(string const fileNameFormat) const
+void Training::writeWeights(string const& nnName,
+                            string const& fileNameFormat) const
 {
     ofstream file;
 
@@ -1162,7 +1102,7 @@ void Training::writeWeights(string const fileNameFormat) const
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         file.open(fileName.c_str());
-        elements.at(i).neuralNetworks.at("short").writeConnections(file);
+        elements.at(i).neuralNetworks.at(nnName).writeConnections(file);
         file.close();
     }
 
@@ -1171,12 +1111,18 @@ void Training::writeWeights(string const fileNameFormat) const
 
 void Training::writeWeightsEpoch() const
 {
-    string fileNameFormat = strpr("weights.%%03zu.%06d.out", epoch);
-
     if (writeWeightsEvery > 0 &&
         (epoch % writeWeightsEvery == 0 || epoch <= writeWeightsAlways))
     {
-        writeWeights(fileNameFormat);
+        if (nnpType == NNPType::SHORT_ONLY ||
+            (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+        {
+            writeWeights("short", strpr("weights.%%03zu.%06d.out", epoch));
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+        {
+            writeWeights("charge", strpr("weightse.%%03zu.%06d.out", epoch));
+        }
     }
 
     return;
@@ -1185,111 +1131,96 @@ void Training::writeWeightsEpoch() const
 void Training::writeLearningCurve(bool append, string const fileName) const
 {
     ofstream file;
+    string fileNameActual = fileName;
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        fileNameActual += strpr(".stage-%zu", stage);
+    }
 
-    if (append) file.open(fileName.c_str(), ofstream::app);
+    if (append) file.open(fileNameActual.c_str(), ofstream::app);
     else
     {
-        file.open(fileName.c_str());
+        file.open(fileNameActual.c_str());
 
         // File header.
         vector<string> title;
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        title.push_back("Learning curves for energies and forces.");
+        if (nnpType == NNPType::SHORT_ONLY ||
+            (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+        {
+            title.push_back("Learning curves for energies and forces.");
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+        {
+            title.push_back("Learning curves for charges.");
+        }
         colSize.push_back(10);
         colName.push_back("epoch");
         colInfo.push_back("Current epoch.");
-        colSize.push_back(16);
-        colName.push_back("RMSEpa_Etrain_pu");
-        colInfo.push_back("RMSE of training energies per atom (physical "
-                          "units).");
-        colSize.push_back(16);
-        colName.push_back("RMSEpa_Etest_pu");
-        colInfo.push_back("RMSE of test energies per atom (physical units).");
-        colSize.push_back(16);
-        colName.push_back("RMSE_Ftrain_pu");
-        colInfo.push_back("RMSE of training forces (physical units).");
-        colSize.push_back(16);
-        colName.push_back("RMSE_Ftest_pu");
-        colInfo.push_back("RMSE of test forces (physical units).");
-        colSize.push_back(16);
-        colName.push_back("RMSE_Etrain_pu");
-        colInfo.push_back("RMSE of training energies (physical "
-                          "units).");
-        colSize.push_back(16);
-        colName.push_back("RMSE_Etest_pu");
-        colInfo.push_back("RMSE of test energies (physical units).");
-        colSize.push_back(16);
-        colName.push_back("MAEpa_Etrain_pu");
-        colInfo.push_back("MAE of training energies per atom (physical "
-                          "units).");
-        colSize.push_back(16);
-        colName.push_back("MAEpa_Etest_pu");
-        colInfo.push_back("MAE of test energies per atom (physical units).");
-        colSize.push_back(16);
-        colName.push_back("MAE_Ftrain_pu");
-        colInfo.push_back("MAE of training forces (physical units).");
-        colSize.push_back(16);
-        colName.push_back("MAE_Ftest_pu");
-        colInfo.push_back("MAE of test forces (physical units).");
-        colSize.push_back(16);
-        colName.push_back("MAE_Etrain_pu");
-        colInfo.push_back("MAE of training energies (physical "
-                          "units).");
-        colSize.push_back(16);
-        colName.push_back("MAE_Etest_pu");
-        colInfo.push_back("MAE of test energies (physical units).");
+
+        map<string, string> text;
+        text["RMSEpa"] = "RMSE of %s %s per atom";
+        text["RMSE"]   = "RMSE of %s %s";
+        text["MAEpa"]  = "MAE of %s %s per atom";
+        text["MAE"]    = "MAE of %s %s";
+
+        for (auto k : pk)
+        {
+            for (auto m : p[k].errorMetrics)
+            {
+                colSize.push_back(16);
+                colName.push_back(m + "_" + p[k].tiny + "train_pu");
+                colInfo.push_back(strpr(
+                                       (text[m] + " (physical units)").c_str(),
+                                       "training",
+                                       p[k].plural.c_str()));
+                colSize.push_back(16);
+                colName.push_back(m + "_" + p[k].tiny + "test_pu");
+                colInfo.push_back(strpr(
+                                       (text[m] + " (physical units)").c_str(),
+                                       "test",
+                                       p[k].plural.c_str()));
+            }
+        }
         if (normalize)
         {
-            colSize.push_back(16);
-            colName.push_back("RMSEpa_Etrain_iu");
-            colInfo.push_back("RMSE of training energies per atom (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("RMSEpa_Etest_iu");
-            colInfo.push_back("RMSE of test energies per atom (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("RMSE_Ftrain_iu");
-            colInfo.push_back("RMSE of training forces (internal units).");
-            colSize.push_back(16);
-            colName.push_back("RMSE_Ftest_iu");
-            colInfo.push_back("RMSE of test forces (internal units).");
-            colSize.push_back(16);
-            colName.push_back("RMSE_Etrain_iu");
-            colInfo.push_back("RMSE of training energies (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("RMSE_Etest_iu");
-            colInfo.push_back("RMSE of test energies (internal units).");
-            colSize.push_back(16);
-            colName.push_back("MAEpa_Etrain_iu");
-            colInfo.push_back("MAE of training energies per atom (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("MAEpa_Etest_iu");
-            colInfo.push_back("MAE of test energies per atom (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("MAE_Ftrain_iu");
-            colInfo.push_back("MAE of training forces (internal units).");
-            colSize.push_back(16);
-            colName.push_back("MAE_Ftest_iu");
-            colInfo.push_back("MAE of test forces (internal units).");
-            colSize.push_back(16);
-            colName.push_back("MAE_Etrain_iu");
-            colInfo.push_back("MAE of training energies (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("MAE_Etest_iu");
-            colInfo.push_back("MAE of test energies (internal units).");
+            for (auto k : pk)
+            {
+                // Internal units only for energies and forces.
+                if (!(k == "energy" || k == "force")) continue;
+                for (auto m : p[k].errorMetrics)
+                {
+                    colSize.push_back(16);
+                    colName.push_back(m + "_" + p[k].tiny + "train_iu");
+                    colInfo.push_back(strpr(
+                                       (text[m] + " (internal units)").c_str(),
+                                       "training",
+                                       p[k].plural.c_str()));
+                    colSize.push_back(16);
+                    colName.push_back(m + "_" + p[k].tiny + "test_iu");
+                    colInfo.push_back(strpr(
+                                       (text[m] + " (internal units)").c_str(),
+                                       "test",
+                                       p[k].plural.c_str()));
+                }
+            }
         }
         appendLinesToFile(file,
                           createFileHeader(title, colSize, colName, colInfo));
     }
 
     file << strpr("%10zu", epoch);
+    for (auto k : pk)
+    {
+        for (auto m : p[k].errorMetrics)
+        {
+            file << strpr(" %16.8E %16.8E",
+                          p[k].errorTrain.at(m),
+                          p[k].errorTest.at(m));
+        }
+    }
     if (normalize)
     {
         file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
@@ -2891,6 +2822,9 @@ void Training::allocateArrays(string const& property)
 
 Training::Property(string const& property) :
     property               (property ),
+    displayMetric          (""       ),
+    tiny                   (""       ),
+    plural                 (""       ),
     selectionMode          (SM_RANDOM),
     numTrainPatterns       (0        ),
     numTestPatterns        (0        ),
@@ -2903,28 +2837,37 @@ Training::Property(string const& property) :
     patternsPerUpdate      (0        ),
     patternsPerUpdateGlobal(0        ),
     numErrorsGlobal        (0        ),
-    errorMetric            (0        ),
     epochFraction          (0.0      ),
     rmseThreshold          (0.0      )
 {
-    // Set up error metrics
-    if (key == "energy")
+    if (property == "energy")
     {
-        errorTrain.resize(4, 0.0);
-        errorTest.resize(4, 0.0);
+        tiny = "E";
+        plural = "energies";
+        errorMetrics = {"RMSEpa", "RMSE", "MAEpa", "MAE"};
     }
-    else if (key == "force")
+    else if (property == "force")
     {
-        errorTrain.resize(2, 0.0);
-        errorTest.resize(2, 0.0);
+        tiny = "F";
+        plural = "forces";
+        errorMetrics = {"RMSE", "MAE"};  
     }
-    else if (key == "charge")
+    else if (property == "charge")
     {
-        errorTrain.resize(2, 0.0);
-        errorTest.resize(2, 0.0);
+        tiny = "Q";
+        plural = "charges";
+        errorMetrics = {"RMSE", "MAE"};
     }
     else
     {
         throw runtime_error("ERROR: Unknown training property.\n");
     }
+
+    // Set up error metrics
+    for (auto m : errorMetrics)
+    {
+        errorTrain[m] = 0.0;
+        errorTest[m] = 0.0;
+    }
+    displayMetric = errorMetrics.at(0);
 }

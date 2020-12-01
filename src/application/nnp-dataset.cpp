@@ -296,9 +296,10 @@ int main(int argc, char* argv[])
                                         it2->index);
                     if (normalize)
                     {
-                        fileForces << strpr(" %16.8E %16.8E",
-                                            dataset.physicalForce(it2->fRef[i]),
-                                            dataset.physicalForce(it2->f[i]));
+                        fileForces << strpr(
+                                       " %16.8E %16.8E",
+                                       dataset.physical("force", it2->fRef[i]),
+                                       dataset.physical("force", it2->f[i]));
                     }
                     fileForces << strpr(" %16.8E %16.8E\n",
                                         it2->fRef[i],
@@ -334,8 +335,8 @@ int main(int argc, char* argv[])
         dataset.combineFiles(fileName);
     }
 
-    dataset.collectErrorEnergies(errorEnergy, countEnergy);
-    if (useForces) dataset.collectErrorForces(errorForces, countForces);
+    dataset.collectError("energy", errorEnergy, countEnergy);
+    if (useForces) dataset.collectError("force", errorForces, countForces);
 
     if (myRank == 0)
     {
@@ -374,10 +375,10 @@ int main(int argc, char* argv[])
     if (normalize)
     {
         dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E |",
-                             dataset.physicalEnergy(errorEnergy.at(0)),
-                             dataset.physicalEnergy(errorEnergy.at(1)),
-                             dataset.physicalEnergy(errorEnergy.at(2)),
-                             dataset.physicalEnergy(errorEnergy.at(3)));
+                             dataset.physical("energy", errorEnergy.at(0)),
+                             dataset.physical("energy", errorEnergy.at(1)),
+                             dataset.physical("energy", errorEnergy.at(2)),
+                             dataset.physical("energy", errorEnergy.at(3)));
     }
     dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E\n",
                          errorEnergy.at(0),
@@ -389,9 +390,10 @@ int main(int argc, char* argv[])
         dataset.log << "FORCES";
         if (normalize)
         {
-            dataset.log << strpr(" %13s %13.5E %13s %13.5E |", "",
-                                 dataset.physicalForce(errorForces.at(0)), "",
-                                 dataset.physicalForce(errorForces.at(1)));
+            dataset.log << strpr(
+                              " %13s %13.5E %13s %13.5E |", "",
+                              dataset.physical("force", errorForces.at(0)), "",
+                              dataset.physical("force", errorForces.at(1)));
         }
         dataset.log << strpr(" %13s %13.5E %13s %13.5E\n", "",
                              errorForces.at(0), "",
@@ -482,10 +484,10 @@ int main(int argc, char* argv[])
                 if (normalize)
                 {
                     sensFile << strpr(" %16.8E %16.8E",
-                                      dataset.physicalEnergy(
-                                                         sensMean.at(i).at(j)),
-                                      dataset.physicalEnergy(
-                                                         sensMax.at(i).at(j)));
+                                      dataset.physical("energy",
+                                                       sensMean.at(i).at(j)),
+                                      dataset.physical("energy",
+                                                       sensMax.at(i).at(j)));
                 }
                 sensFile << strpr(" %16.8E %16.8E\n",
                                   sensMean.at(i).at(j),

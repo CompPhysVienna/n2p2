@@ -164,10 +164,12 @@ public:
     void                  calculateErrorEpoch();
     /** Write weights to files (one file for each element).
      *
+     * @param[in] nnName Identifier for neural network.
      * @param[in] fileNameFormat String with file name format.
      */
-    void                  writeWeights(std::string const fileNameFormat
-                                          = "weights.%03zu.data") const;
+    void                  writeWeights(
+                                      std::string const& nnName,
+                                      std::string const& fileNameFormat) const;
     /** Write weights to files during training loop.
      */
     void                  writeWeightsEpoch() const;
@@ -289,7 +291,9 @@ private:
         double      error;
 
         /// Overload < operator to sort in \em descending order.
-        bool operator<(UpdateCandidate const& rhs) const;
+        bool operator<(UpdateCandidate const& rhs) const {
+            return this->error > rhs.error;
+        }
     };
 
     /// Specific training quantity (e.g. energies, forces, charges).
@@ -300,6 +304,12 @@ private:
 
         /// Copy of identifier within Property map.
         std::string                  property;
+        /// Error metric for display.
+        std::string                  displayMetric;
+        /// Tiny abbreviation string for property.
+        std::string                  tiny;
+        /// Plural string of property;
+        std::string                  plural;
         /// Selection mode for update candidates.
         SelectionMode                selectionMode;
         /// Number of training patterns in set.
@@ -324,8 +334,6 @@ private:
         std::size_t                  patternsPerUpdateGlobal;
         /// Global number of errors per update.
         std::size_t                  numErrorsGlobal;
-        /// Error metric index for display.
-        std::size_t                  errorMetric;
         /// Desired update fraction per epoch.
         double                       epochFraction;
         /// RMSE threshold for update candidates.
@@ -334,24 +342,28 @@ private:
         std::vector<int>             errorsPerTask;
         /// Offset for combined error per task.
         std::vector<int>             offsetPerTask;
+        /// Error metrics available for this property.
+        std::vector<std::string>     errorMetrics;
         /// Current error metrics of training patterns.
-        std::vector<double>          errorTrain;
+        std::map<
+        std::string, double>         errorTrain;
         /// Current error metrics of test patterns.
-        std::vector<double>          errorTest;
+        std::map<
+        std::string, double>         errorTest;
         /// Vector with indices of training patterns.
         std::vector<UpdateCandidate> updateCandidates;
         /// Weights per task per updater.
         std::vector<
-        std::vector<int> >           weightsPerTask;
+        std::vector<int>>            weightsPerTask;
         /// Stride for Jacobians per task per updater.
         std::vector<
-        std::vector<int> >           offsetJacobian;
+        std::vector<int>>            offsetJacobian;
         /// Global error vector (per updater).
         std::vector<
-        std::vector<double> >        error;
+        std::vector<double>>         error;
         /// Global Jacobian (per updater).
         std::vector<
-        std::vector<double> >        jacobian;
+        std::vector<double>>         jacobian;
         /// Schedule for varying selection mode.
         std::map<
         std::size_t, SelectionMode>  selectionModeSchedule;
@@ -361,7 +373,12 @@ private:
     struct PropertyMap : std::map<std::string, Property>
     {
         /// Overload [] operator to simplify access.
-        Property& operator[](std::string const& key) {return this->at(key);};
+        Property& operator[](std::string const& key) {return this->at(key);}
+        /// Overload [] operator to simplify access (const version).
+        Property const& operator[](std::string const& key) const
+        {
+            return this->at(key);
+        }
         /// Check if property is present.
         bool exists(std::string const& key)
         {
@@ -437,7 +454,7 @@ private:
     std::mt19937_64          rngNew;
     /// Global random number generator.
     std::mt19937_64          rngGlobalNew;
-    /// Actual training settings.
+    /// Actual training properties.
     PropertyMap              p;
 
 
@@ -531,16 +548,6 @@ private:
      */
     void allocateArrays(std::string const& property);
 };
-
-//////////////////////////////////
-// Inlined function definitions //
-//////////////////////////////////
-
-inline bool Training::UpdateCandidate::operator<(
-                                    Training::UpdateCandidate const& rhs) const
-{
-    return this->error > rhs.error;
-}
 
 }
 

@@ -1433,9 +1433,12 @@ double Mode::getEnergyWithOffset(Structure const& structure, bool ref) const
     return result;
 }
 
-double Mode::normalizedEnergy(double energy) const
+double Mode::normalized(string const& property, double value) const
 {
-    return energy * convEnergy;
+    if      (property == "energy") return value * convEnergy;
+    else if (property == "force") return value * convEnergy / convLength;
+    else throw runtime_error("ERROR: Unknown property to convert to "
+                             "normalized units.\n");
 }
 
 double Mode::normalizedEnergy(Structure const& structure, bool ref) const
@@ -1452,14 +1455,12 @@ double Mode::normalizedEnergy(Structure const& structure, bool ref) const
     }
 }
 
-double Mode::normalizedForce(double force) const
+double Mode::physical(string const& property, double value) const
 {
-    return force * convEnergy / convLength;
-}
-
-double Mode::physicalEnergy(double energy) const
-{
-    return energy / convEnergy;
+    if      (property == "energy") return value / convEnergy;
+    else if (property == "force") return value * convLength / convEnergy;
+    else throw runtime_error("ERROR: Unknown property to convert to physical "
+                             "units.\n");
 }
 
 double Mode::physicalEnergy(Structure const& structure, bool ref) const
@@ -1473,11 +1474,6 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
     {
         return structure.energy / convEnergy + structure.numAtoms * meanEnergy;
     }
-}
-
-double Mode::physicalForce(double force) const
-{
-    return force * convLength / convEnergy;
 }
 
 void Mode::convertToNormalizedUnits(Structure& structure) const
