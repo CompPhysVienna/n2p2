@@ -1212,6 +1212,19 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     }
 
     file << strpr("%10zu", epoch);
+    if (normalize)
+    {
+        for (auto k : pk)
+        {
+            if (!(k == "energy" || k == "force")) continue;
+            for (auto m : p[k].errorMetrics)
+            {
+                file << strpr(" %16.8E %16.8E",
+                              physical(k, p[k].errorTrain.at(m)),
+                              physical(k, p[k].errorTest.at(m)));
+            }
+        }
+    }
     for (auto k : pk)
     {
         for (auto m : p[k].errorMetrics)
@@ -1221,43 +1234,15 @@ void Training::writeLearningCurve(bool append, string const fileName) const
                           p[k].errorTest.at(m));
         }
     }
-    if (normalize)
-    {
-        file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
-                      " %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E",
-                      physicalEnergy(errorEnergiesTrain.at(0)),
-                      physicalEnergy(errorEnergiesTest.at(0)),
-                      physicalForce(errorForcesTrain.at(0)),
-                      physicalForce(errorForcesTest.at(0)),
-                      physicalEnergy(errorEnergiesTrain.at(1)),
-                      physicalEnergy(errorEnergiesTest.at(1)),
-                      physicalEnergy(errorEnergiesTrain.at(2)),
-                      physicalEnergy(errorEnergiesTest.at(2)),
-                      physicalForce(errorForcesTrain.at(1)),
-                      physicalForce(errorForcesTest.at(1)),
-                      physicalEnergy(errorEnergiesTrain.at(3)),
-                      physicalEnergy(errorEnergiesTest.at(3)));
-    }
-    file << strpr(" %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E"
-                  " %16.8E %16.8E %16.8E %16.8E %16.8E %16.8E\n",
-                  errorEnergiesTrain.at(0),
-                  errorEnergiesTest.at(0),
-                  errorForcesTrain.at(0),
-                  errorForcesTest.at(0),
-                  errorEnergiesTrain.at(1),
-                  errorEnergiesTest.at(1),
-                  errorEnergiesTrain.at(2),
-                  errorEnergiesTest.at(2),
-                  errorForcesTrain.at(1),
-                  errorForcesTest.at(1),
-                  errorEnergiesTrain.at(3),
-                  errorEnergiesTest.at(3));
+    file << "\n";
+    file.flush();
     file.close();
 
     return;
 }
 
-void Training::writeNeuronStatistics(string const fileName) const
+void Training::writeNeuronStatistics(string const& nnName,
+                                     string const& fileName) const
 {
     ofstream file;
     if (myRank == 0)
@@ -1269,8 +1254,8 @@ void Training::writeNeuronStatistics(string const fileName) const
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        title.push_back("Statistics for individual neurons gathered during "
-                        "RMSE calculation.");
+        title.push_back("Statistics for individual neurons of network \""
+                        + nnName + "\"gathered during RMSE calculation.");
         colSize.push_back(10);
         colName.push_back("element");
         colInfo.push_back("Element index.");
@@ -1298,13 +1283,13 @@ void Training::writeNeuronStatistics(string const fileName) const
 
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetworks.at("short").getNumNeurons();
+        size_t n = elements.at(i).neuralNetworks.at(nnName).getNumNeurons();
         vector<long>   count(n, 0);
         vector<double> min(n, 0.0);
         vector<double> max(n, 0.0);
         vector<double> mean(n, 0.0);
         vector<double> sigma(n, 0.0);
-        elements.at(i).neuralNetworks.at("short").
+        elements.at(i).neuralNetworks.at(nnName).
             getNeuronStatistics(&(count.front()),
                                 &(min.front()),
                                 &(max.front()),
@@ -1357,12 +1342,39 @@ void Training::writeNeuronStatistics(string const fileName) const
 
 void Training::writeNeuronStatisticsEpoch() const
 {
+    vector<pair<string, string>> nnInfo; // NN name and file name.
+
     if (writeNeuronStatisticsEvery > 0 &&
         (epoch % writeNeuronStatisticsEvery == 0
         || epoch <= writeNeuronStatisticsAlways))
     {
-        string fileName = strpr("neuron-stats.%06zu.out", epoch);
-        writeNeuronStatistics(fileName);
+        if (nnpType == NNPType::SHORT_ONLY)
+        {
+            nnInfo.push_back(
+                make_pair("short", strpr("neuron-stats.%06zu.out", epoch)));
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN)
+        {
+            if (stage == 1)
+            {
+                nnInfo.push_back(
+                    make_pair("charge",
+                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
+                                    "charge", epoch, stage)));
+            }
+            else if (stage == 2)
+            {
+                nnInfo.push_back(
+                    make_pair("charge",
+                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
+                                    "charge", epoch, stage)));
+                nnInfo.push_back(
+                    make_pair("short",
+                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
+                                    "short", epoch, stage)));
+            }
+        }
+        for (auto const& i : nnInfo) writeNeuronStatistics(i.first, i.second);
     }
 
     return;
@@ -1373,7 +1385,7 @@ void Training::resetNeuronStatistics()
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        it->neuralNetworks.at("short").resetNeuronStatistics();
+        for (auto& nn : it->neuralNetworks) nn.second.resetNeuronStatistics();
     }
     return;
 }
@@ -1382,17 +1394,22 @@ void Training::writeUpdaterStatus(bool         append,
                                   string const fileNameFormat) const
 {
     ofstream file;
+    string fileNameFormatActual = fileNameFormat;
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        fileNameFormatActual += strpr(".stage-%zu", stage);
+    }
 
     for (size_t i = 0; i < numUpdaters; ++i)
     {
         string fileName;
         if (updateStrategy == US_COMBINED)
         {
-            fileName = strpr(fileNameFormat.c_str(), 0);
+            fileName = strpr(fileNameFormatActual.c_str(), 0);
         }
         else if (updateStrategy == US_ELEMENT)
         {
-            fileName = strpr(fileNameFormat.c_str(),
+            fileName = strpr(fileNameFormatActual.c_str(),
                              elementMap.atomicNumber(i));
         }
         if (append) file.open(fileName.c_str(), ofstream::app);
@@ -1408,57 +1425,43 @@ void Training::writeUpdaterStatus(bool         append,
     return;
 }
 
-void Training::sortUpdateCandidates()
+void Training::sortUpdateCandidates(string const& property)
 {
     // Update error for all structures.
-    for (vector<UpdateCandidate>::iterator it = updateCandidatesEnergy.begin();
-         it != updateCandidatesEnergy.end(); ++it)
+    for (auto& uc : p[property].updateCandidates)
     {
-        Structure const& s = structures.at(it->s);
-        it->error = fabs((s.energyRef - s.energy) / s.numAtoms);
-    }
-    // Sort energy update candidates list.
-    sort(updateCandidatesEnergy.begin(), updateCandidatesEnergy.end());
-    // Reset current position.
-    posUpdateCandidatesEnergy = 0;
-
-    if (useForces)
-    {
-        // Update error for all forces.
-        for (vector<UpdateCandidate>::iterator it =
-             updateCandidatesForce.begin();
-             it != updateCandidatesForce.end(); ++it)
+        if (property == "energy")
         {
-            Atom const& a = structures.at(it->s).atoms.at(it->a);
-            it->error = fabs(a.fRef[it->c] - a.f[it->c]);
+            Structure const& s = structures.at(uc.s);
+            uc.error = fabs((s.energyRef - s.energy) / s.numAtoms);
         }
-        // Sort force update candidate list.
-        sort(updateCandidatesForce.begin(), updateCandidatesForce.end());
-        // Reset current position.
-        posUpdateCandidatesForce = 0;
+        else if (property == "force")
+        {
+            Atom const& a = structures.at(uc.s).atoms.at(uc.a);
+            uc.error = fabs(a.fRef[uc.c] - a.f[uc.c]);
+        }
+        else if (property == "charge")
+        {
+            Atom const& a = structures.at(uc.s).atoms.at(uc.a);
+            uc.error = fabs(a.chargeRef - a.charge);
+        }
     }
+    // Sort update candidates list.
+    sort(p[property].updateCandidates.begin(),
+         p[property].updateCandidates.end());
+    // Reset current position.
+    p[property].posUpdateCandidates = 0;
 
     return;
 }
 
-void Training::shuffleUpdateCandidates()
+void Training::shuffleUpdateCandidates(string const& property)
 {
-    shuffle(updateCandidatesEnergy.begin(),
-            updateCandidatesEnergy.end(),
+    shuffle(p[property].updateCandidates.begin(),
+            p[property].updateCandidates.end(),
             rngNew);
-
     // Reset current position.
-    posUpdateCandidatesEnergy = 0;
-
-    if (useForces)
-    {
-        shuffle(updateCandidatesForce.begin(),
-                updateCandidatesForce.end(),
-                rngNew);
-
-        // Reset current position.
-        posUpdateCandidatesForce = 0;
-    }
+    p[property].posUpdateCandidates = 0;
 
     return;
 }
@@ -1469,11 +1472,14 @@ void Training::setEpochSchedule()
     epochSchedule.clear();
     vector<int>(epochSchedule).swap(epochSchedule);
 
-    // Set size of schedule and initialize to 0 (i.e. all energy updates).
-    epochSchedule.resize(energyUpdates + forceUpdates, 0);
+    // Grow schedule vector by each propertie's number of desired updates.
+    for (size_t i = 0; i < pk.size(); ++i)
+    {
+        epochSchedule.insert(epochSchedule.end(), p[pk.at(i)].numUpdates, i);
+    }
 
-    // Fill with as many "1"s as there are force updates.
-    fill(epochSchedule.begin(), epochSchedule.begin() + forceUpdates, 1);
+    // Return if there is only a single training property.
+    if (pk.size() == 1) return;
 
     // Now shuffle the schedule to get a random sequence.
     shuffle(epochSchedule.begin(), epochSchedule.end(), rngGlobalNew);
@@ -1488,25 +1494,31 @@ void Training::setEpochSchedule()
 
 void Training::checkSelectionMode()
 {
-    if (selectionModeSchedule.find(epoch) != selectionModeSchedule.end())
+    for (auto k : pk)
     {
-        selectionMode = selectionModeSchedule[epoch];
-        if (epoch != 0)
+        if (p[k].selectionModeSchedule.find(epoch)
+            != p[k].selectionModeSchedule.end())
         {
-            string message = "INFO   Switching selection mode to ";
-            if (selectionMode == SM_RANDOM)
+            p[k].selectionMode = p[k].selectionModeSchedule[epoch];
+            if (epoch != 0)
             {
-                message += strpr("SM_RANDOM (%d).\n", selectionMode);
+                string message = "INFO   Switching selection mode for "
+                                 "property \"" + k + "\" to ";
+                if (p[k].selectionMode == SM_RANDOM)
+                {
+                    message += strpr("SM_RANDOM (%d).\n", p[k].selectionMode);
+                }
+                else if (p[k].selectionMode == SM_SORT)
+                {
+                    message += strpr("SM_SORT (%d).\n", p[k].selectionMode);
+                }
+                else if (p[k].selectionMode == SM_THRESHOLD)
+                {
+                    message += strpr("SM_THRESHOLD (%d).\n",
+                                     p[k].selectionMode);
+                }
+                log << message;
             }
-            else if (selectionMode == SM_SORT)
-            {
-                message += strpr("SM_SORT (%d).\n", selectionMode);
-            }
-            else if (selectionMode == SM_THRESHOLD)
-            {
-                message += strpr("SM_THRESHOLD (%d).\n", selectionMode);
-            }
-            log << message;
         }
     }
 
@@ -1520,31 +1532,36 @@ void Training::loop()
            "**************************************\n";
     log << "\n";
 
-    string metric = "";
+    string metric = "?";
     string peratom = "";
-    if (errorMetricForces == 0) metric = "RMSE";
-    else if (errorMetricForces == 1) metric = "MAE";
-    if (errorMetricEnergies % 2 == 0) peratom = "per atom ";
 
     log << "The training loop output covers different RMSEs, update and\n";
     log << "timing information. The following quantities are organized\n";
     log << "according to the matrix scheme below:\n";
     log << "-------------------------------------------------------------------\n";
     log << "ep ............ Epoch.\n";
-    log << "Etrain_phys ... " << metric << " of training energies "
-        << peratom << "(p. u.).\n";
-    log << "Etest_phys .... " << metric << " of test     energies "
-        << peratom << "(p. u.).\n";
-    log << "Etrain_int .... " << metric << " of training energies "
-        << peratom << "(i. u.).\n";
-    log << "Etest_int ..... " << metric << " of test     energies "
-        << peratom << "(i. u.).\n";
-    log << "Ftrain_phys ... " << metric << " of training forces (p. u.).\n";
-    log << "Ftest_phys .... " << metric << " of test     forces (p. u.).\n";
-    log << "Ftrain_int .... " << metric << " of training forces (i. u.).\n";
-    log << "Ftest_int ..... " << metric << " of test     forces (i. u.).\n";
-    log << "E_count ....... Number of energy updates.\n";
-    log << "F_count ....... Number of force  updates.\n";
+    for (auto k : pk)
+    {
+        string const& pmetric = p[k].displayMetric;
+        if      (pmetric.find("RMSE") != pmetric.npos) metric = "RMSE";
+        else if (pmetric.find("MAE")  != pmetric.npos) metric = "MAE";
+        if      (pmetric.find("pa") != pmetric.npos) peratom = "per atom ";
+        log << p[k].tiny << "train_phys ... " << metric << " of training "
+            << p[k].plural << peratom << "(p. u.).\n";
+        log << p[k].tiny << "test_phys .... " << metric << " of test     "
+            << p[k].plural << peratom << "(p. u.).\n";
+        if (normalize)
+        {
+            log << p[k].tiny << "train_int .... " << metric << " of training "
+                << p[k].plural << peratom << "(i. u.).\n";
+            log << p[k].tiny << "test_int ..... " << metric << " of test     "
+                << p[k].plural << peratom << "(i. u.).\n";
+        }
+    }
+    for (auto k : pk)
+    {
+        log << p[k].tiny << "_count ....... Number of " << k << " updates.\n";
+    }
     log << "count ......... Total number of updates.\n";
     log << "t_train ....... Time for training (seconds).\n";
     log << "t_error ....... Time for error calculation (seconds).\n";
@@ -1557,8 +1574,16 @@ void Training::loop()
     log << "      if data set normalization is used.\n";
     log << "-------------------------------------------------------------------\n";
     log << "     1    2             3             4             5             6\n";
-    log << "energy   ep   Etrain_phys    Etest_phys    Etrain_int     Etest_int\n";
-    log << "forces   ep   Ftrain_phys    Ftest_phys    Ftrain_int     Ftest_int\n";
+    for (auto k : pk)
+    {
+        log << strpr("%-6s", k.c_str()) << "   ep   "
+            << p[k].tiny << "train_phys    " << p[k].tiny << "test_phys    ";
+        if (normalize)
+        {
+           log << p[k].tiny << "train_int     " << p[k].tiny << "test_int";
+        }
+        log << "\n";
+    }
     log << "update   ep       E_count       F_count         count\n";
     log << "timing   ep       t_train       t_error       t_epoch         t_tot\n";
     log << "-------------------------------------------------------------------\n";
@@ -1609,27 +1634,30 @@ void Training::loop()
         swError.reset();
 
         // Reset update counters.
-        size_t numUpdatesEnergy = 0;
-        size_t numUpdatesForce = 0;
+        for (auto k : pk) p[k].countUpdates = 0;
 
         // Check if selection mode should be changed in this epoch.
         checkSelectionMode();
 
         // Sort or shuffle update candidates.
-        if (selectionMode == SM_SORT) sortUpdateCandidates();
-        else shuffleUpdateCandidates();
+        for (auto k : pk)
+        {
+            if (p[k].selectionMode == SM_SORT) sortUpdateCandidates(k);
+            else shuffleUpdateCandidates(k);
+        }
 
         // Determine epoch update schedule.
         setEpochSchedule();
 
-        // Perform energy/force updates according to schedule.
+        // Perform property updates according to schedule.
         swTrain.start();
-        for (size_t i = 0; i < epochSchedule.size(); ++i)
+        size_t totalUpdates = 0;
+        for (auto i : epochSchedule)
         {
-            bool force = static_cast<bool>(epochSchedule.at(i));
-            update(force);
-            if (force) numUpdatesForce++;
-            else       numUpdatesEnergy++;
+            string property = pk.at(i);
+            update(property);
+            p[property].countUpdates++;
+            totalUpdates++;
         }
         swTrain.stop();
 
@@ -1642,11 +1670,9 @@ void Training::loop()
         swError.stop();
 
         // Print update information.
-        log << strpr("UPDATE %4zu %13zu %13zu %13zu\n",
-                     epoch,
-                     numUpdatesEnergy,
-                     numUpdatesForce,
-                     numUpdatesEnergy + numUpdatesForce);
+        log << strpr("UPDATE %4zu ", epoch);
+        for (auto k : pk) log << strpr(" %13zu", p[k].countUpdates);
+        log << strpr(" %13zu\n", totalUpdates);
 
         // Write weights to files.
         if (myRank == 0) writeWeightsEpoch();
@@ -1676,8 +1702,12 @@ void Training::loop()
     return;
 }
 
-void Training::update(bool force)
+void Training::update(string const& property)
 {
+    // Shortcuts.
+    string const& k = property; // Property key.
+    Property& pu = p[k]; // Update property.
+
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
     omp_set_num_threads(1);
@@ -1686,49 +1716,18 @@ void Training::update(bool force)
     // PART 1: Calculate errors and derivatives
     ///////////////////////////////////////////////////////////////////////
 
-    // Set local variables depending on energy/force update.
-    size_t batchSize = 0;
-    size_t* posUpdateCandidates = NULL;
-    vector<int>* errorsPerTask = NULL;
-    vector<int>* offsetPerTask = NULL;
-    vector<vector<int> >* weightsPerTask = NULL;
-    vector<vector<int> >* offsetJacobian = NULL;
-    vector<vector<double> >* error = NULL;
-    vector<vector<double> >* jacobian = NULL;
-    vector<UpdateCandidate>* updateCandidates = NULL;
-    if (force)
-    {
-        batchSize = taskBatchSizeForce;
-        if (batchSize == 0) batchSize = forcesPerUpdate;
-        posUpdateCandidates = &posUpdateCandidatesForce;
-        errorsPerTask = &errorsPerTaskForce;
-        offsetPerTask = &offsetPerTaskForce;
-        weightsPerTask = &weightsPerTaskForce;
-        offsetJacobian = &offsetJacobianForce;
-        error = &errorF;
-        jacobian = &jacobianF;
-        updateCandidates = &updateCandidatesForce;
-    }
-    else
-    {
-        batchSize = taskBatchSizeEnergy;
-        if (batchSize == 0) batchSize = energiesPerUpdate;
-        posUpdateCandidates = &posUpdateCandidatesEnergy;
-        errorsPerTask = &errorsPerTaskEnergy;
-        offsetPerTask = &offsetPerTaskEnergy;
-        weightsPerTask = &weightsPerTaskEnergy;
-        offsetJacobian = &offsetJacobianEnergy;
-        error = &errorE;
-        jacobian = &jacobianE;
-        updateCandidates = &updateCandidatesEnergy;
-    }
+    size_t batchSize = pu.taskBatchSize;
+    if (batchSize == 0) batchSize = pu.patternsPerUpdate;
+    bool derivatives = false;
+    if (k == "force") derivatives = true;
+
     vector<size_t> thresholdLoopCount(batchSize, 0);
     vector<double> currentRmseFraction(batchSize, 0.0);
     vector<UpdateCandidate*> currentUpdateCandidates(batchSize, NULL);
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        fill(error->at(i).begin(), error->at(i).end(), 0.0);
-        fill(jacobian->at(i).begin(), jacobian->at(i).end(), 0.0);
+        fill(pu.error.at(i).begin(), pu.error.at(i).end(), 0.0);
+        fill(pu.jacobian.at(i).begin(), pu.jacobian.at(i).end(), 0.0);
     }
 
     // Loop over (mini-)batch size.
@@ -1741,34 +1740,34 @@ void Training::update(bool force)
         // For SM_THRESHOLD need to loop until candidate's RMSE is above
         // threshold. Other modes don't loop here.
         size_t trials = 1;
-        if (selectionMode == SM_THRESHOLD) trials = rmseThresholdTrials;
+        if (pu.selectionMode == SM_THRESHOLD) trials = pu.rmseThresholdTrials;
         size_t il = 0;
         for (il = 0; il < trials; ++il)
         {
             // Restart position index if necessary.
-            if (*posUpdateCandidates >= updateCandidates->size())
+            if (pu.posUpdateCandidates >= pu.updateCandidates.size())
             {
-                *posUpdateCandidates = 0;
+                pu.posUpdateCandidates = 0;
             }
 
-            //log << strpr("pos %zu b %zu size %zu\n", *posUpdateCandidates, b, currentUpdateCandidates.size());
+            //log << strpr("pos %zu b %zu size %zu\n", pu.posUpdateCandidates, b, currentUpdateCandidates.size());
             // Set current update candidate.
-            c = &(updateCandidates->at(*posUpdateCandidates));
+            c = &(pu.updateCandidates.at(pu.posUpdateCandidates));
             // Keep update candidates (for logging later).
             currentUpdateCandidates.at(b) = c;
             // Shortcut for current structure.
             Structure& s = structures.at(c->s);
             // Calculate symmetry functions (if results are already stored
             // these functions will return immediately).
-#ifdef NNP_NO_SF_GROUPS
-            calculateSymmetryFunctions(s, force);
+#ifdef NOSFGROUPS
+            calculateSymmetryFunctions(s, derivatives);
 #else
-            calculateSymmetryFunctionGroups(s, force);
+            calculateSymmetryFunctionGroups(s, derivatives);
 #endif
             // For SM_THRESHOLD calculate RMSE of update candidate.
-            if (selectionMode == SM_THRESHOLD)
+            if (pu.selectionMode == SM_THRESHOLD)
             {
-                calculateAtomicNeuralNetworks(s, force);
+                calculateAtomicNeuralNetworks(s, derivatives);
                 if (force)
                 {
                     calculateForces(s);
@@ -1779,7 +1778,7 @@ void Training::update(bool force)
                     if (currentRmseFraction.at(b) > rmseThresholdForce)
                     {
                         // Increment position in update candidate list.
-                        (*posUpdateCandidates)++;
+                        pu.posUpdateCandidates++;
                         break;
                     }
                 }
@@ -1793,7 +1792,7 @@ void Training::update(bool force)
                     if (currentRmseFraction.at(b) > rmseThresholdEnergy)
                     {
                         // Increment position in update candidate list.
-                        (*posUpdateCandidates)++;
+                        pu.posUpdateCandidates++;
                         break;
                     }
                 }
@@ -1806,16 +1805,17 @@ void Training::update(bool force)
                 if (currentRmseFraction.at(b) > rmseFractionBest)
                 {
                     rmseFractionBest = currentRmseFraction.at(b);
-                    indexBest = *posUpdateCandidates;
+                    indexBest = pu.posUpdateCandidates;
                 }
                 // Increment position in update candidate list.
-                (*posUpdateCandidates)++;
+                pu.posUpdateCandidates++;
             }
             // Break loop for all selection modes but SM_THRESHOLD.
-            else if (selectionMode == SM_RANDOM || selectionMode == SM_SORT)
+            else if (pu.selectionMode == SM_RANDOM ||
+                     pu.selectionMode == SM_SORT)
             {
                 // Increment position in update candidate list.
-                (*posUpdateCandidates)++;
+                pu.posUpdateCandidates++;
                 break;
             }
         }
@@ -1823,18 +1823,19 @@ void Training::update(bool force)
 
         // If loop was not stopped because of a proper update candidate found
         // (RMSE above threshold) use best candidate during iteration.
-        if (selectionMode == SM_THRESHOLD && il == trials)
+        if (pu.selectionMode == SM_THRESHOLD && il == trials)
         {
             // Set best candidate.
-            currentUpdateCandidates.at(b) = &(updateCandidates->at(indexBest));
+            currentUpdateCandidates.at(b) =
+                &(pu.updateCandidates.at(indexBest));
             currentRmseFraction.at(b) = rmseFractionBest;
             // Need to calculate the symmetry functions again, maybe results
             // were not stored.
             Structure& s = structures.at(c->s);
 #ifdef NNP_NO_SF_GROUPS
-            calculateSymmetryFunctions(s, force);
+            calculateSymmetryFunctions(s, derivatives);
 #else
-            calculateSymmetryFunctionGroups(s, force);
+            calculateSymmetryFunctionGroups(s, derivatives);
 #endif
         }
 
@@ -1875,7 +1876,7 @@ void Training::update(bool force)
             else iu = 0;
             if (parallelMode == PM_TRAIN_ALL && jacobianMode != JM_SUM)
             {
-                offset.at(i) += offsetPerTask->at(myRank)
+                offset.at(i) += pu.offsetPerTask.at(myRank)
                               * numWeightsPerUpdater.at(iu);
                 //log << strpr("%zu os 1: %zu ", i, offset.at(i));
             }
@@ -1898,15 +1899,15 @@ void Training::update(bool force)
             // For force update save derivative of symmetry function with
             // respect to coordinate.
 #ifndef NNP_FULL_SFD_MEMORY
-            if (force) collectDGdxia((*it), c->a, c->c);
+            if (derivatives) collectDGdxia((*it), c->a, c->c);
 #else
-            if (force) it->collectDGdxia(c->a, c->c);
+            if (derivatives) it->collectDGdxia(c->a, c->c);
 #endif
             size_t i = it->element;
             NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
             nn.setInput(&((it->G).front()));
             nn.propagate();
-            if (force) nn.calculateDEdG(&((it->dEdG).front()));
+            if (derivatives) nn.calculateDEdG(&((it->dEdG).front()));
             nn.getOutput(&(it->energy));
             // Compute derivative of output node with respect to all neural
             // network connections (weights + biases).
@@ -1929,7 +1930,7 @@ void Training::update(bool force)
             else iu = 0;
             for (size_t j = 0; j < dXdc.at(i).size(); ++j)
             {
-                jacobian->at(iu).at(offset.at(i) + j) += dXdc.at(i).at(j);
+                pu.jacobian.at(iu).at(offset.at(i) + j) += dXdc.at(i).at(j);
             }
         }
 
@@ -1957,7 +1958,7 @@ void Training::update(bool force)
         size_t offset2 = 0;
         if (parallelMode == PM_TRAIN_ALL && jacobianMode != JM_SUM)
         {
-            offset2 += offsetPerTask->at(myRank);
+            offset2 += pu.offsetPerTask.at(myRank);
             //log << strpr("os 4: %zu ", offset2);
         }
         if (jacobianMode == JM_FULL)
@@ -1971,49 +1972,61 @@ void Training::update(bool force)
         // Compute error vector (depends on update strategy).
         if (updateStrategy == US_COMBINED)
         {
-            if (force)
+            if (k == "energy")
+            {
+                pu.error.at(0).at(offset2) += s.energyRef - s.energy;
+            }
+            else if (k == "force")
             {
                 Atom const& a = s.atoms.at(c->a);
-                error->at(0).at(offset2) +=  a.fRef[c->c] - a.f[c->c];
+                pu.error.at(0).at(offset2) +=  a.fRef[c->c] - a.f[c->c];
             }
-            else
+            else if (k == "charge")
             {
-                error->at(0).at(offset2) += s.energyRef - s.energy;
+                Atom const& a = s.atoms.at(c->a);
+                pu.error.at(0).at(offset2) +=  a.chargeRef - a.charge;
             }
         }
         else if (updateStrategy == US_ELEMENT)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (force)
+                if (k == "energy")
+                {
+                    pu.error.at(i).at(offset2) += (s.energyRef - s.energy)
+                                               * s.numAtomsPerElement.at(i)
+                                               / s.numAtoms;
+                }
+                else if (k == "force")
                 {
                     Atom const& a = s.atoms.at(c->a);
-                    error->at(i).at(offset2) += (a.fRef[c->c] - a.f[c->c])
-                                              * a.numNeighborsPerElement.at(i)
-                                              / a.numNeighbors;
+                    pu.error.at(i).at(offset2) += (a.fRef[c->c] - a.f[c->c])
+                                               * a.numNeighborsPerElement.at(i)
+                                               / a.numNeighbors;
                 }
-                else
+                else if (k == "charge")
                 {
-                    error->at(i).at(offset2) += (s.energyRef - s.energy)
-                                              * s.numAtomsPerElement.at(i)
-                                              / s.numAtoms;
+                    Atom const& a = s.atoms.at(c->a);
+                    pu.error.at(i).at(offset2) += (a.chargeRef - a.charge)
+                                               * a.numNeighborsPerElement.at(i)
+                                               / a.numNeighbors;
                 }
             }
         }
     }
 
     // Apply force update weight to error and Jacobian.
-    if (force)
+    if (k == "force")
     {
         for (size_t i = 0; i < numUpdaters; ++i)
         {
-            for (size_t j = 0; j < error->at(i).size(); ++j)
+            for (size_t j = 0; j < pu.error.at(i).size(); ++j)
             {
-                error->at(i).at(j) *= forceWeight;
+                pu.error.at(i).at(j) *= forceWeight;
             }
-            for (size_t j = 0; j < jacobian->at(i).size(); ++j)
+            for (size_t j = 0; j < pu.jacobian.at(i).size(); ++j)
             {
-                jacobian->at(i).at(j) *= forceWeight;
+                pu.jacobian.at(i).at(j) *= forceWeight;
             }
         }
     }
@@ -2028,18 +2041,18 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE           , &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
-                else             MPI_Reduce(&(error->at(i).front()), &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
-                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE              , &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
-                else             MPI_Reduce(&(jacobian->at(i).front()), &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
+                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE             , &(pu.error.at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+                else             MPI_Reduce(&(pu.error.at(i).front()), &(pu.error.at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE                , &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
+                else             MPI_Reduce(&(pu.jacobian.at(i).front()), &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                MPI_Allreduce(MPI_IN_PLACE, &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, comm);
-                MPI_Allreduce(MPI_IN_PLACE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, comm);
+                MPI_Allreduce(MPI_IN_PLACE, &(pu.error.at(i).front()), 1, MPI_DOUBLE, MPI_SUM, comm);
+                MPI_Allreduce(MPI_IN_PLACE, &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, comm);
             }
         }
     }
@@ -2049,18 +2062,18 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (myRank == 0) MPI_Gather(MPI_IN_PLACE           , 1, MPI_DOUBLE, &(error->at(i).front()),  1, MPI_DOUBLE, 0, comm);
-                else             MPI_Gather(&(error->at(i).front()), 1, MPI_DOUBLE, NULL                   ,  1, MPI_DOUBLE, 0, comm);
-                if (myRank == 0) MPI_Gather(MPI_IN_PLACE              , numWeightsPerUpdater.at(i), MPI_DOUBLE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
-                else             MPI_Gather(&(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, NULL                      , numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gather(MPI_IN_PLACE             , 1, MPI_DOUBLE, &(pu.error.at(i).front()),  1, MPI_DOUBLE, 0, comm);
+                else             MPI_Gather(&(pu.error.at(i).front()), 1, MPI_DOUBLE, NULL                     ,  1, MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gather(MPI_IN_PLACE                , numWeightsPerUpdater.at(i), MPI_DOUBLE, &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
+                else             MPI_Gather(&(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, NULL                        , numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                MPI_Allgather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(error->at(i).front()),  1, MPI_DOUBLE, comm);
-                MPI_Allgather(MPI_IN_PLACE, numWeightsPerUpdater.at(i), MPI_DOUBLE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, comm);
+                MPI_Allgather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(pu.error.at(i).front()),  1, MPI_DOUBLE, comm);
+                MPI_Allgather(MPI_IN_PLACE, numWeightsPerUpdater.at(i), MPI_DOUBLE, &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, comm);
             }
         }
     }
@@ -2070,18 +2083,18 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE           , 0                        , MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(offsetPerTask->front()), MPI_DOUBLE, 0, comm);
-                else             MPI_Gatherv(&(error->at(i).front()), errorsPerTask->at(myRank), MPI_DOUBLE, NULL                   , NULL                     , NULL                     , MPI_DOUBLE, 0, comm);
-                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE              , 0                               , MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask->at(i).front()), &(offsetJacobian->at(i).front()), MPI_DOUBLE, 0, comm);
-                else             MPI_Gatherv(&(jacobian->at(i).front()), weightsPerTask->at(i).at(myRank), MPI_DOUBLE, NULL                      , NULL                            , NULL                            , MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE             , 0                          , MPI_DOUBLE, &(pu.error.at(i).front()), &(pu.errorsPerTask.front()), &(pu.offsetPerTask.front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(pu.error.at(i).front()), pu.errorsPerTask.at(myRank), MPI_DOUBLE, NULL                     , NULL                       , NULL                       , MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE                , 0                                 , MPI_DOUBLE, &(pu.jacobian.at(i).front()), &(pu.weightsPerTask.at(i).front()), &(pu.offsetJacobian.at(i).front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(pu.jacobian.at(i).front()), pu.weightsPerTask.at(i).at(myRank), MPI_DOUBLE, NULL                        , NULL                              , NULL                              , MPI_DOUBLE, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(offsetPerTask->front()), MPI_DOUBLE, comm);
-                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask->at(i).front()), &(offsetJacobian->at(i).front()), MPI_DOUBLE, comm);
+                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(pu.error.at(i).front()), &(pu.errorsPerTask.front()), &(pu.offsetPerTask.front()), MPI_DOUBLE, comm);
+                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(pu.jacobian.at(i).front()), &(pu.weightsPerTask.at(i).front()), &(pu.offsetJacobian.at(i).front()), MPI_DOUBLE, comm);
             }
         }
     }
@@ -2096,13 +2109,14 @@ void Training::update(bool force)
     // Loop over all updaters.
     for (size_t i = 0; i < updaters.size(); ++i)
     {
-        updaters.at(i)->setError(&(error->at(i).front()), error->at(i).size());
-        updaters.at(i)->setJacobian(&(jacobian->at(i).front()),
-                                    error->at(i).size());
+        updaters.at(i)->setError(&(pu.error.at(i).front()),
+                                 pu.error.at(i).size());
+        updaters.at(i)->setJacobian(&(pu.jacobian.at(i).front()),
+                                    pu.error.at(i).size());
         if (updaterType == UT_KF)
         {
             KalmanFilter* kf = dynamic_cast<KalmanFilter*>(updaters.at(i));
-            kf->setSizeObservation(error->at(i).size());
+            kf->setSizeObservation(pu.error.at(i).size());
         }
         updaters.at(i)->update();
     }
@@ -2833,6 +2847,7 @@ Training::Property(string const& property) :
     writeCompAlways        (0        ),
     posUpdateCandidates    (0        ),
     rmseThresholdTrials    (0        ),
+    countUpdates           (0        ),
     numUpdates             (0        ),
     patternsPerUpdate      (0        ),
     patternsPerUpdateGlobal(0        ),
@@ -2850,7 +2865,7 @@ Training::Property(string const& property) :
     {
         tiny = "F";
         plural = "forces";
-        errorMetrics = {"RMSE", "MAE"};  
+        errorMetrics = {"RMSE", "MAE"};
     }
     else if (property == "charge")
     {

@@ -183,10 +183,12 @@ public:
                                                  = "learning-curve.out") const;
     /** Write neuron statistics collected since last invocation.
      *
+     * @param[in] nnName Identifier of neural network to process.
      * @param[in] fileName File name for statistics file.
      */
-    void                  writeNeuronStatistics(std::string const fileName
-                                                   = "neuron-stats.out") const;
+    void                  writeNeuronStatistics(
+                                            std::string const& nnName,
+                                            std::string const& fileName) const;
     /** Write neuron statistics during training loop.
      */
     void                  writeNeuronStatisticsEpoch() const;
@@ -202,11 +204,15 @@ public:
                                              std::string const fileNameFormat
                                                  = "updater.%03zu.out") const;
     /** Sort update candidates with descending RMSE.
+     *
+     * @param[in] property Training property.
      */
-    void                  sortUpdateCandidates();
+    void                  sortUpdateCandidates(std::string const& property);
     /** Shuffle update candidates.
+     *
+     * @param[in] property Training property.
      */
-    void                  shuffleUpdateCandidates();
+    void                  shuffleUpdateCandidates(std::string const& property);
     /** Check if selection mode should be changed.
      */
     void                  checkSelectionMode();
@@ -218,9 +224,9 @@ public:
     void                  setEpochSchedule();
     /** Perform one update.
      *
-     * @param[in] force If true, perform force update, otherwise energy update.
+     * @param[in] property Training property to use for update.
      */
-    void                  update(bool force);
+    void                  update(std::string const& property);
     /** Get a single weight value.
      *
      * @param[in] element Element index of weight.
@@ -326,7 +332,9 @@ private:
         std::size_t                  posUpdateCandidates;
         /// Maximum trials for SM_THRESHOLD selection mode.
         std::size_t                  rmseThresholdTrials;
-        /// Number of updates per epoch.
+        /// Counter for updates per epoch.
+        std::size_t                  countUpdates;
+        /// Number of desired updates per epoch.
         std::size_t                  numUpdates;
         /// Patterns used per update.
         std::size_t                  patternsPerUpdate;
