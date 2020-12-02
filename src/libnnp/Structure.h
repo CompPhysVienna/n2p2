@@ -254,13 +254,13 @@ struct Structure
      * metrics:
      *
      * key "RMSE"  : RMSE of forces
-     * key "RMSE"  : MAE  of forces
+     * key "MAE"   : MAE  of forces
      *
      * The "charge" error metric map stores temporary sums for the following
      * metrics:
      *
      * key "RMSE"  : RMSE of charges
-     * key "RMSE"  : MAE  of charges
+     * key "MAE"   : MAE  of charges
      */
     void                     updateError(
                                    std::string const&             property,

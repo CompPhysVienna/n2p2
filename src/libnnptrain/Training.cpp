@@ -305,6 +305,16 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
 {
     this->updateStrategy = updateStrategy;
     numWeights= 0;
+    string nnId;
+    if (nnpType == NNPType::SHORT_ONLY ||
+        (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+    {
+        nnId = "short";
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+    {
+        nnId = "charge";
+    }
     if (updateStrategy == US_COMBINED)
     {
         log << strpr("Combined updater for all elements selected: "
@@ -314,7 +324,7 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         for (size_t i = 0; i < numElements; ++i)
         {
             weightsOffset.push_back(numWeights);
-            numWeights += elements.at(i).neuralNetworks.at("short")
+            numWeights += elements.at(i).neuralNetworks.at(nnId)
                           .getNumConnections();
         }
         weights.resize(numUpdaters);
@@ -331,7 +341,7 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         weights.resize(numUpdaters);
         for (size_t i = 0; i < numUpdaters; ++i)
         {
-            size_t n = elements.at(i).neuralNetworks.at("short")
+            size_t n = elements.at(i).neuralNetworks.at(nnId)
                        .getNumConnections();
             weights.at(i).resize(n, 0.0);
             numWeightsPerUpdater.push_back(n);
@@ -1712,6 +1722,7 @@ void Training::update(string const& property)
     int num_threads = omp_get_max_threads();
     omp_set_num_threads(1);
 #endif
+
     ///////////////////////////////////////////////////////////////////////
     // PART 1: Calculate errors and derivatives
     ///////////////////////////////////////////////////////////////////////
@@ -1767,34 +1778,62 @@ void Training::update(string const& property)
             // For SM_THRESHOLD calculate RMSE of update candidate.
             if (pu.selectionMode == SM_THRESHOLD)
             {
-                calculateAtomicNeuralNetworks(s, derivatives);
-                if (force)
+                if (k == "energy")
                 {
-                    calculateForces(s);
-                    Atom const& a = s.atoms.at(c->a);
-                    currentRmseFraction.at(b) = fabs(a.fRef[c->c] - a.f[c->c])
-                                              / errorForcesTrain.at(0);
-                    // If force RMSE is above threshold stop loop immediately.
-                    if (currentRmseFraction.at(b) > rmseThresholdForce)
+                    if (nnpType == NNPType::SHORT_ONLY)
                     {
-                        // Increment position in update candidate list.
-                        pu.posUpdateCandidates++;
-                        break;
+                        calculateAtomicNeuralNetworks(s, derivatives);
+                        calculateEnergy(s);
+                        currentRmseFraction.at(b) =
+                            fabs(s.energyRef - s.energy)
+                            / (s.numAtoms * pu.errorTrain.at("RMSEpa"));
+                    }
+                    // Assume stage 2.
+                    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+                    {
+                        // TODO: Reuse already present charge-NN data and
+                        // compute only short-NN energy contributions.
+                        throw runtime_error("ERROR: Not implemented.\n");
                     }
                 }
-                else
+                else if (k == "force")
                 {
-                    calculateEnergy(s);
-                    currentRmseFraction.at(b)
-                        = fabs(s.energyRef - s.energy)
-                        / (s.numAtoms * errorEnergiesTrain.at(0));
-                    // If energy RMSE is above threshold stop loop immediately.
-                    if (currentRmseFraction.at(b) > rmseThresholdEnergy)
+                    if (nnpType == NNPType::SHORT_ONLY)
                     {
-                        // Increment position in update candidate list.
-                        pu.posUpdateCandidates++;
-                        break;
+                        calculateAtomicNeuralNetworks(s, derivatives);
+                        calculateForces(s);
+                        Atom const& a = s.atoms.at(c->a);
+                        currentRmseFraction.at(b) =
+                            fabs(a.fRef[c->c] - a.f[c->c])
+                            / pu.errorTrain.at("RMSE");
                     }
+                    // Assume stage 2.
+                    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+                    {
+                        // TODO: Reuse already present charge-NN data and
+                        // compute only short-NN force contributions.
+                        throw runtime_error("ERROR: Not implemented.\n");
+                    }
+                }
+                else if (k == "charge")
+                {
+                    // Assume NNPType::SHORT_CHARGE_NN stage 1.
+                    // Compute only charge-NN
+                    Atom& a = s.atoms.at(c->a);
+                    NeuralNetwork& nn = elements.at(a.element)
+                        .neuralNetworks.at("charge");
+                    nn.setInput(&(a.G.front()));
+                    nn.propagate();
+                    nn.getOutput(&(a.charge));
+                    currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
+                                              / pu.errorTrain.at("RMSE");
+                }
+                // If force RMSE is above threshold stop loop immediately.
+                if (currentRmseFraction.at(b) > pu.rmseThreshold)
+                {
+                    // Increment position in update candidate list.
+                    pu.posUpdateCandidates++;
+                    break;
                 }
                 // If loop continues, free memory and remember best candidate
                 // so far.
@@ -1843,27 +1882,24 @@ void Training::update(string const& property)
         // PART 2: Compute error vector and Jacobian
         ///////////////////////////////////////////////////////////////////////
 
-        //log << strpr("%zu %s", b, force ? "F" : "E");
-        //if (force)
-        //{
-        //    log << strpr(" %zu %zu %zu %zu %f\n",
-        //                 posUpdateCandidatesForce,
-        //                 c->s, c->a, c->c, rmseFractionBest);
-        //}
-        //else {
-        //    log << strpr(" %zu %zu %f\n",
-        //                 posUpdateCandidatesEnergy,
-        //                 c->s, rmseFractionBest);
-        //}
-
         Structure& s = structures.at(c->s);
         // Temporary storage for derivative contributions of atoms (dXdc stores
-        // dEdc or dFdc for energy or force update, respectively.
-        vector<vector<double> > dXdc;
+        // dEdc, dFdc or dQdc for energy, force or charge update, respectively.
+        vector<vector<double>> dXdc;
         dXdc.resize(numElements);
+        string nnId;
+        if (nnpType == NNPType::SHORT_ONLY)
+        {
+            if (k == "energy" || k == "force") nnId = "short";
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN)
+        {
+            if (k == "energy" || k == "force") nnId = "short";
+            else if (k == "charge") nnId = "charge";
+        }
         for (size_t i = 0; i < numElements; ++i)
         {
-            size_t n = elements.at(i).neuralNetworks.at("short")
+            size_t n = elements.at(i).neuralNetworks.at(nnId)
                        .getNumConnections();
             dXdc.at(i).resize(n, 0.0);
         }
@@ -2544,10 +2580,10 @@ void Training::randomizeNeuralNetworkWeights(string const& type)
     return;
 }
 
-void Training::setSelectionMode(string const& property)
+void Training::setupSelectionMode(string const& property)
 {
     bool all = (property == "all");
-    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    bool isProperty = (find(pk.begin(), pk.end(), property) != pk.end());
     if (!(all || isProperty))
     {
         throw runtime_error("ERROR: Unknown property for selection mode"
@@ -2572,11 +2608,11 @@ void Training::setSelectionMode(string const& property)
     }
     string keyword;
     if (all) keyword = "selection_mode";
-    else keyword = "selection_mode_" += property;
+    else keyword = "selection_mode_" + property;
 
     if (settings.keywordExists(keyword))
     {
-        vector<SelectionMode> schedule;
+        map<size_t, SelectionMode> schedule;
         vector<string> args = split(settings[keyword]);
         if (args.size() % 2 != 1)
         {
@@ -2608,7 +2644,6 @@ void Training::setSelectionMode(string const& property)
                 log << strpr("  Update candidates chosen randomly above RMSE "
                              "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
                              it->second);
-                useThreshold = true;
             }
             else
             {
@@ -2656,7 +2691,7 @@ void Training::setSelectionMode(string const& property)
 void Training::setupFileOutput(string const& type)
 {
     string keyword = "write_";
-    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end());
     if      (type == "energy"       ) keyword += "trainpoints";
     else if (type == "force"        ) keyword += "trainforces";
     else if (type == "charge"       ) keyword += "traincharges";
@@ -2677,7 +2712,7 @@ void Training::setupFileOutput(string const& type)
         {
             writeEvery = &(p[type].writeCompEvery);
             writeAlways = &(p[type].writeCompAlways);
-            message = type + " comparison";
+            message = "Property \"" + type + "\" comparison";
             message.at(0) = toupper(message.at(0));
         }
         else if (type == "weights_epoch")
@@ -2695,18 +2730,20 @@ void Training::setupFileOutput(string const& type)
 
         *writeEvery = 1;
         vector<string> v = split(reduce(settings[keyword]));
-        if (v.size() == 1) *writeEnergiesEvery = (size_t)atoi(v.at(0).c_str());
+        if (v.size() == 1) *writeEvery = (size_t)atoi(v.at(0).c_str());
         else if (v.size() == 2)
         {
             *writeEvery = (size_t)atoi(v.at(0).c_str());
             *writeAlways = (size_t)atoi(v.at(1).c_str());
         }
-        log << strpr(message + " files will be written every %zu epochs.\n",
+        log << strpr((message
+                      + " files will be written every %zu epochs.\n").c_str(),
                      *writeEvery);
         if (*writeAlways > 0)
         {
-            log << strpr(message + " files will always be written up to epoch"
-                                   " %zu.\n", *writeAlways);
+            log << strpr((message
+                          + " files will always be written up to epoch "
+                            "%zu.\n").c_str(), *writeAlways);
         }
     }
 
@@ -2715,7 +2752,7 @@ void Training::setupFileOutput(string const& type)
 
 void Training::setupUpdatePlan(string const& property)
 {
-    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    bool isProperty = (find(pk.begin(), pk.end(), property) != pk.end());
     if (!isProperty)
     {
         throw runtime_error("ERROR: Unknown property for update plan"
@@ -2726,7 +2763,7 @@ void Training::setupUpdatePlan(string const& property)
     Property& pa = p[property];
     string keyword = property + "_fraction";
     pa.epochFraction = atof(settings[keyword].c_str());
-    keyword = "task_batch_size_" + k;
+    keyword = "task_batch_size_" + property;
     pa.taskBatchSize = (size_t)atoi(settings[keyword].c_str());
     if (pa.taskBatchSize == 0)
     {
@@ -2770,7 +2807,7 @@ void Training::setupUpdatePlan(string const& property)
     for (size_t i = 0; i < pa.errorsPerTask.size(); ++i)
     {
         pa.offsetPerTask.push_back(pa.numErrorsGlobal);
-        pa.errorsGlobal += pa.errorsPerTask.at(i);
+        pa.numErrorsGlobal += pa.errorsPerTask.at(i);
     }
     pa.offsetJacobian.resize(numUpdaters);
     for (size_t i = 0; i < numUpdaters; ++i)
@@ -2798,7 +2835,7 @@ void Training::setupUpdatePlan(string const& property)
 
 void Training::allocateArrays(string const& property)
 {
-    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end())
+    bool isProperty = (find(pk.begin(), pk.end(), property) != pk.end());
     if (!isProperty)
     {
         throw runtime_error("ERROR: Unknown property for array allocation.\n");
@@ -2834,7 +2871,7 @@ void Training::allocateArrays(string const& property)
     return;
 }
 
-Training::Property(string const& property) :
+Training::Property::Property(string const& property) :
     property               (property ),
     displayMetric          (""       ),
     tiny                   (""       ),

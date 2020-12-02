@@ -255,6 +255,22 @@ public:
     void                     calculateSymmetryFunctionGroups(
                                                        Structure& structure,
                                                        bool const derivatives);
+    /** Calculate a single atomic neural network for a given atom and nn type.
+     *
+     * @param[in] nnId Neural network identifier, e.g. "short", "charge".
+     * @param[in] atom Input atom.
+     * @param[in] derivatives If `true` calculate also derivatives of neural
+     *                        networks with respect to input layer neurons
+     *                        (required for force calculation).
+     *
+     * The atomic energy and charge is stored in Atom::energy and Atom::charge,
+     * respectively. If derivatives are calculated the results are stored in
+     * Atom::dEdG or Atom::dQdG.
+     */
+    //void                     calculateAtomicNeuralNetwork(
+    //                                           std::string const& nnId,
+    //                                           Atom&              atom,
+    //                                           bool const         derivatives);
     /** Calculate atomic neural networks for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -262,9 +278,8 @@ public:
      *                        networks with respect to input layer neurons
      *                        (required for force calculation).
      *
-     * The atomic energy is stored in Atom::energy. If derivatives are
-     * calculated the results are stored in Atom::dEdG. The atomic energy
-     * energy offset (keyword `atom_energy`) is also added at this point.
+     * This internally calls calculateAtomicNeuralNetwork with appropriate
+     * neural network identifiers depending on the NNP type.
      */
     void                     calculateAtomicNeuralNetworks(
                                                        Structure& structure,
@@ -277,7 +292,7 @@ public:
      * stored in Structure::energy.
      */
     void                     calculateEnergy(Structure& structure) const;
-    /** Calculate total charge a given structure.
+    /** Calculate total charge for a given structure.
      *
      * @param[in] structure Input structure.
      *
