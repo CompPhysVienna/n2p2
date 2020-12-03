@@ -438,6 +438,8 @@ private:
     double                   forceWeight;
     /// File name for training log.
     std::string              trainingLogFileName;
+    /// ID of neural network the training is working on.
+    std::string              nnId;
     /// Training log file.
     std::ofstream            trainingLog;
     /// Update schedule epoch (false = energy update, true = force update).
@@ -507,6 +509,21 @@ private:
                              std::size_t is,
                              std::size_t ia,
                              std::size_t ic);
+    /** Write charge update data to training log file.
+     *
+     * @param[in] proc Processor which provided update candidate.
+     * @param[in] il Loop index of threshold loop.
+     * @param[in] f RMSE fraction of update candidate.
+     * @param[in] is Local structure index.
+     * @param[in] isg Global structure index.
+     * @param[in] ia Atom index.
+     */
+    void addTrainingLogEntry(int         proc,
+                             std::size_t il,
+                             double      f,
+                             std::size_t isg,
+                             std::size_t is,
+                             std::size_t ia);
 #ifndef NNP_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.

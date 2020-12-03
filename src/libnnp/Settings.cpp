@@ -70,13 +70,16 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["force_fraction"                ] = "";
     m["charge_fraction"               ] = "";
     m["use_old_weights_short"         ] = "";
+    m["use_old_weights_charge"        ] = "";
     m["weights_min"                   ] = "";
     m["weights_max"                   ] = "";
     m["nguyen_widrow_weights_short"   ] = "";
+    m["nguyen_widrow_weights_charge"  ] = "";
     m["precondition_weights"          ] = "";
     m["main_error_metric"             ] = "";
     m["write_trainpoints"             ] = "";
     m["write_trainforces"             ] = "";
+    m["write_traincharges"            ] = "";
     m["write_weights_epoch"           ] = "";
     m["write_neuronstats"             ] = "";
     m["write_trainlog"                ] = "";
@@ -91,6 +94,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["selection_mode_charge"         ] = "";
     m["task_batch_size_energy"        ] = "";
     m["task_batch_size_force"         ] = "";
+    m["task_batch_size_charge"        ] = "";
     m["gradient_type"                 ] = "";
     m["gradient_eta"                  ] = "";
     m["gradient_adam_eta"             ] = "";
