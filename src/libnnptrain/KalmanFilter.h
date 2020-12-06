@@ -22,6 +22,7 @@
 #include <Eigen/Core>
 #include <cstddef>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace nnp
@@ -50,6 +51,19 @@ public:
     /** Destructor.
      */
     virtual ~KalmanFilter();
+    /** Basic MPI setup.
+     *
+     * @param[in] communicator Input communicator of calling program.
+     */
+    void                     setupMPI(MPI_Comm* communicator);
+    /** Set up Kalman filter decoupling.
+     *
+     * @param[in] groupLimits Vector containing starting and ending indices of
+     *                        each decoupling group.
+     */
+    void                     setupDecoupling(
+                                 std::vector<std::pair< std::size_t,
+                                     std::size_t>> groupLimits);
     /** Set observation vector size.
      *
      * @param[in] size Size of the observation vector.
@@ -194,10 +208,16 @@ public:
 private:
     /// Kalman filter type.
     KalmanType                         type;
+    /// My process ID.
+    int                                myRank;
+    /// Total number of MPI processors.
+    int                                numProcs;
     /// Size of observation (measurement) vector.
     std::size_t                        sizeObservation;
     /// Total number of updates performed.
     std::size_t                        numUpdates;
+    /// Number of covariance matrix entries in memory (sum over all groups).
+    std::size_t                        sizeP;
     /// Error covariance initialization parameter @f$\epsilon@f$.
     double                             epsilon;
     /// Process noise @f$q@f$.
@@ -222,18 +242,34 @@ private:
     double                             nu;
     /// Forgetting gain factor gamma for fading memory Kalman filter.
     double                             gamma;
+    /// Size of state vector segment handled by each processor.
+    std::vector<int>                   sizeStatePerProc;
+    /// Offset of state vector segment handled by each processor.
+    std::vector<int>                   offsetStatePerProc;
+    /// List of (group indices, group sizes) of this processor.
+    std::vector<std::pair<
+    std::size_t, std::size_t>>         myGroups;
+    /// Number of groups for each processor.
+    std::vector<std::size_t>           numGroupsPerProc;
+    /// Offset in terms of groups for each processor.
+    std::vector<std::size_t>           groupOffsetPerProc;
+    /// Decoupling group limits, i.e. starting end ending indices.
+    std::vector<std::pair<
+    std::size_t, std::size_t>>         groupLimits;
     /// State vector.
     Eigen::Map<Eigen::VectorXd>*       w;
     /// Error vector.
     Eigen::Map<Eigen::VectorXd const>* xi;
     /// Derivative matrix.
     Eigen::Map<Eigen::MatrixXd const>* H;
-    /// Error covariance matrix.
-    Eigen::MatrixXd                    P;
+    /// Error covariance matrices for all groups.
+    std::vector<Eigen::MatrixXd>       P;
     /// Kalman gain matrix.
-    Eigen::MatrixXd                    K;
+    std::vector<Eigen::MatrixXd>       K;
     /// Intermediate result X = P . H.
-    Eigen::MatrixXd                    X;
+    std::vector<Eigen::MatrixXd>       X;
+    /// Global MPI communicator.
+    MPI_Comm                           comm;
 };
 
 //////////////////////////////////

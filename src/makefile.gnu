@@ -56,3 +56,6 @@ PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE
 
 # Use improved memory layout for symmetry function derivatives.
 PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY
+
+# Use alternative (old) ordering scheme of weights (NDEKF not possible).
+#PROJECT_OPTIONS+= -DALTERNATIVE_WEIGHT_ORDERING

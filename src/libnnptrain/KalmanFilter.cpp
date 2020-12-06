@@ -16,9 +16,11 @@
 
 #include "KalmanFilter.h"
 #include "utility.h"
+#include "mpi-extra.h"
 #include <Eigen/LU>
 #include <iostream>
 #include <stdexcept>
+#include <map>       // std::map
 
 using namespace Eigen;
 using namespace std;
@@ -27,8 +29,11 @@ using namespace nnp;
 KalmanFilter::KalmanFilter(size_t const sizeState,
                            KalmanType const type) :
     Updater(sizeState),
+    myRank         (0   ),
+    numProcs       (0   ),
     sizeObservation(0   ),
     numUpdates     (0   ),
+    sizeP          (0   ),
     epsilon        (0.0 ),
     q              (0.0 ),
     q0             (0.0 ),
@@ -62,15 +67,128 @@ KalmanFilter::KalmanFilter(size_t const sizeState,
     w  = new Map<VectorXd      >(0, sizeState);
     xi = new Map<VectorXd const>(0, sizeObservation);
     H  = new Map<MatrixXd const>(0, sizeState, sizeObservation);
-    P.resize(sizeState, sizeState);
-    P.setIdentity();
-    // Prevent problems with unallocated K when log starts.
-    K.resize(sizeState, sizeObservation);
-    K.setZero();
 }
 
 KalmanFilter::~KalmanFilter()
 {
+}
+
+void KalmanFilter::setupMPI(MPI_Comm* communicator)
+{
+    MPI_Comm_dup(*communicator, &comm);
+    MPI_Comm_rank(comm, &myRank);
+    MPI_Comm_size(comm, &numProcs);
+
+    return;
+}
+
+void KalmanFilter::setupDecoupling(vector<pair<size_t, size_t>> groupLimits)
+{
+    this->groupLimits = groupLimits;
+
+    // Check consistency of decoupling group limits.
+    if (groupLimits.at(0).first != 0)
+    {
+        auto const& l = groupLimits.at(0);
+        throw runtime_error(strpr("ERROR: Inconsistent decoupling group "
+                                  "limits, first group must start with index "
+                                  "0 (is %zu).\n",
+                                  l.first));
+
+    }
+    for (size_t i = 0; i < groupLimits.size(); ++i)
+    {
+        auto const& l = groupLimits.at(i);
+        if (l.first > l.second)
+        {
+            throw runtime_error(
+                strpr("ERROR: Inconsistent decoupling group limits, "
+                      "group %zu: start %zu > end %zu.\n",
+                      i, l.first, l.second));
+        }
+    }
+    for (size_t i = 0; i < groupLimits.size() - 1; ++i)
+    {
+        auto const& l = groupLimits.at(i);
+        auto const& r = groupLimits.at(i + 1);
+        if (l.second + 1 != r.first)
+        {
+            throw runtime_error(
+                strpr("ERROR: Inconsistent decoupling group limits, "
+                      "group %zu end %zu + 1 != group %zu start %zu.\n",
+                      i, l.second, i + 1, r.first));
+        }
+    }
+    if (groupLimits.back().second != sizeState - 1)
+    {
+        auto const& l = groupLimits.back();
+        throw runtime_error(strpr("ERROR: Inconsistent decoupling group "
+                                  "limits, last group must end with index "
+                                  "%zu (is %zu).\n",
+                                  sizeState - 1,
+                                  l.second));
+
+    }
+
+    // Distribute groups to MPI procs.
+    numGroupsPerProc.resize(numProcs, 0);
+    groupOffsetPerProc.resize(numProcs, 0);
+    int quotient = groupLimits.size() / numProcs;
+    int remainder = groupLimits.size() % numProcs;
+    int groupSum = 0;
+    for (int i = 0; i < numProcs; ++i)
+    {
+        numGroupsPerProc.at(i) = quotient;
+        if (remainder > 0 && i < remainder)
+        {
+            numGroupsPerProc.at(i)++;
+        }
+        groupOffsetPerProc.at(i) = groupSum;
+        groupSum += numGroupsPerProc.at(i);
+    }
+
+    // Compute state vector segment length and offset for each processor.
+    for (int i = 0; i < numProcs - 1; ++i)
+    {
+        sizeStatePerProc.push_back(
+            groupLimits.at(groupOffsetPerProc.at(i+1)).first -
+            groupLimits.at(groupOffsetPerProc.at(i)).first);
+        offsetStatePerProc.push_back(
+            groupLimits.at(groupOffsetPerProc.at(i)).first);
+    }
+    sizeStatePerProc.push_back(
+        groupLimits.back().second + 1 -
+        groupLimits.at(groupOffsetPerProc.at(numProcs - 1)).first);
+    offsetStatePerProc.push_back(
+        groupLimits.at(groupOffsetPerProc.at(numProcs - 1)).first);
+
+    // Store group index and segment length for this processor.
+    for (size_t i = 0; i < numGroupsPerProc.at(myRank); ++i)
+    {
+        size_t index = groupOffsetPerProc.at(myRank) + i;
+        size_t size = groupLimits.at(index).second
+                    - groupLimits.at(index).first + 1;
+        myGroups.push_back(make_pair(index, size));
+    }
+
+    // Allocate per-processor matrices for all groups.
+    for (auto g : myGroups)
+    {
+        P.push_back(Eigen::MatrixXd(g.second, g.second));
+        P.back().setIdentity();
+
+        X.push_back(Eigen::MatrixXd(g.second, sizeObservation));
+
+        // Prevent problems with unallocated K when log starts.
+        K.push_back(Eigen::MatrixXd(g.second, sizeObservation));
+        K.back().setZero();
+
+        sizeP += g.second * g.second;
+    }
+
+    MPI_Allreduce(MPI_IN_PLACE, &sizeP, 1, MPI_SIZE_T, MPI_SUM, comm);
+
+    return;
 }
 
 void KalmanFilter::setSizeObservation(size_t const size)
@@ -125,15 +243,32 @@ void KalmanFilter::update()
 
 void KalmanFilter::update(size_t const sizeObservation)
 {
-    X.resize(sizeState, sizeObservation);
+    MatrixXd A(sizeObservation, sizeObservation);
+    A.setZero();
 
-    // Calculate temporary result.
-    // X = P . H
-    X = P.selfadjointView<Lower>() * (*H);
+    for (size_t i = 0; i < myGroups.size(); ++i)
+    {
+        size_t const& j = myGroups.at(i).first;     // group index
+        size_t const& n = myGroups.at(i).second;    // group size
+        size_t const& s = groupLimits.at(j).first;  // group weight start index
 
-    // Calculate scaling matrix.
-    // A = H^T . X
-    MatrixXd A = H->transpose() * X;
+        auto& x = X.at(i);
+        auto& p = P.at(i);
+
+        x.resize(n, sizeObservation);
+
+        // Calculate temporary result.
+        // X = P . H
+        x = p.selfadjointView<Lower>() * H->block(s, 0, n, sizeObservation);
+ 
+        // Calculate scaling matrix.
+        // A = H^T . X
+        // For decoupling summarize scaling matrix here (locally).
+        A += H->block(s, 0, n, sizeObservation).transpose() * x;
+    }
+
+    // Summarize scaling matrix globally.
+    MPI_Allreduce(MPI_IN_PLACE, A.data(), A.size(), MPI_DOUBLE, MPI_SUM, comm);
 
     // Increase learning rate.
     // eta(n) = eta(0) * exp(n * tau)
@@ -150,38 +285,52 @@ void KalmanFilter::update(size_t const sizeObservation)
         A.diagonal() += VectorXd::Constant(sizeObservation, lambda);
     }
 
-    // Calculate Kalman gain matrix.
-    // K = X . A^-1
-    K.resize(sizeState, sizeObservation);
-    K = X * A.inverse();
-
-    // Update error covariance matrix.
-    // P = P - K . X^T
-    P.noalias() -= K * X.transpose();
-
-    // Apply forgetting factor.
-    if (type == KT_FADINGMEMORY)
+    for (size_t i = 0; i < myGroups.size(); ++i)
     {
-        P *= 1.0 / lambda;
+        size_t const& j = myGroups.at(i).first;     // group index
+        size_t const& n = myGroups.at(i).second;    // group size
+        size_t const& s = groupLimits.at(j).first;  // group weight start index
+
+        auto& x = X.at(i);
+        auto& p = P.at(i);
+        auto& k = K.at(i);
+
+        // Calculate Kalman gain matrix.
+        // K = X . A^-1
+        k.resize(n, sizeObservation);
+        k = x * A.inverse();
+
+        // Update error covariance matrix.
+        // P = P - K . X^T
+        p.noalias() -= k * x.transpose();
+
+        // Apply forgetting factor.
+        if (type == KT_FADINGMEMORY)
+        {
+            p *= 1.0 / lambda;
+        }
+        // Add process noise.
+        // P = P + Q
+        p.diagonal() += VectorXd::Constant(n, q);
+
+        // Update state vector.
+        // w =  w + K . xi
+        w->segment(s, n) += k * (*xi);
+
+        // Anneal process noise.
+        // q(n) = q(0) * exp(-n * tau)
+        if (q > qmin) q *= exp(-qtau);
+
+        // Update forgetting factor.
+        if (type == KT_FADINGMEMORY)
+        {
+            lambda = nu * lambda + 1.0 - nu;
+            gamma = 1.0 / (1.0 + lambda / gamma);
+        }
     }
-    // Add process noise.
-    // P = P + Q
-    P.diagonal() += VectorXd::Constant(sizeState, q);
 
-    // Update state vector.
-    // w =  w + K . xi
-    (*w) += K * (*xi);
-
-    // Anneal process noise.
-    // q(n) = q(0) * exp(-n * tau)
-    if (q > qmin) q *= exp(-qtau);
-
-    // Update forgetting factor.
-    if (type == KT_FADINGMEMORY)
-    {
-        lambda = nu * lambda + 1.0 - nu;
-        gamma = 1.0 / (1.0 + lambda / gamma);
-    }
+    // Communicate new weight segments.
+    MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, w->data(), sizeStatePerProc.data(), offsetStatePerProc.data(), MPI_DOUBLE, comm);
 
     numUpdates++;
 
@@ -206,7 +355,10 @@ void KalmanFilter::setParametersStandard(double const epsilon,
 
     q = q0;
     eta = eta0;
-    P /= epsilon;
+    for (auto& p : P)
+    {
+        p /= epsilon;
+    }
 
     return;
 }
@@ -226,7 +378,10 @@ void KalmanFilter::setParametersFadingMemory(double const epsilon,
     this->nu      = nu     ;
 
     q = q0;
-    P /= epsilon;
+    for (auto& p : P)
+    {
+        p /= epsilon;
+    }
     gamma = 1.0;
 
     return;
@@ -235,12 +390,30 @@ void KalmanFilter::setParametersFadingMemory(double const epsilon,
 string KalmanFilter::status(size_t epoch) const
 {
 
-    double Pasym = 0.5 * (P - P.transpose()).array().abs().mean();
-    double Pdiag = P.diagonal().array().abs().sum(); 
-    double Poffdiag = (P.array().abs().sum() - Pdiag)
-                   / (sizeState * (sizeState - 1));
+    double Pasym    = 0.0;
+    double Pdiag    = 0.0;
+    double Poffdiag = 0.0;
+    double Kmean    = 0.0;
+
+    for (size_t i = 0; i < myGroups.size(); ++i)
+    {
+        auto const& p = P.at(i);
+        auto const& k = K.at(i);
+        Pasym += 0.5 * (p - p.transpose()).array().abs().sum();
+        double pdiag = p.diagonal().array().abs().sum(); 
+        Pdiag += pdiag; 
+        Poffdiag += p.array().abs().sum() - pdiag;
+        Kmean += k.array().abs().sum();
+    }
+
+    MPI_Allreduce(MPI_IN_PLACE, &Pasym   , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &Pdiag   , 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &Poffdiag, 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &Kmean   , 1, MPI_DOUBLE, MPI_SUM, comm);
+    Pasym /= (sizeP - sizeState);
     Pdiag /= sizeState;
-    double Kmean = K.array().abs().mean();
+    Poffdiag /= (sizeP - sizeState);
+    Kmean /= (sizeState * sizeObservation);
 
     string s = strpr("%10zu %10zu %16.8E %16.8E %16.8E %16.8E %16.8E",
                      epoch, numUpdates, Pdiag, Poffdiag, Pasym, Kmean, q);
@@ -314,11 +487,24 @@ vector<string> KalmanFilter::info() const
 {
     vector<string> v;
 
+    v.push_back("Extended Kalman Filter (EKF) optimizer:\n");
+    v.push_back(strpr("sizeState       = %zu\n", sizeState));
+    v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
+    v.push_back(strpr("myRank          = %d\n", myRank));
+    v.push_back(strpr("numProcs        = %d\n", numProcs));
+    v.push_back(strpr("OpenMP threads used                    : %d\n",
+                      nbThreads()));
+    v.push_back(strpr("Number of decoupling groups            : %zu\n",
+                      groupLimits.size()));
+    v.push_back(strpr("Number of decoupling groups of proc %3d: %zu\n",
+                      myRank, myGroups.size()));
+    v.push_back(strpr("P matrix size ratio (compared to GEKF) : %6.2f %%\n",
+                      100.0 * sizeP / (sizeState * sizeState)));
+    v.push_back("-----------------------------------------"
+                "--------------------------------------\n");
     if (type == KT_STANDARD)
     {
         v.push_back(strpr("KalmanType::KT_STANDARD (%d)\n", type));
-        v.push_back(strpr("sizeState       = %zu\n", sizeState));
-        v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
         v.push_back(strpr("epsilon         = %12.4E\n", epsilon));
         v.push_back(strpr("q0              = %12.4E\n", q0     ));
         v.push_back(strpr("qtau            = %12.4E\n", qtau   ));
@@ -330,8 +516,6 @@ vector<string> KalmanFilter::info() const
     else if (type == KT_FADINGMEMORY)
     {
         v.push_back(strpr("KalmanType::KT_FADINGMEMORY (%d)\n", type));
-        v.push_back(strpr("sizeState       = %zu\n", sizeState));
-        v.push_back(strpr("sizeObservation = %zu\n", sizeObservation));
         v.push_back(strpr("epsilon         = %12.4E\n", epsilon));
         v.push_back(strpr("q0              = %12.4E\n", q0     ));
         v.push_back(strpr("qtau            = %12.4E\n", qtau   ));
@@ -339,7 +523,17 @@ vector<string> KalmanFilter::info() const
         v.push_back(strpr("lambda          = %12.4E\n", lambda));
         v.push_back(strpr("nu              = %12.4E\n", nu    ));
     }
-    v.push_back(strpr("OpenMP threads used: %d\n", nbThreads()));
+    //for (size_t i = 0; i < groupLimits.size(); ++i)
+    //{
+    //    v.push_back(strpr(" - group %5zu size: %zu\n",
+    //                      i,
+    //                      groupLimits.at(i).second
+    //                      - groupLimits.at(i).first + 1));
+    //}
+    //for (auto g : myGroups)
+    //{
+    //    v.push_back(strpr(" - group %5zu size: %zu\n", g.first, g.second));
+    //}
 
     return v;
 }

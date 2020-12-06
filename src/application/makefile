@@ -47,7 +47,8 @@ APP_CORE=nnp-convert \
          nnp-predict \
          nnp-prune \
          nnp-select \
-         nnp-symfunc
+         nnp-symfunc \
+	 nnx
 
 # Applications which require libnnp and libnnptrain:
 # (nnp-train itself is actually a special case).
@@ -55,7 +56,8 @@ APP_TRAIN=nnp-comp2 \
           nnp-dataset \
           nnp-norm \
           nnp-scaling \
-          nnp-sfclust
+          nnp-sfclust \
+          nnp-winit
 
 # All applications together.
 APP=$(APP_CORE) $(APP_TRAIN) nnp-train
@@ -72,7 +74,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 all: $(APP_CORE) $(APP_TRAIN) nnp-train
 
 # Applications which require only libnnp:
-$(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
+$(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_EIGEN)
 ifeq ($(MODE), shared)
 $(APP_CORE): LDFLAGS=-L$(PROJECT_LIB) -lnnp
 else

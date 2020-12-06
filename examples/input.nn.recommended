@@ -35,6 +35,7 @@ parallel_mode                   0              # Training parallelization used (
 jacobian_mode                   1              # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).
 update_strategy                 0              # Update strategy (0 = Combined, 1 = Per-element).
 selection_mode                  2              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+decoupling_type                 0              # Kalman filter decoupling type (0 = GEKF, 1 = ED-GEKF, 2 = Layer, 3 = NDEKF, 4 = FDEKF).
 task_batch_size_energy          1              # Number of energy update candidates prepared per task for each update (0 = Entire training set).
 task_batch_size_force           1              # Number of force update candidates prepared per task for each update (0 = Entire training set).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
