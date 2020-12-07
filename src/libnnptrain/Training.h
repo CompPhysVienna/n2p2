@@ -19,6 +19,7 @@
 
 #include "Atom.h"
 #include "Dataset.h"
+#include "Stopwatch.h"
 #include "Updater.h"
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
@@ -145,23 +146,27 @@ public:
     void                  calculateNeighborLists();
     /** Calculate error metrics for all structures.
      *
-     * @param[in] identifier String added to "ENERGY" and "FORCES" log line.
      * @param[in] fileNames Map of properties to file names for training/test
      *                      comparison files.
      *
      * If fileNames map is empty, no files will be written.
      */
     void                  calculateError(
-                              std::string const                identifier,
-                              std::map<std::string,
-                              std::pair<
-                              std::string, std::string>> const fileNames);
+                                   std::map<std::string,
+                                   std::pair<
+                                   std::string, std::string>> const fileNames);
     /** Calculate error metrics per epoch for all structures with file names
      * used in training loop.
      *
      * Also write training curve to file.
      */
     void                  calculateErrorEpoch();
+    /** Print training loop header on screen.
+     */
+    void                  printHeader();
+    /** Print preferred error metric and timing information on screen.
+     */
+    void                  printEpoch();
     /** Write weights to files (one file for each element).
      *
      * @param[in] nnName Identifier for neural network.
@@ -460,6 +465,9 @@ private:
     std::vector<double> >    weights;
     /// Weight updater (combined or for each element).
     std::vector<Updater*>    updaters;
+    /// Stopwatches for timing overview.
+    std::map<
+    std::string, Stopwatch>  sw;
     /// Per-task random number generator.
     std::mt19937_64          rngNew;
     /// Global random number generator.
@@ -572,6 +580,13 @@ private:
      * @param[in] property Training property.
      */
     void allocateArrays(std::string const& property);
+    /** Write timing data for all clocks.
+     *
+     * @param[in] append If true, append to file, otherwise create new file.
+     * @param[in] fileName File name for timing data file.
+     */
+    void writeTimingData(bool              append,
+                         std::string const fileName = "timing.out");
 };
 
 }

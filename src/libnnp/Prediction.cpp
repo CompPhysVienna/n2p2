@@ -17,7 +17,6 @@
 #include "Prediction.h"
 #include <fstream>   // std::ifstream
 #include <stdexcept> // std::runtime_error
-#include "Stopwatch.h"
 #include "utility.h"
 
 using namespace std;

@@ -18,7 +18,6 @@
 #include "GradientDescent.h"
 #include "KalmanFilter.h"
 #include "NeuralNetwork.h"
-#include "Stopwatch.h"
 #include "utility.h"
 #include "mpi-extra.h"
 #ifdef _OPENMP
@@ -58,6 +57,7 @@ Training::Training() : Dataset(),
                        forceWeight                (0.0            ),
                        trainingLogFileName        ("train-log.out")
 {
+    sw["setup"].start();
 }
 
 Training::~Training()
@@ -842,6 +842,8 @@ void Training::setupTraining()
                    "--------------------------------------\n";
     }
 
+    log << strpr("TIMING Finished setup: %.2f seconds.\n",
+                 sw["setup"].stop());
     log << "*****************************************"
            "**************************************\n";
 
@@ -850,6 +852,7 @@ void Training::setupTraining()
 
 void Training::calculateNeighborLists()
 {
+    sw["nl"].start();
     log << "\n";
     log << "*** CALCULATE NEIGHBOR LISTS ************"
            "**************************************\n";
@@ -877,6 +880,10 @@ void Training::calculateNeighborLists()
                  omp_get_max_threads());
 #endif
 
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << strpr("TIMING Finished neighbor lists: %.2f seconds.\n",
+                 sw["nl"].stop());
     log << "*****************************************"
            "**************************************\n";
 
@@ -884,8 +891,7 @@ void Training::calculateNeighborLists()
 }
 
 void Training::calculateError(
-                            string const                            identifier,
-                            map<string, pair<string, string>> const fileNames)
+                             map<string, pair<string, string>> const fileNames)
 {
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
@@ -1043,18 +1049,6 @@ void Training::calculateError(
     {
         collectError(k, p[k].errorTrain, countTrain.at(k));
         collectError(k, p[k].errorTest, countTest.at(k));
-        if (k == "energy") log << strpr("ENERGY %4s", identifier.c_str());
-        if (k == "force")  log << strpr("FORCES %4s", identifier.c_str());
-        if (k == "charge") log << strpr("CHARGE %4s", identifier.c_str());
-        if (normalize && (k != "charge"))
-        {
-            log << strpr(" %13.5E %13.5E",
-                         physical(k, p[k].errorTrain.at(p[k].displayMetric)),
-                         physical(k, p[k].errorTest.at(p[k].displayMetric)));
-        }
-        log << strpr(" %13.5E %13.5E\n",
-                     p[k].errorTrain.at(p[k].displayMetric),
-                     p[k].errorTest.at(p[k].displayMetric));
         if (doWrite(k))
         {
             filesTrain.at(k).close();
@@ -1079,7 +1073,6 @@ void Training::calculateErrorEpoch()
 {
     // Check whether property comparison files should be written for
     // this epoch.
-    string identifier = strpr("%d", epoch);
     map<string, pair<string, string>> fileNames;
 
     for (auto const& ip : p)
@@ -1101,7 +1094,111 @@ void Training::calculateErrorEpoch()
     }
 
     // Calculate errors and write comparison files.
-    calculateError(identifier, fileNames);
+    calculateError(fileNames);
+
+    return;
+}
+
+void Training::printHeader()
+{
+    string metric = "?";
+    string peratom = "";
+
+    log << "The training loop output covers different errors, update and\n";
+    log << "timing information. The following quantities are organized\n";
+    log << "according to the matrix scheme below:\n";
+    log << "-------------------------------------------------------------------\n";
+    log << "ep ........ Epoch.\n";
+    for (auto k : pk)
+    {
+        string const& pmetric = p[k].displayMetric;
+        if      (pmetric.find("RMSE") != pmetric.npos) metric = "RMSE";
+        else if (pmetric.find("MAE")  != pmetric.npos) metric = "MAE";
+        if      (pmetric.find("pa") != pmetric.npos) peratom = " per atom";
+        else peratom = "";
+        log << p[k].tiny << "_count ... Number of " << k << " updates.\n";
+        log << p[k].tiny << "_train ... " << metric << " of training "
+            << p[k].plural << peratom << ".\n";
+        log << p[k].tiny << "_test .... " << metric << " of test     "
+            << p[k].plural << peratom << ".\n";
+        //log << p[k].tiny << "_time ........ Time for " << k << " updates "
+        //                 << "(seconds).\n";
+        log << p[k].tiny << "_pt ...... Percentage of time for " << k <<
+                            " updates w.r.t. to t_train.\n";
+    }
+    log << "count ..... Total number of updates.\n";
+    log << "train ..... Percentage of time for training.\n";
+    log << "error ..... Percentage of time for error calculation.\n";
+    log << "other ..... Percentage of time for other purposes.\n";
+    log << "epoch ..... Total time for this epoch (seconds).\n";
+    log << "total ..... Total time for all epochs (seconds).\n";
+    log << "-------------------------------------------------------------------\n";
+    for (auto k : pk)
+    {
+        log << strpr("%-6s", k.c_str())
+            << strpr("  %5s", "ep")
+            << strpr("  %7s", (p[k].tiny + "_count").c_str())
+            << strpr("   %11s", (p[k].tiny + "_train").c_str())
+            << strpr("   %11s", (p[k].tiny + "_test").c_str())
+            << strpr("   %5s", (p[k].tiny + "_pt").c_str())
+            << "\n";
+    }
+    log << strpr("%-6s", "timing")
+        << strpr("  %5s", "ep")
+        << strpr("  %7s", "count")
+        << strpr("  %5s", "train")
+        << strpr("  %5s", "error")
+        << strpr("  %5s", "other")
+        << strpr("  %9s", "epoch")
+        << strpr("  %9s", "total")
+        << "\n";
+    log << "-------------------------------------------------------------------\n";
+
+    return;
+}
+
+void Training::printEpoch()
+{
+    double timeLoop = sw["loop"].getLoop();
+    double timeTrain = sw["train"].getLoop();
+    size_t totalUpdates = 0;
+    for (auto k : pk)
+    {
+        totalUpdates += p[k].countUpdates;
+        double timeProp = sw[k].getLoop();
+        string caps = k;
+        for (auto& c : caps) c = toupper(c);
+        log << strpr("%-6s", caps.c_str());
+        log << strpr("  %5zu", epoch);
+        log << strpr("  %7zu", p[k].countUpdates);
+        if (normalize && (k != "charge"))
+        {
+            log << strpr("   %11.5E   %11.5E",
+                         physical(k, p[k].errorTrain.at(p[k].displayMetric)),
+                         physical(k, p[k].errorTest.at(p[k].displayMetric)));
+        }
+        else
+        {
+            log << strpr("   %11.5E   %11.5E\n",
+                         p[k].errorTrain.at(p[k].displayMetric),
+                         p[k].errorTest.at(p[k].displayMetric));
+        }
+        if (epoch == 0) log << strpr("   %5.1f", 0.0);
+        else log << strpr("   %5.1f", timeProp / timeTrain * 100.0);
+        log << "\n";
+    }
+    double timeOther = timeLoop;
+    timeOther -= sw["error"].getLoop();
+    timeOther -= sw["train"].getLoop();
+    log << strpr("%-6s", "TIMING");
+    log << strpr("  %5zu", epoch);
+    log << strpr("  %7zu", totalUpdates);
+    log << strpr("  %5.1f", sw["train"].getLoop() / timeLoop * 100.0);
+    log << strpr("  %5.1f", sw["error"].getLoop() / timeLoop * 100.0);
+    log << strpr("  %5.1f", timeOther / timeLoop * 100.0);
+    log << strpr("  %9.2f", sw["loop"].getLoop());
+    log << strpr("  %9.2f", sw["loop"].getTotal());
+    log << "\n";
 
     return;
 }
@@ -1543,83 +1640,17 @@ void Training::checkSelectionMode()
 
 void Training::loop()
 {
+    sw["loop"].start();
     log << "\n";
     log << "*** TRAINING LOOP ***********************"
            "**************************************\n";
     log << "\n";
-
-    string metric = "?";
-    string peratom = "";
-
-    log << "The training loop output covers different RMSEs, update and\n";
-    log << "timing information. The following quantities are organized\n";
-    log << "according to the matrix scheme below:\n";
-    log << "-------------------------------------------------------------------\n";
-    log << "ep ............ Epoch.\n";
-    for (auto k : pk)
-    {
-        string const& pmetric = p[k].displayMetric;
-        if      (pmetric.find("RMSE") != pmetric.npos) metric = "RMSE";
-        else if (pmetric.find("MAE")  != pmetric.npos) metric = "MAE";
-        if      (pmetric.find("pa") != pmetric.npos) peratom = " per atom";
-        else peratom = "";
-        log << p[k].tiny << "train_phys ... " << metric << " of training "
-            << p[k].plural << peratom << " (p. u.).\n";
-        log << p[k].tiny << "test_phys .... " << metric << " of test     "
-            << p[k].plural << peratom << " (p. u.).\n";
-        if (normalize)
-        {
-            log << p[k].tiny << "train_int .... " << metric << " of training "
-                << p[k].plural << peratom << " (i. u.).\n";
-            log << p[k].tiny << "test_int ..... " << metric << " of test     "
-                << p[k].plural << peratom << " (i. u.).\n";
-        }
-    }
-    for (auto k : pk)
-    {
-        log << p[k].tiny << "_count ....... Number of " << k << " updates.\n";
-    }
-    log << "count ......... Total number of updates.\n";
-    log << "t_train ....... Time for training (seconds).\n";
-    log << "t_error ....... Time for error calculation (seconds).\n";
-    log << "t_epoch ....... Total time for this epoch (seconds).\n";
-    log << "t_tot ......... Total time for all epochs (seconds).\n";
-    log << "Abbreviations:\n";
-    log << "  p. u. = physical units.\n";
-    if (normalize) log << "  i. u. = internal units.\n";
-    log << "-------------------------------------------------------------------\n";
-    log << "     1    2             3             4             5             6\n";
-    for (auto k : pk)
-    {
-        log << strpr("%-6s", k.c_str()) << "   ep   "
-            << p[k].tiny << "train_phys    " << p[k].tiny << "test_phys    ";
-        if (normalize)
-        {
-           log << p[k].tiny << "train_int     " << p[k].tiny << "test_int";
-        }
-        log << "\n";
-    }
-    log << "update   ep";
-    for (auto k : pk)
-    {
-        log << "       " << p[k].tiny << "_count";
-    }
-    log << "         count\n";
-    log << "timing   ep       t_train       t_error       t_epoch         t_tot\n";
-    log << "-------------------------------------------------------------------\n";
-
-    // Set up stopwatch.
-    double timeSplit;
-    double timeTotal;
-    Stopwatch swTotal;
-    Stopwatch swTrain;
-    Stopwatch swError;
-    swTotal.start();
+    printHeader();
 
     // Calculate initial RMSE and write comparison files.
-    swError.start();
+    sw["error"].start();
     calculateErrorEpoch();
-    swError.stop();
+    sw["error"].stop();
 
     // Write initial weights to files.
     if (myRank == 0) writeWeightsEpoch();
@@ -1634,24 +1665,17 @@ void Training::loop()
     writeNeuronStatisticsEpoch();
 
     // Print timing information.
-    timeTotal = swTotal.split(&timeSplit);
-    log << strpr("TIMING %4zu %13.2f %13.2f %13.2f %13.2f\n",
-                 epoch,
-                 swTrain.getTimeElapsed(),
-                 swError.getTimeElapsed(),
-                 timeSplit,
-                 timeTotal);
+    sw["loop"].stop();
+    printEpoch();
 
     // Check if training should be continued.
     while (advance())
     {
+        sw["loop"].start();
+
         // Increment epoch counter.
         epoch++;
         log << "------\n";
-
-        // Reset timers.
-        swTrain.reset();
-        swError.reset();
 
         // Reset update counters.
         for (auto k : pk) p[k].countUpdates = 0;
@@ -1670,29 +1694,22 @@ void Training::loop()
         setEpochSchedule();
 
         // Perform property updates according to schedule.
-        swTrain.start();
-        size_t totalUpdates = 0;
+        sw["train"].start();
         for (auto i : epochSchedule)
         {
             string property = pk.at(i);
             update(property);
             p[property].countUpdates++;
-            totalUpdates++;
         }
-        swTrain.stop();
+        sw["train"].stop();
 
         // Reset neuron statistics.
         resetNeuronStatistics();
 
-        // Calculate RMSE and write comparison files.
-        swError.start();
+        // Calculate errors and write comparison files.
+        sw["error"].start();
         calculateErrorEpoch();
-        swError.stop();
-
-        // Print update information.
-        log << strpr("UPDATE %4zu", epoch);
-        for (auto k : pk) log << strpr(" %13zu", p[k].countUpdates);
-        log << strpr(" %13zu\n", totalUpdates);
+        sw["error"].stop();
 
         // Write weights to files.
         if (myRank == 0) writeWeightsEpoch();
@@ -1706,16 +1723,17 @@ void Training::loop()
         // Write neuron statistics.
         writeNeuronStatisticsEpoch();
 
-        // Print timing information.
-        timeTotal = swTotal.split(&timeSplit);
-        log << strpr("TIMING %4zu %13.2f %13.2f %13.2f %13.2f\n",
-                     epoch,
-                     swTrain.getTimeElapsed(),
-                     swError.getTimeElapsed(),
-                     timeSplit,
-                     timeTotal);
+        // Print error overview and timing information.
+        sw["loop"].stop();
+        printEpoch();
+
+        if (myRank == 0) writeTimingData(epoch != 1);
     }
 
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << strpr("TIMING Training loop finished: %.2f seconds.\n",
+                 sw["loop"].getTotal());
     log << "*****************************************"
            "**************************************\n";
 
@@ -1727,6 +1745,11 @@ void Training::update(string const& property)
     // Shortcuts.
     string const& k = property; // Property key.
     Property& pu = p[k]; // Update property.
+    // Start watch for error and jacobian computation, reset loop timer if
+    // first update in this epoch.
+    bool newLoop = pu.countUpdates == 0;
+    sw[k].start(newLoop);
+    sw[k + "_err"].start(newLoop);
 
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
@@ -2129,11 +2152,13 @@ void Training::update(string const& property)
             }
         }
     }
+    sw[k + "_err"].stop();
 
     ///////////////////////////////////////////////////////////////////////
     // PART 3: Communicate error and Jacobian.
     ///////////////////////////////////////////////////////////////////////
 
+    sw[k + "_com"].start(newLoop);
     if (jacobianMode == JM_SUM)
     {
         if (parallelMode == PM_TRAIN_RK0)
@@ -2197,11 +2222,13 @@ void Training::update(string const& property)
             }
         }
     }
+    sw[k + "_com"].stop();
 
     ///////////////////////////////////////////////////////////////////////
     // PART 4: Perform weight update and apply new weights.
     ///////////////////////////////////////////////////////////////////////
 
+    sw[k + "_upd"].start(newLoop);
 #ifdef _OPENMP
     omp_set_num_threads(num_threads);
 #endif
@@ -2232,11 +2259,13 @@ void Training::update(string const& property)
 
     // Set new weights in neural networks.
     setWeights();
+    sw[k + "_upd"].stop();
 
     ///////////////////////////////////////////////////////////////////////
     // PART 5: Communicate candidates and RMSE fractions and write log.
     ///////////////////////////////////////////////////////////////////////
 
+    sw[k + "_log"].start(newLoop);
     if (writeTrainingLog)
     {
         vector<int>    procUpdateCandidate;
@@ -2346,6 +2375,8 @@ void Training::update(string const& property)
             }
         }
     }
+    sw[k + "_log"].stop();
+    sw[k].stop();
 
     return;
 }
@@ -2366,7 +2397,7 @@ void Training::setSingleWeight(size_t element, size_t index, double value)
 }
 
 vector<
-vector<double> > Training::calculateWeightDerivatives(Structure* structure)
+vector<double>> Training::calculateWeightDerivatives(Structure* structure)
 {
     Structure& s = *structure;
 #ifdef NNP_NO_SF_GROUPS
@@ -2406,7 +2437,7 @@ vector<double> > Training::calculateWeightDerivatives(Structure* structure)
 
 // Doxygen requires namespace prefix for arguments...
 vector<
-vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
+vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
                                                       std::size_t atom,
                                                       std::size_t component)
 {
@@ -2946,6 +2977,103 @@ void Training::allocateArrays(string const& property)
         log << strpr(" - Jacobian size: %zu\n", pa.jacobian.at(i).size());
     }
     log << "----------------------------------------------\n";
+
+    return;
+}
+
+void Training::writeTimingData(bool append, string const fileName)
+{
+    ofstream file;
+    string fileNameActual = fileName;
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        fileNameActual += strpr(".stage-%zu", stage);
+    }
+
+    vector<string> sub = {"_err", "_com", "_upd", "_log"};
+    if (append) file.open(fileNameActual.c_str(), ofstream::app);
+    else
+    {
+        file.open(fileNameActual.c_str());
+
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Timing data for training loop.");
+        colSize.push_back(10);
+        colName.push_back("epoch");
+        colInfo.push_back("Current epoch.");
+        colSize.push_back(11);
+        colName.push_back("train");
+        colInfo.push_back("Time for training.");
+        colSize.push_back(7);
+        colName.push_back("ptrain");
+        colInfo.push_back("Time for training (percentage of loop).");
+        colSize.push_back(11);
+        colName.push_back("error");
+        colInfo.push_back("Time for error calculation.");
+        colSize.push_back(7);
+        colName.push_back("perror");
+        colInfo.push_back("Time for error calculation (percentage of loop).");
+        colSize.push_back(11);
+        colName.push_back("epoch");
+        colInfo.push_back("Time for this epoch.");
+        colSize.push_back(11);
+        colName.push_back("total");
+        colInfo.push_back("Total time for all epochs.");
+        for (auto k : pk)
+        {
+            colSize.push_back(11);
+            colName.push_back(p[k].tiny + "train");
+            colInfo.push_back("");
+            colSize.push_back(7);
+            colName.push_back(p[k].tiny + "ptrain");
+            colInfo.push_back("");
+        }
+        for (auto s : sub)
+        {
+            for (auto k : pk)
+            {
+                colSize.push_back(11);
+                colName.push_back(p[k].tiny + s);
+                colInfo.push_back("");
+                colSize.push_back(7);
+                colName.push_back(p[k].tiny + "p" + s);
+                colInfo.push_back("");
+            }
+        }
+        appendLinesToFile(file,
+                          createFileHeader(title, colSize, colName, colInfo));
+    }
+
+    double timeLoop = sw["loop"].getLoop();
+    file << strpr("%10zu", epoch);
+    file << strpr(" %11.3E", sw["train"].getLoop());
+    file << strpr(" %7.3f", sw["train"].getLoop() / timeLoop);
+    file << strpr(" %11.3E", sw["error"].getLoop());
+    file << strpr(" %7.3f", sw["error"].getLoop() / timeLoop);
+    file << strpr(" %11.3E", timeLoop);
+    file << strpr(" %11.3E", sw["loop"].getTotal());
+
+    for (auto k : pk)
+    {
+        file << strpr(" %11.3E", sw[k].getLoop());
+        file << strpr(" %7.3f", sw[k].getLoop() / sw["train"].getLoop());
+    }
+    for (auto s : sub)
+    {
+        for (auto k : pk)
+        {
+            file << strpr(" %11.3E", sw[k + s].getLoop());
+            file << strpr(" %7.3f", sw[k + s].getLoop() / sw[k].getLoop());
+        }
+    }
+    file << "\n";
+
+    file.flush();
+    file.close();
 
     return;
 }
