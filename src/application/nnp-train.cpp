@@ -20,6 +20,7 @@
 #include <cstddef> // std::size_t
 #include <cstdlib> // atoi
 #include <fstream>
+#include <string>
 
 using namespace std;
 using namespace nnp;
@@ -30,10 +31,12 @@ int main(int argc, char* argv[])
     int myRank   = 0;
     size_t stage = 0;
     ofstream myLog;
- 
+
+    string suffix = "";
     if (argc > 1)
     {
         stage = (size_t)atoi(argv[1]);
+        suffix = strpr(".stage-%zu", stage);
     }
 
     MPI_Init(&argc, &argv);
@@ -43,7 +46,8 @@ int main(int argc, char* argv[])
     // Basic setup.
     Training training;
     if (myRank != 0) training.log.writeToStdout = false;
-    myLog.open(strpr("nnp-train.log.%04d", myRank).c_str());
+
+    myLog.open((strpr("nnp-train.log.%04d", myRank) + suffix).c_str());
     training.log.registerStreamPointer(&myLog);
     training.setupMPI();
     training.initialize();

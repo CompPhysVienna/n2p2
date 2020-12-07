@@ -601,6 +601,10 @@ void Training::setupTraining()
     writeTrainingLog = settings.keywordExists("write_trainlog");
     if (writeTrainingLog && myRank == 0)
     {
+        if (nnpType == NNPType::SHORT_CHARGE_NN)
+        {
+            trainingLogFileName += strpr(".stage-%zu", stage);
+        }
         log << strpr("Training log with update information will be written to:"
                      " %s.\n", trainingLogFileName.c_str());
         trainingLog.open(trainingLogFileName.c_str());
@@ -1582,9 +1586,7 @@ void Training::loop()
     log << "t_tot ......... Total time for all epochs (seconds).\n";
     log << "Abbreviations:\n";
     log << "  p. u. = physical units.\n";
-    log << "  i. u. = internal units.\n";
-    log << "Note: RMSEs in internal units (columns 5 + 6) are only present \n";
-    log << "      if data set normalization is used.\n";
+    if (normalize) log << "  i. u. = internal units.\n";
     log << "-------------------------------------------------------------------\n";
     log << "     1    2             3             4             5             6\n";
     for (auto k : pk)
@@ -1597,8 +1599,12 @@ void Training::loop()
         }
         log << "\n";
     }
-    // TODO: Fix this line!
-    log << "update   ep       E_count       F_count         count\n";
+    log << "update   ep";
+    for (auto k : pk)
+    {
+        log << "       " << p[k].tiny << "_count";
+    }
+    log << "         count\n";
     log << "timing   ep       t_train       t_error       t_epoch         t_tot\n";
     log << "-------------------------------------------------------------------\n";
 
@@ -2328,7 +2334,7 @@ void Training::update(string const& property)
                                         indexAtom.at(i),
                                         indexCoordinate.at(i));
                 }
-                else if (k == "force")
+                else if (k == "charge")
                 {
                     addTrainingLogEntry(procUpdateCandidate.at(i),
                                         thresholdLoopCount.at(i),
