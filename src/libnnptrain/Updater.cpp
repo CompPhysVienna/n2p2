@@ -19,6 +19,28 @@
 using namespace std;
 using namespace nnp;
 
-Updater::Updater(size_t const sizeState) : sizeState(sizeState)
+Updater::Updater(size_t const sizeState) : timing     (false    ),
+                                           timingReset(true     ),
+                                           sizeState  (sizeState),
+                                           prefix     (""       )
 {
+}
+
+void Updater::setupTiming(string const& prefix)
+{
+    this->prefix = prefix;
+    timing = true;
+
+    return;
+}
+
+std::map<std::string, Stopwatch> Updater::getTiming() const
+{
+    return sw;
+}
+
+void Updater::resetTimingLoop()
+{
+    timingReset = false;
+    return;
 }

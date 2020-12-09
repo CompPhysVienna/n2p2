@@ -718,6 +718,8 @@ void Training::setupTraining()
                                                kalmanType));
             }
             updaters.back()->setState(&(weights.at(i).front()));
+            updaters.back()->setupTiming(strpr("wupd%zu", i));
+            updaters.back()->resetTimingLoop();
         }
     }
     if (updaters.size() > 0) hasUpdaters = true;
@@ -1179,7 +1181,7 @@ void Training::printEpoch()
         }
         else
         {
-            log << strpr("   %11.5E   %11.5E\n",
+            log << strpr("   %11.5E   %11.5E",
                          p[k].errorTrain.at(p[k].displayMetric),
                          p[k].errorTest.at(p[k].displayMetric));
         }
