@@ -53,6 +53,7 @@ APP_CORE=nnp-convert \
 # (nnp-train itself is actually a special case).
 APP_TRAIN=nnp-comp2 \
           nnp-dataset \
+          nnp-fps \
           nnp-norm \
           nnp-scaling \
           nnp-sfclust

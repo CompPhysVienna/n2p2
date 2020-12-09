@@ -37,7 +37,7 @@ DEBUG=$(PROJECT_DEBUG) $(PROJECT_TEST)
 INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain
 
 # Extra flags for linking.
-LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lboost_unit_test_framework -lboost_filesystem
+LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
 
 
 ###############################################################################

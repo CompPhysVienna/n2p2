@@ -188,6 +188,7 @@ list of keywords is provided :ref:`here <keywords>`.
 
    Tools/libnnp
    Tools/nnp-convert
+   Tools/nnp-fps
    Tools/nnp-norm
    Tools/nnp-predict
    Tools/nnp-prune

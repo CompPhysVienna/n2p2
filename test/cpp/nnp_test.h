@@ -6,6 +6,7 @@
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/process.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/asio.hpp>
 #include "fileHelpers.h"
 
 namespace bdata = boost::unit_test::data;
@@ -24,9 +25,15 @@ BOOST_DATA_TEST_CASE_F(FixtureRepairDir,\
     BOOST_REQUIRE(copy_directory_recursively(example.pathData, "test"));\
     bfs::current_path("test");\
 \
-    bproc::ipstream outStream;\
-    int result = bproc::system(example.command + " " + example.args,\
-                               bproc::std_out > outStream);\
+    std::future<std::vector<char>> outStream;\
+    boost::asio::io_service io;\
+    bproc::child c(example.command + " " + example.args,\
+                   bproc::std_in.close(),\
+                   bproc::std_out > outStream,\
+                   io);\
+    io.run();\
+    c.wait();\
+    int result = c.exit_code();\
 \
     BOOST_TEST_INFO(example.description);\
     BOOST_REQUIRE_EQUAL(result, 0);\
