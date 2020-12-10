@@ -30,15 +30,18 @@ struct Atom;
 class ElementMap;
 class SymFnc;
 
-/** Angular symmetry function with polynomials (type 21)
+/** Narrow angular symmetry function with compact support (type 21)
  *
  * @f[
    G^{21}_i = \sum_{\substack{j,k\neq i \\ j < k}}
-              C_{\text{rad}}(r_{ij})
-              C_{\text{rad}}(r_{ik})
-              C_{\text{rad}}(r_{jk})
-              C_{\text{ang}}(\theta_{ijk})
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(r_{jk}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
  * @f]
+ * where @f$C(x, x_\text{low}, x_\text{high})@f$ is a function with compact
+ * support @f$\left[x_\text{low}, x_\text{high}\right]@f$.
+ *
  * Common features:
  * - element of central atom
  * - element of neighbor atom 1

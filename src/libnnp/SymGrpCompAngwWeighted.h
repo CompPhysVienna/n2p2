@@ -30,15 +30,19 @@ struct Atom;
 class ElementMap;
 class SymFnc;
 
-/** Angular symmetry function with polynomials (type 25)
+/** Weighted wide angular symmetry function with compact support (type 25)
  *
  * @f[
    G^{25}_i = \sum_{\substack{j,k\neq i \\ j < k}}
               Z_j Z_k
-              C_{\text{rad}}(r_{ij})
-              C_{\text{rad}}(r_{ik})
-              C_{\text{ang}}(\theta_{ijk})
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
  * @f]
+ * where @f$C(x, x_\text{low}, x_\text{high})@f$ is a function with compact
+ * support @f$\left[x_\text{low}, x_\text{high}\right]@f$. @f$Z_j@f$ is defined
+ * as the atomic number of the neighbor atom @f$j@f$.
+ *
  * Common features:
  * - element of central atom
  */

@@ -18,22 +18,22 @@ Taken from the original 2007 paper
 these are the basic radial and angular symmetry functions:
 
 
-* 
-  Radial symmetry function (:class:`nnp::SymFncRadExp`):
+*
+  Radial symmetry function (class `SymFncExpRad <../doxygen/classnnp_1_1SymFncExpRad.html#details>`__):
 
   .. math::
 
-     G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_s)^2} f_c(r_{ij}) 
+     G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_s)^2} f_c(r_{ij})
 
-* 
-  Angular symmetry function (:class:`nnp::SymFncAngnExp`):
+*
+  Angular symmetry function (class `SymFncExpAngn <../doxygen/classnnp_1_1SymFncExpAngn.html#details>`__):
 
   .. math::
 
      G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
              \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
              \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 + r_{jk}^2 ) }
-             f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
+             f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk})
 
 Atom-centered symmetry functions (continued)
 --------------------------------------------
@@ -52,7 +52,7 @@ Amongst others a variant of the above angular symmetry function was introduced:
 
      G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j < k}}
              \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-             \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 ) } f_c(r_{ij}) f_c(r_{ik}) 
+             \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 ) } f_c(r_{ij}) f_c(r_{ik})
 
 .. note::
 
@@ -74,16 +74,16 @@ J. Chem. Phys. 148, 241709 (2018) <https://doi.org/10.1063/1.5019667>`_
 Here two variants of the original symmetry functions were presented:
 
 
-* 
+*
   Weighted radial symmetry function (:class:`nnp::SymFncRadExpWeighted`)
 
   .. math::
 
      G^{12}_i = \sum_{j \neq i} Z_j \,
                 \mathrm{e}^{-\eta(r_{ij} - r_s)^2}
-                f_c(r_{ij}) 
+                f_c(r_{ij})
 
-* 
+*
   Weighted angular symmetry function (:class:`nnp::SymFncAngnExpWeighted`)
 
   .. math::
@@ -93,4 +93,4 @@ Here two variants of the original symmetry functions were presented:
                 \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
                 \mathrm{e}^{-\eta \left[
                 (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
-                f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
+                f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk})

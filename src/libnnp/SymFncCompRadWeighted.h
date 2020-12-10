@@ -28,20 +28,25 @@ namespace nnp
 struct Atom;
 class ElementMap;
 
-/** Weighted radial symmetry function (type 23)
+/** Weighted radial symmetry function with compact support (type 23)
  *
  * @f[
    G^{23}_i = \sum_{\substack{j \neq i}}
-              Z_j C_{\text{rad}}(r_{ij})
+              Z_j
+              C(r_{ij}, r_l, r_c)
  * @f]
+ * where @f$C(x, x_\text{low}, x_\text{high})@f$ is a function with compact
+ * support @f$\left[x_\text{low}, x_\text{high}\right]@f$. @f$Z_j@f$ is defined
+ * as the atomic number of the neighbor atom @f$j@f$.
+ *
  * Parameter string:
  * ```
- * <element-central> 23 <rl> <rc> <subtype>
+ * <element-central> 23 <rlow> <rcutoff> <subtype>
  * ```
  * where
  * - `<element-central> ....` element symbol of central atom
- * - `<rl> .................` @f$r_{l}@f$
- * - `<rc> .................` @f$r_{c}@f$
+ * - `<rlow> ................` low radius boundary @f$r_{l}@f$
+ * - `<rcutoff> .............` high radius boundary @f$r_{c}@f$
  * - `<subtype> ............` compact function specifier
  *
  * See the description of SymFncBaseComp::setCompactFunction() for possible

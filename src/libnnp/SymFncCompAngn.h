@@ -28,15 +28,18 @@ namespace nnp
 struct Atom;
 class ElementMap;
 
-/** Angular symmetry function with polynomials (type 21)
+/** Narrow angular symmetry function with compact support (type 21)
  *
  * @f[
    G^{21}_i = \sum_{\substack{j,k\neq i \\ j < k}}
-              C_{\text{rad}}(r_{ij})
-              C_{\text{rad}}(r_{ik})
-              C_{\text{rad}}(r_{jk})
-              C_{\text{ang}}(\theta_{ijk})
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(r_{jk}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
  * @f]
+ * where @f$C(x, x_\text{low}, x_\text{high})@f$ is a function with compact
+ * support @f$\left[x_\text{low}, x_\text{high}\right]@f$.
+ *
  * Parameter string:
  * ```
  * <element-central> 21 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
@@ -45,14 +48,18 @@ class ElementMap;
  * - `<element-central> .....` element symbol of central atom
  * - `<element-neighbor1> ...` element symbol of neighbor atom 1
  * - `<element-neighbor2> ...` element symbol of neighbor atom 2
- * - `<rlow>.................` lower radial boundary
- * - `<rcutoff> .............` upper radial boundary
- * - `<left> ................` left angle boundary 
- * - `<right> ...............` right angle boundary 
- * - `<subtype> .............` compact function specifier 
+ * - `<rlow> ................` low radius boundary @f$r_{l}@f$
+ * - `<rcutoff> .............` high radius boundary @f$r_{c}@f$
+ * - `<left> ................` left angle boundary @f$\theta_l@f$
+ * - `<right> ...............` right angle boundary @f$\theta_r@f$
+ * - `<subtype> .............` compact function specifier
  *
  * See the description of SymFncBaseComp::setCompactFunction() for possible
  * values of the `<subtype>` argument.
+ *
+ * @note If `<subtype>` specifies an asymmetric version of a polynomial core
+ * function the asymmetry only applies to the radial parts, i.e. "p2a" sets
+ * a "p2a" radial compact function and a "p2" angular compact function.
  */
 class SymFncCompAngn : public SymFncBaseCompAng
 {

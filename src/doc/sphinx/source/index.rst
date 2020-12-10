@@ -167,41 +167,47 @@ list of keywords is provided :ref:`here <keywords>`.
    :hidden:
    :caption: Topics
 
-   Topics/build
-   Topics/descriptors
-   Topics/keywords
-   Topics/cfg_file
-   Topics/if_lammps
-   Topics/pair_nnp
-   Topics/training
-   Topics/units
+   topics/build
+   topics/descriptors
+   topics/keywords
+   topics/cfg_file
+   topics/if_lammps
+   topics/pair_nnp
+   topics/training
+   topics/units
 
 .. toctree::
    :hidden:
    :caption: Tools
 
-   Tools/libnnp
-   Tools/nnp-convert
-   Tools/nnp-norm
-   Tools/nnp-predict
-   Tools/nnp-prune
-   Tools/nnp-select
-   Tools/nnp-scaling
-   Tools/nnp-train
+   tools/libnnp
+   tools/nnp-convert
+   tools/nnp-norm
+   tools/nnp-predict
+   tools/nnp-prune
+   tools/nnp-select
+   tools/nnp-scaling
+   tools/nnp-train
 
-.. .. toctree::
-..    :hidden:
-..    :caption: API
-.. 
+.. toctree::
+   :hidden:
+   :caption: API
+
+   api/neural_network
+   api/cutoff_functions
+   api/symmetry_function_types
+   api/symmetry_function_scaling
+   api/memory_layout
+
 ..    doc-exhale/root
 
 .. toctree::
    :hidden:
    :caption: About
 
-   About/authors
-   About/license
-   About/changelog
+   about/authors
+   about/license
+   about/changelog
 
 .. |H2O| replace:: H\ :sub:`2`\ O
 

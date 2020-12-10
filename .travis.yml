@@ -59,7 +59,7 @@ before_install:
 install:
   - pip install sphinx
   - pip install sphinx_rtd_theme
-  #- pip install breathe
+  - pip install breathe
   #- pip install exhale
   - pip install cython
   - pip install pytest

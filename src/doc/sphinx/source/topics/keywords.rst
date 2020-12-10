@@ -64,12 +64,13 @@ Defines the number of elements the neural network potential is designed for.
 **Examples**:
    ``elements O H Zn``
 
-This keyword defines all elements via a list of element symbols. The number
-of items provided has to be consistent with the argument of the
+This keyword defines all elements via a list of element symbols. The number of
+items provided has to be consistent with the argument of the
 ``number_of_elements`` keyword. The order of the items is not important,
 elements are automatically sorted according to their atomic number. The list
-:member:`nnp::ElementMap::knownElements` contains a list of recognized element
-symbols.
+`nnp::ElementMap::knownElements
+<../doxygen/classnnp_1_1ElementMap.html#ad0295785b2db8268cfc175b835046a1e>`__
+contains a list of recognized element symbols.
 
 ----
 
@@ -132,7 +133,7 @@ of neural networks of all elements. The number of integer arguments has to
 be consistent with the argument of the ``global_hidden_layers_short`` keyword
 (i.e. number of hidden layers + 1). Activation functions are chosen via
 single characters from the following table (see also
-:type:`nnp::NeuralNetwork::ActivationFunction`).
+:cpp:enum:`nnp::NeuralNetwork::ActivationFunction`).
 
 .. list-table::
    :header-rows: 1
@@ -140,25 +141,25 @@ single characters from the following table (see also
    * - Character
      - Activation function type
    * - l
-     - :enumerator:`nnp::NeuralNetwork::AF_IDENTITY`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_IDENTITY`
    * - t
-     - :enumerator:`nnp::NeuralNetwork::AF_TANH`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_TANH`
    * - s
-     - :enumerator:`nnp::NeuralNetwork::AF_LOGISTIC`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_LOGISTIC`
    * - p
-     - :enumerator:`nnp::NeuralNetwork::AF_SOFTPLUS`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_SOFTPLUS`
    * - r
-     - :enumerator:`nnp::NeuralNetwork::AF_RELU`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_RELU`
    * - g
-     - :enumerator:`nnp::NeuralNetwork::AF_GAUSSIAN`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_GAUSSIAN`
    * - c
-     - :enumerator:`nnp::NeuralNetwork::AF_COS`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_COS`
    * - S
-     - :enumerator:`nnp::NeuralNetwork::AF_REVLOGISTIC`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_REVLOGISTIC`
    * - e
-     - :enumerator:`nnp::NeuralNetwork::AF_EXP`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_EXP`
    * - h
-     - :enumerator:`nnp::NeuralNetwork::AF_HARMONIC`
+     - :cpp:enumerator:`nnp::NeuralNetwork::AF_HARMONIC`
 
 
 ----
@@ -194,10 +195,11 @@ is modified according to:
    ``cutoff_type 7``
 
 Defines the cutoff function type used for all symmetry functions. The first
-argument determines the functional form, see :type:`nnp::CutoffFunction::CutoffType`
-for all available options. Use one of the following integer numbers to
-select the cutoff type. The second argument is optional and sets the parameter
-:math:`\alpha`. If not provided, the default value is :math:`\alpha = 0.0`.
+argument determines the functional form, see
+:cpp:enum:`nnp::CutoffFunction::CutoffType` for all available options. Use one
+of the following integer numbers to select the cutoff type. The second argument
+is optional and sets the parameter :math:`\alpha`. If not provided, the default
+value is :math:`\alpha = 0.0`.
 
 .. list-table::
    :header-rows: 1
@@ -205,23 +207,23 @@ select the cutoff type. The second argument is optional and sets the parameter
    * - Cutoff #
      - Cutoff type
    * - 0
-     - :enumerator:`nnp::CutoffFunction::CT_HARD`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_HARD`
    * - 1
-     - :enumerator:`nnp::CutoffFunction::CT_COS`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_COS`
    * - 2
-     - :enumerator:`nnp::CutoffFunction::CT_TANHU`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_TANHU`
    * - 3
-     - :enumerator:`nnp::CutoffFunction::CT_TANH`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_TANH`
    * - 4
-     - :enumerator:`nnp::CutoffFunction::CT_EXP`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_EXP`
    * - 5
-     - :enumerator:`nnp::CutoffFunction::CT_POLY1`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_POLY1`
    * - 6
-     - :enumerator:`nnp::CutoffFunction::CT_POLY2`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_POLY2`
    * - 7
-     - :enumerator:`nnp::CutoffFunction::CT_POLY3`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_POLY3`
    * - 8
-     - :enumerator:`nnp::CutoffFunction::CT_POLY4`
+     - :cpp:enumerator:`nnp::CutoffFunction::CT_POLY4`
 
 
 ----
@@ -237,7 +239,7 @@ select the cutoff type. The second argument is optional and sets the parameter
 
 Combining these keywords determines how the symmetry functions are scaled
 before they are used as input for the neural network. See
-:type:`nnp::SymmetryFunction::ScalingType` and the following table for allowed
+:cpp:enum:`nnp::SymFnc::ScalingType` and the following table for allowed
 combinations:
 
 .. list-table::
@@ -246,15 +248,15 @@ combinations:
    * - Keywords present
      - Scaling type
    * - ``None``
-     - :enumerator:`nnp::SymmetryFunction::ST_NONE`
+     - :cpp:enumerator:`nnp::SymFnc::ST_NONE`
    * - ``scale_symmetry_functions``
-     - :enumerator:`nnp::SymmetryFunction::ST_SCALE`
+     - :cpp:enumerator:`nnp::SymFnc::ST_SCALE`
    * - ``center_symmetry_functions``
-     - :enumerator:`nnp::SymmetryFunction::ST_CENTER`
+     - :cpp:enumerator:`nnp::SymFnc::ST_CENTER`
    * - ``scale_symmetry_functions`` + ``center_symmetry_functions``
-     - :enumerator:`nnp::SymmetryFunction::ST_SCALECENTER`
+     - :cpp:enumerator:`nnp::SymFnc::ST_SCALECENTER`
    * - ``scale_symmetry_functions_sigma``
-     - :enumerator:`nnp::SymmetryFunction::ST_SCALESIGMA`
+     - :cpp:enumerator:`nnp::SymFnc::ST_SCALESIGMA`
 
 
 ----
@@ -276,7 +278,7 @@ combinations:
    ``scale_max_short 1.0``
 
 Set minimum :math:`S_{\min}` and maximum :math:`S_{\max}` for symmetry function
-scaling. See :type:`nnp::SymmetryFunction::ScalingType`.
+scaling. See :cpp:enumerator:`nnp::SymmetryFunction::ScalingType`.
 
 ----
 
@@ -308,15 +310,27 @@ and look for the detailed description of the class.
    * - Type integer
      - Symmetry function type
    * - 2
-     - :class:`nnp::SymmetryFunctionRadial`
+     - :cpp:class:`nnp::SymFncExpRad`
    * - 3
-     - :class:`nnp::SymmetryFunctionAngularNarrow`
+     - :cpp:class:`nnp::SymFncExpAngn`
    * - 9
-     - :class:`nnp::SymmetryFunctionAngularWide`
+     - :cpp:class:`nnp::SymFncExpAngw`
    * - 12
-     - :class:`nnp::SymmetryFunctionWeightedRadial`
+     - :cpp:class:`nnp::SymFncExpRadWeighted`
    * - 13
-     - :class:`nnp::SymmetryFunctionWeightedAngular`
+     - :cpp:class:`nnp::SymFncExpAngnWeighted`
+   * - 20
+     - :cpp:class:`nnp::SymFncCompRad`
+   * - 21
+     - :cpp:class:`nnp::SymFncCompAngn`
+   * - 22
+     - :cpp:class:`nnp::SymFncCompAngw`
+   * - 23
+     - :cpp:class:`nnp::SymFncCompRadWeighted`
+   * - 24
+     - :cpp:class:`nnp::SymFncCompAngnWeighted`
+   * - 25
+     - :cpp:class:`nnp::SymFncCompAngwWeighted`
 
 Training-specific keywords
 --------------------------

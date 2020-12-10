@@ -30,12 +30,15 @@ class ElementMap;
 class SymFnc;
 class SymFncCompRad;
 
-/** Radial symmetry function (type 20)
+/** Radial symmetry function with compact support (type 20)
  *
  * @f[
    G^{20}_i = \sum_{\substack{j \neq i}}
-              C_{\text{rad}}(r_{ij})
+              C(r_{ij}, r_l, r_c),
  * @f]
+ * where @f$C(x, x_\text{low}, x_\text{high})@f$ is a function with compact
+ * support @f$\left[x_\text{low}, x_\text{high}\right]@f$.
+ *
  * Common features:
  * - element of central atom
  * - element of neighbor atom

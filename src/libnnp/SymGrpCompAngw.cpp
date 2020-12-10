@@ -107,6 +107,7 @@ void SymGrpCompAngw::sortMembers()
         mar.at(i) = members[i]->getAngleRight() * M_PI / 180.0;
         memberIndex.push_back(members[i]->getIndex());
         memberIndexPerElement.push_back(members[i]->getIndexPerElement());
+        calculateComp.push_back(true);
     }
 
 #ifndef NOSFCACHE
