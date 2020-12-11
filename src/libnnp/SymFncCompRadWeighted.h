@@ -33,7 +33,7 @@ class ElementMap;
  * @f[
    G^{23}_i = \sum_{\substack{j \neq i}}
               Z_j
-              C(r_{ij}, r_l, r_c)
+              C(r_{ij}, r_l, r_c),
  * @f]
  * where @f$C(x, x_\text{low}, x_\text{high})@f$ is a function with compact
  * support @f$\left[x_\text{low}, x_\text{high}\right]@f$. @f$Z_j@f$ is defined

@@ -18,15 +18,13 @@ Taken from the original 2007 paper
 these are the basic radial and angular symmetry functions:
 
 
-*
-  Radial symmetry function (class `SymFncExpRad <../doxygen/classnnp_1_1SymFncExpRad.html#details>`__):
+* Radial symmetry function (:cpp:class:`nnp::SymFncExpRad`):
 
   .. math::
 
      G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_s)^2} f_c(r_{ij})
 
-*
-  Angular symmetry function (class `SymFncExpAngn <../doxygen/classnnp_1_1SymFncExpAngn.html#details>`__):
+* Angular symmetry function (:cpp:class:`nnp::SymFncExpAngn`):
 
   .. math::
 
@@ -45,7 +43,7 @@ In 2011 more symmetry functions were presented here:
 Amongst others a variant of the above angular symmetry function was introduced:
 
 
-* Modified angular symmetry function (:class:`nnp::SymFncAngwExp`, for
+* Modified angular symmetry function (:cpp:class:`nnp::SymFncExpAngw`, for
   historic reasons the type number here is 9):
 
   .. math::
@@ -74,8 +72,7 @@ J. Chem. Phys. 148, 241709 (2018) <https://doi.org/10.1063/1.5019667>`_
 Here two variants of the original symmetry functions were presented:
 
 
-*
-  Weighted radial symmetry function (:class:`nnp::SymFncRadExpWeighted`)
+* Weighted radial symmetry function (:cpp:class:`nnp::SymFncExpRadWeighted`)
 
   .. math::
 
@@ -83,8 +80,7 @@ Here two variants of the original symmetry functions were presented:
                 \mathrm{e}^{-\eta(r_{ij} - r_s)^2}
                 f_c(r_{ij})
 
-*
-  Weighted angular symmetry function (:class:`nnp::SymFncAngnExpWeighted`)
+* Weighted angular symmetry function (:cpp:class:`nnp::SymFncExpAngnWeighted`)
 
   .. math::
 
@@ -94,3 +90,59 @@ Here two variants of the original symmetry functions were presented:
                 \mathrm{e}^{-\eta \left[
                 (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
                 f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk})
+
+.. _polynomial_sf:
+
+Low-cost polynomial symmetry functions with compact support
+-----------------------------------------------------------
+
+`Bircher, M. P.; Singraber, A.; Dellago, C., arXiv:2010.14414 [cond-mat,
+physics:physics] (2020). <http://arxiv.org/abs/2010.14414>`__
+
+Here :math:`C(x, x_\text{low}, x_\text{high})` is a function with compact
+support :math:`\left[x_\text{low}, x_\text{high}\right]`.
+
+* Radial symmetry function (:cpp:class:`nnp::SymFncCompRad`)
+
+  .. math::
+
+     G^{20}_i = \sum_{\substack{j \neq i}} C(r_{ij}, r_l, r_c)
+
+* Angular symmetry function, narror variant (:cpp:class:`nnp::SymFncCompAngn`)
+
+  .. math::
+
+     G^{21}_i = \sum_{\substack{j,k\neq i \\ j < k}} C(r_{ij}, r_l, r_c)
+                C(r_{ik}, r_l, r_c) C(r_{jk}, r_l, r_c)
+                C(\theta_{ijk}, \theta_l, \theta_r)
+
+* Angular symmetry function, wide variant (:cpp:class:`nnp::SymFncCompAngw`)
+
+  .. math::
+
+     G^{22}_i = \sum_{\substack{j,k\neq i \\ j < k}} C(r_{ij}, r_l, r_c)
+                C(r_{ik}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r)
+
+* Weighted radial symmetry function (:cpp:class:`nnp::SymFncCompRadWeighted`)
+
+  .. math::
+
+     G^{23}_i = \sum_{\substack{j \neq i}} Z_j C(r_{ij}, r_l, r_c)
+
+* Weighted angular symmetry function, narrow variant
+  (:cpp:class:`nnp::SymFncCompAngnWeighted`)
+
+  .. math::
+
+     G^{24}_i = \sum_{\substack{j,k\neq i \\ j < k}} Z_j Z_k
+                C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c)
+                C(r_{jk}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r),
+
+* Weighted angular symmetry function, wide variant
+  (:cpp:class:`nnp::SymFncCompAngwWeighted`)
+
+  .. math::
+
+     G^{25}_i = \sum_{\substack{j,k\neq i \\ j < k}} Z_j Z_k
+                C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c)
+                C(\theta_{ijk}, \theta_l, \theta_r),

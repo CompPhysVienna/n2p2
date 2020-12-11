@@ -114,7 +114,7 @@ Additional, though not strictly required tools, are also quite useful:
 * :ref:`nnp-select`
 * `nnp-symfunc`
 
-Rough guidelines for NNP training are provided [here](training.md).
+Rough guidelines for NNP training are provided :ref:`here <training>`.
 
 Examples
 ========
@@ -206,6 +206,7 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: About
 
    about/authors
+   about/how_to_cite
    about/license
    about/changelog
 

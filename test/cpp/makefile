@@ -44,15 +44,19 @@ LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lbo
 # DEFINE SOURCES
 ###############################################################################
 SRC=$(wildcard test_*.cpp)
+SRC_NOIF=$(filter-out test_lammps_nnp.cpp, $(SRC))
 EXE=$(SRC:%.cpp=%)
+EXE_NOIF=$(SRC_NOIF:%.cpp=%)
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all coverage clean clean-coverage
+.PHONY: all no-interface coverage clean clean-coverage
 
 all: $(EXE)
+
+no-interface: $(EXE_NOIF)
 
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
