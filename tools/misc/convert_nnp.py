@@ -1,14 +1,53 @@
 #!/usr/bin/env python3
 
+# n2p2 - A neural network potential package
+# Copyright (C) 2018 Andreas Singraber (University of Vienna)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+###############################################################################
+#
+# NNP converter between n2p2 versions.
+# 
+# This converter is helpful when symmetry function ordering and definition
+# strings (keyword symfunction_short in input.nn) change between versions (e.g.
+# during development). It requires the "old" NNP (input.nn, scaling.data,
+# weights.???.data) and a small, representative data set (input.data).
+# Furthermore, it requires the binary nnp-scaling for each n2p2 version. It
+# will first apply changes to the input.nn file (adapt convert_input_nn). Then
+# it computes the scaling data for both versions and tries to find matches (see
+# ScalingData.__eq__ for a matching criterion). Finally, the script will output
+# converted versions of scaling.data and weights.???.data.
+# 
+###############################################################################
+
 import sys
 import os
 import glob
 import shutil
 import numpy as np
 import re
-from typing import List
+from typing import List, Dict
 from collections import OrderedDict
 
+# Settings: edit path to data and two different n2p2 bin directories here:
+dirs = ["PSF_for_DMABN", "PSF_for_ethyl_benzene", "PSF_for_anisole",
+        "PAS_for_DMABN", "PAS_for_ethyl_benzene", "PAS_for_anisole"]
+old_bin = "~/local/src/n2p2-singraber_oldpsf/bin/"      # branch: polynomial_symmetry_functions commit: 0b17662fdd9870818ac8060f3342991daa36b7ca
+new_bin = "~/local/src/n2p2-singraber_alternative/bin/" # branch: polynomial_symmetry_functions commit: b514172eb4816e8791b5a488e671de7a3e1ba292
+
+# Store one scaling data line, allow comparison via equal operator.
 class ScalingData:
     def __init__(self, line):
         self.line = line
@@ -31,27 +70,6 @@ class ScalingData:
         else:
             return False
 
-# Split list of scaling data by elements.
-def element_split_scaling(data: List[ScalingData], order: List[int]):
-    start = []
-    end = []
-    for i, d in enumerate(data):
-        if i == 0:
-            start.append(0)
-            element = d.element
-        else:
-            if element != d.element:
-                end.append(i)
-                start.append(i)
-                element = d.element
-    end.append(len(data))
-    splitScaling = OrderedDict()
-    splitOrder = OrderedDict()
-    for i, (s, e) in enumerate(zip(start, end)):
-        splitScaling[i + 1] = data[s:e]
-        splitOrder[i + 1] = order[s:e]
-    return splitScaling, splitOrder
-
 # Split string into columns but keep (multiple) separators in.
 def split_columns(line, delimiter=' '):
     r = [""]
@@ -65,16 +83,20 @@ def split_columns(line, delimiter=' '):
         r[-1] += c
     return r
 
+# Read in one scaling data file and return dictionary with scaling data for each element.
 def read_scaling_data(file_name):
-    data = []
+    data = {}
     f = open(file_name, "r")
     for line in f:
         ls = line.split()
         if len(ls) > 0 and ls[0][0] != "#":
-            data.append(ScalingData(line))
+            sd = ScalingData(line)
+            if sd.element not in data:
+                data[sd.element] = []
+            data[sd.element].append(sd)
     return data
 
-def convert_scaling_data(old_file, new_file, data: List[List[ScalingData]]):
+def convert_scaling_data(old_file, new_file, data: Dict[int, List[ScalingData]]):
     fi = open(old_file, "r")
     fo = open(new_file, "w")
     for line in fi:
@@ -154,9 +176,17 @@ def convert_weights_file(old_file, new_file, order):
         weights[input_neuron].append(line)
         pos = fi.tell()
     # Print first-to-second layer weights in new order.
+    countw = 0
+    countn = 0
     for i in order:
         for line in weights[i]:
-            fo.write(line)
+            if countw % neurons == 0:
+                countn += 1
+            countw += 1
+            ls = split_columns(line)
+            ls[2] = "{0:{1}d}".format(countw, len(ls[2]))
+            ls[4] = "{0:{1}d}".format(countn, len(ls[4]))
+            fo.write("".join(ls))
     # Copy rest of weights file.
     fi.seek(pos)
     for line in iter(fi.readline, ''):
@@ -167,12 +197,6 @@ def convert_weights_file(old_file, new_file, order):
 
 
 def main():
-    old_bin = "~/local/src/n2p2-singraber_oldpsf/bin/"
-    new_bin = "~/local/src/n2p2-singraber_alternative/bin/"
-    dirs = ["PSF_for_DMABN", "PSF_for_ethyl_benzene", "PSF_for_anisole",
-            "PAS_for_DMABN", "PAS_for_ethyl_benzene", "PAS_for_anisole"]
-    dirs = dirs[0:1]
-
     # Do not create data again if requested.
     create_data = True
     if len(sys.argv) > 1 and sys.argv[1] == "-o":
@@ -217,21 +241,27 @@ def main():
 
         # Now process the scaling data to find matches.
         if len(scaling_old) != len(scaling_new):
-            raise RuntimeError("Inconsistent symmetry function scaling data.")
-        nsf = len(scaling_new)
-        print("Searching matches for " + str(nsf) + " symmetry functions...", end="")
-        index_in_new = [None] * nsf # Index of old SF in scaling_new.
-        index_in_old = [None] * nsf # Index of new SF in scaling_old.
-        for ind_n, n in enumerate(scaling_new):
-            for ind_o, o in enumerate(scaling_old):
-                if n == o:
-                    index_in_new[ind_o] = ind_n
-                    index_in_old[ind_n] = ind_o
-                    break
-        for o, n in enumerate(index_in_new):
-            if n is None:
-                raise RuntimeError("No match found for index in old settings: " + str(o) + "\nLine: " + scaling_old[o].line)
-        print("completed!")
+            raise RuntimeError("Different number of elements in symmetry function scaling data.")
+        elements = sorted(scaling_new.keys())
+        index_in_new = {}
+        index_in_old = {}
+        for e in elements:
+            if len(scaling_old[e]) != len(scaling_new[e]):
+                raise RuntimeError("Different number of symmetry functions in scaling data.")
+            nsf = len(scaling_new[e])
+            print("Searching matches for " + str(nsf) + " symmetry functions of element " + str(e) + "...", end="")
+            index_in_new[e] = [None] * nsf # Index of old SF in scaling_new.
+            index_in_old[e] = [None] * nsf # Index of new SF in scaling_old.
+            for ind_n, n in enumerate(scaling_new[e]):
+                for ind_o, o in enumerate(scaling_old[e]):
+                    if n == o:
+                        index_in_new[e][ind_o] = ind_n
+                        index_in_old[e][ind_n] = ind_o
+                        break
+            for o, n in enumerate(index_in_new[e]):
+                if n is None:
+                    raise RuntimeError("No match found for index in old settings: " + str(o) + "\nLine: " + scaling_old[o].line)
+            print("completed!")
 
         # Create dir for final converted version.
         conv_dir = "converted_" + d
@@ -243,12 +273,17 @@ def main():
         shutil.copy2(new_dir + "/input.nn", conv_dir + "/input.nn")
         # Read original scaling data (not scaling_old which is only for a subset).
         scaling_orig = read_scaling_data(d + "/scaling.data")
+        # Reorder scaling data according to new SF list.
+        scaling_conv = {}
+        for e in elements:
+            scaling_conv[e] = [scaling_orig[e][i] for i in index_in_old[e]]
         os.chdir(conv_dir)
-        data, order = element_split_scaling([scaling_orig[i] for i in index_in_old], index_in_old)
-        convert_scaling_data("../" + d + "/scaling.data", "scaling.data", data)
+        convert_scaling_data("../" + d + "/scaling.data", "scaling.data", scaling_conv)
         for e, wf in weight_dict.items():
             shutil.copy2("../" + d + "/" + wf, wf + ".old")
-            convert_weights_file(wf + ".old", wf, order[e])
+            convert_weights_file(wf + ".old", wf, index_in_old[e])
+            os.remove(wf + ".old")
+        os.system(new_bin + "nnp-dataset 0 > /dev/null")
         os.chdir("..")
 
         print("-------------------------------------------------------------------------------")
