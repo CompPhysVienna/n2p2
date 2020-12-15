@@ -32,7 +32,7 @@ class ScalingData:
             return False
 
 # Split list of scaling data by elements.
-def element_split_scaling(data: List[ScalingData]):
+def element_split_scaling(data: List[ScalingData], order: List[int]):
     start = []
     end = []
     for i, d in enumerate(data):
@@ -45,10 +45,12 @@ def element_split_scaling(data: List[ScalingData]):
                 start.append(i)
                 element = d.element
     end.append(len(data))
-    split = OrderedDict()
+    splitScaling = OrderedDict()
+    splitOrder = OrderedDict()
     for i, (s, e) in enumerate(zip(start, end)):
-        split[i + 1] = data[s:e]
-    return split
+        splitScaling[i + 1] = data[s:e]
+        splitOrder[i + 1] = order[s:e]
+    return splitScaling, splitOrder
 
 # Split string into columns but keep (multiple) separators in.
 def split_columns(line, delimiter=' '):
@@ -72,7 +74,7 @@ def read_scaling_data(file_name):
             data.append(ScalingData(line))
     return data
 
-def write_scaling_data(old_file, new_file, data: List[List[ScalingData]]):
+def convert_scaling_data(old_file, new_file, data: List[List[ScalingData]]):
     fi = open(old_file, "r")
     fo = open(new_file, "w")
     for line in fi:
@@ -121,6 +123,48 @@ def convert_input_nn(old_file, new_file):
         fo.write(line)
     fi.close()
     fo.close()
+
+def convert_weights_file(old_file, new_file, order):
+    fi = open(old_file, "r")
+    fo = open(new_file, "w")
+    for line in iter(fi.readline, ''): # Need this construction because of tell()
+        ls = line.split()
+        if len(ls) > 0 and ls[0][0] == "#":
+            fo.write(line)
+            pos = fi.tell()
+        else:
+            break # Break out of loop if header is copied.
+    # Continue reading old file to check how many neurons are in second layer.
+    fi.seek(pos)
+    neurons = 0
+    for line in iter(fi.readline, ''):
+        ls = line.split()
+        if int(ls[4]) > 1:
+            break
+        neurons += 1
+    fi.seek(pos)
+    # Now store first-to-second layer weights to rearrange afterwards.
+    weights = {i : [] for i in range(len(order))}
+    for line in iter(fi.readline, ''):
+        ls = line.split()
+        # Stop when biases are reached.
+        if ls[1] == "b":
+            break
+        input_neuron = int(ls[4]) - 1
+        weights[input_neuron].append(line)
+        pos = fi.tell()
+    # Print first-to-second layer weights in new order.
+    for i in order:
+        for line in weights[i]:
+            fo.write(line)
+    # Copy rest of weights file.
+    fi.seek(pos)
+    for line in iter(fi.readline, ''):
+        fo.write(line)
+
+    fi.close()
+    fo.close()
+
 
 def main():
     old_bin = "~/local/src/n2p2-singraber_oldpsf/bin/"
@@ -197,10 +241,14 @@ def main():
         os.mkdir(conv_dir)
         shutil.copy2(old_dir + "/input.data", conv_dir)
         shutil.copy2(new_dir + "/input.nn", conv_dir + "/input.nn")
-        data = element_split_scaling([scaling_old[i] for i in index_in_old])
-        write_scaling_data(d + "/scaling.data", conv_dir + "/scaling.data", data)
+        # Read original scaling data (not scaling_old which is only for a subset).
+        scaling_orig = read_scaling_data(d + "/scaling.data")
         os.chdir(conv_dir)
-
+        data, order = element_split_scaling([scaling_orig[i] for i in index_in_old], index_in_old)
+        convert_scaling_data("../" + d + "/scaling.data", "scaling.data", data)
+        for e, wf in weight_dict.items():
+            shutil.copy2("../" + d + "/" + wf, wf + ".old")
+            convert_weights_file(wf + ".old", wf, order[e])
         os.chdir("..")
 
         print("-------------------------------------------------------------------------------")
