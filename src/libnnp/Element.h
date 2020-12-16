@@ -42,8 +42,11 @@ public:
     /// List of symmetry functions corresponding to one cache identifier.
     struct SFCacheList
     {
+        /// Neighbor element index.
         std::size_t              element;
+        /// Cache identifier string.
         std::string              identifier;
+        /// Symmetry function indices for this cache.
         std::vector<std::size_t> indices;
     };
 #endif

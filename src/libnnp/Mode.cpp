@@ -682,15 +682,13 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
 }
 
 #ifndef NOSFCACHE
-void Mode::setupSymmetryFunctionCache()
+void Mode::setupSymmetryFunctionCache(bool verbose)
 {
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTION CACHE ******"
            "**************************************\n";
     log << "\n";
 
-    log << "-----------------------------------------"
-           "--------------------------------------\n";
     for (size_t i = 0; i < numElements; ++i)
     {
         using SFCacheList = Element::SFCacheList;
@@ -721,11 +719,19 @@ void Mode::setupSymmetryFunctionCache()
                 }
             }
         }
-        log << strpr("Multiple cache identifiers for element %2s:\n\n",
-                     e.getSymbol().c_str());
+        if (verbose)
+        {
+            log << strpr("Multiple cache identifiers for element %2s:\n\n",
+                         e.getSymbol().c_str());
+        }
+        double cacheUsageMean = 0.0;
+        size_t cacheCount = 0;
         for (size_t j = 0; j < numElements; ++j)
         {
-            log << strpr("Neighbor %2s:\n", elementMap[j].c_str());
+            if (verbose)
+            {
+                log << strpr("Neighbor %2s:\n", elementMap[j].c_str());
+            }
             vector<SFCacheList>& c = cacheLists.at(j);
             c.erase(remove_if(c.begin(),
                               c.end(),
@@ -733,46 +739,59 @@ void Mode::setupSymmetryFunctionCache()
                               {
                                   return l.indices.size() <= 1;
                               }), c.end());
+            cacheCount += c.size();
             for (size_t k = 0; k < c.size(); ++k)
             {
-                log << strpr("Cache %zu, Identifier \"%s\", Symmetry functions",
-                             k, c.at(k).identifier.c_str());
-                for (auto si : c.at(k).indices)
+                cacheUsageMean += c.at(k).indices.size();
+                if (verbose)
                 {
-                    log << strpr(" %zu", si);
-                }
-                log << "\n";
-            }
-        }
-        e.setCacheIndices(cacheLists);
-        for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
-        {
-            SymFnc const& sf = e.getSymmetryFunction(j);
-            auto indices = sf.getCacheIndices();
-            size_t count = 0;
-            for (size_t k = 0; k < numElements; ++k)
-            {
-                count += indices.at(k).size();
-            }
-            if (count > 0)
-            {
-                log << strpr("SF %4zu:\n", sf.getIndex());
-            }
-            for (size_t k = 0; k < numElements; ++k)
-            {
-                if (indices.at(k).size() > 0)
-                {
-                    log << strpr("- Neighbor %2s:", elementMap[k].c_str());
-                    for (size_t l = 0; l < indices.at(k).size(); ++l)
+                    log << strpr("Cache %zu, Identifier \"%s\", "
+                                 "Symmetry functions",
+                                 k, c.at(k).identifier.c_str());
+                    for (auto si : c.at(k).indices)
                     {
-                        log << strpr(" %zu", indices.at(k).at(l));
+                        log << strpr(" %zu", si);
                     }
                     log << "\n";
                 }
             }
         }
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        e.setCacheIndices(cacheLists);
+        //for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
+        //{
+        //    SymFnc const& sf = e.getSymmetryFunction(j);
+        //    auto indices = sf.getCacheIndices();
+        //    size_t count = 0;
+        //    for (size_t k = 0; k < numElements; ++k)
+        //    {
+        //        count += indices.at(k).size();
+        //    }
+        //    if (count > 0)
+        //    {
+        //        log << strpr("SF %4zu:\n", sf.getIndex());
+        //    }
+        //    for (size_t k = 0; k < numElements; ++k)
+        //    {
+        //        if (indices.at(k).size() > 0)
+        //        {
+        //            log << strpr("- Neighbor %2s:", elementMap[k].c_str());
+        //            for (size_t l = 0; l < indices.at(k).size(); ++l)
+        //            {
+        //                log << strpr(" %zu", indices.at(k).at(l));
+        //            }
+        //            log << "\n";
+        //        }
+        //    }
+        //}
+        cacheUsageMean /= cacheCount;
+        log << strpr("Element %2s: in total %zu caches, "
+                     "used %3.2f times on average.\n",
+                     e.getSymbol().c_str(), cacheCount, cacheUsageMean);
+        if (verbose)
+        {
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+        }
     }
 
     log << "*****************************************"

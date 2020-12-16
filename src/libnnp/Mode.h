@@ -159,10 +159,12 @@ public:
 #ifndef NOSFCACHE
     /** Set up symmetry function cache.
      *
+     * @param[in] verbose If true, print more cache information.
+     *
      * Searches symmetry functions for identical cutoff functions or compact
      * function (i.e. all cachable stuff) and sets up a caching index.
      */
-    void                     setupSymmetryFunctionCache();
+    void                     setupSymmetryFunctionCache(bool verbose = false);
 #endif
     /** Extract required memory dimensions for symmetry function derivatives.
      *

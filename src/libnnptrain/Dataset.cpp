@@ -161,7 +161,6 @@ void Dataset::setupRandomNumberGenerator()
     return;
 }
 
-// TODO: Add SF cache to buffer.
 int Dataset::calculateBufferSize(Structure const& structure) const
 {
     int              bs  = 0;         // Send buffer size.
@@ -203,6 +202,11 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numSymmetryFunctionDerivatives
         bs += ss;
         bs += it->numSymmetryFunctionDerivatives.size() * ss;
+#ifndef NOSFCACHE
+        // Atom.cacheSizePerElement
+        bs += ss;
+        bs += it->cacheSizePerElement.size() * ss;
+#endif
         // Atom.G
         bs += ss;
         bs += it->G.size() * ds;
@@ -224,7 +228,11 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         {
             // Neighbor
             bs += 3 * ss + ds + 3 * ds;
-
+#ifndef NOSFCACHE
+            // Neighbor.cache
+            bs += ss;
+            bs += it2->cache.size() * ds;
+#endif
             // Neighbor.dGdr
             bs += ss;
             bs += it2->dGdr.size() * 3 * ds;
@@ -336,6 +344,16 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
+#ifndef NOSFCACHE
+            // Atom.cacheSizePerElement
+            ts2 = it->cacheSizePerElement.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->cacheSizePerElement.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
+            }
+#endif
+
             // Atom.G
             ts2 = it->G.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -389,8 +407,19 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                     MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE, buf, bs, &p, comm);
                     MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
 
+                    size_t ts3 = 0;
+#ifndef NOSFCACHE
+                    // Neighbor.cache
+                    ts3 = it2->cache.size();
+                    MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
+                    if (ts3 > 0)
+                    {
+                        MPI_Pack(&(it2->cache.front()), ts3, MPI_DOUBLE, buf, bs, &p, comm);
+                    }
+#endif
+
                     // Neighbor.dGdr
-                    size_t ts3 = it2->dGdr.size();
+                    ts3 = it2->dGdr.size();
                     MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
                     if (ts3 > 0)
                     {
@@ -534,6 +563,18 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
             }
 
+#ifndef NOSFCACHE
+            // Atom.cacheSizePerElement
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->cacheSizePerElement.clear();
+                it->cacheSizePerElement.resize(ts2, 0);
+                MPI_Unpack(buf, bs, &p, &(it->cacheSizePerElement.front()), ts2, MPI_SIZE_T, comm);
+            }
+#endif
+
             // Atom.G
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -597,8 +638,21 @@ int Dataset::recvStructure(Structure* const structure, int src)
                     MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE, comm);
                     MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
 
-                    // Neighbor.dGdr
                     size_t ts3 = 0;
+#ifndef NOSFCACHE
+                    // Neighbor.cache
+                    ts3 = 0;
+                    MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
+                    if (ts3 > 0)
+                    {
+                        it2->cache.clear();
+                        it2->cache.resize(ts3, 0.0);
+                        MPI_Unpack(buf, bs, &p, &(it2->cache.front()), ts3, MPI_DOUBLE, comm);
+                    }
+#endif
+
+                    // Neighbor.dGdr
+                    ts3 = 0;
                     MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
                     if (ts3 > 0)
                     {
