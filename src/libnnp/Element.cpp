@@ -467,7 +467,7 @@ void Element::calculateSymmetryFunctionGroups(Atom&      atom,
 size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
 {
     size_t countExtrapolationWarnings = 0;
-    double epsilon = 10.0 * numeric_limits<double>::epsilon();
+    double epsilon = 1000.0 * numeric_limits<double>::epsilon();
 
     if (atom.element != index)
     {
