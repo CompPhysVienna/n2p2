@@ -51,11 +51,11 @@ void Mode::initialize()
     log << "*****************************************"
            "**************************************\n";
     log << "\n";
-    log << "   NNP LIBRARY v" NNP_VERSION "\n";
+    log << "   NNP LIBRARY " NNP_GIT_VERSION "\n";
     log << "   ------------------\n";
     log << "\n";
     log << "Git branch  : " NNP_GIT_BRANCH "\n";
-    log << "Git revision: " NNP_GIT_REV_SHORT " (" NNP_GIT_REV ")\n";
+    log << "Git revision: " NNP_GIT_REV "\n";
     log << "\n";
 #ifdef _OPENMP
     log << strpr("Number of OpenMP threads: %d", omp_get_max_threads());

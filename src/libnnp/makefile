@@ -71,8 +71,8 @@ headers: version
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
 version:
-	@$(eval GIT_REV_SHORT = $(shell git rev-parse --short HEAD))
-	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"$(GIT_REV_SHORT)\"/" version.h
+	@$(eval GIT_VERSION = $(shell git describe --tags --always))
+	@sed -i.bak -E "s/(NNP_GIT_VERSION) .*/\1 \"$(GIT_VERSION)\"/" version.h
 	@$(eval GIT_REV = $(shell git rev-parse HEAD))
 	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"$(GIT_REV)\"/" version.h
 	@$(eval GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD))
@@ -97,7 +97,7 @@ clean: clean-version clean-headers
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
 
 clean-version:
-	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_VERSION) .*/\1 \"\"/" version.h
 	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"\"/" version.h
 	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"\"/" version.h
 	@rm version.h.bak

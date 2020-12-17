@@ -96,11 +96,22 @@ Here two variants of the original symmetry functions were presented:
 Low-cost polynomial symmetry functions with compact support
 -----------------------------------------------------------
 
+In 2020 a new set of computationally efficient symmetry functions was proposed
+here:
+
 `Bircher, M. P.; Singraber, A.; Dellago, C., arXiv:2010.14414 [cond-mat,
 physics:physics] (2020). <http://arxiv.org/abs/2010.14414>`__
 
-Here :math:`C(x, x_\text{low}, x_\text{high})` is a function with compact
-support :math:`\left[x_\text{low}, x_\text{high}\right]`.
+In contrast to the above definitions these **polynomial** symmetry functions do
+not require the computation of expensive exponential terms because they are
+based solely on polynomial window functions in the radial and angular domain. As
+shown in the publication a significant increase in performance ensues without
+sacrificing descriptive power. Furthermore, they are well suited to describe
+complex atomic environments because their angular sensitivity can be easily
+controlled via the free hyperparameters. The following variants of polynomial
+symmetry functions are implemented (here :math:`C(x, x_\text{low},
+x_\text{high})` is a function with compact support :math:`\left[x_\text{low},
+x_\text{high}\right]`):
 
 * Radial symmetry function (:cpp:class:`nnp::SymFncCompRad`)
 
@@ -108,7 +119,7 @@ support :math:`\left[x_\text{low}, x_\text{high}\right]`.
 
      G^{20}_i = \sum_{\substack{j \neq i}} C(r_{ij}, r_l, r_c)
 
-* Angular symmetry function, narror variant (:cpp:class:`nnp::SymFncCompAngn`)
+* Angular symmetry function, narrow variant (:cpp:class:`nnp::SymFncCompAngn`)
 
   .. math::
 
