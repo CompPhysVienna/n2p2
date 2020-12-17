@@ -51,6 +51,9 @@ public:
     };
 #endif
 
+    /** Default constructor
+     */
+    Element() {}
     /** Constructor using index.
      */
     Element(std::size_t const index, ElementMap const& elementMap);
@@ -58,7 +61,7 @@ public:
      *
      * Necessary because of #symmetryFunctions vector of pointers.
      */
-    ~Element();
+    virtual ~Element();
     /** Set #atomicEnergyOffset.
      */
     void                     setAtomicEnergyOffset(double atomicEnergyOffset);
@@ -128,7 +131,7 @@ public:
      * @param[in] statisticsLine Vector of strings containing statistics for
      *                           all symmetry functions.
      * @param[in] minS Minimum for scaling range.
-     * @param[in] maxS Minimum for scaling range.
+     * @param[in] maxS Maximum for scaling range.
      */
     void                     setScaling(
                                 SymFnc::ScalingType             scalingType,
@@ -224,7 +227,7 @@ public:
     /// Symmetry function statistics.
     SymFncStatistics           statistics;
 
-private:
+protected:
     /// Copy of element map.
     ElementMap                            elementMap;
     /// Global index of this element.

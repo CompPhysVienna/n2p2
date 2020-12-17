@@ -110,13 +110,13 @@ public:
      * Uses keyword `elements`. This function should follow immediately after
      * settings are loaded via loadSettingsFile().
      */
-    void                     setupElementMap();
+    virtual void             setupElementMap();
     /** Set up all Element instances.
      *
      * Uses keywords `number_of_elements` and `atom_energy`. This function
      * should follow immediately after setupElementMap().
      */
-    void                     setupElements();
+    virtual void             setupElements();
     /** Set up cutoff function for all symmetry functions.
      *
      * Uses keyword `cutoff_type`. Cutoff parameters are read from settings
@@ -130,7 +130,7 @@ public:
      * Uses keyword `symfunction_short`. Reads all symmetry functions from
      * settings and automatically assigns them to the correct element.
      */
-    void                     setupSymmetryFunctions();
+    virtual void             setupSymmetryFunctions();
     /** Set up "empy" symmetry function scaling.
      *
      * Does not use any keywords. Sets no scaling for all symmetry functions.
@@ -148,14 +148,14 @@ public:
      * behavior for all symmetry functions. Call after
      * setupSymmetryFunctions().
      */
-    void                     setupSymmetryFunctionScaling(
+    virtual void             setupSymmetryFunctionScaling(
                                  std::string const& fileName = "scaling.data");
     /** Set up symmetry function groups.
      *
      * Does not use any keywords. Call after setupSymmetryFunctions() and
      * ensure that correct scaling behavior has already been set.
      */
-    void                     setupSymmetryFunctionGroups();
+    virtual void             setupSymmetryFunctionGroups();
 #ifndef NOSFCACHE
     /** Set up symmetry function cache.
      *
@@ -200,7 +200,7 @@ public:
      * setupSymmetryFunctions(), only then the number of input layer neurons is
      * known.
      */
-    void                     setupNeuralNetwork();
+    virtual void             setupNeuralNetwork();
     /** Set up neural network weights from files.
      *
      * @param[in] fileNameFormat Format for weights file name. The string must
@@ -209,7 +209,7 @@ public:
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
-    void                     setupNeuralNetworkWeights(
+    virtual void             setupNeuralNetworkWeights(
                                  std::string const& fileNameFormat
                                                        = "weights.%03zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.

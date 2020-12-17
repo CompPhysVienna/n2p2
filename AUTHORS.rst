@@ -7,3 +7,5 @@ Vienna. Code development started in 2015 and the first release to the public
 was in 2018.
 
 Contributions are much appreciated and will be recorded here:
+
+* CabanaMD interface (`libnnpif/CabanaMD`): Saaketh Desai and Sam Reeve

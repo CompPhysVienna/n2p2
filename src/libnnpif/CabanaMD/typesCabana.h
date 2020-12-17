@@ -1,5 +1,6 @@
 // n2p2 - A neural network potential package
 // Copyright (C) 2018 Andreas Singraber (University of Vienna)
+// Copyright (C) 2020 Saaketh Desai and Sam Reeve
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,12 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef TYPESCABANAMD_H
+#define TYPESCABANAMD_H
 
-#define NNP_VERSION "2.0.3"
-#define NNP_GIT_REV ""
-#define NNP_GIT_REV_SHORT ""
-#define NNP_GIT_BRANCH ""
+constexpr double CFLENGTH = 1.889726;
+constexpr double CFENERGY = 0.036749;
+constexpr double CFFORCE = CFLENGTH / CFENERGY;
 
-#endif
+// Extracted from SymmetryFunction class
+enum ScalingType {
+    ST_NONE,
+    ST_SCALE,
+    ST_CENTER,
+    ST_SCALECENTER,
+    ST_SCALESIGMA
+};
+
+#endif // TYPES_H

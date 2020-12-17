@@ -29,6 +29,17 @@ INSTALL_LIB=$(HOME)/local/lib
 
 
 ###############################################################################
+# INTERFACE LIBRARY OPTIONS
+###############################################################################
+
+# Select which interfaces should be compiled into libnnpif. Provide a
+# space-separated list of the following available options:
+#    * LAMMPS
+#    * CabanaMD
+INTERFACES=LAMMPS CabanaMD
+
+
+###############################################################################
 # APPLICATION TARGET NAMES
 ###############################################################################
 # Call makefile in "application" directory to list targets.
@@ -84,7 +95,7 @@ clean-all: clean \
 ################################
 doc: doc-doxygen doc-sphinx
 	cp -r ../doc/doxygen/html ../doc/sphinx/html/doxygen
-	
+
 clean-doc: clean-doc-sphinx clean-doc-doxygen
 
 doc-sphinx:
@@ -108,15 +119,25 @@ libnnp:
 clean-libnnp:
 	cd libnnp && $(MAKE) clean
 
-#########################
-# libnnptrain, libnnpif #
-#########################
-libnnptrain libnnpif: libnnp
+###############
+# libnnptrain #
+###############
+libnnptrain: libnnp
 	cd $@ && $(MAKE) COMP=$(COMP) MODE=$(MODE)
 
-clean-libnnptrain clean-libnnpif: LIBDIR=$(subst clean-,,$@)
-clean-libnnptrain clean-libnnpif:
+clean-libnnptrain: LIBDIR=$(subst clean-,,$@)
+clean-libnnptrain:
 	cd $(LIBDIR) && $(MAKE) clean
+
+############
+# libnnpif #
+############
+libnnpif: libnnp
+	cd $@ && $(MAKE) COMP=$(COMP) MODE=$(MODE) INTERFACES="$(INTERFACES)"
+
+clean-libnnpif: LIBDIR=$(subst clean-,,$@)
+clean-libnnpif:
+	cd $(LIBDIR) && $(MAKE) INTERFACES="$(INTERFACES)" clean
 
 ####################
 # nnp applications #

@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
     Log log;
     ifstream inputFile;
     ofstream outputFile;
+    ofstream rejectFile;
     ofstream logFile;
 
     logFile.open("nnp-select.log");
@@ -99,6 +100,7 @@ int main(int argc, char* argv[])
 
     inputFile.open("input.data");
     outputFile.open("output.data");
+    rejectFile.open("reject.data");
     string line;
     while (getline(inputFile, line))
     {
@@ -125,9 +127,14 @@ int main(int argc, char* argv[])
         {
             outputFile << line << '\n';
         }
+        else
+        {
+            rejectFile << line << '\n';
+        }
     }
     inputFile.close();
     outputFile.close();
+    rejectFile.close();
 
     log << "*****************************************"
            "**************************************\n";

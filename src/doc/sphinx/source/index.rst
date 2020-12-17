@@ -37,9 +37,15 @@ Documentation
    quickly as possible.
 
 This package uses automatic documentation generation via `Doxygen
-<http://www.doxygen.nl>`__ and `Sphinx <http://www.sphinx-doc.org>`__. An online
-version of the documentation which is automatically updated with the main
-repository can be found `here <https://compphysvienna.github.io/n2p2>`__.
+<http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__ and `Breathe
+<https://breathe.readthedocs.io/en/latest/#>`__. An online version of the
+documentation which is automatically updated with the main repository can be
+found `here <https://compphysvienna.github.io/n2p2>`__.
+
+.. note::
+
+   The online documentation describes the ``master`` branch of the *n2p2*
+   repository and not the release versions.
 
 .. This package uses automatic documentation generation via `Doxygen
 .. <http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
@@ -86,12 +92,12 @@ Molecular dynamics simulation
 -----------------------------
 
 Similarly, if you have a working neural network potential setup and would like
-to run an MD simulation with an external MD software (so far only LAMMPS is
-supported), these components are required:
+to run an MD simulation with an external MD software (LAMMPS or CabanaMD), these
+components are required:
 
 * :ref:`libnnp <libnnp>`
 * `libnnpif`
-* :ref:`lammps-nnp <if_lammps>`
+* :ref:`lammps-nnp <if_lammps>` (for LAMMPS)
 
 Training a new neural network potential
 ---------------------------------------
@@ -171,10 +177,16 @@ list of keywords is provided :ref:`here <keywords>`.
    topics/descriptors
    topics/keywords
    topics/cfg_file
-   topics/if_lammps
-   topics/pair_nnp
    topics/training
    topics/units
+
+.. toctree::
+   :hidden:
+   :caption: Interfaces
+
+   interfaces/if_lammps
+   interfaces/pair_nnp
+   interfaces/if_cabanamd
 
 .. toctree::
    :hidden:

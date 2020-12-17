@@ -62,12 +62,12 @@ OBJ=$(SRC:.cpp=.o)
 .PHONY: all headers version clean rebuild
 
 ifeq ($(MODE), shared)
-all: version headers $(LIB).so
+all: headers $(LIB).so
 else
-all: version headers $(LIB).a
+all: headers $(LIB).a
 endif
 
-headers:
+headers: version
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
 version:

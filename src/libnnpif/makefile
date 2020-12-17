@@ -24,6 +24,18 @@ include $(PROJECT_DIR)/src/makefile.$(COMP)
 
 
 ###############################################################################
+# INTERFACE LIBRARY OPTIONS
+###############################################################################
+
+# Default interfaces compiled into libnnpif, may be overridden by master
+# makefile or command line. Provide a space-separated list of the following
+# available options:
+#    * LAMMPS
+#    * CabanaMD
+INTERFACES=LAMMPS CabanaMD
+
+
+###############################################################################
 # LIBRARY NAME
 ###############################################################################
 NAME=nnpif
@@ -44,7 +56,7 @@ endif
 OPTIONS+=$(PROJECT_OPTIONS)
 DEBUG=$(PROJECT_DEBUG)
 ifeq ($(MODE), test)
-	DEBUG+= $(PROJECT_TEST)
+DEBUG+= $(PROJECT_TEST)
 endif
 AR=$(PROJECT_AR)
 ARFLAGS=$(PROJECT_ARFLAGS)
@@ -56,8 +68,20 @@ INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
 ###############################################################################
 # DEFINE SOURCES AND HEADERS
 ###############################################################################
-SRC=$(wildcard *.cpp)
-HEADERS=$(wildcard *.h)
+
+$(info The following interfaces were selected: $(INTERFACES))
+IF=LAMMPS
+ifneq ($(filter $(IF),$(INTERFACES)),)
+SRC:=$(SRC) $(wildcard $(IF)/*.cpp)
+HEADERS:=$(HEADERS) $(wildcard $(IF)/*.h)
+endif
+
+IF=CabanaMD
+ifneq ($(filter $(IF),$(INTERFACES)),)
+SRC:=$(SRC) $(wildcard $(IF)/*.cpp)
+HEADERS:=$(HEADERS) $(wildcard $(IF)/*.h)
+endif
+
 OBJ=$(SRC:.cpp=.o)
 
 
@@ -89,10 +113,10 @@ $(LIB).a: $(OBJ)
 
 clean: clean-headers
 	$(RM) $(OBJ)
-	$(RM) *.gcno *.gcda $(LIB).so $(LIB).a
+	$(RM) $(OBJ:.o=.gcno) $(OBJ:.o=.gcda) $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
 
 clean-headers:
-	cd $(PROJECT_INCLUDE) && $(RM) $(HEADERS)
+	cd $(PROJECT_INCLUDE) && $(RM) $(notdir $(HEADERS))
 
 rebuild: clean all
