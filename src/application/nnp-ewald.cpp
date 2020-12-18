@@ -29,10 +29,8 @@ using namespace nnp;
 
 int main(int argc, char* argv[])
 {
-    structureInfo = (bool)atoi(argv[1]);
-
     ofstream logFile;
-    logFile.open("nnp-predict.log");
+    logFile.open("nnp-ewald.log");
     Prediction prediction;
     prediction.log.registerStreamPointer(&logFile);
     prediction.setup();
@@ -45,26 +43,11 @@ int main(int argc, char* argv[])
     Structure& s = prediction.structure;
     prediction.log << strpr("Structure contains %d atoms (%d elements).\n",
                             s.numAtoms, s.numElements);
-    prediction.log << "Calculating NNP prediction...\n";
-    prediction.predict();
-    prediction.log << "\n";
-    prediction.log << "-----------------------------------------"
-                      "--------------------------------------\n";
+    prediction.calculateEwald(s);
+
     prediction.log << strpr("NNP energy: %16.8E\n",
                             prediction.structure.energy);
     prediction.log << "\n";
-    prediction.log << "NNP forces:\n";
-    for (vector<Atom>::const_iterator it = s.atoms.begin();
-         it != s.atoms.end(); ++it)
-    {
-        prediction.log << strpr("%10zu %2s %16.8E %16.8E %16.8E\n",
-                                it->index + 1,
-                                prediction.elementMap[it->element].c_str(),
-                                it->element,
-                                it->f[0],
-                                it->f[1],
-                                it->f[2]);
-    }
     prediction.log << "-----------------------------------------"
                       "--------------------------------------\n";
     prediction.log << "Finished.\n";

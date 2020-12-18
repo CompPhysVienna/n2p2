@@ -1277,6 +1277,19 @@ void Mode::calculateForces(Structure& structure) const
     return;
 }
 
+void Mode::calculateEwald(Structure& structure) const
+{
+    for (auto & a : structure.atoms)
+    {
+        for (size_t in = 0; in < a.neighbors.size(); ++in)
+        {
+            double rij = a.neighbors.at(in).d;
+        }
+    }
+
+    return;
+}
+
 void Mode::addEnergyOffset(Structure& structure, bool ref)
 {
     for (size_t i = 0; i < numElements; ++i)

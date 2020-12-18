@@ -271,6 +271,12 @@ public:
      * computation to atomic forces. Results are stored in Atom::f.
      */
     void                     calculateForces(Structure& structure) const;
+    /** Calculate ewald.
+     *
+     * @param[in] structure Input structure.
+     *
+     */
+    void                     calculateEwald(Structure& structure) const;
     /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.
