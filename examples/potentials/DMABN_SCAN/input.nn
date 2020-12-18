@@ -23,7 +23,6 @@ global_nodes_short              25 25          # Number of nodes in each hidden 
 global_activation_short         p p l          # Activation function for each hidden layer and output layer.
 #normalize_nodes                                # Normalize input of nodes.
 
-use_short_forces
 random_seed 987654321
 
 ###############################################################################

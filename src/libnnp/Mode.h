@@ -172,7 +172,7 @@ public:
      * Searches symmetry functions for identical cutoff functions or compact
      * function (i.e. all cachable stuff) and sets up a caching index.
      */
-    void                     setupSymmetryFunctionCache(bool verbose = false);
+    virtual void             setupSymmetryFunctionCache(bool verbose = false);
 #endif
     /** Extract required memory dimensions for symmetry function derivatives.
      *

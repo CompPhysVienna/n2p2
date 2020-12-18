@@ -19,6 +19,7 @@
 
 #include "CutoffFunction.h"
 #include "ElementMap.h"
+#include "NeuralNetwork.h"
 #include "SymFnc.h"
 #include "SymFncStatistics.h"
 #include <cstddef> // std::size_t
@@ -31,7 +32,6 @@ namespace nnp
 {
 
 struct Atom;
-class NeuralNetwork;
 class SymGrp;
 
 /// Contains element-specific data.

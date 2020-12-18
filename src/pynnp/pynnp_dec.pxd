@@ -278,7 +278,8 @@ cdef extern from "Mode.h" namespace "nnp":
                                      bool stopOnExtrapolationWarnings) except +
         void           setupNeuralNetwork()
         void           setupNeuralNetworkWeights(
-                                                string fileNameFormat) except +
+                                          string fileNameFormatshort,
+                                          string fileNameFormatCharge) except +
         void           calculateSymmetryFunctions(
                                                 Structure structure,
                                                 bool      derivatives) except +
@@ -340,7 +341,8 @@ cdef extern from "Prediction.h" namespace "nnp":
     cdef cppclass Prediction(Mode):
         string    fileNameSettings
         string    fileNameScaling
-        string    formatWeightsFiles
+        string    formatWeightsFilesShort
+        string    formatWeightsFilesCharge
         Structure structure
         Prediction() except +
         void readStructureFromFile(string fileName) except +
