@@ -79,8 +79,8 @@ script:
   - cd src
   # C++ build and tests
   - make MODE=test -j
-  - make MODE=test lammps-nnp
   - make doc
+  - make MODE=test lammps-nnp
   # Prevent GitHub Jekyll to interfere with Sphinx theme.
   - touch ../doc/sphinx/html/.nojekyll
   - cd ../test/
