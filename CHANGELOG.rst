@@ -3,6 +3,17 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[2.1.0] - 2020-12-17
+--------------------
+
+Added
+^^^^^
+
+* Polynomial symmetry functions (Martin P. Bircher and Andreas Singraber).
+* Better symmetry function cache mechanism.
+* Documentation updates.
+
+
 [2.0.0] - 2020-10-05
 --------------------
 

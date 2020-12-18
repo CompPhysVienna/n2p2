@@ -16,6 +16,7 @@
 
 #include "Atom.h"
 #include "utility.h"
+#include <limits>    // std::numeric_limits
 #include <stdexcept> // std::range_error
 
 using namespace std;
@@ -89,8 +90,6 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
              it != neighbors.end(); ++it)
         {
             it->d *= convLength;
-            it->dfc /= convLength;
-            it->rc *= convLength;
             it->dr *= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
@@ -129,8 +128,6 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
              it != neighbors.end(); ++it)
         {
             it->d /= convLength;
-            it->dfc *= convLength;
-            it->rc /= convLength;
             it->dr /= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
@@ -163,6 +160,9 @@ void Atom::allocate(bool all)
     for (vector<Neighbor>::iterator it = neighbors.begin();
          it != neighbors.end(); ++it)
     {
+#ifndef NOSFCACHE
+        it->cache.clear();
+#endif
         it->dGdr.clear();
     }
 
@@ -186,8 +186,15 @@ void Atom::allocate(bool all)
         dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
         dGdr.resize(numSymmetryFunctions);
-        for (vector<Neighbor>::iterator it = neighbors.begin();
-             it != neighbors.end(); ++it)
+    }
+    for (vector<Neighbor>::iterator it = neighbors.begin();
+         it != neighbors.end(); ++it)
+    {
+#ifndef NOSFCACHE
+        it->cache.resize(cacheSizePerElement.at(it->element),
+                         -numeric_limits<double>::max());
+#endif
+        if (all)
         {
 #ifdef IMPROVED_SFD_MEMORY
             it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
@@ -207,6 +214,14 @@ void Atom::free(bool all)
         G.clear();
         vector<double>(G).swap(G);
         hasSymmetryFunctions = false;
+#ifndef NOSFCACHE
+        for (vector<Neighbor>::iterator it = neighbors.begin();
+             it != neighbors.end(); ++it)
+        {
+            it->cache.clear();
+            vector<double>(it->cache).swap(it->cache);
+        }
+#endif
     }
 
     dEdG.clear();
@@ -335,6 +350,16 @@ vector<string> Atom::info() const
     {
         v.push_back(strpr("%29d  : %d\n", i, numSymmetryFunctionDerivatives.at(i)));
     }
+#ifndef NOSFCACHE
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("cacheSizePerElement        [*] : %d\n", cacheSizePerElement.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < cacheSizePerElement.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %d\n", i, cacheSizePerElement.at(i)));
+    }
+#endif
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("G                          [*] : %d\n", G.size()));
@@ -388,12 +413,7 @@ vector<string> Atom::info() const
 Atom::Neighbor::Neighbor() : index      (0                      ),
                              tag        (0                      ),
                              element    (0                      ),
-                             d          (0.0                    ),
-                             fc         (0.0                    ),
-                             dfc        (0.0                    ),
-                             rc         (0.0                    ),
-                             cutoffAlpha(0.0                    ),
-                             cutoffType (CutoffFunction::CT_HARD)
+                             d          (0.0                    )
 {
 }
 
@@ -424,13 +444,18 @@ vector<string> Atom::Neighbor::info() const
     v.push_back(strpr("tag                            : %d\n", tag));
     v.push_back(strpr("element                        : %d\n", element));
     v.push_back(strpr("d                              : %16.8E\n", d));
-    v.push_back(strpr("rc                             : %16.8E\n", rc));
-    v.push_back(strpr("cutoffAlpha                    : %16.8E\n", cutoffAlpha));
-    v.push_back(strpr("fc                             : %16.8E\n", fc));
-    v.push_back(strpr("dfc                            : %16.8E\n", dfc));
-    v.push_back(strpr("cutoffType                     : %d\n", (int)cutoffType));
     v.push_back(strpr("dr                             : %16.8E %16.8E %16.8E\n", dr[0], dr[1], dr[2]));
     v.push_back(strpr("--------------------------------\n"));
+#ifndef NOSFCACHE
+    v.push_back(strpr("cache                      [*] : %d\n", cache.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < cache.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %16.8E\n", i, cache.at(i)));
+    }
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+#endif
     v.push_back(strpr("dGdr                       [*] : %d\n", dGdr.size()));
     v.push_back(strpr("--------------------------------\n"));
     for (size_t i = 0; i < dGdr.size(); ++i)

@@ -8,3 +8,4 @@ doc-mcss:
 
 clean:
 	$(RM) -r ../../../doc/doxygen/html
+	$(RM) -r ../../../doc/doxygen/xml

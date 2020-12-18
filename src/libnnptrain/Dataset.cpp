@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Dataset.h"
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include "mpi-extra.h"
 #include "utility.h"
 #include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
@@ -202,6 +202,11 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numSymmetryFunctionDerivatives
         bs += ss;
         bs += it->numSymmetryFunctionDerivatives.size() * ss;
+#ifndef NOSFCACHE
+        // Atom.cacheSizePerElement
+        bs += ss;
+        bs += it->cacheSizePerElement.size() * ss;
+#endif
         // Atom.G
         bs += ss;
         bs += it->G.size() * ds;
@@ -222,8 +227,12 @@ int Dataset::calculateBufferSize(Structure const& structure) const
              it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
         {
             // Neighbor
-            bs += 3 * ss + 5 * ds + is + 3 * ds;
-
+            bs += 3 * ss + ds + 3 * ds;
+#ifndef NOSFCACHE
+            // Neighbor.cache
+            bs += ss;
+            bs += it2->cache.size() * ds;
+#endif
             // Neighbor.dGdr
             bs += ss;
             bs += it2->dGdr.size() * 3 * ds;
@@ -335,6 +344,16 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
+#ifndef NOSFCACHE
+            // Atom.cacheSizePerElement
+            ts2 = it->cacheSizePerElement.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->cacheSizePerElement.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
+            }
+#endif
+
             // Atom.G
             ts2 = it->G.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -386,15 +405,21 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                     MPI_Pack(&(it2->tag        ), 1, MPI_SIZE_T, buf, bs, &p, comm);
                     MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T, buf, bs, &p, comm);
                     MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->fc         ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->dfc        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->rc         ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->cutoffAlpha), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->cutoffType ), 1, MPI_INT   , buf, bs, &p, comm);
                     MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
 
+                    size_t ts3 = 0;
+#ifndef NOSFCACHE
+                    // Neighbor.cache
+                    ts3 = it2->cache.size();
+                    MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
+                    if (ts3 > 0)
+                    {
+                        MPI_Pack(&(it2->cache.front()), ts3, MPI_DOUBLE, buf, bs, &p, comm);
+                    }
+#endif
+
                     // Neighbor.dGdr
-                    size_t ts3 = it2->dGdr.size();
+                    ts3 = it2->dGdr.size();
                     MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
                     if (ts3 > 0)
                     {
@@ -538,6 +563,18 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
             }
 
+#ifndef NOSFCACHE
+            // Atom.cacheSizePerElement
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->cacheSizePerElement.clear();
+                it->cacheSizePerElement.resize(ts2, 0);
+                MPI_Unpack(buf, bs, &p, &(it->cacheSizePerElement.front()), ts2, MPI_SIZE_T, comm);
+            }
+#endif
+
             // Atom.G
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -599,15 +636,23 @@ int Dataset::recvStructure(Structure* const structure, int src)
                     MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_SIZE_T, comm);
                     MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T, comm);
                     MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->fc         ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->dfc        ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->rc         ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->cutoffAlpha), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->cutoffType ), 1, MPI_INT   , comm);
                     MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
 
-                    // Neighbor.dGdr
                     size_t ts3 = 0;
+#ifndef NOSFCACHE
+                    // Neighbor.cache
+                    ts3 = 0;
+                    MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
+                    if (ts3 > 0)
+                    {
+                        it2->cache.clear();
+                        it2->cache.resize(ts3, 0.0);
+                        MPI_Unpack(buf, bs, &p, &(it2->cache.front()), ts3, MPI_DOUBLE, comm);
+                    }
+#endif
+
+                    // Neighbor.dGdr
+                    ts3 = 0;
                     MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
                     if (ts3 > 0)
                     {
@@ -848,8 +893,7 @@ void Dataset::collectSymmetryFunctionStatistics()
         }
         for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
         {
-            SymmetryFunctionStatistics::
-            Container& c = it->statistics.data[i];
+            SymFncStatistics::Container& c = it->statistics.data[i];
             MPI_Allreduce(MPI_IN_PLACE, &(c.count), 1, MPI_SIZE_T, MPI_SUM, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.min  ), 1, MPI_DOUBLE, MPI_MIN, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.max  ), 1, MPI_DOUBLE, MPI_MAX, comm);
@@ -907,8 +951,8 @@ void Dataset::writeSymmetryFunctionScaling(string const& fileName)
         {
             for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
             {
-                SymmetryFunctionStatistics::
-                Container const& c = it->statistics.data.at(i);
+                SymFncStatistics::Container const& c
+                    = it->statistics.data.at(i);
                 size_t n = c.count;
                 sFile << strpr("%10d %10d %24.16E %24.16E %24.16E %24.16E\n",
                                it->getIndex() + 1,
@@ -1027,8 +1071,8 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                 {
                     fprintf(fp, "#SFINFO %s\n", it->c_str());
                 }
-                SymmetryFunctionStatistics::
-                Container const& c = elements.at(e).statistics.data.at(s);
+                SymFncStatistics::Container const& c
+                    = elements.at(e).statistics.data.at(s);
                 size_t n = c.count;
                 fprintf(fp, "#SFINFO min         %15.8E\n", c.min);
                 fprintf(fp, "#SFINFO max         %15.8E\n", c.max);

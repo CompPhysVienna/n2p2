@@ -17,7 +17,6 @@
 #ifndef ATOM_H
 #define ATOM_H
 
-#include "CutoffFunction.h"
 #include "Vec3D.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
@@ -40,18 +39,12 @@ struct Atom
         std::size_t                element;
         /// Distance to neighbor atom.
         double                     d;
-        /// Cutoff function value.
-        double                     fc;
-        /// Derivative of cutoff function.
-        double                     dfc;
-        /// Cutoff radius for which cutoff and its derivative is cached.
-        double                     rc;
-        /// Cutoff @f$\alpha@f$ for which cutoff and its derivative is cached.
-        double                     cutoffAlpha;
-        /// Cutoff type of cached cutoff values.
-        CutoffFunction::CutoffType cutoffType;
         /// Distance vector to neighbor atom.
         Vec3D                      dr;
+#ifndef NOSFCACHE
+        /// Symmetry function cache (e.g. for cutoffs, compact functions).
+        std::vector<double>        cache;
+#endif
         /** Derivatives of symmetry functions with respect to neighbor
          * coordinates.
          *
@@ -127,6 +120,10 @@ struct Atom
     std::vector<std::size_t> numNeighborsPerElement;
     /// Number of neighbor atom symmetry function derivatives per element.
     std::vector<std::size_t> numSymmetryFunctionDerivatives;
+#ifndef NOSFCACHE
+    /// Cache size for each element.
+    std::vector<std::size_t> cacheSizePerElement;
+#endif
     /// Symmetry function values
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.

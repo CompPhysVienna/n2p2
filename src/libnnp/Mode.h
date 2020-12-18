@@ -23,7 +23,7 @@
 #include "Log.h"
 #include "Settings.h"
 #include "Structure.h"
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include <cstddef> // std::size_t
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -156,6 +156,16 @@ public:
      * ensure that correct scaling behavior has already been set.
      */
     virtual void             setupSymmetryFunctionGroups();
+#ifndef NOSFCACHE
+    /** Set up symmetry function cache.
+     *
+     * @param[in] verbose If true, print more cache information.
+     *
+     * Searches symmetry functions for identical cutoff functions or compact
+     * function (i.e. all cachable stuff) and sets up a caching index.
+     */
+    void                     setupSymmetryFunctionCache(bool verbose = false);
+#endif
     /** Extract required memory dimensions for symmetry function derivatives.
      *
      * @param[in] verbose If true, print all symmetry function lines.
@@ -464,20 +474,20 @@ public:
     Log        log;
 
 protected:
-    bool                          normalize;
-    bool                          checkExtrapolationWarnings;
-    std::size_t                   numElements;
-    std::vector<std::size_t>      minNeighbors;
-    std::vector<double>           minCutoffRadius;
-    double                        maxCutoffRadius;
-    double                        cutoffAlpha;
-    double                        meanEnergy;
-    double                        convEnergy;
-    double                        convLength;
-    Settings                      settings;
-    SymmetryFunction::ScalingType scalingType;
-    CutoffFunction::CutoffType    cutoffType;
-    std::vector<Element>          elements;
+    bool                       normalize;
+    bool                       checkExtrapolationWarnings;
+    std::size_t                numElements;
+    std::vector<std::size_t>   minNeighbors;
+    std::vector<double>        minCutoffRadius;
+    double                     maxCutoffRadius;
+    double                     cutoffAlpha;
+    double                     meanEnergy;
+    double                     convEnergy;
+    double                     convLength;
+    Settings                   settings;
+    SymFnc::ScalingType        scalingType;
+    CutoffFunction::CutoffType cutoffType;
+    std::vector<Element>       elements;
 };
 
 //////////////////////////////////

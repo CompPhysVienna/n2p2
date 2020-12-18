@@ -134,17 +134,13 @@ cdef extern from "Vec3D.h" namespace "nnp":
 cdef extern from "Atom.h" namespace "nnp":
     cdef cppclass Atom:
         cppclass Neighbor:
-            size_t        index
-            size_t        tag
-            size_t        element
-            double        d
-            double        fc
-            double        dfc
-            double        rc
-            double        cutoffAlpha
-            CutoffType    cutoffType
-            Vec3D         dr
-            vector[Vec3D] dGdr
+            size_t         index
+            size_t         tag
+            size_t         element
+            double         d
+            Vec3D          dr
+            vector[double] cache
+            vector[Vec3D]  dGdr
             Neighbor() except +
             bool eq "operator=="(const Neighbor& rhs) except +
             bool ne "operator!="(const Neighbor& rhs) except +
@@ -169,6 +165,8 @@ cdef extern from "Atom.h" namespace "nnp":
         Vec3D            fRef
         vector[size_t]   neighborsUnique
         vector[size_t]   numNeighborsPerElement
+        vector[size_t]   numSymmetryFunctionDerivatives;
+        vector[size_t]   cacheSizePerElement;
         vector[double]   G
         vector[double]   dEdG
         vector[double]   dGdxia

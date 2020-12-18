@@ -37,9 +37,15 @@ Documentation
    quickly as possible.
 
 This package uses automatic documentation generation via `Doxygen
-<http://www.doxygen.nl>`__ and `Sphinx <http://www.sphinx-doc.org>`__. An online
-version of the documentation which is automatically updated with the main
-repository can be found `here <https://compphysvienna.github.io/n2p2>`__.
+<http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__ and `Breathe
+<https://breathe.readthedocs.io/en/latest/#>`__. An online version of the
+documentation which is automatically updated with the main repository can be
+found `here <https://compphysvienna.github.io/n2p2>`__.
+
+.. note::
+
+   The online documentation describes the ``master`` branch of the *n2p2*
+   repository and not the release versions.
 
 .. This package uses automatic documentation generation via `Doxygen
 .. <http://www.doxygen.nl>`__, `Sphinx <http://www.sphinx-doc.org>`__
@@ -114,7 +120,7 @@ Additional, though not strictly required tools, are also quite useful:
 * :ref:`nnp-select`
 * `nnp-symfunc`
 
-Rough guidelines for NNP training are provided [here](training.md).
+Rough guidelines for NNP training are provided :ref:`here <training>`.
 
 Examples
 ========
@@ -167,47 +173,54 @@ list of keywords is provided :ref:`here <keywords>`.
    :hidden:
    :caption: Topics
 
-   Topics/build
-   Topics/descriptors
-   Topics/keywords
-   Topics/cfg_file
-   Topics/training
-   Topics/units
+   topics/build
+   topics/descriptors
+   topics/keywords
+   topics/cfg_file
+   topics/training
+   topics/units
 
 .. toctree::
    :hidden:
    :caption: Interfaces
 
-   Interfaces/if_lammps
-   Interfaces/pair_nnp
-   Interfaces/if_cabanamd
+   interfaces/if_lammps
+   interfaces/pair_nnp
+   interfaces/if_cabanamd
 
 .. toctree::
    :hidden:
    :caption: Tools
 
-   Tools/libnnp
-   Tools/nnp-convert
-   Tools/nnp-norm
-   Tools/nnp-predict
-   Tools/nnp-prune
-   Tools/nnp-select
-   Tools/nnp-scaling
-   Tools/nnp-train
+   tools/libnnp
+   tools/nnp-convert
+   tools/nnp-norm
+   tools/nnp-predict
+   tools/nnp-prune
+   tools/nnp-select
+   tools/nnp-scaling
+   tools/nnp-train
 
-.. .. toctree::
-..    :hidden:
-..    :caption: API
-.. 
+.. toctree::
+   :hidden:
+   :caption: API
+
+   api/neural_network
+   api/cutoff_functions
+   api/symmetry_function_types
+   api/symmetry_function_scaling
+   api/memory_layout
+
 ..    doc-exhale/root
 
 .. toctree::
    :hidden:
    :caption: About
 
-   About/authors
-   About/license
-   About/changelog
+   about/authors
+   about/how_to_cite
+   about/license
+   about/changelog
 
 .. |H2O| replace:: H\ :sub:`2`\ O
 

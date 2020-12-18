@@ -440,10 +440,10 @@ long InterfaceLammps::getEWBufferSize() const
     for (vector<Element>::const_iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        map<size_t, SymmetryFunctionStatistics::Container> const& m =
-                                                           it->statistics.data;
+        map<size_t, SymFncStatistics::Container> const& m
+            = it->statistics.data;
         bs += ss; // n.
-        for (map<size_t, SymmetryFunctionStatistics::Container>::const_iterator
+        for (map<size_t, SymFncStatistics::Container>::const_iterator
              it2 = m.begin(); it2 != m.end(); ++it2)
         {
             bs += ss; // index   (it2->first).
@@ -467,11 +467,11 @@ void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
     for (vector<Element>::const_iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        map<size_t, SymmetryFunctionStatistics::Container> const& m =
-                                                           it->statistics.data;
+        map<size_t, SymFncStatistics::Container> const& m =
+            it->statistics.data;
         size_t n = m.size();
         MPI_Pack(&(n), 1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-        for (map<size_t, SymmetryFunctionStatistics::Container>::const_iterator
+        for (map<size_t, SymFncStatistics::Container>::const_iterator
              it2 = m.begin(); it2 != m.end(); ++it2)
         {
             MPI_Pack(&(it2->first                          ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
@@ -501,8 +501,7 @@ void InterfaceLammps::extractEWBuffer(char const* const& buf, int bs)
         {
             size_t index = 0;
             MPI_Unpack(buf, bs, &p, &(index), 1, MPI_SIZE_T, MPI_COMM_WORLD);
-            SymmetryFunctionStatistics::
-            Container& d = it->statistics.data[index];
+            SymFncStatistics::Container& d = it->statistics.data[index];
             size_t countEW = 0;
             MPI_Unpack(buf, bs, &p, &(countEW                      ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
             MPI_Unpack(buf, bs, &p, &(d.Gmin                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);

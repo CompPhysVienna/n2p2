@@ -17,6 +17,8 @@
 #ifndef CUTOFFFUNCTION_H
 #define CUTOFFFUNCTION_H
 
+#include "CoreFunction.h"
+
 namespace nnp
 {
 
@@ -130,25 +132,27 @@ private:
     static double const TANH_PRE;
 
     /// Cutoff function type.
-    CutoffType cutoffType;
+    CutoffType   cutoffType;
     /// Outer cutoff radius @f$r_c@f$.
-    double     rc;
+    double       rc;
     /// Inverse cutoff radius @f$\frac{1}{r_c}@f$.
-    double     rcinv;
+    double       rcinv;
     /// Inner cutoff for cutoff function types which allow shifting.
-    double     rci;
+    double       rci;
     /// Cutoff function parameter for `CT_POLYn` and `CT_EXP` @f$\alpha@f$.
-    double     alpha;
+    double       alpha;
     /// Inverse width of cutoff function @f$\frac{1}{r_c - r_{ci}}@f$.
-    double     iw;
+    double       iw;
+    /// Core functions used by POLYN, if any.
+    CoreFunction core;
     /// Function pointer to f.
-    double     (CutoffFunction::*fPtr)(double r) const;
+    double       (CutoffFunction::*fPtr)(double r) const;
     /// Function pointer to df.
-    double     (CutoffFunction::*dfPtr)(double r) const;
+    double       (CutoffFunction::*dfPtr)(double r) const;
     /// Function pointer to fdf.
-    void       (CutoffFunction::*fdfPtr)(double  r,
-                                         double& fc,
-                                         double& dfc) const;
+    void         (CutoffFunction::*fdfPtr)(double  r,
+                                           double& fc,
+                                           double& dfc) const;
 
     // Individual cutoff functions.
     double   fHARD (double r) const;
@@ -167,25 +171,9 @@ private:
     double  dfTANH (double r) const;
     void   fdfTANH (double r, double& fc, double& dfc) const;
 
-    double   fPOLY1(double r) const;
-    double  dfPOLY1(double r) const;
-    void   fdfPOLY1(double r, double& fc, double& dfc) const;
-
-    double   fPOLY2(double r) const;
-    double  dfPOLY2(double r) const;
-    void   fdfPOLY2(double r, double& fc, double& dfc) const;
-
-    double   fPOLY3(double r) const;
-    double  dfPOLY3(double r) const;
-    void   fdfPOLY3(double r, double& fc, double& dfc) const;
-
-    double   fPOLY4(double r) const;
-    double  dfPOLY4(double r) const;
-    void   fdfPOLY4(double r, double& fc, double& dfc) const;
-
-    double   fEXP  (double r) const;
-    double  dfEXP  (double r) const;
-    void   fdfEXP  (double r, double& fc, double& dfc) const;
+    double   fCORE (double r) const;
+    double  dfCORE (double r) const;
+    void   fdfCORE (double r, double& fc, double& dfc) const;
 };
 
 //////////////////////////////////

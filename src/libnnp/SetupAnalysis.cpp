@@ -42,7 +42,7 @@ void SetupAnalysis::writeSymmetryFunctionShape(size_t       numPoints,
         Element const& e = elements.at(i);
         for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
         {
-            SymmetryFunction const& s = e.getSymmetryFunction(j);
+            SymFnc const& s = e.getSymmetryFunction(j);
             ofstream file;
             file.open(strpr(fileNameFormat.c_str(),
                             e.getAtomicNumber(),

@@ -32,8 +32,11 @@ PROJECT_OPTIONS=-I${HOME}/miniconda3/envs/n2p2/include/
 # Do not use symmetry function groups.
 #PROJECT_OPTIONS+= -DNOSFGROUPS
 
-# Do not use cutoff function cache.
-#PROJECT_OPTIONS+= -DNOCFCACHE
+# Do not use symmetry function cache.
+#PROJECT_OPTIONS+= -DNOSFCACHE
+
+# Disable asymmetric polynomial symmetry functions.
+#PROJECT_OPTIONS+= -DNOASYMPOLY
 
 # Build with dummy Stopwatch class.
 #PROJECT_OPTIONS+= -DNOTIME

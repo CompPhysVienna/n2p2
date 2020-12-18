@@ -21,9 +21,12 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <algorithm> // std::min, std::max
+#include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
+#ifndef NOSFCACHE
+#include <map>       // std::multimap
+#endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 
@@ -48,11 +51,11 @@ void Mode::initialize()
     log << "*****************************************"
            "**************************************\n";
     log << "\n";
-    log << "   NNP LIBRARY v" NNP_VERSION "\n";
+    log << "   NNP LIBRARY " NNP_GIT_VERSION "\n";
     log << "   ------------------\n";
     log << "\n";
     log << "Git branch  : " NNP_GIT_BRANCH "\n";
-    log << "Git revision: " NNP_GIT_REV_SHORT " (" NNP_GIT_REV ")\n";
+    log << "Git revision: " NNP_GIT_REV "\n";
     log << "\n";
 #ifdef _OPENMP
     log << strpr("Number of OpenMP threads: %d", omp_get_max_threads());
@@ -89,6 +92,9 @@ void Mode::setupGeneric()
     setupSymmetryFunctions();
 #ifdef IMPROVED_SFD_MEMORY
     setupSymmetryFunctionMemory(false);
+#endif
+#ifndef NOSFCACHE
+    setupSymmetryFunctionCache();
 #endif
 #ifndef NOSFGROUPS
     setupSymmetryFunctionGroups();
@@ -330,16 +336,19 @@ void Mode::setupSymmetryFunctions()
     log << "--------------\n";
     log << "ind .... Symmetry function index.\n";
     log << "ec ..... Central atom element.\n";
-    log << "ty ..... Symmetry function type.\n";
+    log << "tp ..... Symmetry function type.\n";
+    log << "sbtp ... Symmetry function subtype (e.g. cutoff type).\n";
     log << "e1 ..... Neighbor 1 element.\n";
     log << "e2 ..... Neighbor 2 element.\n";
     log << "eta .... Gaussian width eta.\n";
-    log << "rs ..... Shift distance of Gaussian.\n";
+    log << "rs/rl... Shift distance of Gaussian or left cutoff radius "
+           "for polynomial.\n";
+    log << "angl.... Left cutoff angle for polynomial.\n";
+    log << "angr.... Right cutoff angle for polynomial.\n";
     log << "la ..... Angle prefactor lambda.\n";
     log << "zeta ... Angle term exponent zeta.\n";
-    log << "rc ..... Cutoff radius.\n";
-    log << "ct ..... Cutoff type.\n";
-    log << "ca ..... Cutoff alpha.\n";
+    log << "rc ..... Cutoff radius / right cutoff radius for polynomial.\n";
+    log << "a ...... Free parameter alpha (e.g. cutoff alpha).\n";
     log << "ln ..... Line number in settings file.\n";
     log << "\n";
     maxCutoffRadius = 0.0;
@@ -352,15 +361,15 @@ void Mode::setupSymmetryFunctions()
         it->setCutoffFunction(cutoffType, cutoffAlpha);
         log << strpr("Short range atomic symmetry functions element %2s :\n",
                      it->getSymbol().c_str());
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
-        log << " ind ec ty e1 e2       eta        rs la "
-               "zeta        rc ct   ca    ln\n";
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "--------------------------------------------------"
+               "-----------------------------------------------\n";
+        log << " ind ec tp sbtp e1 e2       eta      rs/rl         "
+               "rc   angl   angr la zeta    a    ln\n";
+        log << "--------------------------------------------------"
+               "-----------------------------------------------\n";
         log << it->infoSymmetryFunctionParameters();
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "--------------------------------------------------"
+               "-----------------------------------------------\n";
     }
     minNeighbors.resize(numElements, 0);
     minCutoffRadius.resize(numElements, maxCutoffRadius);
@@ -412,33 +421,33 @@ void Mode::setupSymmetryFunctionScaling(string const& fileName)
     if (   ( settings.keywordExists("scale_symmetry_functions" ))
         && (!settings.keywordExists("center_symmetry_functions")))
     {
-        scalingType = SymmetryFunction::ST_SCALE;
+        scalingType = SymFnc::ST_SCALE;
         log << strpr("Scaling type::ST_SCALE (%d)\n", scalingType);
         log << "Gs = Smin + (Smax - Smin) * (G - Gmin) / (Gmax - Gmin)\n";
     }
     else if (   (!settings.keywordExists("scale_symmetry_functions" ))
              && ( settings.keywordExists("center_symmetry_functions")))
     {
-        scalingType = SymmetryFunction::ST_CENTER;
+        scalingType = SymFnc::ST_CENTER;
         log << strpr("Scaling type::ST_CENTER (%d)\n", scalingType);
         log << "Gs = G - Gmean\n";
     }
     else if (   ( settings.keywordExists("scale_symmetry_functions" ))
              && ( settings.keywordExists("center_symmetry_functions")))
     {
-        scalingType = SymmetryFunction::ST_SCALECENTER;
+        scalingType = SymFnc::ST_SCALECENTER;
         log << strpr("Scaling type::ST_SCALECENTER (%d)\n", scalingType);
         log << "Gs = Smin + (Smax - Smin) * (G - Gmean) / (Gmax - Gmin)\n";
     }
     else if (settings.keywordExists("scale_symmetry_functions_sigma"))
     {
-        scalingType = SymmetryFunction::ST_SCALESIGMA;
+        scalingType = SymFnc::ST_SCALESIGMA;
         log << strpr("Scaling type::ST_SCALESIGMA (%d)\n", scalingType);
         log << "Gs = Smin + (Smax - Smin) * (G - Gmean) / Gsigma\n";
     }
     else
     {
-        scalingType = SymmetryFunction::ST_NONE;
+        scalingType = SymFnc::ST_NONE;
         log << strpr("Scaling type::ST_NONE (%d)\n", scalingType);
         log << "Gs = G\n";
         log << "WARNING: No symmetry function scaling!\n";
@@ -446,9 +455,9 @@ void Mode::setupSymmetryFunctionScaling(string const& fileName)
 
     double Smin = 0.0;
     double Smax = 0.0;
-    if (scalingType == SymmetryFunction::ST_SCALE ||
-        scalingType == SymmetryFunction::ST_SCALECENTER ||
-        scalingType == SymmetryFunction::ST_SCALESIGMA)
+    if (scalingType == SymFnc::ST_SCALE ||
+        scalingType == SymFnc::ST_SCALECENTER ||
+        scalingType == SymFnc::ST_SCALESIGMA)
     {
         if (settings.keywordExists("scale_min_short"))
         {
@@ -540,18 +549,21 @@ void Mode::setupSymmetryFunctionGroups()
 
     log << "Abbreviations:\n";
     log << "--------------\n";
-    log << "ind .... Symmetry function group index.\n";
+    log << "ind .... Symmetry function index.\n";
     log << "ec ..... Central atom element.\n";
-    log << "ty ..... Symmetry function type.\n";
+    log << "tp ..... Symmetry function type.\n";
+    log << "sbtp ... Symmetry function subtype (e.g. cutoff type).\n";
     log << "e1 ..... Neighbor 1 element.\n";
     log << "e2 ..... Neighbor 2 element.\n";
     log << "eta .... Gaussian width eta.\n";
-    log << "rs ..... Shift distance of Gaussian.\n";
+    log << "rs/rl... Shift distance of Gaussian or left cutoff radius "
+           "for polynomial.\n";
+    log << "angl.... Left cutoff angle for polynomial.\n";
+    log << "angr.... Right cutoff angle for polynomial.\n";
     log << "la ..... Angle prefactor lambda.\n";
     log << "zeta ... Angle term exponent zeta.\n";
-    log << "rc ..... Cutoff radius.\n";
-    log << "ct ..... Cutoff type.\n";
-    log << "ca ..... Cutoff alpha.\n";
+    log << "rc ..... Cutoff radius / right cutoff radius for polynomial.\n";
+    log << "a ...... Free parameter alpha (e.g. cutoff alpha).\n";
     log << "ln ..... Line number in settings file.\n";
     log << "mi ..... Member index.\n";
     log << "sfi .... Symmetry function index.\n";
@@ -563,15 +575,15 @@ void Mode::setupSymmetryFunctionGroups()
         it->setupSymmetryFunctionGroups();
         log << strpr("Short range atomic symmetry function groups "
                      "element %2s :\n", it->getSymbol().c_str());
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
-        log << " ind ec ty e1 e2       eta        rs la "
-               "zeta        rc ct   ca    ln   mi  sfi e\n";
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "------------------------------------------------------"
+               "----------------------------------------------------\n";
+        log << " ind ec tp sbtp e1 e2       eta      rs/rl         "
+               "rc   angl   angr la zeta    a    ln   mi  sfi e\n";
+        log << "------------------------------------------------------"
+               "----------------------------------------------------\n";
         log << it->infoSymmetryFunctionGroups();
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
+        log << "------------------------------------------------------"
+               "----------------------------------------------------\n";
     }
 
     log << "*****************************************"
@@ -613,7 +625,7 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
                        "--------------------------------------\n";
                 for (auto isf : symmetryFunctionTable.at(i))
                 {
-                    SymmetryFunction const& sf = e.getSymmetryFunction(isf);
+                    SymFnc const& sf = e.getSymmetryFunction(isf);
                     log << sf.parameterLine();
                 }
                 log << "-----------------------------------------"
@@ -641,7 +653,7 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
                    "--------------------------------------\n";
             for (size_t i = 0; i < e.numSymmetryFunctions(); ++i)
             {
-                SymmetryFunction const& sf = e.getSymmetryFunction(i);
+                SymFnc const& sf = e.getSymmetryFunction(i);
                 log << strpr("%4zu", sf.getIndex() + 1);
                 vector<size_t> indexPerElement = sf.getIndexPerElement();
                 for (auto ipe : sf.getIndexPerElement())
@@ -668,6 +680,126 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
 
     return;
 }
+
+#ifndef NOSFCACHE
+void Mode::setupSymmetryFunctionCache(bool verbose)
+{
+    log << "\n";
+    log << "*** SETUP: SYMMETRY FUNCTION CACHE ******"
+           "**************************************\n";
+    log << "\n";
+
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        using SFCacheList = Element::SFCacheList;
+        vector<vector<SFCacheList>> cacheLists(numElements);
+        Element& e = elements.at(i);
+        for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
+        {
+            SymFnc const& s = e.getSymmetryFunction(j);
+            for (auto identifier : s.getCacheIdentifiers())
+            {
+                size_t ne = atoi(split(identifier)[0].c_str());
+                bool unknown = true;
+                for (auto& c : cacheLists.at(ne))
+                {
+                    if (identifier == c.identifier)
+                    {
+                        c.indices.push_back(s.getIndex());
+                        unknown = false;
+                        break;
+                    }
+                }
+                if (unknown)
+                {
+                    cacheLists.at(ne).push_back(SFCacheList());
+                    cacheLists.at(ne).back().element = ne;
+                    cacheLists.at(ne).back().identifier = identifier;
+                    cacheLists.at(ne).back().indices.push_back(s.getIndex());
+                }
+            }
+        }
+        if (verbose)
+        {
+            log << strpr("Multiple cache identifiers for element %2s:\n\n",
+                         e.getSymbol().c_str());
+        }
+        double cacheUsageMean = 0.0;
+        size_t cacheCount = 0;
+        for (size_t j = 0; j < numElements; ++j)
+        {
+            if (verbose)
+            {
+                log << strpr("Neighbor %2s:\n", elementMap[j].c_str());
+            }
+            vector<SFCacheList>& c = cacheLists.at(j);
+            c.erase(remove_if(c.begin(),
+                              c.end(),
+                              [](SFCacheList l)
+                              {
+                                  return l.indices.size() <= 1;
+                              }), c.end());
+            cacheCount += c.size();
+            for (size_t k = 0; k < c.size(); ++k)
+            {
+                cacheUsageMean += c.at(k).indices.size();
+                if (verbose)
+                {
+                    log << strpr("Cache %zu, Identifier \"%s\", "
+                                 "Symmetry functions",
+                                 k, c.at(k).identifier.c_str());
+                    for (auto si : c.at(k).indices)
+                    {
+                        log << strpr(" %zu", si);
+                    }
+                    log << "\n";
+                }
+            }
+        }
+        e.setCacheIndices(cacheLists);
+        //for (size_t j = 0; j < e.numSymmetryFunctions(); ++j)
+        //{
+        //    SymFnc const& sf = e.getSymmetryFunction(j);
+        //    auto indices = sf.getCacheIndices();
+        //    size_t count = 0;
+        //    for (size_t k = 0; k < numElements; ++k)
+        //    {
+        //        count += indices.at(k).size();
+        //    }
+        //    if (count > 0)
+        //    {
+        //        log << strpr("SF %4zu:\n", sf.getIndex());
+        //    }
+        //    for (size_t k = 0; k < numElements; ++k)
+        //    {
+        //        if (indices.at(k).size() > 0)
+        //        {
+        //            log << strpr("- Neighbor %2s:", elementMap[k].c_str());
+        //            for (size_t l = 0; l < indices.at(k).size(); ++l)
+        //            {
+        //                log << strpr(" %zu", indices.at(k).at(l));
+        //            }
+        //            log << "\n";
+        //        }
+        //    }
+        //}
+        cacheUsageMean /= cacheCount;
+        log << strpr("Element %2s: in total %zu caches, "
+                     "used %3.2f times on average.\n",
+                     e.getSymbol().c_str(), cacheCount, cacheUsageMean);
+        if (verbose)
+        {
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+        }
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+#endif
 
 void Mode::setupSymmetryFunctionStatistics(bool collectStatistics,
                                            bool collectExtrapolationWarnings,
@@ -923,6 +1055,9 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
+#ifndef NOSFCACHE
+        a->cacheSizePerElement = e->getCacheSizes();
+#endif
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
@@ -997,6 +1132,9 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
+#ifndef NOSFCACHE
+        a->cacheSizePerElement = e->getCacheSizes();
+#endif
 
 #ifndef NONEIGHCHECK
         // Check if atom has low number of neighbors.
@@ -1349,7 +1487,7 @@ vector<size_t> Mode::pruneSymmetryFunctionsRange(double threshold)
     {
         for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
         {
-            SymmetryFunction const& s = it->getSymmetryFunction(i);
+            SymFnc const& s = it->getSymmetryFunction(i);
             if (fabs(s.getGmax() - s.getGmin()) < threshold)
             {
                 prune.push_back(it->getSymmetryFunction(i).getLineNumber());

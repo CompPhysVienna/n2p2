@@ -21,7 +21,7 @@ PROJECT_TEST=--coverage -fno-default-inline -fno-inline -fno-inline-small-functi
 PROJECT_AR=ar
 PROJECT_ARFLAGS=-rcsv
 PROJECT_CFLAGS_BLAS=
-PROJECT_LDFLAGS_BLAS=-lblas
+PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 
 ###############################################################################
 # COMPILE-TIME OPTIONS
@@ -30,8 +30,11 @@ PROJECT_LDFLAGS_BLAS=-lblas
 # Do not use symmetry function groups.
 #PROJECT_OPTIONS+= -DNOSFGROUPS
 
-# Do not use cutoff function cache.
-#PROJECT_OPTIONS+= -DNOCFCACHE
+# Do not use symmetry function cache.
+#PROJECT_OPTIONS+= -DNOSFCACHE
+
+# Disable asymmetric polynomial symmetry functions.
+#PROJECT_OPTIONS+= -DNOASYMPOLY
 
 # Build with dummy Stopwatch class.
 #PROJECT_OPTIONS+= -DNOTIME
