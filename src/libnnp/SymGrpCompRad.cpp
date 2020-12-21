@@ -108,7 +108,7 @@ void SymGrpCompRad::sortMembers()
         mrc.at(i) = members[i]->getRc();
     }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     mci.resize(members.size());
     for (size_t k = 0; k < members.size(); ++k)
     {
@@ -158,7 +158,7 @@ void SymGrpCompRad::calculate(Atom& atom, bool const derivatives) const
                 if (rij <= mrl[k] || rij >= mrc[k]) continue;
                 double rad;
                 double drad;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
                 if (mci[k].size() == 0) sf.getCompactOnly(rij, rad, drad);
                 else
                 {
@@ -183,7 +183,7 @@ void SymGrpCompRad::calculate(Atom& atom, bool const derivatives) const
                 double const p1drijz = drad * d1[2];
 
                 // Save force contributions in Atom storage.
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                 size_t ki = memberIndex[k];
 #else
                 size_t const ki = memberIndex[k];
@@ -197,7 +197,7 @@ void SymGrpCompRad::calculate(Atom& atom, bool const derivatives) const
                 dGdr[1] += p1drijy;
                 dGdr[2] += p1drijz;
 
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                 ki = memberIndexPerElement[k][e1];
 #endif
                 dGdr = n.dGdr[ki].r;

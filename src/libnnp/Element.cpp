@@ -536,7 +536,7 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
     return countExtrapolationWarnings;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 void Element::setCacheIndices(vector<vector<SFCacheList>> cacheLists)
 {
     this->cacheLists = cacheLists;

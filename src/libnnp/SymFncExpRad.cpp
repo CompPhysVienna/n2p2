@@ -124,7 +124,7 @@ string SymFncExpRad::getSettingsLine() const
 void SymFncExpRad::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     bool unique = true;
     size_t c0 = 0;
     size_t c1 = 0;
@@ -148,7 +148,7 @@ void SymFncExpRad::calculate(Atom& atom, bool const derivatives) const
             // Calculate cutoff function and derivative.
             double pfc;
             double pdfc;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
             if (unique) fc.fdf(rij, pfc, pdfc);
             else
             {
@@ -170,7 +170,7 @@ void SymFncExpRad::calculate(Atom& atom, bool const derivatives) const
             Vec3D dij = p1 * n.dr;
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
             n.dGdr[indexPerElement[e1]] -= dij;
 #else
             n.dGdr[index] -= dij;
@@ -233,7 +233,7 @@ bool SymFncExpRad::checkRelevantElement(size_t index) const
     else return false;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 vector<string> SymFncExpRad::getCacheIdentifiers() const
 {
     vector<string> v;

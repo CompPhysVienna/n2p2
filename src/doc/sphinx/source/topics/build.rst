@@ -160,7 +160,7 @@ time:
 Symmetry function groups
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Flag:** ``-DNOSFGROUPS`` (default: *disabled*)
+**Flag:** ``-DNNP_NO_SF_GROUPS`` (default: *disabled*)
 
 If this flag is set the symmetry function group feature will be disabled
 everywhere. This will result in a much worse performance but may be useful for
@@ -170,18 +170,31 @@ will not change results, please see details in this publication [1]_.
 Improved symmetry function derivative memory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Flag:** ``-DIMPROVED_SFD_MEMORY`` (default: *enabled*)
+**Flag:** ``-DNNP_FULL_SFD_MEMORY`` (default: *disabled*)
 
-Reduces the memory usage for symmetry function derivatives when multiple
-elements are present. The actual reduction depends on the symmetry function
-setup, as a rough estimate expect about 30 to 50% reduction. This feature is
-particularly useful for training of large data sets when symmetry function
-derivatives are stored in memory (keyword ``memorize_symfunc_results``). An
-additional section in the :ref:`libnnp <libnnp>` output will displayed after
-the ``SETUP: SYMMETRY FUNCTIONS`` section, which indicates the amount of
-still required memory for symmetry function derivatives. Here is how the
-output looks like for the RPBE-D3 water example
-(``examples/nnp-predict/H2O_RPBE-D3``):
+By default *n2p2* reduces the memory usage when multiple elements are present by
+eliminating storage for symmetry function derivatives which are zero by
+definition. This happens whenever a symmetry function is only sensitive to
+neighbors of certain (and not all) elements. Then, there is no space required
+for derivatives with respect to neighbors of all other elements and hence a
+significant amount of memory allocation can be avoided. The actual benefit
+depends on the symmetry function setup, as a rough estimate expect about 30 to
+50% reduction. This feature is particularly useful for training of large data
+sets when symmetry function derivatives are stored in memory (keyword
+``memorize_symfunc_results``).
+
+However, for debugging and development purposes it can be helpful to keep the
+naive, full symmetry function derivative memory allocation. This can be achieved
+by enabling the flag ``-DNNP_FULL_SFD_MEMORY``. Only in this case there is a
+one-to-one correspondance between the list of symmetry functions in the
+:ref:`libnnp <libnnp>` output and the symmetry function derivative vectors in
+:cpp:member:`nnp::Atom::Neighbor::dGdr`.
+
+Normally, i.e. when ``-DNNP_FULL_SFD_MEMORY`` is **disabled**, an additional
+section in the :ref:`libnnp <libnnp>` output will displayed after the ``SETUP:
+SYMMETRY FUNCTIONS`` section, which indicates the amount of still required
+memory for symmetry function derivatives. Here is how the output looks like for
+the RPBE-D3 water example (``examples/nnp-predict/H2O_RPBE-D3``):
 
 .. code-block:: none
 
@@ -204,24 +217,25 @@ output looks like for the RPBE-D3 water example
 Benchmarking the training program and the LAMMPS interface with the same
 system gives the following results: 
 
-+---------------------------------+-------------+-----------+------------+
-| ``-DIMPROVED_SFD_MEMORY``       | *disabled*  | *enabled* | difference |
-+=================================+=============+===========+============+
-| Training (memory)               | 55.2 GB     | 37.8 GB   | -31.5 %    |
-+---------------------------------+-------------+-----------+------------+
-| MD with LAMMPS (memory)         | 725.6 MB    | 500.0 MB  | -31.1 %    |
-+---------------------------------+-------------+-----------+------------+
-| MD with LAMMPS (speed)          | 33.82 s     | 34.14 s   |  +0.9 %    |
-+---------------------------------+-------------+-----------+------------+
++---------------------------------+-------------+------------+------------+
+| ``-DNNP_FULL_SFD_MEMORY``       | *enabled*   | *disabled* | difference |
++=================================+=============+============+============+
+| Training (memory)               | 55.2 GB     | 37.8 GB    | -31.5 %    |
++---------------------------------+-------------+------------+------------+
+| MD with LAMMPS (memory)         | 725.6 MB    | 500.0 MB   | -31.1 %    |
++---------------------------------+-------------+------------+------------+
+| MD with LAMMPS (speed)          | 33.82 s     | 34.14 s    |  +0.9 %    |
++---------------------------------+-------------+------------+------------+
 
 Given the significant reduction in memory and the negligible impact on speed
-this feature is enabled by default. 
+the improved memory layout is used by default (``-DNNP_FULL_SFD_MEMORY``
+disabled).
 
 .. important::
 
-   If you prefer to disable this functionality please also remove the flag
-   ``-DIMPROVED_SFD_MEMORY`` from the LAMMPS makefile in
-   ``src/libnnpif/Makefile.lammps``!
+   If you need the full symmetry function derivative memory together with the
+   LAMMPS interface add ``-DNNP_FULL_SFD_MEMORY`` to the ``nnp_SYSINC =``
+   variable in the LAMMPS makefile in ``src/libnnpif/LAMMPS/Makefile.lammps``!
 
 .. [1] Singraber, A.; Behler, J.; Dellago, C. Library-Based LAMMPS
    Implementation of High-Dimensional Neural Network Potentials. J. Chem. Theory

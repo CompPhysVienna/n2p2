@@ -169,7 +169,7 @@ cdef extern from "Atom.h" namespace "nnp":
         vector[size_t]   cacheSizePerElement;
         vector[double]   G
         vector[double]   dEdG
-        vector[double]   dGdxia
+        #vector[double]   dGdxia
         vector[Vec3D]    dGdr
         vector[Neighbor] neighbors
         Atom() except +

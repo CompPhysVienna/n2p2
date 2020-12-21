@@ -133,7 +133,7 @@ void SymFncCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
             double rad;
             double drad;
             double r = rij;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
             if (cacheIndices[ne].size() == 0) cr.fdf(r, rad, drad);
             else
             {
@@ -155,7 +155,7 @@ void SymFncCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
             Vec3D dij = p1 * n.dr;
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
             n.dGdr[indexPerElement[ne]] -= dij;
 #else
             n.dGdr[index] -= dij;
@@ -204,7 +204,7 @@ bool SymFncCompRadWeighted::checkRelevantElement(size_t /*index*/) const
     return true;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 vector<string> SymFncCompRadWeighted::getCacheIdentifiers() const
 {
     vector<string> v;

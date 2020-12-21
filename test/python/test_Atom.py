@@ -196,11 +196,11 @@ class Test_dEdG:
                "Wrong attribute type.")
     # TODO: Test content.
 
-class Test_dGdxia:
-    def test_correct_type(self, a1):
-        assert isinstance(a1.dGdxia, list), (
-               "Wrong attribute type.")
-    # TODO: Test content.
+#class Test_dGdxia:
+#    def test_correct_type(self, a1):
+#        assert isinstance(a1.dGdxia, list), (
+#               "Wrong attribute type.")
+#    # TODO: Test content.
 
 class Test_dGdr:
     def test_correct_type(self, a1):

@@ -97,7 +97,7 @@ void SymFnc::setScalingType(ScalingType scalingType,
     return;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 vector<string> SymFnc::getCacheIdentifiers() const
 {
     return vector<string>();
@@ -160,7 +160,7 @@ SymFnc::SymFnc(size_t type, ElementMap const& elementMap) :
     // "uninitialized" state.
     indexPerElement.resize(elementMap.size(), numeric_limits<size_t>::max());
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     // Initialize cache indices vector.
     cacheIndices.resize(elementMap.size(), vector<size_t>());
 #endif

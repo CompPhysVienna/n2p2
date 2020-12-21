@@ -13,7 +13,7 @@ network potentials in computational physics and chemistry.
 # [Documentation](http://compphysvienna.github.io/n2p2)
 
 This package uses automatic documentation generation via
-[Sphinx](http://www.sphinx-doc.org)
+[Sphinx](http://www.sphinx-doc.org),
 [Breathe](https://breathe.readthedocs.io/en/latest/#) and
 [doxygen](http://www.doxygen.nl/). An online version of the documentation which
 is automatically updated with the master branch of the repository can be found

@@ -38,7 +38,7 @@ class Element
 {
 public:
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     /// List of symmetry functions corresponding to one cache identifier.
     struct SFCacheList
     {
@@ -206,7 +206,7 @@ public:
      * @return Symmetry function object.
      */
     SymFnc const&            getSymmetryFunction(std::size_t index) const;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     /** Set cache indices for all symmetry functions of this element.
      *
      * @param[in] cacheLists List of cache identifier strings and corresponding
@@ -242,7 +242,7 @@ protected:
     std::vector<std::size_t>              symmetryFunctionNumTable;
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     /// Symmetry function cache lists.
     std::vector<std::vector<SFCacheList>> cacheLists;
 #endif

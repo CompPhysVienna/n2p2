@@ -279,13 +279,13 @@ cdef class Atom:
     @dEdG.setter
     def dEdG(self, value):
         deref(self.thisptr).dEdG = value
-    # dGdxia
-    @property
-    def dGdxia(self):
-        return deref(self.thisptr).dGdxia
-    @dGdxia.setter
-    def dGdxia(self, value):
-        deref(self.thisptr).dGdxia = value
+    ## dGdxia
+    #@property
+    #def dGdxia(self):
+    #    return deref(self.thisptr).dGdxia
+    #@dGdxia.setter
+    #def dGdxia(self, value):
+    #    deref(self.thisptr).dGdxia = value
     # dGdr
     @property
     def dGdr(self):

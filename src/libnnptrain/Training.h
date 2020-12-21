@@ -417,7 +417,7 @@ private:
     std::vector<double>           errorForcesTrain;
     /// Current error metrics of test forces.
     std::vector<double>           errorForcesTest;
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>           dGdxia;
@@ -504,7 +504,7 @@ private:
                              std::size_t         is,
                              std::size_t         ia,
                              std::size_t         ic);
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
      *

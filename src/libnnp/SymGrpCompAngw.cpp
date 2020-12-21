@@ -111,7 +111,7 @@ void SymGrpCompAngw::sortMembers()
         calculateComp.push_back(true);
     }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     mci.resize(members.size());
     for (size_t k = 0; k < members.size(); ++k)
     {
@@ -162,7 +162,7 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                 if (rij > mrl[l] && rij < mrc[l])
                 {
                     SymFncCompAngw const& sf = *(members[l]);
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
                     if (mci[l][nej].size() == 0)
                     {
                         sf.getCompactRadial(rij, radij[l], dradij[l]);
@@ -244,7 +244,7 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                             }
 
                             SymFncCompAngw const& sf = *(members[l]);
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
                             if (mci[l][nek].size() == 0)
                             {
                                 sf.getCompactRadial(rik, radik, dradik);
@@ -321,7 +321,7 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                             double const p3drjky = p3 * dr31;
                             double const p3drjkz = p3 * dr32;
 
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                             size_t li = memberIndex[l];
 #else
                             size_t const li = memberIndex[l];
@@ -331,7 +331,7 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                             dGdr[1] += p1drijy + p2driky;
                             dGdr[2] += p1drijz + p2drikz;
 
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                             li = memberIndexPerElement[l][nej];
 #endif
                             dGdr = nj.dGdr[li].r;
@@ -339,7 +339,7 @@ void SymGrpCompAngw::calculate(Atom& atom, bool const derivatives) const
                             dGdr[1] -= p1drijy + p3drjky;
                             dGdr[2] -= p1drijz + p3drjkz;
 
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                             li = memberIndexPerElement[l][nek];
 #endif
                             dGdr = nk.dGdr[li].r;

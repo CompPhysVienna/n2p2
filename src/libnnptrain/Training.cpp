@@ -1295,7 +1295,7 @@ void Training::calculateError(bool const   writeCompFiles,
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
         calculateSymmetryFunctions((*it), useForces);
 #else
         calculateSymmetryFunctionGroups((*it), useForces);
@@ -2118,7 +2118,7 @@ void Training::update(bool force)
             Structure& s = structures.at(c->s);
             // Calculate symmetry functions (if results are already stored
             // these functions will return immediately).
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
             calculateSymmetryFunctions(s, force);
 #else
             calculateSymmetryFunctionGroups(s, force);
@@ -2189,7 +2189,7 @@ void Training::update(bool force)
             // Need to calculate the symmetry functions again, maybe results
             // were not stored.
             Structure& s = structures.at(c->s);
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
             calculateSymmetryFunctions(s, force);
 #else
             calculateSymmetryFunctionGroups(s, force);
@@ -2254,7 +2254,7 @@ void Training::update(bool force)
         {
             // For force update save derivative of symmetry function with
             // respect to coordinate.
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
             if (force) collectDGdxia((*it), c->a, c->c);
 #else 
             if (force) it->collectDGdxia(c->a, c->c);
@@ -2269,7 +2269,7 @@ void Training::update(bool force)
             // network connections (weights + biases).
             if (force)
             {
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                 nn->calculateDFdc(&(dXdc.at(i).front()),
                                   &(dGdxia.front()));
 #else 
@@ -2610,7 +2610,7 @@ vector<
 vector<double> > Training::calculateWeightDerivatives(Structure* structure)
 {
     Structure& s = *structure;
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(s, false);
 #else
     calculateSymmetryFunctionGroups(s, false);
@@ -2651,7 +2651,7 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
                                                       std::size_t component)
 {
     Structure& s = *structure;
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(s, true);
 #else
     calculateSymmetryFunctionGroups(s, true);
@@ -2670,7 +2670,7 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
     for (vector<Atom>::iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
         collectDGdxia((*it), atom, component);
 #else 
         it->collectDGdxia(atom, component);
@@ -2680,7 +2680,7 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
         nn->setInput(&((it->G).front()));
         nn->propagate();
         nn->getOutput(&(it->energy));
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
         nn->calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
 #else 
         nn->calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
@@ -2785,7 +2785,7 @@ void Training::addTrainingLogEntry(int                 proc,
     return;
 }
 
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
 void Training::collectDGdxia(Atom const& atom,
                              size_t      indexAtom,
                              size_t      indexComponent)

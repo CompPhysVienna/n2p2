@@ -156,7 +156,7 @@ public:
      * ensure that correct scaling behavior has already been set.
      */
     virtual void             setupSymmetryFunctionGroups();
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     /** Set up symmetry function cache.
      *
      * @param[in] verbose If true, print more cache information.

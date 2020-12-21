@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
          it != dataset.structures.end(); ++it)
     {
         it->calculateNeighborList(dataset.getMaxCutoffRadius());
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
         dataset.calculateSymmetryFunctions((*it), useForces);
 #else
         dataset.calculateSymmetryFunctionGroups((*it), useForces);
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
             it2->dEdG.clear();
             vector<double>(it2->dEdG).swap(it2->dEdG);
 
-#ifndef IMPROVED_SFD_MEMORY
+#ifdef NNP_FULL_SFD_MEMORY
             it2->dGdxia.clear();
             vector<double>(it2->dGdxia).swap(it2->dGdxia);
 #endif

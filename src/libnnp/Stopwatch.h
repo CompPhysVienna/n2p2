@@ -19,11 +19,11 @@
 
 #if !(defined(__linux__) || defined(__MACH__))
 #pragma message("WARNING: Platform not supported.")
-#define NOTIME
+#define NNP_NO_TIME
 #endif
 
-#ifdef NOTIME
-#pragma message("WARNING: Compiling dummy Stopwatch class (-DNOTIME).")
+#ifdef NNP_NO_TIME
+#pragma message("WARNING: Compiling dummy Stopwatch class (-DNNP_NO_TIME).")
 #endif
 
 #include <ctime>
@@ -64,7 +64,7 @@ private:
     State               state;
     static const double NSEC;
     double              timeElapsed;
-#ifdef NOTIME
+#ifdef NNP_NO_TIME
 #elif __linux__
     timespec            time;
 #elif __MACH__

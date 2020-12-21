@@ -46,7 +46,7 @@ LIB=lib$(NAME)
 # PROJECT COMPILER AND FLAGS
 ###############################################################################
 CC=$(PROJECT_CC)
-ifneq (,$(findstring NOMPI,${PROJECT_OPTIONS}))
+ifneq (,$(findstring NNP_NO_MPI,${PROJECT_OPTIONS}))
 MPICC=${PROJECT_CC}
 CFLAGS=${PROJECT_CFLAGS}
 else

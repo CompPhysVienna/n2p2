@@ -98,7 +98,7 @@ void SymFncExpAngw::calculate(Atom& atom, bool const derivatives) const
             // Calculate cutoff function and derivative.
             double pfcij;
             double pdfcij;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
             if (cacheIndices[nej].size() == 0) fc.fdf(rij, pfcij, pdfcij);
             else
             {
@@ -124,7 +124,7 @@ void SymFncExpAngw::calculate(Atom& atom, bool const derivatives) const
                         // Energy calculation.
                         double pfcik;
                         double pdfcik;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
                         if (cacheIndices[nej].size() == 0)
                         {
                             fc.fdf(rik, pfcik, pdfcik);
@@ -188,7 +188,7 @@ void SymFncExpAngw::calculate(Atom& atom, bool const derivatives) const
 
                         // Save force contributions in Atom storage.
                         atom.dGdr[index] += drij + drik;
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                         nj.dGdr[indexPerElement[nej]] -= drij + drjk;
                         nk.dGdr[indexPerElement[nek]] -= drik - drjk;
 #else

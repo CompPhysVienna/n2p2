@@ -24,7 +24,7 @@
 #include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 #include <map>       // std::multimap
 #endif
 #include <limits>    // std::numeric_limits
@@ -90,13 +90,13 @@ void Mode::setupGeneric()
     setupElements();
     setupCutoff();
     setupSymmetryFunctions();
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
     setupSymmetryFunctionMemory(false);
 #endif
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     setupSymmetryFunctionCache();
 #endif
-#ifndef NOSFGROUPS
+#ifndef NNP_NO_SF_GROUPS
     setupSymmetryFunctionGroups();
 #endif
     setupNeuralNetwork();
@@ -681,7 +681,7 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
     return;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 void Mode::setupSymmetryFunctionCache(bool verbose)
 {
     log << "\n";
@@ -1055,11 +1055,11 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
         a->cacheSizePerElement = e->getCacheSizes();
 #endif
 
-#ifndef NONEIGHCHECK
+#ifndef NNP_NO_NEIGH_CHECK
         // Check if atom has low number of neighbors.
         size_t numNeighbors = a->getNumNeighbors(
                                             minCutoffRadius.at(e->getIndex()));
@@ -1132,11 +1132,11 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
         a->cacheSizePerElement = e->getCacheSizes();
 #endif
 
-#ifndef NONEIGHCHECK
+#ifndef NNP_NO_NEIGH_CHECK
         // Check if atom has low number of neighbors.
         size_t numNeighbors = a->getNumNeighbors(
                                             minCutoffRadius.at(e->getIndex()));
@@ -1246,7 +1246,7 @@ void Mode::calculateForces(Structure& structure) const
         {
             // Define shortcut for atom j (aj).
             Atom& aj = structure.atoms.at(*it);
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
             vector<vector<size_t> > const& tableFull
                 = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
@@ -1257,7 +1257,7 @@ void Mode::calculateForces(Structure& structure) const
                 // If atom j's neighbor is atom i add force contributions.
                 if (n->index == ai->index)
                 {
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
                     vector<size_t> const& table = tableFull.at(n->element);
                     for (size_t j = 0; j < n->dGdr.size(); ++j)
                     {

@@ -182,7 +182,7 @@ bool SymFncBaseExpAng::checkRelevantElement(size_t index) const
     else return false;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 vector<string> SymFncBaseExpAng::getCacheIdentifiers() const
 {
     vector<string> v;

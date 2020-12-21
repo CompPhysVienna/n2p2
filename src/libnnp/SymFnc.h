@@ -238,7 +238,7 @@ public:
      *         otherwise.
      */
     virtual bool        checkRelevantElement(std::size_t index) const = 0;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     /** Get unique cache identifiers.
      *
      * @return Vector of string identifying the type of cache this symmetry
@@ -300,7 +300,7 @@ protected:
     std::set<std::string>      parameters;
     /// Per-element index for derivative memory in Atom::Neighbor::dGdr arrays.
     std::vector<std::size_t>   indexPerElement;
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
     /// Cache indices for each element.
     std::vector<
     std::vector<std::size_t>>  cacheIndices;
@@ -392,7 +392,7 @@ inline void SymFnc::setIndexPerElement(std::size_t elementIndex,
     return;
 }
 
-#ifndef NOSFCACHE
+#ifndef NNP_NO_SF_CACHE
 inline std::vector<std::vector<std::size_t>> SymFnc::getCacheIndices() const
 {
     return cacheIndices;

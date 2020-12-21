@@ -24,7 +24,7 @@ using namespace nnp;
 double const CoreFunction::E = exp(1.0);
 
 CoreFunction::CoreFunction() : type      (Type::POLY2            ),
-#ifndef NOASYMPOLY
+#ifndef NNP_NO_ASYM_POLY
                                asymmetric(false                  ),
 #endif
                                fPtr      (&CoreFunction::  fPOLY2),
