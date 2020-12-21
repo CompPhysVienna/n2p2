@@ -74,6 +74,9 @@ public:
      *                  alternative keywords allowed.
      *
      * @return `True` if keyword exists, `False` otherwise.
+     *
+     * @note This throws an error if the keyword is not in the list of known
+     *       keywords.
      */
     bool                     keywordExists(
                                        std::string const& keyword,

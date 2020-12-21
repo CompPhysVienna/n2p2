@@ -62,8 +62,8 @@ class Test_keywordExists:
         assert s1.keywordExists("number_of_elements") is True, (
                "Keyword exists but return value is False.")
     def test_nonexisting_key(self, prepare_dir, s1):
-        assert s1.keywordExists("asdf") is False, (
-               "Keyword exists but return value is False.")
+        with pytest.raises(RuntimeError):
+            s1.keywordExists("asdf")
     def test_nonstring_key(self, prepare_dir, s1):
         with pytest.raises(TypeError):
             s1.keywordExists(3)

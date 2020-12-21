@@ -174,6 +174,11 @@ size_t Settings::loadFile(string const& fileName)
 
 bool Settings::keywordExists(string const& keyword, bool exact) const
 {
+    if (knownKeywords.find(keyword) == knownKeywords.end())
+    {
+        throw runtime_error("ERROR: Not in the list of allowed keyword: \"" +
+                            keyword + "\".\n");
+    }
     if (exact || knownKeywords.at(keyword)->isUnique())
     {
         return (contents.find(keyword) != contents.end());

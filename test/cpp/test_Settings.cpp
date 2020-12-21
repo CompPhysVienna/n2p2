@@ -64,6 +64,9 @@ BOOST_FIXTURE_TEST_CASE(UnknownKeyword_NoCriticalErrors,
     }
     BOOST_REQUIRE_EQUAL(numProblems, 2);
 
+    BOOST_TEST_INFO("Forbidden to parse file for unknown keywords.\n");
+    BOOST_REQUIRE_THROW(s.keywordExists("abcdefghijk"), runtime_error);
+
     bfs::current_path("..");
     bfs::remove_all("test");
 }
