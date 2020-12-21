@@ -106,6 +106,34 @@ kalman_etamax                   1.0            # Standard Kalman filter paramete
 # NOTE: <<rshift>> is optional!
 #symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
 
+# Weighted radial symmetry function (type 12):
+#symfunction_short <element-central> 12 <eta> <rshift> <rcutoff>
+
+# Weighted narrow Angular symmetry function (type 13):
+#symfunction_short <element-central> 13 <eta> <rshift> <lambda> <zeta> <rcutoff>
+
+# Radial symmetry function with compact support (type 20):
+#symfunction_short <element-central> 20 <element-neighbor> <rlow> <rcutoff> <subtype>
+
+# Narrow angular symmetry function with compact support (type 21):
+#symfunction_short <element-central> 21 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
+
+# Wide angular symmetry function with compact support (type 22):
+#symfunction_short <element-central> 22 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
+
+# Weighted radial symmetry function with compact support (type 23):
+#symfunction_short <element-central> 23 <rlow> <rcutoff> <subtype>
+
+# Weighted narrow angular symmetry function with compact support (type 24):
+#symfunction_short <element-central> 24 <rlow> <rcutoff> <left> <right> <subtype>
+
+# Weighted wide angular symmetry function with compact support (type 24):
+#symfunction_short <element-central> 25 <rlow> <rcutoff> <left> <right> <subtype>
+
+##############################
+# EXAMPLE SYMMETRY FUNCTIONS #
+##############################
+
 # Generating radial symmetry function set:
 # mode  = shift    
 # r_0   = 1.500E+00
