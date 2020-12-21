@@ -125,6 +125,8 @@ void KalmanFilter::update()
 
 void KalmanFilter::update(size_t const sizeObservation)
 {
+    sw[prefix].start(timingReset);
+
     X.resize(sizeState, sizeObservation);
 
     // Calculate temporary result.
@@ -185,6 +187,9 @@ void KalmanFilter::update(size_t const sizeObservation)
 
     numUpdates++;
 
+    if (timingReset) timingReset = false;
+    sw[prefix].stop();
+
     return;
 }
 
@@ -236,9 +241,9 @@ string KalmanFilter::status(size_t epoch) const
 {
 
     double Pasym = 0.5 * (P - P.transpose()).array().abs().mean();
-    double Pdiag = P.diagonal().array().abs().sum(); 
+    double Pdiag = P.diagonal().array().abs().sum();
     double Poffdiag = (P.array().abs().sum() - Pdiag)
-                   / (sizeState * (sizeState - 1));
+                    / (sizeState * (sizeState - 1));
     Pdiag /= sizeState;
     double Kmean = K.array().abs().mean();
 

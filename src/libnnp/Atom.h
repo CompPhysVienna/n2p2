@@ -19,6 +19,7 @@
 
 #include "Vec3D.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -90,6 +91,8 @@ struct Atom
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for this atom.
     bool                     hasSymmetryFunctionDerivatives;
+    /// If an additional charge neuron in the short-range NN is present.
+    bool                     useChargeNeuron;
     /// Index number of this atom.
     std::size_t              index;
     /// Index number of structure this atom belongs to.
@@ -108,6 +111,8 @@ struct Atom
     double                   energy;
     /// Atomic charge determined by neural network.
     double                   charge;
+    /// Atomic reference charge.
+    double                   chargeRef;
     /// Cartesian coordinates
     Vec3D                    r;
     /// Force vector calculated by neural network.
@@ -128,6 +133,8 @@ struct Atom
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.
     std::vector<double>      dEdG;
+    /// Derivative of atomic charge with respect to symmetry functions.
+    std::vector<double>      dQdG;
 #ifdef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
@@ -219,20 +226,27 @@ struct Atom
      * smaller cutoff is requested.
      */
     std::size_t              getNumNeighbors(double cutoffRadius) const;
-    /** Update force error metrices with forces of this atom.
+    /** Update property error metrics with data from this atom.
      *
-     * @param[in,out] error Input error metric vector to be updated.
+     * @param[in] property One of "force" or "charge".
+     * @param[in,out] error Input error metric map to be updated.
      * @param[in,out] count Input counter to be updated.
      */
-    void                     updateErrorForces(
-                                             std::vector<double>& rmse,
-                                             std::size_t&         count) const;
+    void                     updateError(
+                                   std::string const&             property,
+                                   std::map<std::string, double>& error,
+                                   std::size_t&                   count) const;
     /** Get reference and NN forces for this atoms.
      *
      * @return Vector of strings with #indexStructure, #index, #fRef, #f
      * values.
      */
     std::vector<std::string> getForcesLines() const;
+    /** Get reference and NN charge for this atoms.
+     *
+     * @return Line with #indexStructure, #index, #chargeRef, #charge values.
+     */
+    std::string              getChargeLine() const;
     /** Get atom information as a vector of strings.
      *
      * @return Lines with atom information.

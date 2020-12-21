@@ -17,8 +17,10 @@
 #include "Training.h"
 #include "utility.h"
 #include <mpi.h>
+#include <cstddef> // std::size_t
 #include <cstdlib> // atoi
 #include <fstream>
+#include <string>
 
 using namespace std;
 using namespace nnp;
@@ -27,7 +29,15 @@ int main(int argc, char* argv[])
 {
     int numProcs = 0;
     int myRank   = 0;
+    size_t stage = 0;
     ofstream myLog;
+
+    string suffix = "";
+    if (argc > 1)
+    {
+        stage = (size_t)atoi(argv[1]);
+        suffix = strpr(".stage-%zu", stage);
+    }
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
@@ -36,11 +46,13 @@ int main(int argc, char* argv[])
     // Basic setup.
     Training training;
     if (myRank != 0) training.log.writeToStdout = false;
-    myLog.open(strpr("nnp-train.log.%04d", myRank).c_str());
+
+    myLog.open((strpr("nnp-train.log.%04d", myRank) + suffix).c_str());
     training.log.registerStreamPointer(&myLog);
     training.setupMPI();
     training.initialize();
     training.loadSettingsFile();
+    training.setStage(stage);
     training.setupGeneric();
     training.setupSymmetryFunctionScaling();
     training.setupSymmetryFunctionStatistics(false, false, false, false);

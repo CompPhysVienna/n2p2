@@ -82,6 +82,14 @@ namespace nnp
 class Mode
 {
 public:
+    enum class NNPType
+    {
+        /// Short range NNP only.
+        SHORT_ONLY,
+        /// Short range NNP with additional charge NN (M. Bircher).
+        SHORT_CHARGE_NN
+    };
+
     Mode();
     /** Write welcome message with version information.
      */
@@ -164,7 +172,7 @@ public:
      * Searches symmetry functions for identical cutoff functions or compact
      * function (i.e. all cachable stuff) and sets up a caching index.
      */
-    void                     setupSymmetryFunctionCache(bool verbose = false);
+    virtual void             setupSymmetryFunctionCache(bool verbose = false);
 #endif
     /** Extract required memory dimensions for symmetry function derivatives.
      *
@@ -203,15 +211,21 @@ public:
     virtual void             setupNeuralNetwork();
     /** Set up neural network weights from files.
      *
-     * @param[in] fileNameFormat Format for weights file name. The string must
-     *                           contain one placeholder for the atomic number.
+     * @param[in] fileNameFormatShort Format for weights file name. The string
+     *                                must contain one placeholder for the
+     *                                atomic number.
+     * @param[in] fileNameFormatCharge Format for charge NN weights file name.
+     *                                 The string must contain one placeholder
+     *                                 for the atomic number.
      *
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     virtual void             setupNeuralNetworkWeights(
-                                 std::string const& fileNameFormat
-                                                       = "weights.%03zu.data");
+                                std::string const& fileNameFormatShort
+                                                      = "weights.%03zu.data",
+                                std::string const& fileNameFormatCharge
+                                                      = "weightse.%03zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -241,6 +255,22 @@ public:
     void                     calculateSymmetryFunctionGroups(
                                                        Structure& structure,
                                                        bool const derivatives);
+    /** Calculate a single atomic neural network for a given atom and nn type.
+     *
+     * @param[in] nnId Neural network identifier, e.g. "short", "charge".
+     * @param[in] atom Input atom.
+     * @param[in] derivatives If `true` calculate also derivatives of neural
+     *                        networks with respect to input layer neurons
+     *                        (required for force calculation).
+     *
+     * The atomic energy and charge is stored in Atom::energy and Atom::charge,
+     * respectively. If derivatives are calculated the results are stored in
+     * Atom::dEdG or Atom::dQdG.
+     */
+    //void                     calculateAtomicNeuralNetwork(
+    //                                           std::string const& nnId,
+    //                                           Atom&              atom,
+    //                                           bool const         derivatives);
     /** Calculate atomic neural networks for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -248,13 +278,12 @@ public:
      *                        networks with respect to input layer neurons
      *                        (required for force calculation).
      *
-     * The atomic energy is stored in Atom::energy. If derivatives are
-     * calculated the results are stored in Atom::dEdG. The atomic energy
-     * energy offset (keyword `atom_energy`) is also added at this point.
+     * This internally calls calculateAtomicNeuralNetwork with appropriate
+     * neural network identifiers depending on the NNP type.
      */
     void                     calculateAtomicNeuralNetworks(
-                                                 Structure& structure,
-                                                 bool const derivatives) const;
+                                                       Structure& structure,
+                                                       bool const derivatives);
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.
@@ -263,6 +292,14 @@ public:
      * stored in Structure::energy.
      */
     void                     calculateEnergy(Structure& structure) const;
+    /** Calculate total charge for a given structure.
+     *
+     * @param[in] structure Input structure.
+     *
+     * Sum up charge from atomic charge contributions. Result is
+     * stored in Structure::charge.
+     */
+    void                     calculateCharge(Structure& structure) const;
     /** Calculate forces for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -307,13 +344,15 @@ public:
     double                   getEnergyWithOffset(
                                             Structure const& structure,
                                             bool             ref = true) const;
-    /** Apply normalization to given energy.
+    /** Apply normalization to given property.
      *
-     * @param[in] energy Input energy in physical units.
+     * @param[in] property One of "energy", "force".
+     * @param[in] value Input property value in physical units.
      *
-     * @return Energy in normalized units.
+     * @return Property in normalized units.
      */
-    double                   normalizedEnergy(double energy) const;
+    double                   normalized(std::string const& property,
+                                        double             value) const;
     /** Apply normalization to given energy of structure.
      *
      * @param[in] structure Input structure with energy in physical units.
@@ -324,20 +363,15 @@ public:
     double                   normalizedEnergy(
                                             Structure const& structure,
                                             bool             ref = true) const;
-    /** Apply normalization to given force.
+    /** Undo normalization for a given property.
      *
-     * @param[in] force Input force in physical units.
+     * @param[in] property One of "energy", "force".
+     * @param[in] value Input property value in normalized units.
      *
-     * @return Force in normalized units.
+     * @return Property in physical units.
      */
-    double                   normalizedForce(double force) const;
-    /** Undo normalization for a given energy.
-     *
-     * @param[in] energy Input energy in normalized units.
-     *
-     * @return Energy in physical units.
-     */
-    double                   physicalEnergy(double energy) const;
+    double                   physical(std::string const& property,
+                                      double             value) const;
     /** Undo normalization for a given energy of structure.
      *
      * @param[in] structure Input structure with energy in normalized units.
@@ -347,13 +381,6 @@ public:
      */
     double                   physicalEnergy(Structure const& structure,
                                             bool             ref = true) const;
-    /** Undo normalization for a given force.
-     *
-     * @param[in] force Input force in normalized units.
-     *
-     * @return Force in physical units.
-     */
-    double                   physicalForce(double force) const;
     /** Convert one structure to normalized units.
      *
      * @param[in,out] structure Input structure.
@@ -474,8 +501,10 @@ public:
     Log        log;
 
 protected:
+    NNPType                    nnpType;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
+    bool                       useChargeNN;
     std::size_t                numElements;
     std::vector<std::size_t>   minNeighbors;
     std::vector<double>        minCutoffRadius;
@@ -488,6 +517,14 @@ protected:
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
     std::vector<Element>       elements;
+
+    /** Read in weights for a specific type of neural network.
+     *
+     * @param[in] type Actual network type to initialize ("short" or "charge").
+     * @param[in] fileNameFormat Weights file name format.
+     */
+    void readNeuralNetworkWeights(std::string const& type,
+                                  std::string const& fileName);
 };
 
 //////////////////////////////////

@@ -53,12 +53,11 @@ using namespace std;
 using namespace nnp;
 
 Element::Element(size_t const index, ElementMap const& elementMap) :
-    neuralNetwork     (NULL                          ),
-    elementMap        (elementMap                    ),
-    index             (index                         ),
-    atomicNumber      (elementMap.atomicNumber(index)),
-    atomicEnergyOffset(0.0                           ),
-    symbol            (elementMap.symbol(index)      )
+    elementMap         (elementMap                    ),
+    index              (index                         ),
+    atomicNumber       (elementMap.atomicNumber(index)),
+    atomicEnergyOffset (0.0                           ),
+    symbol             (elementMap.symbol(index)      )
 {
 }
 
@@ -75,11 +74,6 @@ Element::~Element()
          it != symmetryFunctionGroups.end(); ++it)
     {
         delete *it;
-    }
-
-    if (neuralNetwork != NULL)
-    {
-        delete neuralNetwork;
     }
 }
 

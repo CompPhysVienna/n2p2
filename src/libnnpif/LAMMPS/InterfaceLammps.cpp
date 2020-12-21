@@ -355,7 +355,7 @@ double InterfaceLammps::getAtomicEnergy(int index) const
 {
     Atom const& a = structure.atoms.at(index);
 
-    if (normalize) return physicalEnergy(a.energy) / cfenergy;
+    if (normalize) return physical("energy", a.energy) / cfenergy;
     else return a.energy / cfenergy;
 }
 

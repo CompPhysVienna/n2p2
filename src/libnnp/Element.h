@@ -19,9 +19,11 @@
 
 #include "CutoffFunction.h"
 #include "ElementMap.h"
+#include "NeuralNetwork.h"
 #include "SymFnc.h"
 #include "SymFncStatistics.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <utility> // std::pair
 #include <vector>  // std::vector
@@ -30,7 +32,6 @@ namespace nnp
 {
 
 struct Atom;
-class NeuralNetwork;
 class SymGrp;
 
 /// Contains element-specific data.
@@ -222,10 +223,10 @@ public:
     std::vector<std::size_t> getCacheSizes() const;
 #endif
 
-    /// Neural network pointer for this element.
-    NeuralNetwork*             neuralNetwork;
+    /// Neural networks for this element.
+    std::map<std::string, NeuralNetwork> neuralNetworks;
     /// Symmetry function statistics.
-    SymFncStatistics           statistics;
+    SymFncStatistics                     statistics;
 
 protected:
     /// Copy of element map.

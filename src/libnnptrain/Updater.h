@@ -17,7 +17,10 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
+#include "Stopwatch.h"
+
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -75,6 +78,21 @@ public:
      * @return Vector of information lines.
      */
     virtual std::vector<std::string> info() const = 0;
+    /** Activate detailed timing.
+     *
+     * @param[in] prefix Prefix used for stopwatch map entries.
+     */
+    virtual void                     setupTiming(
+                                            std::string const& prefix = "upd");
+    /** Start a new timing loop (e.g. epoch).
+     */
+    virtual void                     resetTimingLoop();
+    /** Return timings gathered in stopwatch map.
+     *
+     * @return Stopwatch map.
+     */
+    virtual
+    std::map<std::string, Stopwatch> getTiming() const;
 
 protected:
     /** Constructor
@@ -84,8 +102,16 @@ protected:
      */
     Updater(std::size_t const sizeState);
 
+    /// Whether detailed timing is enabled.
+    bool                             timing;
+    /// Internal loop timer reset switch.
+    bool                             timingReset;
     /// Number of neural network connections (weights + biases).
-    std::size_t sizeState;
+    std::size_t                      sizeState;
+    /// Prefix for timing stopwatches.
+    std::string                      prefix;
+    /// Stopwatch map for timing.
+    std::map<std::string, Stopwatch> sw;
 };
 
 }

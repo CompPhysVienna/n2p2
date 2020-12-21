@@ -22,6 +22,7 @@
 #include "Vec3D.h"
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -75,6 +76,8 @@ struct Structure
     double                   energy;
     /// Reference potential energy.
     double                   energyRef;
+    /// Charge determined by neural network potential.
+    double                   charge;
     /// Reference charge.
     double                   chargeRef;
     /// Simulation box volume.
@@ -233,36 +236,36 @@ struct Structure
     /** Clear neighbor list of all atoms.
      */
     void                     clearNeighborList();
-    /** Update energy error metrices with this structure.
+    /** Update property error metrics with this structure.
      *
-     * @param[in,out] error Input error metric vector to be updated.
+     * @param[in] property One of "energy", "force" or "charge".
+     * @param[in,out] error Input error metric map to be updated.
      * @param[in,out] count Input counter to be updated.
      *
-     * The error metric vector stores temporary sums for the following
-     * metrices:
+     * The "energy" error metric map stores temporary sums for the following
+     * metrics:
      *
-     * index 0: RMSE of energy per atom
-     * index 1: RMSE of energy
-     * index 2: MAE  of energy per atom
-     * index 3: MAE  of energy
+     * key "RMSEpa": RMSE of energy per atom
+     * key "RMSE"  : RMSE of energy
+     * key "MAEpa" : MAE  of energy per atom
+     * key "MAE"   : MAE  of energy
+     *
+     * The "force" error metric map stores temporary sums for the following
+     * metrics:
+     *
+     * key "RMSE"  : RMSE of forces
+     * key "MAE"   : MAE  of forces
+     *
+     * The "charge" error metric map stores temporary sums for the following
+     * metrics:
+     *
+     * key "RMSE"  : RMSE of charges
+     * key "MAE"   : MAE  of charges
      */
-    void                     updateErrorEnergy(
-                                             std::vector<double>& error,
-                                             std::size_t&         count) const;
-    /** Update force error metrices with all atoms of this structure.
-     *
-     * @param[in,out] error Input error metric vector to be updated.
-     * @param[in,out] count Input counter to be updated.
-     *
-     * The error metric vector stores temporary sums for the following
-     * metrices:
-     *
-     * index 0: RMSE of forces
-     * index 1: MAE  of forces
-     */
-    void                     updateErrorForces(
-                                             std::vector<double>& error,
-                                             std::size_t&         count) const;
+    void                     updateError(
+                                   std::string const&             property,
+                                   std::map<std::string, double>& error,
+                                   std::size_t&                   count) const;
     /** Get reference and NN energy.
      *
      * @return String with #index, #energyRef and #energy values.
@@ -273,6 +276,11 @@ struct Structure
      * @return Vector of strings with force comparison.
      */
     std::vector<std::string> getForcesLines() const;
+    /** Get reference and NN charges for all atoms.
+     *
+     * @return Vector of strings with charge comparison.
+     */
+    std::vector<std::string> getChargesLines() const;
     /** Write configuration to file.
      *
      * @param[in,out] fileName Ouptut file name.

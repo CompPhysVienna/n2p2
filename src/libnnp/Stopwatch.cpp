@@ -24,7 +24,8 @@ const double Stopwatch::NSEC = 1E-9;
 Stopwatch::Stopwatch()
 {
     state        = STOPPED;
-    timeElapsed  = 0.0;
+    timeTotal    = 0.0;
+    timeLoop     = 0.0;
 #ifdef NNP_NO_TIME
     //fprintf(stderr, "WARNING: Stopwatch is using dummy implementation.\n");
 #elif __linux__
@@ -36,7 +37,7 @@ Stopwatch::Stopwatch()
 
 }
 
-void Stopwatch::start()
+void Stopwatch::start(bool newLoop)
 {
     if (state == STOPPED)
     {
@@ -46,6 +47,7 @@ void Stopwatch::start()
 #elif __MACH__
         time = mach_absolute_time();
 #endif
+        if (newLoop) timeLoop = 0.0;
         state = RUNNING;
     }
     else
@@ -59,48 +61,40 @@ void Stopwatch::start()
 
 double Stopwatch::stop()
 {
-    timeElapsed += updateTime();
+    stopTime();
 
-    state = STOPPED;
-
-    return timeElapsed;
+    return getTotal();
 }
 
-double Stopwatch::split()
+double Stopwatch::loop()
 {
-    double splitTime = updateTime();
+    stopTime();
 
-    timeElapsed += splitTime;
-
-    return timeElapsed;
-}
-
-double Stopwatch::split(double* lap)
-{
-    double splitTime = updateTime();
-
-    timeElapsed += splitTime;
-    *lap = splitTime;
-
-    return timeElapsed;
-}
-
-double Stopwatch::getTimeElapsed() const
-{
-    return timeElapsed;
+    return getLoop();
 }
 
 void Stopwatch::reset()
 {
-    state           = STOPPED;
-    timeElapsed     = 0.0;
+    state        = STOPPED;
+    timeTotal    = 0.0;
+    timeLoop     = 0.0;
 #ifdef NNP_NO_TIME
 #elif __linux__
     time.tv_sec  = 0;
     time.tv_nsec = 0;
 #elif __MACH__
-    time = 0;
+    time         = 0;
 #endif
+
+    return;
+}
+
+void Stopwatch::stopTime()
+{
+    double timeInterval = updateTime();
+    timeLoop += timeInterval;
+    timeTotal += timeInterval;
+    state = STOPPED;
 
     return;
 }

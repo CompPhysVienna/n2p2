@@ -19,6 +19,7 @@
 #include <cstdio>    // vsprintf
 #include <cstdarg>   // va_list, va_start, va_end
 #include <iomanip>   // std::setw
+#include <limits>    // std::numeric_limits
 #include <sstream>   // std::istringstream
 #include <stdexcept> // std::runtime_error
 
@@ -234,6 +235,51 @@ void appendLinesToFile(FILE* const& file, vector<string> const lines)
     }
 
     return;
+}
+
+map<size_t, vector<double>> readColumnsFromFile(string         fileName,
+                                                vector<size_t> columns,
+                                                char           comment)
+{
+    map<size_t, vector<double>> result;
+
+    sort(columns.begin(), columns.end());
+    for (auto col : columns)
+    {
+        result[col] = vector<double>();
+    }
+
+    ifstream file;
+    file.open(fileName.c_str());
+    if (!file.is_open())
+    {
+        throw runtime_error("ERROR: Could not open file: \"" + fileName
+                            + "\".\n");
+    }
+    string line;
+    while (getline(file, line))
+    {
+        if (line.size() == 0) continue;
+        if (line.at(0) != comment)
+        {
+            vector<string> splitLine = split(reduce(line));
+            for (auto col : columns)
+            {
+                if (col >= splitLine.size())
+                {
+                    result[col].push_back(
+                        std::numeric_limits<double>::quiet_NaN());
+                }
+                else
+                {
+                    result[col].push_back(atof(splitLine.at(col).c_str()));
+                }
+            }
+        }
+    }
+    file.close();
+
+    return result;
 }
 
 double pow_int(double x, int n)

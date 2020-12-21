@@ -110,6 +110,20 @@ void                     appendLinesToFile(
 void                     appendLinesToFile(
                                          FILE* const&                   file,
                                          std::vector<std::string> const lines);
+/** Read multiple columns of data from file.
+ *
+ * @param[in] fileName Name of data file.
+ * @param[in] columns Vector with column indices of interest (starting with 0).
+ * @param[in] comment Lines starting with comment sign are ignored.
+ *
+ * @return Map from column index to vector of data.
+  */
+std::map<std::size_t,
+         std::vector<double>>
+                         readColumnsFromFile(
+                                       std::string fileName,
+                                       std::vector<std::size_t> columns,
+                                       char                     comment = '#');
 /** Safely access map entry.
  *
  * @param[in] stdMap Map to search in.

@@ -124,6 +124,9 @@ public:
                 int const* const&                numNeuronsPerLayer,
                 ActivationFunction const* const& activationFunctionsPerLayer);
     ~NeuralNetwork();
+    // Prevent copying.
+    //NeuralNetwork(const NeuralNetwork&) = delete;
+    //NeuralNetwork(NeuralNetwork&&) = delete;
     /** Turn on/off neuron normalization.
      *
      * @param[in] normalizeNeurons true or false (default: false).
@@ -216,6 +219,13 @@ public:
      * @param[in] input Input layer node values.
      */
     void                     setInput(double const* const& input) const;
+    /** Set neural network input layer node values.
+     *
+     * @param[in] index Index of neuron to set.
+     * @param[in] value Input layer neuron value.
+     */
+    void                     setInput(std::size_t const index,
+                                      double const      value) const;
     /** Get neural network output layer node values.
      *
      * @param[out] output Output layer node values.
@@ -327,7 +337,7 @@ public:
                                                  double* min,
                                                  double* max,
                                                  double* sum,
-                                                 double* sum2);
+                                                 double* sum2) const;
     /** Reset neuron statistics.
      *
      * Counters and summation variables for neuron statistics are reset.

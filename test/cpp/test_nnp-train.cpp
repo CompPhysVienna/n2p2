@@ -35,9 +35,9 @@ void nnpToolTestBody(Example_nnp_train const example)
                                 accuracy);
             BOOST_REQUIRE_SMALL(example.rmseEnergyTest - stod(columns.at(2)),
                                 accuracy);
-            BOOST_REQUIRE_SMALL(example.rmseForcesTrain - stod(columns.at(3)),
+            BOOST_REQUIRE_SMALL(example.rmseForcesTrain - stod(columns.at(9)),
                                 accuracy);
-            BOOST_REQUIRE_SMALL(example.rmseForcesTest - stod(columns.at(4)),
+            BOOST_REQUIRE_SMALL(example.rmseForcesTest - stod(columns.at(10)),
                                 accuracy);
         }
     }

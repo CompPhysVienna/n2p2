@@ -29,18 +29,21 @@
 #endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
+#include <utility>   // std::piecewise_construct, std::forward_as_tuple
 
 using namespace std;
 using namespace nnp;
 
-Mode::Mode() : normalize                 (false),
-               checkExtrapolationWarnings(false),
-               numElements               (0    ),
-               maxCutoffRadius           (0.0  ),
-               cutoffAlpha               (0.0  ),
-               meanEnergy                (0.0  ),
-               convEnergy                (1.0  ),
-               convLength                (1.0  )
+Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
+               normalize                 (false              ),
+               checkExtrapolationWarnings(false              ),
+               useChargeNN               (false              ),
+               numElements               (0                  ),
+               maxCutoffRadius           (0.0                ),
+               cutoffAlpha               (0.0                ),
+               meanEnergy                (0.0                ),
+               convEnergy                (1.0                ),
+               convLength                (1.0                )
 {
 }
 
@@ -74,8 +77,33 @@ void Mode::loadSettingsFile(string const& fileName)
            "**************************************\n";
     log << "\n";
 
-    settings.loadFile(fileName);
+    size_t numCriticalProblems = settings.loadFile(fileName);
     log << settings.info();
+    if (numCriticalProblems > 0)
+    {
+        throw runtime_error(strpr("ERROR: %zu critical problem(s) were found "
+                                  "in settings file.\n", numCriticalProblems));
+    }
+
+    if (settings.keywordExists("nnp_type"))
+    {
+        nnpType = (NNPType)atoi(settings["nnp_type"].c_str());
+    }
+
+    if (nnpType == NNPType::SHORT_ONLY)
+    {
+        log << "This settings file defines a short-range only NNP.\n";
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        log << "This settings file defines a short-range NNP with additional "
+               "charge NN (method by M. Bircher).\n";
+        useChargeNN = true;
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown NNP type.\n");
+    }
 
     log << "*****************************************"
            "**************************************\n";
@@ -966,16 +994,37 @@ void Mode::setupNeuralNetwork()
         NeuralNetworkTopology& t = nnt.at(i);
 
         t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
-        e.neuralNetwork = new NeuralNetwork(
-                                         t.numLayers,
-                                         t.numNeuronsPerLayer.data(),
-                                         t.activationFunctionsPerLayer.data());
-        e.neuralNetwork->setNormalizeNeurons(normalizeNeurons);
+        // Need one extra neuron for atomic charge.
+        if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
+        e.neuralNetworks.emplace(piecewise_construct,
+                                 forward_as_tuple("short"),
+                                 forward_as_tuple(
+                                     t.numLayers,
+                                     t.numNeuronsPerLayer.data(),
+                                     t.activationFunctionsPerLayer.data()));
+        e.neuralNetworks.at("short").setNormalizeNeurons(normalizeNeurons);
         log << strpr("Atomic short range NN for "
                      "element %2s :\n", e.getSymbol().c_str());
-        log << e.neuralNetwork->info();
+        log << e.neuralNetworks.at("short").info();
         log << "-----------------------------------------"
                "--------------------------------------\n";
+        if (useChargeNN)
+        {
+            e.neuralNetworks.emplace(
+                                    piecewise_construct,
+                                    forward_as_tuple("charge"),
+                                    forward_as_tuple(
+                                        t.numLayers,
+                                        t.numNeuronsPerLayer.data(),
+                                        t.activationFunctionsPerLayer.data()));
+            e.neuralNetworks.at("charge")
+                .setNormalizeNeurons(normalizeNeurons);
+            log << strpr("Atomic charge NN for "
+                         "element %2s :\n", e.getSymbol().c_str());
+            log << e.neuralNetworks.at("charge").info();
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+        }
     }
 
     log << "*****************************************"
@@ -984,40 +1033,22 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights(string const& fileNameFormat)
+void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
+                                     string const& fileNameFormatCharge)
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
            "**************************************\n";
     log << "\n";
 
-    log << strpr("Weight file name format: %s\n", fileNameFormat.c_str());
-    for (vector<Element>::iterator it = elements.begin();
-         it != elements.end(); ++it)
+    log << strpr("Short  NN weight file name format: %s\n",
+                 fileNameFormatShort.c_str());
+    readNeuralNetworkWeights("short", fileNameFormatShort);
+    if (useChargeNN)
     {
-        string fileName = strpr(fileNameFormat.c_str(), it->getAtomicNumber());
-        log << strpr("Weight file for element %2s: %s\n",
-                     it->getSymbol().c_str(),
-                     fileName.c_str());
-        ifstream file;
-        file.open(fileName.c_str());
-        if (!file.is_open())
-        {
-            throw runtime_error("ERROR: Could not open file: \"" + fileName
-                                + "\".\n");
-        }
-        string line;
-        vector<double> weights;
-        while (getline(file, line))
-        {
-            if (line.at(0) != '#')
-            {
-                vector<string> splitLine = split(reduce(line));
-                weights.push_back(atof(splitLine.at(0).c_str()));
-            }
-        }
-        it->neuralNetwork->setConnections(&(weights.front()));
-        file.close();
+        log << strpr("Charge NN weight file name format: %s\n",
+                     fileNameFormatCharge.c_str());
+        readNeuralNetworkWeights("charge", fileNameFormatCharge);
     }
 
     log << "*****************************************"
@@ -1046,6 +1077,9 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
         // Skip calculation for individual atom if results are already saved.
         if (a->hasSymmetryFunctionDerivatives) continue;
         if (a->hasSymmetryFunctions && !derivatives) continue;
+
+        // Inform atom if extra charge neuron is present in short-range NN.
+        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1124,6 +1158,9 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
         if (a->hasSymmetryFunctionDerivatives) continue;
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
+        // Inform atom if extra charge neuron is present in short-range NN.
+        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
         a->numSymmetryFunctions = e->numSymmetryFunctions();
@@ -1181,16 +1218,56 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 }
 
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
-                                         bool const derivatives) const
+                                         bool const derivatives)
 {
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    if (nnpType == NNPType::SHORT_ONLY)
     {
-        Element const& e = elements.at(it->element);
-        e.neuralNetwork->setInput(&((it->G).front()));
-        e.neuralNetwork->propagate();
-        if (derivatives) e.neuralNetwork->calculateDEdG(&((it->dEdG).front()));
-        e.neuralNetwork->getOutput(&(it->energy));
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            NeuralNetwork& nn = elements.at(it->element)
+                                .neuralNetworks.at("short");
+            nn.setInput(&((it->G).front()));
+            nn.propagate();
+            if (derivatives)
+            {
+                nn.calculateDEdG(&((it->dEdG).front()));
+            }
+            nn.getOutput(&(it->energy));
+        }
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            // First the charge NN.
+            NeuralNetwork& nnCharge = elements.at(it->element)
+                                      .neuralNetworks.at("charge");
+            nnCharge.setInput(&((it->G).front()));
+            nnCharge.propagate();
+            if (derivatives)
+            {
+                nnCharge.calculateDEdG(&((it->dQdG).front()));
+            }
+            nnCharge.getOutput(&(it->charge));
+
+            // Now the short-range NN (have to set input neurons individually).
+            NeuralNetwork& nnShort = elements.at(it->element)
+                                     .neuralNetworks.at("short");
+            for (size_t i = 0; i < it->G.size(); ++i)
+            {
+                nnShort.setInput(i, it->G.at(i));
+            }
+            // Set additional charge neuron.
+            nnShort.setInput(it->G.size(), it->charge);
+            nnShort.propagate();
+            if (derivatives)
+            {
+                nnShort.calculateDEdG(&((it->dEdG).front()));
+            }
+            nnShort.getOutput(&(it->energy));
+        }
     }
 
     return;
@@ -1204,6 +1281,19 @@ void Mode::calculateEnergy(Structure& structure) const
          it != structure.atoms.end(); ++it)
     {
         structure.energy += it->energy;
+    }
+
+    return;
+}
+
+void Mode::calculateCharge(Structure& structure) const
+{
+    // Loop over all atoms and add atomic charge contributions to total charge.
+    structure.charge = 0.0;
+    for (vector<Atom>::iterator it = structure.atoms.begin();
+         it != structure.atoms.end(); ++it)
+    {
+        structure.charge += it->charge;
     }
 
     return;
@@ -1343,9 +1433,12 @@ double Mode::getEnergyWithOffset(Structure const& structure, bool ref) const
     return result;
 }
 
-double Mode::normalizedEnergy(double energy) const
+double Mode::normalized(string const& property, double value) const
 {
-    return energy * convEnergy; 
+    if      (property == "energy") return value * convEnergy;
+    else if (property == "force") return value * convEnergy / convLength;
+    else throw runtime_error("ERROR: Unknown property to convert to "
+                             "normalized units.\n");
 }
 
 double Mode::normalizedEnergy(Structure const& structure, bool ref) const
@@ -1353,23 +1446,21 @@ double Mode::normalizedEnergy(Structure const& structure, bool ref) const
     if (ref)
     {
         return (structure.energyRef - structure.numAtoms * meanEnergy)
-               * convEnergy; 
+               * convEnergy;
     }
     else
     {
         return (structure.energy - structure.numAtoms * meanEnergy)
-               * convEnergy; 
+               * convEnergy;
     }
 }
 
-double Mode::normalizedForce(double force) const
+double Mode::physical(string const& property, double value) const
 {
-    return force * convEnergy / convLength;
-}
-
-double Mode::physicalEnergy(double energy) const
-{
-    return energy / convEnergy; 
+    if      (property == "energy") return value / convEnergy;
+    else if (property == "force") return value * convLength / convEnergy;
+    else throw runtime_error("ERROR: Unknown property to convert to physical "
+                             "units.\n");
 }
 
 double Mode::physicalEnergy(Structure const& structure, bool ref) const
@@ -1377,17 +1468,12 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
     if (ref)
     {
         return structure.energyRef / convEnergy + structure.numAtoms
-               * meanEnergy; 
+               * meanEnergy;
     }
     else
     {
-        return structure.energy / convEnergy + structure.numAtoms * meanEnergy; 
+        return structure.energy / convEnergy + structure.numAtoms * meanEnergy;
     }
-}
-
-double Mode::physicalForce(double force) const
-{
-    return force * convLength / convEnergy;
 }
 
 void Mode::convertToNormalizedUnits(Structure& structure) const
@@ -1517,4 +1603,34 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
     }
 
     return prune;
+}
+
+void Mode::readNeuralNetworkWeights(string const& type,
+                                    string const& fileNameFormat)
+{
+    string s = "";
+    if      (type == "short" ) s = "short  NN";
+    else if (type == "charge") s = "charge NN";
+    else
+    {
+        throw runtime_error("ERROR: Unknown neural network type.\n");
+    }
+
+    for (vector<Element>::iterator it = elements.begin();
+         it != elements.end(); ++it)
+    {
+        string fileName = strpr(fileNameFormat.c_str(),
+                                it->getAtomicNumber());
+        log << strpr("Setting %s weights for element %2s from file: %s\n",
+                     s.c_str(),
+                     it->getSymbol().c_str(),
+                     fileName.c_str());
+        vector<double> weights = readColumnsFromFile(fileName,
+                                                     vector<size_t>(1, 0)
+                                                    ).at(0);
+        NeuralNetwork& nn = it->neuralNetworks.at(type);
+        nn.setConnections(&(weights.front()));
+    }
+
+    return;
 }

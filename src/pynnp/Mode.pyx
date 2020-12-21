@@ -55,8 +55,11 @@ cdef class Mode:
                                                   stopOnExtrapolationWarnings)
     def setupNeuralNetwork(self):
         self.thisptr.setupNeuralNetwork()
-    def setupNeuralNetworkWeights(self, fileNameFormat="weights.%03zu.data"):
-        self.thisptr.setupNeuralNetworkWeights(fileNameFormat)
+    def setupNeuralNetworkWeights(self,
+                                  fileNameFormatShort="weights.%03zu.data",
+                                  fileNameFormatCharge="weightse.%03zu.data"):
+        self.thisptr.setupNeuralNetworkWeights(fileNameFormatShort,
+                                               fileNameFormatCharge)
     def calculateSymmetryFunctions(self, Structure structure, derivatives):
         self.thisptr.calculateSymmetryFunctions(deref(structure.thisptr),
                                                 derivatives)

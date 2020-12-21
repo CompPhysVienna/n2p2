@@ -46,13 +46,20 @@ cdef class Prediction(Mode):
     @fileNameScaling.setter
     def fileNameScaling(self, value):
         deref(<pd.Prediction*>self.thisptr).fileNameScaling = value
-    # formatWeightsFiles
+    # formatWeightsFilesShort
     @property
-    def formatWeightsFiles(self):
-        return deref(<pd.Prediction*>self.thisptr).formatWeightsFiles
-    @formatWeightsFiles.setter
-    def formatWeightsFiles(self, value):
-        deref(<pd.Prediction*>self.thisptr).formatWeightsFiles = value
+    def formatWeightsFilesShort(self):
+        return deref(<pd.Prediction*>self.thisptr).formatWeightsFilesShort
+    @formatWeightsFilesShort.setter
+    def formatWeightsFilesShort(self, value):
+        deref(<pd.Prediction*>self.thisptr).formatWeightsFilesShort = value
+    # formatWeightsFilesCharge
+    @property
+    def formatWeightsFilesCharge(self):
+        return deref(<pd.Prediction*>self.thisptr).formatWeightsFilesCharge
+    @formatWeightsFilesCharge.setter
+    def formatWeightsFilesCharge(self, value):
+        deref(<pd.Prediction*>self.thisptr).formatWeightsFilesCharge = value
     # structure
     property structure:
         def __get__(self):
