@@ -25,6 +25,7 @@
 #include "Structure.h"
 #include "SymFnc.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -84,10 +85,18 @@ class Mode
 public:
     enum class NNPType
     {
-        /// Short range NNP only.
-        SHORT_ONLY,
-        /// Short range NNP with additional charge NN (M. Bircher).
-        SHORT_CHARGE_NN
+        /// Short range NNP (2G-HDNNP).
+        HDNNP_2G = 2,
+        /// NNP with electrostatics and non-local charge transfer (4G-HDNNP).
+        HDNNP_4G = 4,
+        /** Short range NNP with charge NN, no electrostatics/Qeq (M. Bircher).
+         *
+         * This is a simplified version of a 4G-HDNNP. Two neural networks are
+         * used: the first one predicts atomic charges, which will be used for
+         * the second NN as additional input neuron. There is no electrostatic
+         * energy and no global charge equilibration as in 4G-HDNNP.
+         */
+        HDNNP_4G_NO_ELEC
     };
 
     Mode();
@@ -501,10 +510,16 @@ public:
     Log        log;
 
 protected:
+    struct NNSetup
+    {
+        std::string id;
+        std::string quantity;
+        std::string quantityPlural;
+    };
+
     NNPType                    nnpType;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
-    bool                       useChargeNN;
     std::size_t                numElements;
     std::vector<std::size_t>   minNeighbors;
     std::vector<double>        minCutoffRadius;
@@ -517,6 +532,9 @@ protected:
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
     std::vector<Element>       elements;
+    std::vector<std::string>   nnk;
+    std::map<
+    std::string, NNSetup>      nns;
 
     /** Read in weights for a specific type of neural network.
      *

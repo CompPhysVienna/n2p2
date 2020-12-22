@@ -115,7 +115,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["force_weight"                  ] = "";
 
     // Alternative keyword names.
-    a["nnp_type"]              = {"nn_type"};
+    a["nnp_type"]              = {"nnp_generation", "nnp_type_gen"};
     a["rmse_threshold_energy"] = {"short_energy_error_threshold"};
     a["rmse_threshold_force" ] = {"short_force_error_threshold"};
     a["energy_fraction"      ] = {"short_energy_fraction"};

@@ -34,16 +34,15 @@
 using namespace std;
 using namespace nnp;
 
-Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
-               normalize                 (false              ),
-               checkExtrapolationWarnings(false              ),
-               useChargeNN               (false              ),
-               numElements               (0                  ),
-               maxCutoffRadius           (0.0                ),
-               cutoffAlpha               (0.0                ),
-               meanEnergy                (0.0                ),
-               convEnergy                (1.0                ),
-               convLength                (1.0                )
+Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
+               normalize                 (false            ),
+               checkExtrapolationWarnings(false            ),
+               numElements               (0                ),
+               maxCutoffRadius           (0.0              ),
+               cutoffAlpha               (0.0              ),
+               meanEnergy                (0.0              ),
+               convEnergy                (1.0              ),
+               convLength                (1.0              )
 {
 }
 
@@ -90,15 +89,21 @@ void Mode::loadSettingsFile(string const& fileName)
         nnpType = (NNPType)atoi(settings["nnp_type"].c_str());
     }
 
-    if (nnpType == NNPType::SHORT_ONLY)
+    if (nnpType == NNPType::HDNNP_2G)
     {
-        log << "This settings file defines a short-range only NNP.\n";
+        log << "This settings file defines a short-range NNP (2G-HDNNP).\n";
     }
-    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    else if (nnpType == NNPType::HDNNP_4G)
     {
-        log << "This settings file defines a short-range NNP with additional "
-               "charge NN (method by M. Bircher).\n";
-        useChargeNN = true;
+        log << "This settings file defines a NNP with electrostatics and\n"
+               "non-local charge transfer (4G-HDNNP).\n";
+    }
+    else if (nnpType == NNPType::HDNNP_4G_NO_ELEC)
+    {
+        log << "This settings file defines a short-range NNP similar to\n"
+               "4G-HDNNP with additional charge NN but with neither\n"
+               "electrostatics nor global charge equilibration\n"
+               "(method by M. Bircher).\n";
     }
     else
     {
@@ -994,8 +999,9 @@ void Mode::setupNeuralNetwork()
         NeuralNetworkTopology& t = nnt.at(i);
 
         t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
-        // Need one extra neuron for atomic charge.
-        if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
+        // Need one extra neuron for atomic charge/electronegativity.
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_4G_NO_ELEC) t.numNeuronsPerLayer[0]++;
         e.neuralNetworks.emplace(piecewise_construct,
                                  forward_as_tuple("short"),
                                  forward_as_tuple(
@@ -1008,20 +1014,27 @@ void Mode::setupNeuralNetwork()
         log << e.neuralNetworks.at("short").info();
         log << "-----------------------------------------"
                "--------------------------------------\n";
-        if (useChargeNN)
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_4G_NO_ELEC)
         {
             e.neuralNetworks.emplace(
                                     piecewise_construct,
-                                    forward_as_tuple("charge"),
+                                    forward_as_tuple("elec"),
                                     forward_as_tuple(
                                         t.numLayers,
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
-            e.neuralNetworks.at("charge")
+            e.neuralNetworks.at("elec")
                 .setNormalizeNeurons(normalizeNeurons);
-            log << strpr("Atomic charge NN for "
-                         "element %2s :\n", e.getSymbol().c_str());
-            log << e.neuralNetworks.at("charge").info();
+            string name;
+            if      (nnpType == NNPType::HDNNP_4G) name = "electronegativity";
+            else if (nnpType == NNPType::HDNNP_4G_NO_ELEC) name = "charge";
+
+            log << strpr("Atomic %s NN for "
+                         "element %2s :\n",
+                         name.c_str(),
+                         e.getSymbol().c_str());
+            log << e.neuralNetworks.at("elec").info();
             log << "-----------------------------------------"
                    "--------------------------------------\n";
         }
@@ -1044,7 +1057,8 @@ void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
     log << strpr("Short  NN weight file name format: %s\n",
                  fileNameFormatShort.c_str());
     readNeuralNetworkWeights("short", fileNameFormatShort);
-    if (useChargeNN)
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_4G_NO_ELEC)
     {
         log << strpr("Charge NN weight file name format: %s\n",
                      fileNameFormatCharge.c_str());
