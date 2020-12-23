@@ -881,92 +881,85 @@ void Mode::setupNeuralNetwork()
            "**************************************\n";
     log << "\n";
 
-    struct NeuralNetworkTopology
+    // All NNP types contain a short range NN.
+    string id = "short";
+    nnk.push_back(id);
+    nns[id].id = id;
+    nns.at(id).name = "short range";
+    nns.at(id).weightFilePrefix = "weights.";
+    nns.at(id).keywordSuffix = "_short";
+
+    // Some NNP types require extra NNs.
+    if (nnpType == NNPType::HDNNP_4G)
     {
-        int                                       numLayers = 0;
-        vector<int>                               numNeuronsPerLayer;
-        vector<NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
-    };
-
-    vector<NeuralNetworkTopology> nnt(numElements);
-
-    size_t globalNumHiddenLayers =
-        (size_t)atoi(settings["global_hidden_layers_short"].c_str());
-    vector<string> globalNumNeuronsPerHiddenLayer =
-        split(reduce(settings["global_nodes_short"]));
-    vector<string> globalActivationFunctions =
-        split(reduce(settings["global_activation_short"]));
-
-    for (size_t i = 0; i < numElements; ++i)
+        id = "elec";
+        nnk.push_back(id);
+        nns[id].id = id;
+        nns.at(id).name = "electronegativity";
+        nns.at(id).weightFilePrefix = "weightse.";
+        nns.at(id).keywordSuffix = "_electrostatic";
+    }
+    else if(nnpType == NNPType::HDNNP_4G_NO_ELEC)
     {
-        NeuralNetworkTopology& t = nnt.at(i);
-        t.numLayers = 2 + globalNumHiddenLayers;
-        t.numNeuronsPerLayer.resize(t.numLayers, 0);
-        t.activationFunctionsPerLayer.resize(t.numLayers,
-                                             NeuralNetwork::AF_IDENTITY);
+        id = "elec";
+        nnk.push_back(id);
+        nns[id].id = id;
+        nns.at(id).name = "charge";
+        nns.at(id).weightFilePrefix = "weightse.";
+        nns.at(id).keywordSuffix = "_electrostatic";
+    }
 
-        for (int i = 0; i < t.numLayers; i++)
+    size_t         globalNumHiddenLayers = 0;
+    vector<string> globalNumNeuronsPerHiddenLayer;
+    vector<string> globalActivationFunctions;
+
+    // Loop over all NNs and set global properties.
+    for (auto& k : nnk)
+    {
+        NNSetup& nn = nns.at(k);
+        nn.topology.resize(numElements);
+        string keyword = "global_hidden_layers" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
         {
-            NeuralNetwork::
-            ActivationFunction& a = t.activationFunctionsPerLayer[i];
-            if (i == 0)
+            globalNumHiddenLayers = (size_t)atoi(settings[keyword].c_str());
+        }
+        keyword = "global_nodes" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            globalNumNeuronsPerHiddenLayer = split(reduce(settings[keyword]));
+        }
+        keyword = "global_activation" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            globalActivationFunctions = split(reduce(settings[keyword]));
+        }
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            NNSetup::Topology& t = nn.topology.at(i);
+            t.numLayers = 2 + globalNumHiddenLayers;
+            t.numNeuronsPerLayer.resize(t.numLayers, 0);
+            t.activationFunctionsPerLayer.resize(t.numLayers,
+                                                 NeuralNetwork::AF_IDENTITY);
+            for (int j = 0; j < t.numLayers; j++)
             {
-                t.numNeuronsPerLayer[i] = 0;
-                a = NeuralNetwork::AF_IDENTITY;
-            }
-            else if (i == t.numLayers - 1)
-            {
-                t.numNeuronsPerLayer[i] = 1;
-                a = NeuralNetwork::AF_IDENTITY;
-            }
-            else
-            {
-                t.numNeuronsPerLayer[i] =
-                    atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
-                if (globalActivationFunctions.at(i-1) == "l")
+                NeuralNetwork::
+                ActivationFunction& a = t.activationFunctionsPerLayer.at(j);
+                if (j == 0)
                 {
+                    t.numNeuronsPerLayer.at(j) = 0;
                     a = NeuralNetwork::AF_IDENTITY;
                 }
-                else if (globalActivationFunctions.at(i-1) == "t")
+                else if (j == t.numLayers - 1)
                 {
-                    a = NeuralNetwork::AF_TANH;
-                }
-                else if (globalActivationFunctions.at(i-1) == "s")
-                {
-                    a = NeuralNetwork::AF_LOGISTIC;
-                }
-                else if (globalActivationFunctions.at(i-1) == "p")
-                {
-                    a = NeuralNetwork::AF_SOFTPLUS;
-                }
-                else if (globalActivationFunctions.at(i-1) == "r")
-                {
-                    a = NeuralNetwork::AF_RELU;
-                }
-                else if (globalActivationFunctions.at(i-1) == "g")
-                {
-                    a = NeuralNetwork::AF_GAUSSIAN;
-                }
-                else if (globalActivationFunctions.at(i-1) == "c")
-                {
-                    a = NeuralNetwork::AF_COS;
-                }
-                else if (globalActivationFunctions.at(i-1) == "S")
-                {
-                    a = NeuralNetwork::AF_REVLOGISTIC;
-                }
-                else if (globalActivationFunctions.at(i-1) == "e")
-                {
-                    a = NeuralNetwork::AF_EXP;
-                }
-                else if (globalActivationFunctions.at(i-1) == "h")
-                {
-                    a = NeuralNetwork::AF_HARMONIC;
+                    t.numNeuronsPerLayer.at(j) = 1;
+                    a = NeuralNetwork::AF_IDENTITY;
                 }
                 else
                 {
-                    throw runtime_error("ERROR: Unknown activation "
-                                        "function.\n");
+                    t.numNeuronsPerLayer.at(j) =
+                        atoi(globalNumNeuronsPerHiddenLayer.at(j-1).c_str());
+                    a = activationFromString(
+                            globalActivationFunctions.at(j-1));
                 }
             }
         }

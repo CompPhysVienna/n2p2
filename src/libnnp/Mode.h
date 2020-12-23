@@ -510,11 +510,30 @@ public:
     Log        log;
 
 protected:
+    /// Setup data for one neural network.
     struct NNSetup
     {
-        std::string id;
-        std::string quantity;
-        std::string quantityPlural;
+        struct Topology
+        {
+            /// Number of NN layers (including input and output layer).
+            int                                numLayers;
+            /// Number of neurons per layer.
+            std::vector<int>                   numNeuronsPerLayer;
+            /// Activation function type per layer.
+            std::vector<
+            NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
+        };
+
+        /// NN identifier, e.g. "short", "charge",...
+        std::string                        id;
+        /// Description string for log output, e.g. "electronegativity".
+        std::string                        name;
+        /// Prefix for weight files.
+        std::string                        weightFilePrefix;
+        /// Suffix for keywords.
+        std::string                        keywordSuffix;
+        /// Per-element NN topology.
+        std::vector<Topology>              topology;
     };
 
     NNPType                    nnpType;
