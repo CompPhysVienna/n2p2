@@ -927,11 +927,23 @@ void Mode::setupNeuralNetwork()
         if (settings.keywordExists(keyword))
         {
             globalNumNeuronsPerHiddenLayer = split(reduce(settings[keyword]));
+            if (globalNumHiddenLayers != globalNumNeuronsPerHiddenLayer.size())
+            {
+                throw runtime_error(strpr("ERROR: Inconsistent global NN "
+                                          "topology keyword \"%s\".\n",
+                                          keyword.c_str()));
+            }
         }
         keyword = "global_activation" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
             globalActivationFunctions = split(reduce(settings[keyword]));
+            if (globalNumHiddenLayers != globalActivationFunctions.size() - 1)
+            {
+                throw runtime_error(strpr("ERROR: Inconsistent global NN "
+                                          "topology keyword \"%s\".\n",
+                                          keyword.c_str()));
+            }
         }
         for (size_t i = 0; i < numElements; ++i)
         {
@@ -939,7 +951,7 @@ void Mode::setupNeuralNetwork()
             t.numLayers = 2 + globalNumHiddenLayers;
             t.numNeuronsPerLayer.resize(t.numLayers, 0);
             t.activationFunctionsPerLayer.resize(t.numLayers,
-                                                 NeuralNetwork::AF_IDENTITY);
+                                                 NeuralNetwork::AF_UNSET);
             for (int j = 0; j < t.numLayers; j++)
             {
                 NeuralNetwork::
@@ -952,6 +964,7 @@ void Mode::setupNeuralNetwork()
                 else if (j == t.numLayers - 1)
                 {
                     t.numNeuronsPerLayer.at(j) = 1;
+                    // TODO: Actually last layer AF can be set by user!
                     a = NeuralNetwork::AF_IDENTITY;
                 }
                 else
@@ -962,6 +975,68 @@ void Mode::setupNeuralNetwork()
                             globalActivationFunctions.at(j-1));
                 }
             }
+        }
+        keyword = "element_hidden_layers" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
+            {
+                vector<string> args = split(reduce(it->second.first));
+                size_t e = elementMap[args.at(0)];
+                size_t n = atoi(args.at(1).c_str());
+                NNSetup::Topology& t = nn.topology.at(e);
+                t.numLayers = n + 2;
+                t.numNeuronsPerLayer.resize(n, 0);
+                t.numNeuronsPerLayer.resize(n, NeuralNetwork::AF_UNSET);
+            }
+        }
+        keyword = "element_nodes" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
+            {
+                vector<string> args = split(reduce(it->second.first));
+                size_t e = elementMap[args.at(0)];
+                size_t n = args.size() - 1;
+                NNSetup::Topology& t = nn.topology.at(e);
+                if (n + 2 != t.numNeuronsPerLayer.size())
+                {
+                    throw runtime_error(strpr("ERROR: Inconsistent per-element"
+                                              " NN topology keyword \"%s\".\n",
+                                              keyword.c_str()));
+                }
+                for (int j = 0; j < t.numLayers; j++)
+                {
+                    if (j == 0)
+                    {
+                        t.numNeuronsPerLayer.at(j) = 0;
+                    }
+                    else if (j == t.numLayers - 1)
+                    {
+                        t.numNeuronsPerLayer.at(j) = 1;
+                    }
+                    else
+                    {
+                        t.numNeuronsPerLayer.at(j) = atoi(args[j+1].c_str());
+                    }
+                }
+            }
+        }
+    }
+
+    if (settings.keywordExists("element_hidden_layers"))
+    {
+        Settings::KeyRange r = settings.getValues("element_hidden_layers");
+        for (Settings::KeyMap::const_iterator it = r.first;
+             it != r.second; ++it)
+        {
+            vector<string> args = split(reduce(it->second.first));
+            size_t e = elementMap[args.at(0)];
+            size_t n = atoi(args.at(1).c_str());
         }
     }
 
