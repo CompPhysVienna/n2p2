@@ -522,6 +522,9 @@ protected:
             /// Activation function type per layer.
             std::vector<
             NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
+
+            /// Constructor.
+            Topology() : numLayers(0) {};
         };
 
         /// NN identifier, e.g. "short", "charge",...

@@ -909,20 +909,56 @@ void Mode::setupNeuralNetwork()
         nns.at(id).keywordSuffix = "_electrostatic";
     }
 
-    size_t         globalNumHiddenLayers = 0;
-    vector<string> globalNumNeuronsPerHiddenLayer;
-    vector<string> globalActivationFunctions;
-
     // Loop over all NNs and set global properties.
     for (auto& k : nnk)
     {
+        // Each elements number of hidden layers.
+        size_t globalNumHiddenLayers = 0;
+        // Abbreviation for current NN.
         NNSetup& nn = nns.at(k);
+        // Set size of NN topology vector.
         nn.topology.resize(numElements);
+        // First, check for global number of hidden layers.
         string keyword = "global_hidden_layers" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
-            globalNumHiddenLayers = (size_t)atoi(settings[keyword].c_str());
+            globalNumHiddenLayers = (size_t)atoi(settings[keyword].c_str())
+                                  + 2;
+            for (auto& t : nn.topology) t.numLayers = globalNumHiddenLayers;
         }
+        // Now, check for per-element number of hidden layers.
+        keyword = "element_hidden_layers" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
+            {
+                vector<string> args = split(reduce(it->second.first));
+                size_t const e = elementMap[args.at(0)];
+                size_t const n = atoi(args.at(1).c_str());
+                nn.topology.at(e).numLayers = n + 2;
+            }
+        }
+        // Check whether user has set all NNs correctly.
+        for (auto& t : nn.topology)
+        {
+            if (t.numLayers == 0)
+            {
+                throw runtime_error("ERROR: Number of neural network hidden "
+                                    "layers unset for some elements.\n");
+            }
+        }
+        // Finally, allocate NN topologies data.
+        for (auto& t : nn.topology)
+        {
+            t.numNeuronsPerLayer.resize(t.numLayers, 0);
+            t.activationFunctionsPerLayer.resize(t.numLayers,
+                                                 NeuralNetwork::AF_UNSET);
+        }
+
+        vector<string> globalNumNeuronsPerHiddenLayer;
+        vector<string> globalActivationFunctions;
         keyword = "global_nodes" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
@@ -964,8 +1000,8 @@ void Mode::setupNeuralNetwork()
                 else if (j == t.numLayers - 1)
                 {
                     t.numNeuronsPerLayer.at(j) = 1;
-                    // TODO: Actually last layer AF can be set by user!
-                    a = NeuralNetwork::AF_IDENTITY;
+                    a = activationFromString(
+                            globalActivationFunctions.at(t.numLayers - 2));
                 }
                 else
                 {
