@@ -958,7 +958,6 @@ void Mode::setupNeuralNetwork()
         }
 
         vector<string> globalNumNeuronsPerHiddenLayer;
-        vector<string> globalActivationFunctions;
         keyword = "global_nodes" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
@@ -970,6 +969,7 @@ void Mode::setupNeuralNetwork()
                                           keyword.c_str()));
             }
         }
+        vector<string> globalActivationFunctions;
         keyword = "global_activation" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
@@ -981,51 +981,44 @@ void Mode::setupNeuralNetwork()
                                           keyword.c_str()));
             }
         }
+        bool globalNumNeurons = (globalNumNeuronsPerHiddenLayer.size() != 0);
+        bool globalActivation = (globalActivationFunctions.size() != 0);
         for (size_t i = 0; i < numElements; ++i)
         {
             NNSetup::Topology& t = nn.topology.at(i);
-            t.numLayers = 2 + globalNumHiddenLayers;
-            t.numNeuronsPerLayer.resize(t.numLayers, 0);
-            t.activationFunctionsPerLayer.resize(t.numLayers,
-                                                 NeuralNetwork::AF_UNSET);
-            for (int j = 0; j < t.numLayers; j++)
+            // Set input layer. Number of input layer neurons will not be set
+            // here.
+            t.numNeuronsPerLayer.at(0) = 0;
+            t.activationFunctionsPerLayer.at(0) = NeuralNetwork::AF_IDENTITY;
+            // Set output layer. Assume single output neuron.
+            t.numNeuronsPerLayer.at(t.numLayers - 1) = 1;
+            // If this element's NN does not use the global number of hidden
+            // layers it makes no sense to set the global number of hidden
+            // neurons or activation functions. Hence, skip the settings here,
+            // appropriate settings should follow later in the per-element
+            // section.
+            if ((size_t)t.numLayers != globalNumHiddenLayers + 2) continue;
+            for (int j = 1; j < t.numLayers; ++j)
             {
-                NeuralNetwork::
-                ActivationFunction& a = t.activationFunctionsPerLayer.at(j);
-                if (j == 0)
+                if ((j == t.numLayers - 1) && globalActivation)
                 {
-                    t.numNeuronsPerLayer.at(j) = 0;
-                    a = NeuralNetwork::AF_IDENTITY;
-                }
-                else if (j == t.numLayers - 1)
-                {
-                    t.numNeuronsPerLayer.at(j) = 1;
-                    a = activationFromString(
-                            globalActivationFunctions.at(t.numLayers - 2));
+                    t.activationFunctionsPerLayer.at(j) = activationFromString(
+                        globalActivationFunctions.at(t.numLayers - 2));
                 }
                 else
                 {
-                    t.numNeuronsPerLayer.at(j) =
-                        atoi(globalNumNeuronsPerHiddenLayer.at(j-1).c_str());
-                    a = activationFromString(
-                            globalActivationFunctions.at(j-1));
+                    if (globalNumNeurons)
+                    {
+                        t.numNeuronsPerLayer.at(j) = atoi(
+                            globalNumNeuronsPerHiddenLayer.at(j - 1).c_str());
+                    }
+                    if (globalActivation)
+                    {
+                        t.activationFunctionsPerLayer.at(j) =
+                            activationFromString(
+                                globalActivationFunctions.at(j - 1));
+                    }
                 }
-            }
-        }
-        keyword = "element_hidden_layers" + nn.keywordSuffix;
-        if (settings.keywordExists(keyword))
-        {
-            Settings::KeyRange r = settings.getValues(keyword);
-            for (Settings::KeyMap::const_iterator it = r.first;
-                 it != r.second; ++it)
-            {
-                vector<string> args = split(reduce(it->second.first));
-                size_t e = elementMap[args.at(0)];
-                size_t n = atoi(args.at(1).c_str());
-                NNSetup::Topology& t = nn.topology.at(e);
-                t.numLayers = n + 2;
-                t.numNeuronsPerLayer.resize(n, 0);
-                t.numNeuronsPerLayer.resize(n, NeuralNetwork::AF_UNSET);
             }
         }
         keyword = "element_nodes" + nn.keywordSuffix;
@@ -1039,6 +1032,33 @@ void Mode::setupNeuralNetwork()
                 size_t e = elementMap[args.at(0)];
                 size_t n = args.size() - 1;
                 NNSetup::Topology& t = nn.topology.at(e);
+                if ((size_t)t.numLayers != n + 2)
+                {
+                    throw runtime_error(strpr("ERROR: Inconsistent per-element"
+                                              " NN topology keyword \"%s\".\n",
+                                              keyword.c_str()));
+                }
+                for (int j = 1; j < t.numLayers - 1; ++j)
+                {
+                    if (j == t.numLayers - 1)
+                    {
+                        t.numNeuronsPerLayer.at(j) = 1;
+                        t.activationFunctionsPerLayer.at(j) = activationFromString(
+                            globalActivationFunctions.at(t.numLayers - 2));
+                    }
+                    else
+                    {
+                        t.numNeuronsPerLayer.at(j) =
+                            atoi(globalNumNeuronsPerHiddenLayer.at(j - 1).c_str());
+                        t.activationFunctionsPerLayer.at(j) = activationFromString(
+                            globalActivationFunctions.at(j - 1));
+                    }
+                }
+
+
+
+
+
                 if (n + 2 != t.numNeuronsPerLayer.size())
                 {
                     throw runtime_error(strpr("ERROR: Inconsistent per-element"
