@@ -922,8 +922,7 @@ void Mode::setupNeuralNetwork()
         string keyword = "global_hidden_layers" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
-            globalNumHiddenLayers = (size_t)atoi(settings[keyword].c_str())
-                                  + 2;
+            globalNumHiddenLayers = atoi(settings[keyword].c_str()) + 2;
             for (auto& t : nn.topology) t.numLayers = globalNumHiddenLayers;
         }
         // Now, check for per-element number of hidden layers.
@@ -940,7 +939,7 @@ void Mode::setupNeuralNetwork()
                 nn.topology.at(e).numLayers = n + 2;
             }
         }
-        // Check whether user has set all NNs correctly.
+        // Check whether user has set all NN's number of layers correctly.
         for (auto& t : nn.topology)
         {
             if (t.numLayers == 0)
@@ -957,6 +956,7 @@ void Mode::setupNeuralNetwork()
                                                  NeuralNetwork::AF_UNSET);
         }
 
+        // Now read global number of neurons and activation functions.
         vector<string> globalNumNeuronsPerHiddenLayer;
         keyword = "global_nodes" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
@@ -981,6 +981,7 @@ void Mode::setupNeuralNetwork()
                                           keyword.c_str()));
             }
         }
+        // Set global number of neurons and activation functions if provided.
         bool globalNumNeurons = (globalNumNeuronsPerHiddenLayer.size() != 0);
         bool globalActivation = (globalActivationFunctions.size() != 0);
         for (size_t i = 0; i < numElements; ++i)
@@ -1021,6 +1022,7 @@ void Mode::setupNeuralNetwork()
                 }
             }
         }
+        // Override global number of neurons with per-element keyword.
         keyword = "element_nodes" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
@@ -1038,78 +1040,67 @@ void Mode::setupNeuralNetwork()
                                               " NN topology keyword \"%s\".\n",
                                               keyword.c_str()));
                 }
-                for (int j = 1; j < t.numLayers - 1; ++j)
+                for (int j = 1; j < t.numLayers - 2; ++j)
                 {
-                    if (j == t.numLayers - 1)
-                    {
-                        t.numNeuronsPerLayer.at(j) = 1;
-                        t.activationFunctionsPerLayer.at(j) = activationFromString(
-                            globalActivationFunctions.at(t.numLayers - 2));
-                    }
-                    else
-                    {
-                        t.numNeuronsPerLayer.at(j) =
-                            atoi(globalNumNeuronsPerHiddenLayer.at(j - 1).c_str());
-                        t.activationFunctionsPerLayer.at(j) = activationFromString(
-                            globalActivationFunctions.at(j - 1));
-                    }
+                    t.numNeuronsPerLayer.at(j) = atoi(args.at(j).c_str());
                 }
-
-
-
-
-
-                if (n + 2 != t.numNeuronsPerLayer.size())
+            }
+        }
+        // Override global activation functions with per-element keyword.
+        keyword = "element_activation" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
+            {
+                vector<string> args = split(reduce(it->second.first));
+                size_t e = elementMap[args.at(0)];
+                size_t n = args.size() - 1;
+                NNSetup::Topology& t = nn.topology.at(e);
+                if ((size_t)t.numLayers != n + 1)
                 {
                     throw runtime_error(strpr("ERROR: Inconsistent per-element"
                                               " NN topology keyword \"%s\".\n",
                                               keyword.c_str()));
                 }
-                for (int j = 0; j < t.numLayers; j++)
+                for (int j = 1; j < t.numLayers - 1; ++j)
                 {
-                    if (j == 0)
-                    {
-                        t.numNeuronsPerLayer.at(j) = 0;
-                    }
-                    else if (j == t.numLayers - 1)
-                    {
-                        t.numNeuronsPerLayer.at(j) = 1;
-                    }
-                    else
-                    {
-                        t.numNeuronsPerLayer.at(j) = atoi(args[j+1].c_str());
-                    }
+                    t.activationFunctionsPerLayer.at(j) =
+                        activationFromString(args.at(j).c_str());
+                }
+            }
+        }
+
+        // Finally check everything for any unset NN property.
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            NNSetup::Topology const& t = nn.topology.at(i);
+            for (int j = 0; j < t.numLayers; ++j)
+            {
+                if (j != 0 && t.numNeuronsPerLayer.at(j) == 0)
+                {
+                    throw runtime_error(strpr(
+                              "ERROR: NN \"%s\", element %2s: number of "
+                              "neurons for layer %d unset.\n",
+                              nn.id.c_str(),
+                              elements.at(i).getSymbol().c_str(),
+                              j));
+                }
+                if (t.activationFunctionsPerLayer.at(j)
+                        == NeuralNetwork::AF_UNSET)
+                {
+                    throw runtime_error(strpr(
+                              "ERROR: NN \"%s\", element %2s: activation "
+                              "functions for layer %d unset.\n",
+                              nn.id.c_str(),
+                              elements.at(i).getSymbol().c_str(),
+                              j));
                 }
             }
         }
     }
 
-    if (settings.keywordExists("element_hidden_layers"))
-    {
-        Settings::KeyRange r = settings.getValues("element_hidden_layers");
-        for (Settings::KeyMap::const_iterator it = r.first;
-             it != r.second; ++it)
-        {
-            vector<string> args = split(reduce(it->second.first));
-            size_t e = elementMap[args.at(0)];
-            size_t n = atoi(args.at(1).c_str());
-        }
-    }
-
-    if (settings.keywordExists("element_nodes_short"))
-    {
-        Settings::KeyRange r = settings.getValues("element_nodes_short");
-        for (Settings::KeyMap::const_iterator it = r.first;
-             it != r.second; ++it)
-        {
-            vector<string> args = split(reduce(it->second.first));
-            size_t e = elementMap[args.at(0)];
-            size_t l = atoi(args.at(1).c_str());
-
-            nnt.at(e).numNeuronsPerLayer.at(l) =
-                (size_t)atoi(args.at(2).c_str());
-        }
-    }
 
     bool normalizeNeurons = settings.keywordExists("normalize_nodes");
     log << strpr("Normalize neurons (all elements): %d\n",
