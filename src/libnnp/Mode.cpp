@@ -1139,7 +1139,7 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights()
+void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormat)
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
@@ -1148,11 +1148,16 @@ void Mode::setupNeuralNetworkWeights()
 
     for (auto k : nnk)
     {
-        string fileNameFormat = nns.at(k).weightFilePrefix + "%03d.data";
+        string actualFileNameFormat;
+        if (fileNameFormat.find(k) != fileNameFormat.end())
+        {
+            actualFileNameFormat = fileNameFormat.at(k);
+        }
+        else actualFileNameFormat = nns.at(k).weightFilePrefix + "%03d.data";
         log << strpr("%s weight file name format: %s\n",
                      cap(nns.at(k).name).c_str(),
-                     fileNameFormat.c_str());
-        readNeuralNetworkWeights(k, fileNameFormat);
+                     actualFileNameFormat.c_str());
+        readNeuralNetworkWeights(k, actualFileNameFormat);
     }
 
     log << "*****************************************"

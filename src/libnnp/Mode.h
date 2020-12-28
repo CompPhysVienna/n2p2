@@ -218,12 +218,22 @@ public:
      * known.
      */
     virtual void             setupNeuralNetwork();
-    /** Set up neural network weights from files.
+    /** Set up neural network weights from files with given name format.
+     *
+     * @param[in] fileNameFormat Map of NN ids to format for weight file names.
+     *                           Must contain a placeholder "%zu" for the
+     *                           element atomic number. Map keys are "short",
+     *                           "elec". Map argument may be ommitted, then
+     *                           default name formats are used.
      *
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
-    virtual void             setupNeuralNetworkWeights();
+    virtual void             setupNeuralNetworkWeights(
+                                 std::map<std::string,
+                                          std::string> fileNameFormat =
+                                 std::map<std::string,
+                                          std::string>());
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
