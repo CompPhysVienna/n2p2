@@ -220,21 +220,10 @@ public:
     virtual void             setupNeuralNetwork();
     /** Set up neural network weights from files.
      *
-     * @param[in] fileNameFormatShort Format for weights file name. The string
-     *                                must contain one placeholder for the
-     *                                atomic number.
-     * @param[in] fileNameFormatCharge Format for charge NN weights file name.
-     *                                 The string must contain one placeholder
-     *                                 for the atomic number.
-     *
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
-    virtual void             setupNeuralNetworkWeights(
-                                std::string const& fileNameFormatShort
-                                                      = "weights.%03zu.data",
-                                std::string const& fileNameFormatCharge
-                                                      = "weightse.%03zu.data");
+    virtual void             setupNeuralNetworkWeights();
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.

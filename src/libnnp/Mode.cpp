@@ -1108,48 +1108,26 @@ void Mode::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
-    for (size_t i = 0; i < numElements; ++i)
+    // Finally, allocate all neural networks.
+    for (auto& k : nnk)
     {
-        Element& e = elements.at(i);
-        NeuralNetworkTopology& t = nnt.at(i);
-
-        t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
-        // Need one extra neuron for atomic charge/electronegativity.
-        if (nnpType == NNPType::HDNNP_4G ||
-            nnpType == NNPType::HDNNP_4G_NO_ELEC) t.numNeuronsPerLayer[0]++;
-        e.neuralNetworks.emplace(piecewise_construct,
-                                 forward_as_tuple("short"),
-                                 forward_as_tuple(
-                                     t.numLayers,
-                                     t.numNeuronsPerLayer.data(),
-                                     t.activationFunctionsPerLayer.data()));
-        e.neuralNetworks.at("short").setNormalizeNeurons(normalizeNeurons);
-        log << strpr("Atomic short range NN for "
-                     "element %2s :\n", e.getSymbol().c_str());
-        log << e.neuralNetworks.at("short").info();
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
-        if (nnpType == NNPType::HDNNP_4G ||
-            nnpType == NNPType::HDNNP_4G_NO_ELEC)
+        for (size_t i = 0; i < numElements; ++i)
         {
+            Element& e = elements.at(i);
+            NNSetup::Topology const& t = nns.at(k).topology.at(i);
             e.neuralNetworks.emplace(
                                     piecewise_construct,
-                                    forward_as_tuple("elec"),
+                                    forward_as_tuple(k),
                                     forward_as_tuple(
                                         t.numLayers,
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
-            e.neuralNetworks.at("elec")
-                .setNormalizeNeurons(normalizeNeurons);
-            string name;
-            if      (nnpType == NNPType::HDNNP_4G) name = "electronegativity";
-            else if (nnpType == NNPType::HDNNP_4G_NO_ELEC) name = "charge";
-
+            e.neuralNetworks.at(k).setNormalizeNeurons(normalizeNeurons);
             log << strpr("Atomic %s NN for "
                          "element %2s :\n",
-                         name.c_str(),
+                         nns.at(k).name.c_str(),
                          e.getSymbol().c_str());
-            log << e.neuralNetworks.at("elec").info();
+            log << e.neuralNetworks.at(k).info();
             log << "-----------------------------------------"
                    "--------------------------------------\n";
         }
@@ -1161,23 +1139,20 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
-                                     string const& fileNameFormatCharge)
+void Mode::setupNeuralNetworkWeights()
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
            "**************************************\n";
     log << "\n";
 
-    log << strpr("Short  NN weight file name format: %s\n",
-                 fileNameFormatShort.c_str());
-    readNeuralNetworkWeights("short", fileNameFormatShort);
-    if (nnpType == NNPType::HDNNP_4G ||
-        nnpType == NNPType::HDNNP_4G_NO_ELEC)
+    for (auto k : nnk)
     {
-        log << strpr("Charge NN weight file name format: %s\n",
-                     fileNameFormatCharge.c_str());
-        readNeuralNetworkWeights("charge", fileNameFormatCharge);
+        string fileNameFormat = nns.at(k).weightFilePrefix + "%03d.data";
+        log << strpr("%s weight file name format: %s\n",
+                     cap(nns.at(k).name).c_str(),
+                     fileNameFormat.c_str());
+        readNeuralNetworkWeights(k, fileNameFormat);
     }
 
     log << "*****************************************"
@@ -1208,7 +1183,8 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
         // Inform atom if extra charge neuron is present in short-range NN.
-        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_4G_NO_ELEC) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1288,7 +1264,8 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
         // Inform atom if extra charge neuron is present in short-range NN.
-        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_4G_NO_ELEC) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1349,7 +1326,7 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                                          bool const derivatives)
 {
-    if (nnpType == NNPType::SHORT_ONLY)
+    if (nnpType == NNPType::HDNNP_2G)
     {
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
@@ -1365,14 +1342,22 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             nn.getOutput(&(it->energy));
         }
     }
-    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    else if (nnpType == NNPType::HDNNP_4G)
+    {
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            // TODO
+        }
+    }
+    else if (nnpType == NNPType::HDNNP_4G_NO_ELEC)
     {
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
             // First the charge NN.
             NeuralNetwork& nnCharge = elements.at(it->element)
-                                      .neuralNetworks.at("charge");
+                                      .neuralNetworks.at("elec");
             nnCharge.setInput(&((it->G).front()));
             nnCharge.propagate();
             if (derivatives)
@@ -1737,21 +1722,12 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
 void Mode::readNeuralNetworkWeights(string const& type,
                                     string const& fileNameFormat)
 {
-    string s = "";
-    if      (type == "short" ) s = "short  NN";
-    else if (type == "charge") s = "charge NN";
-    else
-    {
-        throw runtime_error("ERROR: Unknown neural network type.\n");
-    }
-
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
         string fileName = strpr(fileNameFormat.c_str(),
                                 it->getAtomicNumber());
-        log << strpr("Setting %s weights for element %2s from file: %s\n",
-                     s.c_str(),
+        log << strpr("Setting weights for element %2s from file: %s\n",
                      it->getSymbol().c_str(),
                      fileName.c_str());
         vector<double> weights = readColumnsFromFile(fileName,
