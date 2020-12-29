@@ -922,8 +922,11 @@ void Mode::setupNeuralNetwork()
         string keyword = "global_hidden_layers" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
-            globalNumHiddenLayers = atoi(settings[keyword].c_str()) + 2;
-            for (auto& t : nn.topology) t.numLayers = globalNumHiddenLayers;
+            globalNumHiddenLayers = atoi(settings[keyword].c_str());
+            for (auto& t : nn.topology)
+            {
+                t.numLayers = globalNumHiddenLayers + 2;
+            }
         }
         // Now, check for per-element number of hidden layers.
         keyword = "element_hidden_layers" + nn.keywordSuffix;
@@ -987,9 +990,23 @@ void Mode::setupNeuralNetwork()
         for (size_t i = 0; i < numElements; ++i)
         {
             NNSetup::Topology& t = nn.topology.at(i);
-            // Set input layer. Number of input layer neurons will not be set
-            // here.
-            t.numNeuronsPerLayer.at(0) = 0;
+            size_t const nsf = elements.at(i).numSymmetryFunctions();
+            // Set input layer. Number of input layer neurons depends on NNP
+            // type and NN purpose.
+            if (nnpType == NNPType::HDNNP_2G)
+            {
+                // Can assume NN id is "short".
+                t.numNeuronsPerLayer.at(0) = nsf;
+            }
+            else if (nnpType == NNPType::HDNNP_4G ||
+                     nnpType == NNPType::HDNNP_4G_NO_ELEC)
+            {
+                // NN with id "elec" requires only SFs.
+                if (k == "elec") t.numNeuronsPerLayer.at(0) = nsf;
+                // "short" NN needs extra charge neuron.
+                else if (k == "short") t.numNeuronsPerLayer.at(0) = nsf + 1;
+            }
+            // Set dummy input neuron activation function.
             t.activationFunctionsPerLayer.at(0) = NeuralNetwork::AF_IDENTITY;
             // Set output layer. Assume single output neuron.
             t.numNeuronsPerLayer.at(t.numLayers - 1) = 1;
@@ -1078,7 +1095,7 @@ void Mode::setupNeuralNetwork()
             NNSetup::Topology const& t = nn.topology.at(i);
             for (int j = 0; j < t.numLayers; ++j)
             {
-                if (j != 0 && t.numNeuronsPerLayer.at(j) == 0)
+                if (t.numNeuronsPerLayer.at(j) == 0)
                 {
                     throw runtime_error(strpr(
                               "ERROR: NN \"%s\", element %2s: number of "
@@ -1139,7 +1156,7 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormat)
+void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormats)
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
@@ -1149,9 +1166,9 @@ void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormat)
     for (auto k : nnk)
     {
         string actualFileNameFormat;
-        if (fileNameFormat.find(k) != fileNameFormat.end())
+        if (fileNameFormats.find(k) != fileNameFormats.end())
         {
-            actualFileNameFormat = fileNameFormat.at(k);
+            actualFileNameFormat = fileNameFormats.at(k);
         }
         else actualFileNameFormat = nns.at(k).weightFilePrefix + "%03d.data";
         log << strpr("%s weight file name format: %s\n",
