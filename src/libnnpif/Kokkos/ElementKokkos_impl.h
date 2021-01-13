@@ -28,7 +28,7 @@ using namespace std;
 namespace nnp
 {
 
-ElementCabana::ElementCabana( size_t const _index )
+ElementKokkos::ElementKokkos( size_t const _index )
     : Element()
 {
     index = _index;
@@ -36,10 +36,10 @@ ElementCabana::ElementCabana( size_t const _index )
     neuralNetwork = NULL;
 }
 
-ElementCabana::~ElementCabana() {}
+ElementKokkos::~ElementKokkos() {}
 
 template <class t_SF, class h_t_int>
-void ElementCabana::addSymmetryFunction( string const &parameters,
+void ElementKokkos::addSymmetryFunction( string const &parameters,
                                          vector<string> elementStrings, int attype,
                                          t_SF SF, double convLength,
                                          h_t_int h_numSFperElem )
@@ -166,7 +166,7 @@ void ElementCabana::addSymmetryFunction( string const &parameters,
 }
 
 template <class t_SF, class h_t_int>
-void ElementCabana::sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem,
+void ElementKokkos::sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem,
                                            int attype )
 {
     int size = h_numSFperElem( attype );
@@ -202,7 +202,7 @@ void ElementCabana::sortSymmetryFunctions( t_SF SF, h_t_int h_numSFperElem,
 }
 
 template <class t_SF>
-bool ElementCabana::compareSF( t_SF SF, int attype, int index1, int index2 )
+bool ElementKokkos::compareSF( t_SF SF, int attype, int index1, int index2 )
 {
     if ( SF( attype, index2, 0 ) < SF( attype, index1, 0 ) )
         return true; // ec
@@ -265,7 +265,7 @@ bool ElementCabana::compareSF( t_SF SF, int attype, int index1, int index2 )
 
 template <class t_SF, class h_t_int>
 vector<string>
-ElementCabana::infoSymmetryFunctionParameters( t_SF SF, int attype,
+ElementKokkos::infoSymmetryFunctionParameters( t_SF SF, int attype,
                                                h_t_int h_numSFperElem ) const
 {
     vector<string> v;
@@ -290,7 +290,7 @@ ElementCabana::infoSymmetryFunctionParameters( t_SF SF, int attype,
 
 template <class t_SF, class t_SFscaling, class h_t_int>
 vector<string>
-ElementCabana::infoSymmetryFunctionScaling( ScalingType scalingType, t_SF SF,
+ElementKokkos::infoSymmetryFunctionScaling( ScalingType scalingType, t_SF SF,
                                       t_SFscaling SFscaling, int attype,
                                       h_t_int h_numSFperElem ) const
 {
@@ -305,7 +305,7 @@ ElementCabana::infoSymmetryFunctionScaling( ScalingType scalingType, t_SF SF,
 }
 
 template <class t_SF, class t_SFGmemberlist, class h_t_int>
-void ElementCabana::setupSymmetryFunctionGroups( t_SF SF,
+void ElementKokkos::setupSymmetryFunctionGroups( t_SF SF,
                                                  t_SFGmemberlist SFGmemberlist,
                                                  int attype, h_t_int h_numSFperElem,
                                                  h_t_int h_numSFGperElem,
@@ -387,7 +387,7 @@ void ElementCabana::setupSymmetryFunctionGroups( t_SF SF,
 
 template <class t_SF, class t_SFGmemberlist, class h_t_int>
 vector<string>
-ElementCabana::infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
+ElementKokkos::infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlist,
                                            int attype, h_t_int h_numSFGperElem ) const
 {
     vector<string> v;
@@ -409,7 +409,7 @@ ElementCabana::infoSymmetryFunctionGroups( t_SF SF, t_SFGmemberlist SFGmemberlis
 }
 
 template <class t_SF, class h_t_int>
-void ElementCabana::setCutoffFunction( CutoffFunction::CutoffType const cutoffType,
+void ElementKokkos::setCutoffFunction( CutoffFunction::CutoffType const cutoffType,
                                        double const cutoffAlpha, t_SF SF, int attype,
                                        h_t_int h_numSFperElem )
 {
@@ -422,7 +422,7 @@ void ElementCabana::setCutoffFunction( CutoffFunction::CutoffType const cutoffTy
 }
 
 template <class t_SF, class t_SFscaling, class h_t_int>
-void ElementCabana::setScaling( ScalingType scalingType,
+void ElementKokkos::setScaling( ScalingType scalingType,
                                 vector<string> const &statisticsLine, double Smin,
                                 double Smax, t_SF SF, t_SFscaling SFscaling,
                                 int attype, h_t_int h_numSFperElem ) const
@@ -442,7 +442,7 @@ void ElementCabana::setScaling( ScalingType scalingType,
 }
 
 template <class t_SF>
-size_t ElementCabana::getMinNeighbors( int attype, t_SF SF, int nSF ) const
+size_t ElementKokkos::getMinNeighbors( int attype, t_SF SF, int nSF ) const
 {
     // get max number of minNeighbors
     size_t global_minNeighbors = 0;
@@ -462,7 +462,7 @@ size_t ElementCabana::getMinNeighbors( int attype, t_SF SF, int nSF ) const
 }
 
 template <class t_SF, class h_t_int>
-double ElementCabana::getMinCutoffRadius( t_SF SF, int attype,
+double ElementKokkos::getMinCutoffRadius( t_SF SF, int attype,
                                           h_t_int h_numSFperElem ) const
 {
     double minCutoffRadius = numeric_limits<double>::max();
@@ -474,7 +474,7 @@ double ElementCabana::getMinCutoffRadius( t_SF SF, int attype,
 }
 
 template <class t_SF, class h_t_int>
-double ElementCabana::getMaxCutoffRadius( t_SF SF, int attype,
+double ElementKokkos::getMaxCutoffRadius( t_SF SF, int attype,
                                           h_t_int h_numSFperElem ) const
 {
     double maxCutoffRadius = 0.0;
@@ -487,7 +487,7 @@ double ElementCabana::getMaxCutoffRadius( t_SF SF, int attype,
 
 // TODO:add functionality
 /*
-void ElementCabana::updateSymmetryFunctionStatistics
+void ElementKokkos::updateSymmetryFunctionStatistics
 */
 
 }

@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#ifndef MODE_KOKKOS_IMPL_H
+#define MODE_KOKKOS_IMPL_H
+
 #include "utility.h"
 
 #include <algorithm> // std::min, std::max
@@ -31,7 +34,7 @@ namespace nnp
 
 // TODO: call base, then copy to Views
 template <class t_device>
-void ModeCabana<t_device>::setupElementMap()
+void ModeKokkos<t_device>::setupElementMap()
 {
     log << "\n";
     log << "*** SETUP: ELEMENT MAP ******************"
@@ -57,7 +60,7 @@ void ModeCabana<t_device>::setupElementMap()
 }
 
 template <class t_device>
-void ModeCabana<t_device>::setupElements()
+void ModeKokkos<t_device>::setupElements()
 {
     log << "\n";
     log << "*** SETUP: ELEMENTS *********************"
@@ -75,7 +78,7 @@ void ModeCabana<t_device>::setupElements()
 
     for ( size_t i = 0; i < numElements; ++i )
     {
-        elements.push_back( ElementCabana( i ) );
+        elements.push_back( ElementKokkos( i ) );
     }
 
     if ( settings.keywordExists( "atom_energy" ) )
@@ -110,7 +113,7 @@ void ModeCabana<t_device>::setupElements()
 }
 
 template <class t_device>
-void ModeCabana<t_device>::setupSymmetryFunctions()
+void ModeKokkos<t_device>::setupSymmetryFunctions()
 {
     maxSFperElem = 0;
     h_numSFperElem =
@@ -183,7 +186,7 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
     log << "\n";
     maxCutoffRadius = 0.0;
 
-    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementKokkos>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -234,7 +237,7 @@ void ModeCabana<t_device>::setupSymmetryFunctions()
 
 // TODO: call base, then copy to View
 template <class t_device>
-void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName )
+void ModeKokkos<t_device>::setupSymmetryFunctionScaling( string const &fileName )
 {
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTION SCALING ****"
@@ -341,7 +344,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName 
     log << "Smax .... Desired maximum scaled symmetry function value.\n";
     log << "t ....... Scaling type.\n";
     log << "\n";
-    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementKokkos>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -378,7 +381,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionScaling( string const &fileName 
 }
 
 template <class t_device>
-void ModeCabana<t_device>::setupSymmetryFunctionGroups()
+void ModeKokkos<t_device>::setupSymmetryFunctionGroups()
 {
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTION GROUPS *****"
@@ -408,7 +411,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionGroups()
     h_numSFGperElem =
         h_t_int( "Mode::numSymmetryFunctionGroupsPerElement", numElements );
 
-    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementKokkos>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -440,7 +443,7 @@ void ModeCabana<t_device>::setupSymmetryFunctionGroups()
 }
 
 template <class t_device>
-void ModeCabana<t_device>::setupNeuralNetwork()
+void ModeKokkos<t_device>::setupNeuralNetwork()
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORKS **************"
@@ -482,7 +485,7 @@ void ModeCabana<t_device>::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
-    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementKokkos>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         int attype = it->getIndex();
@@ -527,7 +530,7 @@ void ModeCabana<t_device>::setupNeuralNetwork()
 }
 
 template <class t_device>
-void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
+void ModeKokkos<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
@@ -538,7 +541,7 @@ void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameForm
                        fileNameFormat.c_str() );
     int count = 0;
     int AN = 0;
-    for ( vector<ElementCabana>::iterator it = elements.begin(); it != elements.end();
+    for ( vector<ElementKokkos>::iterator it = elements.begin(); it != elements.end();
           ++it )
     {
         const char *estring = elementStrings[count].c_str();
@@ -603,12 +606,12 @@ void ModeCabana<t_device>::setupNeuralNetworkWeights( string const &fileNameForm
 
 template <class t_device>
 template <class t_slice_x, class t_slice_type, class t_slice_G,
-          class t_neigh_list, class t_neigh_parallel, class t_angle_parallel>
-void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
+          class t_neigh_list>
+void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
     t_slice_x x, t_slice_type type, t_slice_G G, t_neigh_list neigh_list,
-    int N_local, t_neigh_parallel neigh_op_tag, t_angle_parallel angle_op_tag )
+    int N_local )
 {
-    Cabana::deep_copy( G, 0.0 );
+    Kokkos::deep_copy( G, 0.0 );
 
     Kokkos::RangePolicy<exe_space> policy( 0, N_local );
 
@@ -668,9 +671,8 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
             }
         }
     };
-    Cabana::neighbor_parallel_for(
-        policy, calc_radial_symm_op, neigh_list, Cabana::FirstNeighborsTag(),
-        neigh_op_tag, "Mode::calculateRadialSymmetryFunctionGroups" );
+    Kokkos::parallel_for(
+        policy, calc_radial_symm_op, "Mode::calculateRadialSymmetryFunctionGroups" );
     Kokkos::fence();
 
     auto calc_angular_symm_op =
@@ -789,9 +791,8 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
             }
         }
     };
-    Cabana::neighbor_parallel_for(
-        policy, calc_angular_symm_op, neigh_list, Cabana::SecondNeighborsTag(),
-        angle_op_tag, "Mode::calculateAngularSymmetryFunctionGroups" );
+    Kokkos::parallel_for( policy, calc_angular_symm_op,
+			  "Mode::calculateAngularSymmetryFunctionGroups" );
     Kokkos::fence();
 
     auto scale_symm_op = KOKKOS_LAMBDA( const int i )
@@ -833,7 +834,7 @@ void ModeCabana<t_device>::calculateSymmetryFunctionGroups(
 template <class t_device>
 template <class t_slice_type, class t_slice_G, class t_slice_dEdG,
           class t_slice_E>
-void ModeCabana<t_device>::calculateAtomicNeuralNetworks( 
+void ModeKokkos<t_device>::calculateAtomicNeuralNetworks( 
     t_slice_type type, t_slice_G G, t_slice_dEdG dEdG, t_slice_E E, int N_local )
 {
     auto NN = d_t_NN( "Mode::NN", N_local, numLayers, maxNeurons );
@@ -927,12 +928,10 @@ void ModeCabana<t_device>::calculateAtomicNeuralNetworks(
 
 template <class t_device>
 template <class t_slice_x, class t_slice_f, class t_slice_type,
-          class t_slice_dEdG, class t_neigh_list, class t_neigh_parallel,
-          class t_angle_parallel>
-void ModeCabana<t_device>::calculateForces( 
+          class t_slice_dEdG, class t_neigh_list>
+void ModeKokkos<t_device>::calculateForces( 
     t_slice_x x, t_slice_f f_a, t_slice_type type, t_slice_dEdG dEdG,
-    t_neigh_list neigh_list, int N_local, t_neigh_parallel neigh_op_tag,
-    t_angle_parallel angle_op_tag )
+    t_neigh_list neigh_list, int N_local )
 {
     double convForce_ = convLength / convEnergy;
 
@@ -1015,9 +1014,8 @@ void ModeCabana<t_device>::calculateForces(
             }
         }
     };
-    Cabana::neighbor_parallel_for( policy, calc_radial_force_op, neigh_list,
-                                   Cabana::FirstNeighborsTag(), neigh_op_tag,
-                                   "Mode::calculateRadialForces" );
+    Kokkos::parallel_for( policy, calc_radial_force_op,
+			  "Mode::calculateRadialForces" );
     Kokkos::fence();
 
     auto calc_angular_force_op =
@@ -1208,12 +1206,12 @@ void ModeCabana<t_device>::calculateForces(
             }
         }
     };
-    Cabana::neighbor_parallel_for( policy, calc_angular_force_op, neigh_list,
-                                   Cabana::SecondNeighborsTag(), angle_op_tag,
-                                   "Mode::calculateAngularForces" );
+    Kokkos::parallel_for( policy, calc_angular_force_op,
+			  "Mode::calculateAngularForces" );
     Kokkos::fence();
 
     return;
 }
 
 }
+#endif

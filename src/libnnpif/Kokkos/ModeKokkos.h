@@ -15,13 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef MODE_CABANA_H
-#define MODE_CABANA_H
+#ifndef MODE_KOKKOS_H
+#define MODE_KOKKOS_H
 
-#include "ElementCabana.h"
-#include "typesCabana.h"
+#include "ElementKokkos.h"
+#include "typesKokkos.h"
 
-#include <Cabana_Core.hpp>
 #include <Kokkos_Core.hpp>
 
 #include "CutoffFunction.h"
@@ -36,14 +35,14 @@
 namespace nnp
 {
 
-/** Derived Cabana main NNP class.
+/** Derived Kokkos main NNP class.
  *
  * The main n2p2 functions for computing energies and forces are replaced
- * to use the Kokkos and Cabana libraries. Most setup functions are
+ * to use the Kokkos library. Most setup functions are
  * overridden; some are replaced as needed to work within device kernels.
  */
 template <class t_device>
-class ModeCabana : public Mode
+class ModeKokkos : public Mode
 {
 
  public:
@@ -162,32 +161,28 @@ class ModeCabana : public Mode
 
     /** Calculate forces for all atoms in given structure.
      *
-     * @param[in] x Cabana slice of atom positions.
-     * @param[in] f Cabana slice of atom forces.
-     * @param[in] type Cabana slice of atom types.
-     * @param[in] dEdG Cabana slice of the derivative of energy with respect
+     * @param[in] x Kokkos View of atom positions.
+     * @param[in] f Kokkos View of atom forces.
+     * @param[in] type Kokkos View of atom types.
+     * @param[in] dEdG Kokkos View of the derivative of energy with respect
                        to symmetry functions per atom.
      * @param[in] N_local Number of atoms.
-     * @param[in] neigh_op Cabana tag for neighbor parallelism.
-     * @param[in] angle_op Cabana tag for angular parallelism.
      *
      * Combine intermediate results from symmetry function and neural network
      * computation to atomic forces. Results are stored in f.
      */
     template <class t_slice_x, class t_slice_f, class t_slice_type,
-              class t_slice_dEdG, class t_neigh_list, class t_neigh_parallel,
-              class t_angle_parallel>
+              class t_slice_dEdG, class t_neigh_list>
     void calculateForces(t_slice_x x, t_slice_f f, t_slice_type type,
-                         t_slice_dEdG dEdG, t_neigh_list neigh_list, int N_local,
-                         t_neigh_parallel neigh_op, t_angle_parallel angle_op);
+                         t_slice_dEdG dEdG, t_neigh_list neigh_list, int N_local );
 
     /** Calculate atomic neural networks for all atoms in given structure.
      *
-     * @param[in] type Cabana slice of atom types.
-     * @param[in] G Cabana slice of symmetry functions per atom.
-     * @param[in] dEdG Cabana slice of the derivative of energy with respect
+     * @param[in] type Kokkos View of atom types.
+     * @param[in] G Kokkos View of symmetry functions per atom.
+     * @param[in] dEdG Kokkos View of the derivative of energy with respect
                        to symmetry functions per atom.
-     * @param[in] E Cabana slice of energy per atom.
+     * @param[in] E Kokkos View of energy per atom.
      * @param[in] N_local Number of atoms.
      *
      * The atomic energy is stored in E.
@@ -201,23 +196,20 @@ class ModeCabana : public Mode
     /** Calculate all symmetry function groups for all atoms in given
      * structure.
      *
-     * @param[in] x Cabana slice of atom positions.
-     * @param[in] type Cabana slice of atom types.
-     * @param[in] G Cabana slice of symmetry functions per atom.
-     * @param[in] neigh_list Cabana neighbor list.
+     * @param[in] x Kokkos View of atom positions.
+     * @param[in] type Kokkos View of atom types.
+     * @param[in] G Kokkos View of symmetry functions per atom.
+     * @param[in] neigh_list neighbor list.
      * @param[in] N_local Number of atoms.
-     * @param[in] neigh_op Cabana tag for neighbor parallelism.
-     * @param[in] angle_op Cabana tag for angular parallelism.
      *
      * Note there is no calculateSymmetryFunctions() within this derived class.
      * Results are stored in G.
      */
     template <class t_slice_x, class t_slice_type, class t_slice_G,
-              class t_neigh_list, class t_neigh_parallel, class t_angle_parallel>
+              class t_neigh_list>
     void calculateSymmetryFunctionGroups(t_slice_x x, t_slice_type type,
                                          t_slice_G G, t_neigh_list neigh_list,
-                                         int N_local, t_neigh_parallel neigh_op,
-                                         t_angle_parallel angle_op);
+                                         int N_local);
 
     using Mode::log;
 
@@ -272,7 +264,7 @@ class ModeCabana : public Mode
     ScalingType scalingType;
     using Mode::settings;
     using Mode::cutoffType;
-    std::vector<ElementCabana> elements;
+    std::vector<ElementKokkos> elements;
     std::vector<std::string> elementStrings;
 };
 
@@ -282,7 +274,7 @@ class ModeCabana : public Mode
 
 template <class t_device>
 KOKKOS_INLINE_FUNCTION void
-ModeCabana<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
+ModeKokkos<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
                                      double cutoffAlpha, double &fc, double &dfc,
                                      double r, double rc, bool derivative) const
 {
@@ -313,7 +305,7 @@ ModeCabana<t_device>::compute_cutoff(CutoffFunction::CutoffType cutoffType,
 
 template <class t_device>
 KOKKOS_INLINE_FUNCTION double
-ModeCabana<t_device>::scale(int attype, double value, int k,
+ModeKokkos<t_device>::scale(int attype, double value, int k,
                             d_t_SFscaling SFscaling_) const
 {
     double scalingType = SFscaling_(attype, k, 7);
@@ -342,6 +334,6 @@ ModeCabana<t_device>::scale(int attype, double value, int k,
 
 }
 
-#include "ModeCabana_impl.h"
+#include "ModeKokkos_impl.h"
 
 #endif
