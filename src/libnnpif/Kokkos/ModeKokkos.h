@@ -18,7 +18,7 @@
 #ifndef MODE_CABANA_H
 #define MODE_CABANA_H
 
-#include "./ElementCabana.h"
+#include "ElementCabana.h"
 #include "typesCabana.h"
 
 #include <Cabana_Core.hpp>
