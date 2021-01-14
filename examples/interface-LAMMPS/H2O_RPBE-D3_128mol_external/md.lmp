@@ -33,7 +33,8 @@ thermo 1
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp/external "H O" dir ${nnpDir} cflength 1.8897261328 cfenergy 0.0367493254
+#pair_style nnp/external "H O" dir ${nnpDir} command "nnp-predict 0" cflength 1.8897261328 cfenergy 0.0367493254
+pair_style nnp/external "H O" dir ${nnpDir} command "RuNNer.serial.x" cflength 1.8897261328 cfenergy 0.0367493254
 pair_coeff * * ${nnpCutoff}
 
 ###############################################################################

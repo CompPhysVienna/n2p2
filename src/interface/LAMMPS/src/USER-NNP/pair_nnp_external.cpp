@@ -86,11 +86,13 @@ void PairNNPExternal::compute(int eflag, int vflag)
   if (!f.is_open()) error->all(FLERR,"Could not open energy output file");
   string line;
   double energy = 0.0;
+  getline(f, line); // Ignore first line, RuNNer and n2p2 have header here.
   while (getline(f, line))
   {
-    if ((line.size() > 0) && (line.at(0) != '#'))
+    if ((line.size() > 0) && (line.at(0) != '#')) // Ignore n2p2 header.
     {
-      sscanf(line.c_str(), "%lf", &energy);
+      // 4th columns contains NNP energy.
+      sscanf(line.c_str(), "%*s %*s %*s %lf", &energy);
     }
   }
   f.close();
@@ -105,15 +107,16 @@ void PairNNPExternal::compute(int eflag, int vflag)
   if (!f.is_open()) error->all(FLERR,"Could not open force output file");
   int c = 0;
   double const cfforce = cfenergy / cflength;
+  getline(f, line); // Ignore first line, RuNNer and n2p2 have header here.
   while (getline(f, line))
   {
-    if ((line.size() > 0) && (line.at(0) != '#'))
+    if ((line.size() > 0) && (line.at(0) != '#')) // Ignore n2p2 header.
     {
       if (c > atom->nlocal - 1) error->all(FLERR,"Too many atoms in force file.");
       double fx;
       double fy;
       double fz;
-      sscanf(line.c_str(), "%lf %lf %lf", &fx, &fy, &fz);
+      sscanf(line.c_str(), "%*s %*s %*s %*s %*s %lf %lf %lf", &fx, &fy, &fz);
       atom->f[c][0] = fx / cfforce;
       atom->f[c][1] = fy / cfforce;
       atom->f[c][2] = fz / cfforce;
@@ -124,6 +127,8 @@ void PairNNPExternal::compute(int eflag, int vflag)
   f.close();
 
   // If virial needed calculate via F dot r.
+  // TODO: Pressure calculation is probably wrong anyway, tell user only to use
+  // in NVE, NVT ensemble.
   if (vflag_fdotr) virial_fdotr_compute();
 }
 
@@ -175,7 +180,7 @@ void PairNNPExternal::settings(int narg, char **arg)
         error->all(FLERR,"Illegal pair_style command");
       delete[] command;
       len = strlen(arg[iarg+1]) + 1;
-      directory = new char[len];
+      command = new char[len];
       sprintf(command, "%s", arg[iarg+1]);
       iarg += 2;
     // length unit conversion factor
