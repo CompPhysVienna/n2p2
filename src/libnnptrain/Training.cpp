@@ -260,8 +260,26 @@ void Training::initializeWeights()
                             " initialization are incompatible\n");
     }
 
+    string id;
+    if (nnpType == NNPType::HDNNP_2G)
+    {
+        id = "short";
+        NNSetup const& nn = nns.at(id);
+        log << "Setting up " + nn.name + " neural networks:\n";
+        if (settings.keywordExists("use_old_weights" + nn.keywordSuffix2))
+        {
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights(id, nn.weightFileFormat);
+        }
+        else randomizeNeuralNetworkWeights(id);
+    }
+    else if (nnpType == NNPType::HDNNP_4G)
+    {
+
+    }
+
     // Charge NN.
-    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    if (nnpType == NNPType::HDNNP_4G_NO_ELEC)
     {
         log << "Setting up charge neural networks:\n";
         if ((stage == 1 && settings.keywordExists("use_old_weights_charge")) ||

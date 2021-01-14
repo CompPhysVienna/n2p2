@@ -234,6 +234,25 @@ public:
                                           std::string> fileNameFormats =
                                  std::map<std::string,
                                           std::string>());
+    /** Set up neural network weights from files with given name format.
+     *
+     * @param[in] directoryPrefix Directory prefix which is applied to all
+     *                            fileNameFormats.
+     * @param[in] fileNameFormats Map of NN ids to format for weight file
+     *                            names. Must contain a placeholder "%zu" for
+     *                            the element atomic number. Map keys are
+     *                            "short", "elec". Map argument may be
+     *                            ommitted, then default name formats are used.
+     *
+     * Does not use any keywords. The weight files should contain one weight
+     * per line, see NeuralNetwork::setConnections() for the correct order.
+     */
+    virtual void             setupNeuralNetworkWeights(
+                                 std::string           directoryPrefix,
+                                 std::map<std::string,
+                                          std::string> fileNameFormats =
+                                 std::map<std::string,
+                                          std::string>());
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -530,10 +549,12 @@ protected:
         std::string                        id;
         /// Description string for log output, e.g. "electronegativity".
         std::string                        name;
-        /// Prefix for weight files.
-        std::string                        weightFilePrefix;
-        /// Suffix for keywords.
+        /// Format for weight files.
+        std::string                        weightFileFormat;
+        /// Suffix for keywords (NN topology related).
         std::string                        keywordSuffix;
+        /// Suffix for some other keywords (weight file loading related).
+        std::string                        keywordSuffix2;
         /// Per-element NN topology.
         std::vector<Topology>              topology;
     };

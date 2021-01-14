@@ -886,8 +886,9 @@ void Mode::setupNeuralNetwork()
     nnk.push_back(id);
     nns[id].id = id;
     nns.at(id).name = "short range";
-    nns.at(id).weightFilePrefix = "weights.";
+    nns.at(id).weightFileFormat = "weights.%03zu.data";
     nns.at(id).keywordSuffix = "_short";
+    nns.at(id).keywordSuffix2 = "_short";
 
     // Some NNP types require extra NNs.
     if (nnpType == NNPType::HDNNP_4G)
@@ -896,8 +897,9 @@ void Mode::setupNeuralNetwork()
         nnk.push_back(id);
         nns[id].id = id;
         nns.at(id).name = "electronegativity";
-        nns.at(id).weightFilePrefix = "weightse.";
+        nns.at(id).weightFileFormat = "weightse.%03zu.data";
         nns.at(id).keywordSuffix = "_electrostatic";
+        nns.at(id).keywordSuffix2 = "_charge";
     }
     else if(nnpType == NNPType::HDNNP_4G_NO_ELEC)
     {
@@ -905,8 +907,9 @@ void Mode::setupNeuralNetwork()
         nnk.push_back(id);
         nns[id].id = id;
         nns.at(id).name = "charge";
-        nns.at(id).weightFilePrefix = "weightse.";
+        nns.at(id).weightFileFormat = "weightse.%03zu.data";
         nns.at(id).keywordSuffix = "_electrostatic";
+        nns.at(id).keywordSuffix2 = "_charge";
     }
 
     // Loop over all NNs and set global properties.
@@ -1158,6 +1161,13 @@ void Mode::setupNeuralNetwork()
 
 void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormats)
 {
+    setupNeuralNetworkWeights("", fileNameFormats);
+    return;
+}
+
+void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
+                                     map<string, string> fileNameFormats)
+{
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
            "**************************************\n";
@@ -1170,7 +1180,8 @@ void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormats)
         {
             actualFileNameFormat = fileNameFormats.at(k);
         }
-        else actualFileNameFormat = nns.at(k).weightFilePrefix + "%03d.data";
+        else actualFileNameFormat = nns.at(k).weightFileFormat;
+        actualFileNameFormat = directoryPrefix + actualFileNameFormat;
         log << strpr("%s weight file name format: %s\n",
                      cap(nns.at(k).name).c_str(),
                      actualFileNameFormat.c_str());
