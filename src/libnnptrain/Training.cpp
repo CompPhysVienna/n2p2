@@ -260,58 +260,23 @@ void Training::initializeWeights()
                             " initialization are incompatible\n");
     }
 
-    string id;
-    if (nnpType == NNPType::HDNNP_2G)
+    // Training stage 2 requires electrostatics NN weights from file.
+    if ((nnpType == NNPType::HDNNP_4G && stage == 2) ||
+        (nnpType == NNPType::HDNNP_Q  && stage == 2))
     {
-        id = "short";
-        NNSetup const& nn = nns.at(id);
-        log << "Setting up " + nn.name + " neural networks:\n";
-        if (settings.keywordExists("use_old_weights" + nn.keywordSuffix2))
-        {
-            log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights(id, nn.weightFileFormat);
-        }
-        else randomizeNeuralNetworkWeights(id);
-    }
-    else if (nnpType == NNPType::HDNNP_4G)
-    {
-
+        log << "Setting up " + nns.at("elec").name + " neural networks:\n";
+        readNeuralNetworkWeights("elec", nns.at("elec").weightFileFormat);
     }
 
-    // Charge NN.
-    if (nnpType == NNPType::HDNNP_4G_NO_ELEC)
+    // Currently trained NN weights may be read from file or randomized.
+    NNSetup const& nn = nns.at(nnId);
+    log << "Setting up " + nn.name + " neural networks:\n";
+    if (settings.keywordExists("use_old_weights" + nn.keywordSuffix2))
     {
-        log << "Setting up charge neural networks:\n";
-        if ((stage == 1 && settings.keywordExists("use_old_weights_charge")) ||
-            (stage == 2))
-        {
-            log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights("charge", "weightse.%03zu.data");
-        }
-        else randomizeNeuralNetworkWeights("charge");
+        log << "Reading old weights from files.\n";
+        readNeuralNetworkWeights(nnId, nn.weightFileFormat);
     }
-
-    // Short-range NN.
-    if(nnpType == NNPType::SHORT_ONLY)
-    {
-        log << "Setting up short-range neural networks:\n";
-        if (settings.keywordExists("use_old_weights_short"))
-        {
-            log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights("short", "weights.%03zu.data");
-        }
-        else randomizeNeuralNetworkWeights("short");
-    }
-    else if(nnpType == NNPType::SHORT_CHARGE_NN && stage == 2)
-    {
-        log << "Setting up short-range neural networks:\n";
-        if (settings.keywordExists("use_old_weights_short"))
-        {
-            log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights("short", "weights.%03zu.data");
-        }
-        else randomizeNeuralNetworkWeights("short");
-    }
+    else randomizeNeuralNetworkWeights(nnId);
 
     log << "*****************************************"
            "**************************************\n";
@@ -370,19 +335,25 @@ void Training::setStage(size_t stage)
 {
     this->stage = stage;
 
-    // NNP of type SHORT_ONLY requires:
-    // * "energy" (optionally: "force")
-    if (nnpType == NNPType::SHORT_ONLY)
+    // NNP of type HDNNP_2G trains "properties" -> "network":
+    // * "energy" (optionally: "force") -> "short"
+    if (nnpType == NNPType::HDNNP_2G)
     {
         pk.push_back("energy");
         if (settings.keywordExists("use_short_forces")) pk.push_back("force");
+        nnId = "short";
     }
-    // NNP of type SHORT_CHARGE_NN requires:
-    // * stage 1: "charge"
-    // * stage 2: "energy" (optionally: "force")
-    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    // NNP of type HDNNP_4G or HDNNP_Q trains "properties" -> "network":
+    // * stage 1: "charge" -> "elec"
+    // * stage 2: "energy" (optionally: "force") -> "short"
+    else if (nnpType == NNPType::HDNNP_4G ||
+             nnpType == NNPType::HDNNP_Q)
     {
-        if (stage == 1) pk.push_back("charge");
+        if (stage == 1)
+        {
+            pk.push_back("charge");
+            nnId = "elec";
+        }
         else if (stage == 2)
         {
             pk.push_back("energy");
@@ -390,6 +361,7 @@ void Training::setStage(size_t stage)
             {
                 pk.push_back("force");
             }
+            nnId = "short";
         }
     }
 
@@ -410,18 +382,19 @@ void Training::setupTraining()
            "**************************************\n";
     log << "\n";
 
-    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q)
     {
         log << strpr("Running stage %zu of training:", stage);
-        if      (stage == 1) log << "charge NN fitting.\n";
+        if      (stage == 1) log << "electrostatic NN fitting.\n";
         else if (stage == 2) log << "short-range NN fitting.\n";
         else throw runtime_error("\nERROR: Unknown training stage.\n");
     }
 
-    if (nnpType == NNPType::SHORT_ONLY ||
-        (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+    if ( nnpType == NNPType::HDNNP_2G ||
+        (nnpType == NNPType::HDNNP_4G && stage == 2) ||
+        (nnpType == NNPType::HDNNP_Q  && stage == 2))
     {
-        nnId = "short";
         useForces = settings.keywordExists("use_short_forces");
         if (useForces)
         {
@@ -442,11 +415,8 @@ void Training::setupTraining()
             log << "Only energies will used for training.\n";
         }
     }
-    else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
-    {
-        nnId = "charge";
-    }
-    log << "Training will act on \"" << nnId << "\" neural networks.\n";
+    log << "Training will act on \"" << nns.at(nnId).name
+        << "\" neural networks.\n";
 
     if (settings.keywordExists("main_error_metric"))
     {
@@ -619,7 +589,8 @@ void Training::setupTraining()
     writeTrainingLog = settings.keywordExists("write_trainlog");
     if (writeTrainingLog && myRank == 0)
     {
-        if (nnpType == NNPType::SHORT_CHARGE_NN)
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_Q)
         {
             trainingLogFileName += strpr(".stage-%zu", stage);
         }
@@ -1245,15 +1216,19 @@ void Training::writeWeightsEpoch() const
     if (writeWeightsEvery > 0 &&
         (epoch % writeWeightsEvery == 0 || epoch <= writeWeightsAlways))
     {
-        if (nnpType == NNPType::SHORT_ONLY ||
-            (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+        string weightFileFormat = strpr(".%%03zu.%06d.out", epoch);
+        if ( nnpType == NNPType::HDNNP_2G ||
+            (nnpType == NNPType::HDNNP_4G && stage == 2) ||
+            (nnpType == NNPType::HDNNP_Q  && stage == 2))
         {
-            writeWeights("short", strpr("weights.%%03zu.%06d.out", epoch));
+            weightFileFormat = "weights" + weightFileFormat;
         }
-        else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+        else if ((nnpType == NNPType::HDNNP_4G && stage == 1) ||
+                 (nnpType == NNPType::HDNNP_Q  && stage == 1))
         {
-            writeWeights("charge", strpr("weightse.%%03zu.%06d.out", epoch));
+            weightFileFormat = "weightse" + weightFileFormat;
         }
+        writeWeights(nnId, weightFileFormat);
     }
 
     return;
@@ -1263,7 +1238,8 @@ void Training::writeLearningCurve(bool append, string const fileName) const
 {
     ofstream file;
     string fileNameActual = fileName;
-    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q)
     {
         fileNameActual += strpr(".stage-%zu", stage);
     }
@@ -1278,14 +1254,10 @@ void Training::writeLearningCurve(bool append, string const fileName) const
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        if (nnpType == NNPType::SHORT_ONLY ||
-            (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+        title.push_back("Learning curves for training properties:");
+        for (auto k : pk)
         {
-            title.push_back("Learning curves for energies and forces.");
-        }
-        else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
-        {
-            title.push_back("Learning curves for charges.");
+            title.push_back(" * " + p[k].plural);
         }
         colSize.push_back(10);
         colName.push_back("epoch");
@@ -1372,7 +1344,7 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     return;
 }
 
-void Training::writeNeuronStatistics(string const& nnName,
+void Training::writeNeuronStatistics(string const& id,
                                      string const& fileName) const
 {
     ofstream file;
@@ -1386,7 +1358,7 @@ void Training::writeNeuronStatistics(string const& nnName,
         vector<string> colInfo;
         vector<size_t> colSize;
         title.push_back("Statistics for individual neurons of network \""
-                        + nnName + "\" gathered during RMSE calculation.");
+                        + id + "\" gathered during RMSE calculation.");
         colSize.push_back(10);
         colName.push_back("element");
         colInfo.push_back("Element index.");
@@ -1414,13 +1386,13 @@ void Training::writeNeuronStatistics(string const& nnName,
 
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetworks.at(nnName).getNumNeurons();
+        size_t n = elements.at(i).neuralNetworks.at(id).getNumNeurons();
         vector<long>   count(n, 0);
         vector<double> min(n, 0.0);
         vector<double> max(n, 0.0);
         vector<double> mean(n, 0.0);
         vector<double> sigma(n, 0.0);
-        elements.at(i).neuralNetworks.at(nnName).
+        elements.at(i).neuralNetworks.at(id).
             getNeuronStatistics(&(count.front()),
                                 &(min.front()),
                                 &(max.front()),
@@ -1473,39 +1445,18 @@ void Training::writeNeuronStatistics(string const& nnName,
 
 void Training::writeNeuronStatisticsEpoch() const
 {
-    vector<pair<string, string>> nnInfo; // NN name and file name.
-
     if (writeNeuronStatisticsEvery > 0 &&
         (epoch % writeNeuronStatisticsEvery == 0
         || epoch <= writeNeuronStatisticsAlways))
     {
-        if (nnpType == NNPType::SHORT_ONLY)
+        string fileName = strpr("neuron-stats.%s.%06zu.out",
+                                nnId.c_str(), epoch);
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_Q)
         {
-            nnInfo.push_back(
-                make_pair("short", strpr("neuron-stats.%06zu.out", epoch)));
+            fileName += strpr(".stage-%zu", stage);
         }
-        else if (nnpType == NNPType::SHORT_CHARGE_NN)
-        {
-            if (stage == 1)
-            {
-                nnInfo.push_back(
-                    make_pair("charge",
-                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
-                                    "charge", epoch, stage)));
-            }
-            else if (stage == 2)
-            {
-                nnInfo.push_back(
-                    make_pair("charge",
-                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
-                                    "charge", epoch, stage)));
-                nnInfo.push_back(
-                    make_pair("short",
-                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
-                                    "short", epoch, stage)));
-            }
-        }
-        for (auto const& i : nnInfo) writeNeuronStatistics(i.first, i.second);
+        writeNeuronStatistics(nnId, fileName);
     }
 
     return;
@@ -1526,7 +1477,8 @@ void Training::writeUpdaterStatus(bool         append,
 {
     ofstream file;
     string fileNameFormatActual = fileNameFormat;
-    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q)
     {
         fileNameFormatActual += strpr(".stage-%zu", stage);
     }
@@ -1833,7 +1785,7 @@ void Training::update(string const& property)
             {
                 if (k == "energy")
                 {
-                    if (nnpType == NNPType::SHORT_ONLY)
+                    if (nnpType == NNPType::HDNNP_2G)
                     {
                         calculateAtomicNeuralNetworks(s, derivatives);
                         calculateEnergy(s);
@@ -1842,7 +1794,8 @@ void Training::update(string const& property)
                             / (s.numAtoms * pu.errorTrain.at("RMSEpa"));
                     }
                     // Assume stage 2.
-                    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+                    else if (nnpType == NNPType::HDNNP_4G ||
+                             nnpType == NNPType::HDNNP_Q)
                     {
                         // TODO: Reuse already present charge-NN data and
                         // compute only short-NN energy contributions.
@@ -1851,7 +1804,7 @@ void Training::update(string const& property)
                 }
                 else if (k == "force")
                 {
-                    if (nnpType == NNPType::SHORT_ONLY)
+                    if (nnpType == NNPType::HDNNP_2G)
                     {
                         calculateAtomicNeuralNetworks(s, derivatives);
                         calculateForces(s);
@@ -1861,7 +1814,8 @@ void Training::update(string const& property)
                             / pu.errorTrain.at("RMSE");
                     }
                     // Assume stage 2.
-                    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+                    else if (nnpType == NNPType::HDNNP_4G ||
+                             nnpType == NNPType::HDNNP_Q)
                     {
                         // TODO: Reuse already present charge-NN data and
                         // compute only short-NN force contributions.
@@ -1870,16 +1824,25 @@ void Training::update(string const& property)
                 }
                 else if (k == "charge")
                 {
-                    // Assume NNPType::SHORT_CHARGE_NN stage 1.
-                    // Compute only charge-NN
-                    Atom& a = s.atoms.at(c->a);
-                    NeuralNetwork& nn =
-                        elements.at(a.element).neuralNetworks.at("charge");
-                    nn.setInput(&(a.G.front()));
-                    nn.propagate();
-                    nn.getOutput(&(a.charge));
-                    currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
-                                              / pu.errorTrain.at("RMSE");
+                    // Assume stage 1.
+                    if (nnpType == NNPType::HDNNP_4G)
+                    {
+                        // TODO: Lots of stuff.
+                        throw runtime_error("ERROR: Not implemented.\n");
+                    }
+                    else if (nnpType == NNPType::HDNNP_Q)
+                    {
+                        // Compute only charge-NN
+                        Atom& a = s.atoms.at(c->a);
+                        NeuralNetwork& nn =
+                            elements.at(a.element).neuralNetworks.at(nnId);
+                        nn.setInput(&(a.G.front()));
+                        nn.propagate();
+                        nn.getOutput(&(a.charge));
+                        currentRmseFraction.at(b) =
+                            fabs(a.chargeRef - a.charge)
+                            / pu.errorTrain.at("RMSE");
+                    }
                 }
                 // If force RMSE is above threshold stop loop immediately.
                 if (currentRmseFraction.at(b) > pu.rmseThreshold)
@@ -1974,7 +1937,7 @@ void Training::update(string const& property)
         // Now compute Jacobian.
         if (k == "energy")
         {
-            if (nnpType == NNPType::SHORT_ONLY)
+            if (nnpType == NNPType::HDNNP_2G)
             {
                 // Loop over atoms and calculate atomic energy contributions.
                 for (vector<Atom>::iterator it = s.atoms.begin();
@@ -1998,14 +1961,17 @@ void Training::update(string const& property)
                     }
                 }
             }
-            else if (nnpType == NNPType::SHORT_CHARGE_NN)
+            // Assume stage 2.
+            else if (nnpType == NNPType::HDNNP_4G ||
+                     nnpType == NNPType::HDNNP_Q)
             {
+                // TODO: Lots of stuff.
                 throw runtime_error("ERROR: Not implemented.\n");
             }
         }
         else if (k == "force")
         {
-            if (nnpType == NNPType::SHORT_ONLY)
+            if (nnpType == NNPType::HDNNP_2G)
             {
                 // Loop over atoms and calculate atomic energy contributions.
                 for (vector<Atom>::iterator it = s.atoms.begin();
@@ -2044,31 +2010,42 @@ void Training::update(string const& property)
                 }
 
             }
-            else if (nnpType == NNPType::SHORT_CHARGE_NN)
+            // Assume stage 2.
+            else if (nnpType == NNPType::HDNNP_4G ||
+                     nnpType == NNPType::HDNNP_Q)
             {
+                // TODO: Lots of stuff.
                 throw runtime_error("ERROR: Not implemented.\n");
             }
         }
         else if (k == "charge")
         {
-            // Assume NNPType::SHORT_CHARGE_NN stage 1.
-            // Shortcut to selected atom.
-            Atom& a = s.atoms.at(c->a);
-            size_t i = a.element;
-            NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
-            nn.setInput(&(a.G.front()));
-            nn.propagate();
-            nn.getOutput(&(a.charge));
-            // Compute derivative of output node with respect to all
-            // neural network connections (weights + biases).
-            nn.calculateDEdc(&(dXdc.at(i).front()));
-            // Finally sum up Jacobian.
-            if (updateStrategy == US_ELEMENT) iu = i;
-            else iu = 0;
-            for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+            // Assume stage 1.
+            if (nnpType == NNPType::HDNNP_4G)
             {
-                pu.jacobian.at(iu).at(offset.at(i) + j) +=
-                    dXdc.at(i).at(j);
+                // TODO: Lots of stuff.
+                throw runtime_error("ERROR: Not implemented.\n");
+            }
+            else if (nnpType == NNPType::HDNNP_Q)
+            {
+                // Shortcut to selected atom.
+                Atom& a = s.atoms.at(c->a);
+                size_t i = a.element;
+                NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+                nn.setInput(&(a.G.front()));
+                nn.propagate();
+                nn.getOutput(&(a.charge));
+                // Compute derivative of output node with respect to all
+                // neural network connections (weights + biases).
+                nn.calculateDEdc(&(dXdc.at(i).front()));
+                // Finally sum up Jacobian.
+                if (updateStrategy == US_ELEMENT) iu = i;
+                else iu = 0;
+                for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+                {
+                    pu.jacobian.at(iu).at(offset.at(i) + j) +=
+                        dXdc.at(i).at(j);
+                }
             }
         }
 
@@ -2651,15 +2628,9 @@ void Training::collectDGdxia(Atom const& atom,
 }
 #endif
 
-void Training::randomizeNeuralNetworkWeights(string const& type)
+void Training::randomizeNeuralNetworkWeights(string const& id)
 {
-    string keywordNW = "";
-    if      (type == "short" ) keywordNW = "nguyen_widrow_weights_short";
-    else if (type == "charge") keywordNW = "nguyen_widrow_weights_charge";
-    else
-    {
-        throw runtime_error("ERROR: Unknown neural network type.\n");
-    }
+    string keywordNW = "nguyen_widrow_weights" + nns.at(id).keywordSuffix;
 
     double minWeights = atof(settings["weights_min"].c_str());
     double maxWeights = atof(settings["weights_max"].c_str());
@@ -2668,7 +2639,7 @@ void Training::randomizeNeuralNetworkWeights(string const& type)
     vector<double> w;
     for (size_t i = 0; i < numElements; ++i)
     {
-        NeuralNetwork& nn = elements.at(i).neuralNetworks.at(type);
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at(id);
         w.resize(nn.getNumConnections(), 0);
         for (size_t j = 0; j < w.size(); ++j)
         {
@@ -2683,7 +2654,7 @@ void Training::randomizeNeuralNetworkWeights(string const& type)
         for (vector<Element>::iterator it = elements.begin();
              it != elements.end(); ++it)
         {
-            NeuralNetwork& nn = it->neuralNetworks.at(type);
+            NeuralNetwork& nn = it->neuralNetworks.at(id);
             nn.modifyConnections(NeuralNetwork::MS_NGUYENWIDROW);
         }
     }
@@ -2700,7 +2671,7 @@ void Training::randomizeNeuralNetworkWeights(string const& type)
         for (vector<Element>::iterator it = elements.begin();
              it != elements.end(); ++it)
         {
-            NeuralNetwork& nn = it->neuralNetworks.at(type);
+            NeuralNetwork& nn = it->neuralNetworks.at(id);
             nn.modifyConnections(NeuralNetwork::MS_GLOROTBENGIO);
             //nn->modifyConnections(NeuralNetwork::MS_ZEROOUTPUTWEIGHTS);
             nn.modifyConnections(NeuralNetwork::MS_ZEROBIAS);
@@ -3005,7 +2976,8 @@ void Training::writeTimingData(bool append, string const fileName)
 {
     ofstream file;
     string fileNameActual = fileName;
-    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q)
     {
         fileNameActual += strpr(".stage-%zu", stage);
     }

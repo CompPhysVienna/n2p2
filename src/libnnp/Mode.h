@@ -96,7 +96,7 @@ public:
          * the second NN as additional input neuron. There is no electrostatic
          * energy and no global charge equilibration as in 4G-HDNNP.
          */
-        HDNNP_4G_NO_ELEC
+        HDNNP_Q = 10
     };
 
     Mode();
@@ -546,17 +546,17 @@ protected:
         };
 
         /// NN identifier, e.g. "short", "charge",...
-        std::string                        id;
+        std::string           id;
         /// Description string for log output, e.g. "electronegativity".
-        std::string                        name;
+        std::string           name;
         /// Format for weight files.
-        std::string                        weightFileFormat;
+        std::string           weightFileFormat;
         /// Suffix for keywords (NN topology related).
-        std::string                        keywordSuffix;
+        std::string           keywordSuffix;
         /// Suffix for some other keywords (weight file loading related).
-        std::string                        keywordSuffix2;
+        std::string           keywordSuffix2;
         /// Per-element NN topology.
-        std::vector<Topology>              topology;
+        std::vector<Topology> topology;
     };
 
     NNPType                    nnpType;
@@ -580,10 +580,10 @@ protected:
 
     /** Read in weights for a specific type of neural network.
      *
-     * @param[in] type Actual network type to initialize ("short" or "charge").
+     * @param[in] id Actual network type to initialize ("short" or "elec").
      * @param[in] fileNameFormat Weights file name format.
      */
-    void readNeuralNetworkWeights(std::string const& type,
+    void readNeuralNetworkWeights(std::string const& id,
                                   std::string const& fileName);
 };
 

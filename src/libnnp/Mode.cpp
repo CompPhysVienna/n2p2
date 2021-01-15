@@ -24,9 +24,7 @@
 #include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
-#ifndef NNP_NO_SF_CACHE
 #include <map>       // std::multimap
-#endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 #include <utility>   // std::piecewise_construct, std::forward_as_tuple
@@ -86,7 +84,11 @@ void Mode::loadSettingsFile(string const& fileName)
 
     if (settings.keywordExists("nnp_type"))
     {
-        nnpType = (NNPType)atoi(settings["nnp_type"].c_str());
+        string nnpTypeString = settings["nnp_type"];
+        if      (nnpTypeString == "2G-HDNNP") nnpType = NNPType::HDNNP_2G;
+        else if (nnpTypeString == "4G-HDNNP") nnpType = NNPType::HDNNP_4G;
+        else if (nnpTypeString == "Q-HDNNP")  nnpType = NNPType::HDNNP_Q;
+        else nnpType = (NNPType)atoi(settings["nnp_type"].c_str());
     }
 
     if (nnpType == NNPType::HDNNP_2G)
@@ -98,7 +100,7 @@ void Mode::loadSettingsFile(string const& fileName)
         log << "This settings file defines a NNP with electrostatics and\n"
                "non-local charge transfer (4G-HDNNP).\n";
     }
-    else if (nnpType == NNPType::HDNNP_4G_NO_ELEC)
+    else if (nnpType == NNPType::HDNNP_Q)
     {
         log << "This settings file defines a short-range NNP similar to\n"
                "4G-HDNNP with additional charge NN but with neither\n"
@@ -901,7 +903,7 @@ void Mode::setupNeuralNetwork()
         nns.at(id).keywordSuffix = "_electrostatic";
         nns.at(id).keywordSuffix2 = "_charge";
     }
-    else if(nnpType == NNPType::HDNNP_4G_NO_ELEC)
+    else if(nnpType == NNPType::HDNNP_Q)
     {
         id = "elec";
         nnk.push_back(id);
@@ -1002,7 +1004,7 @@ void Mode::setupNeuralNetwork()
                 t.numNeuronsPerLayer.at(0) = nsf;
             }
             else if (nnpType == NNPType::HDNNP_4G ||
-                     nnpType == NNPType::HDNNP_4G_NO_ELEC)
+                     nnpType == NNPType::HDNNP_Q)
             {
                 // NN with id "elec" requires only SFs.
                 if (k == "elec") t.numNeuronsPerLayer.at(0) = nsf;
@@ -1217,7 +1219,7 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
 
         // Inform atom if extra charge neuron is present in short-range NN.
         if (nnpType == NNPType::HDNNP_4G ||
-            nnpType == NNPType::HDNNP_4G_NO_ELEC) a->useChargeNeuron = true;
+            nnpType == NNPType::HDNNP_Q) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1298,7 +1300,7 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 
         // Inform atom if extra charge neuron is present in short-range NN.
         if (nnpType == NNPType::HDNNP_4G ||
-            nnpType == NNPType::HDNNP_4G_NO_ELEC) a->useChargeNeuron = true;
+            nnpType == NNPType::HDNNP_Q) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1383,7 +1385,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             // TODO
         }
     }
-    else if (nnpType == NNPType::HDNNP_4G_NO_ELEC)
+    else if (nnpType == NNPType::HDNNP_Q)
     {
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
@@ -1402,6 +1404,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             // Now the short-range NN (have to set input neurons individually).
             NeuralNetwork& nnShort = elements.at(it->element)
                                      .neuralNetworks.at("short");
+            // TODO: This part should simplify with improved NN class.
             for (size_t i = 0; i < it->G.size(); ++i)
             {
                 nnShort.setInput(i, it->G.at(i));
@@ -1448,6 +1451,10 @@ void Mode::calculateCharge(Structure& structure) const
 
 void Mode::calculateForces(Structure& structure) const
 {
+    if (nnpType != NNPType::HDNNP_2G)
+    {
+        throw runtime_error("ERROR: Forces are not yet implemented.\n");
+    }
     Atom* ai = NULL;
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
@@ -1752,7 +1759,7 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
     return prune;
 }
 
-void Mode::readNeuralNetworkWeights(string const& type,
+void Mode::readNeuralNetworkWeights(string const& id,
                                     string const& fileNameFormat)
 {
     for (vector<Element>::iterator it = elements.begin();
@@ -1766,7 +1773,7 @@ void Mode::readNeuralNetworkWeights(string const& type,
         vector<double> weights = readColumnsFromFile(fileName,
                                                      vector<size_t>(1, 0)
                                                     ).at(0);
-        NeuralNetwork& nn = it->neuralNetworks.at(type);
+        NeuralNetwork& nn = it->neuralNetworks.at(id);
         nn.setConnections(&(weights.front()));
     }
 

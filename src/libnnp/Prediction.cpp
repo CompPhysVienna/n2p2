@@ -73,7 +73,7 @@ void Prediction::predict()
     calculateAtomicNeuralNetworks(structure, true);
     calculateEnergy(structure);
     if (nnpType == NNPType::HDNNP_4G ||
-        nnpType == NNPType::HDNNP_4G_NO_ELEC) calculateCharge(structure);
+        nnpType == NNPType::HDNNP_Q) calculateCharge(structure);
     calculateForces(structure);
     if (normalize)
     {
