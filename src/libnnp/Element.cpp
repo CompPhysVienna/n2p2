@@ -57,6 +57,8 @@ Element::Element(size_t const index, ElementMap const& elementMap) :
     index              (index                         ),
     atomicNumber       (elementMap.atomicNumber(index)),
     atomicEnergyOffset (0.0                           ),
+    hardness           (0.0                           ),
+    qsigma             (0.0                           ),
     symbol             (elementMap.symbol(index)      )
 {
 }

@@ -293,6 +293,13 @@ size_t Atom::getNumNeighbors(double cutoffRadius) const
     return numNeighborsLocal;
 }
 
+bool Atom::isNeighbor(size_t index) const
+{
+    for (auto const& n : neighbors) if (n.index == index) return true;
+
+    return false;
+}
+
 void Atom::updateError(string const&        property,
                        map<string, double>& error,
                        size_t&              count) const

@@ -253,6 +253,13 @@ public:
                                           std::string> fileNameFormats =
                                  std::map<std::string,
                                           std::string>());
+    /** Read in atomic hardness from file.
+     *
+     * @param[in] fileNameFormat Name format of file containing atomic
+     *                           hardness data.
+     */
+    virtual void             setupAtomicHardness(std::string fileNameFormat =
+                                                 "hardness.%3zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -311,6 +318,11 @@ public:
     void                     calculateAtomicNeuralNetworks(
                                                        Structure& structure,
                                                        bool const derivatives);
+    /** Perform global charge equilibration method.
+     *
+     * @param[in] structure Input structure.
+     */
+    void                     chargeEquilibration(Structure& structure) const;
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.

@@ -42,6 +42,7 @@ void Prediction::setup()
         {"elec", formatWeightsFilesCharge}
     };
     setupNeuralNetworkWeights(formatWeights);
+    if (nnpType == NNPType::HDNNP_4G) setupAtomicHardness();
     setupSymmetryFunctionStatistics(false, false, true, false);
 }
 

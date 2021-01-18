@@ -226,6 +226,13 @@ struct Atom
      * smaller cutoff is requested.
      */
     std::size_t              getNumNeighbors(double cutoffRadius) const;
+    /** Return whether atom is a neighbor.
+     *
+     * @param[in] index Index of atom in question.
+     *
+     * @return `True` if atom is neighbor of this atom.
+     */
+    bool                     isNeighbor(std::size_t index) const;
     /** Update property error metrics with data from this atom.
      *
      * @param[in] property One of "force" or "charge".

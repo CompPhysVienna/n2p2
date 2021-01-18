@@ -31,6 +31,7 @@
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
 Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                normalize                 (false            ),
@@ -246,9 +247,27 @@ void Mode::setupElements()
         log << strpr("Element %2zu: %16.8E\n",
                      i, elements.at(i).getAtomicEnergyOffset());
     }
-
     log << "Energy offsets are automatically subtracted from reference "
            "energies.\n";
+
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        Settings::KeyRange r = settings.getValues("fixed_gausswidth");
+        for (Settings::KeyMap::const_iterator it = r.first;
+             it != r.second; ++it)
+        {
+            vector<string> args    = split(reduce(it->second.first));
+            size_t         element = elementMap[args.at(0)];
+            elements.at(element).setQsigma(atof(args.at(1).c_str()));
+        }
+        log << "Gaussian width of charge distribution per element:\n";
+        for (size_t i = 0; i < elementMap.size(); ++i)
+        {
+            log << strpr("Element %2zu: %16.8E\n",
+                         i, elements.at(i).getQsigma());
+        }
+    }
+
     log << "*****************************************"
            "**************************************\n";
 
@@ -1196,6 +1215,24 @@ void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
     return;
 }
 
+void Mode::setupAtomicHardness(string fileNameFormat)
+{
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        string fileName = strpr(fileNameFormat.c_str(),
+                                elements.at(i).getAtomicNumber());
+        vector<double> const data = readColumnsFromFile(fileName, {0}).at(0);
+        if (data.size() != 1)
+        {
+            throw runtime_error("ERROR: Atomic hardness data is "
+                                "inconsistent.\n");
+        }
+        elements.at(i).setHardness(data.at(0));
+    }
+
+    return;
+}
+
 void Mode::calculateSymmetryFunctions(Structure& structure,
                                       bool const derivatives)
 {
@@ -1419,6 +1456,29 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             nnShort.getOutput(&(it->energy));
         }
     }
+
+    return;
+}
+
+void Mode::chargeEquilibration(Structure& structure) const
+{
+    Structure& s = structure;
+
+    // Prepare hardness vector and precalculate gamma(i, j).
+    VectorXd hardness(numElements);
+    MatrixXd gamma(numElements, numElements);
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        hardness(i) = elements.at(i).getHardness();
+        double const iSigma = elements.at(i).getQsigma();
+        for (size_t j = 0; j < numElements; ++j)
+        {
+            double const jSigma = elements.at(j).getQsigma();
+            gamma(i, j) = sqrt(iSigma * iSigma + jSigma * jSigma);
+        }
+    }
+
+    s.fillChargeEquilibrationMatrix(hardness, gamma);
 
     return;
 }

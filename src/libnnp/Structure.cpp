@@ -26,6 +26,7 @@
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
 Structure::Structure() :
     isPeriodic                    (false     ),
@@ -428,6 +429,27 @@ void Structure::calculateInverseBox()
 void Structure::calculateVolume()
 {
     volume = fabs(box[0] * (box[1].cross(box[2])));
+
+    return;
+}
+
+void Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
+                                              MatrixXd gamma)
+{
+    A.resize(numAtoms + 1, numAtoms + 1);
+
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom const& ai = atoms.at(i);
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+
+            if (ai.isNeighbor(j))
+            {
+
+            }
+        }
+    }
 
     return;
 }

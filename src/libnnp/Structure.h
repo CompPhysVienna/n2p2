@@ -20,6 +20,7 @@
 #include "Atom.h"
 #include "ElementMap.h"
 #include "Vec3D.h"
+#include <Eigen/Core>
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
 #include <map>     // std::map
@@ -90,6 +91,8 @@ struct Structure
     Vec3D                    box[3];
     /// Inverse simulation box vectors.
     Vec3D                    invbox[3];
+    /// Global charge equilibration matrix A'.
+    Eigen::MatrixXd          A;
     /// Number of atoms of each element in this structure.
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
@@ -197,6 +200,14 @@ struct Structure
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();
+    /** Fill charge equilibration matrix.
+     *
+     * @param[in] hardness Vector containing the hardness of all elements.
+     * @param[in] gamma Matrix of all sigma combinations for all elements.
+     */
+    void                     fillChargeEquilibrationMatrix(
+                                                      Eigen::VectorXd hardness,
+                                                      Eigen::MatrixXd gamma);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.

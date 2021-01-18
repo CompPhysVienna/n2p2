@@ -60,6 +60,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["conv_length"                        ] = "";
     m["conv_energy"                        ] = "";
     m["nnp_type"                           ] = "";
+    m["fixed_gausswidth"                   ] = "";
 
     // Training keywords.
     m["random_seed"                        ] = "";
@@ -387,7 +388,8 @@ pair<size_t, size_t> Settings::sanityCheck()
         if (contents.count((*it).first) > 1
             && (*it).first != "symfunction_short"
             && (*it).first != "atom_energy"
-            && (*it).first != "element_nodes_short")
+            && (*it).first != "element_nodes_short"
+            && (*it).first != "fixed_gausswidth")
         {
             countProblems++;
             countCritical++;
