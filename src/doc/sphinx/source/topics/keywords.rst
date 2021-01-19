@@ -284,6 +284,8 @@ scaling. See :cpp:enumerator:`nnp::SymmetryFunction::ScalingType`.
 
 ----
 
+.. _symfunction_short:
+
 ``symfunction_short``
 ^^^^^^^^^^^^^^^^^^^^^
 

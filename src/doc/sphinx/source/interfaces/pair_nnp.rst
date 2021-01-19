@@ -130,11 +130,13 @@ warning may look like this:
 
 .. code-block:: none
 
-   ### NNP EXTRAPOLATION WARNING ### STRUCTURE:      2 ATOM:     36 SYMFUNC:   14 VALUE:  8.978E-02 MIN:  3.900E-08 MAX:  8.888E-02
+   ### NNP EXTRAPOLATION WARNING ### STRUCTURE:      0 ATOM:       119 ELEMENT: Cu SYMFUNC:   32 TYPE:  3 VALUE:  2.166E-02 MIN:  2.003E-05 MAX:  1.756E-02
 
-stating that the value 8.978E-02 of symmetry function 14 was out of bounds
-(maximum in "scaling.data" is 8.888E-02) for atom 36. Here, the structure index
-refers to the MPI rank.
+stating that the value 2.166E-02 of symmetry function 32 of :ref:`type 3
+(angular narrow)<symfunction_short>`, element Cu (see the log file for a symmetry
+function listing) was out of bounds (maximum in "scaling.data" is 1.756E-02) for
+atom 119. Here, the atom index refers to the LAMMPS tag (global index) and the
+structure index is used to print out the MPI rank the atom belongs to.
 
 .. note::
 

@@ -25,12 +25,14 @@ using namespace nnp;
 SymFncStatistics::Container::Container() :
     count  (0                             ),
     countEW(0                             ),
+    type   (0                             ),
     min    ( numeric_limits<double>::max()),
     max    (-numeric_limits<double>::max()),
     Gmin   (0.0                           ),
     Gmax   (0.0                           ),
     sum    (0.0                           ),
-    sum2   (0.0                           )
+    sum2   (0.0                           ),
+    element(""                            )
 {
 }
 
@@ -58,6 +60,8 @@ void SymFncStatistics::Container::resetExtrapolationWarnings()
     countEW = 0;
     Gmin = 0.0;
     Gmax = 0.0;
+    type = 0;
+    element = "";
     indexStructureEW.clear();
     indexAtomEW.clear();
     valueEW.clear();
@@ -85,15 +89,19 @@ void SymFncStatistics::addValue(size_t index, double value)
 }
 
 void SymFncStatistics::addExtrapolationWarning(size_t index,
+                                               size_t type,
                                                double value,
                                                double Gmin,
                                                double Gmax,
+                                               string element,
                                                size_t indexStructure,
                                                size_t indexAtom)
 {
     data[index].countEW++;
     data[index].Gmin = Gmin;
     data[index].Gmax = Gmax;
+    data[index].type = type;
+    data[index].element = element;
     data[index].valueEW.push_back(value);
     data[index].indexStructureEW.push_back(indexStructure);
     data[index].indexAtomEW.push_back(indexAtom);
@@ -111,11 +119,14 @@ vector<string> SymFncStatistics::getExtrapolationWarningLines() const
         for (size_t i = 0; i < d.valueEW.size(); ++i)
         {
             vs.push_back(strpr("### NNP EXTRAPOLATION WARNING ### "
-                               "STRUCTURE: %6zu ATOM: %6zu SYMFUNC: %4zu "
-                               "VALUE: %10.3E MIN: %10.3E MAX: %10.3E\n",
+                               "STRUCTURE: %6zu ATOM: %9zu ELEMENT: %2s "
+                               "SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
+                               "MIN: %10.3E MAX: %10.3E\n",
                                d.indexStructureEW[i],
                                d.indexAtomEW[i],
+                               d.element.c_str(),
                                it->first,
+                               d.type,
                                d.valueEW[i],
                                d.Gmin,
                                d.Gmax));
