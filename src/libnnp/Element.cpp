@@ -470,10 +470,11 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
         double const Gmin = symmetryFunctions.at(i)->getGmin();
         double const Gmax = symmetryFunctions.at(i)->getGmax();
         double const value = symmetryFunctions.at(i)->unscale(atom.G.at(i));
-        size_t const index = symmetryFunctions.at(i)->getIndex();
+        size_t const sfindex = symmetryFunctions.at(i)->getIndex() + 1;
+        size_t const type = symmetryFunctions.at(i)->getType();
         if (statistics.collectStatistics)
         {
-            statistics.addValue(index, atom.G.at(i));
+            statistics.addValue(sfindex, atom.G.at(i));
         }
 
         // Avoid "fake" EWs at the boundaries.
@@ -482,21 +483,26 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
             countExtrapolationWarnings++;
             if (statistics.collectExtrapolationWarnings)
             {
-                statistics.addExtrapolationWarning(index,
+                statistics.addExtrapolationWarning(sfindex,
+                                                   type,
                                                    value,
                                                    Gmin,
                                                    Gmax,
+                                                   symbol,
                                                    atom.indexStructure,
                                                    atom.tag);
             }
             if (statistics.writeExtrapolationWarnings)
             {
                 cerr << strpr("### NNP EXTRAPOLATION WARNING ### "
-                              "STRUCTURE: %6zu ATOM: %6zu SYMFUNC: %4zu "
-                              "VALUE: %10.3E MIN: %10.3E MAX: %10.3E\n",
+                              "STRUCTURE: %6zu ATOM: %9zu ELEMENT: %2s "
+                              "SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
+                              "MIN: %10.3E MAX: %10.3E\n",
                               atom.indexStructure,
                               atom.tag,
-                              index,
+                              symbol.c_str(),
+                              sfindex,
+                              type,
                               value,
                               Gmin,
                               Gmax);
@@ -505,12 +511,15 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
             {
                 throw out_of_range(
                         strpr("### NNP EXTRAPOLATION WARNING ### "
-                              "STRUCTURE: %6zu ATOM: %6zu SYMFUNC: %4zu "
-                              "VALUE: %10.3E MIN: %10.3E MAX: %10.3E\n"
+                              "STRUCTURE: %6zu ATOM: %9zu ELEMENT: %2s "
+                              "SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
+                              "MIN: %10.3E MAX: %10.3E\n"
                               "ERROR: Symmetry function value out of range.\n",
                               atom.indexStructure,
                               atom.tag,
-                              index,
+                              symbol.c_str(),
+                              sfindex,
+                              type,
                               value,
                               Gmin,
                               Gmax));

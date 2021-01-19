@@ -37,6 +37,8 @@ public:
         std::size_t              count;
         /// Counts extrapolation warnings.
         std::size_t              countEW;
+        /// Symmetry function type.
+        std::size_t              type;
         /// Minimum symmetry function value encountered.
         double                   min;
         /// Maximum symmetry function value encountered.
@@ -49,6 +51,8 @@ public:
         double                   sum;
         /// Sum of squared symmetry function values (to compute sigma).
         double                   sum2;
+        /// Element string of central atom of symmetry function.
+        std::string              element;
         /// Structure indices for which extrapolation warnings occured.
         std::vector<std::size_t> indexStructureEW;
         /// Atom indices for which extrapolation warnings occured.
@@ -100,16 +104,20 @@ public:
     /** Add extrapolation warning entry.
      *
      * @param[in] index Symmetry function index.
+     * @param[in] type Symmetry function type.
      * @param[in] value Unscaled symmetry function value.
      * @param[in] Gmin Minimum symmetry function value from scaling data.
      * @param[in] Gmax Maximum symmetry function value from scaling data.
+     * @param[in] element Symmetry function element string.
      * @param[in] indexStructure Index of structure of affected atom.
      * @param[in] indexAtom Index of affected atom.
      */
     void         addExtrapolationWarning(std::size_t index,
+                                         std::size_t type,
                                          double      value,
                                          double      Gmin,
                                          double      Gmax,
+                                         std::string element,
                                          std::size_t indexStructure,
                                          std::size_t indexAtom);
     /** Get lines with extrapolation warnings.

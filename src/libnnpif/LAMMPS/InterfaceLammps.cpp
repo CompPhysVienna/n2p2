@@ -448,8 +448,11 @@ long InterfaceLammps::getEWBufferSize() const
         {
             bs += ss; // index   (it2->first).
             bs += ss; // countEW (it2->second.countEW).
+            bs += ss; // type    (it2->second.type).
             bs += ds; // Gmin    (it2->second.Gmin).
             bs += ds; // Gmax    (it2->second.Gmax).
+            bs += ss; // element.length() (it2->second.element.length()).
+            bs += (it2->second.element.length() + 1) * cs; // element.
             size_t countEW = it2->second.countEW;
             bs += countEW * ss; // indexStructureEW.
             bs += countEW * ss; // indexAtomEW.
@@ -477,8 +480,13 @@ void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
             MPI_Pack(&(it2->first                          ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
             size_t countEW = it2->second.countEW;
             MPI_Pack(&(countEW                             ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack(&(it2->second.type                    ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
             MPI_Pack(&(it2->second.Gmin                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
             MPI_Pack(&(it2->second.Gmax                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            // it2->element
+            size_t ts = it2->second.element.length() + 1;
+            MPI_Pack(&ts                                    ,       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack(it2->second.element.c_str()            ,      ts, MPI_CHAR  , buf, bs, &p, MPI_COMM_WORLD);
             MPI_Pack(&(it2->second.indexStructureEW.front()), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
             MPI_Pack(&(it2->second.indexAtomEW.front()     ), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
             MPI_Pack(&(it2->second.valueEW.front()         ), countEW, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
@@ -504,8 +512,16 @@ void InterfaceLammps::extractEWBuffer(char const* const& buf, int bs)
             SymFncStatistics::Container& d = it->statistics.data[index];
             size_t countEW = 0;
             MPI_Unpack(buf, bs, &p, &(countEW                      ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack(buf, bs, &p, &(d.type                       ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
             MPI_Unpack(buf, bs, &p, &(d.Gmin                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
             MPI_Unpack(buf, bs, &p, &(d.Gmax                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
+            // d.element
+            size_t ts = 0;
+            MPI_Unpack(buf, bs, &p, &ts                             ,       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            char* element = new char[ts];
+            MPI_Unpack(buf, bs, &p, element                         ,      ts, MPI_CHAR  , MPI_COMM_WORLD);
+            d.element = element;
+            delete[] element;
             // indexStructureEW.
             d.indexStructureEW.resize(d.countEW + countEW);
             MPI_Unpack(buf, bs, &p, &(d.indexStructureEW[d.countEW]), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
