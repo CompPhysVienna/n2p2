@@ -31,6 +31,8 @@ public:
     /// List of available activation function types.
     enum ActivationFunction
     {
+        /// Unset activation function.
+        AF_UNSET,
         /// @f$f_a(x) = x@f$
         AF_IDENTITY,
         /// @f$f_a(x) = \tanh(x)@f$
@@ -489,6 +491,14 @@ private:
      */
     void   propagateLayer(Layer& layer, Layer& layerPrev);
 };
+
+/** Convert string to activation function.
+ *
+ * @param[in] letter String representing activation function.
+ *
+ * @return Activation corresponding to string.
+ */
+NeuralNetwork::ActivationFunction activationFromString(std::string c);
 
 }
 

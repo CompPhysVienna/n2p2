@@ -75,6 +75,13 @@ std::string              pad(std::string const& input,
 /** String version of printf function.
  */
 std::string              strpr(const char* format, ...);
+/** Capitalize first letter of word.
+ *
+ * @param[in] word String to capitalize.
+ *
+ * @return Input string with first letter in capital letters.
+ */
+std::string              cap(std::string word);
 /** Generate output file header with info section and column labels.
  *
  * @param[in] title Multiple lines of title text.

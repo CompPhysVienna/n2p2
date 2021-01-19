@@ -25,6 +25,7 @@
 #include "Structure.h"
 #include "SymFnc.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -84,10 +85,18 @@ class Mode
 public:
     enum class NNPType
     {
-        /// Short range NNP only.
-        SHORT_ONLY,
-        /// Short range NNP with additional charge NN (M. Bircher).
-        SHORT_CHARGE_NN
+        /// Short range NNP (2G-HDNNP).
+        HDNNP_2G = 2,
+        /// NNP with electrostatics and non-local charge transfer (4G-HDNNP).
+        HDNNP_4G = 4,
+        /** Short range NNP with charge NN, no electrostatics/Qeq (M. Bircher).
+         *
+         * This is a simplified version of a 4G-HDNNP. Two neural networks are
+         * used: the first one predicts atomic charges, which will be used for
+         * the second NN as additional input neuron. There is no electrostatic
+         * energy and no global charge equilibration as in 4G-HDNNP.
+         */
+        HDNNP_Q = 10
     };
 
     Mode();
@@ -209,23 +218,41 @@ public:
      * known.
      */
     virtual void             setupNeuralNetwork();
-    /** Set up neural network weights from files.
+    /** Set up neural network weights from files with given name format.
      *
-     * @param[in] fileNameFormatShort Format for weights file name. The string
-     *                                must contain one placeholder for the
-     *                                atomic number.
-     * @param[in] fileNameFormatCharge Format for charge NN weights file name.
-     *                                 The string must contain one placeholder
-     *                                 for the atomic number.
+     * @param[in] fileNameFormats Map of NN ids to format for weight file
+     *                            names. Must contain a placeholder "%zu" for
+     *                            the element atomic number. Map keys are
+     *                            "short", "elec". Map argument may be
+     *                            ommitted, then default name formats are used.
      *
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     virtual void             setupNeuralNetworkWeights(
-                                std::string const& fileNameFormatShort
-                                                      = "weights.%03zu.data",
-                                std::string const& fileNameFormatCharge
-                                                      = "weightse.%03zu.data");
+                                 std::map<std::string,
+                                          std::string> fileNameFormats =
+                                 std::map<std::string,
+                                          std::string>());
+    /** Set up neural network weights from files with given name format.
+     *
+     * @param[in] directoryPrefix Directory prefix which is applied to all
+     *                            fileNameFormats.
+     * @param[in] fileNameFormats Map of NN ids to format for weight file
+     *                            names. Must contain a placeholder "%zu" for
+     *                            the element atomic number. Map keys are
+     *                            "short", "elec". Map argument may be
+     *                            ommitted, then default name formats are used.
+     *
+     * Does not use any keywords. The weight files should contain one weight
+     * per line, see NeuralNetwork::setConnections() for the correct order.
+     */
+    virtual void             setupNeuralNetworkWeights(
+                                 std::string           directoryPrefix,
+                                 std::map<std::string,
+                                          std::string> fileNameFormats =
+                                 std::map<std::string,
+                                          std::string>());
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -501,10 +528,40 @@ public:
     Log        log;
 
 protected:
+    /// Setup data for one neural network.
+    struct NNSetup
+    {
+        struct Topology
+        {
+            /// Number of NN layers (including input and output layer).
+            int                                numLayers;
+            /// Number of neurons per layer.
+            std::vector<int>                   numNeuronsPerLayer;
+            /// Activation function type per layer.
+            std::vector<
+            NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
+
+            /// Constructor.
+            Topology() : numLayers(0) {};
+        };
+
+        /// NN identifier, e.g. "short", "charge",...
+        std::string           id;
+        /// Description string for log output, e.g. "electronegativity".
+        std::string           name;
+        /// Format for weight files.
+        std::string           weightFileFormat;
+        /// Suffix for keywords (NN topology related).
+        std::string           keywordSuffix;
+        /// Suffix for some other keywords (weight file loading related).
+        std::string           keywordSuffix2;
+        /// Per-element NN topology.
+        std::vector<Topology> topology;
+    };
+
     NNPType                    nnpType;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
-    bool                       useChargeNN;
     std::size_t                numElements;
     std::vector<std::size_t>   minNeighbors;
     std::vector<double>        minCutoffRadius;
@@ -517,13 +574,16 @@ protected:
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
     std::vector<Element>       elements;
+    std::vector<std::string>   nnk;
+    std::map<
+    std::string, NNSetup>      nns;
 
     /** Read in weights for a specific type of neural network.
      *
-     * @param[in] type Actual network type to initialize ("short" or "charge").
+     * @param[in] id Actual network type to initialize ("short" or "elec").
      * @param[in] fileNameFormat Weights file name format.
      */
-    void readNeuralNetworkWeights(std::string const& type,
+    void readNeuralNetworkWeights(std::string const& id,
                                   std::string const& fileName);
 };
 
