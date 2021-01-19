@@ -1217,10 +1217,20 @@ void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
 
 void Mode::setupAtomicHardness(string fileNameFormat)
 {
+    log << "\n";
+    log << "*** SETUP: ATOMIC HARDNESS **************"
+           "**************************************\n";
+    log << "\n";
+
+    log << strpr("Atomic hardness file name format: %s\n",
+                 fileNameFormat.c_str());
     for (size_t i = 0; i < numElements; ++i)
     {
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
+        log << strpr("Atomic hardness for element %2s from file %s: ",
+                     elements.at(i).getSymbol().c_str(),
+                     fileName.c_str());
         vector<double> const data = readColumnsFromFile(fileName, {0}).at(0);
         if (data.size() != 1)
         {
@@ -1228,7 +1238,11 @@ void Mode::setupAtomicHardness(string fileNameFormat)
                                 "inconsistent.\n");
         }
         elements.at(i).setHardness(data.at(0));
+        log << strpr("%16.8E\n", elements.at(i).getHardness());
     }
+
+    log << "*****************************************"
+           "**************************************\n";
 
     return;
 }
@@ -1419,8 +1433,16 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
+            NeuralNetwork& nn = elements.at(it->element)
+                                .neuralNetworks.at("elec");
+            nn.setInput(&((it->G).front()));
+            nn.propagate();
+            nn.getOutput(&(it->chi));
+            log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
+                         it->index, elementMap[it->element].c_str(), it->chi);
             // TODO
         }
+        throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
     }
     else if (nnpType == NNPType::HDNNP_Q)
     {

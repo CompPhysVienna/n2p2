@@ -259,7 +259,7 @@ public:
      *                           hardness data.
      */
     virtual void             setupAtomicHardness(std::string fileNameFormat =
-                                                 "hardness.%3zu.data");
+                                                 "hardness.%03zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.

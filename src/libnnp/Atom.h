@@ -109,6 +109,8 @@ struct Atom
     std::size_t              numSymmetryFunctions;
     /// Atomic energy determined by neural network.
     double                   energy;
+    /// Atomic electronegativity determined by neural network.
+    double                   chi;
     /// Atomic charge determined by neural network.
     double                   charge;
     /// Atomic reference charge.
