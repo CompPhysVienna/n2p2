@@ -24,6 +24,7 @@
 #include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
+#include <iostream>
 #include <map>       // std::multimap
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
@@ -902,14 +903,7 @@ void Mode::setupNeuralNetwork()
            "**************************************\n";
     log << "\n";
 
-    // All NNP types contain a short range NN.
-    string id = "short";
-    nnk.push_back(id);
-    nns[id].id = id;
-    nns.at(id).name = "short range";
-    nns.at(id).weightFileFormat = "weights.%03zu.data";
-    nns.at(id).keywordSuffix = "_short";
-    nns.at(id).keywordSuffix2 = "_short";
+    string id;
 
     // Some NNP types require extra NNs.
     if (nnpType == NNPType::HDNNP_4G)
@@ -932,6 +926,15 @@ void Mode::setupNeuralNetwork()
         nns.at(id).keywordSuffix = "_electrostatic";
         nns.at(id).keywordSuffix2 = "_charge";
     }
+
+    // All NNP types contain a short range NN.
+    id = "short";
+    nnk.push_back(id);
+    nns[id].id = id;
+    nns.at(id).name = "short range";
+    nns.at(id).weightFileFormat = "weights.%03zu.data";
+    nns.at(id).keywordSuffix = "_short";
+    nns.at(id).keywordSuffix2 = "_short";
 
     // Loop over all NNs and set global properties.
     for (auto& k : nnk)
@@ -1410,15 +1413,18 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 }
 
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
-                                         bool const derivatives)
+                                         bool const derivatives,
+                                         string id)
 {
+    if (id == "") id = nnk.front();
+
     if (nnpType == NNPType::HDNNP_2G)
     {
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
             NeuralNetwork& nn = elements.at(it->element)
-                                .neuralNetworks.at("short");
+                                .neuralNetworks.at(id);
             nn.setInput(&((it->G).front()));
             nn.propagate();
             if (derivatives)
@@ -1430,22 +1436,28 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
     }
     else if (nnpType == NNPType::HDNNP_4G)
     {
-        for (vector<Atom>::iterator it = structure.atoms.begin();
-             it != structure.atoms.end(); ++it)
+        if (id == "elec")
         {
-            NeuralNetwork& nn = elements.at(it->element)
-                                .neuralNetworks.at("elec");
-            nn.setInput(&((it->G).front()));
-            nn.propagate();
-            nn.getOutput(&(it->chi));
-            log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
-                         it->index, elementMap[it->element].c_str(), it->chi);
-            // TODO
+            for (auto& a : structure.atoms)
+            {
+                NeuralNetwork& nn = elements.at(a.element)
+                                    .neuralNetworks.at(id);
+                nn.setInput(&((a.G).front()));
+                nn.propagate();
+                nn.getOutput(&(a.chi));
+                log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
+                             a.index, elementMap[a.element].c_str(), a.chi);
+            }
         }
-        throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
+        else if (id == "short")
+        {
+            // TODO
+            throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
+        }
     }
     else if (nnpType == NNPType::HDNNP_Q)
     {
+        // Ignore ID, both NNs are computed here.
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
@@ -1496,11 +1508,17 @@ void Mode::chargeEquilibration(Structure& structure) const
         for (size_t j = 0; j < numElements; ++j)
         {
             double const jSigma = elements.at(j).getQsigma();
-            gamma(i, j) = sqrt(iSigma * iSigma + jSigma * jSigma);
+            if (i == j) gamma(i, j) = sqrt(M_PI) * iSigma;
+            else        gamma(i, j) = sqrt(2.0 * (iSigma * iSigma
+                                                + jSigma * jSigma));
         }
     }
 
     s.fillChargeEquilibrationMatrix(hardness, gamma);
+
+    cout << s.A << endl;
+
+    throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
 
     return;
 }

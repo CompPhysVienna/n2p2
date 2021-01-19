@@ -311,13 +311,13 @@ public:
      * @param[in] derivatives If `true` calculate also derivatives of neural
      *                        networks with respect to input layer neurons
      *                        (required for force calculation).
-     *
-     * This internally calls calculateAtomicNeuralNetwork with appropriate
-     * neural network identifiers depending on the NNP type.
+     * @param[in] id Neural network ID to use. If empty, the first entry
+     *               nnk.front() is used.
      */
     void                     calculateAtomicNeuralNetworks(
-                                                       Structure& structure,
-                                                       bool const derivatives);
+                                                       Structure&  structure,
+                                                       bool const  derivatives,
+                                                       std::string id = "");
     /** Perform global charge equilibration method.
      *
      * @param[in] structure Input structure.

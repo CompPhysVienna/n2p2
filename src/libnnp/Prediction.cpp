@@ -72,6 +72,11 @@ void Prediction::predict()
     calculateSymmetryFunctionGroups(structure, true);
 #endif
     calculateAtomicNeuralNetworks(structure, true);
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        chargeEquilibration(structure);
+        calculateAtomicNeuralNetworks(structure, true, "short");
+    }
     calculateEnergy(structure);
     if (nnpType == NNPType::HDNNP_4G ||
         nnpType == NNPType::HDNNP_Q) calculateCharge(structure);

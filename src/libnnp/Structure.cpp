@@ -17,7 +17,7 @@
 #include "Structure.h"
 #include "utility.h"
 #include <algorithm> // std::max
-#include <cmath>     // fabs
+#include <cmath>     // fabs, erf
 #include <cstdlib>   // atof
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
@@ -437,19 +437,44 @@ void Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
                                               MatrixXd gamma)
 {
     A.resize(numAtoms + 1, numAtoms + 1);
+    A.setZero();
 
-    for (size_t i = 0; i < numAtoms; ++i)
+    if (isPeriodic)
     {
-        Atom const& ai = atoms.at(i);
-        for (size_t j = 0; j < numAtoms; ++j)
+        for (size_t i = 0; i < numAtoms; ++i)
         {
-
-            if (ai.isNeighbor(j))
+            Atom const& ai = atoms.at(i);
+            for (size_t j = i; j < numAtoms; ++j)
             {
 
+                if (ai.isNeighbor(j))
+                {
+
+                }
             }
         }
     }
+    else
+    {
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            A(i, i) = hardness(ei) + 1.0 / gamma(ei, ei);
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const rij = (ai.r - aj.r).norm();
+                A(i, j) = erf(rij / gamma(ei, ej)) / rij;
+                A(j, i) = A(i, j);
+            }
+        }
+    }
+
+    A.col(numAtoms).setOnes();
+    A.row(numAtoms).setOnes();
+    A(numAtoms, numAtoms) = 0.0;
 
     return;
 }
