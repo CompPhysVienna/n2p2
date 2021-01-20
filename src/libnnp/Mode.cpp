@@ -1451,8 +1451,23 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         }
         else if (id == "short")
         {
-            // TODO
-            throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
+            for (auto& a : structure.atoms)
+            {
+                NeuralNetwork& nn = elements.at(a.element)
+                                    .neuralNetworks.at(id);
+                nn.setInput(&((a.G).front()));
+                // TODO: This part should simplify with improved NN class.
+                for (size_t i = 0; i < a.G.size(); ++i)
+                {
+                    nn.setInput(i, a.G.at(i));
+                }
+                // Set additional charge neuron.
+                nn.setInput(a.G.size(), a.charge);
+                nn.propagate();
+                nn.getOutput(&(a.energy));
+                log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
+                             a.index, elementMap[a.element].c_str(), a.energy);
+            }
         }
     }
     else if (nnpType == NNPType::HDNNP_Q)
@@ -1501,7 +1516,7 @@ void Mode::chargeEquilibration(Structure& structure)
 
     // Prepare hardness vector and precalculate gamma(i, j).
     VectorXd hardness(numElements);
-    MatrixXd gamma(numElements, numElements);
+    MatrixXd siggam(numElements, numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
         hardness(i) = elements.at(i).getHardness();
@@ -1509,13 +1524,13 @@ void Mode::chargeEquilibration(Structure& structure)
         for (size_t j = 0; j < numElements; ++j)
         {
             double const jSigma = elements.at(j).getQsigma();
-            if (i == j) gamma(i, j) = sqrt(M_PI) * iSigma;
-            else        gamma(i, j) = sqrt(2.0 * (iSigma * iSigma
+            if (i == j) siggam(i, j) = sqrt(M_PI) * iSigma;
+            else        siggam(i, j) = sqrt(2.0 * (iSigma * iSigma
                                                 + jSigma * jSigma));
         }
     }
 
-    double const error = s.fillChargeEquilibrationMatrix(hardness, gamma);
+    double const error = s.calculateElectrostaticEnergy(hardness, siggam);
 
     cout << "A: " << endl;
     cout << s.A << endl;
@@ -1532,8 +1547,6 @@ void Mode::chargeEquilibration(Structure& structure)
 
     log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
 
-    throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
-
     return;
 }
 
@@ -1544,8 +1557,21 @@ void Mode::calculateEnergy(Structure& structure) const
     for (vector<Atom>::iterator it = structure.atoms.begin();
          it != structure.atoms.end(); ++it)
     {
-        structure.energy += it->energy;
+        structure.energyShort += it->energy;
     }
+    structure.energy = structure.energyShort + structure.energyElec;
+
+    cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
+    cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
+    cout << strpr("Sum           energy: %24.16E\n", structure.energy);
+    cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
+    cout << "---------------------\n";
+    cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
+    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
+    cout << "---------------------\n";
+    cout << "without offset:      \n";
+    cout << strpr("Total         energy: %24.16E\n", structure.energy);
+    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
 
     return;
 }
@@ -1560,6 +1586,12 @@ void Mode::calculateCharge(Structure& structure) const
         structure.charge += it->charge;
     }
 
+    cout << "---------------------\n";
+    cout << strpr("Total         charge: %24.16E\n", structure.charge);
+    cout << strpr("Reference     charge: %24.16E\n", structure.chargeRef);
+
+    //throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
+
     return;
 }
 
@@ -1567,7 +1599,8 @@ void Mode::calculateForces(Structure& structure) const
 {
     if (nnpType != NNPType::HDNNP_2G)
     {
-        throw runtime_error("ERROR: Forces are not yet implemented.\n");
+        cout << "WARNING: Forces are not yet implemented.\n";
+        return;
     }
     Atom* ai = NULL;
     // Loop over all atoms, center atom i (ai).

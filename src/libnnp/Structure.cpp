@@ -436,25 +436,36 @@ void Structure::calculateVolume()
     return;
 }
 
-double Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
-                                                MatrixXd gamma)
+double Structure::calculateElectrostaticEnergy(VectorXd hardness,
+                                               MatrixXd siggam)
 {
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
     VectorXd b(numAtoms + 1);
+
+    // TODO: Precompute eta!!
+    double const sqrt2eta = 1.0;
 
     if (isPeriodic)
     {
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
-            for (size_t j = i; j < numAtoms; ++j)
+            size_t const ei = ai.element;
+            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            b(i) = -ai.chi;
+            for (size_t j = i + 1; j < numAtoms; ++j)
             {
-
+                // TODO: Ewald in k-space.
+                Atom const& aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const rij = (ai.r - aj.r).norm();
                 if (ai.isNeighbor(j))
                 {
-
+                    A(i, j) += (erfc(rij / sqrt2eta)
+                              - erfc(rij / siggam(ei, ej))) / rij;
                 }
+                A(j, i) = A(i, j);
             }
         }
     }
@@ -464,14 +475,14 @@ double Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
         {
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
-            A(i, i) = hardness(ei) + 1.0 / gamma(ei, ei);
+            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
                 Atom const& aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const rij = (ai.r - aj.r).norm();
-                A(i, j) = erf(rij / gamma(ei, ej)) / rij;
+                A(i, j) = erf(rij / siggam(ei, ej)) / rij;
                 A(j, i) = A(i, j);
             }
         }

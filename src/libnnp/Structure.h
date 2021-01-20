@@ -209,14 +209,21 @@ struct Structure
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();
-    /** Fill charge equilibration matrix.
+    /** Compute electrostatic energy with global charge equilibration.
      *
      * @param[in] hardness Vector containing the hardness of all elements.
-     * @param[in] gamma Matrix of all sigma combinations for all elements.
+     * @param[in] siggam Matrix combining sigma and gamma for all elements,
+     *                   including some prefactors.
+     *                   @f$ \text{siggam}_{ij} =
+     *                   \begin{cases}
+     *                      \sqrt{\pi} \sigma_i, & \text{for } i = j \\
+     *                      \sqrt{2} \gamma_{ij} = \sqrt{2 (\sigma_i^2
+     *                          + \sigma_j^2)}, & \text{for } i \neq j
+     *                   \end{cases} @f$
      */
-    double                   fillChargeEquilibrationMatrix(
+    double                   calculateElectrostaticEnergy(
                                                       Eigen::VectorXd hardness,
-                                                      Eigen::MatrixXd gamma);
+                                                      Eigen::MatrixXd siggam);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.
