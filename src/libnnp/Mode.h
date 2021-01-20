@@ -322,7 +322,7 @@ public:
      *
      * @param[in] structure Input structure.
      */
-    void                     chargeEquilibration(Structure& structure) const;
+    void                     chargeEquilibration(Structure& structure);
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.

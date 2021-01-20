@@ -1494,7 +1494,8 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
     return;
 }
 
-void Mode::chargeEquilibration(Structure& structure) const
+// TODO: Make this const?
+void Mode::chargeEquilibration(Structure& structure)
 {
     Structure& s = structure;
 
@@ -1514,9 +1515,20 @@ void Mode::chargeEquilibration(Structure& structure) const
         }
     }
 
-    s.fillChargeEquilibrationMatrix(hardness, gamma);
+    double const error = s.fillChargeEquilibrationMatrix(hardness, gamma);
 
+    cout << "A: " << endl;
     cout << s.A << endl;
+    log << strpr("Solve relative error: %16.8E\n", error);
+
+    for (auto const& a : structure.atoms)
+    {
+        log << strpr("Atom %5zu (%2s) q: %16.8E\n",
+                     a.index, elementMap[a.element].c_str(), a.charge);
+        structure.charge += a.charge;
+    }
+    log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
+                 structure.charge, structure.chargeRef);
 
     throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
 

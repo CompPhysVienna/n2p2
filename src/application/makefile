@@ -74,9 +74,9 @@ all: $(APP_CORE) $(APP_TRAIN)
 # Applications which require only libnnp:
 $(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_EIGEN)
 ifeq ($(MODE), shared)
-$(APP_CORE): LDFLAGS=-L$(PROJECT_LIB) -lnnp
+$(APP_CORE): LDFLAGS=-L$(PROJECT_LIB) -lnnp $(PROJECT_LDFLAGS_BLAS)
 else
-$(APP_CORE): LDFLAGS=$(PROJECT_LIB)/libnnp.a
+$(APP_CORE): LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LDFLAGS_BLAS)
 endif
 $(APP_CORE):
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp

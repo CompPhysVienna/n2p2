@@ -16,6 +16,7 @@
 
 #include "Structure.h"
 #include "utility.h"
+#include <Eigen/Dense>
 #include <algorithm> // std::max
 #include <cmath>     // fabs, erf
 #include <cstdlib>   // atof
@@ -433,11 +434,12 @@ void Structure::calculateVolume()
     return;
 }
 
-void Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
-                                              MatrixXd gamma)
+double Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
+                                                MatrixXd gamma)
 {
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
+    VectorXd b(numAtoms + 1);
 
     if (isPeriodic)
     {
@@ -461,6 +463,7 @@ void Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
             A(i, i) = hardness(ei) + 1.0 / gamma(ei, ei);
+            b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
                 Atom const& aj = atoms.at(j);
@@ -475,8 +478,18 @@ void Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
     A.col(numAtoms).setOnes();
     A.row(numAtoms).setOnes();
     A(numAtoms, numAtoms) = 0.0;
+    b(numAtoms) = chargeRef;
 
-    return;
+    VectorXd const Q = A.colPivHouseholderQr().solve(b);
+
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        atoms.at(i).charge = Q(i); 
+    }
+    lambda = Q(numAtoms);
+    double error = (A * Q - b).norm() / b.norm();
+
+    return error;
 }
 
 void Structure::remap(Atom& atom)

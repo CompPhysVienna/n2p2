@@ -83,6 +83,8 @@ struct Structure
     double                   chargeRef;
     /// Simulation box volume.
     double                   volume;
+    /// Lagrange multiplier used for charge equilibration.
+    double                   lambda;
     /// Sample type (training or test set).
     SampleType               sampleType;
     /// Structure comment.
@@ -205,7 +207,7 @@ struct Structure
      * @param[in] hardness Vector containing the hardness of all elements.
      * @param[in] gamma Matrix of all sigma combinations for all elements.
      */
-    void                     fillChargeEquilibrationMatrix(
+    double                   fillChargeEquilibrationMatrix(
                                                       Eigen::VectorXd hardness,
                                                       Eigen::MatrixXd gamma);
     /** Translate atom back into box if outside.
