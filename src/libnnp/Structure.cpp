@@ -41,6 +41,8 @@ Structure::Structure() :
     numElementsPresent            (0         ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
+    energyShort                   (0.0       ),
+    energyElec                    (0.0       ),
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
@@ -488,6 +490,9 @@ double Structure::fillChargeEquilibrationMatrix(VectorXd hardness,
     }
     lambda = Q(numAtoms);
     double error = (A * Q - b).norm() / b.norm();
+
+    energyElec = 0.5 * Q.head(numAtoms).transpose()
+               * A.topLeftCorner(numAtoms, numAtoms) * Q.head(numAtoms);
 
     return error;
 }

@@ -1530,6 +1530,8 @@ void Mode::chargeEquilibration(Structure& structure)
     log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
                  structure.charge, structure.chargeRef);
 
+    log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
+
     throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
 
     return;

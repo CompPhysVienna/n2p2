@@ -77,12 +77,19 @@ struct Structure
     double                   energy;
     /// Reference potential energy.
     double                   energyRef;
+    // TODO: MPI_Pack
+    /// Short-range part of the potential energy predicted by NNP.
+    double                   energyShort;
+    // TODO: MPI_Pack
+    /// Electrostatics part of the potential energy predicted by NNP.
+    double                   energyElec;
     /// Charge determined by neural network potential.
     double                   charge;
     /// Reference charge.
     double                   chargeRef;
     /// Simulation box volume.
     double                   volume;
+    // TODO: MPI_Pack
     /// Lagrange multiplier used for charge equilibration.
     double                   lambda;
     /// Sample type (training or test set).
