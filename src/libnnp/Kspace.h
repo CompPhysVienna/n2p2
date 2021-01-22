@@ -23,38 +23,39 @@
 namespace nnp
 {
 
-class Kpoint
+class Kvector
 {
 public:
-    /// A single k-point (as Vec3D).
+    /// A single k-vector (as Vec3D).
     Vec3D  k;
-    /// Norm of k-point.
-    double knorm;
+    /// Square of norm of k-vector.
+    double knorm2;
     /// Precomputed coefficient for Ewald summation.
     double coeff;
 
     /// Constructor.
-    Kpoint();
-
+    Kvector();
+    /// Constructor with Vec3D.
+    Kvector(Vec3D v);
 };
 
 class KspaceGrid
 {
 public:
     /// Ewald summation eta parameter.
-    double              eta;
+    double               eta;
     /// Cutoff in reciprocal space.
-    double              rcut;
+    double               rcut;
     /// Volume of real box.
-    double              volume;
+    double               volume;
     /// Ewald sum prefactor @f$\frac{2\pi}{V}@f$.
-    double              pre;
+    double               pre;
     /// Required box copies in each box vector direction.
-    size_t              n[3];
+    int                  n[3];
     /// Reciprocal box vectors.
-    Vec3D               kbox[3];
+    Vec3D                kbox[3];
     /// Vector containing all k-vectors.
-    std::vector<Kpoint> kpoints;
+    std::vector<Kvector> kvectors;
     
     /// Constructor.
     KspaceGrid();

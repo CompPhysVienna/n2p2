@@ -13,15 +13,24 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//
+
+
 #include "Kspace.h"
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace nnp;
 
-Kpoint::Kpoint() : k    (Vec3D()),
-                   knorm(0.0    ),
-                   coeff(0.0    )
+Kvector::Kvector() : k     (Vec3D()),
+                     knorm2(0.0    ),
+                     coeff (0.0    )
+{
+}
+
+Kvector::Kvector(Vec3D v) : k     (v       ),
+                            knorm2(v.norm()),
+                            coeff (0.0     )
 {
 }
 
@@ -53,7 +62,28 @@ double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
     // Compute box copies required in each direction.
     calculatePbcCopies(rcut);
 
-    // TODO: Create k-points here.
+    for (int i = 0; i <= n[0]; ++i)
+    {
+        int sj = -n[1];
+        if (i == 0) sj = 0;
+        for (int j = sj; j <= n[1]; ++j)
+        {
+            int sk = -n[2];
+            if (i == 0 && j == 0) sk = 0;
+            for (int k = sk; k <= n[2]; ++k)
+            {
+                if (i == 0 && j == 0 && k == 0) continue;
+                Vec3D kv = i * kbox[0] + j * kbox[1] + k * kbox[2];
+                double knorm2 = kv.norm2();
+                if (kv.norm2() < rcut * rcut)
+                {
+                    kvectors.push_back(kv);
+                    kvectors.back().coeff = exp(-0.5 * eta * eta * knorm2)
+                                          / knorm2;
+                }
+            }
+        }
+    }
 
     // Return real space cutoff radius.
     return sqrt(-2.0 * log(precision)) * eta;

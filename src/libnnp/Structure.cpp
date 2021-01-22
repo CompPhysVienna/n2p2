@@ -442,22 +442,8 @@ double Structure::calculateElectrostaticEnergy(VectorXd hardness,
 {
     if (isPeriodic)
     {
-        //Matrix3d lat;
-        //for (int i = 0; i < 3; ++i)
-        //{
-        //    for (int j = 0; j < 3; ++j)
-        //    {
-        //        lat(j, i) = box[i][j];
-        //    }
-        //}
-        //Matrix3d klat = 2.0 * M_PI * lat.inverse().transpose();
-        //cout << "Real lattice: " << endl;
-        //cout << lat << endl;
-        //cout << "Reciprocal lattice: " << endl;
-        //cout << klat << endl;
-
         KspaceGrid grid;
-        grid.setup(box, 1.E-7);
+        double rcutReal = grid.setup(box, 1.E-7);
 
         cout << "Reciprocal lattice: " << endl;
         for (int i = 0; i < 3; ++i)
@@ -468,6 +454,12 @@ double Structure::calculateElectrostaticEnergy(VectorXd hardness,
             }
             cout << endl;
         }
+        cout << "eta       = " << grid.eta << endl;
+        cout << "rcutReal  = " << rcutReal << endl;
+        cout << "rcutRecip = " << grid.rcut << endl;
+        cout << "n[0]      = " << grid.n[0] << endl;
+        cout << "n[1]      = " << grid.n[1] << endl;
+        cout << "n[2]      = " << grid.n[2] << endl;
     }
 
     A.resize(numAtoms + 1, numAtoms + 1);
