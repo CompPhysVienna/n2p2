@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include "Kspace.h"
 #include "Structure.h"
 #include "utility.h"
 #include <Eigen/Dense>
@@ -439,6 +440,36 @@ void Structure::calculateVolume()
 double Structure::calculateElectrostaticEnergy(VectorXd hardness,
                                                MatrixXd siggam)
 {
+    if (isPeriodic)
+    {
+        //Matrix3d lat;
+        //for (int i = 0; i < 3; ++i)
+        //{
+        //    for (int j = 0; j < 3; ++j)
+        //    {
+        //        lat(j, i) = box[i][j];
+        //    }
+        //}
+        //Matrix3d klat = 2.0 * M_PI * lat.inverse().transpose();
+        //cout << "Real lattice: " << endl;
+        //cout << lat << endl;
+        //cout << "Reciprocal lattice: " << endl;
+        //cout << klat << endl;
+
+        KspaceGrid grid;
+        grid.setup(box, 1.E-7);
+
+        cout << "Reciprocal lattice: " << endl;
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                cout << strpr(" %12f", grid.kbox[j][i]);
+            }
+            cout << endl;
+        }
+    }
+
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
     VectorXd b(numAtoms + 1);

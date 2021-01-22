@@ -1532,8 +1532,8 @@ void Mode::chargeEquilibration(Structure& structure)
 
     double const error = s.calculateElectrostaticEnergy(hardness, siggam);
 
-    cout << "A: " << endl;
-    cout << s.A << endl;
+    //cout << "A: " << endl;
+    //cout << s.A << endl;
     log << strpr("Solve relative error: %16.8E\n", error);
 
     for (auto const& a : structure.atoms)
