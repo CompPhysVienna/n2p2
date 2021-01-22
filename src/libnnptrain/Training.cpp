@@ -2630,7 +2630,7 @@ void Training::collectDGdxia(Atom const& atom,
 
 void Training::randomizeNeuralNetworkWeights(string const& id)
 {
-    string keywordNW = "nguyen_widrow_weights" + nns.at(id).keywordSuffix;
+    string keywordNW = "nguyen_widrow_weights" + nns.at(id).keywordSuffix2;
 
     double minWeights = atof(settings["weights_min"].c_str());
     double maxWeights = atof(settings["weights_max"].c_str());
