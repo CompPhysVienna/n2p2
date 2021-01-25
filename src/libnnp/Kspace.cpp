@@ -78,8 +78,9 @@ double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
                 if (kv.norm2() < rcut * rcut)
                 {
                     kvectors.push_back(kv);
+                    kvectors.back().knorm2 = knorm2; // TODO: Really necessary?
                     kvectors.back().coeff = exp(-0.5 * eta * eta * knorm2)
-                                          / knorm2;
+                                          * 2.0 * pre / knorm2;
                 }
             }
         }

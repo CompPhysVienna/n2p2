@@ -1554,6 +1554,7 @@ void Mode::calculateEnergy(Structure& structure) const
 {
     // Loop over all atoms and add atomic contributions to total energy.
     structure.energy = 0.0;
+    structure.energyShort = 0.0;
     for (vector<Atom>::iterator it = structure.atoms.begin();
          it != structure.atoms.end(); ++it)
     {
@@ -1561,17 +1562,17 @@ void Mode::calculateEnergy(Structure& structure) const
     }
     structure.energy = structure.energyShort + structure.energyElec;
 
-    cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
-    cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
-    cout << strpr("Sum           energy: %24.16E\n", structure.energy);
-    cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
-    cout << "---------------------\n";
-    cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
-    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
-    cout << "---------------------\n";
-    cout << "without offset:      \n";
-    cout << strpr("Total         energy: %24.16E\n", structure.energy);
-    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
+    //cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
+    //cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
+    //cout << strpr("Sum           energy: %24.16E\n", structure.energy);
+    //cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
+    //cout << "---------------------\n";
+    //cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
+    //cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
+    //cout << "---------------------\n";
+    //cout << "without offset:      \n";
+    //cout << strpr("Total         energy: %24.16E\n", structure.energy);
+    //cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
 
     return;
 }
