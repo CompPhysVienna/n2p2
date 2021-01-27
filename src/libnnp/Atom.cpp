@@ -48,21 +48,47 @@ void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
     {
         dGdxia[i] = 0.0;
     }
-    for (size_t i = 0; i < numNeighbors; i++)
+
+    if (useChargeNeuron)
     {
-        if (neighbors[i].index == indexAtom)
+        for (size_t i = 0; i < numNeighbors; i++)
         {
-            for (size_t j = 0; j < numSymmetryFunctions; ++j)
+            if (neighbors[i].index == indexAtom)
             {
-                dGdxia[j] += neighbors[i].dGdr[j][indexComponent];
+                for (size_t j = 0; j < numSymmetryFunctions; ++j)
+                {
+                    dGdxia[j] += neighbors[i].dGdr[j][indexComponent];
+                    dGdxia[numSymmetryFunctions] += dQdG[j] * neighbors[i].dGdr[j][indexComponent];
+                }
+            }
+        }
+        if (index == indexAtom)
+        {
+            for (size_t i = 0; i < numSymmetryFunctions; ++i)
+            {
+                dGdxia[i] += dGdr[i][indexComponent];
+                dGdxia[numSymmetryFunctions] += dQdG[i] * dGdr[i][indexComponent];
             }
         }
     }
-    if (index == indexAtom)
+    else
     {
-        for (size_t i = 0; i < numSymmetryFunctions; ++i)
+        for (size_t i = 0; i < numNeighbors; i++)
         {
-            dGdxia[i] += dGdr[i][indexComponent];
+            if (neighbors[i].index == indexAtom)
+            {
+                for (size_t j = 0; j < numSymmetryFunctions; ++j)
+                {
+                    dGdxia[j] += neighbors[i].dGdr[j][indexComponent];
+                }
+            }
+        }
+        if (index == indexAtom)
+        {
+            for (size_t i = 0; i < numSymmetryFunctions; ++i)
+            {
+                dGdxia[i] += dGdr[i][indexComponent];
+            }
         }
     }
 
@@ -87,6 +113,8 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
 #endif
         }
         // Take care of extra charge neuron.
+        // Correction in last element of dGdxia is not necessary (sum 
+        // over [0,numSymmetryFunctions) accounts for this).
         if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
     }
 
@@ -194,7 +222,8 @@ void Atom::allocate(bool all)
         else                 dEdG.resize(numSymmetryFunctions, 0.0);
         dQdG.resize(numSymmetryFunctions, 0.0);
 #ifdef NNP_FULL_SFD_MEMORY
-        dGdxia.resize(numSymmetryFunctions, 0.0);
+        if (useChargeNeuron) dGdxia.resize(numSymmetryFunctions + 1, 0.0);
+        else                 dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
         dGdr.resize(numSymmetryFunctions);
     }

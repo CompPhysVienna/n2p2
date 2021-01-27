@@ -412,7 +412,7 @@ void Training::setupTraining()
         }
         else
         {
-            log << "Only energies will used for training.\n";
+            log << "Only energies will be used for training.\n";
         }
     }
     log << "Training will act on \"" << nns.at(nnId).name
@@ -1794,8 +1794,17 @@ void Training::update(string const& property)
                             / (s.numAtoms * pu.errorTrain.at("RMSEpa"));
                     }
                     // Assume stage 2.
-                    else if (nnpType == NNPType::HDNNP_4G ||
-                             nnpType == NNPType::HDNNP_Q)
+                    else if (nnpType == NNPType::HDNNP_Q)
+                    {
+                        // First trial: Call standard routine and re-calculate
+                        // charge-NN data, followed by short-NN.
+                        calculateAtomicNeuralNetworks(s, derivatives);
+                        calculateEnergy(s);
+                        currentRmseFraction.at(b) =
+                            fabs(s.energyRef - s.energy)
+                            / (s.numAtoms * pu.errorTrain.at("RMSEpa"));
+                    }
+                    else if (nnpType == NNPType::HDNNP_4G)
                     {
                         // TODO: Reuse already present charge-NN data and
                         // compute only short-NN energy contributions.
@@ -1814,8 +1823,18 @@ void Training::update(string const& property)
                             / pu.errorTrain.at("RMSE");
                     }
                     // Assume stage 2.
-                    else if (nnpType == NNPType::HDNNP_4G ||
-                             nnpType == NNPType::HDNNP_Q)
+                    else if (nnpType == NNPType::HDNNP_Q)
+                    {
+                        // First trial: Call standard routine and re-calculate
+                        // charge-NN data, followed by short-NN.
+                        calculateAtomicNeuralNetworks(s, derivatives);
+                        calculateForces(s);
+                        Atom const& a = s.atoms.at(c->a);
+                        currentRmseFraction.at(b) =
+                            fabs(a.fRef[c->c] - a.f[c->c])
+                            / pu.errorTrain.at("RMSE");
+                    }
+                    else if (nnpType == NNPType::HDNNP_4G)
                     {
                         // TODO: Reuse already present charge-NN data and
                         // compute only short-NN force contributions.
@@ -1962,8 +1981,42 @@ void Training::update(string const& property)
                 }
             }
             // Assume stage 2.
-            else if (nnpType == NNPType::HDNNP_4G ||
-                     nnpType == NNPType::HDNNP_Q)
+            else if (nnpType == NNPType::HDNNP_Q)
+            {
+                // Ignore ID, both NNs are computed here.
+                for (vector<Atom>::iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    size_t i = it->element;
+                    NeuralNetwork& nnCharge = elements.at(i).neuralNetworks.at("elec");
+                    nnCharge.setInput(&((it->G).front()));
+                    nnCharge.propagate();
+                    nnCharge.getOutput(&(it->charge));
+                    // Now the short-range NN (have to set input neurons individually).
+                    NeuralNetwork& nnShort = elements.at(i).neuralNetworks.at(nnId);
+                    for (size_t j = 0; j < it->G.size(); ++j)
+                    {
+                        nnShort.setInput(j, it->G.at(j));
+                    }
+                    // Set additional charge neuron.
+                    nnShort.setInput(it->G.size(), it->charge);
+                    nnShort.propagate();
+                    nnShort.getOutput(&(it->energy));
+                    // Compute derivative of output node with respect to all
+                    // neural network connections (weights + biases).
+                    nnShort.calculateDEdc(&(dXdc.at(i).front()));
+                    // Finally sum up Jacobian.
+                    if (updateStrategy == US_ELEMENT) iu = i;
+                    else iu = 0;
+                    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+                    {
+                        pu.jacobian.at(iu).at(offset.at(i) + j) +=
+                            dXdc.at(i).at(j);
+                    }
+                }
+            }
+            // Assume stage 2.
+            else if (nnpType == NNPType::HDNNP_4G)
             {
                 // TODO: Lots of stuff.
                 throw runtime_error("ERROR: Not implemented.\n");
@@ -2011,8 +2064,65 @@ void Training::update(string const& property)
 
             }
             // Assume stage 2.
-            else if (nnpType == NNPType::HDNNP_4G ||
-                     nnpType == NNPType::HDNNP_Q)
+            else if (nnpType == NNPType::HDNNP_Q)
+            {
+                for (vector<Atom>::iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    // For force update save derivative of symmetry function
+                    // with respect to coordinate.
+#ifndef NNP_FULL_SFD_MEMORY
+                    collectDGdxia((*it), c->a, c->c);
+#else
+                    it->collectDGdxia(c->a, c->c);
+#endif
+                    size_t i = it->element;
+                    // First the charge NN.
+                    NeuralNetwork& nnCharge = elements.at(i).neuralNetworks.at("elec");
+                    nnCharge.setInput(&((it->G).front()));
+                    nnCharge.propagate();
+                    if (derivatives)
+                    {
+                        nnCharge.calculateDEdG(&((it->dQdG).front()));
+                    }
+                    nnCharge.getOutput(&(it->charge));
+
+                    // Now the short-range NN (have to set input neurons individually).
+                    NeuralNetwork& nnShort = elements.at(i).neuralNetworks.at(nnId);
+                    // TODO: This part should simplify with improved NN class.
+                    for (size_t j = 0; j < it->G.size(); ++j)
+                    {
+                        nnShort.setInput(j, it->G.at(j));
+                    }
+                    // Set additional charge neuron.
+                    nnShort.setInput(it->G.size(), it->charge);
+                    nnShort.propagate();
+                    if (derivatives)
+                    {
+                        nnShort.calculateDEdG(&((it->dEdG).front()));
+                    }
+                    nnShort.getOutput(&(it->energy));
+                    // Compute derivative of output node with respect to all
+                    // neural network connections (weights + biases).
+#ifndef NNP_FULL_SFD_MEMORY
+                    nnShort.calculateDFdc(&(dXdc.at(i).front()),
+                                     &(dGdxia.front()));
+#else
+                    nnShort.calculateDFdc(&(dXdc.at(i).front()),
+                                     &(it->dGdxia.front()));
+#endif
+                    // Finally sum up Jacobian.
+                    if (updateStrategy == US_ELEMENT) iu = i;
+                    else iu = 0;
+                    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+                    {
+                        pu.jacobian.at(iu).at(offset.at(i) + j) +=
+                            dXdc.at(i).at(j);
+                    }
+                }
+            }
+            // Assume stage 2.
+            else if (nnpType == NNPType::HDNNP_4G)
             {
                 // TODO: Lots of stuff.
                 throw runtime_error("ERROR: Not implemented.\n");
@@ -2596,33 +2706,70 @@ void Training::collectDGdxia(Atom const& atom,
 {
     size_t const nsf = atom.numSymmetryFunctions;
 
-    // Reset dGdxia array.
-    dGdxia.clear();
-    vector<double>(dGdxia).swap(dGdxia);
-    dGdxia.resize(nsf, 0.0);
-
-    vector<vector<size_t> > const& tableFull
-        = elements.at(atom.element).getSymmetryFunctionTable();
-
-    for (size_t i = 0; i < atom.numNeighbors; i++)
+    if (nnpType == NNPType::HDNNP_Q)
     {
-        if (atom.neighbors[i].index == indexAtom)
+        size_t const nsq = nsf + 1;
+        // Reset dGdxia array.
+        dGdxia.clear();
+        vector<double>(dGdxia).swap(dGdxia);
+        dGdxia.resize(nsq, 0.0);
+
+        vector<vector<size_t> > const& tableFull
+            = elements.at(atom.element).getSymmetryFunctionTable();
+
+        for (size_t i = 0; i < atom.numNeighbors; i++)
         {
-            Atom::Neighbor const& n = atom.neighbors[i];
-            vector<size_t> const& table = tableFull.at(n.element);
-            for (size_t j = 0; j < n.dGdr.size(); ++j)
+            if (atom.neighbors[i].index == indexAtom)
             {
-                dGdxia[table.at(j)] += n.dGdr[j][indexComponent];
+                Atom::Neighbor const& n = atom.neighbors[i];
+                vector<size_t> const& table = tableFull.at(n.element);
+                for (size_t j = 0; j < n.dGdr.size(); ++j)
+                {
+                     dGdxia[table.at(j)] += n.dGdr[j][indexComponent];
+                     dGdxia[nsf]         += atom.dQdG[j] * n.dGdr[j][indexComponent];
+                }
+            }
+        }
+        if (atom.index == indexAtom)
+        {
+            for (size_t i = 0; i < nsf; ++i)
+            {
+                dGdxia[i]   += atom.dGdr[i][indexComponent];
+                dGdxia[nsf] += atom.dQdG[i] * atom.dGdr[i][indexComponent];
             }
         }
     }
-    if (atom.index == indexAtom)
+    else
     {
-        for (size_t i = 0; i < nsf; ++i)
+        // Reset dGdxia array.
+        dGdxia.clear();
+        vector<double>(dGdxia).swap(dGdxia);
+        dGdxia.resize(nsf, 0.0);
+
+        vector<vector<size_t> > const& tableFull
+            = elements.at(atom.element).getSymmetryFunctionTable();
+
+        for (size_t i = 0; i < atom.numNeighbors; i++)
         {
-            dGdxia[i] += atom.dGdr[i][indexComponent];
+            if (atom.neighbors[i].index == indexAtom)
+            {
+                Atom::Neighbor const& n = atom.neighbors[i];
+                vector<size_t> const& table = tableFull.at(n.element);
+                for (size_t j = 0; j < n.dGdr.size(); ++j)
+                {
+                    dGdxia[table.at(j)] += n.dGdr[j][indexComponent];
+                }
+            }
+        }
+        if (atom.index == indexAtom)
+        {
+            for (size_t i = 0; i < nsf; ++i)
+            {
+                dGdxia[i]   += atom.dGdr[i][indexComponent];
+            }
         }
     }
+
 
     return;
 }
