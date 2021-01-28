@@ -78,7 +78,7 @@ vector<string> SymGrpBaseExpAng::parameterLines() const
                           members[i]->getRs() / convLength,
                           members[i]->getLambda(),
                           members[i]->getZeta(),
-                          members[i]->getLineNumber(),
+                          members[i]->getLineNumber() + 1,
                           i + 1,
                           members[i]->getIndex() + 1,
                           (int)calculateExp[i]));

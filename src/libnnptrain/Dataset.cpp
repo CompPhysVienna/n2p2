@@ -1040,7 +1040,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                              "(line %4zu).\n",
                              it->getSymbol().c_str(),
                              i,
-                             it->getSymmetryFunction(i).getLineNumber());
+                             it->getSymmetryFunction(i).getLineNumber() + 1);
             }
         }
     }
