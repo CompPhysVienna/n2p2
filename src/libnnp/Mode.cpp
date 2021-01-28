@@ -49,21 +49,62 @@ Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
 
 void Mode::initialize()
 {
+    string version("" NNP_GIT_VERSION);
+    if (version == "") version = "" NNP_VERSION;
 
     log << "\n";
     log << "*****************************************"
            "**************************************\n";
     log << "\n";
-    log << "   NNP LIBRARY " NNP_GIT_VERSION "\n";
-    log << "   ------------------\n";
+    log << "WELCOME TO n²p², A SOFTWARE PACKAGE FOR NEURAL NETWORK "
+           "POTENTIALS!\n";
+    log << "-------------------------------------------------------"
+           "-----------\n";
     log << "\n";
-    log << "Git branch  : " NNP_GIT_BRANCH "\n";
-    log << "Git revision: " NNP_GIT_REV "\n";
+    log << "n²p² version      : " + version + "\n";
+    log << "------------------------------------------------------------\n";
+    log << "Git branch        : " NNP_GIT_BRANCH "\n";
+    log << "Git revision      : " NNP_GIT_REV "\n";
+    log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
+    log << "------------------------------------------------------------\n";
     log << "\n";
 #ifdef _OPENMP
-    log << strpr("Number of OpenMP threads: %d", omp_get_max_threads());
+    log << strpr("OpenMP threads    : %d\n", omp_get_max_threads());
+    log << "------------------------------------------------------------\n";
     log << "\n";
 #endif
+
+    log << "Please cite the following papers when publishing results "
+           "obtained with n²p²:\n";
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << " * General citation for n²p² and the LAMMPS interface:\n";
+    log << "\n";
+    log << " Singraber, A.; Behler, J.; Dellago, C.\n";
+    log << " Library-Based LAMMPS Implementation of High-Dimensional\n";
+    log << " Neural Network Potentials.\n";
+    log << " J. Chem. Theory Comput. 2019 15 (3), 1827–1840.\n";
+    log << " https://doi.org/10.1021/acs.jctc.8b00770\n";
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << " * Additionally, if you use the NNP training features of n²p²:\n";
+    log << "\n";
+    log << " Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C.\n";
+    log << " Parallel Multistream Training of High-Dimensional Neural\n";
+    log << " Network Potentials.\n";
+    log << " J. Chem. Theory Comput. 2019, 15 (5), 3075–3092.\n";
+    log << " https://doi.org/10.1021/acs.jctc.8b01092\n";
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << " * Additionally, if polynomial symmetry functions are used:\n";
+    log << "\n";
+    log << " Bircher, M. P.; Singraber, A.; Dellago, C.\n";
+    log << " Improved Description of Atomic Environments Using Low-Cost\n";
+    log << " Polynomial Functions with Compact Support.\n";
+    log << " arXiv:2010.14414 [cond-mat, physics:physics] 2020.\n";
+    log << " https://arxiv.org/abs/2010.14414\n";
+
+
     log << "*****************************************"
            "**************************************\n";
 
