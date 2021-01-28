@@ -220,7 +220,7 @@ vector<string> SymGrpCompRadWeighted::parameterLines() const
                           members[i]->getSubtype().c_str(),
                           members[i]->getRl() / convLength,
                           members[i]->getRc() / convLength,
-                          members[i]->getLineNumber(),
+                          members[i]->getLineNumber() + 1,
                           i + 1,
                           members[i]->getIndex() + 1));
     }

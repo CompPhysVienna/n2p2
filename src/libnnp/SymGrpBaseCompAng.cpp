@@ -75,7 +75,7 @@ vector<string> SymGrpBaseCompAng::parameterLines() const
                           members[i]->getRc() / convLength,
                           members[i]->getAngleLeft(),
                           members[i]->getAngleRight(),
-                          members[i]->getLineNumber(),
+                          members[i]->getLineNumber() + 1,
                           i + 1,
                           members[i]->getIndex() + 1,
                           calculateComp[i]));
