@@ -256,7 +256,7 @@ vector<string> SymGrpExpRad::parameterLines() const
         v.push_back(strpr(getPrintFormatMember().c_str(),
                           members[i]->getEta() * convLength * convLength,
                           members[i]->getRs() / convLength,
-                          members[i]->getLineNumber(),
+                          members[i]->getLineNumber() + 1,
                           i + 1,
                           members[i]->getIndex() + 1));
     }
