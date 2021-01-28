@@ -125,7 +125,7 @@ vector<string> SymFncStatistics::getExtrapolationWarningLines() const
                                d.indexStructureEW[i],
                                d.indexAtomEW[i],
                                d.element.c_str(),
-                               it->first,
+                               it->first + 1,
                                d.type,
                                d.valueEW[i],
                                d.Gmin,
