@@ -88,16 +88,20 @@ OBJ=$(SRC:.cpp=.o)
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all headers clean rebuild
+.PHONY: all headers lammps-mf clean rebuild
 
 ifeq ($(MODE), shared)
-all: headers $(LIB).so
+all: headers lammps-mf $(LIB).so
 else
-all: headers $(LIB).a
+all: headers lammps-mf $(LIB).a
 endif
 
 headers:
 	cp $(HEADERS) $(PROJECT_INCLUDE)
+
+lammps-mf:
+	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(OPTIONS) -I$(PROJECT_EIGEN)," LAMMPS/Makefile.lammps
+	@rm LAMMPS/Makefile.lammps.bak
 
 $(LIB).so: CFLAGS+= -fPIC
 $(LIB).so: $(OBJ)
@@ -111,12 +115,16 @@ $(LIB).a: $(OBJ)
 %.o: %.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-clean: clean-headers
+clean: clean-headers clean-lammps-mf
 	$(RM) $(OBJ)
 	$(RM) $(OBJ:.o=.gcno) $(OBJ:.o=.gcda) $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
 
 clean-headers:
 	cd $(PROJECT_INCLUDE) && $(RM) $(notdir $(HEADERS))
+
+clean-lammps-mf:
+	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1," LAMMPS/Makefile.lammps
+	@rm LAMMPS/Makefile.lammps.bak
 
 rebuild: clean all
