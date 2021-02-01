@@ -1554,6 +1554,7 @@ void Mode::calculateEnergy(Structure& structure) const
 {
     // Loop over all atoms and add atomic contributions to total energy.
     structure.energy = 0.0;
+    structure.energyShort = 0.0;
     for (vector<Atom>::iterator it = structure.atoms.begin();
          it != structure.atoms.end(); ++it)
     {
