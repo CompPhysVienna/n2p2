@@ -52,8 +52,8 @@ lammps-nnp:
 	@sed -i.bak "s/^LINK .*$$/LINK =          $(PROJECT_MPICC)/" lammps-nnp/src/MAKE/Makefile.mpi
 	@sed -i.bak "s/^LINKFLAGS .*$$/LINKFLAGS =     $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI) $(PROJECT_LDFLAGS_BLAS)/" lammps-nnp/src/MAKE/Makefile.mpi
 	if [ "$(MODE)" = "test" ]; then \
-		@sed -i.bak "/^CCFLAGS =/   s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
-		@sed -i.bak "/^LINKFLAGS =/ s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
+		sed -i.bak "/^CCFLAGS =/   s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
+		sed -i.bak "/^LINKFLAGS =/ s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
 	fi
 	@rm lammps-nnp/src/MAKE/Makefile.mpi.bak
 	cd lammps-nnp/src/ && $(MAKE) yes-user-nnp && $(MAKE) yes-molecule && $(MAKE) mpi
