@@ -42,7 +42,8 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                cutoffAlpha               (0.0              ),
                meanEnergy                (0.0              ),
                convEnergy                (1.0              ),
-               convLength                (1.0              )
+               convLength                (1.0              ),
+               convCharge                (1.0              )
 {
 }
 
@@ -150,16 +151,19 @@ void Mode::setupNormalization()
 
     if (settings.keywordExists("mean_energy") &&
         settings.keywordExists("conv_energy") &&
-        settings.keywordExists("conv_length"))
+        settings.keywordExists("conv_length") &&
+        settings.keywordExists("conv_charge"))
     {
         normalize = true;
         meanEnergy = atof(settings["mean_energy"].c_str());
         convEnergy = atof(settings["conv_energy"].c_str());
         convLength = atof(settings["conv_length"].c_str());
+        convCharge = atof(settings["conv_charge"].c_str());
         log << "Data set normalization is used.\n";
         log << strpr("Mean energy per atom     : %24.16E\n", meanEnergy);
         log << strpr("Conversion factor energy : %24.16E\n", convEnergy);
         log << strpr("Conversion factor length : %24.16E\n", convLength);
+        log << strpr("Conversion factor charge : %24.16E\n", convCharge);
         if (settings.keywordExists("atom_energy"))
         {
             log << "\n";
@@ -171,7 +175,8 @@ void Mode::setupNormalization()
     }
     else if ((!settings.keywordExists("mean_energy")) &&
              (!settings.keywordExists("conv_energy")) &&
-             (!settings.keywordExists("conv_length")))
+             (!settings.keywordExists("conv_length")) &&
+             (!settings.keywordExists("conv_charge")))
     {
         normalize = false;
         log << "Data set normalization is not used.\n";
@@ -181,7 +186,7 @@ void Mode::setupNormalization()
         throw runtime_error("ERROR: Incorrect usage of normalization"
                             " keywords.\n"
                             "       Use all or none of \"mean_energy\", "
-                            "\"conv_energy\" and \"conv_length\".\n");
+                            "\"conv_energy\", \"conv_charge\" and \"conv_length\".\n");
     }
 
     log << "*****************************************"
@@ -1814,7 +1819,8 @@ double Mode::getEnergyWithOffset(Structure const& structure, bool ref) const
 double Mode::normalized(string const& property, double value) const
 {
     if      (property == "energy") return value * convEnergy;
-    else if (property == "force") return value * convEnergy / convLength;
+    else if (property == "force")  return value * convEnergy / convLength;
+    else if (property == "charge") return value * convCharge;
     else throw runtime_error("ERROR: Unknown property to convert to "
                              "normalized units.\n");
 }
@@ -1836,7 +1842,8 @@ double Mode::normalizedEnergy(Structure const& structure, bool ref) const
 double Mode::physical(string const& property, double value) const
 {
     if      (property == "energy") return value / convEnergy;
-    else if (property == "force") return value * convLength / convEnergy;
+    else if (property == "force")  return value * convLength / convEnergy;
+    else if (property == "charge") return value / convCharge;
     else throw runtime_error("ERROR: Unknown property to convert to physical "
                              "units.\n");
 }
@@ -1856,14 +1863,14 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
 
 void Mode::convertToNormalizedUnits(Structure& structure) const
 {
-    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength);
+    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
 
     return;
 }
 
 void Mode::convertToPhysicalUnits(Structure& structure) const
 {
-    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength);
+    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
 
     return;
 }

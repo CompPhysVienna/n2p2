@@ -176,16 +176,20 @@ struct Atom
      *
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convLength Multiplicative charge unit conversion factor.
      */
     void                     toNormalizedUnits(double convEnergy,
-                                               double convLength);
+                                               double convLength,
+                                               double convCharge);
     /** Switch to physical length and energy units.
      *
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convLength Multiplicative charge unit conversion factor.
      */
     void                     toPhysicalUnits(double convEnergy,
-                                             double convLength);
+                                             double convLength,
+                                             double convCharge);
     /** Allocate vectors related to symmetry functions (#G, #dEdG).
      *
      * @param[in] all If `true` allocate also vectors corresponding to

@@ -456,6 +456,11 @@ public:
      * @return Length unit conversion factor.
      */
     double                   getConvLength() const;
+    /** Getter for Mode::convCharge.
+     *
+     * @return Charge unit conversion factor.
+     */
+    double                   getConvCharge() const;
     /** Getter for Mode::maxCutoffRadius.
      *
      * @return Maximum cutoff radius of all symmetry functions.
@@ -582,6 +587,7 @@ protected:
     double                     meanEnergy;
     double                     convEnergy;
     double                     convLength;
+    double                     convCharge;
     Settings                   settings;
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
@@ -614,6 +620,11 @@ inline double Mode::getConvEnergy() const
 }
 
 inline double Mode::getConvLength() const
+{
+    return convLength;
+}
+
+inline double Mode::getConvCharge() const
 {
     return convLength;
 }

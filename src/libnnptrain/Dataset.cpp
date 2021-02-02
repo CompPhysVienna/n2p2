@@ -887,7 +887,7 @@ void Dataset::toNormalizedUnits()
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
-        it->toNormalizedUnits(meanEnergy, convEnergy, convLength);
+        it->toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
     
     return;
@@ -898,7 +898,7 @@ void Dataset::toPhysicalUnits()
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
-        it->toPhysicalUnits(meanEnergy, convEnergy, convLength);
+        it->toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
     
     return;

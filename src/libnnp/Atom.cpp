@@ -96,16 +96,19 @@ void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
 }
 #endif
 
-void Atom::toNormalizedUnits(double convEnergy, double convLength)
+void Atom::toNormalizedUnits(double convEnergy, double convLength, double convCharge)
 {
     energy *= convEnergy;
     r *= convLength;
     f *= convEnergy / convLength;
     fRef *= convEnergy / convLength;
+    charge *= convCharge;
+    chargeRef *= convCharge;
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
         {
+            dQdG.at(i) *= convCharge;
             dEdG.at(i) *= convEnergy;
             dGdr.at(i) /= convLength;
 #ifdef NNP_FULL_SFD_MEMORY
@@ -138,16 +141,19 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
     return;
 }
 
-void Atom::toPhysicalUnits(double convEnergy, double convLength)
+void Atom::toPhysicalUnits(double convEnergy, double convLength, double convCharge)
 {
     energy /= convEnergy;
     r /= convLength;
     f /= convEnergy / convLength;
     fRef /= convEnergy / convLength;
+    charge /= convCharge;
+    chargeRef /= convCharge;
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
         {
+            dQdG.at(i) /= convCharge;
             dEdG.at(i) /= convEnergy;
             dGdr.at(i) *= convLength;
 #ifdef NNP_FULL_SFD_MEMORY
@@ -155,7 +161,7 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
 #endif
         }
         // Take care of extra charge neuron.
-        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
+        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) /= convEnergy;
     }
 
     if (hasNeighborList)

@@ -319,7 +319,8 @@ int main(int argc, char* argv[])
         {
             it->toPhysicalUnits(dataset.getMeanEnergy(),
                                 dataset.getConvEnergy(),
-                                dataset.getConvLength());
+                                dataset.getConvLength(),
+                                dataset.getConvCharge());
         }
         dataset.addEnergyOffset(*it, false);
         it->writeToFile(&fileOutputData, false);

@@ -234,19 +234,23 @@ struct Structure
      * @param[in] meanEnergy Mean energy per atom (in old units).
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toNormalizedUnits(double meanEnergy,
                                                double convEnergy,
-                                               double convLength);
+                                               double convLength,
+                                               double convCharge);
     /** Switch to physical units, shift energy and change energy and length unit.
      *
      * @param[in] meanEnergy Mean energy per atom (in old units).
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toPhysicalUnits(double meanEnergy,
                                              double convEnergy,
-                                             double convLength);
+                                             double convLength,
+                                             double convCharge);
     /** Find maximum number of neighbors.
      *
      * @return Maximum numbor of neighbors of all atoms in this structure.

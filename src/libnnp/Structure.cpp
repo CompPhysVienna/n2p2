@@ -536,7 +536,8 @@ void Structure::remap(Atom& atom)
 
 void Structure::toNormalizedUnits(double meanEnergy,
                                   double convEnergy,
-                                  double convLength)
+                                  double convLength,
+                                  double convCharge)
 {
     if (isPeriodic)
     {
@@ -554,7 +555,7 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toNormalizedUnits(convEnergy, convLength);
+        it->toNormalizedUnits(convEnergy, convLength, convCharge);
     }
 
     return;
@@ -562,7 +563,8 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
 void Structure::toPhysicalUnits(double meanEnergy,
                                 double convEnergy,
-                                double convLength)
+                                double convLength,
+                                double convCharge)
 {
     if (isPeriodic)
     {
@@ -580,7 +582,7 @@ void Structure::toPhysicalUnits(double meanEnergy,
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toPhysicalUnits(convEnergy, convLength);
+        it->toPhysicalUnits(convEnergy, convLength, convCharge);
     }
 
     return;
