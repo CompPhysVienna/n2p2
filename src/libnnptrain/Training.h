@@ -557,9 +557,9 @@ private:
 #endif
     /** Randomly initialize specificy neural network weights.
      *
-     * @param[in] type Actual network type to initialize ("short" or "charge").
+     * @param[in] id Actual network type to initialize ("short" or "elec").
      */
-    void randomizeNeuralNetworkWeights(std::string const& type);
+    void randomizeNeuralNetworkWeights(std::string const& id);
     /** Set selection mode for specific training property.
      *
      * @param[in] property Training property (uses corresponding keyword).

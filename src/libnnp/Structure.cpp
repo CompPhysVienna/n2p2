@@ -16,8 +16,9 @@
 
 #include "Structure.h"
 #include "utility.h"
+#include <Eigen/Dense>
 #include <algorithm> // std::max
-#include <cmath>     // fabs
+#include <cmath>     // fabs, erf
 #include <cstdlib>   // atof
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
@@ -26,6 +27,7 @@
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
 Structure::Structure() :
     isPeriodic                    (false     ),
@@ -39,6 +41,8 @@ Structure::Structure() :
     numElementsPresent            (0         ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
+    energyShort                   (0.0       ),
+    energyElec                    (0.0       ),
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
@@ -430,6 +434,78 @@ void Structure::calculateVolume()
     volume = fabs(box[0] * (box[1].cross(box[2])));
 
     return;
+}
+
+double Structure::calculateElectrostaticEnergy(VectorXd hardness,
+                                               MatrixXd siggam)
+{
+    A.resize(numAtoms + 1, numAtoms + 1);
+    A.setZero();
+    VectorXd b(numAtoms + 1);
+
+    // TODO: Precompute eta!!
+    double const sqrt2eta = 1.0;
+
+    if (isPeriodic)
+    {
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            b(i) = -ai.chi;
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                // TODO: Ewald in k-space.
+                Atom const& aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const rij = (ai.r - aj.r).norm();
+                if (ai.isNeighbor(j))
+                {
+                    A(i, j) += (erfc(rij / sqrt2eta)
+                              - erfc(rij / siggam(ei, ej))) / rij;
+                }
+                A(j, i) = A(i, j);
+            }
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            b(i) = -ai.chi;
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const rij = (ai.r - aj.r).norm();
+                A(i, j) = erf(rij / siggam(ei, ej)) / rij;
+                A(j, i) = A(i, j);
+            }
+        }
+    }
+
+    A.col(numAtoms).setOnes();
+    A.row(numAtoms).setOnes();
+    A(numAtoms, numAtoms) = 0.0;
+    b(numAtoms) = chargeRef;
+
+    VectorXd const Q = A.colPivHouseholderQr().solve(b);
+
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        atoms.at(i).charge = Q(i); 
+    }
+    lambda = Q(numAtoms);
+    double error = (A * Q - b).norm() / b.norm();
+
+    energyElec = 0.5 * Q.head(numAtoms).transpose()
+               * A.topLeftCorner(numAtoms, numAtoms) * Q.head(numAtoms);
+
+    return error;
 }
 
 void Structure::remap(Atom& atom)

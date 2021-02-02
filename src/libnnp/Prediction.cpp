@@ -16,6 +16,7 @@
 
 #include "Prediction.h"
 #include <fstream>   // std::ifstream
+#include <map>       // std::map
 #include <stdexcept> // std::runtime_error
 #include "utility.h"
 
@@ -36,8 +37,12 @@ void Prediction::setup()
     loadSettingsFile(fileNameSettings);
     setupGeneric();
     setupSymmetryFunctionScaling(fileNameScaling);
-    setupNeuralNetworkWeights(formatWeightsFilesShort,
-                              formatWeightsFilesCharge);
+    map<string, string> formatWeights {
+        {"short", formatWeightsFilesShort},
+        {"elec", formatWeightsFilesCharge}
+    };
+    setupNeuralNetworkWeights(formatWeights);
+    if (nnpType == NNPType::HDNNP_4G) setupAtomicHardness();
     setupSymmetryFunctionStatistics(false, false, true, false);
 }
 
@@ -67,8 +72,14 @@ void Prediction::predict()
     calculateSymmetryFunctionGroups(structure, true);
 #endif
     calculateAtomicNeuralNetworks(structure, true);
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        chargeEquilibration(structure);
+        calculateAtomicNeuralNetworks(structure, true, "short");
+    }
     calculateEnergy(structure);
-    if (nnpType == NNPType::SHORT_CHARGE_NN) calculateCharge(structure);
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q) calculateCharge(structure);
     calculateForces(structure);
     if (normalize)
     {

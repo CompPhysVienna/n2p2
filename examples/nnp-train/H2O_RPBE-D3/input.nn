@@ -7,6 +7,13 @@ conv_energy   8.5167544626563699E+02
 conv_length   2.2798325235535355E+01
 ###############################################################################
 
+nnp_type Q-HDNNP
+global_hidden_layers_electrostatic      2
+global_nodes_electrostatic              25 25
+global_activation_electrostatic         t t l
+charge_fraction                         1.0
+task_batch_size_charge                  1
+write_traincharges                      1
 ###############################################################################
 # GENERAL NNP SETTINGS
 ###############################################################################

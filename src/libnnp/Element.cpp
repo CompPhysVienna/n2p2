@@ -57,6 +57,8 @@ Element::Element(size_t const index, ElementMap const& elementMap) :
     index              (index                         ),
     atomicNumber       (elementMap.atomicNumber(index)),
     atomicEnergyOffset (0.0                           ),
+    hardness           (0.0                           ),
+    qsigma             (0.0                           ),
     symbol             (elementMap.symbol(index)      )
 {
 }
@@ -428,17 +430,6 @@ void Element::calculateSymmetryFunctions(Atom&      atom,
          it = symmetryFunctions.begin();
          it != symmetryFunctions.end(); ++it)
     {
-        //cerr << (*it)->getIndex() << " "
-        //     << elementMap[(*it)->getEc()] << " "
-        //     << (*it)->getUnique() << "\n";
-        //auto cid = (*it)->getCacheIdentifiers();
-        //for (auto icid : cid) cerr << icid << "\n";
-        //auto ci = (*it)->getCacheIndices();
-        //for (auto eci : ci)
-        //{
-        //    for (auto ici : eci) cerr << ici << " ";
-        //    cerr << "\n";
-        //}
         (*it)->calculate(atom, derivatives);
     }
 

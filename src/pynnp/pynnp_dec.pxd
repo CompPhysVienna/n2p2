@@ -277,9 +277,7 @@ cdef extern from "Mode.h" namespace "nnp":
                                      bool writeExtrapolationWarnings,
                                      bool stopOnExtrapolationWarnings) except +
         void           setupNeuralNetwork()
-        void           setupNeuralNetworkWeights(
-                                          string fileNameFormatshort,
-                                          string fileNameFormatCharge) except +
+        void           setupNeuralNetworkWeights() except +
         void           calculateSymmetryFunctions(
                                                 Structure structure,
                                                 bool      derivatives) except +
