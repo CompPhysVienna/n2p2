@@ -83,6 +83,7 @@ void InterfaceLammps::initialize(char* const& directory,
                                     writeExtrapolationWarnings,
                                     stopOnExtrapolationWarnings);
     setupNeuralNetworkWeights(dir);
+    if (nnpType == NNPType::HDNNP_4G) setupAtomicHardness(dir);
 
     log << "\n";
     log << "*** SETUP: LAMMPS INTERFACE *************"
@@ -330,7 +331,14 @@ void InterfaceLammps::process()
     calculateSymmetryFunctionGroups(structure, true);
 #endif
     calculateAtomicNeuralNetworks(structure, true);
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        chargeEquilibration(structure);
+        calculateAtomicNeuralNetworks(structure, true, "short");
+    }
     calculateEnergy(structure);
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q) calculateCharge(structure);
     if (normalize)
     {
         structure.energy = physicalEnergy(structure, false);

@@ -77,7 +77,7 @@ void PairNNPExternal::compute(int eflag, int vflag)
   structure.writeToFile(string(directory) + "input.data");
 
   // Run external command and throw away stdout output.
-  string com = "cd " + string(directory) + "; " + string(command) + " > /dev/null";
+  string com = "cd " + string(directory) + "; " + string(command) + " > external.out";
   system(com.c_str());
 
   // Read back in total potential energy.

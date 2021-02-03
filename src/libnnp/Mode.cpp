@@ -1218,18 +1218,19 @@ void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
     return;
 }
 
-void Mode::setupAtomicHardness(string fileNameFormat)
+void Mode::setupAtomicHardness(string directoryPrefix, string fileNameFormat)
 {
     log << "\n";
     log << "*** SETUP: ATOMIC HARDNESS **************"
            "**************************************\n";
     log << "\n";
 
+    string actualFileNameFormat = directoryPrefix + fileNameFormat;
     log << strpr("Atomic hardness file name format: %s\n",
-                 fileNameFormat.c_str());
+                 actualFileNameFormat.c_str());
     for (size_t i = 0; i < numElements; ++i)
     {
-        string fileName = strpr(fileNameFormat.c_str(),
+        string fileName = strpr(actualFileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         log << strpr("Atomic hardness for element %2s from file %s: ",
                      elements.at(i).getSymbol().c_str(),
@@ -1562,17 +1563,17 @@ void Mode::calculateEnergy(Structure& structure) const
     }
     structure.energy = structure.energyShort + structure.energyElec;
 
-    //cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
-    //cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
-    //cout << strpr("Sum           energy: %24.16E\n", structure.energy);
-    //cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
-    //cout << "---------------------\n";
-    //cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
-    //cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
-    //cout << "---------------------\n";
-    //cout << "without offset:      \n";
-    //cout << strpr("Total         energy: %24.16E\n", structure.energy);
-    //cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
+    cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
+    cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
+    cout << strpr("Sum           energy: %24.16E\n", structure.energy);
+    cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
+    cout << "---------------------\n";
+    cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
+    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
+    cout << "---------------------\n";
+    cout << "without offset:      \n";
+    cout << strpr("Total         energy: %24.16E\n", structure.energy);
+    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
 
     return;
 }

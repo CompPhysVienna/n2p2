@@ -255,10 +255,14 @@ public:
                                           std::string>());
     /** Read in atomic hardness from file.
      *
+     * @param[in] directoryPrefix Directory prefix which is applied to
+     *                            fileNameFormat.
      * @param[in] fileNameFormat Name format of file containing atomic
      *                           hardness data.
      */
-    virtual void             setupAtomicHardness(std::string fileNameFormat =
+    virtual void             setupAtomicHardness(std::string directoryPrefix =
+                                                 "",
+                                                 std::string fileNameFormat =
                                                  "hardness.%03zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.
      *
