@@ -1691,12 +1691,14 @@ void Mode::calculateForces(Structure& structure) const
            // First add force contributions from atom i itself (gradient of
            // atomic energy E_i).
            // Formally:   \sum_G dE/dG*dG/dR + dE/dQ dQ/dR
-           //           = \sum_G dE/dG*dG/dR + \sum_G dE/dQ dQ/dG dG/dR
+           //           = \sum_G dE/dG*dG/dR + dE/dQ \sum_G dQ/dG dG/dR
            //           = \sum_G (dE/dG + dE/dQ * dQ/dG) * dG/dR
 
            for (size_t j = 0; j < idQ; ++j)
            {
                ai->f -= (ai->dEdG.at(j) + ai->dEdG.at(idQ) * ai->dQdG.at(j)) * ai->dGdr.at(j);
+               //       ---------------   ----------------   ---------------
+               //            dEdG              dEdQ              dQdG
            }
 
            // Now loop over all neighbor atoms j of atom i. These may hold

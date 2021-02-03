@@ -2066,16 +2066,10 @@ void Training::update(string const& property)
             // Assume stage 2.
             else if (nnpType == NNPType::HDNNP_Q)
             {
+                // Now we loop over atoms
                 for (vector<Atom>::iterator it = s.atoms.begin();
                      it != s.atoms.end(); ++it)
                 {
-                    // For force update save derivative of symmetry function
-                    // with respect to coordinate.
-#ifndef NNP_FULL_SFD_MEMORY
-                    collectDGdxia((*it), c->a, c->c);
-#else
-                    it->collectDGdxia(c->a, c->c);
-#endif
                     size_t i = it->element;
                     // First the charge NN.
                     NeuralNetwork& nnCharge = elements.at(i).neuralNetworks.at("elec");
@@ -2087,8 +2081,14 @@ void Training::update(string const& property)
                     }
                     nnCharge.getOutput(&(it->charge));
 
+#ifndef NNP_FULL_SFD_MEMORY
+                    collectDGdxia((*it), c->a, c->c);
+#else
+                    it->collectDGdxia(c->a, c->c);
+#endif
+
                     // Now the short-range NN (have to set input neurons individually).
-                    NeuralNetwork& nnShort = elements.at(i).neuralNetworks.at(nnId);
+                    NeuralNetwork& nnShort = elements.at(i).neuralNetworks.at("short");
                     // TODO: This part should simplify with improved NN class.
                     for (size_t j = 0; j < it->G.size(); ++j)
                     {
@@ -2726,7 +2726,9 @@ void Training::collectDGdxia(Atom const& atom,
                 for (size_t j = 0; j < n.dGdr.size(); ++j)
                 {
                      dGdxia[table.at(j)] += n.dGdr[j][indexComponent];
-                     dGdxia[nsf]         += atom.dQdG[j] * n.dGdr[j][indexComponent];
+                     // in case indexAtom is a neighbour of atom, atom contributes
+                     // its own dQdG to the force on indexAtom.
+                     dGdxia[nsf]         += atom.dQdG[table.at(j)] * n.dGdr[j][indexComponent];
                 }
             }
         }
