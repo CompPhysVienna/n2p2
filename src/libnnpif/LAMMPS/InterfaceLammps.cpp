@@ -84,6 +84,7 @@ void InterfaceLammps::initialize(char* const& directory,
                                     writeExtrapolationWarnings,
                                     stopOnExtrapolationWarnings);
     setupNeuralNetworkWeights(dir);
+    if (nnpType == NNPType::HDNNP_4G) setupAtomicHardness(dir);
 
     log << "\n";
     log << "*** SETUP: LAMMPS INTERFACE *************"
@@ -330,7 +331,7 @@ void InterfaceLammps::process() //TODO : add comments
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
-    if (Mode::getNnpType() == 2)
+    if (nnpType == NNPType::HDNNP_2G)
     {
         calculateAtomicNeuralNetworks(structure, true);
         calculateEnergy(structure);
@@ -340,7 +341,7 @@ void InterfaceLammps::process() //TODO : add comments
         }
         addEnergyOffset(structure, false);
     }
-    else if (Mode::getNnpType() == 4)
+    else if (nnpType == NNPType::HDNNP_4G)
     {
         if (!isElecDone)
         {

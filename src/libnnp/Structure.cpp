@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include "Kspace.h"
 #include "Structure.h"
 #include "utility.h"
 #include <Eigen/Dense>
@@ -439,12 +440,35 @@ void Structure::calculateVolume()
 double Structure::calculateElectrostaticEnergy(VectorXd hardness,
                                                MatrixXd siggam)
 {
+    KspaceGrid grid;
+    double rcutReal;
+    if (isPeriodic)
+    {
+        rcutReal = grid.setup(box, 1.E-6);
+
+        //cout << "Reciprocal lattice: " << endl;
+        //for (int i = 0; i < 3; ++i)
+        //{
+        //    for (int j = 0; j < 3; ++j)
+        //    {
+        //        cout << strpr(" %12f", grid.kbox[j][i]);
+        //    }
+        //    cout << endl;
+        //}
+        //cout << "eta       = " << grid.eta << endl;
+        //cout << "rcutReal  = " << rcutReal << endl;
+        //cout << "rcutRecip = " << grid.rcut << endl;
+        //cout << "n[0]      = " << grid.n[0] << endl;
+        //cout << "n[1]      = " << grid.n[1] << endl;
+        //cout << "n[2]      = " << grid.n[2] << endl;
+    }
+
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
     VectorXd b(numAtoms + 1);
 
     // TODO: Precompute eta!!
-    double const sqrt2eta = 1.0;
+    double const sqrt2eta = sqrt(2.0) * grid.eta;
 
     if (isPeriodic)
     {
@@ -456,18 +480,22 @@ double Structure::calculateElectrostaticEnergy(VectorXd hardness,
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
-                // TODO: Ewald in k-space.
                 Atom const& aj = atoms.at(j);
-                size_t const ej = aj.element;
-                double const rij = (ai.r - aj.r).norm();
-                if (ai.isNeighbor(j))
+                for (auto const& gv : grid.kvectors)
                 {
-                    A(i, j) += (erfc(rij / sqrt2eta)
-                              - erfc(rij / siggam(ei, ej))) / rij;
+                    A(i, j) += gv.coeff * cos(gv.k * (ai.r - aj.r));
                 }
                 A(j, i) = A(i, j);
             }
         }
+        // TODO: Real part needs larger neighbor list!
+        // size_t const ej = aj.element;
+        // double const rij = (ai.r - aj.r).norm();
+        // if (rij < rcutReal)
+        // {
+        //     A(i, j) += (erfc(rij / sqrt2eta)
+        //               - erfc(rij / siggam(ei, ej))) / rij;
+        // }
     }
     else
     {

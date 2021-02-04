@@ -124,11 +124,12 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["force_weight"                       ] = "";
 
     // Alternative keyword names.
-    a["nnp_type"             ] = {"nnp_generation", "nnp_type_gen"};
+    a["nnp_type"             ] = {"nnp_generation", "nnp_type_gen", "nnp_gen"};
     a["rmse_threshold_energy"] = {"short_energy_error_threshold"};
     a["rmse_threshold_force" ] = {"short_force_error_threshold"};
     a["energy_fraction"      ] = {"short_energy_fraction"};
     a["force_fraction"       ] = {"short_force_fraction"};
+    a["symfunction_short"    ] = {"symfunction"};
 
     for (auto im : m)
     {
@@ -386,6 +387,7 @@ pair<size_t, size_t> Settings::sanityCheck()
          it != knownKeywords.end(); ++it)
     {
         if (contents.count((*it).first) > 1
+            && (*it).first != "symfunction"
             && (*it).first != "symfunction_short"
             && (*it).first != "atom_energy"
             && (*it).first != "element_nodes_short"

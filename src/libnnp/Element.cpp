@@ -470,7 +470,7 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
         double const Gmin = symmetryFunctions.at(i)->getGmin();
         double const Gmax = symmetryFunctions.at(i)->getGmax();
         double const value = symmetryFunctions.at(i)->unscale(atom.G.at(i));
-        size_t const sfindex = symmetryFunctions.at(i)->getIndex() + 1;
+        size_t const sfindex = symmetryFunctions.at(i)->getIndex();
         size_t const type = symmetryFunctions.at(i)->getType();
         if (statistics.collectStatistics)
         {
@@ -501,7 +501,7 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
                               atom.indexStructure,
                               atom.tag,
                               symbol.c_str(),
-                              sfindex,
+                              sfindex + 1,
                               type,
                               value,
                               Gmin,
@@ -518,7 +518,7 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
                               atom.indexStructure,
                               atom.tag,
                               symbol.c_str(),
-                              sfindex,
+                              sfindex + 1,
                               type,
                               value,
                               Gmin,
