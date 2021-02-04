@@ -144,6 +144,10 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
+    /** TODO: Add comments later.
+     */
+    void   getQeqArrays(double* const& atomChi, double* const& atomJ,
+            double* const* const& Gij) const;
 
 protected:
     /// Process rank.
@@ -174,6 +178,8 @@ protected:
     std::map<std::size_t, int> mapElementToType;
     /// Structure containing local atoms.
     Structure                  structure;
+    /// True if first NN is calculated
+    bool                       isElecDone;
 };
 
 //////////////////////////////////

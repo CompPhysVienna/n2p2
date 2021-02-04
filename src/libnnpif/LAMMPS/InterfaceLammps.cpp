@@ -39,7 +39,8 @@ InterfaceLammps::InterfaceLammps() : myRank      (0    ),
                                      showewsum   (0    ),
                                      maxew       (0    ),
                                      cflength    (1.0  ),
-                                     cfenergy    (1.0  )
+                                     cfenergy    (1.0  ),
+                                     isElecDone  (false)
                                      
 {
 }
@@ -322,20 +323,40 @@ void InterfaceLammps::addNeighbor(int    i,
     return;
 }
 
-void InterfaceLammps::process()
+void InterfaceLammps::process() //TODO : add comments
 {
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
-    calculateAtomicNeuralNetworks(structure, true);
-    calculateEnergy(structure);
-    if (normalize)
+    if (Mode::getNnpType() == 2)
     {
-        structure.energy = physicalEnergy(structure, false);
+        calculateAtomicNeuralNetworks(structure, true);
+        calculateEnergy(structure);
+        if (normalize)
+        {
+            structure.energy = physicalEnergy(structure, false);
+        }
+        addEnergyOffset(structure, false);
     }
-    addEnergyOffset(structure, false);
+    else if (Mode::getNnpType() == 4)
+    {
+        if (!isElecDone)
+        {
+            calculateAtomicNeuralNetworks(structure, true, "elec");
+            isElecDone = true;
+        } else
+        {
+            calculateAtomicNeuralNetworks(structure, true, "short");
+            calculateEnergy(structure);
+            if (normalize)
+            {
+                structure.energy = physicalEnergy(structure, false);
+            }
+            addEnergyOffset(structure, false);
+        }
+    }
 
     return;
 }
@@ -357,6 +378,35 @@ double InterfaceLammps::getAtomicEnergy(int index) const
 
     if (normalize) return physical("energy", a.energy) / cfenergy;
     else return a.energy / cfenergy;
+}
+
+void InterfaceLammps::getQeqArrays(double* const& atomChi, double* const& atomJ,
+                     double* const* const& Gij) const
+{
+    // TODO: check later
+    // 1-loop over atoms for chi, 2-loop over elements for hardness and sigma terms
+    Atom const* a = NULL;
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
+       a = &(structure.atoms.at(i));
+       atomChi[i] = a->chi;
+
+    }
+
+    for (size_t i = 0; i < getNumElements(); i++)
+    {
+        atomJ[i] = elements.at(i).getHardness();
+        double const iSigma = elements.at(i).getQsigma();
+        for (size_t j = 0; j < getNumElements(); j++)
+        {
+            double const jSigma = elements.at(j).getQsigma();
+            if (i == j) Gij[i][j] = sqrt(M_PI) * iSigma;
+            else        Gij[i][j] = sqrt(2.0 * (iSigma * iSigma
+                    + jSigma * jSigma));
+        }
+    }
+
+    return;
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const

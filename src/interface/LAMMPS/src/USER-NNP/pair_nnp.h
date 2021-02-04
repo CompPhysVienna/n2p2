@@ -38,6 +38,7 @@ class PairNNP : public Pair {
 
   virtual void allocate();
   void transferNeighborList();
+  void transferCharges();
   void handleExtrapolationWarnings();
 
   bool showew;
@@ -52,6 +53,9 @@ class PairNNP : public Pair {
   char* directory;
   char* emap;
   nnp::InterfaceLammps interface;
+  // TODO: check this later
+  double *chi,*hardness;
+  double **gammaij;
 };
 
 }

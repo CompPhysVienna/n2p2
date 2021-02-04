@@ -45,14 +45,14 @@ lammps-nnp:
 	tar -xzf $(LAMMPS_VERSION).tar.gz && mv lammps-$(LAMMPS_VERSION) lammps-nnp
 	ln -s $(PROJECT_DIR)/../../ lammps-nnp/lib/nnp
 	cp -r ./LAMMPS/src/USER-NNP lammps-nnp/src/
-	sed -i -E "s,(PKG_LIB .*lnnp)(.*),\1 $(PROJECT_LDFLAGS_BLAS)\2," lammps-nnp/src/USER-NNP/Install.sh
-	sed -i "s/^CC .*$$/CC      =       $(PROJECT_MPICC)/" lammps-nnp/src/MAKE/Makefile.mpi
-	sed -i "s/^CCFLAGS .*$$/CCFLAGS =       $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI)/" lammps-nnp/src/MAKE/Makefile.mpi
-	sed -i "s/^LINK .*$$/LINK =          $(PROJECT_MPICC)/" lammps-nnp/src/MAKE/Makefile.mpi
-	sed -i "s/^LINKFLAGS .*$$/LINKFLAGS =     $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI) $(PROJECT_LDFLAGS_BLAS)/" lammps-nnp/src/MAKE/Makefile.mpi
+	sed -i '' -E "s,(PKG_LIB .*lnnp)(.*),\1 $(PROJECT_LDFLAGS_BLAS)\2," lammps-nnp/src/USER-NNP/Install.sh
+	sed -i '' "s/^CC .*$$/CC      =       $(PROJECT_MPICC)/" lammps-nnp/src/MAKE/Makefile.mpi
+	sed -i '' "s/^CCFLAGS .*$$/CCFLAGS =       $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI)/" lammps-nnp/src/MAKE/Makefile.mpi
+	sed -i '' "s/^LINK .*$$/LINK =          $(PROJECT_MPICC)/" lammps-nnp/src/MAKE/Makefile.mpi
+	sed -i '' "s/^LINKFLAGS .*$$/LINKFLAGS =     $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI) $(PROJECT_LDFLAGS_BLAS)/" lammps-nnp/src/MAKE/Makefile.mpi
 	if [ "$(MODE)" = "test" ]; then \
-		sed -i "/^CCFLAGS =/   s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
-		sed -i "/^LINKFLAGS =/ s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
+		sed -i '' "/^CCFLAGS =/   s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
+		sed -i '' "/^LINKFLAGS =/ s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
 	fi
 	cd lammps-nnp/src/ && $(MAKE) yes-user-nnp && $(MAKE) yes-molecule && $(MAKE) mpi
 	cp lammps-nnp/src/lmp_mpi $(PROJECT_BIN)/

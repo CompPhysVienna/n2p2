@@ -31,6 +31,12 @@ PairNNP::PairNNP(LAMMPS *lmp) : Pair(lmp)
 
 PairNNP::~PairNNP()
 {
+    if (interface.getNnpType() == 4)
+    {
+        memory->destroy(chi);
+        memory->destroy(hardness);
+        memory->destroy(gammaij);
+    }
 }
 
 /* ---------------------------------------------------------------------- */
@@ -46,8 +52,28 @@ void PairNNP::compute(int eflag, int vflag)
   // Transfer local neighbor list to NNP interface.
   transferNeighborList();
 
-  // Compute symmetry functions, atomic neural networks and add up energy.
-  interface.process();
+  if (interface.getNnpType() == 2) //2G-HDNNPs
+  {
+      // Compute symmetry functions, atomic neural networks and add up energy.
+      interface.process();
+  }else if (interface.getNnpType() == 4) //4G-HDNNPs
+  {
+      // First call for electronegativity NN
+      interface.process();
+
+      // Transfer required information to be used in Qeq
+      interface.getQeqArrays(chi,hardness,gammaij);
+
+      error->all(FLERR,"sikişşş");
+
+      // TODO: Charge equilibration to get Q and dQdr
+
+      // TODO: add a routine to transfer Q and dQdr to n2p2
+      transferCharges();
+
+      // Second call for short range energy
+      interface.process();
+  }
 
   // Do all stuff related to extrapolation warnings.
   if(showew == true || showewsum > 0 || maxew >= 0) {
@@ -295,7 +321,21 @@ void PairNNP::allocate()
       setflag[i][j] = 0;
 
   memory->create(cutsq,n+1,n+1,"pair:cutsq");
+
+  // TODO: check this later
+  // memory allocation for 4G-HDNNPs
+  if (interface.getNnpType() == 4)
+  {
+      int nloc = atom->nlocal;
+      int nall = atom->nghost + atom->nlocal;
+      memory->create(chi,nall,"qeq_gaussian:chi");
+      memory->create(hardness,nall,"qeq_gaussian:hardness");
+      memory->create(gammaij,nall,"qeq_gaussian:gammaij");
+  }
 }
+
+void PairNNP::transferCharges()
+{}
 
 void PairNNP::transferNeighborList()
 {
