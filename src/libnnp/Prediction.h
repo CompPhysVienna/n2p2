@@ -34,7 +34,8 @@ public:
 
     std::string fileNameSettings;
     std::string fileNameScaling;
-    std::string formatWeightsFiles;
+    std::string formatWeightsFilesShort;
+    std::string formatWeightsFilesCharge;
     Structure   structure;
 };
 

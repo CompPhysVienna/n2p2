@@ -24,6 +24,18 @@ include $(PROJECT_DIR)/src/makefile.$(COMP)
 
 
 ###############################################################################
+# INTERFACE LIBRARY OPTIONS
+###############################################################################
+
+# Default interfaces compiled into libnnpif, may be overridden by master
+# makefile or command line. Provide a space-separated list of the following
+# available options:
+#    * LAMMPS
+#    * CabanaMD
+INTERFACES=LAMMPS CabanaMD
+
+
+###############################################################################
 # LIBRARY NAME
 ###############################################################################
 NAME=nnpif
@@ -34,7 +46,7 @@ LIB=lib$(NAME)
 # PROJECT COMPILER AND FLAGS
 ###############################################################################
 CC=$(PROJECT_CC)
-ifneq (,$(findstring NOMPI,${PROJECT_OPTIONS}))
+ifneq (,$(findstring NNP_NO_MPI,${PROJECT_OPTIONS}))
 MPICC=${PROJECT_CC}
 CFLAGS=${PROJECT_CFLAGS}
 else
@@ -44,7 +56,7 @@ endif
 OPTIONS+=$(PROJECT_OPTIONS)
 DEBUG=$(PROJECT_DEBUG)
 ifeq ($(MODE), test)
-	DEBUG+= $(PROJECT_TEST)
+DEBUG+= $(PROJECT_TEST)
 endif
 AR=$(PROJECT_AR)
 ARFLAGS=$(PROJECT_ARFLAGS)
@@ -56,24 +68,40 @@ INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
 ###############################################################################
 # DEFINE SOURCES AND HEADERS
 ###############################################################################
-SRC=$(wildcard *.cpp)
-HEADERS=$(wildcard *.h)
+
+$(info The following interfaces were selected: $(INTERFACES))
+IF=LAMMPS
+ifneq ($(filter $(IF),$(INTERFACES)),)
+SRC:=$(SRC) $(wildcard $(IF)/*.cpp)
+HEADERS:=$(HEADERS) $(wildcard $(IF)/*.h)
+endif
+
+IF=CabanaMD
+ifneq ($(filter $(IF),$(INTERFACES)),)
+SRC:=$(SRC) $(wildcard $(IF)/*.cpp)
+HEADERS:=$(HEADERS) $(wildcard $(IF)/*.h)
+endif
+
 OBJ=$(SRC:.cpp=.o)
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all headers clean rebuild
+.PHONY: all headers lammps-mf clean rebuild
 
 ifeq ($(MODE), shared)
-all: headers $(LIB).so
+all: headers lammps-mf $(LIB).so
 else
-all: headers $(LIB).a
+all: headers lammps-mf $(LIB).a
 endif
 
 headers:
 	cp $(HEADERS) $(PROJECT_INCLUDE)
+
+lammps-mf:
+	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(OPTIONS) -I$(PROJECT_EIGEN)," LAMMPS/Makefile.lammps
+	@rm LAMMPS/Makefile.lammps.bak
 
 $(LIB).so: CFLAGS+= -fPIC
 $(LIB).so: $(OBJ)
@@ -87,12 +115,16 @@ $(LIB).a: $(OBJ)
 %.o: %.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-clean: clean-headers
+clean: clean-headers clean-lammps-mf
 	$(RM) $(OBJ)
-	$(RM) *.gcno *.gcda $(LIB).so $(LIB).a
+	$(RM) $(OBJ:.o=.gcno) $(OBJ:.o=.gcda) $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
 
 clean-headers:
-	cd $(PROJECT_INCLUDE) && $(RM) $(HEADERS)
+	cd $(PROJECT_INCLUDE) && $(RM) $(notdir $(HEADERS))
+
+clean-lammps-mf:
+	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1," LAMMPS/Makefile.lammps
+	@rm LAMMPS/Makefile.lammps.bak
 
 rebuild: clean all

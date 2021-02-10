@@ -18,18 +18,18 @@
 #include "GradientDescent.h"
 #include "KalmanFilter.h"
 #include "NeuralNetwork.h"
-#include "Stopwatch.h"
 #include "utility.h"
 #include "mpi-extra.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <algorithm> // std::sort, std::fill
+#include <algorithm> // std::sort, std::fill, std::find
 #include <cmath>     // fabs
 #include <cstdlib>   // atoi
 #include <gsl/gsl_rng.h>
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error, std::range_error
+#include <utility>   // std::piecewise_construct, std::forward_as_tuple
 
 using namespace std;
 using namespace nnp;
@@ -39,52 +39,25 @@ Training::Training() : Dataset(),
                        parallelMode               (PM_TRAIN_RK0   ),
                        jacobianMode               (JM_SUM         ),
                        updateStrategy             (US_COMBINED    ),
-                       selectionMode              (SM_RANDOM      ),
                        hasUpdaters                (false          ),
                        hasStructures              (false          ),
                        useForces                  (false          ),
-                       reapeatedEnergyUpdates     (false          ),
+                       repeatedEnergyUpdates      (false          ),
                        freeMemory                 (false          ),
                        writeTrainingLog           (false          ),
+                       stage                      (0              ),
                        numUpdaters                (0              ),
-                       numEnergiesTrain           (0              ),
-                       numForcesTrain             (0              ),
                        numEpochs                  (0              ),
-                       taskBatchSizeEnergy        (0              ),
-                       taskBatchSizeForce         (0              ),
                        epoch                      (0              ),
-                       writeEnergiesEvery         (0              ),
-                       writeForcesEvery           (0              ),
                        writeWeightsEvery          (0              ),
-                       writeNeuronStatisticsEvery (0              ),
-                       writeEnergiesAlways        (0              ),
-                       writeForcesAlways          (0              ),
                        writeWeightsAlways         (0              ),
+                       writeNeuronStatisticsEvery (0              ),
                        writeNeuronStatisticsAlways(0              ),
-                       posUpdateCandidatesEnergy  (0              ),
-                       posUpdateCandidatesForce   (0              ),
-                       rmseThresholdTrials        (0              ),
-                       countUpdates               (0              ),
-                       energyUpdates              (0              ),
-                       forceUpdates               (0              ),
-                       energiesPerUpdate          (0              ),
-                       energiesPerUpdateGlobal    (0              ),
-                       errorsGlobalEnergy         (0              ),
-                       forcesPerUpdate            (0              ),
-                       forcesPerUpdateGlobal      (0              ),
-                       errorsGlobalForce          (0              ),
                        numWeights                 (0              ),
-                       epochFractionEnergies      (0.0            ),
-                       epochFractionForces        (0.0            ),
-                       rmseEnergiesTrain          (0.0            ),
-                       rmseEnergiesTest           (0.0            ),
-                       rmseForcesTrain            (0.0            ),
-                       rmseForcesTest             (0.0            ),
-                       rmseThresholdEnergy        (0.0            ),
-                       rmseThresholdForce         (0.0            ),
                        forceWeight                (0.0            ),
                        trainingLogFileName        ("train-log.out")
 {
+    sw["setup"].start();
 }
 
 Training::~Training()
@@ -112,76 +85,98 @@ void Training::selectSets()
            "**************************************\n";
     log << "\n";
 
-    size_t numMyEnergiesTrain = 0;
-    size_t numMyEnergiesTest  = 0;
-    size_t numMyForcesTrain   = 0;
-    size_t numMyForcesTest    = 0;
-    vector<size_t> numMyForcesTrainPerElement;
-    numMyForcesTrainPerElement.resize(numElements, 0);
+    vector<string> pCheck = {"force", "charge"};
+    bool check = false;
+    for (auto k : pk)
+    {
+        check |= (find(pCheck.begin(), pCheck.end(), k) != pCheck.end());
+    }
+    vector<size_t> numAtomsPerElement(numElements, 0);
+
     double testSetFraction = atof(settings["test_fraction"].c_str());
     log << strpr("Desired test set ratio      : %f\n", testSetFraction);
-    //for (vector<Structure>::iterator it = structures.begin();
-    //     it != structures.end(); ++it)
     if (structures.size() > 0) hasStructures = true;
     else hasStructures = false;
+
+    string k;
     for (size_t i = 0; i < structures.size(); ++i)
     {
         Structure& s = structures.at(i);
         if (gsl_rng_uniform(rng) < testSetFraction)
         {
             s.sampleType = Structure::ST_TEST;
-            numMyEnergiesTest++;
-            numMyForcesTest += 3 * s.numAtoms;
+            size_t const& na = s.numAtoms;
+            k = "energy"; if (p.exists(k)) p[k].numTestPatterns++;
+            k = "force";  if (p.exists(k)) p[k].numTestPatterns += 3 * na;
+            k = "charge"; if (p.exists(k)) p[k].numTestPatterns += na;
         }
         else
         {
             s.sampleType = Structure::ST_TRAINING;
-            numMyEnergiesTrain++;
-            numMyForcesTrain += 3 * s.numAtoms;
             for (size_t j = 0; j < numElements; ++j)
             {
-                numMyForcesTrainPerElement.at(j) +=
-                                                3 * s.numAtomsPerElement.at(j);
+                numAtomsPerElement.at(j) += s.numAtomsPerElement.at(j);
             }
-            updateCandidatesEnergy.push_back(UpdateCandidate());
-            updateCandidatesEnergy.back().s = i;
-            for (vector<Atom>::const_iterator it = s.atoms.begin();
-                 it != s.atoms.end(); ++it)
+
+            k = "energy";
+            if (p.exists(k))
             {
-                for (size_t j = 0; j < 3; ++j)
+                p[k].numTrainPatterns++;
+                p[k].updateCandidates.push_back(UpdateCandidate());
+                p[k].updateCandidates.back().s = i;
+            }
+            k = "force";
+            if (p.exists(k))
+            {
+                p[k].numTrainPatterns += 3 * s.numAtoms;
+                for (vector<Atom>::const_iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
                 {
-                    updateCandidatesForce.push_back(UpdateCandidate());
-                    updateCandidatesForce.back().s = i;
-                    updateCandidatesForce.back().a = it->index;
-                    updateCandidatesForce.back().c = j;
+                    for (size_t j = 0; j < 3; ++j)
+                    {
+                        p[k].updateCandidates.push_back(UpdateCandidate());
+                        p[k].updateCandidates.back().s = i;
+                        p[k].updateCandidates.back().a = it->index;
+                        p[k].updateCandidates.back().c = j;
+                    }
+                }
+            }
+            k = "charge";
+            if (p.exists(k))
+            {
+                p[k].numTrainPatterns += s.numAtoms;
+                for (vector<Atom>::const_iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    p[k].updateCandidates.push_back(UpdateCandidate());
+                    p[k].updateCandidates.back().s = i;
+                    p[k].updateCandidates.back().a = it->index;
                 }
             }
         }
     }
     for (size_t i = 0; i < numElements; ++i)
     {
-        if (hasStructures && (numMyForcesTrainPerElement.at(i) == 0))
+        if (hasStructures && (numAtomsPerElement.at(i) == 0))
         {
-            throw runtime_error(strpr("ERROR: Process %d has no atoms of "
-                                      "element %d (%2s).\n",
-                                      myRank,
-                                      i,
-                                      elementMap[i].c_str()));
+            log << strpr("WARNING: Process %d has no atoms of element "
+                         "%d (%2s).\n",
+                         myRank,
+                         i,
+                         elementMap[i].c_str());
         }
     }
-    MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTrain, 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &numMyEnergiesTest , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTrain  , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &numMyForcesTest   , 1, MPI_SIZE_T, MPI_SUM, comm);
-    numEnergiesTrain = numMyEnergiesTrain;
-    numForcesTrain = numMyForcesTrain;
-    log << strpr("Total number of energies    : %d\n", numStructures);
-    log << strpr("Number of training energies : %d\n", numMyEnergiesTrain);
-    log << strpr("Number of test     energies : %d\n", numMyEnergiesTest);
-    log << strpr("Number of training forces   : %d\n", numMyForcesTrain);
-    log << strpr("Number of test     forces   : %d\n", numMyForcesTest);
-    log << strpr("Actual test set fraction    : %f\n",
-                 numMyEnergiesTest / double(numStructures));
+    for (auto k : pk)
+    {
+        MPI_Allreduce(MPI_IN_PLACE, &(p[k].numTrainPatterns), 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(p[k].numTestPatterns) , 1, MPI_SIZE_T, MPI_SUM, comm);
+        double sum = p[k].numTrainPatterns + p[k].numTestPatterns;
+        log << "Training/test split of data set for property \"" + k + "\":\n";
+        log << strpr("- Total    patterns : %.0f\n", sum);
+        log << strpr("- Training patterns : %d\n", p[k].numTrainPatterns);
+        log << strpr("- Test     patterns : %d\n", p[k].numTestPatterns);
+        log << strpr("- Test set fraction : %f\n", p[k].numTestPatterns / sum);
+    }
 
     log << "*****************************************"
            "**************************************\n";
@@ -253,9 +248,6 @@ void Training::writeSetsToFiles()
 
 void Training::initializeWeights()
 {
-    // Local weights array (actual weights array depends on update strategy).
-    vector<vector<double> > w;
-
     log << "\n";
     log << "*** WEIGHT INITIALIZATION ***************"
            "**************************************\n";
@@ -268,72 +260,39 @@ void Training::initializeWeights()
                             " initialization are incompatible\n");
     }
 
-    // Create per-element connections vectors.
-    for (size_t i = 0; i < numElements; ++i)
+    // Charge NN.
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
     {
-        w.push_back(vector<double>());
-        w.at(i).resize(elements.at(i).neuralNetwork->getNumConnections(), 0.0);
+        log << "Setting up charge neural networks:\n";
+        if ((stage == 1 && settings.keywordExists("use_old_weights_charge")) ||
+            (stage == 2))
+        {
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights("charge", "weightse.%03zu.data");
+        }
+        else randomizeNeuralNetworkWeights("charge");
     }
 
-    if (settings.keywordExists("use_old_weights_short"))
+    // Short-range NN.
+    if(nnpType == NNPType::SHORT_ONLY)
     {
-        log << "Reading old weights from files.\n";
-        log << "Calling standard weight initialization routine...\n";
-        log << "*****************************************"
-               "**************************************\n";
-        setupNeuralNetworkWeights("weights.%03zu.data");
-        return;
+        log << "Setting up short-range neural networks:\n";
+        if (settings.keywordExists("use_old_weights_short"))
+        {
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights("short", "weights.%03zu.data");
+        }
+        else randomizeNeuralNetworkWeights("short");
     }
-    else
+    else if(nnpType == NNPType::SHORT_CHARGE_NN && stage == 2)
     {
-        double minWeights = atof(settings["weights_min"].c_str());
-        double maxWeights = atof(settings["weights_max"].c_str());
-        log << strpr("Initial weights selected randomly in interval "
-                     "[%f, %f).\n", minWeights, maxWeights);
-        for (size_t i = 0; i < numElements; ++i)
+        log << "Setting up short-range neural networks:\n";
+        if (settings.keywordExists("use_old_weights_short"))
         {
-            for (size_t j = 0; j < w.at(i).size(); ++j)
-            {
-                w.at(i).at(j) = minWeights + gsl_rng_uniform(rngGlobal)
-                              * (maxWeights - minWeights);
-            }
-            elements.at(i).neuralNetwork->setConnections(&(w.at(i).front()));
+            log << "Reading old weights from files.\n";
+            readNeuralNetworkWeights("short", "weights.%03zu.data");
         }
-        if (settings.keywordExists("nguyen_widrow_weights_short"))
-        {
-            log << "Weights modified according to Nguyen Widrow scheme.\n";
-            for (vector<Element>::iterator it = elements.begin();
-                 it != elements.end(); ++it)
-            {
-                it->neuralNetwork->
-                    modifyConnections(NeuralNetwork::MS_NGUYENWIDROW);
-            }
-        }
-        else if (settings.keywordExists("precondition_weights"))
-        {
-            throw runtime_error("ERROR: Preconditioning of weights not yet"
-                                " implemented.\n");
-            //it->neuralNetwork->
-            //    modifyConnections(NeuralNetwork::MS_PRECONDITIONOUTPUT,
-            //                      mean,
-            //                      sigma);
-        }
-        else
-        {
-            log << "Weights modified accoring to Glorot Bengio scheme.\n";
-            //log << "Weights connected to output layer node set to zero.\n";
-            log << "Biases set to zero.\n";
-            for (vector<Element>::iterator it = elements.begin();
-                 it != elements.end(); ++it)
-            {
-                it->neuralNetwork->
-                    modifyConnections(NeuralNetwork::MS_GLOROTBENGIO);
-                //it->neuralNetwork->
-                //    modifyConnections(NeuralNetwork::MS_ZEROOUTPUTWEIGHTS);
-                it->neuralNetwork->
-                    modifyConnections(NeuralNetwork::MS_ZEROBIAS);
-            }
-        }
+        else randomizeNeuralNetworkWeights("short");
     }
 
     log << "*****************************************"
@@ -355,7 +314,8 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         for (size_t i = 0; i < numElements; ++i)
         {
             weightsOffset.push_back(numWeights);
-            numWeights += elements.at(i).neuralNetwork->getNumConnections();
+            numWeights += elements.at(i).neuralNetworks.at(nnId)
+                          .getNumConnections();
         }
         weights.resize(numUpdaters);
         weights.at(0).resize(numWeights, 0.0);
@@ -371,7 +331,8 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
         weights.resize(numUpdaters);
         for (size_t i = 0; i < numUpdaters; ++i)
         {
-            size_t n = elements.at(i).neuralNetwork->getNumConnections();
+            size_t n = elements.at(i).neuralNetworks.at(nnId)
+                       .getNumConnections();
             weights.at(i).resize(n, 0.0);
             numWeightsPerUpdater.push_back(n);
             log << strpr("Fit parameters for element %2s: %zu\n",
@@ -387,6 +348,43 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
     return;
 }
 
+void Training::setStage(size_t stage)
+{
+    this->stage = stage;
+
+    // NNP of type SHORT_ONLY requires:
+    // * "energy" (optionally: "force")
+    if (nnpType == NNPType::SHORT_ONLY)
+    {
+        pk.push_back("energy");
+        if (settings.keywordExists("use_short_forces")) pk.push_back("force");
+    }
+    // NNP of type SHORT_CHARGE_NN requires:
+    // * stage 1: "charge"
+    // * stage 2: "energy" (optionally: "force")
+    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        if (stage == 1) pk.push_back("charge");
+        else if (stage == 2)
+        {
+            pk.push_back("energy");
+            if (settings.keywordExists("use_short_forces"))
+            {
+                pk.push_back("force");
+            }
+        }
+    }
+
+    // Initialize all training properties which will be used.
+    auto initP = [this](string key) {p.emplace(piecewise_construct,
+                                               forward_as_tuple(key),
+                                               forward_as_tuple(key));
+                 };
+    for (auto k : pk) initP(k);
+
+    return;
+}
+
 void Training::setupTraining()
 {
     log << "\n";
@@ -394,24 +392,82 @@ void Training::setupTraining()
            "**************************************\n";
     log << "\n";
 
-    useForces = settings.keywordExists("use_short_forces");
-    if (useForces)
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
     {
-        log << "Forces will be used for training.\n";
-        if (settings.keywordExists("force_weight"))
+        log << strpr("Running stage %zu of training:", stage);
+        if      (stage == 1) log << "charge NN fitting.\n";
+        else if (stage == 2) log << "short-range NN fitting.\n";
+        else throw runtime_error("\nERROR: Unknown training stage.\n");
+    }
+
+    if (nnpType == NNPType::SHORT_ONLY ||
+        (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+    {
+        nnId = "short";
+        useForces = settings.keywordExists("use_short_forces");
+        if (useForces)
         {
-            forceWeight = atof(settings["force_weight"].c_str());
+            log << "Forces will be used for training.\n";
+            if (settings.keywordExists("force_weight"))
+            {
+                forceWeight = atof(settings["force_weight"].c_str());
+            }
+            else
+            {
+                log << "WARNING: Force weight not set, using default value.\n";
+                forceWeight = 1.0;
+            }
+            log << strpr("Force update weight: %10.2E\n", forceWeight);
         }
         else
         {
-            log << "WARNING: Force weight not set, using default value.\n";
-            forceWeight = 1.0;
+            log << "Only energies will used for training.\n";
         }
-        log << strpr("Force update weight: %10.2E\n", forceWeight);
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+    {
+        nnId = "charge";
+    }
+    log << "Training will act on \"" << nnId << "\" neural networks.\n";
+
+    if (settings.keywordExists("main_error_metric"))
+    {
+        string k;
+        if (settings["main_error_metric"] == "RMSEpa")
+        {
+            k = "energy"; if (p.exists(k)) p[k].displayMetric = "RMSEpa";
+            k = "force";  if (p.exists(k)) p[k].displayMetric = "RMSE";
+            k = "charge"; if (p.exists(k)) p[k].displayMetric = "RMSE";
+        }
+        else if (settings["main_error_metric"] == "RMSE")
+        {
+            k = "energy"; if (p.exists(k)) p[k].displayMetric = "RMSE";
+            k = "force";  if (p.exists(k)) p[k].displayMetric = "RMSE";
+            k = "charge"; if (p.exists(k)) p[k].displayMetric = "RMSE";
+        }
+        else if (settings["main_error_metric"] == "MAEpa")
+        {
+            k = "energy"; if (p.exists(k)) p[k].displayMetric = "MAEpa";
+            k = "force";  if (p.exists(k)) p[k].displayMetric = "MAE";
+            k = "charge"; if (p.exists(k)) p[k].displayMetric = "MAE";
+        }
+        else if (settings["main_error_metric"] == "MAE")
+        {
+            k = "energy"; if (p.exists(k)) p[k].displayMetric = "MAE";
+            k = "force";  if (p.exists(k)) p[k].displayMetric = "MAE";
+            k = "charge"; if (p.exists(k)) p[k].displayMetric = "MAE";
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown error metric.\n");
+        }
     }
     else
     {
-        log << "Only energies will used for training.\n";
+        string k;
+        k = "energy"; if (p.exists(k)) p[k].displayMetric = "RMSEpa";
+        k = "force";  if (p.exists(k)) p[k].displayMetric = "RMSE";
+        k = "charge"; if (p.exists(k)) p[k].displayMetric = "RMSE";
     }
 
     updaterType = (UpdaterType)atoi(settings["updater_type"].c_str());
@@ -469,7 +525,7 @@ void Training::setupTraining()
         log << strpr("Gradient summation only selected: "
                      "JacobianMode::JM_SUM (%d)\n", jacobianMode);
         log << "No Jacobi matrix, gradients of all training candidates are "
-               "summed up instead.\n"; 
+               "summed up instead.\n";
     }
     else if (jacobianMode == JM_TASK)
     {
@@ -506,65 +562,14 @@ void Training::setupTraining()
     // from the neural network.
     getWeights();
 
-    vector<string> selectionModeArgs = split(settings["selection_mode"]);
-    if (selectionModeArgs.size() % 2 != 1)
-    {
-        throw runtime_error("ERROR: Incorrect selection mode format.\n");
-    }
-    selectionModeSchedule[0] =
-                          (SelectionMode)atoi(selectionModeArgs.at(0).c_str());
-    for (size_t i = 1; i < selectionModeArgs.size(); i = i + 2)
-    {
-        selectionModeSchedule[(size_t)atoi(selectionModeArgs.at(i).c_str())] =
-                      (SelectionMode)atoi(selectionModeArgs.at(i + 1).c_str());
-    }
-    for (map<size_t, SelectionMode>::const_iterator it =
-         selectionModeSchedule.begin();
-         it != selectionModeSchedule.end(); ++it)
-    {
-        log << strpr("Selection mode starting with epoch %zu:\n", it->first);
-        if (it->second == SM_RANDOM)
-        {
-            log << strpr("Random selection of update candidates: "
-                         "SelectionMode::SM_RANDOM (%d)\n", it->second);
-        }
-        else if (it->second == SM_SORT)
-        {
-            log << strpr("Update candidates selected according to error: "
-                         "SelectionMode::SM_SORT (%d)\n", it->second);
-        }
-        else if (it->second == SM_THRESHOLD)
-        {
-            log << strpr("Update candidates chosen randomly above RMSE "
-                         "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
-                         it->second);
-            rmseThresholdEnergy
-                      = atof(settings["short_energy_error_threshold"].c_str());
-            rmseThresholdForce
-                       = atof(settings["short_force_error_threshold"].c_str());
-            rmseThresholdTrials
-                             = atof(settings["rmse_threshold_trials"].c_str());
-            log << strpr("Energy threshold: %.2f * RMSE(Energy)\n",
-                         rmseThresholdEnergy);
-            if (useForces)
-            {
-                log << strpr("Force  threshold: %.2f * RMSE(Force)\n",
-                             rmseThresholdForce);
-            }
-            log << strpr("Maximum number of update candidate trials: %zu\n",
-                         rmseThresholdTrials);
-        }
-        else
-        {
-            throw runtime_error("ERROR: Unknown selection mode.\n");
-        }
-    }
-    selectionMode = selectionModeSchedule[0];
+    // Set up update candidate selection modes.
+    setupSelectionMode("all");
+    for (auto k : pk) setupSelectionMode(k);
 
     log << "-----------------------------------------"
            "--------------------------------------\n";
-    reapeatedEnergyUpdates = settings.keywordExists("repeated_energy_update");
-    if (useForces && reapeatedEnergyUpdates)
+    repeatedEnergyUpdates = settings.keywordExists("repeated_energy_update");
+    if (useForces && repeatedEnergyUpdates)
     {
         throw runtime_error("ERROR: Repeated energy updates are not correctly"
                             " implemented at the moment.\n");
@@ -585,105 +590,21 @@ void Training::setupTraining()
     numEpochs = (size_t)atoi(settings["epochs"].c_str());
     log << strpr("Training will be stopped after %zu epochs.\n", numEpochs);
 
-    // Check how often energy comparison files should be written.
-    if (settings.keywordExists("write_trainpoints"))
-    {
-        writeEnergiesEvery = 1;
-        vector<string> v = split(reduce(settings["write_trainpoints"]));
-        if (v.size() == 1)
-        {
-            writeEnergiesEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeEnergiesEvery = (size_t)atoi(v.at(0).c_str());
-            writeEnergiesAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        log << strpr("Energy comparison will be written every %d epochs.\n",
-                     writeEnergiesEvery);
-        if (writeEnergiesAlways > 0)
-        {
-            log << strpr("Up to epoch %d energy comparison will be written"
-                         " every epoch.\n", writeEnergiesAlways);
-        }
-    }
-
-    // Check how often force comparison files should be written.
-    if (settings.keywordExists("write_trainforces"))
-    {
-        writeForcesEvery = 1;
-        vector<string> v = split(reduce(settings["write_trainforces"]));
-        if (v.size() == 1)
-        {
-            writeForcesEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeForcesEvery = (size_t)atoi(v.at(0).c_str());
-            writeForcesAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        if (useForces)
-        {
-            log << strpr("Force comparison will be written every %d epochs.\n",
-                         writeForcesEvery);
-        }
-        if (writeForcesAlways > 0 && useForces)
-        {
-            log << strpr("Up to epoch %d force comparison will be written"
-                         " every epoch.\n", writeForcesAlways);
-        }
-    }
-
-    // Check how often energy comparison files should be written.
-    if (settings.keywordExists("write_weights_epoch"))
-    {
-        writeWeightsEvery = 1;
-        vector<string> v = split(reduce(settings["write_weights_epoch"]));
-        if (v.size() == 1)
-        {
-            writeWeightsEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeWeightsEvery = (size_t)atoi(v.at(0).c_str());
-            writeWeightsAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        log << strpr("Weights will be written every %d epochs.\n",
-                     writeWeightsEvery);
-        if (writeWeightsAlways > 0)
-        {
-            log << strpr("Up to epoch %d weights will be written"
-                         " every epoch.\n", writeWeightsAlways);
-        }
-    }
-
-    // Check how often neuron statistics should be written.
-    if (settings.keywordExists("write_neuronstats"))
-    {
-        writeNeuronStatisticsEvery = 1;
-        vector<string> v = split(reduce(settings["write_neuronstats"]));
-        if (v.size() == 1)
-        {
-            writeNeuronStatisticsEvery = (size_t)atoi(v.at(0).c_str());
-        }
-        else if (v.size() == 2)
-        {
-            writeNeuronStatisticsEvery = (size_t)atoi(v.at(0).c_str());
-            writeNeuronStatisticsAlways = (size_t)atoi(v.at(1).c_str());
-        }
-        log << strpr("Neuron statistics will be written every %d epochs.\n",
-                     writeNeuronStatisticsEvery);
-        if (writeNeuronStatisticsAlways > 0)
-        {
-            log << strpr("Up to epoch %d neuron statistics will be written"
-                         " every epoch.\n", writeNeuronStatisticsAlways);
-        }
-    }
+    // Set up how often comparison output files should be written.
+    for (auto k : pk) setupFileOutput(k);
+    // Set up how often weight files should be written.
+    setupFileOutput("weights_epoch");
+    // Set up how often neuron statistics files should be written.
+    setupFileOutput("neuronstats");
 
     // Prepare training log header.
     writeTrainingLog = settings.keywordExists("write_trainlog");
     if (writeTrainingLog && myRank == 0)
     {
+        if (nnpType == NNPType::SHORT_CHARGE_NN)
+        {
+            trainingLogFileName += strpr(".stage-%zu", stage);
+        }
         log << strpr("Training log with update information will be written to:"
                      " %s.\n", trainingLogFileName.c_str());
         trainingLog.open(trainingLogFileName.c_str());
@@ -696,7 +617,7 @@ void Training::setupTraining()
         title.push_back("Detailed information on each weight update.");
         colSize.push_back(3);
         colName.push_back("U");
-        colInfo.push_back("Update type (E = energy, F = force).");
+        colInfo.push_back("Update type (E = energy, F = force, Q = charge).");
         colSize.push_back(5);
         colName.push_back("epoch");
         colInfo.push_back("Current training epoch.");
@@ -730,212 +651,35 @@ void Training::setupTraining()
                           createFileHeader(title, colSize, colName, colInfo));
     }
 
-    // Compute number of updates and energies/forces per update.
+    // Compute number of updates and properties per update.
     log << "-----------------------------------------"
            "--------------------------------------\n";
-    epochFractionEnergies = atof(settings["short_energy_fraction"].c_str());
-    taskBatchSizeEnergy
-        = (size_t)atoi(settings["task_batch_size_energy"].c_str());
-    if (taskBatchSizeEnergy == 0)
+    for (auto k : pk) setupUpdatePlan(k);
+    if (p.exists("energy") && p.exists("force"))
     {
-        energiesPerUpdate = static_cast<size_t>(updateCandidatesEnergy.size()
-                                                * epochFractionEnergies);
-        energyUpdates = 1;
-    }
-    else
-    {
-        energiesPerUpdate = taskBatchSizeEnergy;
-        energyUpdates = static_cast<size_t>((numEnergiesTrain
-                                            * epochFractionEnergies)
-                                            / taskBatchSizeEnergy / numProcs);
-    }
-    energiesPerUpdateGlobal = energiesPerUpdate;
-    MPI_Allreduce(MPI_IN_PLACE, &energiesPerUpdateGlobal, 1, MPI_SIZE_T, MPI_SUM, comm);
-    errorsPerTaskEnergy.resize(numProcs, 0);
-    if (jacobianMode == JM_FULL)
-    {
-        errorsPerTaskEnergy.at(myRank) = static_cast<int>(energiesPerUpdate);
-    }
-    else
-    {
-        errorsPerTaskEnergy.at(myRank) = 1;
-    }
-    MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskEnergy.front()), 1, MPI_INT, comm);
-    if (jacobianMode == JM_FULL)
-    {
-        weightsPerTaskEnergy.resize(numUpdaters);
-        for (size_t i = 0; i < numUpdaters; ++i)
-        {
-            weightsPerTaskEnergy.at(i).resize(numProcs, 0);
-            for (int j = 0; j < numProcs; ++j)
-            {
-                weightsPerTaskEnergy.at(i).at(j) = errorsPerTaskEnergy.at(j)
-                                                 * numWeightsPerUpdater.at(i);
-            }
-        }
-    }
-    errorsGlobalEnergy = 0;
-    for (size_t i = 0; i < errorsPerTaskEnergy.size(); ++i)
-    {
-        offsetPerTaskEnergy.push_back(errorsGlobalEnergy);
-        errorsGlobalEnergy += errorsPerTaskEnergy.at(i);
-    }
-    offsetJacobianEnergy.resize(numUpdaters);
-    for (size_t i = 0; i < numUpdaters; ++i)
-    {
-        for (size_t j = 0; j < offsetPerTaskEnergy.size(); ++j)
-        {
-            offsetJacobianEnergy.at(i).push_back(offsetPerTaskEnergy.at(j) *
-                                                 numWeightsPerUpdater.at(i));
-        }
-    }
-    log << strpr("Per-task batch size for energies             : %zu\n",
-                 taskBatchSizeEnergy);
-    log << strpr("Fraction of energies used per epoch          : %.4f\n",
-                 epochFractionEnergies);
-    log << strpr("Energy updates per epoch                     : %zu\n",
-                 energyUpdates);
-    log << strpr("Energies used per update (rank %3d / global) : %10zu / %zu\n",
-                 myRank, energiesPerUpdate, energiesPerUpdateGlobal);
-
-    if (useForces)
-    {
-        log << "----------------------------------------------\n";
-        epochFractionForces = atof(settings["short_force_fraction"].c_str());
-        taskBatchSizeForce
-            = (size_t)atoi(settings["task_batch_size_force"].c_str());
-        if (taskBatchSizeForce == 0)
-        {
-            forcesPerUpdate = static_cast<size_t>(updateCandidatesForce.size()
-                                                  * epochFractionForces);
-            forceUpdates = 1;
-        }
-        else
-        {
-            forcesPerUpdate = taskBatchSizeForce;
-            forceUpdates = static_cast<size_t>((numForcesTrain
-                                                * epochFractionForces)
-                                                / taskBatchSizeForce
-                                                / numProcs);
-        }
-        forcesPerUpdateGlobal = forcesPerUpdate;
-        MPI_Allreduce(MPI_IN_PLACE, &forcesPerUpdateGlobal, 1, MPI_SIZE_T, MPI_SUM, comm);
-        errorsPerTaskForce.resize(numProcs, 0);
-        if (jacobianMode == JM_FULL)
-        {
-            errorsPerTaskForce.at(myRank) = static_cast<int>(forcesPerUpdate);
-        }
-        else
-        {
-            errorsPerTaskForce.at(myRank) = 1;
-        }
-        MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(errorsPerTaskForce.front()), 1, MPI_INT, comm);
-        if (jacobianMode == JM_FULL)
-        {
-            weightsPerTaskForce.resize(numUpdaters);
-            for (size_t i = 0; i < numUpdaters; ++i)
-            {
-                weightsPerTaskForce.at(i).resize(numProcs, 0);
-                for (int j = 0; j < numProcs; ++j)
-                {
-                    weightsPerTaskForce.at(i).at(j) =
-                        errorsPerTaskForce.at(j) * numWeightsPerUpdater.at(i);
-                }
-            }
-        }
-        errorsGlobalForce = 0;
-        for (size_t i = 0; i < errorsPerTaskForce.size(); ++i)
-        {
-            offsetPerTaskForce.push_back(errorsGlobalForce);
-            errorsGlobalForce += errorsPerTaskForce.at(i);
-        }
-        offsetJacobianForce.resize(numUpdaters);
-        for (size_t i = 0; i < numUpdaters; ++i)
-        {
-            for (size_t j = 0; j < offsetPerTaskForce.size(); ++j)
-            {
-                offsetJacobianForce.at(i).push_back(
-                                                   offsetPerTaskForce.at(j) *
-                                                   numWeightsPerUpdater.at(i));
-            }
-        }
-        log << strpr("Per-task batch size for forces               : %zu\n",
-                     taskBatchSizeForce);
-        log << strpr("Fraction of forces used per epoch            : %.4f\n",
-                     epochFractionForces);
-        log << strpr("Force updates per epoch                      : %zu\n",
-                     forceUpdates);
-        log << strpr("Forces used per update (rank %3d / global)   : %10zu / "
-                     "%zu\n", myRank, forcesPerUpdate, forcesPerUpdateGlobal);
-        log << "----------------------------------------------\n";
+        Property& pe = p["energy"];
+        Property& pf = p["force"];
         log << strpr("Energy to force ratio                        : "
                      "     1 : %5.1f\n",
-                     static_cast<double>(forceUpdates * forcesPerUpdateGlobal)
-                     / (energyUpdates * energiesPerUpdateGlobal));
+                     static_cast<double>(
+                         pf.numUpdates * pf.patternsPerUpdateGlobal)
+                         / (pe.numUpdates * pe.patternsPerUpdateGlobal));
         log << strpr("Energy to force percentages                  : "
                      "%5.1f%% : %5.1f%%\n",
-                     energyUpdates * energiesPerUpdateGlobal * 100.0 /
-                     (energyUpdates * energiesPerUpdateGlobal
-                     + forceUpdates * forcesPerUpdateGlobal),
-                     forceUpdates * forcesPerUpdateGlobal * 100.0 /
-                     (energyUpdates * energiesPerUpdateGlobal
-                     + forceUpdates * forcesPerUpdateGlobal));
+                     pe.numUpdates * pe.patternsPerUpdateGlobal * 100.0 /
+                     (pe.numUpdates * pe.patternsPerUpdateGlobal
+                     + pf.numUpdates * pf.patternsPerUpdateGlobal),
+                     pf.numUpdates * pf.patternsPerUpdateGlobal * 100.0 /
+                     (pe.numUpdates * pe.patternsPerUpdateGlobal
+                     + pf.numUpdates * pf.patternsPerUpdateGlobal));
     }
-    double totalUpdates = energyUpdates + forceUpdates;
+    double totalUpdates = 0.0;
+    for (auto k : pk) totalUpdates += p[k].numUpdates;
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
     // Allocate error and Jacobian arrays.
-    log << "Allocating memory for energy error vector and Jacobian.\n";
-    errorE.resize(numUpdaters);
-    jacobianE.resize(numUpdaters);
-    for (size_t i = 0; i < numUpdaters; ++i)
-    {
-        size_t size = 1;
-        if (( parallelMode == PM_TRAIN_ALL ||
-              (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
-            jacobianMode != JM_SUM)
-        {
-            size *= errorsGlobalEnergy;            
-        }
-        else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
-                 jacobianMode != JM_SUM)
-        {
-            size *= errorsPerTaskEnergy.at(myRank);            
-        }
-        errorE.at(i).resize(size, 0.0);
-        jacobianE.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
-        log << strpr("Updater %3zu:\n", i);
-        log << strpr(" - Error    size: %zu\n", errorE.at(i).size());
-        log << strpr(" - Jacobian size: %zu\n", jacobianE.at(i).size());
-    }
-    if (useForces)
-    {
-        log << "------------------------------------------------------\n";
-        log << "Allocating memory for force error vector and Jacobian.\n";
-        errorF.resize(numUpdaters);
-        jacobianF.resize(numUpdaters);
-        for (size_t i = 0; i < numUpdaters; ++i)
-        {
-            size_t size = 1;
-            if ((parallelMode == PM_TRAIN_ALL ||
-                 (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
-                jacobianMode != JM_SUM)
-            {
-                size *= errorsGlobalForce;            
-            }
-            else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
-                     jacobianMode != JM_SUM)
-            {
-                size *= errorsPerTaskForce.at(myRank);            
-            }
-            errorF.at(i).resize(size, 0.0);
-            jacobianF.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
-            log << strpr("Updater %3zu:\n", i);
-            log << strpr(" - Error    size: %zu\n", errorF.at(i).size());
-            log << strpr(" - Jacobian size: %zu\n", jacobianF.at(i).size());
-        }
-    }
+    for (auto k : pk) allocateArrays(k);
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
@@ -974,6 +718,8 @@ void Training::setupTraining()
                                                kalmanType));
             }
             updaters.back()->setState(&(weights.at(i).front()));
+            updaters.back()->setupTiming(strpr("wupd%zu", i));
+            updaters.back()->resetTimingLoop();
         }
     }
     if (updaters.size() > 0) hasUpdaters = true;
@@ -1088,18 +834,18 @@ void Training::setupTraining()
             {
                 log << "Note: During training loop the actual observation\n";
                 log << "      size corresponds to error vector size:\n";
-                log << strpr("sizeObservation = %zu (energy updates)\n",
-                             errorE.at(i).size());
-                if (useForces)
+                for (auto k : pk)
                 {
-                    log << strpr("sizeObservation = %zu (force  updates)\n",
-                                 errorF.at(i).size());
+                    log << strpr("sizeObservation = %zu (%s updates)\n",
+                                 p[k].error.at(i).size(), k.c_str());
                 }
             }
             log << "-----------------------------------------"
                    "--------------------------------------\n";
     }
 
+    log << strpr("TIMING Finished setup: %.2f seconds.\n",
+                 sw["setup"].stop());
     log << "*****************************************"
            "**************************************\n";
 
@@ -1108,6 +854,7 @@ void Training::setupTraining()
 
 void Training::calculateNeighborLists()
 {
+    sw["nl"].start();
     log << "\n";
     log << "*** CALCULATE NEIGHBOR LISTS ************"
            "**************************************\n";
@@ -1135,93 +882,87 @@ void Training::calculateNeighborLists()
                  omp_get_max_threads());
 #endif
 
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << strpr("TIMING Finished neighbor lists: %.2f seconds.\n",
+                 sw["nl"].stop());
     log << "*****************************************"
            "**************************************\n";
 
     return;
 }
 
-void Training::calculateRmse(bool const   writeCompFiles,
-                             string const identifier,
-                             string const fileNameEnergiesTrain,
-                             string const fileNameEnergiesTest,
-                             string const fileNameForcesTrain,
-                             string const fileNameForcesTest)
+void Training::calculateError(
+                             map<string, pair<string, string>> const fileNames)
 {
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
     omp_set_num_threads(1);
 #endif
-    bool     energiesTrain = true;
-    if (fileNameEnergiesTrain == "") energiesTrain = false;
-    bool     energiesTest = true;
-    if (fileNameEnergiesTest == "") energiesTest = false;
-    bool     forcesTrain = true;
-    if (fileNameForcesTrain == "") forcesTrain = false;
-    bool     forcesTest = true;
-    if (fileNameForcesTest == "") forcesTest = false;
-    size_t   countEnergiesTrain = 0;
-    size_t   countEnergiesTest  = 0;
-    size_t   countForcesTrain   = 0;
-    size_t   countForcesTest    = 0;
-    ofstream fileEnergiesTrain;
-    ofstream fileEnergiesTest;
-    ofstream fileForcesTrain;
-    ofstream fileForcesTest;
-
-    // Reset current RMSEs.
-    rmseEnergiesTrain = 0.0;
-    rmseEnergiesTest  = 0.0;
-    rmseForcesTrain   = 0.0;
-    rmseForcesTest    = 0.0;
-
-    if (writeCompFiles)
+    vector<string> write;
+    for (auto i : fileNames)
     {
+        if (i.second.first.size() == 0 || i.second.second.size() == 0)
+        {
+            throw runtime_error("ERROR: No filename provided for comparison "
+                                "files.\n");
+        }
+        write.push_back(i.first);
+    }
+    auto doWrite = [&write](string key){
+                       return find(write.begin(),
+                                   write.end(),
+                                   key) != write.end();
+                   };
+
+
+    map<string, size_t> countTrain;
+    map<string, size_t> countTest;
+    for (auto k : pk) countTrain[k] = 0;
+    for (auto k : pk) countTest[k]  = 0;
+
+    map<string, ofstream> filesTrain;
+    map<string, ofstream> filesTest;
+
+    // Reset current error metrics.
+    for (auto k : pk)
+    {
+        for (auto& m : p[k].errorTrain) m.second = 0.0;
+        for (auto& m : p[k].errorTest) m.second = 0.0;
+    }
+
+    for (auto k : write)
+    {
+        filesTrain[k].open(strpr("%s.%04d",
+                                 fileNames.at(k).first.c_str(),
+                                 myRank).c_str());
+        filesTest[k].open(strpr("%s.%04d",
+                                fileNames.at(k).second.c_str(),
+                                myRank).c_str());
         // File header.
         vector<string> header;
-        vector<string> title;
-        vector<string> colName;
-        vector<string> colInfo;
-        vector<size_t> colSize;
-        if (myRank == 0 && (energiesTrain || energiesTest))
+        if (myRank == 0)
         {
-            title.push_back("Energy comparison.");
-            colSize.push_back(10);
-            colName.push_back("index");
-            colInfo.push_back("Structure index.");
-            colSize.push_back(16);
-            colName.push_back("Eref");
-            colInfo.push_back("Reference potential energy per atom "
-                              "(training units).");
-            colSize.push_back(16);
-            colName.push_back("Ennp");
-            colInfo.push_back("NNP potential energy per atom "
-                              "(training units).");
-            header = createFileHeader(title, colSize, colName, colInfo);
-        }
-
-        if (energiesTrain)
-        {
-            fileEnergiesTrain.open(strpr("%s.%04d",
-                                         fileNameEnergiesTrain.c_str(),
-                                         myRank).c_str());
-            if (myRank == 0) appendLinesToFile(fileEnergiesTrain, header);
-        }
-        if (energiesTest)
-        {
-            fileEnergiesTest.open(strpr("%s.%04d",
-                                        fileNameEnergiesTest.c_str(),
-                                        myRank).c_str());
-            if (myRank == 0) appendLinesToFile(fileEnergiesTest, header);
-        }
-        if (useForces)
-        {
-            header.clear();
-            title.clear();
-            colName.clear();
-            colInfo.clear();
-            colSize.clear();
-            if (myRank == 0 && (forcesTrain || forcesTest))
+            vector<string> title;
+            vector<string> colName;
+            vector<string> colInfo;
+            vector<size_t> colSize;
+            if (k == "energy")
+            {
+                title.push_back("Energy comparison.");
+                colSize.push_back(10);
+                colName.push_back("index");
+                colInfo.push_back("Structure index.");
+                colSize.push_back(16);
+                colName.push_back("Eref");
+                colInfo.push_back("Reference potential energy per atom "
+                                  "(training units).");
+                colSize.push_back(16);
+                colName.push_back("Ennp");
+                colInfo.push_back("NNP potential energy per atom "
+                                  "(training units).");
+            }
+            else if (k == "force")
             {
                 title.push_back("Force comparison.");
                 colSize.push_back(10);
@@ -1237,130 +978,92 @@ void Training::calculateRmse(bool const   writeCompFiles,
                 colSize.push_back(16);
                 colName.push_back("Fnnp");
                 colInfo.push_back("NNP force (training units).");
-                header = createFileHeader(title, colSize, colName, colInfo);
             }
-            if (forcesTrain)
+            else if (k == "charge")
             {
-                fileForcesTrain.open(strpr("%s.%04d",
-                                           fileNameForcesTrain.c_str(),
-                                           myRank).c_str());
-                if (myRank == 0) appendLinesToFile(fileForcesTrain, header);
+                title.push_back("Charge comparison.");
+                colSize.push_back(10);
+                colName.push_back("index_s");
+                colInfo.push_back("Structure index.");
+                colSize.push_back(10);
+                colName.push_back("index_a");
+                colInfo.push_back("Atom index.");
+                colSize.push_back(16);
+                colName.push_back("Qref");
+                colInfo.push_back("Reference charge.");
+                colSize.push_back(16);
+                colName.push_back("Qnnp");
+                colInfo.push_back("NNP charge.");
             }
-            if (forcesTest)
-            {
-                fileForcesTest.open(strpr("%s.%04d",
-                                          fileNameForcesTest.c_str(),
-                                          myRank).c_str());
-                if (myRank == 0) appendLinesToFile(fileForcesTest, header);
-            }
+            header = createFileHeader(title, colSize, colName, colInfo);
+            appendLinesToFile(filesTrain.at(k), header);
+            appendLinesToFile(filesTest.at(k), header);
         }
     }
 
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
         calculateSymmetryFunctions((*it), useForces);
 #else
         calculateSymmetryFunctionGroups((*it), useForces);
 #endif
         calculateAtomicNeuralNetworks((*it), useForces);
         calculateEnergy((*it));
-        if (it->sampleType == Structure::ST_TRAINING)
+        if (useForces) calculateForces((*it));
+        for (auto k : pk)
         {
-            it->updateRmseEnergy(rmseEnergiesTrain, countEnergiesTrain);
-            if (writeCompFiles && energiesTrain)
-            {
-                fileEnergiesTrain << it->getEnergyLine();
-            }
-            
-        }
-        else if (it->sampleType == Structure::ST_TEST)
-        {
-            it->updateRmseEnergy(rmseEnergiesTest, countEnergiesTest);
-            if (writeCompFiles && energiesTest)
-            {
-                fileEnergiesTest << it->getEnergyLine();
-            }
-        }
-        if (useForces)
-        {
-            calculateForces((*it));
+            map<string, double>* error = nullptr;
+            size_t* count = nullptr;
+            ofstream* file = nullptr;
             if (it->sampleType == Structure::ST_TRAINING)
             {
-                it->updateRmseForces(rmseForcesTrain, countForcesTrain);
-                if (writeCompFiles && forcesTrain)
-                {
-                    vector<string> v = it->getForcesLines();
-                    for (vector<string>::const_iterator it2 = v.begin();
-                         it2 != v.end(); ++it2)
-                    {
-                        fileForcesTrain << (*it2);
-                    }
-                }
+                error = &(p[k].errorTrain);
+                count = &(countTrain.at(k));
+                if (doWrite(k)) file = &(filesTrain.at(k));
             }
             else if (it->sampleType == Structure::ST_TEST)
             {
-                it->updateRmseForces(rmseForcesTest, countForcesTest);
-                if (writeCompFiles && forcesTest)
+                error = &(p[k].errorTest);
+                count = &(countTest.at(k));
+                if (doWrite(k)) file = &(filesTest.at(k));
+            }
+
+            it->updateError(k, *error, *count);
+            if (doWrite(k))
+            {
+                if      (k == "energy") (*file) << it->getEnergyLine();
+                else if (k == "force")
                 {
-                    vector<string> v = it->getForcesLines();
-                    for (vector<string>::const_iterator it2 = v.begin();
-                         it2 != v.end(); ++it2)
-                    {
-                        fileForcesTest << (*it2);
-                    }
+                    for (auto l : it->getForcesLines()) (*file) << l;
+                }
+                else if (k == "charge")
+                {
+                    for (auto l : it->getChargesLines()) (*file) << l;
                 }
             }
         }
         if (freeMemory) it->freeAtoms(true);
     }
 
-    averageRmse(rmseEnergiesTrain, countEnergiesTrain);
-    averageRmse(rmseEnergiesTest , countEnergiesTest );
-    log << strpr("ENERGY %4s", identifier.c_str());
-    if (normalize)
+    for (auto k : pk)
     {
-        log << strpr(" %13.5E %13.5E",
-                     physicalEnergy(rmseEnergiesTrain),
-                     physicalEnergy(rmseEnergiesTest));
-    }
-    log << strpr(" %13.5E %13.5E\n", rmseEnergiesTrain, rmseEnergiesTest);
-    if (useForces)
-    {
-        averageRmse(rmseForcesTrain, countForcesTrain);
-        averageRmse(rmseForcesTest , countForcesTest );
-        log << strpr("FORCES %4s", identifier.c_str());
-        if (normalize)
+        collectError(k, p[k].errorTrain, countTrain.at(k));
+        collectError(k, p[k].errorTest, countTest.at(k));
+        if (doWrite(k))
         {
-            log << strpr(" %13.5E %13.5E",
-                         physicalForce(rmseForcesTrain),
-                         physicalForce(rmseForcesTest));
-        }
-        log << strpr(" %13.5E %13.5E\n", rmseForcesTrain, rmseForcesTest);
-    }
-
-    if (writeCompFiles)
-    {
-        if (energiesTrain) fileEnergiesTrain.close();
-        if (energiesTest) fileEnergiesTest.close();
-        if (useForces)
-        {
-            if (forcesTrain) fileForcesTrain.close();
-            if (forcesTest) fileForcesTest.close();
-        }
-        MPI_Barrier(comm);
-        if (myRank == 0)
-        {
-            if (energiesTrain) combineFiles(fileNameEnergiesTrain);
-            if (energiesTest) combineFiles(fileNameEnergiesTest);
-            if (useForces)
+            filesTrain.at(k).close();
+            filesTest.at(k).close();
+            MPI_Barrier(comm);
+            if (myRank == 0)
             {
-                if (forcesTrain) combineFiles(fileNameForcesTrain);
-                if (forcesTest) combineFiles(fileNameForcesTest);
+                combineFiles(fileNames.at(k).first);
+                combineFiles(fileNames.at(k).second);
             }
         }
     }
+
 #ifdef _OPENMP
     omp_set_num_threads(num_threads);
 #endif
@@ -1368,41 +1071,142 @@ void Training::calculateRmse(bool const   writeCompFiles,
     return;
 }
 
-void Training::calculateRmseEpoch()
+void Training::calculateErrorEpoch()
 {
-    // Check whether energy/force comparison files should be written for
+    // Check whether property comparison files should be written for
     // this epoch.
-    string identifier = strpr("%d", epoch);
-    string fileNameEnergiesTrain = "";
-    string fileNameEnergiesTest = "";
-    string fileNameForcesTrain = "";
-    string fileNameForcesTest = "";
-    if (writeEnergiesEvery > 0 &&
-        (epoch % writeEnergiesEvery == 0 || epoch <= writeEnergiesAlways))
+    map<string, pair<string, string>> fileNames;
+
+    for (auto const& ip : p)
     {
-        fileNameEnergiesTrain = strpr("trainpoints.%06zu.out", epoch);
-        fileNameEnergiesTest = strpr("testpoints.%06zu.out", epoch);
-    }
-    if (useForces &&
-        writeForcesEvery > 0 &&
-        (epoch % writeForcesEvery == 0 || epoch <= writeForcesAlways))
-    {
-        fileNameForcesTrain = strpr("trainforces.%06zu.out", epoch);
-        fileNameForcesTest = strpr("testforces.%06zu.out", epoch);
+        string const& k = ip.first; // key
+        Property const& d = ip.second; // data
+        if (d.writeCompEvery > 0 &&
+            (epoch % d.writeCompEvery == 0 || epoch <= d.writeCompAlways))
+        {
+            string middle;
+            if      (k == "energy") middle = "points";
+            else if (k == "force" ) middle = "forces";
+            else if (k == "charge") middle = "charges";
+            fileNames[k] = make_pair(strpr("train%s.%06zu.out",
+                                           middle.c_str(), epoch),
+                                     strpr("test%s.%06zu.out",
+                                           middle.c_str(), epoch));
+        }
     }
 
-    // Calculate RMSE and write comparison files.
-    calculateRmse(true,
-                  identifier,
-                  fileNameEnergiesTrain,
-                  fileNameEnergiesTest,
-                  fileNameForcesTrain,
-                  fileNameForcesTest);
+    // Calculate errors and write comparison files.
+    calculateError(fileNames);
 
     return;
 }
 
-void Training::writeWeights(string const fileNameFormat) const
+void Training::printHeader()
+{
+    string metric = "?";
+    string peratom = "";
+
+    log << "The training loop output covers different errors, update and\n";
+    log << "timing information. The following quantities are organized\n";
+    log << "according to the matrix scheme below:\n";
+    log << "-------------------------------------------------------------------\n";
+    log << "ep ........ Epoch.\n";
+    for (auto k : pk)
+    {
+        string const& pmetric = p[k].displayMetric;
+        if      (pmetric.find("RMSE") != pmetric.npos) metric = "RMSE";
+        else if (pmetric.find("MAE")  != pmetric.npos) metric = "MAE";
+        if      (pmetric.find("pa") != pmetric.npos) peratom = " per atom";
+        else peratom = "";
+        log << p[k].tiny << "_count ... Number of " << k << " updates.\n";
+        log << p[k].tiny << "_train ... " << metric << " of training "
+            << p[k].plural << peratom << ".\n";
+        log << p[k].tiny << "_test .... " << metric << " of test     "
+            << p[k].plural << peratom << ".\n";
+        //log << p[k].tiny << "_time ........ Time for " << k << " updates "
+        //                 << "(seconds).\n";
+        log << p[k].tiny << "_pt ...... Percentage of time for " << k <<
+                            " updates w.r.t. to t_train.\n";
+    }
+    log << "count ..... Total number of updates.\n";
+    log << "train ..... Percentage of time for training.\n";
+    log << "error ..... Percentage of time for error calculation.\n";
+    log << "other ..... Percentage of time for other purposes.\n";
+    log << "epoch ..... Total time for this epoch (seconds).\n";
+    log << "total ..... Total time for all epochs (seconds).\n";
+    log << "-------------------------------------------------------------------\n";
+    for (auto k : pk)
+    {
+        log << strpr("%-6s", k.c_str())
+            << strpr("  %5s", "ep")
+            << strpr("  %7s", (p[k].tiny + "_count").c_str())
+            << strpr("   %11s", (p[k].tiny + "_train").c_str())
+            << strpr("   %11s", (p[k].tiny + "_test").c_str())
+            << strpr("   %5s", (p[k].tiny + "_pt").c_str())
+            << "\n";
+    }
+    log << strpr("%-6s", "timing")
+        << strpr("  %5s", "ep")
+        << strpr("  %7s", "count")
+        << strpr("  %5s", "train")
+        << strpr("  %5s", "error")
+        << strpr("  %5s", "other")
+        << strpr("  %9s", "epoch")
+        << strpr("  %9s", "total")
+        << "\n";
+    log << "-------------------------------------------------------------------\n";
+
+    return;
+}
+
+void Training::printEpoch()
+{
+    double timeLoop = sw["loop"].getLoop();
+    double timeTrain = sw["train"].getLoop();
+    size_t totalUpdates = 0;
+    for (auto k : pk)
+    {
+        totalUpdates += p[k].countUpdates;
+        double timeProp = sw[k].getLoop();
+        string caps = k;
+        for (auto& c : caps) c = toupper(c);
+        log << strpr("%-6s", caps.c_str());
+        log << strpr("  %5zu", epoch);
+        log << strpr("  %7zu", p[k].countUpdates);
+        if (normalize && (k != "charge"))
+        {
+            log << strpr("   %11.5E   %11.5E",
+                         physical(k, p[k].errorTrain.at(p[k].displayMetric)),
+                         physical(k, p[k].errorTest.at(p[k].displayMetric)));
+        }
+        else
+        {
+            log << strpr("   %11.5E   %11.5E",
+                         p[k].errorTrain.at(p[k].displayMetric),
+                         p[k].errorTest.at(p[k].displayMetric));
+        }
+        if (epoch == 0) log << strpr("   %5.1f", 0.0);
+        else log << strpr("   %5.1f", timeProp / timeTrain * 100.0);
+        log << "\n";
+    }
+    double timeOther = timeLoop;
+    timeOther -= sw["error"].getLoop();
+    timeOther -= sw["train"].getLoop();
+    log << strpr("%-6s", "TIMING");
+    log << strpr("  %5zu", epoch);
+    log << strpr("  %7zu", totalUpdates);
+    log << strpr("  %5.1f", sw["train"].getLoop() / timeLoop * 100.0);
+    log << strpr("  %5.1f", sw["error"].getLoop() / timeLoop * 100.0);
+    log << strpr("  %5.1f", timeOther / timeLoop * 100.0);
+    log << strpr("  %9.2f", sw["loop"].getLoop());
+    log << strpr("  %9.2f", sw["loop"].getTotal());
+    log << "\n";
+
+    return;
+}
+
+void Training::writeWeights(string const& nnName,
+                            string const& fileNameFormat) const
 {
     ofstream file;
 
@@ -1411,7 +1215,7 @@ void Training::writeWeights(string const fileNameFormat) const
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         file.open(fileName.c_str());
-        elements.at(i).neuralNetwork->writeConnections(file);
+        elements.at(i).neuralNetworks.at(nnName).writeConnections(file);
         file.close();
     }
 
@@ -1420,12 +1224,18 @@ void Training::writeWeights(string const fileNameFormat) const
 
 void Training::writeWeightsEpoch() const
 {
-    string fileNameFormat = strpr("weights.%%03zu.%06d.out", epoch);
-
     if (writeWeightsEvery > 0 &&
         (epoch % writeWeightsEvery == 0 || epoch <= writeWeightsAlways))
     {
-        writeWeights(fileNameFormat);
+        if (nnpType == NNPType::SHORT_ONLY ||
+            (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+        {
+            writeWeights("short", strpr("weights.%%03zu.%06d.out", epoch));
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+        {
+            writeWeights("charge", strpr("weightse.%%03zu.%06d.out", epoch));
+        }
     }
 
     return;
@@ -1434,49 +1244,81 @@ void Training::writeWeightsEpoch() const
 void Training::writeLearningCurve(bool append, string const fileName) const
 {
     ofstream file;
-
-    if (append) file.open(fileName.c_str(), ofstream::app);
-    else 
+    string fileNameActual = fileName;
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
     {
-        file.open(fileName.c_str());
+        fileNameActual += strpr(".stage-%zu", stage);
+    }
+
+    if (append) file.open(fileNameActual.c_str(), ofstream::app);
+    else
+    {
+        file.open(fileNameActual.c_str());
 
         // File header.
         vector<string> title;
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        title.push_back("Learning curves for energies and forces.");
+        if (nnpType == NNPType::SHORT_ONLY ||
+            (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2))
+        {
+            title.push_back("Learning curves for energies and forces.");
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+        {
+            title.push_back("Learning curves for charges.");
+        }
         colSize.push_back(10);
         colName.push_back("epoch");
         colInfo.push_back("Current epoch.");
-        colSize.push_back(16);
-        colName.push_back("rmse_Etrain_phys");
-        colInfo.push_back("RMSE of training energies per atom (physical "
-                          "units).");
-        colSize.push_back(16);
-        colName.push_back("rmse_Etest_phys");
-        colInfo.push_back("RMSE of test energies per atom (physical units).");
-        colSize.push_back(16);
-        colName.push_back("rmse_Ftrain_phys");
-        colInfo.push_back("RMSE of training forces (physical units).");
-        colSize.push_back(16);
-        colName.push_back("rmse_Ftest_phys");
-        colInfo.push_back("RMSE of test forces (physical units).");
+
+        map<string, string> text;
+        text["RMSEpa"] = "RMSE of %s %s per atom";
+        text["RMSE"]   = "RMSE of %s %s";
+        text["MAEpa"]  = "MAE of %s %s per atom";
+        text["MAE"]    = "MAE of %s %s";
+
+        for (auto k : pk)
+        {
+            for (auto m : p[k].errorMetrics)
+            {
+                colSize.push_back(16);
+                colName.push_back(m + "_" + p[k].tiny + "train_pu");
+                colInfo.push_back(strpr(
+                                       (text[m] + " (physical units)").c_str(),
+                                       "training",
+                                       p[k].plural.c_str()));
+                colSize.push_back(16);
+                colName.push_back(m + "_" + p[k].tiny + "test_pu");
+                colInfo.push_back(strpr(
+                                       (text[m] + " (physical units)").c_str(),
+                                       "test",
+                                       p[k].plural.c_str()));
+            }
+        }
         if (normalize)
         {
-            colSize.push_back(16);
-            colName.push_back("rmse_Etrain_int");
-            colInfo.push_back("RMSE of training energies per atom (internal "
-                              "units).");
-            colSize.push_back(16);
-            colName.push_back("rmse_Etest_int");
-            colInfo.push_back("RMSE of test energies per atom (internal units).");
-            colSize.push_back(16);
-            colName.push_back("rmse_Ftrain_int");
-            colInfo.push_back("RMSE of training forces (internal units).");
-            colSize.push_back(16);
-            colName.push_back("rmse_Ftest_int");
-            colInfo.push_back("RMSE of test forces (internal units).");
+            for (auto k : pk)
+            {
+                // Internal units only for energies and forces.
+                if (!(k == "energy" || k == "force")) continue;
+                for (auto m : p[k].errorMetrics)
+                {
+                    colSize.push_back(16);
+                    colName.push_back(m + "_" + p[k].tiny + "train_iu");
+                    colInfo.push_back(strpr(
+                                       (text[m] + " (internal units)").c_str(),
+                                       "training",
+                                       p[k].plural.c_str()));
+                    colSize.push_back(16);
+                    colName.push_back(m + "_" + p[k].tiny + "test_iu");
+                    colInfo.push_back(strpr(
+                                       (text[m] + " (internal units)").c_str(),
+                                       "test",
+                                       p[k].plural.c_str()));
+                }
+            }
         }
         appendLinesToFile(file,
                           createFileHeader(title, colSize, colName, colInfo));
@@ -1485,23 +1327,35 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     file << strpr("%10zu", epoch);
     if (normalize)
     {
-        file << strpr(" %16.8E %16.8E %16.8E %16.8E",
-                      physicalEnergy(rmseEnergiesTrain),
-                      physicalEnergy(rmseEnergiesTest),
-                      physicalForce(rmseForcesTrain),
-                      physicalForce(rmseForcesTest));
+        for (auto k : pk)
+        {
+            if (!(k == "energy" || k == "force")) continue;
+            for (auto m : p[k].errorMetrics)
+            {
+                file << strpr(" %16.8E %16.8E",
+                              physical(k, p[k].errorTrain.at(m)),
+                              physical(k, p[k].errorTest.at(m)));
+            }
+        }
     }
-    file << strpr(" %16.8E %16.8E %16.8E %16.8E\n",
-                  rmseEnergiesTrain,
-                  rmseEnergiesTest,
-                  rmseForcesTrain,
-                  rmseForcesTest);
+    for (auto k : pk)
+    {
+        for (auto m : p[k].errorMetrics)
+        {
+            file << strpr(" %16.8E %16.8E",
+                          p[k].errorTrain.at(m),
+                          p[k].errorTest.at(m));
+        }
+    }
+    file << "\n";
+    file.flush();
     file.close();
 
     return;
 }
 
-void Training::writeNeuronStatistics(string const fileName) const
+void Training::writeNeuronStatistics(string const& nnName,
+                                     string const& fileName) const
 {
     ofstream file;
     if (myRank == 0)
@@ -1513,8 +1367,8 @@ void Training::writeNeuronStatistics(string const fileName) const
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        title.push_back("Statistics for individual neurons gathered during "
-                        "RMSE calculation.");
+        title.push_back("Statistics for individual neurons of network \""
+                        + nnName + "\" gathered during RMSE calculation.");
         colSize.push_back(10);
         colName.push_back("element");
         colInfo.push_back("Element index.");
@@ -1542,17 +1396,18 @@ void Training::writeNeuronStatistics(string const fileName) const
 
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetwork->getNumNeurons();
+        size_t n = elements.at(i).neuralNetworks.at(nnName).getNumNeurons();
         vector<long>   count(n, 0);
         vector<double> min(n, 0.0);
         vector<double> max(n, 0.0);
         vector<double> mean(n, 0.0);
         vector<double> sigma(n, 0.0);
-        elements.at(i).neuralNetwork->getNeuronStatistics(&(count.front()),
-                                                          &(min.front()),
-                                                          &(max.front()),
-                                                          &(mean.front()),
-                                                          &(sigma.front()));
+        elements.at(i).neuralNetworks.at(nnName).
+            getNeuronStatistics(&(count.front()),
+                                &(min.front()),
+                                &(max.front()),
+                                &(mean.front()),
+                                &(sigma.front()));
         // Collect statistics from all processors on proc 0.
         if (myRank == 0)
         {
@@ -1600,23 +1455,50 @@ void Training::writeNeuronStatistics(string const fileName) const
 
 void Training::writeNeuronStatisticsEpoch() const
 {
+    vector<pair<string, string>> nnInfo; // NN name and file name.
+
     if (writeNeuronStatisticsEvery > 0 &&
         (epoch % writeNeuronStatisticsEvery == 0
         || epoch <= writeNeuronStatisticsAlways))
     {
-        string fileName = strpr("neuron-stats.%06zu.out", epoch);
-        writeNeuronStatistics(fileName);
+        if (nnpType == NNPType::SHORT_ONLY)
+        {
+            nnInfo.push_back(
+                make_pair("short", strpr("neuron-stats.%06zu.out", epoch)));
+        }
+        else if (nnpType == NNPType::SHORT_CHARGE_NN)
+        {
+            if (stage == 1)
+            {
+                nnInfo.push_back(
+                    make_pair("charge",
+                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
+                                    "charge", epoch, stage)));
+            }
+            else if (stage == 2)
+            {
+                nnInfo.push_back(
+                    make_pair("charge",
+                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
+                                    "charge", epoch, stage)));
+                nnInfo.push_back(
+                    make_pair("short",
+                              strpr("neuron-stats.%s.%06zu.out.stage-%zu",
+                                    "short", epoch, stage)));
+            }
+        }
+        for (auto const& i : nnInfo) writeNeuronStatistics(i.first, i.second);
     }
 
     return;
 }
 
-void Training::resetNeuronStatistics() const
+void Training::resetNeuronStatistics()
 {
-    for (vector<Element>::const_iterator it = elements.begin();
+    for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        it->neuralNetwork->resetNeuronStatistics();
+        for (auto& nn : it->neuralNetworks) nn.second.resetNeuronStatistics();
     }
     return;
 }
@@ -1625,21 +1507,26 @@ void Training::writeUpdaterStatus(bool         append,
                                   string const fileNameFormat) const
 {
     ofstream file;
+    string fileNameFormatActual = fileNameFormat;
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        fileNameFormatActual += strpr(".stage-%zu", stage);
+    }
 
     for (size_t i = 0; i < numUpdaters; ++i)
     {
         string fileName;
         if (updateStrategy == US_COMBINED)
         {
-            fileName = strpr(fileNameFormat.c_str(), 0);
+            fileName = strpr(fileNameFormatActual.c_str(), 0);
         }
         else if (updateStrategy == US_ELEMENT)
         {
-            fileName = strpr(fileNameFormat.c_str(),
+            fileName = strpr(fileNameFormatActual.c_str(),
                              elementMap.atomicNumber(i));
         }
         if (append) file.open(fileName.c_str(), ofstream::app);
-        else 
+        else
         {
             file.open(fileName.c_str());
             appendLinesToFile(file, updaters.at(i)->statusHeader());
@@ -1651,57 +1538,43 @@ void Training::writeUpdaterStatus(bool         append,
     return;
 }
 
-void Training::sortUpdateCandidates()
+void Training::sortUpdateCandidates(string const& property)
 {
     // Update error for all structures.
-    for (vector<UpdateCandidate>::iterator it = updateCandidatesEnergy.begin();
-         it != updateCandidatesEnergy.end(); ++it)
+    for (auto& uc : p[property].updateCandidates)
     {
-        Structure const& s = structures.at(it->s);
-        it->error = fabs((s.energyRef - s.energy) / s.numAtoms);
-    }
-    // Sort energy update candidates list.
-    sort(updateCandidatesEnergy.begin(), updateCandidatesEnergy.end());
-    // Reset current position.
-    posUpdateCandidatesEnergy = 0;
-
-    if (useForces)
-    {
-        // Update error for all forces.
-        for (vector<UpdateCandidate>::iterator it =
-             updateCandidatesForce.begin();
-             it != updateCandidatesForce.end(); ++it)
+        if (property == "energy")
         {
-            Atom const& a = structures.at(it->s).atoms.at(it->a);
-            it->error = fabs(a.fRef[it->c] - a.f[it->c]);
+            Structure const& s = structures.at(uc.s);
+            uc.error = fabs((s.energyRef - s.energy) / s.numAtoms);
         }
-        // Sort force update candidate list.
-        sort(updateCandidatesForce.begin(), updateCandidatesForce.end());
-        // Reset current position.
-        posUpdateCandidatesForce = 0;
+        else if (property == "force")
+        {
+            Atom const& a = structures.at(uc.s).atoms.at(uc.a);
+            uc.error = fabs(a.fRef[uc.c] - a.f[uc.c]);
+        }
+        else if (property == "charge")
+        {
+            Atom const& a = structures.at(uc.s).atoms.at(uc.a);
+            uc.error = fabs(a.chargeRef - a.charge);
+        }
     }
+    // Sort update candidates list.
+    sort(p[property].updateCandidates.begin(),
+         p[property].updateCandidates.end());
+    // Reset current position.
+    p[property].posUpdateCandidates = 0;
 
     return;
 }
 
-void Training::shuffleUpdateCandidates()
+void Training::shuffleUpdateCandidates(string const& property)
 {
-    shuffle(updateCandidatesEnergy.begin(),
-            updateCandidatesEnergy.end(),
+    shuffle(p[property].updateCandidates.begin(),
+            p[property].updateCandidates.end(),
             rngNew);
-
     // Reset current position.
-    posUpdateCandidatesEnergy = 0;
-
-    if (useForces)
-    {
-        shuffle(updateCandidatesForce.begin(),
-                updateCandidatesForce.end(),
-                rngNew);
-
-        // Reset current position.
-        posUpdateCandidatesForce = 0;
-    }
+    p[property].posUpdateCandidates = 0;
 
     return;
 }
@@ -1712,11 +1585,16 @@ void Training::setEpochSchedule()
     epochSchedule.clear();
     vector<int>(epochSchedule).swap(epochSchedule);
 
-    // Set size of schedule and initialize to 0 (i.e. all energy updates).
-    epochSchedule.resize(energyUpdates + forceUpdates, 0);
+    // Grow schedule vector by each property's number of desired updates.
+    // Fill this array looping in reverse direction for backward compatibility.
+    //for (size_t i = 0; i < pk.size(); ++i)
+    for (int i = pk.size() - 1; i >= 0; --i)
+    {
+        epochSchedule.insert(epochSchedule.end(), p[pk.at(i)].numUpdates, i);
+    }
 
-    // Fill with as many "1"s as there are force updates.
-    fill(epochSchedule.begin(), epochSchedule.begin() + forceUpdates, 1);
+    // Return if there is only a single training property.
+    if (pk.size() == 1) return;
 
     // Now shuffle the schedule to get a random sequence.
     shuffle(epochSchedule.begin(), epochSchedule.end(), rngGlobalNew);
@@ -1731,25 +1609,31 @@ void Training::setEpochSchedule()
 
 void Training::checkSelectionMode()
 {
-    if (selectionModeSchedule.find(epoch) != selectionModeSchedule.end())
+    for (auto k : pk)
     {
-        selectionMode = selectionModeSchedule[epoch];
-        if (epoch != 0)
+        if (p[k].selectionModeSchedule.find(epoch)
+            != p[k].selectionModeSchedule.end())
         {
-            string message = "INFO   Switching selection mode to ";
-            if (selectionMode == SM_RANDOM)
+            p[k].selectionMode = p[k].selectionModeSchedule[epoch];
+            if (epoch != 0)
             {
-                message += strpr("SM_RANDOM (%d).\n", selectionMode);
+                string message = "INFO   Switching selection mode for "
+                                 "property \"" + k + "\" to ";
+                if (p[k].selectionMode == SM_RANDOM)
+                {
+                    message += strpr("SM_RANDOM (%d).\n", p[k].selectionMode);
+                }
+                else if (p[k].selectionMode == SM_SORT)
+                {
+                    message += strpr("SM_SORT (%d).\n", p[k].selectionMode);
+                }
+                else if (p[k].selectionMode == SM_THRESHOLD)
+                {
+                    message += strpr("SM_THRESHOLD (%d).\n",
+                                     p[k].selectionMode);
+                }
+                log << message;
             }
-            else if (selectionMode == SM_SORT)
-            {
-                message += strpr("SM_SORT (%d).\n", selectionMode);
-            }
-            else if (selectionMode == SM_THRESHOLD)
-            {
-                message += strpr("SM_THRESHOLD (%d).\n", selectionMode);
-            }
-            log << message;
         }
     }
 
@@ -1758,56 +1642,17 @@ void Training::checkSelectionMode()
 
 void Training::loop()
 {
+    sw["loop"].start();
     log << "\n";
     log << "*** TRAINING LOOP ***********************"
            "**************************************\n";
     log << "\n";
-
-    log << "The training loop output covers different RMSEs, update and\n";
-    log << "timing information. The following quantities are organized\n";
-    log << "according to the matrix scheme below:\n";
-    log << "-------------------------------------------------------------------\n";
-    log << "ep ............ Epoch.\n";
-    log << "Etrain_phys ... RMSE of training energies per atom (p. u.).\n";
-    log << "Etest_phys .... RMSE of test     energies per atom (p. u.).\n";
-    log << "Etrain_int .... RMSE of training energies per atom (i. u.).\n";
-    log << "Etest_int ..... RMSE of test     energies per atom (i. u.).\n";
-    log << "Ftrain_phys ... RMSE of training forces (p. u.).\n";
-    log << "Ftest_phys .... RMSE of test     forces (p. u.).\n";
-    log << "Ftrain_int .... RMSE of training forces (i. u.).\n";
-    log << "Ftest_int ..... RMSE of test     forces (i. u.).\n";
-    log << "E_count ....... Number of energy updates.\n";
-    log << "F_count ....... Number of force  updates.\n";
-    log << "count ......... Total number of updates.\n";
-    log << "t_train ....... Time for training (seconds).\n";
-    log << "t_rmse ........ Time for RMSE calculation (seconds).\n";
-    log << "t_epoch ....... Total time for this epoch (seconds).\n";
-    log << "t_tot ......... Total time for all epochs (seconds).\n";
-    log << "Abbreviations:\n";
-    log << "  p. u. = physical units.\n";
-    log << "  i. u. = internal units.\n";
-    log << "Note: RMSEs in internal units (columns 5 + 6) are only present \n";
-    log << "      if data set normalization is used.\n";
-    log << "-------------------------------------------------------------------\n";
-    log << "     1    2             3             4             5             6\n";
-    log << "energy   ep   Etrain_phys    Etest_phys    Etrain_int     Etest_int\n";
-    log << "forces   ep   Ftrain_phys    Ftest_phys    Ftrain_int     Ftest_int\n";
-    log << "update   ep       E_count       F_count         count\n";
-    log << "timing   ep       t_train        t_rmse       t_epoch         t_tot\n";
-    log << "-------------------------------------------------------------------\n";
-
-    // Set up stopwatch.
-    double timeSplit;
-    double timeTotal;
-    Stopwatch swTotal;
-    Stopwatch swTrain;
-    Stopwatch swRmse;
-    swTotal.start();
+    printHeader();
 
     // Calculate initial RMSE and write comparison files.
-    swRmse.start();
-    calculateRmseEpoch();
-    swRmse.stop();
+    sw["error"].start();
+    calculateErrorEpoch();
+    sw["error"].stop();
 
     // Write initial weights to files.
     if (myRank == 0) writeWeightsEpoch();
@@ -1822,64 +1667,51 @@ void Training::loop()
     writeNeuronStatisticsEpoch();
 
     // Print timing information.
-    timeTotal = swTotal.split(&timeSplit);
-    log << strpr("TIMING %4zu %13.2f %13.2f %13.2f %13.2f\n",
-                 epoch,
-                 swTrain.getTimeElapsed(),
-                 swRmse.getTimeElapsed(),
-                 timeSplit,
-                 timeTotal);
+    sw["loop"].stop();
+    printEpoch();
 
     // Check if training should be continued.
     while (advance())
     {
+        sw["loop"].start();
+
         // Increment epoch counter.
         epoch++;
         log << "------\n";
 
-        // Reset timers.
-        swTrain.reset();
-        swRmse.reset();
-
         // Reset update counters.
-        size_t numUpdatesEnergy = 0;
-        size_t numUpdatesForce = 0;
+        for (auto k : pk) p[k].countUpdates = 0;
 
         // Check if selection mode should be changed in this epoch.
         checkSelectionMode();
 
         // Sort or shuffle update candidates.
-        if (selectionMode == SM_SORT) sortUpdateCandidates();
-        else shuffleUpdateCandidates();
+        for (auto k : pk)
+        {
+            if (p[k].selectionMode == SM_SORT) sortUpdateCandidates(k);
+            else shuffleUpdateCandidates(k);
+        }
 
         // Determine epoch update schedule.
         setEpochSchedule();
 
-        // Perform energy/force updates according to schedule.
-        swTrain.start();
-        for (size_t i = 0; i < epochSchedule.size(); ++i)
+        // Perform property updates according to schedule.
+        sw["train"].start();
+        for (auto i : epochSchedule)
         {
-            bool force = static_cast<bool>(epochSchedule.at(i));
-            update(force);
-            if (force) numUpdatesForce++;
-            else       numUpdatesEnergy++;
+            string property = pk.at(i);
+            update(property);
+            p[property].countUpdates++;
         }
-        swTrain.stop();
+        sw["train"].stop();
 
         // Reset neuron statistics.
         resetNeuronStatistics();
 
-        // Calculate RMSE and write comparison files.
-        swRmse.start();
-        calculateRmseEpoch();
-        swRmse.stop();
-
-        // Print update information.
-        log << strpr("UPDATE %4zu %13zu %13zu %13zu\n",
-                     epoch,
-                     numUpdatesEnergy,
-                     numUpdatesForce,
-                     numUpdatesEnergy + numUpdatesForce);
+        // Calculate errors and write comparison files.
+        sw["error"].start();
+        calculateErrorEpoch();
+        sw["error"].stop();
 
         // Write weights to files.
         if (myRank == 0) writeWeightsEpoch();
@@ -1893,75 +1725,55 @@ void Training::loop()
         // Write neuron statistics.
         writeNeuronStatisticsEpoch();
 
-        // Print timing information.
-        timeTotal = swTotal.split(&timeSplit);
-        log << strpr("TIMING %4zu %13.2f %13.2f %13.2f %13.2f\n",
-                     epoch,
-                     swTrain.getTimeElapsed(),
-                     swRmse.getTimeElapsed(),
-                     timeSplit,
-                     timeTotal);
+        // Print error overview and timing information.
+        sw["loop"].stop();
+        printEpoch();
+
+        if (myRank == 0) writeTimingData(epoch != 1);
     }
 
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    log << strpr("TIMING Training loop finished: %.2f seconds.\n",
+                 sw["loop"].getTotal());
     log << "*****************************************"
            "**************************************\n";
 
     return;
 }
 
-void Training::update(bool force)
+void Training::update(string const& property)
 {
+    // Shortcuts.
+    string const& k = property; // Property key.
+    Property& pu = p[k]; // Update property.
+    // Start watch for error and jacobian computation, reset loop timer if
+    // first update in this epoch.
+    bool newLoop = pu.countUpdates == 0;
+    sw[k].start(newLoop);
+    sw[k + "_err"].start(newLoop);
+
 #ifdef _OPENMP
     int num_threads = omp_get_max_threads();
     omp_set_num_threads(1);
 #endif
-    ///////////////////////////////////////////////////////////////////////
-    // PART 1: Calculate errors and derivatives
-    ///////////////////////////////////////////////////////////////////////
 
-    // Set local variables depending on energy/force update.
-    size_t batchSize = 0;
-    size_t* posUpdateCandidates = NULL;
-    vector<int>* errorsPerTask = NULL;
-    vector<int>* offsetPerTask = NULL;
-    vector<vector<int> >* weightsPerTask = NULL;
-    vector<vector<int> >* offsetJacobian = NULL;
-    vector<vector<double> >* error = NULL;
-    vector<vector<double> >* jacobian = NULL;
-    vector<UpdateCandidate>* updateCandidates = NULL;
-    if (force)
-    {
-        batchSize = taskBatchSizeForce;
-        if (batchSize == 0) batchSize = forcesPerUpdate;
-        posUpdateCandidates = &posUpdateCandidatesForce;
-        errorsPerTask = &errorsPerTaskForce;
-        offsetPerTask = &offsetPerTaskForce;
-        weightsPerTask = &weightsPerTaskForce;
-        offsetJacobian = &offsetJacobianForce;
-        error = &errorF;
-        jacobian = &jacobianF;
-        updateCandidates = &updateCandidatesForce;
-    }
-    else
-    {
-        batchSize = taskBatchSizeEnergy;
-        if (batchSize == 0) batchSize = energiesPerUpdate;
-        posUpdateCandidates = &posUpdateCandidatesEnergy;
-        errorsPerTask = &errorsPerTaskEnergy;
-        offsetPerTask = &offsetPerTaskEnergy;
-        weightsPerTask = &weightsPerTaskEnergy;
-        offsetJacobian = &offsetJacobianEnergy;
-        error = &errorE;
-        jacobian = &jacobianE;
-        updateCandidates = &updateCandidatesEnergy;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // PART 1: Find update candidate, compute error fractions and derivatives
+    ///////////////////////////////////////////////////////////////////////////
+
+    size_t batchSize = pu.taskBatchSize;
+    if (batchSize == 0) batchSize = pu.patternsPerUpdate;
+    bool derivatives = false;
+    if (k == "force") derivatives = true;
+
     vector<size_t> thresholdLoopCount(batchSize, 0);
     vector<double> currentRmseFraction(batchSize, 0.0);
     vector<UpdateCandidate*> currentUpdateCandidates(batchSize, NULL);
     for (size_t i = 0; i < numUpdaters; ++i)
     {
-        fill(error->at(i).begin(), error->at(i).end(), 0.0);
-        fill(jacobian->at(i).begin(), jacobian->at(i).end(), 0.0);
+        fill(pu.error.at(i).begin(), pu.error.at(i).end(), 0.0);
+        fill(pu.jacobian.at(i).begin(), pu.jacobian.at(i).end(), 0.0);
     }
 
     // Loop over (mini-)batch size.
@@ -1974,19 +1786,19 @@ void Training::update(bool force)
         // For SM_THRESHOLD need to loop until candidate's RMSE is above
         // threshold. Other modes don't loop here.
         size_t trials = 1;
-        if (selectionMode == SM_THRESHOLD) trials = rmseThresholdTrials;
+        if (pu.selectionMode == SM_THRESHOLD) trials = pu.rmseThresholdTrials;
         size_t il = 0;
         for (il = 0; il < trials; ++il)
         {
             // Restart position index if necessary.
-            if (*posUpdateCandidates >= updateCandidates->size())
+            if (pu.posUpdateCandidates >= pu.updateCandidates.size())
             {
-                *posUpdateCandidates = 0;
+                pu.posUpdateCandidates = 0;
             }
 
-            //log << strpr("pos %zu b %zu size %zu\n", *posUpdateCandidates, b, currentUpdateCandidates.size());
+            //log << strpr("pos %zu b %zu size %zu\n", pu.posUpdateCandidates, b, currentUpdateCandidates.size());
             // Set current update candidate.
-            c = &(updateCandidates->at(*posUpdateCandidates));
+            c = &(pu.updateCandidates.at(pu.posUpdateCandidates));
             // Keep update candidates (for logging later).
             currentUpdateCandidates.at(b) = c;
             // Shortcut for current structure.
@@ -1994,41 +1806,69 @@ void Training::update(bool force)
             // Calculate symmetry functions (if results are already stored
             // these functions will return immediately).
 #ifdef NOSFGROUPS
-            calculateSymmetryFunctions(s, force);
+            calculateSymmetryFunctions(s, derivatives);
 #else
-            calculateSymmetryFunctionGroups(s, force);
+            calculateSymmetryFunctionGroups(s, derivatives);
 #endif
             // For SM_THRESHOLD calculate RMSE of update candidate.
-            if (selectionMode == SM_THRESHOLD)
+            if (pu.selectionMode == SM_THRESHOLD)
             {
-                calculateAtomicNeuralNetworks(s, force);
-                if (force)
+                if (k == "energy")
                 {
-                    calculateForces(s);
-                    Atom const& a = s.atoms.at(c->a);
-                    currentRmseFraction.at(b)
-                        = fabs(a.fRef[c->c] - a.f[c->c]) / rmseForcesTrain;
-                    // If force RMSE is above threshold stop loop immediately.
-                    if (currentRmseFraction.at(b) > rmseThresholdForce)
+                    if (nnpType == NNPType::SHORT_ONLY)
                     {
-                        // Increment position in update candidate list.
-                        (*posUpdateCandidates)++;
-                        break;
+                        calculateAtomicNeuralNetworks(s, derivatives);
+                        calculateEnergy(s);
+                        currentRmseFraction.at(b) =
+                            fabs(s.energyRef - s.energy)
+                            / (s.numAtoms * pu.errorTrain.at("RMSEpa"));
+                    }
+                    // Assume stage 2.
+                    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+                    {
+                        // TODO: Reuse already present charge-NN data and
+                        // compute only short-NN energy contributions.
+                        throw runtime_error("ERROR: Not implemented.\n");
                     }
                 }
-                else
+                else if (k == "force")
                 {
-                    calculateEnergy(s);
-                    currentRmseFraction.at(b)
-                        = fabs(s.energyRef - s.energy)
-                        / (s.numAtoms * rmseEnergiesTrain);
-                    // If energy RMSE is above threshold stop loop immediately.
-                    if (currentRmseFraction.at(b) > rmseThresholdEnergy)
+                    if (nnpType == NNPType::SHORT_ONLY)
                     {
-                        // Increment position in update candidate list.
-                        (*posUpdateCandidates)++;
-                        break;
+                        calculateAtomicNeuralNetworks(s, derivatives);
+                        calculateForces(s);
+                        Atom const& a = s.atoms.at(c->a);
+                        currentRmseFraction.at(b) =
+                            fabs(a.fRef[c->c] - a.f[c->c])
+                            / pu.errorTrain.at("RMSE");
                     }
+                    // Assume stage 2.
+                    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+                    {
+                        // TODO: Reuse already present charge-NN data and
+                        // compute only short-NN force contributions.
+                        throw runtime_error("ERROR: Not implemented.\n");
+                    }
+                }
+                else if (k == "charge")
+                {
+                    // Assume NNPType::SHORT_CHARGE_NN stage 1.
+                    // Compute only charge-NN
+                    Atom& a = s.atoms.at(c->a);
+                    NeuralNetwork& nn =
+                        elements.at(a.element).neuralNetworks.at("charge");
+                    nn.setInput(&(a.G.front()));
+                    nn.propagate();
+                    nn.getOutput(&(a.charge));
+                    currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
+                                              / pu.errorTrain.at("RMSE");
+                }
+                // If force RMSE is above threshold stop loop immediately.
+                if (currentRmseFraction.at(b) > pu.rmseThreshold)
+                {
+                    // Increment position in update candidate list.
+                    pu.posUpdateCandidates++;
+                    break;
                 }
                 // If loop continues, free memory and remember best candidate
                 // so far.
@@ -2039,16 +1879,17 @@ void Training::update(bool force)
                 if (currentRmseFraction.at(b) > rmseFractionBest)
                 {
                     rmseFractionBest = currentRmseFraction.at(b);
-                    indexBest = *posUpdateCandidates;
+                    indexBest = pu.posUpdateCandidates;
                 }
                 // Increment position in update candidate list.
-                (*posUpdateCandidates)++;
+                pu.posUpdateCandidates++;
             }
             // Break loop for all selection modes but SM_THRESHOLD.
-            else if (selectionMode == SM_RANDOM || selectionMode == SM_SORT)
+            else if (pu.selectionMode == SM_RANDOM ||
+                     pu.selectionMode == SM_SORT)
             {
                 // Increment position in update candidate list.
-                (*posUpdateCandidates)++;
+                pu.posUpdateCandidates++;
                 break;
             }
         }
@@ -2056,46 +1897,35 @@ void Training::update(bool force)
 
         // If loop was not stopped because of a proper update candidate found
         // (RMSE above threshold) use best candidate during iteration.
-        if (selectionMode == SM_THRESHOLD && il == trials)
+        if (pu.selectionMode == SM_THRESHOLD && il == trials)
         {
             // Set best candidate.
-            currentUpdateCandidates.at(b) = &(updateCandidates->at(indexBest));
+            currentUpdateCandidates.at(b) =
+                &(pu.updateCandidates.at(indexBest));
             currentRmseFraction.at(b) = rmseFractionBest;
             // Need to calculate the symmetry functions again, maybe results
             // were not stored.
             Structure& s = structures.at(c->s);
-#ifdef NOSFGROUPS
-            calculateSymmetryFunctions(s, force);
+#ifdef NNP_NO_SF_GROUPS
+            calculateSymmetryFunctions(s, derivatives);
 #else
-            calculateSymmetryFunctionGroups(s, force);
+            calculateSymmetryFunctionGroups(s, derivatives);
 #endif
         }
 
         ///////////////////////////////////////////////////////////////////////
         // PART 2: Compute error vector and Jacobian
         ///////////////////////////////////////////////////////////////////////
- 
-        //log << strpr("%zu %s", b, force ? "F" : "E");
-        //if (force)
-        //{
-        //    log << strpr(" %zu %zu %zu %zu %f\n",
-        //                 posUpdateCandidatesForce,
-        //                 c->s, c->a, c->c, rmseFractionBest);
-        //}
-        //else {
-        //    log << strpr(" %zu %zu %f\n",
-        //                 posUpdateCandidatesEnergy,
-        //                 c->s, rmseFractionBest);
-        //}
- 
+
         Structure& s = structures.at(c->s);
         // Temporary storage for derivative contributions of atoms (dXdc stores
-        // dEdc or dFdc for energy or force update, respectively.
-        vector<vector<double> > dXdc;
+        // dEdc, dFdc or dQdc for energy, force or charge update, respectively.
+        vector<vector<double>> dXdc;
         dXdc.resize(numElements);
         for (size_t i = 0; i < numElements; ++i)
         {
-            size_t n = elements.at(i).neuralNetwork->getNumConnections();
+            size_t n = elements.at(i).neuralNetworks.at(nnId)
+                       .getNumConnections();
             dXdc.at(i).resize(n, 0.0);
         }
         // Precalculate offset in Jacobian array.
@@ -2107,7 +1937,7 @@ void Training::update(bool force)
             else iu = 0;
             if (parallelMode == PM_TRAIN_ALL && jacobianMode != JM_SUM)
             {
-                offset.at(i) += offsetPerTask->at(myRank)
+                offset.at(i) += pu.offsetPerTask.at(myRank)
                               * numWeightsPerUpdater.at(iu);
                 //log << strpr("%zu os 1: %zu ", i, offset.at(i));
             }
@@ -2123,61 +1953,127 @@ void Training::update(bool force)
             }
             //log << strpr(" %zu final os: %zu\n", i, offset.at(i));
         }
-        // Loop over atoms and calculate atomic energy contributions.
-        for (vector<Atom>::iterator it = s.atoms.begin();
-             it != s.atoms.end(); ++it)
+        // Now compute Jacobian.
+        if (k == "energy")
         {
-            // For force update save derivative of symmetry function with
-            // respect to coordinate.
-#ifdef IMPROVED_SFD_MEMORY
-            if (force) collectDGdxia((*it), c->a, c->c);
-#else 
-            if (force) it->collectDGdxia(c->a, c->c);
-#endif
-            size_t i = it->element;
-            NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
-            nn->setInput(&((it->G).front()));
-            nn->propagate();
-            if (force) nn->calculateDEdG(&((it->dEdG).front()));
-            nn->getOutput(&(it->energy));
-            // Compute derivative of output node with respect to all neural
-            // network connections (weights + biases).
-            if (force)
+            if (nnpType == NNPType::SHORT_ONLY)
             {
-#ifdef IMPROVED_SFD_MEMORY
-                nn->calculateDFdc(&(dXdc.at(i).front()),
-                                  &(dGdxia.front()));
-#else 
-                nn->calculateDFdc(&(dXdc.at(i).front()),
-                                  &(it->dGdxia.front()));
-#endif
+                // Loop over atoms and calculate atomic energy contributions.
+                for (vector<Atom>::iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    size_t i = it->element;
+                    NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+                    nn.setInput(&((it->G).front()));
+                    nn.propagate();
+                    nn.getOutput(&(it->energy));
+                    // Compute derivative of output node with respect to all
+                    // neural network connections (weights + biases).
+                    nn.calculateDEdc(&(dXdc.at(i).front()));
+                    // Finally sum up Jacobian.
+                    if (updateStrategy == US_ELEMENT) iu = i;
+                    else iu = 0;
+                    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+                    {
+                        pu.jacobian.at(iu).at(offset.at(i) + j) +=
+                            dXdc.at(i).at(j);
+                    }
+                }
             }
-            else
+            else if (nnpType == NNPType::SHORT_CHARGE_NN)
             {
-                nn->calculateDEdc(&(dXdc.at(i).front()));
+                throw runtime_error("ERROR: Not implemented.\n");
             }
+        }
+        else if (k == "force")
+        {
+            if (nnpType == NNPType::SHORT_ONLY)
+            {
+                // Loop over atoms and calculate atomic energy contributions.
+                for (vector<Atom>::iterator it = s.atoms.begin();
+                     it != s.atoms.end(); ++it)
+                {
+                    // For force update save derivative of symmetry function
+                    // with respect to coordinate.
+#ifndef NNP_FULL_SFD_MEMORY
+                    collectDGdxia((*it), c->a, c->c);
+#else
+                    it->collectDGdxia(c->a, c->c);
+#endif
+                    size_t i = it->element;
+                    NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+                    nn.setInput(&((it->G).front()));
+                    nn.propagate();
+                    if (derivatives) nn.calculateDEdG(&((it->dEdG).front()));
+                    nn.getOutput(&(it->energy));
+                    // Compute derivative of output node with respect to all
+                    // neural network connections (weights + biases).
+#ifndef NNP_FULL_SFD_MEMORY
+                    nn.calculateDFdc(&(dXdc.at(i).front()),
+                                     &(dGdxia.front()));
+#else
+                    nn.calculateDFdc(&(dXdc.at(i).front()),
+                                     &(it->dGdxia.front()));
+#endif
+                    // Finally sum up Jacobian.
+                    if (updateStrategy == US_ELEMENT) iu = i;
+                    else iu = 0;
+                    for (size_t j = 0; j < dXdc.at(i).size(); ++j)
+                    {
+                        pu.jacobian.at(iu).at(offset.at(i) + j) +=
+                            dXdc.at(i).at(j);
+                    }
+                }
+
+            }
+            else if (nnpType == NNPType::SHORT_CHARGE_NN)
+            {
+                throw runtime_error("ERROR: Not implemented.\n");
+            }
+        }
+        else if (k == "charge")
+        {
+            // Assume NNPType::SHORT_CHARGE_NN stage 1.
+            // Shortcut to selected atom.
+            Atom& a = s.atoms.at(c->a);
+            size_t i = a.element;
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+            nn.setInput(&(a.G.front()));
+            nn.propagate();
+            nn.getOutput(&(a.charge));
+            // Compute derivative of output node with respect to all
+            // neural network connections (weights + biases).
+            nn.calculateDEdc(&(dXdc.at(i).front()));
             // Finally sum up Jacobian.
             if (updateStrategy == US_ELEMENT) iu = i;
             else iu = 0;
             for (size_t j = 0; j < dXdc.at(i).size(); ++j)
             {
-                jacobian->at(iu).at(offset.at(i) + j) += dXdc.at(i).at(j);
+                pu.jacobian.at(iu).at(offset.at(i) + j) +=
+                    dXdc.at(i).at(j);
             }
         }
- 
+
         // Sum up total potential energy or calculate force.
-        if (force)
+        if (k == "energy")
+        {
+            calculateEnergy(s);
+            currentRmseFraction.at(b) = fabs(s.energyRef - s.energy)
+                                      / (s.numAtoms
+                                         * pu.errorTrain.at("RMSEpa"));
+        }
+        else if (k == "force")
         {
             calculateForces(s);
             Atom const& a = s.atoms.at(c->a);
             currentRmseFraction.at(b) = fabs(a.fRef[c->c] - a.f[c->c])
-                                      / rmseForcesTrain;
+                                      / pu.errorTrain.at("RMSE");
         }
-        else
+        else if (k == "charge")
         {
-            calculateEnergy(s);
-            currentRmseFraction.at(b) = fabs(s.energyRef - s.energy)
-                                      / (s.numAtoms * rmseEnergiesTrain);
+            Atom const& a = s.atoms.at(c->a);
+            currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
+                                      / pu.errorTrain.at("RMSE");
         }
 
         // Now symmetry function memory is not required any more for this
@@ -2188,7 +2084,7 @@ void Training::update(bool force)
         size_t offset2 = 0;
         if (parallelMode == PM_TRAIN_ALL && jacobianMode != JM_SUM)
         {
-            offset2 += offsetPerTask->at(myRank);
+            offset2 += pu.offsetPerTask.at(myRank);
             //log << strpr("os 4: %zu ", offset2);
         }
         if (jacobianMode == JM_FULL)
@@ -2197,80 +2093,92 @@ void Training::update(bool force)
             //log << strpr("os 5: %zu ", offset2);
         }
         //log << strpr(" final os: %zu\n", offset2);
-        
+
 
         // Compute error vector (depends on update strategy).
         if (updateStrategy == US_COMBINED)
         {
-            if (force)
+            if (k == "energy")
+            {
+                pu.error.at(0).at(offset2) += s.energyRef - s.energy;
+            }
+            else if (k == "force")
             {
                 Atom const& a = s.atoms.at(c->a);
-                error->at(0).at(offset2) +=  a.fRef[c->c] - a.f[c->c];
+                pu.error.at(0).at(offset2) +=  a.fRef[c->c] - a.f[c->c];
             }
-            else
+            else if (k == "charge")
             {
-                error->at(0).at(offset2) += s.energyRef - s.energy;
+                Atom const& a = s.atoms.at(c->a);
+                pu.error.at(0).at(offset2) +=  a.chargeRef - a.charge;
             }
         }
         else if (updateStrategy == US_ELEMENT)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (force)
+                if (k == "energy")
+                {
+                    pu.error.at(i).at(offset2) += (s.energyRef - s.energy)
+                                               * s.numAtomsPerElement.at(i)
+                                               / s.numAtoms;
+                }
+                else if (k == "force")
                 {
                     Atom const& a = s.atoms.at(c->a);
-                    error->at(i).at(offset2) += (a.fRef[c->c] - a.f[c->c])
-                                              * a.numNeighborsPerElement.at(i)
-                                              / a.numNeighbors;
+                    pu.error.at(i).at(offset2) += (a.fRef[c->c] - a.f[c->c])
+                                               * a.numNeighborsPerElement.at(i)
+                                               / a.numNeighbors;
                 }
-                else
+                else if (k == "charge")
                 {
-                    error->at(i).at(offset2) += (s.energyRef - s.energy)
-                                              * s.numAtomsPerElement.at(i)
-                                              / s.numAtoms;
+                    Atom const& a = s.atoms.at(c->a);
+                    pu.error.at(i).at(offset2) += a.chargeRef - a.charge;
                 }
             }
         }
     }
 
     // Apply force update weight to error and Jacobian.
-    if (force)
+    if (k == "force")
     {
         for (size_t i = 0; i < numUpdaters; ++i)
         {
-            for (size_t j = 0; j < error->at(i).size(); ++j)
+            for (size_t j = 0; j < pu.error.at(i).size(); ++j)
             {
-                error->at(i).at(j) *= forceWeight;
+                pu.error.at(i).at(j) *= forceWeight;
             }
-            for (size_t j = 0; j < jacobian->at(i).size(); ++j)
+            for (size_t j = 0; j < pu.jacobian.at(i).size(); ++j)
             {
-                jacobian->at(i).at(j) *= forceWeight;
+                pu.jacobian.at(i).at(j) *= forceWeight;
             }
         }
     }
+    sw[k + "_err"].stop();
 
     ///////////////////////////////////////////////////////////////////////
     // PART 3: Communicate error and Jacobian.
     ///////////////////////////////////////////////////////////////////////
 
+    sw[k + "_com"].start(newLoop);
     if (jacobianMode == JM_SUM)
     {
         if (parallelMode == PM_TRAIN_RK0)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE           , &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
-                else             MPI_Reduce(&(error->at(i).front()), &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
-                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE              , &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
-                else             MPI_Reduce(&(jacobian->at(i).front()), &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
+                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE             , &(pu.error.at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+                else             MPI_Reduce(&(pu.error.at(i).front()), &(pu.error.at(i).front()), 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+                if (myRank == 0) MPI_Reduce(MPI_IN_PLACE                , &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
+                else             MPI_Reduce(&(pu.jacobian.at(i).front()), &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                MPI_Allreduce(MPI_IN_PLACE, &(error->at(i).front()), 1, MPI_DOUBLE, MPI_SUM, comm);
-                MPI_Allreduce(MPI_IN_PLACE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, comm);
+                MPI_Allreduce(MPI_IN_PLACE, &(pu.error.at(i).front()), 1, MPI_DOUBLE, MPI_SUM, comm);
+                MPI_Allreduce(MPI_IN_PLACE, &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, MPI_SUM, comm);
             }
         }
     }
@@ -2280,18 +2188,18 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (myRank == 0) MPI_Gather(MPI_IN_PLACE           , 1, MPI_DOUBLE, &(error->at(i).front()),  1, MPI_DOUBLE, 0, comm);
-                else             MPI_Gather(&(error->at(i).front()), 1, MPI_DOUBLE, NULL                   ,  1, MPI_DOUBLE, 0, comm);
-                if (myRank == 0) MPI_Gather(MPI_IN_PLACE              , numWeightsPerUpdater.at(i), MPI_DOUBLE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
-                else             MPI_Gather(&(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, NULL                      , numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gather(MPI_IN_PLACE             , 1, MPI_DOUBLE, &(pu.error.at(i).front()),  1, MPI_DOUBLE, 0, comm);
+                else             MPI_Gather(&(pu.error.at(i).front()), 1, MPI_DOUBLE, NULL                     ,  1, MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gather(MPI_IN_PLACE                , numWeightsPerUpdater.at(i), MPI_DOUBLE, &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
+                else             MPI_Gather(&(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, NULL                        , numWeightsPerUpdater.at(i), MPI_DOUBLE, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                MPI_Allgather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(error->at(i).front()),  1, MPI_DOUBLE, comm);
-                MPI_Allgather(MPI_IN_PLACE, numWeightsPerUpdater.at(i), MPI_DOUBLE, &(jacobian->at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, comm);
+                MPI_Allgather(MPI_IN_PLACE, 1, MPI_DOUBLE, &(pu.error.at(i).front()),  1, MPI_DOUBLE, comm);
+                MPI_Allgather(MPI_IN_PLACE, numWeightsPerUpdater.at(i), MPI_DOUBLE, &(pu.jacobian.at(i).front()), numWeightsPerUpdater.at(i), MPI_DOUBLE, comm);
             }
         }
     }
@@ -2301,39 +2209,42 @@ void Training::update(bool force)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE           , 0                        , MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(offsetPerTask->front()), MPI_DOUBLE, 0, comm);
-                else             MPI_Gatherv(&(error->at(i).front()), errorsPerTask->at(myRank), MPI_DOUBLE, NULL                   , NULL                     , NULL                     , MPI_DOUBLE, 0, comm);
-                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE              , 0                               , MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask->at(i).front()), &(offsetJacobian->at(i).front()), MPI_DOUBLE, 0, comm);
-                else             MPI_Gatherv(&(jacobian->at(i).front()), weightsPerTask->at(i).at(myRank), MPI_DOUBLE, NULL                      , NULL                            , NULL                            , MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE             , 0                          , MPI_DOUBLE, &(pu.error.at(i).front()), &(pu.errorsPerTask.front()), &(pu.offsetPerTask.front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(pu.error.at(i).front()), pu.errorsPerTask.at(myRank), MPI_DOUBLE, NULL                     , NULL                       , NULL                       , MPI_DOUBLE, 0, comm);
+                if (myRank == 0) MPI_Gatherv(MPI_IN_PLACE                , 0                                 , MPI_DOUBLE, &(pu.jacobian.at(i).front()), &(pu.weightsPerTask.at(i).front()), &(pu.offsetJacobian.at(i).front()), MPI_DOUBLE, 0, comm);
+                else             MPI_Gatherv(&(pu.jacobian.at(i).front()), pu.weightsPerTask.at(i).at(myRank), MPI_DOUBLE, NULL                        , NULL                              , NULL                              , MPI_DOUBLE, 0, comm);
             }
         }
         else if (parallelMode == PM_TRAIN_ALL)
         {
             for (size_t i = 0; i < numUpdaters; ++i)
             {
-                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(error->at(i).front()), &(errorsPerTask->front()), &(offsetPerTask->front()), MPI_DOUBLE, comm);
-                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(jacobian->at(i).front()), &(weightsPerTask->at(i).front()), &(offsetJacobian->at(i).front()), MPI_DOUBLE, comm);
+                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(pu.error.at(i).front()), &(pu.errorsPerTask.front()), &(pu.offsetPerTask.front()), MPI_DOUBLE, comm);
+                MPI_Allgatherv(MPI_IN_PLACE, 0, MPI_DOUBLE, &(pu.jacobian.at(i).front()), &(pu.weightsPerTask.at(i).front()), &(pu.offsetJacobian.at(i).front()), MPI_DOUBLE, comm);
             }
         }
     }
+    sw[k + "_com"].stop();
 
     ///////////////////////////////////////////////////////////////////////
     // PART 4: Perform weight update and apply new weights.
     ///////////////////////////////////////////////////////////////////////
 
+    sw[k + "_upd"].start(newLoop);
 #ifdef _OPENMP
     omp_set_num_threads(num_threads);
 #endif
     // Loop over all updaters.
     for (size_t i = 0; i < updaters.size(); ++i)
     {
-        updaters.at(i)->setError(&(error->at(i).front()), error->at(i).size());
-        updaters.at(i)->setJacobian(&(jacobian->at(i).front()),
-                                    error->at(i).size());
-        if (updaterType == UT_KF) 
+        updaters.at(i)->setError(&(pu.error.at(i).front()),
+                                 pu.error.at(i).size());
+        updaters.at(i)->setJacobian(&(pu.jacobian.at(i).front()),
+                                    pu.error.at(i).size());
+        if (updaterType == UT_KF)
         {
             KalmanFilter* kf = dynamic_cast<KalmanFilter*>(updaters.at(i));
-            kf->setSizeObservation(error->at(i).size());
+            kf->setSizeObservation(pu.error.at(i).size());
         }
         updaters.at(i)->update();
     }
@@ -2350,11 +2261,13 @@ void Training::update(bool force)
 
     // Set new weights in neural networks.
     setWeights();
+    sw[k + "_upd"].stop();
 
     ///////////////////////////////////////////////////////////////////////
     // PART 5: Communicate candidates and RMSE fractions and write log.
     ///////////////////////////////////////////////////////////////////////
 
+    sw[k + "_log"].start(newLoop);
     if (writeTrainingLog)
     {
         vector<int>    procUpdateCandidate;
@@ -2369,7 +2282,7 @@ void Training::update(bool force)
 
         if (myRank == 0)
         {
-            currentUpdateCandidatesPerTask.resize(numProcs, 0); 
+            currentUpdateCandidatesPerTask.resize(numProcs, 0);
             currentUpdateCandidatesPerTask.at(0) = myCurrentUpdateCandidates;
         }
         if (myRank == 0) MPI_Gather(MPI_IN_PLACE                , 1, MPI_INT, &(currentUpdateCandidatesPerTask.front()),  1, MPI_INT, 0, comm);
@@ -2384,10 +2297,10 @@ void Training::update(bool force)
                 totalUpdateCandidates += currentUpdateCandidatesPerTask.at(i);
             }
             procUpdateCandidate.resize(totalUpdateCandidates, 0);
-            indexStructure.resize(totalUpdateCandidates, 0); 
-            indexStructureGlobal.resize(totalUpdateCandidates, 0); 
-            indexAtom.resize(totalUpdateCandidates, 0); 
-            indexCoordinate.resize(totalUpdateCandidates, 0); 
+            indexStructure.resize(totalUpdateCandidates, 0);
+            indexStructureGlobal.resize(totalUpdateCandidates, 0);
+            indexAtom.resize(totalUpdateCandidates, 0);
+            indexCoordinate.resize(totalUpdateCandidates, 0);
             // Increase size of this vectors (only rank 0).
             currentRmseFraction.resize(totalUpdateCandidates, 0.0);
             thresholdLoopCount.resize(totalUpdateCandidates, 0.0);
@@ -2395,10 +2308,10 @@ void Training::update(bool force)
         else
         {
             procUpdateCandidate.resize(myCurrentUpdateCandidates, 0);
-            indexStructure.resize(myCurrentUpdateCandidates, 0); 
-            indexStructureGlobal.resize(myCurrentUpdateCandidates, 0); 
-            indexAtom.resize(myCurrentUpdateCandidates, 0); 
-            indexCoordinate.resize(myCurrentUpdateCandidates, 0); 
+            indexStructure.resize(myCurrentUpdateCandidates, 0);
+            indexStructureGlobal.resize(myCurrentUpdateCandidates, 0);
+            indexAtom.resize(myCurrentUpdateCandidates, 0);
+            indexCoordinate.resize(myCurrentUpdateCandidates, 0);
         }
         for (int i = 0; i < myCurrentUpdateCandidates; ++i)
         {
@@ -2416,11 +2329,8 @@ void Training::update(bool force)
             MPI_Gatherv(MPI_IN_PLACE, 0, MPI_INT   , &(procUpdateCandidate.front()) , &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_INT   , 0, comm);
             MPI_Gatherv(MPI_IN_PLACE, 0, MPI_SIZE_T, &(indexStructure.front())      , &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_SIZE_T, 0, comm);
             MPI_Gatherv(MPI_IN_PLACE, 0, MPI_SIZE_T, &(indexStructureGlobal.front()), &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_SIZE_T, 0, comm);
-            if (force)
-            {
-                MPI_Gatherv(MPI_IN_PLACE, 0, MPI_SIZE_T, &(indexAtom.front())           , &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_SIZE_T, 0, comm);
-                MPI_Gatherv(MPI_IN_PLACE, 0, MPI_SIZE_T, &(indexCoordinate.front())     , &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_SIZE_T, 0, comm);
-            }
+            MPI_Gatherv(MPI_IN_PLACE, 0, MPI_SIZE_T, &(indexAtom.front())           , &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_SIZE_T, 0, comm);
+            MPI_Gatherv(MPI_IN_PLACE, 0, MPI_SIZE_T, &(indexCoordinate.front())     , &(currentUpdateCandidatesPerTask.front()), &(currentUpdateCandidatesOffset.front()), MPI_SIZE_T, 0, comm);
         }
         else
         {
@@ -2429,18 +2339,23 @@ void Training::update(bool force)
             MPI_Gatherv(&(procUpdateCandidate.front()) , myCurrentUpdateCandidates, MPI_INT   , NULL, NULL, NULL, MPI_INT   , 0, comm);
             MPI_Gatherv(&(indexStructure.front())      , myCurrentUpdateCandidates, MPI_SIZE_T, NULL, NULL, NULL, MPI_SIZE_T, 0, comm);
             MPI_Gatherv(&(indexStructureGlobal.front()), myCurrentUpdateCandidates, MPI_SIZE_T, NULL, NULL, NULL, MPI_SIZE_T, 0, comm);
-            if (force)
-            {
-                MPI_Gatherv(&(indexAtom.front())           , myCurrentUpdateCandidates, MPI_SIZE_T, NULL, NULL, NULL, MPI_SIZE_T, 0, comm);
-                MPI_Gatherv(&(indexCoordinate.front())     , myCurrentUpdateCandidates, MPI_SIZE_T, NULL, NULL, NULL, MPI_SIZE_T, 0, comm);
-            }
+            MPI_Gatherv(&(indexAtom.front())           , myCurrentUpdateCandidates, MPI_SIZE_T, NULL, NULL, NULL, MPI_SIZE_T, 0, comm);
+            MPI_Gatherv(&(indexCoordinate.front())     , myCurrentUpdateCandidates, MPI_SIZE_T, NULL, NULL, NULL, MPI_SIZE_T, 0, comm);
         }
 
         if (myRank == 0)
         {
             for (size_t i = 0; i < procUpdateCandidate.size(); ++i)
             {
-                if (force)
+                if (k == "energy")
+                {
+                    addTrainingLogEntry(procUpdateCandidate.at(i),
+                                        thresholdLoopCount.at(i),
+                                        currentRmseFraction.at(i),
+                                        indexStructureGlobal.at(i),
+                                        indexStructure.at(i));
+                }
+                else if (k == "force")
                 {
                     addTrainingLogEntry(procUpdateCandidate.at(i),
                                         thresholdLoopCount.at(i),
@@ -2450,17 +2365,20 @@ void Training::update(bool force)
                                         indexAtom.at(i),
                                         indexCoordinate.at(i));
                 }
-                else
+                else if (k == "charge")
                 {
                     addTrainingLogEntry(procUpdateCandidate.at(i),
                                         thresholdLoopCount.at(i),
                                         currentRmseFraction.at(i),
                                         indexStructureGlobal.at(i),
-                                        indexStructure.at(i));
+                                        indexStructure.at(i),
+                                        indexAtom.at(i));
                 }
             }
         }
     }
+    sw[k + "_log"].stop();
+    sw[k].stop();
 
     return;
 }
@@ -2481,10 +2399,10 @@ void Training::setSingleWeight(size_t element, size_t index, double value)
 }
 
 vector<
-vector<double> > Training::calculateWeightDerivatives(Structure* structure)
+vector<double>> Training::calculateWeightDerivatives(Structure* structure)
 {
     Structure& s = *structure;
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(s, false);
 #else
     calculateSymmetryFunctionGroups(s, false);
@@ -2496,7 +2414,8 @@ vector<double> > Training::calculateWeightDerivatives(Structure* structure)
     dedc.resize(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetwork->getNumConnections();
+        size_t n = elements.at(i).neuralNetworks.at("short")
+                   .getNumConnections();
         dEdc.at(i).resize(n, 0.0);
         dedc.at(i).resize(n, 0.0);
     }
@@ -2504,11 +2423,11 @@ vector<double> > Training::calculateWeightDerivatives(Structure* structure)
          it != s.atoms.end(); ++it)
     {
         size_t i = it->element;
-        NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
-        nn->setInput(&((it->G).front()));
-        nn->propagate();
-        nn->getOutput(&(it->energy));
-        nn->calculateDEdc(&(dedc.at(i).front()));
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+        nn.setInput(&((it->G).front()));
+        nn.propagate();
+        nn.getOutput(&(it->energy));
+        nn.calculateDEdc(&(dedc.at(i).front()));
         for (size_t j = 0; j < dedc.at(i).size(); ++j)
         {
             dEdc.at(i).at(j) += dedc.at(i).at(j);
@@ -2520,12 +2439,12 @@ vector<double> > Training::calculateWeightDerivatives(Structure* structure)
 
 // Doxygen requires namespace prefix for arguments...
 vector<
-vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
+vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
                                                       std::size_t atom,
                                                       std::size_t component)
 {
     Structure& s = *structure;
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(s, true);
 #else
     calculateSymmetryFunctionGroups(s, true);
@@ -2537,27 +2456,28 @@ vector<double> > Training::calculateWeightDerivatives(Structure*  structure,
     dfdc.resize(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
-        size_t n = elements.at(i).neuralNetwork->getNumConnections();
+        size_t n = elements.at(i).neuralNetworks.at("short")
+                   .getNumConnections();
         dFdc.at(i).resize(n, 0.0);
         dfdc.at(i).resize(n, 0.0);
     }
     for (vector<Atom>::iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
         collectDGdxia((*it), atom, component);
-#else 
+#else
         it->collectDGdxia(atom, component);
 #endif
         size_t i = it->element;
-        NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
-        nn->setInput(&((it->G).front()));
-        nn->propagate();
-        nn->getOutput(&(it->energy));
-#ifdef IMPROVED_SFD_MEMORY
-        nn->calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
-#else 
-        nn->calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
+        nn.setInput(&((it->G).front()));
+        nn.propagate();
+        nn.getOutput(&(it->energy));
+#ifndef NNP_FULL_SFD_MEMORY
+        nn.calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
+#else
+        nn.calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
 #endif
         for (size_t j = 0; j < dfdc.at(i).size(); ++j)
         {
@@ -2588,17 +2508,17 @@ void Training::getWeights()
         size_t pos = 0;
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork const* const& nn = elements.at(i).neuralNetwork;
-            nn->getConnections(&(weights.at(0).at(pos)));
-            pos += nn->getNumConnections();
+            NeuralNetwork const& nn = elements.at(i).neuralNetworks.at(nnId);
+            nn.getConnections(&(weights.at(0).at(pos)));
+            pos += nn.getNumConnections();
         }
     }
     else if (updateStrategy == US_ELEMENT)
     {
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork const* const& nn = elements.at(i).neuralNetwork;
-            nn->getConnections(&(weights.at(i).front()));
+            NeuralNetwork const& nn = elements.at(i).neuralNetworks.at(nnId);
+            nn.getConnections(&(weights.at(i).front()));
         }
     }
 
@@ -2612,17 +2532,17 @@ void Training::setWeights()
         size_t pos = 0;
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
-            nn->setConnections(&(weights.at(0).at(pos)));
-            pos += nn->getNumConnections();
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+            nn.setConnections(&(weights.at(0).at(pos)));
+            pos += nn.getNumConnections();
         }
     }
     else if (updateStrategy == US_ELEMENT)
     {
         for (size_t i = 0; i < numElements; ++i)
         {
-            NeuralNetwork* const& nn = elements.at(i).neuralNetwork;
-            nn->setConnections(&(weights.at(i).front()));
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+            nn.setConnections(&(weights.at(i).front()));
         }
     }
 
@@ -2659,7 +2579,22 @@ void Training::addTrainingLogEntry(int                 proc,
     return;
 }
 
-#ifdef IMPROVED_SFD_MEMORY
+// Doxygen requires namespace prefix for arguments...
+void Training::addTrainingLogEntry(int                 proc,
+                                   std::size_t         il,
+                                   double              f,
+                                   std::size_t         isg,
+                                   std::size_t         is,
+                                   std::size_t         ia)
+{
+    string s = strpr("  Q %5zu %10zu %5d %3zu %10.2E %10zu %5zu %5zu\n",
+                     epoch, countUpdates, proc, il + 1, f, isg, is, ia);
+    trainingLog << s;
+
+    return;
+}
+
+#ifndef NNP_FULL_SFD_MEMORY
 void Training::collectDGdxia(Atom const& atom,
                              size_t      indexAtom,
                              size_t      indexComponent)
@@ -2697,3 +2632,503 @@ void Training::collectDGdxia(Atom const& atom,
     return;
 }
 #endif
+
+void Training::randomizeNeuralNetworkWeights(string const& type)
+{
+    string keywordNW = "";
+    if      (type == "short" ) keywordNW = "nguyen_widrow_weights_short";
+    else if (type == "charge") keywordNW = "nguyen_widrow_weights_charge";
+    else
+    {
+        throw runtime_error("ERROR: Unknown neural network type.\n");
+    }
+
+    double minWeights = atof(settings["weights_min"].c_str());
+    double maxWeights = atof(settings["weights_max"].c_str());
+    log << strpr("Initial weights selected randomly in interval "
+                 "[%f, %f).\n", minWeights, maxWeights);
+    vector<double> w;
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        NeuralNetwork& nn = elements.at(i).neuralNetworks.at(type);
+        w.resize(nn.getNumConnections(), 0);
+        for (size_t j = 0; j < w.size(); ++j)
+        {
+            w.at(j) = minWeights + gsl_rng_uniform(rngGlobal)
+                    * (maxWeights - minWeights);
+        }
+        nn.setConnections(&(w.front()));
+    }
+    if (settings.keywordExists(keywordNW))
+    {
+        log << "Weights modified according to Nguyen Widrow scheme.\n";
+        for (vector<Element>::iterator it = elements.begin();
+             it != elements.end(); ++it)
+        {
+            NeuralNetwork& nn = it->neuralNetworks.at(type);
+            nn.modifyConnections(NeuralNetwork::MS_NGUYENWIDROW);
+        }
+    }
+    else if (settings.keywordExists("precondition_weights"))
+    {
+        throw runtime_error("ERROR: Preconditioning of weights not yet"
+                            " implemented.\n");
+    }
+    else
+    {
+        log << "Weights modified accoring to Glorot Bengio scheme.\n";
+        //log << "Weights connected to output layer node set to zero.\n";
+        log << "Biases set to zero.\n";
+        for (vector<Element>::iterator it = elements.begin();
+             it != elements.end(); ++it)
+        {
+            NeuralNetwork& nn = it->neuralNetworks.at(type);
+            nn.modifyConnections(NeuralNetwork::MS_GLOROTBENGIO);
+            //nn->modifyConnections(NeuralNetwork::MS_ZEROOUTPUTWEIGHTS);
+            nn.modifyConnections(NeuralNetwork::MS_ZEROBIAS);
+        }
+    }
+
+    return;
+}
+
+void Training::setupSelectionMode(string const& property)
+{
+    bool all = (property == "all");
+    bool isProperty = (find(pk.begin(), pk.end(), property) != pk.end());
+    if (!(all || isProperty))
+    {
+        throw runtime_error("ERROR: Unknown property for selection mode"
+                            " setup.\n");
+    }
+
+    if (all)
+    {
+        if (!(settings.keywordExists("selection_mode") ||
+              settings.keywordExists("rmse_threshold") ||
+              settings.keywordExists("rmse_threshold_trials"))) return;
+        log << "Global selection mode settings:\n";
+    }
+    else
+    {
+        if (!(settings.keywordExists("selection_mode_" + property) ||
+              settings.keywordExists("rmse_threshold_" + property) ||
+              settings.keywordExists("rmse_threshold_trials_"
+                                     + property))) return;
+        log << "Selection mode settings specific to property \""
+            << property << "\":\n";
+    }
+    string keyword;
+    if (all) keyword = "selection_mode";
+    else keyword = "selection_mode_" + property;
+
+    if (settings.keywordExists(keyword))
+    {
+        map<size_t, SelectionMode> schedule;
+        vector<string> args = split(settings[keyword]);
+        if (args.size() % 2 != 1)
+        {
+            throw runtime_error("ERROR: Incorrect selection mode format.\n");
+        }
+        schedule[0] = (SelectionMode)atoi(args.at(0).c_str());
+        for (size_t i = 1; i < args.size(); i = i + 2)
+        {
+            schedule[(size_t)atoi(args.at(i).c_str())] =
+                (SelectionMode)atoi(args.at(i + 1).c_str());
+        }
+        for (map<size_t, SelectionMode>::const_iterator it = schedule.begin();
+             it != schedule.end(); ++it)
+        {
+            log << strpr("- Selection mode starting with epoch %zu:\n",
+                         it->first);
+            if (it->second == SM_RANDOM)
+            {
+                log << strpr("  Random selection of update candidates: "
+                             "SelectionMode::SM_RANDOM (%d)\n", it->second);
+            }
+            else if (it->second == SM_SORT)
+            {
+                log << strpr("  Update candidates selected according to error: "
+                             "SelectionMode::SM_SORT (%d)\n", it->second);
+            }
+            else if (it->second == SM_THRESHOLD)
+            {
+                log << strpr("  Update candidates chosen randomly above RMSE "
+                             "threshold: SelectionMode::SM_THRESHOLD (%d)\n",
+                             it->second);
+            }
+            else
+            {
+                throw runtime_error("ERROR: Unknown selection mode.\n");
+            }
+        }
+        if (all)
+        {
+            for (auto& i : p)
+            {
+                i.second.selectionModeSchedule = schedule;
+                i.second.selectionMode = schedule[0];
+            }
+        }
+        else
+        {
+            p[property].selectionModeSchedule = schedule;
+            p[property].selectionMode = schedule[0];
+        }
+    }
+
+    if (all) keyword = "rmse_threshold";
+    else keyword = "rmse_threshold_" + property;
+    if (settings.keywordExists(keyword))
+    {
+        double t = atof(settings[keyword].c_str());
+        log << strpr("- RMSE selection threshold: %.2f * RMSE\n", t);
+        if (all) for (auto& i : p) i.second.rmseThreshold = t;
+        else p[property].rmseThreshold = t;
+    }
+
+    if (all) keyword = "rmse_threshold_trials";
+    else keyword = "rmse_threshold_trials_" + property;
+    if (settings.keywordExists(keyword))
+    {
+        size_t t = atoi(settings[keyword].c_str());
+        log << strpr("- RMSE selection trials   : %zu\n", t);
+        if (all) for (auto& i : p) i.second.rmseThresholdTrials = t;
+        else p[property].rmseThresholdTrials = t;
+    }
+
+    return;
+}
+
+void Training::setupFileOutput(string const& type)
+{
+    string keyword = "write_";
+    bool isProperty = (find(pk.begin(), pk.end(), type) != pk.end());
+    if      (type == "energy"       ) keyword += "trainpoints";
+    else if (type == "force"        ) keyword += "trainforces";
+    else if (type == "charge"       ) keyword += "traincharges";
+    else if (type == "weights_epoch") keyword += type;
+    else if (type == "neuronstats"  ) keyword += type;
+    else
+    {
+        throw runtime_error("ERROR: Invalid type for file output setup.\n");
+    }
+
+    // Check how often energy comparison files should be written.
+    if (settings.keywordExists(keyword))
+    {
+        size_t* writeEvery = nullptr;
+        size_t* writeAlways = nullptr;
+        string message;
+        if (isProperty)
+        {
+            writeEvery = &(p[type].writeCompEvery);
+            writeAlways = &(p[type].writeCompAlways);
+            message = "Property \"" + type + "\" comparison";
+            message.at(0) = toupper(message.at(0));
+        }
+        else if (type == "weights_epoch")
+        {
+            writeEvery = &writeWeightsEvery;
+            writeAlways = &writeWeightsAlways;
+            message = "Weight";
+        }
+        else if (type == "neuronstats")
+        {
+            writeEvery = &writeNeuronStatisticsEvery;
+            writeAlways = &writeNeuronStatisticsAlways;
+            message = "Neuron statistics";
+        }
+
+        *writeEvery = 1;
+        vector<string> v = split(reduce(settings[keyword]));
+        if (v.size() == 1) *writeEvery = (size_t)atoi(v.at(0).c_str());
+        else if (v.size() == 2)
+        {
+            *writeEvery = (size_t)atoi(v.at(0).c_str());
+            *writeAlways = (size_t)atoi(v.at(1).c_str());
+        }
+        log << strpr((message
+                      + " files will be written every %zu epochs.\n").c_str(),
+                     *writeEvery);
+        if (*writeAlways > 0)
+        {
+            log << strpr((message
+                          + " files will always be written up to epoch "
+                            "%zu.\n").c_str(), *writeAlways);
+        }
+    }
+
+    return;
+}
+
+void Training::setupUpdatePlan(string const& property)
+{
+    bool isProperty = (find(pk.begin(), pk.end(), property) != pk.end());
+    if (!isProperty)
+    {
+        throw runtime_error("ERROR: Unknown property for update plan"
+                            " setup.\n");
+    }
+
+    // Actual property modified here.
+    Property& pa = p[property];
+    string keyword = property + "_fraction";
+    pa.epochFraction = atof(settings[keyword].c_str());
+    keyword = "task_batch_size_" + property;
+    pa.taskBatchSize = (size_t)atoi(settings[keyword].c_str());
+    if (pa.taskBatchSize == 0)
+    {
+        pa.patternsPerUpdate =
+            static_cast<size_t>(pa.updateCandidates.size() * pa.epochFraction);
+        pa.numUpdates = 1;
+    }
+    else
+    {
+        pa.patternsPerUpdate = pa.taskBatchSize;
+        pa.numUpdates =
+            static_cast<size_t>((pa.numTrainPatterns * pa.epochFraction)
+                                / pa.taskBatchSize / numProcs);
+    }
+    pa.patternsPerUpdateGlobal = pa.patternsPerUpdate;
+    MPI_Allreduce(MPI_IN_PLACE, &(pa.patternsPerUpdateGlobal), 1, MPI_SIZE_T, MPI_SUM, comm);
+    pa.errorsPerTask.resize(numProcs, 0);
+    if (jacobianMode == JM_FULL)
+    {
+        pa.errorsPerTask.at(myRank) = static_cast<int>(pa.patternsPerUpdate);
+    }
+    else
+    {
+        pa.errorsPerTask.at(myRank) = 1;
+    }
+    MPI_Allgather(MPI_IN_PLACE, 1, MPI_INT, &(pa.errorsPerTask.front()), 1, MPI_INT, comm);
+    if (jacobianMode == JM_FULL)
+    {
+        pa.weightsPerTask.resize(numUpdaters);
+        for (size_t i = 0; i < numUpdaters; ++i)
+        {
+            pa.weightsPerTask.at(i).resize(numProcs, 0);
+            for (int j = 0; j < numProcs; ++j)
+            {
+                pa.weightsPerTask.at(i).at(j) = pa.errorsPerTask.at(j)
+                                              * numWeightsPerUpdater.at(i);
+            }
+        }
+    }
+    pa.numErrorsGlobal = 0;
+    for (size_t i = 0; i < pa.errorsPerTask.size(); ++i)
+    {
+        pa.offsetPerTask.push_back(pa.numErrorsGlobal);
+        pa.numErrorsGlobal += pa.errorsPerTask.at(i);
+    }
+    pa.offsetJacobian.resize(numUpdaters);
+    for (size_t i = 0; i < numUpdaters; ++i)
+    {
+        for (size_t j = 0; j < pa.offsetPerTask.size(); ++j)
+        {
+            pa.offsetJacobian.at(i).push_back(pa.offsetPerTask.at(j) *
+                                              numWeightsPerUpdater.at(i));
+        }
+    }
+    log << "Update plan for property \"" + property + "\":\n";
+    log << strpr("- Per-task batch size                          : %zu\n",
+                 pa.taskBatchSize);
+    log << strpr("- Fraction of patterns used per epoch          : %.4f\n",
+                 pa.epochFraction);
+    log << strpr("- Updates per epoch                            : %zu\n",
+                 pa.numUpdates);
+    log << strpr("- Patterns used per update (rank %3d / global) : "
+                 "%10zu / %zu\n",
+                 myRank, pa.patternsPerUpdate, pa.patternsPerUpdateGlobal);
+    log << "----------------------------------------------\n";
+
+    return;
+}
+
+void Training::allocateArrays(string const& property)
+{
+    bool isProperty = (find(pk.begin(), pk.end(), property) != pk.end());
+    if (!isProperty)
+    {
+        throw runtime_error("ERROR: Unknown property for array allocation.\n");
+    }
+
+    log << "Allocating memory for " + property +
+           " error vector and Jacobian.\n";
+    Property& pa = p[property];
+    pa.error.resize(numUpdaters);
+    pa.jacobian.resize(numUpdaters);
+    for (size_t i = 0; i < numUpdaters; ++i)
+    {
+        size_t size = 1;
+        if (( parallelMode == PM_TRAIN_ALL ||
+              (parallelMode == PM_TRAIN_RK0 && myRank == 0)) &&
+            jacobianMode != JM_SUM)
+        {
+            size *= pa.numErrorsGlobal;
+        }
+        else if ((parallelMode == PM_TRAIN_RK0 && myRank != 0) &&
+                 jacobianMode != JM_SUM)
+        {
+            size *= pa.errorsPerTask.at(myRank);
+        }
+        pa.error.at(i).resize(size, 0.0);
+        pa.jacobian.at(i).resize(size * numWeightsPerUpdater.at(i), 0.0);
+        log << strpr("Updater %3zu:\n", i);
+        log << strpr(" - Error    size: %zu\n", pa.error.at(i).size());
+        log << strpr(" - Jacobian size: %zu\n", pa.jacobian.at(i).size());
+    }
+    log << "----------------------------------------------\n";
+
+    return;
+}
+
+void Training::writeTimingData(bool append, string const fileName)
+{
+    ofstream file;
+    string fileNameActual = fileName;
+    if (nnpType == NNPType::SHORT_CHARGE_NN)
+    {
+        fileNameActual += strpr(".stage-%zu", stage);
+    }
+
+    vector<string> sub = {"_err", "_com", "_upd", "_log"};
+    if (append) file.open(fileNameActual.c_str(), ofstream::app);
+    else
+    {
+        file.open(fileNameActual.c_str());
+
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Timing data for training loop.");
+        colSize.push_back(10);
+        colName.push_back("epoch");
+        colInfo.push_back("Current epoch.");
+        colSize.push_back(11);
+        colName.push_back("train");
+        colInfo.push_back("Time for training.");
+        colSize.push_back(7);
+        colName.push_back("ptrain");
+        colInfo.push_back("Time for training (percentage of loop).");
+        colSize.push_back(11);
+        colName.push_back("error");
+        colInfo.push_back("Time for error calculation.");
+        colSize.push_back(7);
+        colName.push_back("perror");
+        colInfo.push_back("Time for error calculation (percentage of loop).");
+        colSize.push_back(11);
+        colName.push_back("epoch");
+        colInfo.push_back("Time for this epoch.");
+        colSize.push_back(11);
+        colName.push_back("total");
+        colInfo.push_back("Total time for all epochs.");
+        for (auto k : pk)
+        {
+            colSize.push_back(11);
+            colName.push_back(p[k].tiny + "train");
+            colInfo.push_back("");
+            colSize.push_back(7);
+            colName.push_back(p[k].tiny + "ptrain");
+            colInfo.push_back("");
+        }
+        for (auto s : sub)
+        {
+            for (auto k : pk)
+            {
+                colSize.push_back(11);
+                colName.push_back(p[k].tiny + s);
+                colInfo.push_back("");
+                colSize.push_back(7);
+                colName.push_back(p[k].tiny + "p" + s);
+                colInfo.push_back("");
+            }
+        }
+        appendLinesToFile(file,
+                          createFileHeader(title, colSize, colName, colInfo));
+    }
+
+    double timeLoop = sw["loop"].getLoop();
+    file << strpr("%10zu", epoch);
+    file << strpr(" %11.3E", sw["train"].getLoop());
+    file << strpr(" %7.3f", sw["train"].getLoop() / timeLoop);
+    file << strpr(" %11.3E", sw["error"].getLoop());
+    file << strpr(" %7.3f", sw["error"].getLoop() / timeLoop);
+    file << strpr(" %11.3E", timeLoop);
+    file << strpr(" %11.3E", sw["loop"].getTotal());
+
+    for (auto k : pk)
+    {
+        file << strpr(" %11.3E", sw[k].getLoop());
+        file << strpr(" %7.3f", sw[k].getLoop() / sw["train"].getLoop());
+    }
+    for (auto s : sub)
+    {
+        for (auto k : pk)
+        {
+            file << strpr(" %11.3E", sw[k + s].getLoop());
+            file << strpr(" %7.3f", sw[k + s].getLoop() / sw[k].getLoop());
+        }
+    }
+    file << "\n";
+
+    file.flush();
+    file.close();
+
+    return;
+}
+
+Training::Property::Property(string const& property) :
+    property               (property ),
+    displayMetric          (""       ),
+    tiny                   (""       ),
+    plural                 (""       ),
+    selectionMode          (SM_RANDOM),
+    numTrainPatterns       (0        ),
+    numTestPatterns        (0        ),
+    taskBatchSize          (0        ),
+    writeCompEvery         (0        ),
+    writeCompAlways        (0        ),
+    posUpdateCandidates    (0        ),
+    rmseThresholdTrials    (0        ),
+    countUpdates           (0        ),
+    numUpdates             (0        ),
+    patternsPerUpdate      (0        ),
+    patternsPerUpdateGlobal(0        ),
+    numErrorsGlobal        (0        ),
+    epochFraction          (0.0      ),
+    rmseThreshold          (0.0      )
+{
+    if (property == "energy")
+    {
+        tiny = "E";
+        plural = "energies";
+        errorMetrics = {"RMSEpa", "RMSE", "MAEpa", "MAE"};
+    }
+    else if (property == "force")
+    {
+        tiny = "F";
+        plural = "forces";
+        errorMetrics = {"RMSE", "MAE"};
+    }
+    else if (property == "charge")
+    {
+        tiny = "Q";
+        plural = "charges";
+        errorMetrics = {"RMSE", "MAE"};
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown training property.\n");
+    }
+
+    // Set up error metrics
+    for (auto m : errorMetrics)
+    {
+        errorTrain[m] = 0.0;
+        errorTest[m] = 0.0;
+    }
+    displayMetric = errorMetrics.at(0);
+}

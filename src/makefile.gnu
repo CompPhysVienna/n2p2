@@ -21,26 +21,32 @@ PROJECT_TEST=--coverage -fno-default-inline -fno-inline -fno-inline-small-functi
 PROJECT_AR=ar
 PROJECT_ARFLAGS=-rcsv
 PROJECT_CFLAGS_BLAS=
-PROJECT_LDFLAGS_BLAS=-lblas
+PROJECT_LDFLAGS_BLAS=-lblas -lgsl -lgslcblas
 
 ###############################################################################
 # COMPILE-TIME OPTIONS
 ###############################################################################
 
 # Do not use symmetry function groups.
-#PROJECT_OPTIONS+= -DNOSFGROUPS
+#PROJECT_OPTIONS+= -DNNP_NO_SF_GROUPS
 
-# Do not use cutoff function cache.
-#PROJECT_OPTIONS+= -DNOCFCACHE
+# Do not use symmetry function cache.
+#PROJECT_OPTIONS+= -DNNP_NO_SF_CACHE
+
+# Disable asymmetric polynomial symmetry functions.
+#PROJECT_OPTIONS+= -DNNP_NO_ASYM_POLY
 
 # Build with dummy Stopwatch class.
-#PROJECT_OPTIONS+= -DNOTIME
+#PROJECT_OPTIONS+= -DNNP_NO_TIME
 
 # Disable check for low number of neighbors.
-#PROJECT_OPTIONS+= -DNONEIGHCHECK
+#PROJECT_OPTIONS+= -DNNP_NO_NEIGH_CHECK
+
+# Use alternative (older) memory layout for symmetry function derivatives.
+#PROJECT_OPTIONS+= -DNNP_FULL_SFD_MEMORY
 
 # Compile without MPI support.
-#PROJECT_OPTIONS+= -DNOMPI
+#PROJECT_OPTIONS+= -DNNP_NO_MPI
 
 # Use BLAS together with Eigen.
 PROJECT_OPTIONS+= -DEIGEN_USE_BLAS
@@ -53,6 +59,3 @@ PROJECT_OPTIONS+= -DEIGEN_USE_BLAS
 
 # Disable Eigen multi threading.
 PROJECT_OPTIONS+= -DEIGEN_DONT_PARALLELIZE
-
-# Use improved memory layout for symmetry function derivatives.
-PROJECT_OPTIONS+= -DIMPROVED_SFD_MEMORY

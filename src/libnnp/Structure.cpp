@@ -39,6 +39,7 @@ Structure::Structure() :
     numElementsPresent            (0         ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
+    charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
     sampleType                    (ST_UNKNOWN),
@@ -189,7 +190,7 @@ void Structure::readFromLines(vector<string> const& lines)
             atoms.back().r[1]           = atof(splitLine.at(2).c_str());
             atoms.back().r[2]           = atof(splitLine.at(3).c_str());
             atoms.back().element        = elementMap[splitLine.at(4)];
-            atoms.back().charge         = atof(splitLine.at(5).c_str());
+            atoms.back().chargeRef      = atof(splitLine.at(5).c_str());
             atoms.back().fRef[0]        = atof(splitLine.at(7).c_str());
             atoms.back().fRef[1]        = atof(splitLine.at(8).c_str());
             atoms.back().fRef[2]        = atof(splitLine.at(9).c_str());
@@ -533,6 +534,7 @@ void Structure::reset()
     numElementsPresent             = 0         ;
     energy                         = 0.0       ;
     energyRef                      = 0.0       ;
+    charge                         = 0.0       ;
     chargeRef                      = 0.0       ;
     volume                         = 0.0       ;
     sampleType                     = ST_UNKNOWN;
@@ -573,21 +575,31 @@ void Structure::clearNeighborList()
     return;
 }
 
-void Structure::updateRmseEnergy(double& rmse, size_t& count) const
+void Structure::updateError(string const&        property,
+                            map<string, double>& error,
+                            size_t&              count) const
 {
-    count++;
-    rmse += (energyRef - energy) * (energyRef - energy)
-          / (numAtoms * numAtoms);
-
-    return;
-}
-
-void Structure::updateRmseForces(double& rmse, size_t& count) const
-{
-    for (vector<Atom>::const_iterator it = atoms.begin();
-         it != atoms.end(); ++it)
+    if (property == "energy")
     {
-        it->updateRmseForces(rmse, count);
+        count++;
+        double diff = energyRef - energy;
+        error.at("RMSEpa") += diff * diff / (numAtoms * numAtoms);
+        error.at("RMSE") += diff * diff;
+        diff = fabs(diff);
+        error.at("MAEpa") += diff / numAtoms;
+        error.at("MAE") += diff;
+    }
+    else if (property == "force" || property == "charge")
+    {
+        for (vector<Atom>::const_iterator it = atoms.begin();
+             it != atoms.end(); ++it)
+        {
+            it->updateError(property, error, count);
+        }
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown property for error update.\n");
     }
 
     return;
@@ -609,6 +621,18 @@ vector<string> Structure::getForcesLines() const
     {
         vector<string> va = it->getForcesLines();
         v.insert(v.end(), va.begin(), va.end());
+    }
+
+    return v;
+}
+
+vector<string> Structure::getChargesLines() const
+{
+    vector<string> v;
+    for (vector<Atom>::const_iterator it = atoms.begin();
+         it != atoms.end(); ++it)
+    {
+        v.push_back(it->getChargeLine());
     }
 
     return v;
@@ -667,7 +691,7 @@ void Structure::writeToFile(ofstream* const& file, bool const ref) const
                              it->r[1],
                              it->r[2],
                              elementMap[it->element].c_str(),
-                             it->charge,
+                             it->chargeRef,
                              0.0,
                              it->fRef[0],
                              it->fRef[1],
@@ -691,7 +715,8 @@ void Structure::writeToFile(ofstream* const& file, bool const ref) const
     }
     if (ref) (*file) << strpr("energy %24.16E\n", energyRef);
     else     (*file) << strpr("energy %24.16E\n", energy);
-    (*file) << strpr("charge %24.16E\n", chargeRef);
+    if (ref) (*file) << strpr("charge %24.16E\n", chargeRef);
+    else     (*file) << strpr("charge %24.16E\n", charge);
     (*file) << strpr("end\n");
 
     return;
@@ -826,6 +851,7 @@ vector<string> Structure::info() const
     v.push_back(strpr("pbc                            : %d %d %d\n", pbc[0], pbc[1], pbc[2]));
     v.push_back(strpr("energy                         : %16.8E\n", energy        ));
     v.push_back(strpr("energyRef                      : %16.8E\n", energyRef     ));
+    v.push_back(strpr("charge                         : %16.8E\n", charge        ));
     v.push_back(strpr("chargeRef                      : %16.8E\n", chargeRef     ));
     v.push_back(strpr("volume                         : %16.8E\n", volume        ));
     v.push_back(strpr("sampleType                     : %d\n", (int)sampleType));

@@ -19,6 +19,7 @@
 
 #include "Atom.h"
 #include "Dataset.h"
+#include "Stopwatch.h"
 #include "Updater.h"
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
@@ -132,48 +133,48 @@ public:
      */
     void                  initializeWeightsMemory(UpdateStrategy updateStrategy
                                                       = US_COMBINED);
+    /** Set training stage (if multiple stages are needed for NNP type).
+     *
+     * @param[in] stage Training stage to set.
+     */
+    void                  setStage(std::size_t stage);
     /** General training settings and setup of weight update routine.
      */
     void                  setupTraining();
     /** Calculate neighbor lists for all structures.
      */
     void                  calculateNeighborLists();
-    /** Calculate RMSE for all structures.
+    /** Calculate error metrics for all structures.
      *
-     * @param[in] writeCompFiles Write NN and reference energies and forces to
-     *                           comparison files.
-     * @param[in] identifier String added to "ENERGY" and "FORCES" log line.
-     * @param[in] fileNameEnergiesTrain File name for training energies
-     *                                  comparison file.
-     * @param[in] fileNameEnergiesTest File name for test energies comparison
-     *                                 file.
-     * @param[in] fileNameForcesTrain File name for training forces comparison
-     *                                file.
-     * @param[in] fileNameForcesTest File name for test forces comparison file.
+     * @param[in] fileNames Map of properties to file names for training/test
+     *                      comparison files.
+     *
+     * If fileNames map is empty, no files will be written.
      */
-    void                  calculateRmse(bool const        writeCompFiles,
-                                        std::string const identifier           
-                                            = "",
-                                        std::string const fileNameEnergiesTrain
-                                            = "energies-train.comp",
-                                        std::string const fileNameEnergiesTest
-                                            = "energies-test.comp",
-                                        std::string const fileNameForcesTrain
-                                            = "forces-train.comp",
-                                        std::string const fileNameForcesTest
-                                            = "forces-test.comp");
-    /** Calculate RMSE per epoch for all structures with file names used in
-     * training loop.
+    void                  calculateError(
+                                   std::map<std::string,
+                                   std::pair<
+                                   std::string, std::string>> const fileNames);
+    /** Calculate error metrics per epoch for all structures with file names
+     * used in training loop.
      *
      * Also write training curve to file.
      */
-    void                  calculateRmseEpoch();
+    void                  calculateErrorEpoch();
+    /** Print training loop header on screen.
+     */
+    void                  printHeader();
+    /** Print preferred error metric and timing information on screen.
+     */
+    void                  printEpoch();
     /** Write weights to files (one file for each element).
      *
+     * @param[in] nnName Identifier for neural network.
      * @param[in] fileNameFormat String with file name format.
      */
-    void                  writeWeights(std::string const fileNameFormat
-                                          = "weights.%03zu.data") const;
+    void                  writeWeights(
+                                      std::string const& nnName,
+                                      std::string const& fileNameFormat) const;
     /** Write weights to files during training loop.
      */
     void                  writeWeightsEpoch() const;
@@ -187,16 +188,18 @@ public:
                                                  = "learning-curve.out") const;
     /** Write neuron statistics collected since last invocation.
      *
+     * @param[in] nnName Identifier of neural network to process.
      * @param[in] fileName File name for statistics file.
      */
-    void                  writeNeuronStatistics(std::string const fileName
-                                                   = "neuron-stats.out") const;
+    void                  writeNeuronStatistics(
+                                            std::string const& nnName,
+                                            std::string const& fileName) const;
     /** Write neuron statistics during training loop.
      */
     void                  writeNeuronStatisticsEpoch() const;
     /** Reset neuron statistics for all elements.
      */
-    void                  resetNeuronStatistics() const;
+    void                  resetNeuronStatistics();
     /** Write updater information to file.
      *
      * @param[in] append If true, append to file, otherwise create new file.
@@ -206,11 +209,15 @@ public:
                                              std::string const fileNameFormat
                                                  = "updater.%03zu.out") const;
     /** Sort update candidates with descending RMSE.
+     *
+     * @param[in] property Training property.
      */
-    void                  sortUpdateCandidates();
+    void                  sortUpdateCandidates(std::string const& property);
     /** Shuffle update candidates.
+     *
+     * @param[in] property Training property.
      */
-    void                  shuffleUpdateCandidates();
+    void                  shuffleUpdateCandidates(std::string const& property);
     /** Check if selection mode should be changed.
      */
     void                  checkSelectionMode();
@@ -222,9 +229,9 @@ public:
     void                  setEpochSchedule();
     /** Perform one update.
      *
-     * @param[in] force If true, perform force update, otherwise energy update.
+     * @param[in] property Training property to use for update.
      */
-    void                  update(bool force);
+    void                  update(std::string const& property);
     /** Get a single weight value.
      *
      * @param[in] element Element index of weight.
@@ -295,168 +302,179 @@ private:
         double      error;
 
         /// Overload < operator to sort in \em descending order.
-        bool operator<(UpdateCandidate const& rhs) const;
+        bool operator<(UpdateCandidate const& rhs) const {
+            return this->error > rhs.error;
+        }
+    };
+
+    /// Specific training quantity (e.g. energies, forces, charges).
+    struct Property
+    {
+        /// Constructor.
+        Property(std::string const& property);
+
+        /// Copy of identifier within Property map.
+        std::string                  property;
+        /// Error metric for display.
+        std::string                  displayMetric;
+        /// Tiny abbreviation string for property.
+        std::string                  tiny;
+        /// Plural string of property;
+        std::string                  plural;
+        /// Selection mode for update candidates.
+        SelectionMode                selectionMode;
+        /// Number of training patterns in set.
+        std::size_t                  numTrainPatterns;
+        /// Number of training patterns in set.
+        std::size_t                  numTestPatterns;
+        /// Batch size for each MPI task.
+        std::size_t                  taskBatchSize;
+        /// Write comparison every this many epochs.
+        std::size_t                  writeCompEvery;
+        /// Up to this epoch comparison is written every epoch.
+        std::size_t                  writeCompAlways;
+        /// Current position in update candidate list (SM_SORT).
+        std::size_t                  posUpdateCandidates;
+        /// Maximum trials for SM_THRESHOLD selection mode.
+        std::size_t                  rmseThresholdTrials;
+        /// Counter for updates per epoch.
+        std::size_t                  countUpdates;
+        /// Number of desired updates per epoch.
+        std::size_t                  numUpdates;
+        /// Patterns used per update.
+        std::size_t                  patternsPerUpdate;
+        /// Patterns used per update (summed over all MPI tasks).
+        std::size_t                  patternsPerUpdateGlobal;
+        /// Global number of errors per update.
+        std::size_t                  numErrorsGlobal;
+        /// Desired update fraction per epoch.
+        double                       epochFraction;
+        /// RMSE threshold for update candidates.
+        double                       rmseThreshold;
+        /// Errors per task for each update.
+        std::vector<int>             errorsPerTask;
+        /// Offset for combined error per task.
+        std::vector<int>             offsetPerTask;
+        /// Error metrics available for this property.
+        std::vector<std::string>     errorMetrics;
+        /// Current error metrics of training patterns.
+        std::map<
+        std::string, double>         errorTrain;
+        /// Current error metrics of test patterns.
+        std::map<
+        std::string, double>         errorTest;
+        /// Vector with indices of training patterns.
+        std::vector<UpdateCandidate> updateCandidates;
+        /// Weights per task per updater.
+        std::vector<
+        std::vector<int>>            weightsPerTask;
+        /// Stride for Jacobians per task per updater.
+        std::vector<
+        std::vector<int>>            offsetJacobian;
+        /// Global error vector (per updater).
+        std::vector<
+        std::vector<double>>         error;
+        /// Global Jacobian (per updater).
+        std::vector<
+        std::vector<double>>         jacobian;
+        /// Schedule for varying selection mode.
+        std::map<
+        std::size_t, SelectionMode>  selectionModeSchedule;
+    };
+
+    /// Map of all training properties.
+    struct PropertyMap : std::map<std::string, Property>
+    {
+        /// Overload [] operator to simplify access.
+        Property& operator[](std::string const& key) {return this->at(key);}
+        /// Overload [] operator to simplify access (const version).
+        Property const& operator[](std::string const& key) const
+        {
+            return this->at(key);
+        }
+        /// Check if property is present.
+        bool exists(std::string const& key)
+        {
+            return (this->find(key) != this->end());
+        }
     };
 
     /// Updater type used.
-    UpdaterType                   updaterType;
+    UpdaterType              updaterType;
     /// Parallelization mode used.
-    ParallelMode                  parallelMode;
+    ParallelMode             parallelMode;
     /// Jacobian mode used.
-    JacobianMode                  jacobianMode;
+    JacobianMode             jacobianMode;
     /// Update strategy used.
-    UpdateStrategy                updateStrategy;
-    /// Selection mode for update candidates.
-    SelectionMode                 selectionMode;
+    UpdateStrategy           updateStrategy;
     /// If this rank performs weight updates.
-    bool                          hasUpdaters;
+    bool                     hasUpdaters;
     /// If this rank holds structure information.
-    bool                          hasStructures;
+    bool                     hasStructures;
     /// Use forces for training.
-    bool                          useForces;
+    bool                     useForces;
     /// After force update perform energy update for corresponding structure.
-    bool                          reapeatedEnergyUpdates;
+    bool                     repeatedEnergyUpdates;
     /// Free symmetry function memory after calculation.
-    bool                          freeMemory;
+    bool                     freeMemory;
     /// Whether training log file is written.
-    bool                          writeTrainingLog;
+    bool                     writeTrainingLog;
+    /// Training stage.
+    std::size_t              stage;
     /// Number of updaters (depends on update strategy).
-    std::size_t                   numUpdaters;
-    /// Number of energies in training set.
-    std::size_t                   numEnergiesTrain;
-    /// Number of forces in training set.
-    std::size_t                   numForcesTrain;
+    std::size_t              numUpdaters;
     /// Number of epochs requested.
-    std::size_t                   numEpochs;
-    /// Batch size for each MPI task (energies).
-    std::size_t                   taskBatchSizeEnergy;
-    /// Batch size for each MPI task (forces).
-    std::size_t                   taskBatchSizeForce;
+    std::size_t              numEpochs;
     /// Current epoch.
-    std::size_t                   epoch;
-    /// Write energy comparison every this many epochs.
-    std::size_t                   writeEnergiesEvery;
-    /// Write force comparison every this many epochs.
-    std::size_t                   writeForcesEvery;
+    std::size_t              epoch;
     /// Write weights every this many epochs.
-    std::size_t                   writeWeightsEvery;
-    /// Write neuron statistics every this many epochs.
-    std::size_t                   writeNeuronStatisticsEvery;
-    /// Up to this epoch energy comparison is written every epoch.
-    std::size_t                   writeEnergiesAlways;
-    /// Up to this epoch force comparison is written every epoch.
-    std::size_t                   writeForcesAlways;
+    std::size_t              writeWeightsEvery;
     /// Up to this epoch weights are written every epoch.
-    std::size_t                   writeWeightsAlways;
+    std::size_t              writeWeightsAlways;
+    /// Write neuron statistics every this many epochs.
+    std::size_t              writeNeuronStatisticsEvery;
     /// Up to this epoch neuron statistics are written every epoch.
-    std::size_t                   writeNeuronStatisticsAlways;
-    /// Current position in energy update candidate list (SM_SORT).
-    std::size_t                   posUpdateCandidatesEnergy;
-    /// Current position in force update candidate list (SM_SORT).
-    std::size_t                   posUpdateCandidatesForce;
-    /// Maximum trials for SM_THRESHOLD selection mode.
-    std::size_t                   rmseThresholdTrials;
-    /// Update counter.
-    std::size_t                   countUpdates;
-    /// Number of energy updates per epoch.
-    std::size_t                   energyUpdates;
-    /// Number of force updates per epoch.
-    std::size_t                   forceUpdates;
-    /// Energies used per update.
-    std::size_t                   energiesPerUpdate;
-    /// Energies used per update (summed over all MPI tasks).
-    std::size_t                   energiesPerUpdateGlobal;
-    /// Global number of energy errors per update.
-    std::size_t                   errorsGlobalEnergy;
-    /// Forces used per update.
-    std::size_t                   forcesPerUpdate;
-    /// Forces used per update (summed over all MPI tasks).
-    std::size_t                   forcesPerUpdateGlobal;
-    /// Global number of force errors per update.
-    std::size_t                   errorsGlobalForce;
+    std::size_t              writeNeuronStatisticsAlways;
+    /// Update counter (for all training quantities together).
+    std::size_t              countUpdates;
     /// Total number of weights.
-    std::size_t                   numWeights;
-    /// Desired energy update fraction per epoch.
-    double                        epochFractionEnergies;
-    /// Desired force update fraction per epoch.
-    double                        epochFractionForces;
-    /// Current RMSE of training energies.
-    double                        rmseEnergiesTrain;
-    /// Current RMSE of test energies.
-    double                        rmseEnergiesTest;
-    /// Current RMSE of training forces.
-    double                        rmseForcesTrain;
-    /// Current RMSE of test forces.
-    double                        rmseForcesTest;
-    /// RMSE threshold for energy update candidates.
-    double                        rmseThresholdEnergy;
-    /// RMSE threshold for force update candidates.
-    double                        rmseThresholdForce;
+    std::size_t              numWeights;
     /// Force update weight.
-    double                        forceWeight;
+    double                   forceWeight;
     /// File name for training log.
-    std::string                   trainingLogFileName;
+    std::string              trainingLogFileName;
+    /// ID of neural network the training is working on.
+    std::string              nnId;
     /// Training log file.
-    std::ofstream                 trainingLog;
+    std::ofstream            trainingLog;
     /// Update schedule epoch (false = energy update, true = force update).
-    std::vector<int>              epochSchedule;
-    /// Errors per task for each energy update.
-    std::vector<int>              errorsPerTaskEnergy;
-    /// Errors per task for each force update.
-    std::vector<int>              errorsPerTaskForce;
-    /// Offset for combined energy error per task.
-    std::vector<int>              offsetPerTaskEnergy;
-    /// Offset for combined force error per task.
-    std::vector<int>              offsetPerTaskForce;
+    std::vector<int>         epochSchedule;
     /// Number of weights per updater.
-    std::vector<std::size_t>      numWeightsPerUpdater;
+    std::vector<std::size_t> numWeightsPerUpdater;
     /// Offset of each element's weights in combined array.
-    std::vector<std::size_t>      weightsOffset;
-#ifdef IMPROVED_SFD_MEMORY
+    std::vector<std::size_t> weightsOffset;
+    /// Vector of actually used training properties.
+    std::vector<std::string> pk;
+#ifndef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
-    std::vector<double>           dGdxia;
+    std::vector<double>      dGdxia;
 #endif
-    /// Vector with indices of training structures.
-    std::vector<UpdateCandidate>  updateCandidatesEnergy;
-    /// Vector with indices of training forces.
-    std::vector<UpdateCandidate>  updateCandidatesForce;
-    /// Weights per task per updater for energy updates.
-    std::vector<
-    std::vector<int> >            weightsPerTaskEnergy;
-    /// Stride for Jacobians per task per updater for energy updates.
-    std::vector<
-    std::vector<int> >            offsetJacobianEnergy;
-    /// Weights per task per updater for force updates.
-    std::vector<
-    std::vector<int> >            weightsPerTaskForce;
-    /// Stride for Jacobians per task per updater for force updates.
-    std::vector<
-    std::vector<int> >            offsetJacobianForce;
     /// Neural network weights and biases for each element.
     std::vector<
-    std::vector<double> >         weights;
-    /// Global error vector for energies (per updater).
-    std::vector<
-    std::vector<double> >         errorE;
-    /// Global error vector for forces (per updater).
-    std::vector<
-    std::vector<double> >         errorF;
-    /// Global Jacobian for energies (per updater).
-    std::vector<
-    std::vector<double> >         jacobianE;
-    /// Global Jacobian for forces (per updater).
-    std::vector<
-    std::vector<double> >         jacobianF;
+    std::vector<double> >    weights;
     /// Weight updater (combined or for each element).
-    std::vector<Updater*>         updaters;
-    /// Schedule for varying selection mode.
-    std::map<std::size_t,
-             SelectionMode>       selectionModeSchedule;
+    std::vector<Updater*>    updaters;
+    /// Stopwatches for timing overview.
+    std::map<
+    std::string, Stopwatch>  sw;
     /// Per-task random number generator.
-    std::mt19937_64               rngNew;
+    std::mt19937_64          rngNew;
     /// Global random number generator.
-    std::mt19937_64               rngGlobalNew;
+    std::mt19937_64          rngGlobalNew;
+    /// Actual training properties.
+    PropertyMap              p;
+
 
     /** Check if training loop should be continued.
      *
@@ -477,11 +495,11 @@ private:
      * @param[in] is Local structure index.
      * @param[in] isg Global structure index.
      */
-    void addTrainingLogEntry(int                 proc,
-                             std::size_t         il,
-                             double              f,
-                             std::size_t         isg,
-                             std::size_t         is);
+    void addTrainingLogEntry(int         proc,
+                             std::size_t il,
+                             double      f,
+                             std::size_t isg,
+                             std::size_t is);
     /** Write force update data to training log file.
      *
      * @param[in] proc Processor which provided update candidate.
@@ -492,14 +510,29 @@ private:
      * @param[in] ia Atom index.
      * @param[in] ic Component index.
      */
-    void addTrainingLogEntry(int                 proc,
-                             std::size_t         il,
-                             double              f,
-                             std::size_t         isg,
-                             std::size_t         is,
-                             std::size_t         ia,
-                             std::size_t         ic);
-#ifdef IMPROVED_SFD_MEMORY
+    void addTrainingLogEntry(int         proc,
+                             std::size_t il,
+                             double      f,
+                             std::size_t isg,
+                             std::size_t is,
+                             std::size_t ia,
+                             std::size_t ic);
+    /** Write charge update data to training log file.
+     *
+     * @param[in] proc Processor which provided update candidate.
+     * @param[in] il Loop index of threshold loop.
+     * @param[in] f RMSE fraction of update candidate.
+     * @param[in] is Local structure index.
+     * @param[in] isg Global structure index.
+     * @param[in] ia Atom index.
+     */
+    void addTrainingLogEntry(int         proc,
+                             std::size_t il,
+                             double      f,
+                             std::size_t isg,
+                             std::size_t is,
+                             std::size_t ia);
+#ifndef NNP_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
      *
@@ -522,17 +555,39 @@ private:
                        std::size_t indexAtom,
                        std::size_t indexComponent);
 #endif
+    /** Randomly initialize specificy neural network weights.
+     *
+     * @param[in] type Actual network type to initialize ("short" or "charge").
+     */
+    void randomizeNeuralNetworkWeights(std::string const& type);
+    /** Set selection mode for specific training property.
+     *
+     * @param[in] property Training property (uses corresponding keyword).
+     */
+    void setupSelectionMode(std::string const& property);
+    /** Set file output intervals for properties and other quantities.
+     *
+     * @param[in] type Training property or `weights` or `neuron-stats`.
+     */
+    void setupFileOutput(std::string const& type);
+    /** Set up how often properties are updated.
+     *
+     * @param[in] property Training property (uses corresponding keyword).
+     */
+    void setupUpdatePlan(std::string const& property);
+    /** Allocate error and Jacobian arrays for given property.
+     *
+     * @param[in] property Training property.
+     */
+    void allocateArrays(std::string const& property);
+    /** Write timing data for all clocks.
+     *
+     * @param[in] append If true, append to file, otherwise create new file.
+     * @param[in] fileName File name for timing data file.
+     */
+    void writeTimingData(bool              append,
+                         std::string const fileName = "timing.out");
 };
-
-//////////////////////////////////
-// Inlined function definitions //
-//////////////////////////////////
-
-inline bool Training::UpdateCandidate::operator<(
-                                    Training::UpdateCandidate const& rhs) const
-{
-    return this->error > rhs.error;
-}
 
 }
 

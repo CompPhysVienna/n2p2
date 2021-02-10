@@ -37,22 +37,26 @@ DEBUG=$(PROJECT_DEBUG) $(PROJECT_TEST)
 INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain
 
 # Extra flags for linking.
-LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lboost_unit_test_framework -lboost_filesystem
+LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
 
 
 ###############################################################################
 # DEFINE SOURCES
 ###############################################################################
 SRC=$(wildcard test_*.cpp)
+SRC_NOIF=$(filter-out test_lammps_nnp.cpp, $(SRC))
 EXE=$(SRC:%.cpp=%)
+EXE_NOIF=$(SRC_NOIF:%.cpp=%)
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all coverage clean clean-coverage
+.PHONY: all no-interface coverage clean clean-coverage
 
 all: $(EXE)
+
+no-interface: $(EXE_NOIF)
 
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
@@ -70,7 +74,7 @@ clean: clean-coverage
 clean-coverage:
 	$(RM) $(PROJECT_DIR)/src/libnnp/*.gcda
 	$(RM) $(PROJECT_DIR)/src/libnnptrain/*.gcda
-	$(RM) $(PROJECT_DIR)/src/libnnpif/*.gcda
+	$(RM) $(PROJECT_DIR)/src/libnnpif/LAMMPS/*.gcda
 	$(RM) $(PROJECT_DIR)/src/application/*.gcda
 	$(RM) *.gcda *.base *.run *.info
 	$(RM) -r htmlcov

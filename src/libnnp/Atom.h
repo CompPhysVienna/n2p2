@@ -17,9 +17,9 @@
 #ifndef ATOM_H
 #define ATOM_H
 
-#include "CutoffFunction.h"
 #include "Vec3D.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -40,18 +40,12 @@ struct Atom
         std::size_t                element;
         /// Distance to neighbor atom.
         double                     d;
-        /// Cutoff function value.
-        double                     fc;
-        /// Derivative of cutoff function.
-        double                     dfc;
-        /// Cutoff radius for which cutoff and its derivative is cached.
-        double                     rc;
-        /// Cutoff @f$\alpha@f$ for which cutoff and its derivative is cached.
-        double                     cutoffAlpha;
-        /// Cutoff type of cached cutoff values.
-        CutoffFunction::CutoffType cutoffType;
         /// Distance vector to neighbor atom.
         Vec3D                      dr;
+#ifndef NNP_NO_SF_CACHE
+        /// Symmetry function cache (e.g. for cutoffs, compact functions).
+        std::vector<double>        cache;
+#endif
         /** Derivatives of symmetry functions with respect to neighbor
          * coordinates.
          *
@@ -97,6 +91,8 @@ struct Atom
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for this atom.
     bool                     hasSymmetryFunctionDerivatives;
+    /// If an additional charge neuron in the short-range NN is present.
+    bool                     useChargeNeuron;
     /// Index number of this atom.
     std::size_t              index;
     /// Index number of structure this atom belongs to.
@@ -115,6 +111,8 @@ struct Atom
     double                   energy;
     /// Atomic charge determined by neural network.
     double                   charge;
+    /// Atomic reference charge.
+    double                   chargeRef;
     /// Cartesian coordinates
     Vec3D                    r;
     /// Force vector calculated by neural network.
@@ -127,11 +125,17 @@ struct Atom
     std::vector<std::size_t> numNeighborsPerElement;
     /// Number of neighbor atom symmetry function derivatives per element.
     std::vector<std::size_t> numSymmetryFunctionDerivatives;
+#ifndef NNP_NO_SF_CACHE
+    /// Cache size for each element.
+    std::vector<std::size_t> cacheSizePerElement;
+#endif
     /// Symmetry function values
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.
     std::vector<double>      dEdG;
-#ifndef IMPROVED_SFD_MEMORY
+    /// Derivative of atomic charge with respect to symmetry functions.
+    std::vector<double>      dQdG;
+#ifdef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>      dGdxia;
@@ -145,7 +149,7 @@ struct Atom
     /** Atom constructor, initialize to zero.
      */
     Atom();
-#ifndef IMPROVED_SFD_MEMORY
+#ifdef NNP_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
      *
@@ -222,19 +226,27 @@ struct Atom
      * smaller cutoff is requested.
      */
     std::size_t              getNumNeighbors(double cutoffRadius) const;
-    /** Update force RMSE with forces of this atom.
+    /** Update property error metrics with data from this atom.
      *
-     * @param[in,out] rmse Input RMSE to be updated.
+     * @param[in] property One of "force" or "charge".
+     * @param[in,out] error Input error metric map to be updated.
      * @param[in,out] count Input counter to be updated.
      */
-    void                     updateRmseForces(double&      rmse,
-                                              std::size_t& count) const;
+    void                     updateError(
+                                   std::string const&             property,
+                                   std::map<std::string, double>& error,
+                                   std::size_t&                   count) const;
     /** Get reference and NN forces for this atoms.
      *
      * @return Vector of strings with #indexStructure, #index, #fRef, #f
      * values.
      */
     std::vector<std::string> getForcesLines() const;
+    /** Get reference and NN charge for this atoms.
+     *
+     * @return Line with #indexStructure, #index, #chargeRef, #charge values.
+     */
+    std::string              getChargeLine() const;
     /** Get atom information as a vector of strings.
      *
      * @return Lines with atom information.

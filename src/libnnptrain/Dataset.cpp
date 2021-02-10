@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Dataset.h"
-#include "SymmetryFunction.h"
+#include "SymFnc.h"
 #include "mpi-extra.h"
 #include "utility.h"
 #include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
@@ -176,7 +176,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     MPI_Pack_size(1, MPI_CHAR  , comm, &cs);
 
     // Structure
-    bs += 5 * cs + 4 * ss + 4 * is + 4 * ds;
+    bs += 5 * cs + 4 * ss + 4 * is + 5 * ds;
     // Structure.comment
     bs += ss;
     bs += (s.comment.length() + 1) * cs;
@@ -189,7 +189,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     bs += s.numAtomsPerElement.size() * ss;
     // Structure.atoms
     bs += ss;
-    bs += s.atoms.size() * (3 * cs + 7 * ss + 2 * ds + 3 * 3 * ds);
+    bs += s.atoms.size() * (4 * cs + 7 * ss + 3 * ds + 3 * 3 * ds);
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
@@ -202,13 +202,21 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numSymmetryFunctionDerivatives
         bs += ss;
         bs += it->numSymmetryFunctionDerivatives.size() * ss;
+#ifndef NNP_NO_SF_CACHE
+        // Atom.cacheSizePerElement
+        bs += ss;
+        bs += it->cacheSizePerElement.size() * ss;
+#endif
         // Atom.G
         bs += ss;
         bs += it->G.size() * ds;
         // Atom.dEdG
         bs += ss;
         bs += it->dEdG.size() * ds;
-#ifndef IMPROVED_SFD_MEMORY
+        // Atom.dQdG
+        bs += ss;
+        bs += it->dQdG.size() * ds;
+#ifdef NNP_FULL_SFD_MEMORY
         // Atom.dGdxia
         bs += ss;
         bs += it->dGdxia.size() * ds;
@@ -222,8 +230,12 @@ int Dataset::calculateBufferSize(Structure const& structure) const
              it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
         {
             // Neighbor
-            bs += 3 * ss + 5 * ds + is + 3 * ds;
-
+            bs += 3 * ss + ds + 3 * ds;
+#ifndef NNP_NO_SF_CACHE
+            // Neighbor.cache
+            bs += ss;
+            bs += it2->cache.size() * ds;
+#endif
             // Neighbor.dGdr
             bs += ss;
             bs += it2->dGdr.size() * 3 * ds;
@@ -257,6 +269,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
     MPI_Pack(&(s.pbc                           ), 3, MPI_INT   , buf, bs, &p, comm);
     MPI_Pack(&(s.energy                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.energyRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
+    MPI_Pack(&(s.charge                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.chargeRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.volume                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
     MPI_Pack(&(s.sampleType                    ), 1, MPI_INT   , buf, bs, &p, comm);
@@ -298,6 +311,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             MPI_Pack(&(it->hasNeighborList               ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->hasSymmetryFunctions          ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR  , buf, bs, &p, comm);
+            MPI_Pack(&(it->useChargeNeuron               ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->index                         ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->indexStructure                ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->tag                           ), 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -307,6 +321,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             MPI_Pack(&(it->numSymmetryFunctions          ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->energy                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->charge                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
+            MPI_Pack(&(it->chargeRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->r.r                           ), 3, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->f.r                           ), 3, MPI_DOUBLE, buf, bs, &p, comm);
             MPI_Pack(&(it->fRef.r                        ), 3, MPI_DOUBLE, buf, bs, &p, comm);
@@ -335,6 +350,16 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
+#ifndef NNP_NO_SF_CACHE
+            // Atom.cacheSizePerElement
+            ts2 = it->cacheSizePerElement.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->cacheSizePerElement.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
+            }
+#endif
+
             // Atom.G
             ts2 = it->G.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -351,7 +376,15 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->dEdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
 
-#ifndef IMPROVED_SFD_MEMORY
+            // Atom.dQdG
+            ts2 = it->dQdG.size();
+            MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
+            if (ts2 > 0)
+            {
+                MPI_Pack(&(it->dQdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
+            }
+
+#ifdef NNP_FULL_SFD_MEMORY
             // Atom.dGdxia
             ts2 = it->dGdxia.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -386,15 +419,21 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                     MPI_Pack(&(it2->tag        ), 1, MPI_SIZE_T, buf, bs, &p, comm);
                     MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T, buf, bs, &p, comm);
                     MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->fc         ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->dfc        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->rc         ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->cutoffAlpha), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->cutoffType ), 1, MPI_INT   , buf, bs, &p, comm);
                     MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
 
+                    size_t ts3 = 0;
+#ifndef NNP_NO_SF_CACHE
+                    // Neighbor.cache
+                    ts3 = it2->cache.size();
+                    MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
+                    if (ts3 > 0)
+                    {
+                        MPI_Pack(&(it2->cache.front()), ts3, MPI_DOUBLE, buf, bs, &p, comm);
+                    }
+#endif
+
                     // Neighbor.dGdr
-                    size_t ts3 = it2->dGdr.size();
+                    ts3 = it2->dGdr.size();
                     MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
                     if (ts3 > 0)
                     {
@@ -447,6 +486,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
     MPI_Unpack(buf, bs, &p, &(s->pbc                           ), 3, MPI_INT   , comm);
     MPI_Unpack(buf, bs, &p, &(s->energy                        ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->energyRef                     ), 1, MPI_DOUBLE, comm);
+    MPI_Unpack(buf, bs, &p, &(s->charge                        ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->chargeRef                     ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->volume                        ), 1, MPI_DOUBLE, comm);
     MPI_Unpack(buf, bs, &p, &(s->sampleType                    ), 1, MPI_INT   , comm);
@@ -495,6 +535,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
             MPI_Unpack(buf, bs, &p, &(it->hasNeighborList               ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctions          ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR  , comm);
+            MPI_Unpack(buf, bs, &p, &(it->useChargeNeuron               ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->index                         ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->indexStructure                ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->tag                           ), 1, MPI_SIZE_T, comm);
@@ -504,6 +545,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
             MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctions          ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->energy                        ), 1, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->charge                        ), 1, MPI_DOUBLE, comm);
+            MPI_Unpack(buf, bs, &p, &(it->chargeRef                     ), 1, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->r.r                           ), 3, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->f.r                           ), 3, MPI_DOUBLE, comm);
             MPI_Unpack(buf, bs, &p, &(it->fRef.r                        ), 3, MPI_DOUBLE, comm);
@@ -538,6 +580,18 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
             }
 
+#ifndef NNP_NO_SF_CACHE
+            // Atom.cacheSizePerElement
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->cacheSizePerElement.clear();
+                it->cacheSizePerElement.resize(ts2, 0);
+                MPI_Unpack(buf, bs, &p, &(it->cacheSizePerElement.front()), ts2, MPI_SIZE_T, comm);
+            }
+#endif
+
             // Atom.G
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -558,7 +612,17 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->dEdG.front()), ts2, MPI_DOUBLE, comm);
             }
 
-#ifndef IMPROVED_SFD_MEMORY
+            // Atom.dQdG
+            ts2 = 0;
+            MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
+            if (ts2 > 0)
+            {
+                it->dQdG.clear();
+                it->dQdG.resize(ts2, 0.0);
+                MPI_Unpack(buf, bs, &p, &(it->dQdG.front()), ts2, MPI_DOUBLE, comm);
+            }
+
+#ifdef NNP_FULL_SFD_MEMORY
             // Atom.dGdxia
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -599,15 +663,23 @@ int Dataset::recvStructure(Structure* const structure, int src)
                     MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_SIZE_T, comm);
                     MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T, comm);
                     MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->fc         ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->dfc        ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->rc         ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->cutoffAlpha), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->cutoffType ), 1, MPI_INT   , comm);
                     MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
 
-                    // Neighbor.dGdr
                     size_t ts3 = 0;
+#ifndef NNP_NO_SF_CACHE
+                    // Neighbor.cache
+                    ts3 = 0;
+                    MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
+                    if (ts3 > 0)
+                    {
+                        it2->cache.clear();
+                        it2->cache.resize(ts3, 0.0);
+                        MPI_Unpack(buf, bs, &p, &(it2->cache.front()), ts3, MPI_DOUBLE, comm);
+                    }
+#endif
+
+                    // Neighbor.dGdr
+                    ts3 = 0;
                     MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
                     if (ts3 > 0)
                     {
@@ -835,10 +907,20 @@ void Dataset::collectSymmetryFunctionStatistics()
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
+        // If no atoms of this element exist on this proc, create empty
+        // statistics.
+        if (it->statistics.data.size() == 0)
+        {
+            log << strpr("WARNING: No statistics for element %zu (%2s) found, "
+                         "process %d has no corresponding atoms, creating "
+                         "empty statistics.\n",
+                         it->getIndex(),
+                         it->getSymbol().c_str(),
+                         myRank);
+        }
         for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
         {
-            SymmetryFunctionStatistics::
-            Container& c = it->statistics.data.at(i);
+            SymFncStatistics::Container& c = it->statistics.data[i];
             MPI_Allreduce(MPI_IN_PLACE, &(c.count), 1, MPI_SIZE_T, MPI_SUM, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.min  ), 1, MPI_DOUBLE, MPI_MIN, comm);
             MPI_Allreduce(MPI_IN_PLACE, &(c.max  ), 1, MPI_DOUBLE, MPI_MAX, comm);
@@ -896,8 +978,8 @@ void Dataset::writeSymmetryFunctionScaling(string const& fileName)
         {
             for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
             {
-                SymmetryFunctionStatistics::
-                Container const& c = it->statistics.data.at(i);
+                SymFncStatistics::Container const& c
+                    = it->statistics.data.at(i);
                 size_t n = c.count;
                 sFile << strpr("%10d %10d %24.16E %24.16E %24.16E %24.16E\n",
                                it->getIndex() + 1,
@@ -956,7 +1038,7 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                              "(line %4zu).\n",
                              it->getSymbol().c_str(),
                              i,
-                             it->getSymmetryFunction(i).getLineNumber());
+                             it->getSymmetryFunction(i).getLineNumber() + 1);
             }
         }
     }
@@ -1016,8 +1098,8 @@ void Dataset::writeSymmetryFunctionHistograms(size_t numBins,
                 {
                     fprintf(fp, "#SFINFO %s\n", it->c_str());
                 }
-                SymmetryFunctionStatistics::
-                Container const& c = elements.at(e).statistics.data.at(s);
+                SymFncStatistics::Container const& c
+                    = elements.at(e).statistics.data.at(s);
                 size_t n = c.count;
                 fprintf(fp, "#SFINFO min         %15.8E\n", c.min);
                 fprintf(fp, "#SFINFO max         %15.8E\n", c.max);
@@ -1477,11 +1559,34 @@ void Dataset::writeAtomicEnvironmentFile(
     return;
 }
 
-void Dataset::averageRmse(double& rmse, size_t& count) const
+void Dataset::collectError(string const&        property,
+                           map<string, double>& error,
+                           size_t&              count) const
 {
-    MPI_Allreduce(MPI_IN_PLACE, &count, 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &rmse , 1, MPI_DOUBLE, MPI_SUM, comm);
-    rmse = sqrt(rmse / count);
+    if (property == "energy")
+    {
+        MPI_Allreduce(MPI_IN_PLACE, &count               , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("RMSEpa")), 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("RMSE"))  , 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("MAEpa")) , 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("MAE"))   , 1, MPI_DOUBLE, MPI_SUM, comm);
+        error.at("RMSEpa") = sqrt(error.at("RMSEpa") / count);
+        error.at("RMSE") = sqrt(error.at("RMSE") / count);
+        error.at("MAEpa") = error.at("MAEpa") / count;
+        error.at("MAE") = error.at("MAE") / count;
+    }
+    else if (property == "force" || property == "charge")
+    {
+        MPI_Allreduce(MPI_IN_PLACE, &count             , 1, MPI_SIZE_T, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("RMSE")), 1, MPI_DOUBLE, MPI_SUM, comm);
+        MPI_Allreduce(MPI_IN_PLACE, &(error.at("MAE")) , 1, MPI_DOUBLE, MPI_SUM, comm);
+        error.at("RMSE") = sqrt(error.at("RMSE") / count);
+        error.at("MAE") = error.at("MAE") / count;
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown property for error collection.\n");
+    }
 
     return;
 }

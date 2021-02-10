@@ -1,0 +1,1202 @@
+###############################################################################
+# DATA SET NORMALIZATION
+###############################################################################
+# This section was automatically added by nnp-norm.
+mean_energy  -3.6581036498775639E+00
+conv_energy   1.1608720067118788E+03
+conv_length   3.8128564085005848E+01
+###############################################################################
+
+###############################################################################
+# GENERAL NNP SETTINGS
+###############################################################################
+number_of_elements              3              # Number of elements.
+elements                        C N H          # Specification of elements.
+cutoff_type                     6 0.0          # Cutoff type.
+scale_symmetry_functions                       # Scale all symmetry functions with min/max values.
+#scale_symmetry_functions_sigma                 # Scale all symmetry functions with sigma.
+scale_min_short                 0.0            # Minimum value for scaling.
+scale_max_short                 1.0            # Maximum value for scaling.
+center_symmetry_functions                      # Center all symmetry functions, i.e. subtract mean value.
+global_hidden_layers_short      2              # Number of hidden layers.
+global_nodes_short              25 25          # Number of nodes in each hidden layer.
+global_activation_short         p p l          # Activation function for each hidden layer and output layer.
+#normalize_nodes                                # Normalize input of nodes.
+
+random_seed 987654321
+
+###############################################################################
+# ADDITIONAL SETTINGS FOR TRAINING
+###############################################################################
+epochs                          25             # Number of training epochs.
+updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
+parallel_mode                   0              # Training parallelization used (0 = Serial, 1 = Multi-stream, 2 = MS with PMO).
+jacobian_mode                   1
+update_strategy                 0              # Update strategy (0 = Combined, 1 = Per-element).
+selection_mode                  2              # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+memorize_symfunc_results                       # Keep symmetry function results in memory.
+task_batch_size_energy          1
+task_batch_size_force           1
+test_fraction                   0.1            # Fraction of structures kept for testing.
+use_short_forces                               # Use forces for training.
+force_weight                    10.0           # Weight of force updates relative to energy updates.
+short_energy_fraction           1.000          # Fraction of energy updates per epoch.
+short_force_fraction            0.041          # Fraction of force updates per epoch.
+short_energy_error_threshold    1.00           # RMSE threshold for energy update candidates.
+short_force_error_threshold     1.00           # RMSE threshold for force update candidates.
+rmse_threshold_trials           3              # Maximum number of RMSE threshold trials.
+#repeated_energy_update                         # After force update perform energy update for corresponding structure.
+#use_old_weights_short                          # Restart fitting with old weight parameters.
+weights_min                     -1.0           # Minimum value for initial random weights.
+weights_max                     1.0            # Maximum value for initial random weights.
+#precondition_weights                           # Precondition weights with initial energies.
+#nguyen_widrow_weights_short                    # Initialize neural network weights according to Nguyen-Widrow scheme.
+write_trainpoints                5             # Write energy comparison.
+write_trainforces                5             # Write force comparison.
+write_weights_epoch              5             # Write weights.
+write_neuronstats               5 10           # Write neuron statistics.
+write_trainlog                                 # Write training log file.
+## ####################
+## # GRADIENT DESCENT #
+## ####################
+## gradient_type                   0              # Gradient descent type (0 = Fixed step size).
+## gradient_eta                    1.0E-4         # Gradient descent parameter eta (fixed step size).
+############################
+# KALMAN FILTER (STANDARD) #
+############################
+kalman_type                     0              # Kalman filter type (0 = Standard, 1 = Fading memory).
+kalman_epsilon                  1.0E-2         # General Kalman filter parameter epsilon (sigmoidal: 0.01, linear: 0.001).
+kalman_q0                       0.01           # General Kalman filter parameter q0 ("large").
+kalman_qtau                     2.302          # General Kalman filter parameter qtau (2.302 => 1 order of magnitude per epoch).
+kalman_qmin                     1.0E-6         # General Kalman filter parameter qmin (typ. 1.0E-6).
+kalman_eta                      0.01           # Standard Kalman filter parameter eta (0.001-1.0).
+kalman_etatau                   2.302          # Standard Kalman filter parameter etatau (2.302 => 1 order of magnitude per epoch).
+kalman_etamax                   1.0            # Standard Kalman filter parameter etamax (1.0+).
+#################################
+# KALMAN FILTER (FADING MEMORY) #
+#################################
+#kalman_type                     1              # Kalman filter type (0 = Standard, 1 = Fading memory).
+#kalman_epsilon                  1.0E-1         # General Kalman filter parameter epsilon (sigmoidal: 0.01, linear: 0.001).
+#kalman_q0                       0.00           # General Kalman filter parameter q0 ("large").
+#kalman_qtau                     2.302          # General Kalman filter parameter qtau (2.302 => 1 order of magnitude per epoch).
+#kalman_qmin                     0.0E-6         # General Kalman filter parameter qmin (typ. 1.0E-6).
+#kalman_lambda_short             0.96000        # Fading memory Kalman filter parameter lambda (forgetting factor 0.95-0.99).
+#kalman_nue_short                0.99950        # Fading memory Kalman filter parameter nu (0.99-0.9995).
+
+###############################################################################
+# SYMMETRY FUNCTIONS
+###############################################################################
+
+symfunction_short C 20 C -1.50E+01 1.50E+01 p2
+symfunction_short C 20 C -1.30E+01 1.30E+01 p2
+symfunction_short C 20 C -1.10E+01 1.10E+01 p2
+symfunction_short C 20 C -9.00E+00 9.00E+00 p2
+symfunction_short C 20 C -7.00E+00 7.00E+00 p2
+symfunction_short C 20 C -5.00E+00 5.00E+00 p2
+symfunction_short C 20 C -3.00E+00 3.00E+00 p2
+symfunction_short C 20 C 0.00E+00 6.00E+00 p2
+symfunction_short C 20 C 3.00E+00 9.00E+00 p2
+symfunction_short C 20 C 6.00E+00 1.20E+01 p2
+symfunction_short C 20 C 9.00E+00 1.50E+01 p2
+ 
+symfunction_short C 20 N -1.50E+01 1.50E+01 p2
+symfunction_short C 20 N -1.30E+01 1.30E+01 p2
+symfunction_short C 20 N -1.10E+01 1.10E+01 p2
+symfunction_short C 20 N -9.00E+00 9.00E+00 p2
+symfunction_short C 20 N -7.00E+00 7.00E+00 p2
+symfunction_short C 20 N -5.00E+00 5.00E+00 p2
+symfunction_short C 20 N -3.00E+00 3.00E+00 p2
+symfunction_short C 20 N 0.00E+00 6.00E+00 p2
+symfunction_short C 20 N 3.00E+00 9.00E+00 p2
+symfunction_short C 20 N 6.00E+00 1.20E+01 p2
+symfunction_short C 20 N 9.00E+00 1.50E+01 p2
+ 
+symfunction_short C 20 H -1.50E+01 1.50E+01 p2
+symfunction_short C 20 H -1.30E+01 1.30E+01 p2
+symfunction_short C 20 H -1.10E+01 1.10E+01 p2
+symfunction_short C 20 H -9.00E+00 9.00E+00 p2
+symfunction_short C 20 H -7.00E+00 7.00E+00 p2
+symfunction_short C 20 H -5.00E+00 5.00E+00 p2
+symfunction_short C 20 H -3.00E+00 3.00E+00 p2
+symfunction_short C 20 H 0.00E+00 6.00E+00 p2
+symfunction_short C 20 H 3.00E+00 9.00E+00 p2
+symfunction_short C 20 H 6.00E+00 1.20E+01 p2
+symfunction_short C 20 H 9.00E+00 1.50E+01 p2
+ 
+ 
+symfunction_short N 20 C -1.50E+01 1.50E+01 p2
+symfunction_short N 20 C -1.30E+01 1.30E+01 p2
+symfunction_short N 20 C -1.10E+01 1.10E+01 p2
+symfunction_short N 20 C -9.00E+00 9.00E+00 p2
+symfunction_short N 20 C -7.00E+00 7.00E+00 p2
+symfunction_short N 20 C -5.00E+00 5.00E+00 p2
+symfunction_short N 20 C -3.00E+00 3.00E+00 p2
+symfunction_short N 20 C 0.00E+00 6.00E+00 p2
+symfunction_short N 20 C 3.00E+00 9.00E+00 p2
+symfunction_short N 20 C 6.00E+00 1.20E+01 p2
+symfunction_short N 20 C 9.00E+00 1.50E+01 p2
+ 
+symfunction_short N 20 N -1.50E+01 1.50E+01 p2
+symfunction_short N 20 N -1.30E+01 1.30E+01 p2
+# symfunction_short  N   28  N      -1.10E+01  1.10E+01
+# symfunction_short  N   28  N      -9.00E+00  9.00E+00
+# symfunction_short  N   28  N      -7.00E+00  7.00E+00
+# symfunction_short  N   28  N      -5.00E+00  5.00E+00
+# symfunction_short  N   28  N      -3.00E+00  3.00E+00
+# symfunction_short  N   28  N       0.00E+00  6.00E+00
+# symfunction_short  N   28  N       3.00E+00  9.00E+00
+# symfunction_short  N   28  N       6.00E+00  1.20E+01
+symfunction_short N 20 N 9.00E+00 1.50E+01 p2
+ 
+symfunction_short N 20 H -1.50E+01 1.50E+01 p2
+symfunction_short N 20 H -1.30E+01 1.30E+01 p2
+symfunction_short N 20 H -1.10E+01 1.10E+01 p2
+symfunction_short N 20 H -9.00E+00 9.00E+00 p2
+symfunction_short N 20 H -7.00E+00 7.00E+00 p2
+symfunction_short N 20 H -5.00E+00 5.00E+00 p2
+# symfunction_short  N   28  H      -3.00E+00  3.00E+00
+symfunction_short N 20 H 0.00E+00 6.00E+00 p2
+symfunction_short N 20 H 3.00E+00 9.00E+00 p2
+symfunction_short N 20 H 6.00E+00 1.20E+01 p2
+symfunction_short N 20 H 9.00E+00 1.50E+01 p2
+ 
+ 
+symfunction_short H 20 C -1.50E+01 1.50E+01 p2
+symfunction_short H 20 C -1.30E+01 1.30E+01 p2
+symfunction_short H 20 C -1.10E+01 1.10E+01 p2
+symfunction_short H 20 C -9.00E+00 9.00E+00 p2
+symfunction_short H 20 C -7.00E+00 7.00E+00 p2
+symfunction_short H 20 C -5.00E+00 5.00E+00 p2
+symfunction_short H 20 C -3.00E+00 3.00E+00 p2
+symfunction_short H 20 C 0.00E+00 6.00E+00 p2
+symfunction_short H 20 C 3.00E+00 9.00E+00 p2
+symfunction_short H 20 C 6.00E+00 1.20E+01 p2
+symfunction_short H 20 C 9.00E+00 1.50E+01 p2
+ 
+symfunction_short H 20 N -1.50E+01 1.50E+01 p2
+symfunction_short H 20 N -1.30E+01 1.30E+01 p2
+symfunction_short H 20 N -1.10E+01 1.10E+01 p2
+symfunction_short H 20 N -9.00E+00 9.00E+00 p2
+symfunction_short H 20 N -7.00E+00 7.00E+00 p2
+symfunction_short H 20 N -5.00E+00 5.00E+00 p2
+# symfunction_short  H   28  N      -3.00E+00  3.00E+00
+symfunction_short H 20 N 0.00E+00 6.00E+00 p2
+symfunction_short H 20 N 3.00E+00 9.00E+00 p2
+symfunction_short H 20 N 6.00E+00 1.20E+01 p2
+symfunction_short H 20 N 9.00E+00 1.50E+01 p2
+ 
+symfunction_short H 20 H -1.50E+01 1.50E+01 p2
+symfunction_short H 20 H -1.30E+01 1.30E+01 p2
+symfunction_short H 20 H -1.10E+01 1.10E+01 p2
+symfunction_short H 20 H -9.00E+00 9.00E+00 p2
+symfunction_short H 20 H -7.00E+00 7.00E+00 p2
+symfunction_short H 20 H -5.00E+00 5.00E+00 p2
+symfunction_short H 20 H -3.00E+00 3.00E+00 p2
+symfunction_short H 20 H 0.00E+00 6.00E+00 p2
+symfunction_short H 20 H 3.00E+00 9.00E+00 p2
+symfunction_short H 20 H 6.00E+00 1.20E+01 p2
+symfunction_short H 20 H 9.00E+00 1.50E+01 p2
+ 
+ 
+symfunction_short C 22 C C -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 C C -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 C C -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 C C -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 C C -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 C C -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short C 22 C C -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short C 22 C C -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short C 22 C C -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short C 22 C C -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short C 22 C C -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short C 22 C C -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short C 22 C C -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short C 22 C C -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short C 22 C C -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short C 22 C C -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short C 22 C C -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short C 22 C C -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short C 22 C C -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C C -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short C 22 C C -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short C 22 C C -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short C 22 C C -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short C 22 C C -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short C 22 C C -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C C -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short C 22 C C -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short C 22 C C -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short C 22 C C -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short C 22 C C -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short C 22 C C -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C C -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short C 22 C C -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short C 22 C C -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short C 22 C C -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short C 22 C C -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short C 22 C C 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short C 22 C C 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short C 22 C C 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short C 22 C C 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short C 22 C C 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short C 22 C C 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short C 22 C C 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short C 22 C C 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short C 22 C C 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short C 22 C C 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short C 22 C C 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short C 22 C C 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short C 22 C C 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 C C 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 C C 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 C C 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 C C 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 C C 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+symfunction_short C 22 C N -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 C N -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 C N -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 C N -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 C N -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 C N -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short C 22 C N -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short C 22 C N -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short C 22 C N -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short C 22 C N -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short C 22 C N -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short C 22 C N -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short C 22 C N -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short C 22 C N -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short C 22 C N -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short C 22 C N -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short C 22 C N -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short C 22 C N -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short C 22 C N -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C N -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short C 22 C N -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short C 22 C N -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short C 22 C N -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short C 22 C N -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short C 22 C N -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C N -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short C 22 C N -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short C 22 C N -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short C 22 C N -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short C 22 C N -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short C 22 C N -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C N -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short C 22 C N -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short C 22 C N -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short C 22 C N -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short C 22 C N -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short C 22 C N 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short C 22 C N 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short C 22 C N 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short C 22 C N 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short C 22 C N 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short C 22 C N 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short C 22 C N 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short C 22 C N 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short C 22 C N 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short C 22 C N 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short C 22 C N 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short C 22 C N 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short C 22 C N 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 C N 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 C N 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 C N 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 C N 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 C N 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+symfunction_short C 22 C H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 C H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 C H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 C H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 C H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 C H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short C 22 C H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short C 22 C H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short C 22 C H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short C 22 C H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short C 22 C H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short C 22 C H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short C 22 C H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short C 22 C H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short C 22 C H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short C 22 C H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short C 22 C H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short C 22 C H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short C 22 C H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short C 22 C H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short C 22 C H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short C 22 C H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short C 22 C H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short C 22 C H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short C 22 C H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short C 22 C H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short C 22 C H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short C 22 C H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short C 22 C H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short C 22 C H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short C 22 C H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short C 22 C H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short C 22 C H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short C 22 C H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short C 22 C H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short C 22 C H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short C 22 C H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short C 22 C H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short C 22 C H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short C 22 C H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short C 22 C H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short C 22 C H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short C 22 C H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short C 22 C H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short C 22 C H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short C 22 C H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short C 22 C H 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 C H 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 C H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 C H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 C H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 C H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+symfunction_short C 22 N N -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 N N -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 N N -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 N N -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 N N -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 N N -1.50E+01 1.50E+01 49.10 169.10 p2
+# symfunction_short  C   89  N   N   -1.30E+01  -90.00   90.00  1.30E+01
+symfunction_short C 22 N N -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short C 22 N N -1.30E+01 1.30E+01 0.00 180.00 p2
+# symfunction_short  C   89  N   N   -1.30E+01    0.00  120.00  1.30E+01
+symfunction_short C 22 N N -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short C 22 N N -1.30E+01 1.30E+01 49.10 169.10 p2
+# symfunction_short  C   89  N   N   -1.10E+01  -90.00   90.00  1.10E+01
+symfunction_short C 22 N N -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short C 22 N N -1.10E+01 1.10E+01 0.00 180.00 p2
+# symfunction_short  C   89  N   N   -1.10E+01    0.00  120.00  1.10E+01
+symfunction_short C 22 N N -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short C 22 N N -1.10E+01 1.10E+01 49.10 169.10 p2
+# symfunction_short  C   89  N   N   -9.00E+00  -90.00   90.00  9.00E+00
+symfunction_short C 22 N N -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short C 22 N N -9.00E+00 9.00E+00 0.00 180.00 p2
+# symfunction_short  C   89  N   N   -9.00E+00    0.00  120.00  9.00E+00
+symfunction_short C 22 N N -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short C 22 N N -9.00E+00 9.00E+00 49.10 169.10 p2
+# symfunction_short  C   89  N   N   -7.00E+00  -90.00   90.00  7.00E+00
+# symfunction_short  C   89  N   N   -7.00E+00   90.00  270.00  7.00E+00
+# symfunction_short  C   89  N   N   -7.00E+00    0.00  180.00  7.00E+00
+# symfunction_short  C   89  N   N   -7.00E+00    0.00  120.00  7.00E+00
+# symfunction_short  C   89  N   N   -7.00E+00   60.00  180.00  7.00E+00
+# symfunction_short  C   89  N   N   -7.00E+00   49.10  169.10  7.00E+00
+# symfunction_short  C   89  N   N   -5.00E+00  -90.00   90.00  5.00E+00
+# symfunction_short  C   89  N   N   -5.00E+00   90.00  270.00  5.00E+00
+# symfunction_short  C   89  N   N   -5.00E+00    0.00  180.00  5.00E+00
+# symfunction_short  C   89  N   N   -5.00E+00    0.00  120.00  5.00E+00
+# symfunction_short  C   89  N   N   -5.00E+00   60.00  180.00  5.00E+00
+# symfunction_short  C   89  N   N   -5.00E+00   49.10  169.10  5.00E+00
+# symfunction_short  C   89  N   N    0.00E+00  -90.00   90.00  1.00E+01
+symfunction_short C 22 N N 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short C 22 N N 0.00E+00 1.00E+01 0.00 180.00 p2
+# symfunction_short  C   89  N   N    0.00E+00    0.00  120.00  1.00E+01
+symfunction_short C 22 N N 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short C 22 N N 0.00E+00 1.00E+01 49.10 169.10 p2
+# symfunction_short  C   89  N   N    2.50E+00  -90.00   90.00  1.25E+01
+symfunction_short C 22 N N 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short C 22 N N 2.50E+00 1.25E+01 0.00 180.00 p2
+# symfunction_short  C   89  N   N    2.50E+00    0.00  120.00  1.25E+01
+symfunction_short C 22 N N 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short C 22 N N 2.50E+00 1.25E+01 49.10 169.10 p2
+# symfunction_short  C   89  N   N    5.00E+00  -90.00   90.00  1.50E+01
+symfunction_short C 22 N N 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 N N 5.00E+00 1.50E+01 0.00 180.00 p2
+# symfunction_short  C   89  N   N    5.00E+00    0.00  120.00  1.50E+01
+symfunction_short C 22 N N 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 N N 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+symfunction_short C 22 N H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 N H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 N H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 N H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 N H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 N H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short C 22 N H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short C 22 N H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short C 22 N H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short C 22 N H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short C 22 N H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short C 22 N H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short C 22 N H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short C 22 N H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short C 22 N H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short C 22 N H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short C 22 N H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short C 22 N H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short C 22 N H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short C 22 N H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short C 22 N H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short C 22 N H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short C 22 N H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short C 22 N H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short C 22 N H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short C 22 N H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short C 22 N H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short C 22 N H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short C 22 N H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short C 22 N H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short C 22 N H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short C 22 N H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short C 22 N H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short C 22 N H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short C 22 N H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short C 22 N H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short C 22 N H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short C 22 N H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short C 22 N H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short C 22 N H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short C 22 N H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short C 22 N H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short C 22 N H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short C 22 N H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short C 22 N H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short C 22 N H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short C 22 N H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short C 22 N H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short C 22 N H 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 N H 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 N H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 N H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 N H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 N H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+symfunction_short C 22 H H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 H H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 H H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 H H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 H H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 H H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short C 22 H H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short C 22 H H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short C 22 H H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short C 22 H H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short C 22 H H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short C 22 H H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short C 22 H H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short C 22 H H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short C 22 H H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short C 22 H H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short C 22 H H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short C 22 H H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short C 22 H H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short C 22 H H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short C 22 H H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short C 22 H H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short C 22 H H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short C 22 H H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short C 22 H H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short C 22 H H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short C 22 H H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short C 22 H H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short C 22 H H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short C 22 H H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short C 22 H H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short C 22 H H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short C 22 H H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short C 22 H H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short C 22 H H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short C 22 H H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short C 22 H H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short C 22 H H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short C 22 H H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short C 22 H H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short C 22 H H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short C 22 H H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short C 22 H H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short C 22 H H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short C 22 H H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short C 22 H H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short C 22 H H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short C 22 H H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short C 22 H H 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short C 22 H H 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short C 22 H H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short C 22 H H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short C 22 H H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short C 22 H H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+ 
+symfunction_short N 22 C C -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short N 22 C C -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short N 22 C C -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 C C -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short N 22 C C -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short N 22 C C -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short N 22 C C -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short N 22 C C -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short N 22 C C -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short N 22 C C -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short N 22 C C -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short N 22 C C -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short N 22 C C -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short N 22 C C -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short N 22 C C -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short N 22 C C -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short N 22 C C -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short N 22 C C -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short N 22 C C -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short N 22 C C -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short N 22 C C -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short N 22 C C -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short N 22 C C -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short N 22 C C -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short N 22 C C -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short N 22 C C -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short N 22 C C -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short N 22 C C -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short N 22 C C -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short N 22 C C -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short N 22 C C -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short N 22 C C -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short N 22 C C -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short N 22 C C -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short N 22 C C -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short N 22 C C -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short N 22 C C 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short N 22 C C 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short N 22 C C 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short N 22 C C 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short N 22 C C 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short N 22 C C 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short N 22 C C 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short N 22 C C 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short N 22 C C 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short N 22 C C 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short N 22 C C 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short N 22 C C 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short N 22 C C 5.00E+00 1.50E+01 -90.00 90.00 p2
+# symfunction_short  N   89  C   C    5.00E+00   90.00  270.00  1.50E+01
+symfunction_short N 22 C C 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 C C 5.00E+00 1.50E+01 0.00 120.00 p2
+# symfunction_short  N   89  C   C    5.00E+00   60.00  180.00  1.50E+01
+# symfunction_short  N   89  C   C    5.00E+00   49.10  169.10  1.50E+01
+ 
+symfunction_short N 22 C N -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short N 22 C N -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short N 22 C N -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 C N -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short N 22 C N -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short N 22 C N -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short N 22 C N -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short N 22 C N -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short N 22 C N -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short N 22 C N -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short N 22 C N -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short N 22 C N -1.30E+01 1.30E+01 49.10 169.10 p2
+# symfunction_short  N   89  C   N   -1.10E+01  -90.00   90.00  1.10E+01
+# symfunction_short  N   89  C   N   -1.10E+01   90.00  270.00  1.10E+01
+# symfunction_short  N   89  C   N   -1.10E+01    0.00  180.00  1.10E+01
+# symfunction_short  N   89  C   N   -1.10E+01    0.00  120.00  1.10E+01
+# symfunction_short  N   89  C   N   -1.10E+01   60.00  180.00  1.10E+01
+# symfunction_short  N   89  C   N   -1.10E+01   49.10  169.10  1.10E+01
+# symfunction_short  N   89  C   N   -9.00E+00  -90.00   90.00  9.00E+00
+# symfunction_short  N   89  C   N   -9.00E+00   90.00  270.00  9.00E+00
+# symfunction_short  N   89  C   N   -9.00E+00    0.00  180.00  9.00E+00
+# symfunction_short  N   89  C   N   -9.00E+00    0.00  120.00  9.00E+00
+# symfunction_short  N   89  C   N   -9.00E+00   60.00  180.00  9.00E+00
+# symfunction_short  N   89  C   N   -9.00E+00   49.10  169.10  9.00E+00
+# symfunction_short  N   89  C   N   -7.00E+00  -90.00   90.00  7.00E+00
+# symfunction_short  N   89  C   N   -7.00E+00   90.00  270.00  7.00E+00
+# symfunction_short  N   89  C   N   -7.00E+00    0.00  180.00  7.00E+00
+# symfunction_short  N   89  C   N   -7.00E+00    0.00  120.00  7.00E+00
+# symfunction_short  N   89  C   N   -7.00E+00   60.00  180.00  7.00E+00
+# symfunction_short  N   89  C   N   -7.00E+00   49.10  169.10  7.00E+00
+# symfunction_short  N   89  C   N   -5.00E+00  -90.00   90.00  5.00E+00
+# symfunction_short  N   89  C   N   -5.00E+00   90.00  270.00  5.00E+00
+# symfunction_short  N   89  C   N   -5.00E+00    0.00  180.00  5.00E+00
+# symfunction_short  N   89  C   N   -5.00E+00    0.00  120.00  5.00E+00
+# symfunction_short  N   89  C   N   -5.00E+00   60.00  180.00  5.00E+00
+# symfunction_short  N   89  C   N   -5.00E+00   49.10  169.10  5.00E+00
+# symfunction_short  N   89  C   N    0.00E+00  -90.00   90.00  1.00E+01
+# symfunction_short  N   89  C   N    0.00E+00   90.00  270.00  1.00E+01
+# symfunction_short  N   89  C   N    0.00E+00    0.00  180.00  1.00E+01
+# symfunction_short  N   89  C   N    0.00E+00    0.00  120.00  1.00E+01
+# symfunction_short  N   89  C   N    0.00E+00   60.00  180.00  1.00E+01
+# symfunction_short  N   89  C   N    0.00E+00   49.10  169.10  1.00E+01
+symfunction_short N 22 C N 2.50E+00 1.25E+01 -90.00 90.00 p2
+# symfunction_short  N   89  C   N    2.50E+00   90.00  270.00  1.25E+01
+symfunction_short N 22 C N 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short N 22 C N 2.50E+00 1.25E+01 0.00 120.00 p2
+# symfunction_short  N   89  C   N    2.50E+00   60.00  180.00  1.25E+01
+# symfunction_short  N   89  C   N    2.50E+00   49.10  169.10  1.25E+01
+symfunction_short N 22 C N 5.00E+00 1.50E+01 -90.00 90.00 p2
+# symfunction_short  N   89  C   N    5.00E+00   90.00  270.00  1.50E+01
+symfunction_short N 22 C N 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 C N 5.00E+00 1.50E+01 0.00 120.00 p2
+# symfunction_short  N   89  C   N    5.00E+00   60.00  180.00  1.50E+01
+# symfunction_short  N   89  C   N    5.00E+00   49.10  169.10  1.50E+01
+ 
+symfunction_short N 22 C H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short N 22 C H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short N 22 C H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 C H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short N 22 C H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short N 22 C H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short N 22 C H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short N 22 C H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short N 22 C H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short N 22 C H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short N 22 C H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short N 22 C H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short N 22 C H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short N 22 C H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short N 22 C H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short N 22 C H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short N 22 C H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short N 22 C H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short N 22 C H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short N 22 C H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short N 22 C H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short N 22 C H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short N 22 C H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short N 22 C H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short N 22 C H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short N 22 C H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short N 22 C H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short N 22 C H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short N 22 C H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short N 22 C H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short N 22 C H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short N 22 C H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short N 22 C H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short N 22 C H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short N 22 C H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short N 22 C H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short N 22 C H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short N 22 C H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short N 22 C H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short N 22 C H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short N 22 C H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short N 22 C H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short N 22 C H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short N 22 C H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short N 22 C H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short N 22 C H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short N 22 C H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short N 22 C H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short N 22 C H 5.00E+00 1.50E+01 -90.00 90.00 p2
+# symfunction_short  N   89  C   H    5.00E+00   90.00  270.00  1.50E+01
+symfunction_short N 22 C H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 C H 5.00E+00 1.50E+01 0.00 120.00 p2
+# symfunction_short  N   89  C   H    5.00E+00   60.00  180.00  1.50E+01
+symfunction_short N 22 C H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+# symfunction_short  N   89  N   N   -1.50E+01  -90.00   90.00  1.50E+01
+# symfunction_short  N   89  N   N   -1.50E+01   90.00  270.00  1.50E+01
+# symfunction_short  N   89  N   N   -1.50E+01    0.00  180.00  1.50E+01
+# symfunction_short  N   89  N   N   -1.50E+01    0.00  120.00  1.50E+01
+# symfunction_short  N   89  N   N   -1.50E+01   60.00  180.00  1.50E+01
+# symfunction_short  N   89  N   N   -1.50E+01   49.10  169.10  1.50E+01
+# symfunction_short  N   89  N   N   -1.30E+01  -90.00   90.00  1.30E+01
+# symfunction_short  N   89  N   N   -1.30E+01   90.00  270.00  1.30E+01
+# symfunction_short  N   89  N   N   -1.30E+01    0.00  180.00  1.30E+01
+# symfunction_short  N   89  N   N   -1.30E+01    0.00  120.00  1.30E+01
+# symfunction_short  N   89  N   N   -1.30E+01   60.00  180.00  1.30E+01
+# symfunction_short  N   89  N   N   -1.30E+01   49.10  169.10  1.30E+01
+# symfunction_short  N   89  N   N   -1.10E+01  -90.00   90.00  1.10E+01
+# symfunction_short  N   89  N   N   -1.10E+01   90.00  270.00  1.10E+01
+# symfunction_short  N   89  N   N   -1.10E+01    0.00  180.00  1.10E+01
+# symfunction_short  N   89  N   N   -1.10E+01    0.00  120.00  1.10E+01
+# symfunction_short  N   89  N   N   -1.10E+01   60.00  180.00  1.10E+01
+# symfunction_short  N   89  N   N   -1.10E+01   49.10  169.10  1.10E+01
+# symfunction_short  N   89  N   N   -9.00E+00  -90.00   90.00  9.00E+00
+# symfunction_short  N   89  N   N   -9.00E+00   90.00  270.00  9.00E+00
+# symfunction_short  N   89  N   N   -9.00E+00    0.00  180.00  9.00E+00
+# symfunction_short  N   89  N   N   -9.00E+00    0.00  120.00  9.00E+00
+# symfunction_short  N   89  N   N   -9.00E+00   60.00  180.00  9.00E+00
+# symfunction_short  N   89  N   N   -9.00E+00   49.10  169.10  9.00E+00
+# symfunction_short  N   89  N   N   -7.00E+00  -90.00   90.00  7.00E+00
+# symfunction_short  N   89  N   N   -7.00E+00   90.00  270.00  7.00E+00
+# symfunction_short  N   89  N   N   -7.00E+00    0.00  180.00  7.00E+00
+# symfunction_short  N   89  N   N   -7.00E+00    0.00  120.00  7.00E+00
+# symfunction_short  N   89  N   N   -7.00E+00   60.00  180.00  7.00E+00
+# symfunction_short  N   89  N   N   -7.00E+00   49.10  169.10  7.00E+00
+# symfunction_short  N   89  N   N   -5.00E+00  -90.00   90.00  5.00E+00
+# symfunction_short  N   89  N   N   -5.00E+00   90.00  270.00  5.00E+00
+# symfunction_short  N   89  N   N   -5.00E+00    0.00  180.00  5.00E+00
+# symfunction_short  N   89  N   N   -5.00E+00    0.00  120.00  5.00E+00
+# symfunction_short  N   89  N   N   -5.00E+00   60.00  180.00  5.00E+00
+# symfunction_short  N   89  N   N   -5.00E+00   49.10  169.10  5.00E+00
+# symfunction_short  N   89  N   N    0.00E+00  -90.00   90.00  1.00E+01
+# symfunction_short  N   89  N   N    0.00E+00   90.00  270.00  1.00E+01
+# symfunction_short  N   89  N   N    0.00E+00    0.00  180.00  1.00E+01
+# symfunction_short  N   89  N   N    0.00E+00    0.00  120.00  1.00E+01
+# symfunction_short  N   89  N   N    0.00E+00   60.00  180.00  1.00E+01
+# symfunction_short  N   89  N   N    0.00E+00   49.10  169.10  1.00E+01
+# symfunction_short  N   89  N   N    2.50E+00  -90.00   90.00  1.25E+01
+# symfunction_short  N   89  N   N    2.50E+00   90.00  270.00  1.25E+01
+# symfunction_short  N   89  N   N    2.50E+00    0.00  180.00  1.25E+01
+# symfunction_short  N   89  N   N    2.50E+00    0.00  120.00  1.25E+01
+# symfunction_short  N   89  N   N    2.50E+00   60.00  180.00  1.25E+01
+# symfunction_short  N   89  N   N    2.50E+00   49.10  169.10  1.25E+01
+# symfunction_short  N   89  N   N    5.00E+00  -90.00   90.00  1.50E+01
+# symfunction_short  N   89  N   N    5.00E+00   90.00  270.00  1.50E+01
+# symfunction_short  N   89  N   N    5.00E+00    0.00  180.00  1.50E+01
+# symfunction_short  N   89  N   N    5.00E+00    0.00  120.00  1.50E+01
+# symfunction_short  N   89  N   N    5.00E+00   60.00  180.00  1.50E+01
+# symfunction_short  N   89  N   N    5.00E+00   49.10  169.10  1.50E+01
+ 
+symfunction_short N 22 N H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short N 22 N H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short N 22 N H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 N H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short N 22 N H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short N 22 N H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short N 22 N H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short N 22 N H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short N 22 N H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short N 22 N H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short N 22 N H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short N 22 N H -1.30E+01 1.30E+01 49.10 169.10 p2
+# symfunction_short  N   89  N   H   -1.10E+01  -90.00   90.00  1.10E+01
+# symfunction_short  N   89  N   H   -1.10E+01   90.00  270.00  1.10E+01
+# symfunction_short  N   89  N   H   -1.10E+01    0.00  180.00  1.10E+01
+# symfunction_short  N   89  N   H   -1.10E+01    0.00  120.00  1.10E+01
+# symfunction_short  N   89  N   H   -1.10E+01   60.00  180.00  1.10E+01
+# symfunction_short  N   89  N   H   -1.10E+01   49.10  169.10  1.10E+01
+# symfunction_short  N   89  N   H   -9.00E+00  -90.00   90.00  9.00E+00
+# symfunction_short  N   89  N   H   -9.00E+00   90.00  270.00  9.00E+00
+# symfunction_short  N   89  N   H   -9.00E+00    0.00  180.00  9.00E+00
+# symfunction_short  N   89  N   H   -9.00E+00    0.00  120.00  9.00E+00
+# symfunction_short  N   89  N   H   -9.00E+00   60.00  180.00  9.00E+00
+# symfunction_short  N   89  N   H   -9.00E+00   49.10  169.10  9.00E+00
+# symfunction_short  N   89  N   H   -7.00E+00  -90.00   90.00  7.00E+00
+# symfunction_short  N   89  N   H   -7.00E+00   90.00  270.00  7.00E+00
+# symfunction_short  N   89  N   H   -7.00E+00    0.00  180.00  7.00E+00
+# symfunction_short  N   89  N   H   -7.00E+00    0.00  120.00  7.00E+00
+# symfunction_short  N   89  N   H   -7.00E+00   60.00  180.00  7.00E+00
+# symfunction_short  N   89  N   H   -7.00E+00   49.10  169.10  7.00E+00
+# symfunction_short  N   89  N   H   -5.00E+00  -90.00   90.00  5.00E+00
+# symfunction_short  N   89  N   H   -5.00E+00   90.00  270.00  5.00E+00
+# symfunction_short  N   89  N   H   -5.00E+00    0.00  180.00  5.00E+00
+# symfunction_short  N   89  N   H   -5.00E+00    0.00  120.00  5.00E+00
+# symfunction_short  N   89  N   H   -5.00E+00   60.00  180.00  5.00E+00
+# symfunction_short  N   89  N   H   -5.00E+00   49.10  169.10  5.00E+00
+# symfunction_short  N   89  N   H    0.00E+00  -90.00   90.00  1.00E+01
+# symfunction_short  N   89  N   H    0.00E+00   90.00  270.00  1.00E+01
+# symfunction_short  N   89  N   H    0.00E+00    0.00  180.00  1.00E+01
+# symfunction_short  N   89  N   H    0.00E+00    0.00  120.00  1.00E+01
+# symfunction_short  N   89  N   H    0.00E+00   60.00  180.00  1.00E+01
+# symfunction_short  N   89  N   H    0.00E+00   49.10  169.10  1.00E+01
+symfunction_short N 22 N H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short N 22 N H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short N 22 N H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short N 22 N H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short N 22 N H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short N 22 N H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short N 22 N H 5.00E+00 1.50E+01 -90.00 90.00 p2
+# symfunction_short  N   89  N   H    5.00E+00   90.00  270.00  1.50E+01
+symfunction_short N 22 N H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 N H 5.00E+00 1.50E+01 0.00 120.00 p2
+# symfunction_short  N   89  N   H    5.00E+00   60.00  180.00  1.50E+01
+# symfunction_short  N   89  N   H    5.00E+00   49.10  169.10  1.50E+01
+ 
+ 
+symfunction_short N 22 H H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short N 22 H H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short N 22 H H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 H H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short N 22 H H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short N 22 H H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short N 22 H H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short N 22 H H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short N 22 H H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short N 22 H H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short N 22 H H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short N 22 H H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short N 22 H H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short N 22 H H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short N 22 H H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short N 22 H H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short N 22 H H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short N 22 H H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short N 22 H H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short N 22 H H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short N 22 H H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short N 22 H H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short N 22 H H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short N 22 H H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short N 22 H H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short N 22 H H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short N 22 H H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short N 22 H H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short N 22 H H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short N 22 H H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short N 22 H H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short N 22 H H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short N 22 H H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short N 22 H H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short N 22 H H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short N 22 H H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short N 22 H H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short N 22 H H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short N 22 H H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short N 22 H H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short N 22 H H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short N 22 H H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short N 22 H H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short N 22 H H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short N 22 H H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short N 22 H H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short N 22 H H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short N 22 H H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short N 22 H H 5.00E+00 1.50E+01 -90.00 90.00 p2
+# symfunction_short  N   89  H   H    5.00E+00   90.00  270.00  1.50E+01
+symfunction_short N 22 H H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short N 22 H H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short N 22 H H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short N 22 H H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+ 
+symfunction_short H 22 C C -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 C C -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 C C -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 C C -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 C C -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 C C -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short H 22 C C -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short H 22 C C -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short H 22 C C -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short H 22 C C -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short H 22 C C -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short H 22 C C -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short H 22 C C -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short H 22 C C -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short H 22 C C -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short H 22 C C -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short H 22 C C -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short H 22 C C -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short H 22 C C -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C C -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short H 22 C C -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short H 22 C C -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short H 22 C C -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short H 22 C C -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short H 22 C C -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C C -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short H 22 C C -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short H 22 C C -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short H 22 C C -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short H 22 C C -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short H 22 C C -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C C -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short H 22 C C -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short H 22 C C -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short H 22 C C -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short H 22 C C -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short H 22 C C 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short H 22 C C 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short H 22 C C 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short H 22 C C 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short H 22 C C 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short H 22 C C 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short H 22 C C 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short H 22 C C 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short H 22 C C 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short H 22 C C 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short H 22 C C 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short H 22 C C 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short H 22 C C 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 C C 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 C C 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 C C 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 C C 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 C C 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+symfunction_short H 22 C N -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 C N -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 C N -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 C N -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 C N -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 C N -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short H 22 C N -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short H 22 C N -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short H 22 C N -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short H 22 C N -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short H 22 C N -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short H 22 C N -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short H 22 C N -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short H 22 C N -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short H 22 C N -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short H 22 C N -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short H 22 C N -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short H 22 C N -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short H 22 C N -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C N -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short H 22 C N -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short H 22 C N -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short H 22 C N -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short H 22 C N -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short H 22 C N -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C N -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short H 22 C N -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short H 22 C N -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short H 22 C N -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short H 22 C N -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short H 22 C N -5.00E+00 5.00E+00 -90.00 90.00 p2
+# symfunction_short  H   89  C   N   -5.00E+00   90.00  270.00  5.00E+00
+symfunction_short H 22 C N -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short H 22 C N -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short H 22 C N -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short H 22 C N -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short H 22 C N 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short H 22 C N 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short H 22 C N 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short H 22 C N 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short H 22 C N 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short H 22 C N 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short H 22 C N 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short H 22 C N 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short H 22 C N 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short H 22 C N 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short H 22 C N 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short H 22 C N 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short H 22 C N 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 C N 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 C N 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 C N 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 C N 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 C N 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+symfunction_short H 22 C H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 C H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 C H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 C H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 C H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 C H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short H 22 C H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short H 22 C H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short H 22 C H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short H 22 C H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short H 22 C H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short H 22 C H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short H 22 C H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short H 22 C H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short H 22 C H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short H 22 C H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short H 22 C H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short H 22 C H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short H 22 C H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short H 22 C H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short H 22 C H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short H 22 C H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short H 22 C H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short H 22 C H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short H 22 C H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short H 22 C H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short H 22 C H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short H 22 C H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short H 22 C H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short H 22 C H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short H 22 C H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short H 22 C H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short H 22 C H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short H 22 C H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short H 22 C H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short H 22 C H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short H 22 C H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short H 22 C H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short H 22 C H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short H 22 C H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short H 22 C H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short H 22 C H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short H 22 C H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short H 22 C H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short H 22 C H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short H 22 C H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short H 22 C H 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 C H 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 C H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 C H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 C H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 C H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+symfunction_short H 22 N N -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 N N -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 N N -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 N N -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 N N -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 N N -1.50E+01 1.50E+01 49.10 169.10 p2
+# symfunction_short  H   89  N   N   -1.30E+01  -90.00   90.00  1.30E+01
+symfunction_short H 22 N N -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short H 22 N N -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short H 22 N N -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short H 22 N N -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short H 22 N N -1.30E+01 1.30E+01 49.10 169.10 p2
+# symfunction_short  H   89  N   N   -1.10E+01  -90.00   90.00  1.10E+01
+symfunction_short H 22 N N -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short H 22 N N -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short H 22 N N -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short H 22 N N -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short H 22 N N -1.10E+01 1.10E+01 49.10 169.10 p2
+# symfunction_short  H   89  N   N   -9.00E+00  -90.00   90.00  9.00E+00
+# symfunction_short  H   89  N   N   -9.00E+00   90.00  270.00  9.00E+00
+symfunction_short H 22 N N -9.00E+00 9.00E+00 0.00 180.00 p2
+# symfunction_short  H   89  N   N   -9.00E+00    0.00  120.00  9.00E+00
+symfunction_short H 22 N N -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short H 22 N N -9.00E+00 9.00E+00 49.10 169.10 p2
+# symfunction_short  H   89  N   N   -7.00E+00  -90.00   90.00  7.00E+00
+# symfunction_short  H   89  N   N   -7.00E+00   90.00  270.00  7.00E+00
+# symfunction_short  H   89  N   N   -7.00E+00    0.00  180.00  7.00E+00
+# symfunction_short  H   89  N   N   -7.00E+00    0.00  120.00  7.00E+00
+# symfunction_short  H   89  N   N   -7.00E+00   60.00  180.00  7.00E+00
+# symfunction_short  H   89  N   N   -7.00E+00   49.10  169.10  7.00E+00
+# symfunction_short  H   89  N   N   -5.00E+00  -90.00   90.00  5.00E+00
+# symfunction_short  H   89  N   N   -5.00E+00   90.00  270.00  5.00E+00
+# symfunction_short  H   89  N   N   -5.00E+00    0.00  180.00  5.00E+00
+# symfunction_short  H   89  N   N   -5.00E+00    0.00  120.00  5.00E+00
+# symfunction_short  H   89  N   N   -5.00E+00   60.00  180.00  5.00E+00
+# symfunction_short  H   89  N   N   -5.00E+00   49.10  169.10  5.00E+00
+# symfunction_short  H   89  N   N    0.00E+00  -90.00   90.00  1.00E+01
+symfunction_short H 22 N N 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short H 22 N N 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short H 22 N N 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short H 22 N N 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short H 22 N N 0.00E+00 1.00E+01 49.10 169.10 p2
+# symfunction_short  H   89  N   N    2.50E+00  -90.00   90.00  1.25E+01
+symfunction_short H 22 N N 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short H 22 N N 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short H 22 N N 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short H 22 N N 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short H 22 N N 2.50E+00 1.25E+01 49.10 169.10 p2
+# symfunction_short  H   89  N   N    5.00E+00  -90.00   90.00  1.50E+01
+symfunction_short H 22 N N 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 N N 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 N N 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 N N 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 N N 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+symfunction_short H 22 N H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 N H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 N H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 N H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 N H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 N H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short H 22 N H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short H 22 N H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short H 22 N H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short H 22 N H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short H 22 N H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short H 22 N H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short H 22 N H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short H 22 N H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short H 22 N H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short H 22 N H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short H 22 N H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short H 22 N H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short H 22 N H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short H 22 N H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short H 22 N H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short H 22 N H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short H 22 N H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short H 22 N H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short H 22 N H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short H 22 N H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short H 22 N H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short H 22 N H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short H 22 N H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short H 22 N H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short H 22 N H -5.00E+00 5.00E+00 -90.00 90.00 p2
+# symfunction_short  H   89  N   H   -5.00E+00   90.00  270.00  5.00E+00
+symfunction_short H 22 N H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short H 22 N H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short H 22 N H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short H 22 N H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short H 22 N H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short H 22 N H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short H 22 N H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short H 22 N H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short H 22 N H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short H 22 N H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short H 22 N H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short H 22 N H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short H 22 N H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short H 22 N H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short H 22 N H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short H 22 N H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short H 22 N H 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 N H 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 N H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 N H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 N H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 N H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+symfunction_short H 22 H H -1.50E+01 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 H H -1.50E+01 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 H H -1.50E+01 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 H H -1.50E+01 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 H H -1.50E+01 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 H H -1.50E+01 1.50E+01 49.10 169.10 p2
+symfunction_short H 22 H H -1.30E+01 1.30E+01 -90.00 90.00 p2
+symfunction_short H 22 H H -1.30E+01 1.30E+01 90.00 270.00 p2
+symfunction_short H 22 H H -1.30E+01 1.30E+01 0.00 180.00 p2
+symfunction_short H 22 H H -1.30E+01 1.30E+01 0.00 120.00 p2
+symfunction_short H 22 H H -1.30E+01 1.30E+01 60.00 180.00 p2
+symfunction_short H 22 H H -1.30E+01 1.30E+01 49.10 169.10 p2
+symfunction_short H 22 H H -1.10E+01 1.10E+01 -90.00 90.00 p2
+symfunction_short H 22 H H -1.10E+01 1.10E+01 90.00 270.00 p2
+symfunction_short H 22 H H -1.10E+01 1.10E+01 0.00 180.00 p2
+symfunction_short H 22 H H -1.10E+01 1.10E+01 0.00 120.00 p2
+symfunction_short H 22 H H -1.10E+01 1.10E+01 60.00 180.00 p2
+symfunction_short H 22 H H -1.10E+01 1.10E+01 49.10 169.10 p2
+symfunction_short H 22 H H -9.00E+00 9.00E+00 -90.00 90.00 p2
+symfunction_short H 22 H H -9.00E+00 9.00E+00 90.00 270.00 p2
+symfunction_short H 22 H H -9.00E+00 9.00E+00 0.00 180.00 p2
+symfunction_short H 22 H H -9.00E+00 9.00E+00 0.00 120.00 p2
+symfunction_short H 22 H H -9.00E+00 9.00E+00 60.00 180.00 p2
+symfunction_short H 22 H H -9.00E+00 9.00E+00 49.10 169.10 p2
+symfunction_short H 22 H H -7.00E+00 7.00E+00 -90.00 90.00 p2
+symfunction_short H 22 H H -7.00E+00 7.00E+00 90.00 270.00 p2
+symfunction_short H 22 H H -7.00E+00 7.00E+00 0.00 180.00 p2
+symfunction_short H 22 H H -7.00E+00 7.00E+00 0.00 120.00 p2
+symfunction_short H 22 H H -7.00E+00 7.00E+00 60.00 180.00 p2
+symfunction_short H 22 H H -7.00E+00 7.00E+00 49.10 169.10 p2
+symfunction_short H 22 H H -5.00E+00 5.00E+00 -90.00 90.00 p2
+symfunction_short H 22 H H -5.00E+00 5.00E+00 90.00 270.00 p2
+symfunction_short H 22 H H -5.00E+00 5.00E+00 0.00 180.00 p2
+symfunction_short H 22 H H -5.00E+00 5.00E+00 0.00 120.00 p2
+symfunction_short H 22 H H -5.00E+00 5.00E+00 60.00 180.00 p2
+symfunction_short H 22 H H -5.00E+00 5.00E+00 49.10 169.10 p2
+symfunction_short H 22 H H 0.00E+00 1.00E+01 -90.00 90.00 p2
+symfunction_short H 22 H H 0.00E+00 1.00E+01 90.00 270.00 p2
+symfunction_short H 22 H H 0.00E+00 1.00E+01 0.00 180.00 p2
+symfunction_short H 22 H H 0.00E+00 1.00E+01 0.00 120.00 p2
+symfunction_short H 22 H H 0.00E+00 1.00E+01 60.00 180.00 p2
+symfunction_short H 22 H H 0.00E+00 1.00E+01 49.10 169.10 p2
+symfunction_short H 22 H H 2.50E+00 1.25E+01 -90.00 90.00 p2
+symfunction_short H 22 H H 2.50E+00 1.25E+01 90.00 270.00 p2
+symfunction_short H 22 H H 2.50E+00 1.25E+01 0.00 180.00 p2
+symfunction_short H 22 H H 2.50E+00 1.25E+01 0.00 120.00 p2
+symfunction_short H 22 H H 2.50E+00 1.25E+01 60.00 180.00 p2
+symfunction_short H 22 H H 2.50E+00 1.25E+01 49.10 169.10 p2
+symfunction_short H 22 H H 5.00E+00 1.50E+01 -90.00 90.00 p2
+symfunction_short H 22 H H 5.00E+00 1.50E+01 90.00 270.00 p2
+symfunction_short H 22 H H 5.00E+00 1.50E+01 0.00 180.00 p2
+symfunction_short H 22 H H 5.00E+00 1.50E+01 0.00 120.00 p2
+symfunction_short H 22 H H 5.00E+00 1.50E+01 60.00 180.00 p2
+symfunction_short H 22 H H 5.00E+00 1.50E+01 49.10 169.10 p2
+ 
+ 
+ 

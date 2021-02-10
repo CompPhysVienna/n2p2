@@ -341,6 +341,19 @@ void NeuralNetwork::modifyConnections(ModificationScheme modificationScheme,
     return;
 }
 
+void NeuralNetwork::setInput(size_t const index, double const value) const
+{
+    Neuron& n = inputLayer->neurons[index];
+    n.count++;
+    n.value = value;
+    n.min  = min(value, n.min);
+    n.max  = max(value, n.max);
+    n.sum  += value;
+    n.sum2 += value * value;
+
+    return;
+}
+
 void NeuralNetwork::setInput(double const* const& input) const
 {
     for (int i = 0; i < inputLayer->numNeurons; i++)
@@ -901,7 +914,7 @@ void NeuralNetwork::getNeuronStatistics(long*   count,
                                         double* min,
                                         double* max,
                                         double* sum,
-                                        double* sum2)
+                                        double* sum2) const
 {
     int iNeuron = 0;
 

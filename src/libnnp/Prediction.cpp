@@ -17,16 +17,16 @@
 #include "Prediction.h"
 #include <fstream>   // std::ifstream
 #include <stdexcept> // std::runtime_error
-#include "Stopwatch.h"
 #include "utility.h"
 
 using namespace std;
 using namespace nnp;
 
 Prediction::Prediction() : Mode(),
-                           fileNameSettings  ("input.nn"          ),
-                           fileNameScaling   ("scaling.data"      ),
-                           formatWeightsFiles("weights.%03zu.data")
+                           fileNameSettings        ("input.nn"          ),
+                           fileNameScaling         ("scaling.data"      ),
+                           formatWeightsFilesShort ("weights.%03zu.data" ),
+                           formatWeightsFilesCharge("weightse.%03zu.data")
 {
 }
 
@@ -36,7 +36,8 @@ void Prediction::setup()
     loadSettingsFile(fileNameSettings);
     setupGeneric();
     setupSymmetryFunctionScaling(fileNameScaling);
-    setupNeuralNetworkWeights(formatWeightsFiles);
+    setupNeuralNetworkWeights(formatWeightsFilesShort,
+                              formatWeightsFilesCharge);
     setupSymmetryFunctionStatistics(false, false, true, false);
 }
 
@@ -60,13 +61,14 @@ void Prediction::readStructureFromFile(string const& fileName)
 void Prediction::predict()
 {
     structure.calculateNeighborList(maxCutoffRadius);
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
     calculateAtomicNeuralNetworks(structure, true);
     calculateEnergy(structure);
+    if (nnpType == NNPType::SHORT_CHARGE_NN) calculateCharge(structure);
     calculateForces(structure);
     if (normalize)
     {

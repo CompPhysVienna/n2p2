@@ -50,6 +50,7 @@ weights_min                     -1.0           # Minimum value for initial rando
 weights_max                     1.0            # Maximum value for initial random weights.
 #precondition_weights                           # Precondition weights with initial energies.
 #nguyen_widrow_weights_short                    # Initialize neural network weights according to Nguyen-Widrow scheme.
+main_error_metric               RMSEpa         # Main error metric for screen output (RMSEpa/RMSE/MAEpa/MAE).
 write_trainpoints               1              # Write energy comparison every this many epochs.
 write_trainforces               1              # Write force comparison every this many epochs.
 write_weights_epoch             1              # Write weights every this many epochs.
@@ -104,6 +105,34 @@ kalman_etamax                   1.0            # Standard Kalman filter paramete
 # Wide Angular symmetry function (type 9):
 # NOTE: <<rshift>> is optional!
 #symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
+
+# Weighted radial symmetry function (type 12):
+#symfunction_short <element-central> 12 <eta> <rshift> <rcutoff>
+
+# Weighted narrow Angular symmetry function (type 13):
+#symfunction_short <element-central> 13 <eta> <rshift> <lambda> <zeta> <rcutoff>
+
+# Radial symmetry function with compact support (type 20):
+#symfunction_short <element-central> 20 <element-neighbor> <rlow> <rcutoff> <subtype>
+
+# Narrow angular symmetry function with compact support (type 21):
+#symfunction_short <element-central> 21 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
+
+# Wide angular symmetry function with compact support (type 22):
+#symfunction_short <element-central> 22 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
+
+# Weighted radial symmetry function with compact support (type 23):
+#symfunction_short <element-central> 23 <rlow> <rcutoff> <subtype>
+
+# Weighted narrow angular symmetry function with compact support (type 24):
+#symfunction_short <element-central> 24 <rlow> <rcutoff> <left> <right> <subtype>
+
+# Weighted wide angular symmetry function with compact support (type 24):
+#symfunction_short <element-central> 25 <rlow> <rcutoff> <left> <right> <subtype>
+
+##############################
+# EXAMPLE SYMMETRY FUNCTIONS #
+##############################
 
 # Generating radial symmetry function set:
 # mode  = shift    

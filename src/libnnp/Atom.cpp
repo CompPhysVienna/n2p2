@@ -16,6 +16,8 @@
 
 #include "Atom.h"
 #include "utility.h"
+#include <cmath>     // fabs
+#include <limits>    // std::numeric_limits
 #include <stdexcept> // std::range_error
 
 using namespace std;
@@ -24,6 +26,7 @@ using namespace nnp;
 Atom::Atom() : hasNeighborList               (false),
                hasSymmetryFunctions          (false),
                hasSymmetryFunctionDerivatives(false),
+               useChargeNeuron               (false),
                index                         (0    ),
                indexStructure                (0    ),
                tag                           (0    ),
@@ -32,11 +35,12 @@ Atom::Atom() : hasNeighborList               (false),
                numNeighborsUnique            (0    ),
                numSymmetryFunctions          (0    ),
                energy                        (0.0  ),
-               charge                        (0.0  )
+               charge                        (0.0  ),
+               chargeRef                     (0.0  )
 {
 }
 
-#ifndef IMPROVED_SFD_MEMORY
+#ifdef NNP_FULL_SFD_MEMORY
 void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
 {
     for (size_t i = 0; i < dGdxia.size(); i++)
@@ -77,10 +81,12 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
         {
             dEdG.at(i) *= convEnergy;
             dGdr.at(i) /= convLength;
-#ifndef IMPROVED_SFD_MEMORY
+#ifdef NNP_FULL_SFD_MEMORY
             dGdxia.at(i) /= convLength;
 #endif
         }
+        // Take care of extra charge neuron.
+        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
     }
 
     if (hasNeighborList)
@@ -89,8 +95,6 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
              it != neighbors.end(); ++it)
         {
             it->d *= convLength;
-            it->dfc /= convLength;
-            it->rc *= convLength;
             it->dr *= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
@@ -117,10 +121,12 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
         {
             dEdG.at(i) /= convEnergy;
             dGdr.at(i) *= convLength;
-#ifndef IMPROVED_SFD_MEMORY
+#ifdef NNP_FULL_SFD_MEMORY
             dGdxia.at(i) *= convLength;
 #endif
         }
+        // Take care of extra charge neuron.
+        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
     }
 
     if (hasNeighborList)
@@ -129,8 +135,6 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
              it != neighbors.end(); ++it)
         {
             it->d /= convLength;
-            it->dfc *= convLength;
-            it->rc /= convLength;
             it->dr /= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
@@ -156,13 +160,17 @@ void Atom::allocate(bool all)
     // Clear all symmetry function related vectors (also for derivatives).
     G.clear();
     dEdG.clear();
-#ifndef IMPROVED_SFD_MEMORY
+    dQdG.clear();
+#ifdef NNP_FULL_SFD_MEMORY
     dGdxia.clear();
 #endif
     dGdr.clear();
     for (vector<Neighbor>::iterator it = neighbors.begin();
          it != neighbors.end(); ++it)
     {
+#ifndef NNP_NO_SF_CACHE
+        it->cache.clear();
+#endif
         it->dGdr.clear();
     }
 
@@ -174,22 +182,31 @@ void Atom::allocate(bool all)
     G.resize(numSymmetryFunctions, 0.0);
     if (all)
     {
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
         if (numSymmetryFunctionDerivatives.size() == 0)
         {
             throw range_error("ERROR: Number of symmetry function derivatives"
                               " unset, cannot allocate.\n");
         }
 #endif
-        dEdG.resize(numSymmetryFunctions, 0.0);
-#ifndef IMPROVED_SFD_MEMORY
+        if (useChargeNeuron) dEdG.resize(numSymmetryFunctions + 1, 0.0);
+        else                 dEdG.resize(numSymmetryFunctions, 0.0);
+        dQdG.resize(numSymmetryFunctions, 0.0);
+#ifdef NNP_FULL_SFD_MEMORY
         dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
         dGdr.resize(numSymmetryFunctions);
-        for (vector<Neighbor>::iterator it = neighbors.begin();
-             it != neighbors.end(); ++it)
+    }
+    for (vector<Neighbor>::iterator it = neighbors.begin();
+         it != neighbors.end(); ++it)
+    {
+#ifndef NNP_NO_SF_CACHE
+        it->cache.resize(cacheSizePerElement.at(it->element),
+                         -numeric_limits<double>::max());
+#endif
+        if (all)
         {
-#ifdef IMPROVED_SFD_MEMORY
+#ifndef NNP_FULL_SFD_MEMORY
             it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
 #else
             it->dGdr.resize(numSymmetryFunctions);
@@ -207,11 +224,21 @@ void Atom::free(bool all)
         G.clear();
         vector<double>(G).swap(G);
         hasSymmetryFunctions = false;
+#ifndef NNP_NO_SF_CACHE
+        for (vector<Neighbor>::iterator it = neighbors.begin();
+             it != neighbors.end(); ++it)
+        {
+            it->cache.clear();
+            vector<double>(it->cache).swap(it->cache);
+        }
+#endif
     }
 
     dEdG.clear();
     vector<double>(dEdG).swap(dEdG);
-#ifndef IMPROVED_SFD_MEMORY
+    dQdG.clear();
+    vector<double>(dQdG).swap(dQdG);
+#ifdef NNP_FULL_SFD_MEMORY
     dGdxia.clear();
     vector<double>(dGdxia).swap(dGdxia);
 #endif
@@ -266,10 +293,26 @@ size_t Atom::getNumNeighbors(double cutoffRadius) const
     return numNeighborsLocal;
 }
 
-void Atom::updateRmseForces(double& rmse, size_t& count) const
+void Atom::updateError(string const&        property,
+                       map<string, double>& error,
+                       size_t&              count) const
 {
-    count += 3;
-    rmse += (fRef - f).norm2();
+    if (property == "force")
+    {
+        count += 3;
+        error.at("RMSE") += (fRef - f).norm2();
+        error.at("MAE") += (fRef - f).l1norm();
+    }
+    else if (property == "charge")
+    {
+        count++;
+        error.at("RMSE") += (chargeRef - charge) * (chargeRef - charge);
+        error.at("MAE") += fabs(chargeRef - charge);
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown property for error update.\n");
+    }
 
     return;
 }
@@ -289,6 +332,15 @@ vector<string> Atom::getForcesLines() const
     return v;
 }
 
+string Atom::getChargeLine() const
+{
+    return strpr("%10zu %10zu %16.8E %16.8E\n",
+                 indexStructure,
+                 index,
+                 chargeRef,
+                 charge);
+}
+
 vector<string> Atom::info() const
 {
     vector<string> v;
@@ -299,6 +351,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("hasNeighborList                : %d\n", hasNeighborList));
     v.push_back(strpr("hasSymmetryFunctions           : %d\n", hasSymmetryFunctions));
     v.push_back(strpr("hasSymmetryFunctionDerivatives : %d\n", hasSymmetryFunctionDerivatives));
+    v.push_back(strpr("useChargeNeuron                : %d\n", useChargeNeuron));
     v.push_back(strpr("index                          : %d\n", index));
     v.push_back(strpr("indexStructure                 : %d\n", indexStructure));
     v.push_back(strpr("tag                            : %d\n", tag));
@@ -308,6 +361,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("numSymmetryFunctions           : %d\n", numSymmetryFunctions));
     v.push_back(strpr("energy                         : %16.8E\n", energy));
     v.push_back(strpr("charge                         : %16.8E\n", charge));
+    v.push_back(strpr("chargeRef                      : %16.8E\n", chargeRef));
     v.push_back(strpr("r                              : %16.8E %16.8E %16.8E\n", r[0], r[1], r[2]));
     v.push_back(strpr("f                              : %16.8E %16.8E %16.8E\n", f[0], f[1], f[2]));
     v.push_back(strpr("fRef                           : %16.8E %16.8E %16.8E\n", fRef[0], fRef[1], fRef[2]));
@@ -334,6 +388,16 @@ vector<string> Atom::info() const
     {
         v.push_back(strpr("%29d  : %d\n", i, numSymmetryFunctionDerivatives.at(i)));
     }
+#ifndef NNP_NO_SF_CACHE
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("cacheSizePerElement        [*] : %d\n", cacheSizePerElement.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < cacheSizePerElement.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %d\n", i, cacheSizePerElement.at(i)));
+    }
+#endif
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("G                          [*] : %d\n", G.size()));
@@ -351,7 +415,15 @@ vector<string> Atom::info() const
         v.push_back(strpr("%29d  : %16.8E\n", i, dEdG.at(i)));
     }
     v.push_back(strpr("--------------------------------\n"));
-#ifndef IMPROVED_SFD_MEMORY
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("dQdG                       [*] : %d\n", dQdG.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < dQdG.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %16.8E\n", i, dQdG.at(i)));
+    }
+    v.push_back(strpr("--------------------------------\n"));
+#ifdef NNP_FULL_SFD_MEMORY
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("dGdxia                     [*] : %d\n", dGdxia.size()));
     v.push_back(strpr("--------------------------------\n"));
@@ -387,12 +459,7 @@ vector<string> Atom::info() const
 Atom::Neighbor::Neighbor() : index      (0                      ),
                              tag        (0                      ),
                              element    (0                      ),
-                             d          (0.0                    ),
-                             fc         (0.0                    ),
-                             dfc        (0.0                    ),
-                             rc         (0.0                    ),
-                             cutoffAlpha(0.0                    ),
-                             cutoffType (CutoffFunction::CT_HARD)
+                             d          (0.0                    )
 {
 }
 
@@ -423,13 +490,18 @@ vector<string> Atom::Neighbor::info() const
     v.push_back(strpr("tag                            : %d\n", tag));
     v.push_back(strpr("element                        : %d\n", element));
     v.push_back(strpr("d                              : %16.8E\n", d));
-    v.push_back(strpr("rc                             : %16.8E\n", rc));
-    v.push_back(strpr("cutoffAlpha                    : %16.8E\n", cutoffAlpha));
-    v.push_back(strpr("fc                             : %16.8E\n", fc));
-    v.push_back(strpr("dfc                            : %16.8E\n", dfc));
-    v.push_back(strpr("cutoffType                     : %d\n", (int)cutoffType));
     v.push_back(strpr("dr                             : %16.8E %16.8E %16.8E\n", dr[0], dr[1], dr[2]));
     v.push_back(strpr("--------------------------------\n"));
+#ifndef NNP_NO_SF_CACHE
+    v.push_back(strpr("cache                      [*] : %d\n", cache.size()));
+    v.push_back(strpr("--------------------------------\n"));
+    for (size_t i = 0; i < cache.size(); ++i)
+    {
+        v.push_back(strpr("%29d  : %16.8E\n", i, cache.at(i)));
+    }
+    v.push_back(strpr("--------------------------------\n"));
+    v.push_back(strpr("--------------------------------\n"));
+#endif
     v.push_back(strpr("dGdr                       [*] : %d\n", dGdr.size()));
     v.push_back(strpr("--------------------------------\n"));
     for (size_t i = 0; i < dGdr.size(); ++i)

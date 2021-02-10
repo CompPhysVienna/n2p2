@@ -39,7 +39,7 @@ CFLAGS=$(PROJECT_CFLAGS)
 OPTIONS+=$(PROJECT_OPTIONS)
 DEBUG=$(PROJECT_DEBUG)
 ifeq ($(MODE), test)
-	DEBUG+= $(PROJECT_TEST)
+DEBUG+= $(PROJECT_TEST)
 endif
 AR=$(PROJECT_AR)
 ARFLAGS=$(PROJECT_ARFLAGS)
@@ -62,17 +62,17 @@ OBJ=$(SRC:.cpp=.o)
 .PHONY: all headers version clean rebuild
 
 ifeq ($(MODE), shared)
-all: version headers $(LIB).so
+all: headers $(LIB).so
 else
-all: version headers $(LIB).a
+all: headers $(LIB).a
 endif
 
-headers:
+headers: version
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
 version:
-	@$(eval GIT_REV_SHORT = $(shell git rev-parse --short HEAD))
-	@sed -i.bak -E "s/(NNP_GIT_REV_SHORT) .*/\1 \"$(GIT_REV_SHORT)\"/" version.h
+	@$(eval GIT_VERSION = $(shell git describe --tags --always))
+	@sed -i.bak -E "s/(NNP_GIT_VERSION) .*/\1 \"$(GIT_VERSION)\"/" version.h
 	@$(eval GIT_REV = $(shell git rev-parse HEAD))
 	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"$(GIT_REV)\"/" version.h
 	@$(eval GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD))
@@ -91,10 +91,16 @@ $(LIB).a: $(OBJ)
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-clean: clean-headers
+clean: clean-version clean-headers
 	$(RM) $(OBJ)
 	$(RM) *.gcno *.gcda $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
+
+clean-version:
+	@sed -i.bak -E "s/(NNP_GIT_VERSION) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_REV) .*/\1 \"\"/" version.h
+	@sed -i.bak -E "s/(NNP_GIT_BRANCH) .*/\1 \"\"/" version.h
+	@rm version.h.bak
 
 clean-headers:
 	cd $(PROJECT_INCLUDE) && $(RM) $(HEADERS)

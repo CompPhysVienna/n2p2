@@ -19,11 +19,11 @@
 
 #if !(defined(__linux__) || defined(__MACH__))
 #pragma message("WARNING: Platform not supported.")
-#define NOTIME
+#define NNP_NO_TIME
 #endif
 
-#ifdef NOTIME
-#pragma message("WARNING: Compiling dummy Stopwatch class (-DNOTIME).")
+#ifdef NNP_NO_TIME
+#pragma message("WARNING: Compiling dummy Stopwatch class (-DNNP_NO_TIME).")
 #endif
 
 #include <ctime>
@@ -40,19 +40,24 @@ class Stopwatch
 
 public:
     Stopwatch();
-    /// Start the stopwatch.
-    void                start();
-    /// Take a split time (returns total time elapsed).
-    double              split();
-    /// Take a split time (returns total time elapsed and
-    /// saves split time in argument).
-    double              split(double* lap);
-    /// Stop and return elapsed time.
-    double              stop();
+    /** Start the stopwatch.
+     *
+     * @param[in] resetLoop Optional. If `true` reset loop time, i.e. this
+     *                      start() call is then also the beginning of a new
+     *                      loop. Use `false` if you want to accumulate further
+     *                      time in the loop timer. Default: `true`.
+     */
+    void                      start(bool newLoop = true);
+    /// Stop and return total time.
+    double                    stop();
+    /// Stop and return loop time.
+    double                    loop();
     /// Return total time elapsed (of a stopped watch).
-    double              getTimeElapsed() const;
-    /// Reset stopwatch (total time zero, not running).
-    void                reset();
+    double                    getTotal() const {return timeTotal;};
+    /// Return time elapsed in last loop interval (of a stopped watch).
+    double                    getLoop() const {return timeLoop;};
+    /// Reset stopwatch (total and loop time zero, clock not running).
+    void                      reset();
 
 private:
     enum State
@@ -62,17 +67,19 @@ private:
     };
 
     State               state;
+    bool                resetLoop;
     static const double NSEC;
-    double              timeElapsed;
-#ifdef NOTIME
+    double              timeTotal;
+    double              timeLoop;
+#ifdef NNP_NO_TIME
 #elif __linux__
     timespec            time;
 #elif __MACH__
     uint64_t            time;
 #endif
 
+    void                stopTime();
     double              updateTime();
-
 };
 
 }

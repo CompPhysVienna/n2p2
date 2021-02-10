@@ -19,23 +19,42 @@
 
 #include "CutoffFunction.h"
 #include "ElementMap.h"
-#include "SymmetryFunction.h"
-#include "SymmetryFunctionStatistics.h"
+#include "NeuralNetwork.h"
+#include "SymFnc.h"
+#include "SymFncStatistics.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
+#include <utility> // std::pair
 #include <vector>  // std::vector
 
 namespace nnp
 {
 
 struct Atom;
-class NeuralNetwork;
-class SymmetryFunctionGroup;
+class SymGrp;
 
 /// Contains element-specific data.
 class Element
 {
 public:
+
+#ifndef NNP_NO_SF_CACHE
+    /// List of symmetry functions corresponding to one cache identifier.
+    struct SFCacheList
+    {
+        /// Neighbor element index.
+        std::size_t              element;
+        /// Cache identifier string.
+        std::string              identifier;
+        /// Symmetry function indices for this cache.
+        std::vector<std::size_t> indices;
+    };
+#endif
+
+    /** Default constructor
+     */
+    Element() {}
     /** Constructor using index.
      */
     Element(std::size_t const index, ElementMap const& elementMap);
@@ -43,7 +62,7 @@ public:
      *
      * Necessary because of #symmetryFunctions vector of pointers.
      */
-    ~Element();
+    virtual ~Element();
     /** Set #atomicEnergyOffset.
      */
     void                     setAtomicEnergyOffset(double atomicEnergyOffset);
@@ -109,15 +128,14 @@ public:
     void                     setScalingNone() const;
     /** Set scaling of all symmetry functions.
      *
-     * @param[in] scalingType Type of scaling, see
-     *                        SymmetryFunction::ScalingType.
+     * @param[in] scalingType Type of scaling, see SymFnc::ScalingType.
      * @param[in] statisticsLine Vector of strings containing statistics for
      *                           all symmetry functions.
      * @param[in] minS Minimum for scaling range.
-     * @param[in] maxS Minimum for scaling range.
+     * @param[in] maxS Maximum for scaling range.
      */
     void                     setScaling(
-                                SymmetryFunction::ScalingType   scalingType,
+                                SymFnc::ScalingType             scalingType,
                                 std::vector<std::string> const& statisticsLine,
                                 double                          minS,
                                 double                          maxS) const;
@@ -188,14 +206,29 @@ public:
      *
      * @return Symmetry function object.
      */
-    SymmetryFunction const&  getSymmetryFunction(std::size_t index) const;
+    SymFnc const&            getSymmetryFunction(std::size_t index) const;
+#ifndef NNP_NO_SF_CACHE
+    /** Set cache indices for all symmetry functions of this element.
+     *
+     * @param[in] cacheLists List of cache identifier strings and corresponding
+     *                       SF indices for each neighbor element.
+     */
+    void                     setCacheIndices(
+                                         std::vector<
+                                         std::vector<SFCacheList>> cacheLists);
+    /** Get cache sizes for each neighbor atom element.
+     *
+     * @return Vector with cache sizes.
+     */
+    std::vector<std::size_t> getCacheSizes() const;
+#endif
 
-    /// Neural network pointer for this element.
-    NeuralNetwork*             neuralNetwork;
+    /// Neural networks for this element.
+    std::map<std::string, NeuralNetwork> neuralNetworks;
     /// Symmetry function statistics.
-    SymmetryFunctionStatistics statistics;
+    SymFncStatistics                     statistics;
 
-private:
+protected:
     /// Copy of element map.
     ElementMap                            elementMap;
     /// Global index of this element.
@@ -210,10 +243,14 @@ private:
     std::vector<std::size_t>              symmetryFunctionNumTable;
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
+#ifndef NNP_NO_SF_CACHE
+    /// Symmetry function cache lists.
+    std::vector<std::vector<SFCacheList>> cacheLists;
+#endif
     /// Vector of pointers to symmetry functions.
-    std::vector<SymmetryFunction*>        symmetryFunctions;
+    std::vector<SymFnc*>                  symmetryFunctions;
     /// Vector of pointers to symmetry function groups.
-    std::vector<SymmetryFunctionGroup*>   symmetryFunctionGroups;
+    std::vector<SymGrp*>                  symmetryFunctionGroups;
 };
 
 //////////////////////////////////
@@ -270,7 +307,7 @@ inline size_t Element::numSymmetryFunctions() const
     return symmetryFunctions.size();
 }
 
-inline SymmetryFunction const& Element::getSymmetryFunction(
+inline SymFnc const& Element::getSymmetryFunction(
                                                        std::size_t index) const
 {
     return *(symmetryFunctions.at(index));

@@ -20,7 +20,9 @@
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
 #include <map>     // std::multimap
+#include <memory>  // std::shared_ptr
 #include <string>  // std::string
+#include <utility> // std::pair
 #include <vector>  // std::vector
 
 namespace nnp
@@ -30,10 +32,24 @@ namespace nnp
 class Settings
 {
 public:
+    /// Keyword properties.
+    struct Key
+    {
+        /// Whether this keyword has no alternative definitions or spellings.
+        bool isUnique() const {return (words.size() == 1);}
+
+        /// A short description of the keyword.
+        std::string              description;
+        /// Alternative keywords (first entry is main name).
+        std::vector<std::string> words;
+    };
+
     typedef std::multimap<std::string,
                           std::pair<std::string, std::size_t> > KeyMap;
     typedef std::pair<KeyMap::const_iterator,
                       KeyMap::const_iterator>                   KeyRange;
+    typedef std::map<std::string,
+                     std::shared_ptr<Key>> const                KeywordList;
 
     /** Overload [] operator.
      *
@@ -46,17 +62,37 @@ public:
     /** Load a file with settings.
      *
      * @param[in] fileName Name of file containing settings.
+     *
+     * @return Number of critical problems detected.
      */
-    void                     loadFile(std::string const& fileName);
-    /** Check if keyword was read from the settings file.
+    std::size_t              loadFile(
+                                     std::string const& fileName = "input.nn");
+    /** Check if keyword is present in settings file.
      *
      * @param[in] keyword Keyword string.
+     * @param[in] exact If `True` check only for exact spelling, no
+     *                  alternative keywords allowed.
+     *
      * @return `True` if keyword exists, `False` otherwise.
+     *
+     * @note This throws an error if the keyword is not in the list of known
+     *       keywords.
      */
-    bool                     keywordExists(std::string const& keyword) const;
+    bool                     keywordExists(
+                                       std::string const& keyword,
+                                       bool               exact = false) const;
+    /** Check for keyword and alternatives, throw exception if not present.
+     *
+     * @param[in] keyword Original keyword for which alternatives should be
+     *                    searched.
+     *
+     * @return Keyword or alternative found in file contents.
+     */
+    std::string              keywordCheck(std::string const& keyword) const;
     /** Get value for given keyword.
      *
      * @param[in] keyword Keyword string.
+     *
      * @return Value string corresponding to keyword.
      *
      * If keyword is present multiple times only the value of the first
@@ -66,6 +102,7 @@ public:
     /** Get all keyword-value pairs for given keyword.
      *
      * @param[in] keyword Keyword string.
+     *
      * @return Pair with begin and end values for iteration.
      *
      * Useful if keyword appears multiple times. Returns a pair representing
@@ -108,26 +145,25 @@ private:
     /// Map containing all keyword-value pairs.
     KeyMap                                          contents;
     /// Map containing all known keywords and a description.
-    static std::map<std::string, std::string> const knownKeywords;
+    static KeywordList                              knownKeywords;
     /// %Settings file name.
     std::string                                     fileName;
 
     /** Read file once and save all lines in #lines vector.
-     *
-     * Called automatically by constructor.
      */
-    void        readFile();
+    void                      readFile();
     /** Parse lines and create #contents map.
      *
-     * Called automatically by constructor.
+     * @return Number of critical problems detected.
      */
-    void        parseLines();
+    std::size_t               parseLines();
     /** Check if all keywords are in known-keywords database and for
      * duplicates.
      *
-     * @return Number of detected problems.
+     * @return Number of detected/critical problems.
      */
-    std::size_t sanityCheck();
+    std::pair<
+    std::size_t, std::size_t> sanityCheck();
 };
 
 }

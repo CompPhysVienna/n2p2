@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -31,20 +32,27 @@ using namespace nnp;
 
 int main(int argc, char* argv[])
 {
-    bool     shuffle         = false;
-    bool     useForces       = false;
-    bool     normalize       = false;
-    int      numProcs        = 0;
-    int      myRank          = 0;
-    size_t   countEnergy     = 0;
-    size_t   countForces     = 0;
-    double   rmseEnergy      = 0.0;
-    double   rmseForces      = 0.0;
-    string   fileName;
-    ofstream fileEnergy;
-    ofstream fileForces;
-    ofstream fileOutputData;
-    ofstream myLog;
+    bool                shuffle         = false;
+    bool                useForces       = false;
+    bool                normalize       = false;
+    int                 numProcs        = 0;
+    int                 myRank          = 0;
+    size_t              countEnergy     = 0;
+    size_t              countForces     = 0;
+    map<string, double> errorEnergy;
+    map<string, double> errorForces;
+    string              fileName;
+    ofstream            fileEnergy;
+    ofstream            fileForces;
+    ofstream            fileOutputData;
+    ofstream            myLog;
+
+    errorEnergy["RMSEpa"] = 0.0;
+    errorEnergy["RMSE"] = 0.0;
+    errorEnergy["MAEpa"] = 0.0;
+    errorEnergy["MAE"] = 0.0;
+    errorForces["RMSE"] = 0.0;
+    errorForces["MAE"] = 0.0;
 
     if (argc != 2)
     {
@@ -199,7 +207,7 @@ int main(int argc, char* argv[])
          it != dataset.structures.end(); ++it)
     {
         it->calculateNeighborList(dataset.getMaxCutoffRadius());
-#ifdef NOSFGROUPS
+#ifdef NNP_NO_SF_GROUPS
         dataset.calculateSymmetryFunctions((*it), useForces);
 #else
         dataset.calculateSymmetryFunctionGroups((*it), useForces);
@@ -246,7 +254,7 @@ int main(int argc, char* argv[])
             it2->dEdG.clear();
             vector<double>(it2->dEdG).swap(it2->dEdG);
 
-#ifndef IMPROVED_SFD_MEMORY
+#ifdef NNP_FULL_SFD_MEMORY
             it2->dGdxia.clear();
             vector<double>(it2->dGdxia).swap(it2->dGdxia);
 #endif
@@ -265,7 +273,7 @@ int main(int argc, char* argv[])
         it->hasNeighborList = false;
         it->hasSymmetryFunctions = false;
         it->hasSymmetryFunctionDerivatives = false;
-        it->updateRmseEnergy(rmseEnergy, countEnergy);
+        it->updateError("energy", errorEnergy, countEnergy);
         fileEnergy << strpr("%10zu %10zu", it->index, it->numAtoms);
         if (normalize)
         {
@@ -285,7 +293,7 @@ int main(int argc, char* argv[])
         }
         if (useForces)
         {
-            it->updateRmseForces(rmseForces, countForces);
+            it->updateError("force", errorForces, countForces);
             for (vector<Atom>::const_iterator it2 = it->atoms.begin();
                  it2 != it->atoms.end(); ++it2)
             {
@@ -296,9 +304,10 @@ int main(int argc, char* argv[])
                                         it2->index);
                     if (normalize)
                     {
-                        fileForces << strpr(" %16.8E %16.8E",
-                                            dataset.physicalForce(it2->fRef[i]),
-                                            dataset.physicalForce(it2->f[i]));
+                        fileForces << strpr(
+                                       " %16.8E %16.8E",
+                                       dataset.physical("force", it2->fRef[i]),
+                                       dataset.physical("force", it2->f[i]));
                     }
                     fileForces << strpr(" %16.8E %16.8E\n",
                                         it2->fRef[i],
@@ -334,8 +343,8 @@ int main(int argc, char* argv[])
         dataset.combineFiles(fileName);
     }
 
-    dataset.averageRmse(rmseEnergy, countEnergy);
-    if (useForces) dataset.averageRmse(rmseForces, countForces);
+    dataset.collectError("energy", errorEnergy, countEnergy);
+    if (useForces) dataset.collectError("force", errorForces, countForces);
 
     if (myRank == 0)
     {
@@ -352,26 +361,56 @@ int main(int argc, char* argv[])
         }
         dataset.log << "Predicted data set in \"output.data\"\n";
     }
-    dataset.log << "Root mean squared errors for energies and forces:\n";
-    dataset.log << strpr("ENERGY %3s", "S");
+    dataset.log << "Error metrics for energies and forces:\n";
+    dataset.log << "-----------------------------------------"
+                   "-----------------------------------------"
+                   "--------------------------------------\n";
+    dataset.log << "                      physical units                          ";
     if (normalize)
     {
-        dataset.log << strpr(" %13.5E %13.5E",
-                             dataset.physicalEnergy(rmseEnergy),
-                             0.0);
+        dataset.log << " |                    internal units                            ";
     }
-    dataset.log << strpr(" %13.5E %13.5E\n", rmseEnergy, 0.0);
+    dataset.log << "\n";
+    dataset.log << strpr("       %13s %13s %13s %13s",
+                         "RMSEpa", "RMSE", "MAEpa", "MAE");
+    if (normalize)
+    {
+        dataset.log << strpr(" | %13s %13s %13s %13s",
+                             "RMSEpa", "RMSE", "MAEpa", "MAE");
+    }
+    dataset.log << "\n";
+    dataset.log << "ENERGY";
+    if (normalize)
+    {
+        dataset.log << strpr(
+                          " %13.5E %13.5E %13.5E %13.5E |",
+                          dataset.physical("energy", errorEnergy.at("RMSEpa")),
+                          dataset.physical("energy", errorEnergy.at("RMSE")),
+                          dataset.physical("energy", errorEnergy.at("MAEpa")),
+                          dataset.physical("energy", errorEnergy.at("MAE")));
+    }
+    dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E\n",
+                         errorEnergy.at("RMSEpa"),
+                         errorEnergy.at("RMSE"),
+                         errorEnergy.at("MAEpa"),
+                         errorEnergy.at("MAE"));
     if (useForces)
     {
-        dataset.log << strpr("FORCES %3s", "S");
+        dataset.log << "FORCES";
         if (normalize)
         {
-            dataset.log << strpr(" %13.5E %13.5E",
-                                 dataset.physicalForce(rmseForces),
-                                 0.0);
+            dataset.log << strpr(
+                         " %13s %13.5E %13s %13.5E |", "",
+                         dataset.physical("force", errorForces.at("RMSE")), "",
+                         dataset.physical("force", errorForces.at("MAE")));
         }
-        dataset.log << strpr(" %13.5E %13.5E\n", rmseForces, 0.0);
+        dataset.log << strpr(" %13s %13.5E %13s %13.5E\n", "",
+                             errorForces.at("RMSE"), "",
+                             errorForces.at("MAE"));
     }
+    dataset.log << "-----------------------------------------"
+                   "-----------------------------------------"
+                   "--------------------------------------\n";
     dataset.log << "*****************************************"
                    "**************************************\n";
 
@@ -454,10 +493,10 @@ int main(int argc, char* argv[])
                 if (normalize)
                 {
                     sensFile << strpr(" %16.8E %16.8E",
-                                      dataset.physicalEnergy(
-                                                         sensMean.at(i).at(j)),
-                                      dataset.physicalEnergy(
-                                                         sensMax.at(i).at(j)));
+                                      dataset.physical("energy",
+                                                       sensMean.at(i).at(j)),
+                                      dataset.physical("energy",
+                                                       sensMax.at(i).at(j)));
                 }
                 sensFile << strpr(" %16.8E %16.8E\n",
                                   sensMean.at(i).at(j),

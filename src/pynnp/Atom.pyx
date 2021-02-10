@@ -79,34 +79,6 @@ cdef class Neighbor:
     @d.setter
     def d(self, value):
         deref(self.thisptr).d = value
-    # fc
-    @property
-    def fc(self):
-        return deref(self.thisptr).fc
-    @fc.setter
-    def fc(self, value):
-        deref(self.thisptr).fc = value
-    # dfc
-    @property
-    def dfc(self):
-        return deref(self.thisptr).dfc
-    @dfc.setter
-    def dfc(self, value):
-        deref(self.thisptr).dfc = value
-    # cutoffAlpha
-    @property
-    def cutoffAlpha(self):
-        return deref(self.thisptr).cutoffAlpha
-    @cutoffAlpha.setter
-    def cutoffAlpha(self, value):
-        deref(self.thisptr).cutoffAlpha = value
-    # cutoffType
-    @property
-    def cutoffType(self):
-        return deref(self.thisptr).cutoffType
-    @cutoffType.setter
-    def cutoffType(self, value):
-        deref(self.thisptr).cutoffType = value
     # dr
     @property
     def dr(self):
@@ -116,6 +88,13 @@ cdef class Neighbor:
     @dr.setter
     def dr(self, Vec3D v):
         deref(self.thisptr).dr = deref(v.thisptr)
+    # cache
+    @property
+    def cache(self):
+        return deref(self.thisptr).cache
+    @cache.setter
+    def cache(self, value):
+        deref(self.thisptr).cache = value
     # dGdr
     @property
     def dGdr(self):
@@ -168,6 +147,13 @@ cdef class Atom:
     @hasSymmetryFunctionDerivatives.setter
     def hasSymmetryFunctionDerivatives(self, value):
         deref(self.thisptr).hasSymmetryFunctionDerivatives = value
+    # useChargeNeuron
+    @property
+    def useChargeNeuron(self):
+        return deref(self.thisptr).useChargeNeuron
+    @useChargeNeuron.setter
+    def useChargeNeuron(self, value):
+        deref(self.thisptr).useChargeNeuron = value
     # index
     @property
     def index(self):
@@ -231,6 +217,13 @@ cdef class Atom:
     @charge.setter
     def charge(self, value):
         deref(self.thisptr).charge = value
+    #chargeRef
+    @property
+    def chargeRef(self):
+        return deref(self.thisptr).chargeRef
+    @chargeRef.setter
+    def chargeRef(self, value):
+        deref(self.thisptr).chargeRef = value
     # r
     @property
     def r(self):
@@ -272,6 +265,20 @@ cdef class Atom:
     @numNeighborsPerElement.setter
     def numNeighborsPerElement(self, value):
         deref(self.thisptr).numNeighborsPerElement = value
+    # numSymmetryFunctionDerivatives
+    @property
+    def numSymmetryFunctionDerivatives(self):
+        return deref(self.thisptr).numSymmetryFunctionDerivatives
+    @numSymmetryFunctionDerivatives.setter
+    def numSymmetryFunctionDerivatives(self, value):
+        deref(self.thisptr).numSymmetryFunctionDerivatives = value
+    # cacheSizePerElement
+    @property
+    def cacheSizePerElement(self):
+        return deref(self.thisptr).cacheSizePerElement
+    @cacheSizePerElement.setter
+    def cacheSizePerElement(self, value):
+        deref(self.thisptr).cacheSizePerElement = value
     # G
     @property
     def G(self):
@@ -286,13 +293,20 @@ cdef class Atom:
     @dEdG.setter
     def dEdG(self, value):
         deref(self.thisptr).dEdG = value
-    # dGdxia
+    # dQdG
     @property
-    def dGdxia(self):
-        return deref(self.thisptr).dGdxia
-    @dGdxia.setter
-    def dGdxia(self, value):
-        deref(self.thisptr).dGdxia = value
+    def dQdG(self):
+        return deref(self.thisptr).dQdG
+    @dQdG.setter
+    def dQdG(self, value):
+        deref(self.thisptr).dQdG = value
+    ## dGdxia
+    #@property
+    #def dGdxia(self):
+    #    return deref(self.thisptr).dGdxia
+    #@dGdxia.setter
+    #def dGdxia(self, value):
+    #    deref(self.thisptr).dGdxia = value
     # dGdr
     @property
     def dGdr(self):

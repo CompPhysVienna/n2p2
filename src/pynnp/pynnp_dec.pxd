@@ -134,17 +134,13 @@ cdef extern from "Vec3D.h" namespace "nnp":
 cdef extern from "Atom.h" namespace "nnp":
     cdef cppclass Atom:
         cppclass Neighbor:
-            size_t        index
-            size_t        tag
-            size_t        element
-            double        d
-            double        fc
-            double        dfc
-            double        rc
-            double        cutoffAlpha
-            CutoffType    cutoffType
-            Vec3D         dr
-            vector[Vec3D] dGdr
+            size_t         index
+            size_t         tag
+            size_t         element
+            double         d
+            Vec3D          dr
+            vector[double] cache
+            vector[Vec3D]  dGdr
             Neighbor() except +
             bool eq "operator=="(const Neighbor& rhs) except +
             bool ne "operator!="(const Neighbor& rhs) except +
@@ -155,6 +151,7 @@ cdef extern from "Atom.h" namespace "nnp":
         bool             hasNeighborList
         bool             hasSymmetryFunctions
         bool             hasSymmetryFunctionDerivatives
+        bool             useChargeNeuron
         size_t           index
         size_t           indexStructure
         size_t           tag
@@ -164,14 +161,18 @@ cdef extern from "Atom.h" namespace "nnp":
         size_t           numSymmetryFunctions
         double           energy
         double           charge
+        double           chargeRef
         Vec3D            r
         Vec3D            f
         Vec3D            fRef
         vector[size_t]   neighborsUnique
         vector[size_t]   numNeighborsPerElement
+        vector[size_t]   numSymmetryFunctionDerivatives;
+        vector[size_t]   cacheSizePerElement;
         vector[double]   G
         vector[double]   dEdG
-        vector[double]   dGdxia
+        vector[double]   dQdG
+        #vector[double]   dGdxia
         vector[Vec3D]    dGdr
         vector[Neighbor] neighbors
         Atom() except +
@@ -277,7 +278,8 @@ cdef extern from "Mode.h" namespace "nnp":
                                      bool stopOnExtrapolationWarnings) except +
         void           setupNeuralNetwork()
         void           setupNeuralNetworkWeights(
-                                                string fileNameFormat) except +
+                                          string fileNameFormatshort,
+                                          string fileNameFormatCharge) except +
         void           calculateSymmetryFunctions(
                                                 Structure structure,
                                                 bool      derivatives) except +
@@ -339,7 +341,8 @@ cdef extern from "Prediction.h" namespace "nnp":
     cdef cppclass Prediction(Mode):
         string    fileNameSettings
         string    fileNameScaling
-        string    formatWeightsFiles
+        string    formatWeightsFilesShort
+        string    formatWeightsFilesCharge
         Structure structure
         Prediction() except +
         void readStructureFromFile(string fileName) except +
