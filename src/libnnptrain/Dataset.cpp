@@ -1286,7 +1286,7 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        title.push_back("Symmetry function histogram.");
+        title.push_back("Neighbor count histogram.");
         colSize.push_back(9);
         colName.push_back("neigh_l");
         colInfo.push_back("Number of neighbors, left bin limit.");

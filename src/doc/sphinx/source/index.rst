@@ -193,13 +193,13 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: Tools
 
    tools/libnnp
+   tools/nnp-atomenv
    tools/nnp-convert
    tools/nnp-norm
    tools/nnp-predict
    tools/nnp-prune
    tools/nnp-select
    tools/nnp-scaling
-   tools/nnp-sfclust
    tools/nnp-train
 
 .. toctree::
