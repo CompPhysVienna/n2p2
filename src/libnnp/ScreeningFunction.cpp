@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "ScreeningFunction.h"
+#include "utility.h"
 #include <stdexcept>
 
 using namespace std;
@@ -40,4 +41,20 @@ void ScreeningFunction::setInnerOuter(double inner, double outer)
     this->scale  = 1.0 / (outer - inner);
 
     return;
+}
+
+vector<string> ScreeningFunction::info() const
+{
+    vector<string> v;
+
+    v.push_back("Screening function information:\n");
+    v.push_back(strpr("Inner radius : %16.8E\n", inner));
+    v.push_back(strpr("Outer radius : %16.8E\n", outer));
+    v.push_back("Transition region functional form:\n");
+    v.push_back("x     := (r - inner) / (outer - inner)\n");
+    v.push_back("fs(x) := 1 - f(x)\n");
+    vector<string> ci = core.info();
+    v.insert(v.end(), ci.begin(), ci.end());
+
+    return v;
 }

@@ -19,6 +19,7 @@
 
 #include "Atom.h"
 #include "ElementMap.h"
+#include "ScreeningFunction.h"
 #include "Vec3D.h"
 #include <Eigen/Core>
 #include <cstddef> // std::size_t
@@ -211,6 +212,7 @@ struct Structure
     void                     calculateVolume();
     /** Compute electrostatic energy with global charge equilibration.
      *
+     * @param[in] precision Ewald precision parameters.
      * @param[in] hardness Vector containing the hardness of all elements.
      * @param[in] siggam Matrix combining sigma and gamma for all elements,
      *                   including some prefactors.
@@ -220,10 +222,13 @@ struct Structure
      *                      \sqrt{2} \gamma_{ij} = \sqrt{2 (\sigma_i^2
      *                          + \sigma_j^2)}, & \text{for } i \neq j
      *                   \end{cases} @f$
+     * @param[in] fs Screening function.
      */
     double                   calculateElectrostaticEnergy(
-                                                      Eigen::VectorXd hardness,
-                                                      Eigen::MatrixXd siggam);
+                                            double                   precision,
+                                            Eigen::VectorXd          hardness,
+                                            Eigen::MatrixXd          siggam,
+                                            ScreeningFunction const& fs);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.

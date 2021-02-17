@@ -106,5 +106,5 @@ deploy:
   local_dir: doc/sphinx/html
   github_token: $GH_REPO_TOKEN
   on:
-    all_branches: true
-    #branch: master
+    branch: master
+    #all_branches: true

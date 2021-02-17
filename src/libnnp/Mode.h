@@ -21,6 +21,7 @@
 #include "Element.h"
 #include "ElementMap.h"
 #include "Log.h"
+#include "ScreeningFunction.h"
 #include "Settings.h"
 #include "Structure.h"
 #include "SymFnc.h"
@@ -253,14 +254,14 @@ public:
                                           std::string> fileNameFormats =
                                  std::map<std::string,
                                           std::string>());
-    /** Read in atomic hardness from file.
+    /** Set up electrostatics related stuff (hardness, screening, ...).
      *
      * @param[in] directoryPrefix Directory prefix which is applied to
      *                            fileNameFormat.
      * @param[in] fileNameFormat Name format of file containing atomic
      *                           hardness data.
      */
-    virtual void             setupAtomicHardness(std::string directoryPrefix =
+    virtual void             setupElectrostatics(std::string directoryPrefix =
                                                  "",
                                                  std::string fileNameFormat =
                                                  "hardness.%03zu.data");
@@ -586,9 +587,11 @@ protected:
     double                     meanEnergy;
     double                     convEnergy;
     double                     convLength;
+    double                     ewaldPrecision;
     Settings                   settings;
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
+    ScreeningFunction          screeningFunction;
     std::vector<Element>       elements;
     std::vector<std::string>   nnk;
     std::map<

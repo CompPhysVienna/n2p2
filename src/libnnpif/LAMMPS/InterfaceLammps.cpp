@@ -83,7 +83,6 @@ void InterfaceLammps::initialize(char* const& directory,
                                     writeExtrapolationWarnings,
                                     stopOnExtrapolationWarnings);
     setupNeuralNetworkWeights(dir);
-    if (nnpType == NNPType::HDNNP_4G) setupAtomicHardness(dir);
 
     log << "\n";
     log << "*** SETUP: LAMMPS INTERFACE *************"

@@ -437,14 +437,17 @@ void Structure::calculateVolume()
     return;
 }
 
-double Structure::calculateElectrostaticEnergy(VectorXd hardness,
-                                               MatrixXd siggam)
+double Structure::calculateElectrostaticEnergy(
+                                            double                   precision,
+                                            VectorXd                 hardness,
+                                            MatrixXd                 siggam,
+                                            ScreeningFunction const& fs)
 {
     KspaceGrid grid;
     double rcutReal;
     if (isPeriodic)
     {
-        rcutReal = grid.setup(box, 1.E-6);
+        rcutReal = grid.setup(box, precision);
 
         //cout << "Reciprocal lattice: " << endl;
         //for (int i = 0; i < 3; ++i)
@@ -467,11 +470,12 @@ double Structure::calculateElectrostaticEnergy(VectorXd hardness,
     A.setZero();
     VectorXd b(numAtoms + 1);
 
-    // TODO: Precompute eta!!
     double const sqrt2eta = sqrt(2.0) * grid.eta;
 
     if (isPeriodic)
     {
+        // TODO: This part is not yet correct! Need to use real and reciprocal
+        // cutoffs to avoid loop of order O(numAtoms^2).
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
@@ -488,7 +492,8 @@ double Structure::calculateElectrostaticEnergy(VectorXd hardness,
                 A(j, i) = A(i, j);
             }
         }
-        // TODO: Real part needs larger neighbor list!
+        // TODO: Real part needs larger neighbor list (maybe set up 2nd
+        // neighbor list)!
         // size_t const ej = aj.element;
         // double const rij = (ai.r - aj.r).norm();
         // if (rij < rcutReal)
@@ -499,6 +504,15 @@ double Structure::calculateElectrostaticEnergy(VectorXd hardness,
     }
     else
     {
+        // TODO: This part needs to be verified and modified to include the
+        // screening function! It is passed in this function as the argument
+        // "fs" and can be directly used like this:
+        // fs.f(rij) .... returns screening function value.
+        // fs.df(rij) ... returns screening function derivative.
+        // or get both at the same time (store in 2nd and 3rd argument):
+        // double f;
+        // double df;
+        // fs.fdf(rij, f, df)
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);

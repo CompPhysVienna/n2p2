@@ -42,7 +42,8 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                cutoffAlpha               (0.0              ),
                meanEnergy                (0.0              ),
                convEnergy                (1.0              ),
-               convLength                (1.0              )
+               convLength                (1.0              ),
+               ewaldPrecision            (0.0              )
 {
 }
 
@@ -125,6 +126,7 @@ void Mode::setupGeneric()
     setupNormalization();
     setupElementMap();
     setupElements();
+    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics();
     setupCutoff();
     setupSymmetryFunctions();
 #ifndef NNP_FULL_SFD_MEMORY
@@ -251,22 +253,85 @@ void Mode::setupElements()
     log << "Energy offsets are automatically subtracted from reference "
            "energies.\n";
 
-    if (nnpType == NNPType::HDNNP_4G)
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
+void Mode::setupElectrostatics(string directoryPrefix, string fileNameFormat)
+{
+    log << "\n";
+    log << "*** SETUP: ELECTROSTATICS ***************"
+           "**************************************\n";
+    log << "\n";
+
+    // Atomic hardness.
+    string actualFileNameFormat = directoryPrefix + fileNameFormat;
+    log << strpr("Atomic hardness file name format: %s\n",
+                 actualFileNameFormat.c_str());
+    for (size_t i = 0; i < numElements; ++i)
     {
-        Settings::KeyRange r = settings.getValues("fixed_gausswidth");
-        for (Settings::KeyMap::const_iterator it = r.first;
-             it != r.second; ++it)
+        string fileName = strpr(actualFileNameFormat.c_str(),
+                                elements.at(i).getAtomicNumber());
+        log << strpr("Atomic hardness for element %2s from file %s: ",
+                     elements.at(i).getSymbol().c_str(),
+                     fileName.c_str());
+        vector<double> const data = readColumnsFromFile(fileName, {0}).at(0);
+        if (data.size() != 1)
         {
-            vector<string> args    = split(reduce(it->second.first));
-            size_t         element = elementMap[args.at(0)];
-            elements.at(element).setQsigma(atof(args.at(1).c_str()));
+            throw runtime_error("ERROR: Atomic hardness data is "
+                                "inconsistent.\n");
         }
-        log << "Gaussian width of charge distribution per element:\n";
-        for (size_t i = 0; i < elementMap.size(); ++i)
-        {
-            log << strpr("Element %2zu: %16.8E\n",
-                         i, elements.at(i).getQsigma());
-        }
+        elements.at(i).setHardness(data.at(0));
+        log << strpr("%16.8E\n", elements.at(i).getHardness());
+    }
+    log << "\n";
+
+    // Gaussian width of charges.
+    Settings::KeyRange r = settings.getValues("fixed_gausswidth");
+    for (Settings::KeyMap::const_iterator it = r.first;
+         it != r.second; ++it)
+    {
+        vector<string> args    = split(reduce(it->second.first));
+        size_t         element = elementMap[args.at(0)];
+        elements.at(element).setQsigma(atof(args.at(1).c_str()));
+    }
+    log << "Gaussian width of charge distribution per element:\n";
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        log << strpr("Element %2zu: %16.8E\n",
+                     i, elements.at(i).getQsigma());
+    }
+    log << "\n";
+
+    // Ewald precision.
+    if (settings.keywordExists("ewald_prec"))
+    {
+        ewaldPrecision = atof(settings["ewald_prec"].c_str());        
+    }
+    else ewaldPrecision = 1.0E-6;
+    log << strpr("Ewald precision: %16.8E\n", ewaldPrecision);
+    log << "\n";
+
+    // Screening function.
+    if (settings.keywordExists("screen_electrostatics"))
+    {
+        vector<string> args = split(settings["screen_electrostatics"]);
+        double inner = atof(args.at(0).c_str());
+        double outer = atof(args.at(1).c_str());
+        string type = "c"; // Default core function is cosine.
+        if (args.size() > 2) type = args.at(2); 
+        screeningFunction.setInnerOuter(inner, outer);
+        screeningFunction.setCoreFunction(type);
+	for (auto s : screeningFunction.info()) log << s;
+    }
+    else
+    {
+	// Set screening function in such way that it will always be 1.0.
+	// This may not be very efficient, may optimize later.
+        screeningFunction.setInnerOuter(-2.0, -1.0);
+	log << "Screening function not used.\n";
     }
 
     log << "*****************************************"
@@ -1218,39 +1283,6 @@ void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
     return;
 }
 
-void Mode::setupAtomicHardness(string directoryPrefix, string fileNameFormat)
-{
-    log << "\n";
-    log << "*** SETUP: ATOMIC HARDNESS **************"
-           "**************************************\n";
-    log << "\n";
-
-    string actualFileNameFormat = directoryPrefix + fileNameFormat;
-    log << strpr("Atomic hardness file name format: %s\n",
-                 actualFileNameFormat.c_str());
-    for (size_t i = 0; i < numElements; ++i)
-    {
-        string fileName = strpr(actualFileNameFormat.c_str(),
-                                elements.at(i).getAtomicNumber());
-        log << strpr("Atomic hardness for element %2s from file %s: ",
-                     elements.at(i).getSymbol().c_str(),
-                     fileName.c_str());
-        vector<double> const data = readColumnsFromFile(fileName, {0}).at(0);
-        if (data.size() != 1)
-        {
-            throw runtime_error("ERROR: Atomic hardness data is "
-                                "inconsistent.\n");
-        }
-        elements.at(i).setHardness(data.at(0));
-        log << strpr("%16.8E\n", elements.at(i).getHardness());
-    }
-
-    log << "*****************************************"
-           "**************************************\n";
-
-    return;
-}
-
 void Mode::calculateSymmetryFunctions(Structure& structure,
                                       bool const derivatives)
 {
@@ -1531,7 +1563,10 @@ void Mode::chargeEquilibration(Structure& structure)
         }
     }
 
-    double const error = s.calculateElectrostaticEnergy(hardness, siggam);
+    double const error = s.calculateElectrostaticEnergy(ewaldPrecision,
+		                                        hardness,
+		                                        siggam,
+							screeningFunction);
 
     //cout << "A: " << endl;
     //cout << s.A << endl;
