@@ -183,12 +183,13 @@ depends on the symmetry function setup, as a rough estimate expect about 30 to
 sets when symmetry function derivatives are stored in memory (keyword
 ``memorize_symfunc_results``).
 
-However, for debugging and development purposes it can be helpful to keep the
-naive, full symmetry function derivative memory allocation. This can be achieved
-by enabling the flag ``-DNNP_FULL_SFD_MEMORY``. Only in this case there is a
-one-to-one correspondance between the list of symmetry functions in the
-:ref:`libnnp <libnnp>` output and the symmetry function derivative vectors in
-:cpp:member:`nnp::Atom::Neighbor::dGdr`.
+However, for debugging and development purposes (see e.g. `this
+discussion <https://github.com/CompPhysVienna/n2p2/issues/68>`__) it can be
+helpful to keep the naive, full symmetry function derivative memory allocation.
+This can be achieved by enabling the flag ``-DNNP_FULL_SFD_MEMORY``. Only in
+this case there is a one-to-one correspondance between the list of symmetry
+functions in the :ref:`libnnp <libnnp>` output and the symmetry function
+derivative vectors in :cpp:member:`nnp::Atom::Neighbor::dGdr`.
 
 Normally, i.e. when ``-DNNP_FULL_SFD_MEMORY`` is **disabled**, an additional
 section in the :ref:`libnnp <libnnp>` output will displayed after the ``SETUP:
@@ -230,12 +231,6 @@ system gives the following results:
 Given the significant reduction in memory and the negligible impact on speed
 the improved memory layout is used by default (``-DNNP_FULL_SFD_MEMORY``
 disabled).
-
-.. important::
-
-   If you need the full symmetry function derivative memory together with the
-   LAMMPS interface add ``-DNNP_FULL_SFD_MEMORY`` to the ``nnp_SYSINC =``
-   variable in the LAMMPS makefile in ``src/libnnpif/LAMMPS/Makefile.lammps``!
 
 .. [1] Singraber, A.; Behler, J.; Dellago, C. Library-Based LAMMPS
    Implementation of High-Dimensional Neural Network Potentials. J. Chem. Theory
