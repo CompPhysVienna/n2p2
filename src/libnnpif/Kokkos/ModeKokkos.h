@@ -129,7 +129,8 @@ class ModeKokkos : public Mode
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     void setupNeuralNetworkWeights(
-        std::string const &fileNameFormat = "weights.%03zu.data") override;
+        std::string const &fileNameFormatShort = "weights.%03zu.data",
+        std::string const &fileNameFormatCharge = "weightse.%03zu.data" ) override;
 
     /* Compute cutoff for a single atom pair.
      *

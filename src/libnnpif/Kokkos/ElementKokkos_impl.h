@@ -33,7 +33,6 @@ ElementKokkos::ElementKokkos( size_t const _index )
 {
     index = _index;
     atomicEnergyOffset = 0.0;
-    neuralNetwork = NULL;
 }
 
 ElementKokkos::~ElementKokkos() {}

@@ -530,7 +530,8 @@ void ModeKokkos<t_device>::setupNeuralNetwork()
 }
 
 template <class t_device>
-void ModeKokkos<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat )
+void ModeKokkos<t_device>::setupNeuralNetworkWeights( string const &fileNameFormat,
+                                                      string const &)
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
