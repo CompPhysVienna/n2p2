@@ -19,7 +19,9 @@
 
 #include "Atom.h"
 #include "ElementMap.h"
+#include "ScreeningFunction.h"
 #include "Vec3D.h"
+#include <Eigen/Core>
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
 #include <map>     // std::map
@@ -76,12 +78,21 @@ struct Structure
     double                   energy;
     /// Reference potential energy.
     double                   energyRef;
+    // TODO: MPI_Pack
+    /// Short-range part of the potential energy predicted by NNP.
+    double                   energyShort;
+    // TODO: MPI_Pack
+    /// Electrostatics part of the potential energy predicted by NNP.
+    double                   energyElec;
     /// Charge determined by neural network potential.
     double                   charge;
     /// Reference charge.
     double                   chargeRef;
     /// Simulation box volume.
     double                   volume;
+    // TODO: MPI_Pack
+    /// Lagrange multiplier used for charge equilibration.
+    double                   lambda;
     /// Sample type (training or test set).
     SampleType               sampleType;
     /// Structure comment.
@@ -90,6 +101,8 @@ struct Structure
     Vec3D                    box[3];
     /// Inverse simulation box vectors.
     Vec3D                    invbox[3];
+    /// Global charge equilibration matrix A'.
+    Eigen::MatrixXd          A;
     /// Number of atoms of each element in this structure.
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
@@ -197,6 +210,25 @@ struct Structure
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();
+    /** Compute electrostatic energy with global charge equilibration.
+     *
+     * @param[in] precision Ewald precision parameters.
+     * @param[in] hardness Vector containing the hardness of all elements.
+     * @param[in] siggam Matrix combining sigma and gamma for all elements,
+     *                   including some prefactors.
+     *                   @f$ \text{siggam}_{ij} =
+     *                   \begin{cases}
+     *                      \sqrt{\pi} \sigma_i, & \text{for } i = j \\
+     *                      \sqrt{2} \gamma_{ij} = \sqrt{2 (\sigma_i^2
+     *                          + \sigma_j^2)}, & \text{for } i \neq j
+     *                   \end{cases} @f$
+     * @param[in] fs Screening function.
+     */
+    double                   calculateElectrostaticEnergy(
+                                            double                   precision,
+                                            Eigen::VectorXd          hardness,
+                                            Eigen::MatrixXd          siggam,
+                                            ScreeningFunction const& fs);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.

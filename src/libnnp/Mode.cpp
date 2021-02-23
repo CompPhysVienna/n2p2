@@ -24,26 +24,26 @@
 #include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
-#ifndef NNP_NO_SF_CACHE
+#include <iostream>
 #include <map>       // std::multimap
-#endif
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 #include <utility>   // std::piecewise_construct, std::forward_as_tuple
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
-Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
-               normalize                 (false              ),
-               checkExtrapolationWarnings(false              ),
-               useChargeNN               (false              ),
-               numElements               (0                  ),
-               maxCutoffRadius           (0.0                ),
-               cutoffAlpha               (0.0                ),
-               meanEnergy                (0.0                ),
-               convEnergy                (1.0                ),
-               convLength                (1.0                )
+Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
+               normalize                 (false            ),
+               checkExtrapolationWarnings(false            ),
+               numElements               (0                ),
+               maxCutoffRadius           (0.0              ),
+               cutoffAlpha               (0.0              ),
+               meanEnergy                (0.0              ),
+               convEnergy                (1.0              ),
+               convLength                (1.0              ),
+               ewaldPrecision            (0.0              )
 {
 }
 
@@ -128,18 +128,28 @@ void Mode::loadSettingsFile(string const& fileName)
 
     if (settings.keywordExists("nnp_type"))
     {
-        nnpType = (NNPType)atoi(settings["nnp_type"].c_str());
+        string nnpTypeString = settings["nnp_type"];
+        if      (nnpTypeString == "2G-HDNNP") nnpType = NNPType::HDNNP_2G;
+        else if (nnpTypeString == "4G-HDNNP") nnpType = NNPType::HDNNP_4G;
+        else if (nnpTypeString == "Q-HDNNP")  nnpType = NNPType::HDNNP_Q;
+        else nnpType = (NNPType)atoi(settings["nnp_type"].c_str());
     }
 
-    if (nnpType == NNPType::SHORT_ONLY)
+    if (nnpType == NNPType::HDNNP_2G)
     {
-        log << "This settings file defines a short-range only NNP.\n";
+        log << "This settings file defines a short-range NNP (2G-HDNNP).\n";
     }
-    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    else if (nnpType == NNPType::HDNNP_4G)
     {
-        log << "This settings file defines a short-range NNP with additional "
-               "charge NN (method by M. Bircher).\n";
-        useChargeNN = true;
+        log << "This settings file defines a NNP with electrostatics and\n"
+               "non-local charge transfer (4G-HDNNP).\n";
+    }
+    else if (nnpType == NNPType::HDNNP_Q)
+    {
+        log << "This settings file defines a short-range NNP similar to\n"
+               "4G-HDNNP with additional charge NN but with neither\n"
+               "electrostatics nor global charge equilibration\n"
+               "(method by M. Bircher).\n";
     }
     else
     {
@@ -157,6 +167,7 @@ void Mode::setupGeneric()
     setupNormalization();
     setupElementMap();
     setupElements();
+    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics();
     setupCutoff();
     setupSymmetryFunctions();
 #ifndef NNP_FULL_SFD_MEMORY
@@ -280,9 +291,90 @@ void Mode::setupElements()
         log << strpr("Element %2zu: %16.8E\n",
                      i, elements.at(i).getAtomicEnergyOffset());
     }
-
     log << "Energy offsets are automatically subtracted from reference "
            "energies.\n";
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
+void Mode::setupElectrostatics(string directoryPrefix, string fileNameFormat)
+{
+    log << "\n";
+    log << "*** SETUP: ELECTROSTATICS ***************"
+           "**************************************\n";
+    log << "\n";
+
+    // Atomic hardness.
+    string actualFileNameFormat = directoryPrefix + fileNameFormat;
+    log << strpr("Atomic hardness file name format: %s\n",
+                 actualFileNameFormat.c_str());
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        string fileName = strpr(actualFileNameFormat.c_str(),
+                                elements.at(i).getAtomicNumber());
+        log << strpr("Atomic hardness for element %2s from file %s: ",
+                     elements.at(i).getSymbol().c_str(),
+                     fileName.c_str());
+        vector<double> const data = readColumnsFromFile(fileName, {0}).at(0);
+        if (data.size() != 1)
+        {
+            throw runtime_error("ERROR: Atomic hardness data is "
+                                "inconsistent.\n");
+        }
+        elements.at(i).setHardness(data.at(0));
+        log << strpr("%16.8E\n", elements.at(i).getHardness());
+    }
+    log << "\n";
+
+    // Gaussian width of charges.
+    Settings::KeyRange r = settings.getValues("fixed_gausswidth");
+    for (Settings::KeyMap::const_iterator it = r.first;
+         it != r.second; ++it)
+    {
+        vector<string> args    = split(reduce(it->second.first));
+        size_t         element = elementMap[args.at(0)];
+        elements.at(element).setQsigma(atof(args.at(1).c_str()));
+    }
+    log << "Gaussian width of charge distribution per element:\n";
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        log << strpr("Element %2zu: %16.8E\n",
+                     i, elements.at(i).getQsigma());
+    }
+    log << "\n";
+
+    // Ewald precision.
+    if (settings.keywordExists("ewald_prec"))
+    {
+        ewaldPrecision = atof(settings["ewald_prec"].c_str());        
+    }
+    else ewaldPrecision = 1.0E-6;
+    log << strpr("Ewald precision: %16.8E\n", ewaldPrecision);
+    log << "\n";
+
+    // Screening function.
+    if (settings.keywordExists("screen_electrostatics"))
+    {
+        vector<string> args = split(settings["screen_electrostatics"]);
+        double inner = atof(args.at(0).c_str());
+        double outer = atof(args.at(1).c_str());
+        string type = "c"; // Default core function is cosine.
+        if (args.size() > 2) type = args.at(2); 
+        screeningFunction.setInnerOuter(inner, outer);
+        screeningFunction.setCoreFunction(type);
+	for (auto s : screeningFunction.info()) log << s;
+    }
+    else
+    {
+	// Set screening function in such way that it will always be 1.0.
+	// This may not be very efficient, may optimize later.
+        screeningFunction.setInnerOuter(-2.0, -1.0);
+	log << "Screening function not used.\n";
+    }
+
     log << "*****************************************"
            "**************************************\n";
 
@@ -917,111 +1009,248 @@ void Mode::setupNeuralNetwork()
            "**************************************\n";
     log << "\n";
 
-    struct NeuralNetworkTopology
+    string id;
+
+    // Some NNP types require extra NNs.
+    if (nnpType == NNPType::HDNNP_4G)
     {
-        int                                       numLayers = 0;
-        vector<int>                               numNeuronsPerLayer;
-        vector<NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
-    };
-
-    vector<NeuralNetworkTopology> nnt(numElements);
-
-    size_t globalNumHiddenLayers =
-        (size_t)atoi(settings["global_hidden_layers_short"].c_str());
-    vector<string> globalNumNeuronsPerHiddenLayer =
-        split(reduce(settings["global_nodes_short"]));
-    vector<string> globalActivationFunctions =
-        split(reduce(settings["global_activation_short"]));
-
-    for (size_t i = 0; i < numElements; ++i)
+        id = "elec";
+        nnk.push_back(id);
+        nns[id].id = id;
+        nns.at(id).name = "electronegativity";
+        nns.at(id).weightFileFormat = "weightse.%03zu.data";
+        nns.at(id).keywordSuffix = "_electrostatic";
+        nns.at(id).keywordSuffix2 = "_charge";
+    }
+    else if(nnpType == NNPType::HDNNP_Q)
     {
-        NeuralNetworkTopology& t = nnt.at(i);
-        t.numLayers = 2 + globalNumHiddenLayers;
-        t.numNeuronsPerLayer.resize(t.numLayers, 0);
-        t.activationFunctionsPerLayer.resize(t.numLayers,
-                                             NeuralNetwork::AF_IDENTITY);
+        id = "elec";
+        nnk.push_back(id);
+        nns[id].id = id;
+        nns.at(id).name = "charge";
+        nns.at(id).weightFileFormat = "weightse.%03zu.data";
+        nns.at(id).keywordSuffix = "_electrostatic";
+        nns.at(id).keywordSuffix2 = "_charge";
+    }
 
-        for (int i = 0; i < t.numLayers; i++)
+    // All NNP types contain a short range NN.
+    id = "short";
+    nnk.push_back(id);
+    nns[id].id = id;
+    nns.at(id).name = "short range";
+    nns.at(id).weightFileFormat = "weights.%03zu.data";
+    nns.at(id).keywordSuffix = "_short";
+    nns.at(id).keywordSuffix2 = "_short";
+
+    // Loop over all NNs and set global properties.
+    for (auto& k : nnk)
+    {
+        // Each elements number of hidden layers.
+        size_t globalNumHiddenLayers = 0;
+        // Abbreviation for current NN.
+        NNSetup& nn = nns.at(k);
+        // Set size of NN topology vector.
+        nn.topology.resize(numElements);
+        // First, check for global number of hidden layers.
+        string keyword = "global_hidden_layers" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
         {
-            NeuralNetwork::
-            ActivationFunction& a = t.activationFunctionsPerLayer[i];
-            if (i == 0)
+            globalNumHiddenLayers = atoi(settings[keyword].c_str());
+            for (auto& t : nn.topology)
             {
-                t.numNeuronsPerLayer[i] = 0;
-                a = NeuralNetwork::AF_IDENTITY;
+                t.numLayers = globalNumHiddenLayers + 2;
             }
-            else if (i == t.numLayers - 1)
+        }
+        // Now, check for per-element number of hidden layers.
+        keyword = "element_hidden_layers" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
             {
-                t.numNeuronsPerLayer[i] = 1;
-                a = NeuralNetwork::AF_IDENTITY;
+                vector<string> args = split(reduce(it->second.first));
+                size_t const e = elementMap[args.at(0)];
+                size_t const n = atoi(args.at(1).c_str());
+                nn.topology.at(e).numLayers = n + 2;
             }
-            else
+        }
+        // Check whether user has set all NN's number of layers correctly.
+        for (auto& t : nn.topology)
+        {
+            if (t.numLayers == 0)
             {
-                t.numNeuronsPerLayer[i] =
-                    atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
-                if (globalActivationFunctions.at(i-1) == "l")
+                throw runtime_error("ERROR: Number of neural network hidden "
+                                    "layers unset for some elements.\n");
+            }
+        }
+        // Finally, allocate NN topologies data.
+        for (auto& t : nn.topology)
+        {
+            t.numNeuronsPerLayer.resize(t.numLayers, 0);
+            t.activationFunctionsPerLayer.resize(t.numLayers,
+                                                 NeuralNetwork::AF_UNSET);
+        }
+
+        // Now read global number of neurons and activation functions.
+        vector<string> globalNumNeuronsPerHiddenLayer;
+        keyword = "global_nodes" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            globalNumNeuronsPerHiddenLayer = split(reduce(settings[keyword]));
+            if (globalNumHiddenLayers != globalNumNeuronsPerHiddenLayer.size())
+            {
+                throw runtime_error(strpr("ERROR: Inconsistent global NN "
+                                          "topology keyword \"%s\".\n",
+                                          keyword.c_str()));
+            }
+        }
+        vector<string> globalActivationFunctions;
+        keyword = "global_activation" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            globalActivationFunctions = split(reduce(settings[keyword]));
+            if (globalNumHiddenLayers != globalActivationFunctions.size() - 1)
+            {
+                throw runtime_error(strpr("ERROR: Inconsistent global NN "
+                                          "topology keyword \"%s\".\n",
+                                          keyword.c_str()));
+            }
+        }
+        // Set global number of neurons and activation functions if provided.
+        bool globalNumNeurons = (globalNumNeuronsPerHiddenLayer.size() != 0);
+        bool globalActivation = (globalActivationFunctions.size() != 0);
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            NNSetup::Topology& t = nn.topology.at(i);
+            size_t const nsf = elements.at(i).numSymmetryFunctions();
+            // Set input layer. Number of input layer neurons depends on NNP
+            // type and NN purpose.
+            if (nnpType == NNPType::HDNNP_2G)
+            {
+                // Can assume NN id is "short".
+                t.numNeuronsPerLayer.at(0) = nsf;
+            }
+            else if (nnpType == NNPType::HDNNP_4G ||
+                     nnpType == NNPType::HDNNP_Q)
+            {
+                // NN with id "elec" requires only SFs.
+                if (k == "elec") t.numNeuronsPerLayer.at(0) = nsf;
+                // "short" NN needs extra charge neuron.
+                else if (k == "short") t.numNeuronsPerLayer.at(0) = nsf + 1;
+            }
+            // Set dummy input neuron activation function.
+            t.activationFunctionsPerLayer.at(0) = NeuralNetwork::AF_IDENTITY;
+            // Set output layer. Assume single output neuron.
+            t.numNeuronsPerLayer.at(t.numLayers - 1) = 1;
+            // If this element's NN does not use the global number of hidden
+            // layers it makes no sense to set the global number of hidden
+            // neurons or activation functions. Hence, skip the settings here,
+            // appropriate settings should follow later in the per-element
+            // section.
+            if ((size_t)t.numLayers != globalNumHiddenLayers + 2) continue;
+            for (int j = 1; j < t.numLayers; ++j)
+            {
+                if ((j == t.numLayers - 1) && globalActivation)
                 {
-                    a = NeuralNetwork::AF_IDENTITY;
-                }
-                else if (globalActivationFunctions.at(i-1) == "t")
-                {
-                    a = NeuralNetwork::AF_TANH;
-                }
-                else if (globalActivationFunctions.at(i-1) == "s")
-                {
-                    a = NeuralNetwork::AF_LOGISTIC;
-                }
-                else if (globalActivationFunctions.at(i-1) == "p")
-                {
-                    a = NeuralNetwork::AF_SOFTPLUS;
-                }
-                else if (globalActivationFunctions.at(i-1) == "r")
-                {
-                    a = NeuralNetwork::AF_RELU;
-                }
-                else if (globalActivationFunctions.at(i-1) == "g")
-                {
-                    a = NeuralNetwork::AF_GAUSSIAN;
-                }
-                else if (globalActivationFunctions.at(i-1) == "c")
-                {
-                    a = NeuralNetwork::AF_COS;
-                }
-                else if (globalActivationFunctions.at(i-1) == "S")
-                {
-                    a = NeuralNetwork::AF_REVLOGISTIC;
-                }
-                else if (globalActivationFunctions.at(i-1) == "e")
-                {
-                    a = NeuralNetwork::AF_EXP;
-                }
-                else if (globalActivationFunctions.at(i-1) == "h")
-                {
-                    a = NeuralNetwork::AF_HARMONIC;
+                    t.activationFunctionsPerLayer.at(j) = activationFromString(
+                        globalActivationFunctions.at(t.numLayers - 2));
                 }
                 else
                 {
-                    throw runtime_error("ERROR: Unknown activation "
-                                        "function.\n");
+                    if (globalNumNeurons)
+                    {
+                        t.numNeuronsPerLayer.at(j) = atoi(
+                            globalNumNeuronsPerHiddenLayer.at(j - 1).c_str());
+                    }
+                    if (globalActivation)
+                    {
+                        t.activationFunctionsPerLayer.at(j) =
+                            activationFromString(
+                                globalActivationFunctions.at(j - 1));
+                    }
+                }
+            }
+        }
+        // Override global number of neurons with per-element keyword.
+        keyword = "element_nodes" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
+            {
+                vector<string> args = split(reduce(it->second.first));
+                size_t e = elementMap[args.at(0)];
+                size_t n = args.size() - 1;
+                NNSetup::Topology& t = nn.topology.at(e);
+                if ((size_t)t.numLayers != n + 2)
+                {
+                    throw runtime_error(strpr("ERROR: Inconsistent per-element"
+                                              " NN topology keyword \"%s\".\n",
+                                              keyword.c_str()));
+                }
+                for (int j = 1; j < t.numLayers - 2; ++j)
+                {
+                    t.numNeuronsPerLayer.at(j) = atoi(args.at(j).c_str());
+                }
+            }
+        }
+        // Override global activation functions with per-element keyword.
+        keyword = "element_activation" + nn.keywordSuffix;
+        if (settings.keywordExists(keyword))
+        {
+            Settings::KeyRange r = settings.getValues(keyword);
+            for (Settings::KeyMap::const_iterator it = r.first;
+                 it != r.second; ++it)
+            {
+                vector<string> args = split(reduce(it->second.first));
+                size_t e = elementMap[args.at(0)];
+                size_t n = args.size() - 1;
+                NNSetup::Topology& t = nn.topology.at(e);
+                if ((size_t)t.numLayers != n + 1)
+                {
+                    throw runtime_error(strpr("ERROR: Inconsistent per-element"
+                                              " NN topology keyword \"%s\".\n",
+                                              keyword.c_str()));
+                }
+                for (int j = 1; j < t.numLayers - 1; ++j)
+                {
+                    t.activationFunctionsPerLayer.at(j) =
+                        activationFromString(args.at(j).c_str());
+                }
+            }
+        }
+
+        // Finally check everything for any unset NN property.
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            NNSetup::Topology const& t = nn.topology.at(i);
+            for (int j = 0; j < t.numLayers; ++j)
+            {
+                if (t.numNeuronsPerLayer.at(j) == 0)
+                {
+                    throw runtime_error(strpr(
+                              "ERROR: NN \"%s\", element %2s: number of "
+                              "neurons for layer %d unset.\n",
+                              nn.id.c_str(),
+                              elements.at(i).getSymbol().c_str(),
+                              j));
+                }
+                if (t.activationFunctionsPerLayer.at(j)
+                        == NeuralNetwork::AF_UNSET)
+                {
+                    throw runtime_error(strpr(
+                              "ERROR: NN \"%s\", element %2s: activation "
+                              "functions for layer %d unset.\n",
+                              nn.id.c_str(),
+                              elements.at(i).getSymbol().c_str(),
+                              j));
                 }
             }
         }
     }
 
-    if (settings.keywordExists("element_nodes_short"))
-    {
-        Settings::KeyRange r = settings.getValues("element_nodes_short");
-        for (Settings::KeyMap::const_iterator it = r.first;
-             it != r.second; ++it)
-        {
-            vector<string> args = split(reduce(it->second.first));
-            size_t e = elementMap[args.at(0)];
-            size_t l = atoi(args.at(1).c_str());
-
-            nnt.at(e).numNeuronsPerLayer.at(l) =
-                (size_t)atoi(args.at(2).c_str());
-        }
-    }
 
     bool normalizeNeurons = settings.keywordExists("normalize_nodes");
     log << strpr("Normalize neurons (all elements): %d\n",
@@ -1029,40 +1258,26 @@ void Mode::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
-    for (size_t i = 0; i < numElements; ++i)
+    // Finally, allocate all neural networks.
+    for (auto& k : nnk)
     {
-        Element& e = elements.at(i);
-        NeuralNetworkTopology& t = nnt.at(i);
-
-        t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
-        // Need one extra neuron for atomic charge.
-        if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
-        e.neuralNetworks.emplace(piecewise_construct,
-                                 forward_as_tuple("short"),
-                                 forward_as_tuple(
-                                     t.numLayers,
-                                     t.numNeuronsPerLayer.data(),
-                                     t.activationFunctionsPerLayer.data()));
-        e.neuralNetworks.at("short").setNormalizeNeurons(normalizeNeurons);
-        log << strpr("Atomic short range NN for "
-                     "element %2s :\n", e.getSymbol().c_str());
-        log << e.neuralNetworks.at("short").info();
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
-        if (useChargeNN)
+        for (size_t i = 0; i < numElements; ++i)
         {
+            Element& e = elements.at(i);
+            NNSetup::Topology const& t = nns.at(k).topology.at(i);
             e.neuralNetworks.emplace(
                                     piecewise_construct,
-                                    forward_as_tuple("charge"),
+                                    forward_as_tuple(k),
                                     forward_as_tuple(
                                         t.numLayers,
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
-            e.neuralNetworks.at("charge")
-                .setNormalizeNeurons(normalizeNeurons);
-            log << strpr("Atomic charge NN for "
-                         "element %2s :\n", e.getSymbol().c_str());
-            log << e.neuralNetworks.at("charge").info();
+            e.neuralNetworks.at(k).setNormalizeNeurons(normalizeNeurons);
+            log << strpr("Atomic %s NN for "
+                         "element %2s :\n",
+                         nns.at(k).name.c_str(),
+                         e.getSymbol().c_str());
+            log << e.neuralNetworks.at(k).info();
             log << "-----------------------------------------"
                    "--------------------------------------\n";
         }
@@ -1074,22 +1289,33 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
-                                     string const& fileNameFormatCharge)
+void Mode::setupNeuralNetworkWeights(map<string, string> fileNameFormats)
+{
+    setupNeuralNetworkWeights("", fileNameFormats);
+    return;
+}
+
+void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
+                                     map<string, string> fileNameFormats)
 {
     log << "\n";
     log << "*** SETUP: NEURAL NETWORK WEIGHTS *******"
            "**************************************\n";
     log << "\n";
 
-    log << strpr("Short  NN weight file name format: %s\n",
-                 fileNameFormatShort.c_str());
-    readNeuralNetworkWeights("short", fileNameFormatShort);
-    if (useChargeNN)
+    for (auto k : nnk)
     {
-        log << strpr("Charge NN weight file name format: %s\n",
-                     fileNameFormatCharge.c_str());
-        readNeuralNetworkWeights("charge", fileNameFormatCharge);
+        string actualFileNameFormat;
+        if (fileNameFormats.find(k) != fileNameFormats.end())
+        {
+            actualFileNameFormat = fileNameFormats.at(k);
+        }
+        else actualFileNameFormat = nns.at(k).weightFileFormat;
+        actualFileNameFormat = directoryPrefix + actualFileNameFormat;
+        log << strpr("%s weight file name format: %s\n",
+                     cap(nns.at(k).name).c_str(),
+                     actualFileNameFormat.c_str());
+        readNeuralNetworkWeights(k, actualFileNameFormat);
     }
 
     log << "*****************************************"
@@ -1120,7 +1346,8 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
         // Inform atom if extra charge neuron is present in short-range NN.
-        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_Q) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1200,7 +1427,8 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
         if (a->hasSymmetryFunctions && !derivatives) continue;
 
         // Inform atom if extra charge neuron is present in short-range NN.
-        if (nnpType == NNPType::SHORT_CHARGE_NN) a->useChargeNeuron = true;
+        if (nnpType == NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_Q) a->useChargeNeuron = true;
 
         // Get element of atom and set number of symmetry functions.
         e = &(elements.at(a->element));
@@ -1259,15 +1487,18 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 }
 
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
-                                         bool const derivatives)
+                                         bool const derivatives,
+                                         string id)
 {
-    if (nnpType == NNPType::SHORT_ONLY)
+    if (id == "") id = nnk.front();
+
+    if (nnpType == NNPType::HDNNP_2G)
     {
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
             NeuralNetwork& nn = elements.at(it->element)
-                                .neuralNetworks.at("short");
+                                .neuralNetworks.at(id);
             nn.setInput(&((it->G).front()));
             nn.propagate();
             if (derivatives)
@@ -1277,14 +1508,51 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             nn.getOutput(&(it->energy));
         }
     }
-    else if (nnpType == NNPType::SHORT_CHARGE_NN)
+    else if (nnpType == NNPType::HDNNP_4G)
     {
+        if (id == "elec")
+        {
+            for (auto& a : structure.atoms)
+            {
+                NeuralNetwork& nn = elements.at(a.element)
+                                    .neuralNetworks.at(id);
+                nn.setInput(&((a.G).front()));
+                nn.propagate();
+                nn.getOutput(&(a.chi));
+                log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
+                             a.index, elementMap[a.element].c_str(), a.chi);
+            }
+        }
+        else if (id == "short")
+        {
+            for (auto& a : structure.atoms)
+            {
+                NeuralNetwork& nn = elements.at(a.element)
+                                    .neuralNetworks.at(id);
+                nn.setInput(&((a.G).front()));
+                // TODO: This part should simplify with improved NN class.
+                for (size_t i = 0; i < a.G.size(); ++i)
+                {
+                    nn.setInput(i, a.G.at(i));
+                }
+                // Set additional charge neuron.
+                nn.setInput(a.G.size(), a.charge);
+                nn.propagate();
+                nn.getOutput(&(a.energy));
+                log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
+                             a.index, elementMap[a.element].c_str(), a.energy);
+            }
+        }
+    }
+    else if (nnpType == NNPType::HDNNP_Q)
+    {
+        // Ignore ID, both NNs are computed here.
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
             // First the charge NN.
             NeuralNetwork& nnCharge = elements.at(it->element)
-                                      .neuralNetworks.at("charge");
+                                      .neuralNetworks.at("elec");
             nnCharge.setInput(&((it->G).front()));
             nnCharge.propagate();
             if (derivatives)
@@ -1296,6 +1564,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             // Now the short-range NN (have to set input neurons individually).
             NeuralNetwork& nnShort = elements.at(it->element)
                                      .neuralNetworks.at("short");
+            // TODO: This part should simplify with improved NN class.
             for (size_t i = 0; i < it->G.size(); ++i)
             {
                 nnShort.setInput(i, it->G.at(i));
@@ -1314,15 +1583,73 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
     return;
 }
 
+// TODO: Make this const?
+void Mode::chargeEquilibration(Structure& structure)
+{
+    Structure& s = structure;
+
+    // Prepare hardness vector and precalculate gamma(i, j).
+    VectorXd hardness(numElements);
+    MatrixXd siggam(numElements, numElements);
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        hardness(i) = elements.at(i).getHardness();
+        double const iSigma = elements.at(i).getQsigma();
+        for (size_t j = 0; j < numElements; ++j)
+        {
+            double const jSigma = elements.at(j).getQsigma();
+            if (i == j) siggam(i, j) = sqrt(M_PI) * iSigma;
+            else        siggam(i, j) = sqrt(2.0 * (iSigma * iSigma
+                                                + jSigma * jSigma));
+        }
+    }
+
+    double const error = s.calculateElectrostaticEnergy(ewaldPrecision,
+		                                        hardness,
+		                                        siggam,
+							screeningFunction);
+
+    //cout << "A: " << endl;
+    //cout << s.A << endl;
+    log << strpr("Solve relative error: %16.8E\n", error);
+
+    for (auto const& a : structure.atoms)
+    {
+        log << strpr("Atom %5zu (%2s) q: %16.8E\n",
+                     a.index, elementMap[a.element].c_str(), a.charge);
+        structure.charge += a.charge;
+    }
+    log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
+                 structure.charge, structure.chargeRef);
+
+    log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
+
+    return;
+}
+
 void Mode::calculateEnergy(Structure& structure) const
 {
     // Loop over all atoms and add atomic contributions to total energy.
     structure.energy = 0.0;
+    structure.energyShort = 0.0;
     for (vector<Atom>::iterator it = structure.atoms.begin();
          it != structure.atoms.end(); ++it)
     {
-        structure.energy += it->energy;
+        structure.energyShort += it->energy;
     }
+    structure.energy = structure.energyShort + structure.energyElec;
+
+    cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
+    cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
+    cout << strpr("Sum           energy: %24.16E\n", structure.energy);
+    cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
+    cout << "---------------------\n";
+    cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
+    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
+    cout << "---------------------\n";
+    cout << "without offset:      \n";
+    cout << strpr("Total         energy: %24.16E\n", structure.energy);
+    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
 
     return;
 }
@@ -1337,11 +1664,22 @@ void Mode::calculateCharge(Structure& structure) const
         structure.charge += it->charge;
     }
 
+    cout << "---------------------\n";
+    cout << strpr("Total         charge: %24.16E\n", structure.charge);
+    cout << strpr("Reference     charge: %24.16E\n", structure.chargeRef);
+
+    //throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
+
     return;
 }
 
 void Mode::calculateForces(Structure& structure) const
 {
+    if (nnpType != NNPType::HDNNP_2G)
+    {
+        cout << "WARNING: Forces are not yet implemented.\n";
+        return;
+    }
     Atom* ai = NULL;
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
@@ -1646,30 +1984,21 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
     return prune;
 }
 
-void Mode::readNeuralNetworkWeights(string const& type,
+void Mode::readNeuralNetworkWeights(string const& id,
                                     string const& fileNameFormat)
 {
-    string s = "";
-    if      (type == "short" ) s = "short  NN";
-    else if (type == "charge") s = "charge NN";
-    else
-    {
-        throw runtime_error("ERROR: Unknown neural network type.\n");
-    }
-
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
         string fileName = strpr(fileNameFormat.c_str(),
                                 it->getAtomicNumber());
-        log << strpr("Setting %s weights for element %2s from file: %s\n",
-                     s.c_str(),
+        log << strpr("Setting weights for element %2s from file: %s\n",
                      it->getSymbol().c_str(),
                      fileName.c_str());
         vector<double> weights = readColumnsFromFile(fileName,
                                                      vector<size_t>(1, 0)
                                                     ).at(0);
-        NeuralNetwork& nn = it->neuralNetworks.at(type);
+        NeuralNetwork& nn = it->neuralNetworks.at(id);
         nn.setConnections(&(weights.front()));
     }
 

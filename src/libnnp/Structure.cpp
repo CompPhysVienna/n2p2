@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include "Kspace.h"
 #include "Structure.h"
 #include "utility.h"
+#include <Eigen/Dense>
 #include <algorithm> // std::max
-#include <cmath>     // fabs
+#include <cmath>     // fabs, erf
 #include <cstdlib>   // atof
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
@@ -26,6 +28,7 @@
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
 Structure::Structure() :
     isPeriodic                    (false     ),
@@ -39,6 +42,8 @@ Structure::Structure() :
     numElementsPresent            (0         ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
+    energyShort                   (0.0       ),
+    energyElec                    (0.0       ),
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
@@ -430,6 +435,128 @@ void Structure::calculateVolume()
     volume = fabs(box[0] * (box[1].cross(box[2])));
 
     return;
+}
+
+double Structure::calculateElectrostaticEnergy(
+                                            double                   precision,
+                                            VectorXd                 hardness,
+                                            MatrixXd                 siggam,
+                                            ScreeningFunction const& fs)
+{
+    KspaceGrid grid;
+    double rcutReal;
+    if (isPeriodic)
+    {
+        rcutReal = grid.setup(box, precision);
+
+        //cout << "Reciprocal lattice: " << endl;
+        //for (int i = 0; i < 3; ++i)
+        //{
+        //    for (int j = 0; j < 3; ++j)
+        //    {
+        //        cout << strpr(" %12f", grid.kbox[j][i]);
+        //    }
+        //    cout << endl;
+        //}
+        //cout << "eta       = " << grid.eta << endl;
+        //cout << "rcutReal  = " << rcutReal << endl;
+        //cout << "rcutRecip = " << grid.rcut << endl;
+        //cout << "n[0]      = " << grid.n[0] << endl;
+        //cout << "n[1]      = " << grid.n[1] << endl;
+        //cout << "n[2]      = " << grid.n[2] << endl;
+    }
+
+    A.resize(numAtoms + 1, numAtoms + 1);
+    A.setZero();
+    VectorXd b(numAtoms + 1);
+    VectorXd hardnessJ(numAtoms);
+
+    double const sqrt2eta = sqrt(2.0) * grid.eta;
+
+    if (isPeriodic)
+    {
+        // TODO: This part is not yet correct! Need to use real and reciprocal
+        // cutoffs to avoid loop of order O(numAtoms^2).
+        // UPDATE: should be fixed, but needs to be tested, therefore need periodic example with
+        // electrostatic data
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            hardnessJ(i) = hardness(ei);
+            b(i) = -ai.chi;
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                for (auto const& gv : grid.kvectors)
+                {
+                    A(i, j) += gv.coeff * cos(gv.k * (ai.r - aj.r));
+                }
+
+                // still needs to be tested.
+                 
+                 size_t const ej = aj.element;
+                 double const rij = (ai.r - aj.r).norm();
+                 if (rij < rcutReal)
+                 {
+                     A(i, j) += (erfc(rij / sqrt2eta)
+                               - erfc(rij / siggam(ei, ej))) / rij;
+                 }
+
+                A(j, i) = A(i, j);
+            }
+        }
+    }
+    else
+    {
+        // TODO: This part needs to be verified and modified to include the
+        // screening function! It is passed in this function as the argument
+        // "fs" and can be directly used like this:
+        // fs.f(rij) .... returns screening function value.
+        // fs.df(rij) ... returns screening function derivative.
+        // or get both at the same time (store in 2nd and 3rd argument):
+        // double f;
+        // double df;
+        // fs.fdf(rij, f, df)
+        // UPDATE: Probably not needed here
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            hardnessJ(i) = hardness(ei);
+            b(i) = -ai.chi;
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const rij = (ai.r - aj.r).norm();
+                A(i, j) = erf(rij / siggam(ei, ej)) / rij;
+                A(j, i) = A(i, j);
+            }
+        }
+    }
+
+    A.col(numAtoms).setOnes();
+    A.row(numAtoms).setOnes();
+    A(numAtoms, numAtoms) = 0.0;
+    b(numAtoms) = chargeRef;
+
+    VectorXd const Q = A.colPivHouseholderQr().solve(b);
+
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        atoms.at(i).charge = Q(i); 
+    }
+    lambda = Q(numAtoms);
+    double error = (A * Q - b).norm() / b.norm();
+
+    // We need matrix E not A, which only differ by the hardness terms along the diagonal
+    energyElec = 0.5 * Q.head(numAtoms).transpose()
+               * (A.topLeftCorner(numAtoms, numAtoms) - MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
+    
+    return error;
 }
 
 void Structure::remap(Atom& atom)

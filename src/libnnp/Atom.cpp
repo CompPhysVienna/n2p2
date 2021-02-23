@@ -35,6 +35,7 @@ Atom::Atom() : hasNeighborList               (false),
                numNeighborsUnique            (0    ),
                numSymmetryFunctions          (0    ),
                energy                        (0.0  ),
+               chi                           (0.0  ),
                charge                        (0.0  ),
                chargeRef                     (0.0  )
 {
@@ -293,6 +294,13 @@ size_t Atom::getNumNeighbors(double cutoffRadius) const
     return numNeighborsLocal;
 }
 
+bool Atom::isNeighbor(size_t index) const
+{
+    for (auto const& n : neighbors) if (n.index == index) return true;
+
+    return false;
+}
+
 void Atom::updateError(string const&        property,
                        map<string, double>& error,
                        size_t&              count) const
@@ -360,6 +368,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("numNeighborsUnique             : %d\n", numNeighborsUnique));
     v.push_back(strpr("numSymmetryFunctions           : %d\n", numSymmetryFunctions));
     v.push_back(strpr("energy                         : %16.8E\n", energy));
+    v.push_back(strpr("chi                            : %16.8E\n", chi));
     v.push_back(strpr("charge                         : %16.8E\n", charge));
     v.push_back(strpr("chargeRef                      : %16.8E\n", chargeRef));
     v.push_back(strpr("r                              : %16.8E %16.8E %16.8E\n", r[0], r[1], r[2]));
