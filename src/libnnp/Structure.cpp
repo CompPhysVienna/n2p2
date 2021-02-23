@@ -469,6 +469,7 @@ double Structure::calculateElectrostaticEnergy(
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
     VectorXd b(numAtoms + 1);
+    VectorXd hardnessJ(numAtoms);
 
     double const sqrt2eta = sqrt(2.0) * grid.eta;
 
@@ -476,11 +477,14 @@ double Structure::calculateElectrostaticEnergy(
     {
         // TODO: This part is not yet correct! Need to use real and reciprocal
         // cutoffs to avoid loop of order O(numAtoms^2).
+        // UPDATE: should be fixed, but needs to be tested, therefore need periodic example with
+        // electrostatic data
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
             A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
@@ -489,18 +493,20 @@ double Structure::calculateElectrostaticEnergy(
                 {
                     A(i, j) += gv.coeff * cos(gv.k * (ai.r - aj.r));
                 }
+
+                // still needs to be tested.
+                 
+                 size_t const ej = aj.element;
+                 double const rij = (ai.r - aj.r).norm();
+                 if (rij < rcutReal)
+                 {
+                     A(i, j) += (erfc(rij / sqrt2eta)
+                               - erfc(rij / siggam(ei, ej))) / rij;
+                 }
+
                 A(j, i) = A(i, j);
             }
         }
-        // TODO: Real part needs larger neighbor list (maybe set up 2nd
-        // neighbor list)!
-        // size_t const ej = aj.element;
-        // double const rij = (ai.r - aj.r).norm();
-        // if (rij < rcutReal)
-        // {
-        //     A(i, j) += (erfc(rij / sqrt2eta)
-        //               - erfc(rij / siggam(ei, ej))) / rij;
-        // }
     }
     else
     {
@@ -513,11 +519,13 @@ double Structure::calculateElectrostaticEnergy(
         // double f;
         // double df;
         // fs.fdf(rij, f, df)
+        // UPDATE: Probably not needed here
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
             A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
@@ -544,9 +552,10 @@ double Structure::calculateElectrostaticEnergy(
     lambda = Q(numAtoms);
     double error = (A * Q - b).norm() / b.norm();
 
+    // We need matrix E not A, which only differ by the hardness terms along the diagonal
     energyElec = 0.5 * Q.head(numAtoms).transpose()
-               * A.topLeftCorner(numAtoms, numAtoms) * Q.head(numAtoms);
-
+               * (A.topLeftCorner(numAtoms, numAtoms) - MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
+    
     return error;
 }
 
