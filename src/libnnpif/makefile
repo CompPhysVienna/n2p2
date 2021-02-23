@@ -99,9 +99,11 @@ endif
 headers:
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
+LAMMPS_OPTIONS := $(filter -DNNP_%,$(OPTIONS))
 lammps-mf:
-	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(OPTIONS) -I$(PROJECT_EIGEN)," LAMMPS/Makefile.lammps
+	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(LAMMPS_OPTIONS)," LAMMPS/Makefile.lammps
 	@rm LAMMPS/Makefile.lammps.bak
+	cp LAMMPS/Makefile.lammps $(PROJECT_LIB)/Makefile.lammps-extra
 
 $(LIB).so: CFLAGS+= -fPIC
 $(LIB).so: $(OBJ)
@@ -119,6 +121,7 @@ clean: clean-headers clean-lammps-mf
 	$(RM) $(OBJ)
 	$(RM) $(OBJ:.o=.gcno) $(OBJ:.o=.gcda) $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
+	$(RM) $(PROJECT_LIB)/Makefile.lammps-extra
 
 clean-headers:
 	cd $(PROJECT_INCLUDE) && $(RM) $(notdir $(HEADERS))
