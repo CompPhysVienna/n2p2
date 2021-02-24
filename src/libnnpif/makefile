@@ -46,7 +46,7 @@ LIB=lib$(NAME)
 # PROJECT COMPILER AND FLAGS
 ###############################################################################
 CC=$(PROJECT_CC)
-ifneq (,$(findstring NNP_NO_MPI,${PROJECT_OPTIONS}))
+ifneq (,$(findstring N2P2_NO_MPI,${PROJECT_OPTIONS}))
 MPICC=${PROJECT_CC}
 CFLAGS=${PROJECT_CFLAGS}
 else
@@ -99,7 +99,7 @@ endif
 headers:
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
-LAMMPS_OPTIONS := $(filter -DNNP_%,$(OPTIONS))
+LAMMPS_OPTIONS := $(filter -DN2P2_%,$(OPTIONS))
 lammps-mf:
 	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(LAMMPS_OPTIONS)," LAMMPS/Makefile.lammps
 	@rm LAMMPS/Makefile.lammps.bak

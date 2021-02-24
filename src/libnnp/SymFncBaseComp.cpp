@@ -62,13 +62,13 @@ void SymFncBaseComp::setCompactFunction(string subtype)
         {
             if (subtype.at(2) == 'a')
             {
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
                 asymmetric = true;
                 cr.setAsymmetric(true);
 #else
                 throw runtime_error("ERROR: Compiled without support for "
                                     "asymmetric polynomial symmetry functions "
-                                    "(-DNNP_NO_ASYM_POLY).\n");
+                                    "(-DN2P2_NO_ASYM_POLY).\n");
 #endif
             }
             else

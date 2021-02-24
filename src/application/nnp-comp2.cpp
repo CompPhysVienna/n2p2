@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
              it != dataset.structures.end(); ++it)
         {
             it->calculateNeighborList(dataset.getMaxCutoffRadius());
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
             dataset.calculateSymmetryFunctions((*it), useForces);
 #else
             dataset.calculateSymmetryFunctionGroups((*it), useForces);

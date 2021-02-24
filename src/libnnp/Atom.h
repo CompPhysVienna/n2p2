@@ -42,7 +42,7 @@ struct Atom
         double                     d;
         /// Distance vector to neighbor atom.
         Vec3D                      dr;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
         /// Symmetry function cache (e.g. for cutoffs, compact functions).
         std::vector<double>        cache;
 #endif
@@ -125,7 +125,7 @@ struct Atom
     std::vector<std::size_t> numNeighborsPerElement;
     /// Number of neighbor atom symmetry function derivatives per element.
     std::vector<std::size_t> numSymmetryFunctionDerivatives;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     /// Cache size for each element.
     std::vector<std::size_t> cacheSizePerElement;
 #endif
@@ -135,7 +135,7 @@ struct Atom
     std::vector<double>      dEdG;
     /// Derivative of atomic charge with respect to symmetry functions.
     std::vector<double>      dQdG;
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>      dGdxia;
@@ -149,7 +149,7 @@ struct Atom
     /** Atom constructor, initialize to zero.
      */
     Atom();
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
      *

@@ -119,7 +119,7 @@ author = u'Andreas Singraber'
 # The short X.Y version.
 with open('../../../libnnp/version.h') as f:
     for line in f:
-        if 'NNP_GIT_VERSION' in line:
+        if 'N2P2_GIT_VERSION' in line:
             version = line.split()[2]
 #version = u'1.0.0'
 # The full version, including alpha/beta/rc tags.

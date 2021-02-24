@@ -93,7 +93,7 @@ void SymFncCompAngn::calculate(Atom& atom, bool const derivatives) const
         {
             double radij;
             double dradij;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             if (cacheIndices[nej].size() == 0) cr.fdf(rij, radij, dradij);
             else
             {
@@ -126,7 +126,7 @@ void SymFncCompAngn::calculate(Atom& atom, bool const derivatives) const
  
                         double radik;
                         double dradik;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                         if (cacheIndices[nek].size() == 0)
                         {
                             cr.fdf(rik, radik, dradik);
@@ -197,7 +197,7 @@ void SymFncCompAngn::calculate(Atom& atom, bool const derivatives) const
 
                         // Save force contributions in Atom storage.
                         atom.dGdr[index] += drij + drik;
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                         nj.dGdr[indexPerElement[nej]] -= drij + drjk;
                         nk.dGdr[indexPerElement[nek]] -= drik - drjk;
 #else

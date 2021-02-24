@@ -202,7 +202,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numSymmetryFunctionDerivatives
         bs += ss;
         bs += it->numSymmetryFunctionDerivatives.size() * ss;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
         // Atom.cacheSizePerElement
         bs += ss;
         bs += it->cacheSizePerElement.size() * ss;
@@ -216,7 +216,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.dQdG
         bs += ss;
         bs += it->dQdG.size() * ds;
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
         // Atom.dGdxia
         bs += ss;
         bs += it->dGdxia.size() * ds;
@@ -231,7 +231,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         {
             // Neighbor
             bs += 3 * ss + ds + 3 * ds;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             // Neighbor.cache
             bs += ss;
             bs += it2->cache.size() * ds;
@@ -350,7 +350,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             // Atom.cacheSizePerElement
             ts2 = it->cacheSizePerElement.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -384,7 +384,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->dQdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
 
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
             // Atom.dGdxia
             ts2 = it->dGdxia.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -422,7 +422,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                     MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
 
                     size_t ts3 = 0;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                     // Neighbor.cache
                     ts3 = it2->cache.size();
                     MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -580,7 +580,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
             }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             // Atom.cacheSizePerElement
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -622,7 +622,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->dQdG.front()), ts2, MPI_DOUBLE, comm);
             }
 
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
             // Atom.dGdxia
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -666,7 +666,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                     MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
 
                     size_t ts3 = 0;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                     // Neighbor.cache
                     ts3 = 0;
                     MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);

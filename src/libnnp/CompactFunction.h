@@ -56,7 +56,7 @@ public:
      * @return Type used.
      */
     CoreFunction::Type getCoreFunctionType() const;
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
     /** Set asymmetric property in core function.
      *
      * @param[in] asymmetric Whether asymmetry should be activated.
