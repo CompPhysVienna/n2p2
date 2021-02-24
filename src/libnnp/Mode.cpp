@@ -68,11 +68,55 @@ void Mode::initialize()
     log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
     log << "------------------------------------------------------------\n";
     log << "\n";
+    log << "Features/Flags:\n";
+    log << "------------------------------------------------------------\n";
+    log << "Symmetry function groups     : ";
+#ifndef NNP_NO_SF_GROUPS
+    log << "enabled\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "Symmetry function cache      : ";
+#ifndef NNP_NO_SF_CACHE
+    log << "enabled\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "Timing function available    : ";
+#ifndef NNP_NO_TIME
+    log << "available\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "Asymmetric polynomial SFs    : ";
+#ifndef NNP_NO_ASYM_POLY
+    log << "available\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "SF low neighbor number check : ";
+#ifndef NNP_NO_NEIGH_CHECK
+    log << "enabled\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "SF derivative memory layout  : ";
+#ifndef NNP_FULL_SFD_MEMORY
+    log << "reduced\n";
+#else
+    log << "full\n";
+#endif
+    log << "MPI explicitly disabled      : ";
+#ifndef NNP_NO_MPI
+    log << "no\n";
+#else
+    log << "yes\n";
+#endif
 #ifdef _OPENMP
-    log << strpr("OpenMP threads    : %d\n", omp_get_max_threads());
+    log << strpr("OpenMP threads               : %d\n", omp_get_max_threads());
+#endif
     log << "------------------------------------------------------------\n";
     log << "\n";
-#endif
 
     log << "Please cite the following papers when publishing results "
            "obtained with n²p²:\n";
