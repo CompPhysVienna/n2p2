@@ -606,10 +606,10 @@ void ModeKokkos<t_device>::setupNeuralNetworkWeights( string const &fileNameForm
 }
 
 template <class t_device>
-template <class t_slice_x, class t_slice_type, class t_slice_G,
+template <class t_x, class t_type, class t_G,
           class t_neigh_list>
 void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
-    t_slice_x x, t_slice_type type, t_slice_G G, t_neigh_list neigh_list,
+    t_x x, t_type type, t_G G, t_neigh_list neigh_list,
     int N_local )
 {
     Kokkos::deep_copy( G, 0.0 );
@@ -626,7 +626,7 @@ void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
     auto cutoffType_ = cutoffType;
     auto cutoffAlpha_ = cutoffAlpha;
 
-    auto calc_radial_symm_op = KOKKOS_LAMBDA( const int i, const int j )
+    auto calc_radial_symm_op = KOKKOS_LAMBDA( const int i )
     {
         double pfcij = 0.0;
         double pdfcij = 0.0;
@@ -636,7 +636,10 @@ void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
         double rij, r2ij;
         T_F_FLOAT dxij, dyij, dzij;
 
+        typename t_neigh_list::t_neighs neighs_i = neigh_list.get_neighs(i);
+        const int num_neighs_i = neighs_i.get_num_neighs();
         int attype = type( i );
+
         for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
@@ -649,35 +652,38 @@ void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
                 size_t size =
                     SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
-                nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
-                r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
-                rij = sqrt( r2ij );
-                if ( e1 == nej && rij < rc )
+                for(int jj = 0; jj < num_neighs_i; jj++)
                 {
-                    compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
-                                    rij, rc, false );
-                    for ( size_t k = 0; k < size; ++k )
+                    T_INT j = neighs_i(jj);
+                    nej = type( j );
+                    dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                    dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                    dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
+                    r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
+                    rij = sqrt( r2ij );
+                    if ( e1 == nej && rij < rc )
                     {
-                        memberindex = SFGmemberlist_( attype, groupIndex, k );
-                        globalIndex = SF_( attype, memberindex, 14 );
-                        eta = SF_( attype, memberindex, 4 );
-                        rs = SF_( attype, memberindex, 8 );
-                        G( i, globalIndex ) +=
-                            exp( -eta * ( rij - rs ) * ( rij - rs ) ) * pfcij;
+                        compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
+                                        rij, rc, false );
+                        for ( size_t k = 0; k < size; ++k )
+                        {
+                            memberindex = SFGmemberlist_( attype, groupIndex, k );
+                            globalIndex = SF_( attype, memberindex, 14 );
+                            eta = SF_( attype, memberindex, 4 );
+                            rs = SF_( attype, memberindex, 8 );
+                            G( i, globalIndex ) +=
+                                exp( -eta * ( rij - rs ) * ( rij - rs ) ) * pfcij;
+                        }
                     }
                 }
             }
         }
     };
-    Kokkos::parallel_for(
-        policy, calc_radial_symm_op, "Mode::calculateRadialSymmetryFunctionGroups" );
+    Kokkos::parallel_for( "Mode::calculateRadialSymmetryFunctionGroups",
+                          policy, calc_radial_symm_op );
     Kokkos::fence();
 
-    auto calc_angular_symm_op =
-        KOKKOS_LAMBDA( const int i, const int j, const int k )
+    auto calc_angular_symm_op = KOKKOS_LAMBDA( const int i )
     {
         double pfcij = 0.0, pdfcij = 0.0;
         double pfcik = 0.0, pdfcik = 0.0;
@@ -688,7 +694,10 @@ void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
         T_F_FLOAT dxij, dyij, dzij, dxik, dyik, dzik, dxjk, dyjk, dzjk;
         double eta, rs, lambda, zeta;
 
+        typename t_neigh_list::t_neighs neighs_i = neigh_list.get_neighs(i);
+        const int num_neighs_i = neighs_i.get_num_neighs();
         int attype = type( i );
+
         for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
@@ -702,98 +711,108 @@ void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
                 size_t size =
                     SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
-                nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
-                r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
-                rij = sqrt( r2ij );
-                if ( ( e1 == nej || e2 == nej ) && rij < rc )
+                for(int jj = 0; jj < num_neighs_i; jj++)
                 {
-                    // Calculate cutoff function and derivative.
-                    compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
-                                    rij, rc, false );
-
-                    nek = type( k );
-
-                    if ( ( e1 == nej && e2 == nek ) ||
-                         ( e2 == nej && e1 == nek ) )
+                    T_INT j = neighs_i(jj);
+                    nej = type( j );
+                    dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                    dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                    dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
+                    r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
+                    rij = sqrt( r2ij );
+                    if ( ( e1 == nej || e2 == nej ) && rij < rc )
                     {
-                        dxik =
-                            ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength_;
-                        dyik =
-                            ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength_;
-                        dzik =
-                            ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength_;
-                        r2ik = dxik * dxik + dyik * dyik + dzik * dzik;
-                        rik = sqrt( r2ik );
-                        if ( rik < rc )
+                        // Calculate cutoff function and derivative.
+                        compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
+                                        rij, rc, false );
+                        
+                        typename t_neigh_list::t_neighs neighs_j = neigh_list.get_neighs(j);
+                        const int num_neighs_j = neighs_j.get_num_neighs();
+                        for(int kk = 0; kk < num_neighs_j; kk++)
                         {
-                            dxjk = dxik - dxij;
-                            dyjk = dyik - dyij;
-                            dzjk = dzik - dzij;
-                            r2jk = dxjk * dxjk + dyjk * dyjk + dzjk * dzjk;
-                            if ( r2jk < rc * rc )
+                            T_INT k = neighs_i(kk);
+                            nek = type( k );
+                            
+                            if ( ( e1 == nej && e2 == nek ) ||
+                                 ( e2 == nej && e1 == nek ) )
                             {
-                                // Energy calculation.
-                                compute_cutoff( cutoffType_, cutoffAlpha_,
-                                                pfcik, pdfcik, rik, rc, false );
-
-                                rjk = sqrt( r2jk );
-                                compute_cutoff( cutoffType_, cutoffAlpha_,
-                                                pfcjk, pdfcjk, rjk, rc, false );
-
-                                double const rinvijik = 1.0 / rij / rik;
-                                double const costijk =
-                                    ( dxij * dxik + dyij * dyik +
-                                      dzij * dzik ) *
-                                    rinvijik;
-                                double vexp = 0.0, rijs = 0.0, riks = 0.0,
-                                       rjks = 0.0;
-                                for ( size_t l = 0; l < size; ++l )
+                                dxik =
+                                    ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength_;
+                                dyik =
+                                    ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength_;
+                                dzik =
+                                    ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength_;
+                                r2ik = dxik * dxik + dyik * dyik + dzik * dzik;
+                                rik = sqrt( r2ik );
+                                if ( rik < rc )
                                 {
-                                    globalIndex =
-                                        SF_( attype,
-                                              SFGmemberlist_( attype,
-                                                               groupIndex, l ),
-                                              14 );
-                                    memberindex = SFGmemberlist_(
-                                        attype, groupIndex, l );
-                                    eta = SF_( attype, memberindex, 4 );
-                                    lambda = SF_( attype, memberindex, 5 );
-                                    zeta = SF_( attype, memberindex, 6 );
-                                    rs = SF_( attype, memberindex, 8 );
-                                    if ( rs > 0.0 )
+                                    dxjk = dxik - dxij;
+                                    dyjk = dyik - dyij;
+                                    dzjk = dzik - dzij;
+                                    r2jk = dxjk * dxjk + dyjk * dyjk + dzjk * dzjk;
+                                    if ( r2jk < rc * rc )
                                     {
-                                        rijs = rij - rs;
-                                        riks = rik - rs;
-                                        rjks = rjk - rs;
-                                        vexp = exp( -eta * ( rijs * rijs +
-                                                             riks * riks +
-                                                             rjks * rjks ) );
-                                    }
-                                    else
-                                        vexp = exp( -eta *
-                                                    ( r2ij + r2ik + r2jk ) );
-                                    double const plambda =
-                                        1.0 + lambda * costijk;
-                                    double fg = vexp;
-                                    if ( plambda <= 0.0 )
-                                        fg = 0.0;
-                                    else
-                                        fg *= pow( plambda, ( zeta - 1.0 ) );
-                                    G( i, globalIndex ) +=
-                                        fg * plambda * pfcij * pfcik * pfcjk;
-                                } // l
-                            }     // rjk <= rc
-                        }         // rik <= rc
-                    }             // elem
-                }                 // rij <= rc
+                                        // Energy calculation.
+                                        compute_cutoff( cutoffType_, cutoffAlpha_,
+                                                        pfcik, pdfcik, rik, rc, false );
+                                        
+                                        rjk = sqrt( r2jk );
+                                        compute_cutoff( cutoffType_, cutoffAlpha_,
+                                                        pfcjk, pdfcjk, rjk, rc, false );
+                                        
+                                        double const rinvijik = 1.0 / rij / rik;
+                                        double const costijk =
+                                            ( dxij * dxik + dyij * dyik +
+                                              dzij * dzik ) *
+                                            rinvijik;
+                                        double vexp = 0.0, rijs = 0.0, riks = 0.0,
+                                            rjks = 0.0;
+                                        for ( size_t l = 0; l < size; ++l )
+                                        {
+                                            globalIndex =
+                                                SF_( attype,
+                                                     SFGmemberlist_( attype,
+                                                                     groupIndex, l ),
+                                                     14 );
+                                            memberindex = SFGmemberlist_(
+                                                                         attype, groupIndex, l );
+                                            eta = SF_( attype, memberindex, 4 );
+                                            lambda = SF_( attype, memberindex, 5 );
+                                            zeta = SF_( attype, memberindex, 6 );
+                                            rs = SF_( attype, memberindex, 8 );
+                                            if ( rs > 0.0 )
+                                            {
+                                                rijs = rij - rs;
+                                                riks = rik - rs;
+                                                rjks = rjk - rs;
+                                                vexp = exp( -eta * ( rijs * rijs +
+                                                                     riks * riks +
+                                                                     rjks * rjks ) );
+                                            }
+                                            else
+                                                vexp = exp( -eta *
+                                                            ( r2ij + r2ik + r2jk ) );
+                                            double const plambda =
+                                                1.0 + lambda * costijk;
+                                            double fg = vexp;
+                                            if ( plambda <= 0.0 )
+                                                fg = 0.0;
+                                            else
+                                                fg *= pow( plambda, ( zeta - 1.0 ) );
+                                            G( i, globalIndex ) +=
+                                                fg * plambda * pfcij * pfcik * pfcjk;
+                                        } // l
+                                    }     // rjk <= rc
+                                }         // rik <= rc
+                            }             // elem
+                        }                 // k
+                    }                     // rij <= rc
+                }                         // j
             }
         }
     };
-    Kokkos::parallel_for( policy, calc_angular_symm_op,
-			  "Mode::calculateAngularSymmetryFunctionGroups" );
+    Kokkos::parallel_for( "Mode::calculateAngularSymmetryFunctionGroups",
+                          policy, calc_angular_symm_op );
     Kokkos::fence();
 
     auto scale_symm_op = KOKKOS_LAMBDA( const int i )
@@ -833,10 +852,10 @@ void ModeKokkos<t_device>::calculateSymmetryFunctionGroups(
 }
 
 template <class t_device>
-template <class t_slice_type, class t_slice_G, class t_slice_dEdG,
-          class t_slice_E>
+template <class t_type, class t_G, class t_dEdG,
+          class t_E>
 void ModeKokkos<t_device>::calculateAtomicNeuralNetworks( 
-    t_slice_type type, t_slice_G G, t_slice_dEdG dEdG, t_slice_E E, int N_local )
+    t_type type, t_G G, t_dEdG dEdG, t_E E, int N_local )
 {
     auto NN = d_t_NN( "Mode::NN", N_local, numLayers, maxNeurons );
     auto dfdx = d_t_NN( "Mode::dfdx", N_local, numLayers, maxNeurons );
@@ -928,10 +947,10 @@ void ModeKokkos<t_device>::calculateAtomicNeuralNetworks(
 }
 
 template <class t_device>
-template <class t_slice_x, class t_slice_f, class t_slice_type,
-          class t_slice_dEdG, class t_neigh_list>
+template <class t_x, class t_f, class t_type,
+          class t_dEdG, class t_neigh_list>
 void ModeKokkos<t_device>::calculateForces( 
-    t_slice_x x, t_slice_f f_a, t_slice_type type, t_slice_dEdG dEdG,
+    t_x x, t_f f_a, t_type type, t_dEdG dEdG,
     t_neigh_list neigh_list, int N_local )
 {
     double convForce_ = convLength / convEnergy;
@@ -948,7 +967,7 @@ void ModeKokkos<t_device>::calculateForces(
     auto cutoffType_ = cutoffType;
     auto cutoffAlpha_ = cutoffAlpha;
 
-    auto calc_radial_force_op = KOKKOS_LAMBDA( const int i, const int j )
+    auto calc_radial_force_op = KOKKOS_LAMBDA( const int i )
     {
         double pfcij = 0.0;
         double pdfcij = 0.0;
@@ -957,6 +976,9 @@ void ModeKokkos<t_device>::calculateForces(
         double eta, rs;
         int memberindex, globalIndex;
 
+
+        typename t_neigh_list::t_neighs neighs_i = neigh_list.get_neighs(i);
+        const int num_neighs_i = neighs_i.get_num_neighs();
         int attype = type( i );
 
         for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
@@ -971,56 +993,59 @@ void ModeKokkos<t_device>::calculateForces(
                 size_t size =
                     SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
-                size_t nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
-                r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
-                rij = sqrt( r2ij );
-                if ( e1 == nej && rij < rc )
+                for(int jj = 0; jj < num_neighs_i; jj++)
                 {
-                    // Energy calculation.
-                    // Calculate cutoff function and derivative.
-                    compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
-                                    rij, rc, true );
-                    for ( size_t k = 0; k < size; ++k )
+                    T_INT j = neighs_i(jj);
+                    size_t nej = type( j );
+                    dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                    dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                    dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
+                    r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
+                    rij = sqrt( r2ij );
+                    if ( e1 == nej && rij < rc )
                     {
-                        globalIndex = SF_(
-                            attype, SFGmemberlist_( attype, groupIndex, k ),
-                            14 );
-                        memberindex = SFGmemberlist_( attype, groupIndex, k );
-                        eta = SF_( attype, memberindex, 4 );
-                        rs = SF_( attype, memberindex, 8 );
-                        double pexp = exp( -eta * ( rij - rs ) * ( rij - rs ) );
-                        // Force calculation.
-                        double const p1 =
-                            SFscaling_( attype, memberindex, 6 ) *
-                            ( pdfcij - 2.0 * eta * ( rij - rs ) * pfcij ) *
-                            pexp / rij;
-                        f_a( i, 0 ) -= ( dEdG( i, globalIndex ) *
-                                         ( p1 * dxij ) * CFFORCE * convForce_ );
-                        f_a( i, 1 ) -= ( dEdG( i, globalIndex ) *
-                                         ( p1 * dyij ) * CFFORCE * convForce_ );
-                        f_a( i, 2 ) -= ( dEdG( i, globalIndex ) *
-                                         ( p1 * dzij ) * CFFORCE * convForce_ );
+                        // Energy calculation.
+                        // Calculate cutoff function and derivative.
+                        compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
+                                        rij, rc, true );
+                        for ( size_t k = 0; k < size; ++k )
+                        {
+                            globalIndex = SF_(
+                                              attype, SFGmemberlist_( attype, groupIndex, k ),
+                                              14 );
+                            memberindex = SFGmemberlist_( attype, groupIndex, k );
+                            eta = SF_( attype, memberindex, 4 );
+                            rs = SF_( attype, memberindex, 8 );
+                            double pexp = exp( -eta * ( rij - rs ) * ( rij - rs ) );
+                            // Force calculation.
+                            double const p1 =
+                                SFscaling_( attype, memberindex, 6 ) *
+                                ( pdfcij - 2.0 * eta * ( rij - rs ) * pfcij ) *
+                                pexp / rij;
+                            f_a( i, 0 ) -= ( dEdG( i, globalIndex ) *
+                                             ( p1 * dxij ) * CFFORCE * convForce_ );
+                            f_a( i, 1 ) -= ( dEdG( i, globalIndex ) *
+                                             ( p1 * dyij ) * CFFORCE * convForce_ );
+                            f_a( i, 2 ) -= ( dEdG( i, globalIndex ) *
+                                             ( p1 * dzij ) * CFFORCE * convForce_ );
 
-                        f_a( j, 0 ) += ( dEdG( i, globalIndex ) *
-                                         ( p1 * dxij ) * CFFORCE * convForce_ );
-                        f_a( j, 1 ) += ( dEdG( i, globalIndex ) *
-                                         ( p1 * dyij ) * CFFORCE * convForce_ );
-                        f_a( j, 2 ) += ( dEdG( i, globalIndex ) *
-                                         ( p1 * dzij ) * CFFORCE * convForce_ );
+                            f_a( j, 0 ) += ( dEdG( i, globalIndex ) *
+                                             ( p1 * dxij ) * CFFORCE * convForce_ );
+                            f_a( j, 1 ) += ( dEdG( i, globalIndex ) *
+                                             ( p1 * dyij ) * CFFORCE * convForce_ );
+                            f_a( j, 2 ) += ( dEdG( i, globalIndex ) *
+                                             ( p1 * dzij ) * CFFORCE * convForce_ );
+                        }
                     }
                 }
             }
         }
     };
-    Kokkos::parallel_for( policy, calc_radial_force_op,
-			  "Mode::calculateRadialForces" );
+    Kokkos::parallel_for( "Mode::calculateRadialForces",
+                          policy, calc_radial_force_op );
     Kokkos::fence();
 
-    auto calc_angular_force_op =
-        KOKKOS_LAMBDA( const int i, const int j, const int k )
+    auto calc_angular_force_op = KOKKOS_LAMBDA( const int i )
     {
         double pfcij = 0.0;
         double pdfcij = 0.0;
@@ -1031,7 +1056,10 @@ void ModeKokkos<t_device>::calculateForces(
         double eta, rs, lambda, zeta;
         int memberindex, globalIndex;
 
+        typename t_neigh_list::t_neighs neighs_i = neigh_list.get_neighs(i);
+        const int num_neighs_i = neighs_i.get_num_neighs();
         int attype = type( i );
+
         for ( int groupIndex = 0; groupIndex < numSFGperElem_( attype );
               ++groupIndex )
         {
@@ -1045,170 +1073,181 @@ void ModeKokkos<t_device>::calculateForces(
                 size_t size =
                     SFGmemberlist_( attype, groupIndex, maxSFperElem_ );
 
-                nej = type( j );
-                dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
-                dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
-                dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
-                r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
-                rij = sqrt( r2ij );
-                if ( ( e1 == nej || e2 == nej ) && rij < rc )
+                for(int jj = 0; jj < num_neighs_i; jj++)
                 {
-                    // Calculate cutoff function and derivative.
-                    compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
-                                    rij, rc, true );
-
-                    nek = type( k );
-                    if ( ( e1 == nej && e2 == nek ) ||
-                         ( e2 == nej && e1 == nek ) )
+                    T_INT j = neighs_i(jj);
+                    nej = type( j );
+                    dxij = ( x( i, 0 ) - x( j, 0 ) ) * CFLENGTH * convLength_;
+                    dyij = ( x( i, 1 ) - x( j, 1 ) ) * CFLENGTH * convLength_;
+                    dzij = ( x( i, 2 ) - x( j, 2 ) ) * CFLENGTH * convLength_;
+                    r2ij = dxij * dxij + dyij * dyij + dzij * dzij;
+                    rij = sqrt( r2ij );
+                    if ( ( e1 == nej || e2 == nej ) && rij < rc )
                     {
-                        dxik =
-                            ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength_;
-                        dyik =
-                            ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength_;
-                        dzik =
-                            ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength_;
-                        r2ik = dxik * dxik + dyik * dyik + dzik * dzik;
-                        rik = sqrt( r2ik );
-                        if ( rik < rc )
+                        // Calculate cutoff function and derivative.
+                        compute_cutoff( cutoffType_, cutoffAlpha_, pfcij, pdfcij,
+                                        rij, rc, true );
+
+                        typename t_neigh_list::t_neighs neighs_j = neigh_list.get_neighs(j);
+                        const int num_neighs_j = neighs_j.get_num_neighs();
+
+                        for(int kk = 0; kk < num_neighs_j; kk++)
                         {
-                            dxjk = dxik - dxij;
-                            dyjk = dyik - dyij;
-                            dzjk = dzik - dzij;
-                            r2jk = dxjk * dxjk + dyjk * dyjk + dzjk * dzjk;
-                            if ( r2jk < rc * rc )
+                            T_INT k = neighs_j(kk);
+                            nek = type( k );
+                            if ( ( e1 == nej && e2 == nek ) ||
+                                 ( e2 == nej && e1 == nek ) )
                             {
-                                // Energy calculation.
-                                compute_cutoff( cutoffType_, cutoffAlpha_,
-                                                pfcik, pdfcik, rik, rc, true );
-                                rjk = sqrt( r2jk );
-
-                                compute_cutoff( cutoffType_, cutoffAlpha_,
-                                                pfcjk, pdfcjk, rjk, rc, true );
-
-                                double const rinvijik = 1.0 / rij / rik;
-                                double const costijk =
-                                    ( dxij * dxik + dyij * dyik +
-                                      dzij * dzik ) *
-                                    rinvijik;
-                                double const pfc = pfcij * pfcik * pfcjk;
-                                double const r2sum = r2ij + r2ik + r2jk;
-                                double const pr1 = pfcik * pfcjk * pdfcij / rij;
-                                double const pr2 = pfcij * pfcjk * pdfcik / rik;
-                                double const pr3 = pfcij * pfcik * pdfcjk / rjk;
-                                double vexp = 0.0, rijs = 0.0, riks = 0.0,
-                                       rjks = 0.0;
-                                for ( size_t l = 0; l < size; ++l )
+                                dxik =
+                                    ( x( i, 0 ) - x( k, 0 ) ) * CFLENGTH * convLength_;
+                                dyik =
+                                    ( x( i, 1 ) - x( k, 1 ) ) * CFLENGTH * convLength_;
+                                dzik =
+                                    ( x( i, 2 ) - x( k, 2 ) ) * CFLENGTH * convLength_;
+                                r2ik = dxik * dxik + dyik * dyik + dzik * dzik;
+                                rik = sqrt( r2ik );
+                                if ( rik < rc )
                                 {
-                                    globalIndex =
-                                        SF_( attype,
-                                              SFGmemberlist_( attype,
-                                                               groupIndex, l ),
-                                              14 );
-                                    memberindex = SFGmemberlist_(
-                                        attype, groupIndex, l );
-                                    rs = SF_( attype, memberindex, 8 );
-                                    eta = SF_( attype, memberindex, 4 );
-                                    lambda = SF_( attype, memberindex, 5 );
-                                    zeta = SF_( attype, memberindex, 6 );
-                                    if ( rs > 0.0 )
+                                    dxjk = dxik - dxij;
+                                    dyjk = dyik - dyij;
+                                    dzjk = dzik - dzij;
+                                    r2jk = dxjk * dxjk + dyjk * dyjk + dzjk * dzjk;
+                                    if ( r2jk < rc * rc )
                                     {
-                                        rijs = rij - rs;
-                                        riks = rik - rs;
-                                        rjks = rjk - rs;
-                                        vexp = exp( -eta * ( rijs * rijs +
-                                                             riks * riks +
-                                                             rjks * rjks ) );
-                                    }
-                                    else
-                                        vexp = exp( -eta * r2sum );
+                                        // Energy calculation.
+                                        compute_cutoff( cutoffType_, cutoffAlpha_,
+                                                        pfcik, pdfcik, rik, rc, true );
+                                        rjk = sqrt( r2jk );
+                                        
+                                        compute_cutoff( cutoffType_, cutoffAlpha_,
+                                                        pfcjk, pdfcjk, rjk, rc, true );
+                                        
+                                        double const rinvijik = 1.0 / rij / rik;
+                                        double const costijk =
+                                            ( dxij * dxik + dyij * dyik +
+                                              dzij * dzik ) *
+                                            rinvijik;
+                                        double const pfc = pfcij * pfcik * pfcjk;
+                                        double const r2sum = r2ij + r2ik + r2jk;
+                                        double const pr1 = pfcik * pfcjk * pdfcij / rij;
+                                        double const pr2 = pfcij * pfcjk * pdfcik / rik;
+                                        double const pr3 = pfcij * pfcik * pdfcjk / rjk;
+                                        double vexp = 0.0, rijs = 0.0, riks = 0.0,
+                                            rjks = 0.0;
+                                        for ( size_t l = 0; l < size; ++l )
+                                        {
+                                            globalIndex =
+                                                SF_( attype,
+                                                     SFGmemberlist_( attype,
+                                                                     groupIndex, l ),
+                                                     14 );
+                                            memberindex = SFGmemberlist_(
+                                                 attype, groupIndex, l );
+                                            rs = SF_( attype, memberindex, 8 );
+                                            eta = SF_( attype, memberindex, 4 );
+                                            lambda = SF_( attype, memberindex, 5 );
+                                            zeta = SF_( attype, memberindex, 6 );
+                                            if ( rs > 0.0 )
+                                            {
+                                                rijs = rij - rs;
+                                                riks = rik - rs;
+                                                rjks = rjk - rs;
+                                                vexp = exp( -eta * ( rijs * rijs +
+                                                                     riks * riks +
+                                                                     rjks * rjks ) );
+                                            }
+                                            else
+                                                vexp = exp( -eta * r2sum );
 
-                                    double const plambda =
-                                        1.0 + lambda * costijk;
-                                    double fg = vexp;
-                                    if ( plambda <= 0.0 )
-                                        fg = 0.0;
-                                    else
-                                        fg *= pow( plambda, ( zeta - 1.0 ) );
+                                            double const plambda =
+                                                1.0 + lambda * costijk;
+                                            double fg = vexp;
+                                            if ( plambda <= 0.0 )
+                                                fg = 0.0;
+                                            else
+                                                fg *= pow( plambda, ( zeta - 1.0 ) );
 
-                                    fg *= pow( 2, ( 1 - zeta ) ) *
-                                          SFscaling_( attype, memberindex, 6 );
-                                    double const pfczl = pfc * zeta * lambda;
-                                    double factorDeriv =
-                                        2.0 * eta / zeta / lambda;
-                                    double const p2etapl =
-                                        plambda * factorDeriv;
-                                    double p1, p2, p3;
-                                    if ( rs > 0.0 )
-                                    {
-                                        p1 = fg *
-                                             ( pfczl *
-                                                   ( rinvijik - costijk / r2ij -
-                                                     p2etapl * rijs / rij ) +
-                                               pr1 * plambda );
-                                        p2 = fg *
-                                             ( pfczl *
-                                                   ( rinvijik - costijk / r2ik -
-                                                     p2etapl * riks / rik ) +
-                                               pr2 * plambda );
-                                        p3 =
-                                            fg *
-                                            ( pfczl * ( rinvijik +
-                                                        p2etapl * rjks / rjk ) -
-                                              pr3 * plambda );
-                                    }
-                                    else
-                                    {
-                                        p1 = fg * ( pfczl * ( rinvijik -
-                                                              costijk / r2ij -
-                                                              p2etapl ) +
-                                                    pr1 * plambda );
-                                        p2 = fg * ( pfczl * ( rinvijik -
-                                                              costijk / r2ik -
-                                                              p2etapl ) +
-                                                    pr2 * plambda );
-                                        p3 = fg *
-                                             ( pfczl * ( rinvijik + p2etapl ) -
-                                               pr3 * plambda );
-                                    }
-                                    f_a( i, 0 ) -= ( dEdG( i, globalIndex ) *
-                                                     ( p1 * dxij + p2 * dxik ) *
-                                                     CFFORCE * convForce_ );
-                                    f_a( i, 1 ) -= ( dEdG( i, globalIndex ) *
-                                                     ( p1 * dyij + p2 * dyik ) *
-                                                     CFFORCE * convForce_ );
-                                    f_a( i, 2 ) -= ( dEdG( i, globalIndex ) *
-                                                     ( p1 * dzij + p2 * dzik ) *
-                                                     CFFORCE * convForce_ );
-
-                                    f_a( j, 0 ) += ( dEdG( i, globalIndex ) *
-                                                     ( p1 * dxij + p3 * dxjk ) *
-                                                     CFFORCE * convForce_ );
-                                    f_a( j, 1 ) += ( dEdG( i, globalIndex ) *
-                                                     ( p1 * dyij + p3 * dyjk ) *
-                                                     CFFORCE * convForce_ );
-                                    f_a( j, 2 ) += ( dEdG( i, globalIndex ) *
-                                                     ( p1 * dzij + p3 * dzjk ) *
-                                                     CFFORCE * convForce_ );
-
-                                    f_a( k, 0 ) += ( dEdG( i, globalIndex ) *
-                                                     ( p2 * dxik - p3 * dxjk ) *
-                                                     CFFORCE * convForce_ );
-                                    f_a( k, 1 ) += ( dEdG( i, globalIndex ) *
-                                                     ( p2 * dyik - p3 * dyjk ) *
-                                                     CFFORCE * convForce_ );
-                                    f_a( k, 2 ) += ( dEdG( i, globalIndex ) *
-                                                     ( p2 * dzik - p3 * dzjk ) *
-                                                     CFFORCE * convForce_ );
-                                } // l
-                            }     // rjk <= rc
-                        }         // rik <= rc
-                    }             // elem
-                }                 // rij <= rc
+                                            fg *= pow( 2, ( 1 - zeta ) ) *
+                                                SFscaling_( attype, memberindex, 6 );
+                                            double const pfczl = pfc * zeta * lambda;
+                                            double factorDeriv =
+                                                2.0 * eta / zeta / lambda;
+                                            double const p2etapl =
+                                                plambda * factorDeriv;
+                                            double p1, p2, p3;
+                                            if ( rs > 0.0 )
+                                            {
+                                                p1 = fg *
+                                                    ( pfczl *
+                                                      ( rinvijik - costijk / r2ij -
+                                                        p2etapl * rijs / rij ) +
+                                                      pr1 * plambda );
+                                                p2 = fg *
+                                                    ( pfczl *
+                                                      ( rinvijik - costijk / r2ik -
+                                                        p2etapl * riks / rik ) +
+                                                      pr2 * plambda );
+                                                p3 =
+                                                    fg *
+                                                    ( pfczl * ( rinvijik +
+                                                                p2etapl * rjks / rjk ) -
+                                                      pr3 * plambda );
+                                            }
+                                            else
+                                            {
+                                                p1 = fg * ( pfczl * ( rinvijik -
+                                                                      costijk / r2ij -
+                                                                      p2etapl ) +
+                                                            pr1 * plambda );
+                                                p2 = fg * ( pfczl * ( rinvijik -
+                                                                      costijk / r2ik -
+                                                                      p2etapl ) +
+                                                            pr2 * plambda );
+                                                p3 = fg *
+                                                    ( pfczl * ( rinvijik + p2etapl ) -
+                                                      pr3 * plambda );
+                                            }
+                                            f_a( i, 0 ) -= ( dEdG( i, globalIndex ) *
+                                                             ( p1 * dxij + p2 * dxik ) *
+                                                             CFFORCE * convForce_ );
+                                            f_a( i, 1 ) -= ( dEdG( i, globalIndex ) *
+                                                             ( p1 * dyij + p2 * dyik ) *
+                                                             CFFORCE * convForce_ );
+                                            f_a( i, 2 ) -= ( dEdG( i, globalIndex ) *
+                                                             ( p1 * dzij + p2 * dzik ) *
+                                                             CFFORCE * convForce_ );
+                                            
+                                            f_a( j, 0 ) += ( dEdG( i, globalIndex ) *
+                                                             ( p1 * dxij + p3 * dxjk ) *
+                                                             CFFORCE * convForce_ );
+                                            f_a( j, 1 ) += ( dEdG( i, globalIndex ) *
+                                                             ( p1 * dyij + p3 * dyjk ) *
+                                                             CFFORCE * convForce_ );
+                                            f_a( j, 2 ) += ( dEdG( i, globalIndex ) *
+                                                             ( p1 * dzij + p3 * dzjk ) *
+                                                             CFFORCE * convForce_ );
+                                            
+                                            f_a( k, 0 ) += ( dEdG( i, globalIndex ) *
+                                                             ( p2 * dxik - p3 * dxjk ) *
+                                                             CFFORCE * convForce_ );
+                                            f_a( k, 1 ) += ( dEdG( i, globalIndex ) *
+                                                             ( p2 * dyik - p3 * dyjk ) *
+                                                             CFFORCE * convForce_ );
+                                            f_a( k, 2 ) += ( dEdG( i, globalIndex ) *
+                                                             ( p2 * dzik - p3 * dzjk ) *
+                                                             CFFORCE * convForce_ );
+                                        } // l
+                                    }     // rjk <= rc
+                                }         // rik <= rc
+                            }             // elem
+                        }                 // k
+                    }                     // rij <= rc
+                }                         // j
             }
         }
     };
-    Kokkos::parallel_for( policy, calc_angular_force_op,
-			  "Mode::calculateAngularForces" );
+    Kokkos::parallel_for( "Mode::calculateAngularForces",
+                          policy, calc_angular_force_op );
     Kokkos::fence();
 
     return;

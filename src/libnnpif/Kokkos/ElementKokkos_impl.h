@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#ifndef ELEMENT_KOKKOS_IMPL_H
+#define ELEMENT_KOKKOS_IMPL_H
+
 #include "utility.h"
 
 #include <algorithm> // std::sort, std::min, std::max
@@ -28,14 +31,14 @@ using namespace std;
 namespace nnp
 {
 
-ElementKokkos::ElementKokkos( size_t const _index )
+inline ElementKokkos::ElementKokkos( size_t const _index )
     : Element()
 {
     index = _index;
     atomicEnergyOffset = 0.0;
 }
 
-ElementKokkos::~ElementKokkos() {}
+inline ElementKokkos::~ElementKokkos() {}
 
 template <class t_SF, class h_t_int>
 void ElementKokkos::addSymmetryFunction( string const &parameters,
@@ -490,3 +493,5 @@ void ElementKokkos::updateSymmetryFunctionStatistics
 */
 
 }
+
+#endif
