@@ -16,6 +16,7 @@
 
 #include "Atom.h"
 #include "utility.h"
+#include <cinttypes> // PRId64
 #include <cmath>     // fabs
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::range_error
@@ -354,7 +355,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("useChargeNeuron                : %d\n", useChargeNeuron));
     v.push_back(strpr("index                          : %d\n", index));
     v.push_back(strpr("indexStructure                 : %d\n", indexStructure));
-    v.push_back(strpr("tag                            : %d\n", tag));
+    v.push_back(strpr("tag                            : %" PRId64 "\n", tag));
     v.push_back(strpr("element                        : %d\n", element));
     v.push_back(strpr("numNeighbors                   : %d\n", numNeighbors));
     v.push_back(strpr("numNeighborsUnique             : %d\n", numNeighborsUnique));
@@ -487,7 +488,7 @@ vector<string> Atom::Neighbor::info() const
     v.push_back(strpr("NEIGHBOR                        \n"));
     v.push_back(strpr("********************************\n"));
     v.push_back(strpr("index                          : %d\n", index));
-    v.push_back(strpr("tag                            : %d\n", tag));
+    v.push_back(strpr("tag                            : %" PRId64 "\n", tag));
     v.push_back(strpr("element                        : %d\n", element));
     v.push_back(strpr("d                              : %16.8E\n", d));
     v.push_back(strpr("dr                             : %16.8E %16.8E %16.8E\n", dr[0], dr[1], dr[2]));

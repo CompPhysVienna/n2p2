@@ -249,7 +249,6 @@ void InterfaceLammps::initialize(char* const& directory,
 }
 
 void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
-                                    int const* const atomTag,
                                     int const* const atomType)
 {
     for (size_t i = 0; i < numElements; ++i)
@@ -274,7 +273,6 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         Atom& a = structure.atoms.back();
         a.index                          = i;
         a.indexStructure                 = myRank;
-        a.tag                            = atomTag[i];
         a.element                        = mapTypeToElement[atomType[i]];
         a.numNeighbors                   = 0;
         a.hasSymmetryFunctions           = false;
@@ -288,14 +286,35 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
     return;
 }
 
-void InterfaceLammps::addNeighbor(int    i,
-                                  int    j,
-                                  int    tag,
-                                  int    type,
-                                  double dx,
-                                  double dy,
-                                  double dz,
-                                  double d2)
+void InterfaceLammps::setLocalTags(int const* const atomTag)
+{
+    for (size_t i = 0; i < structure.atoms.size(); i++)
+    {
+        // Implicit conversion from int to int64_t!
+        structure.atoms.at(i).tag = atomTag[i];
+    }
+
+    return;
+}
+
+void InterfaceLammps::setLocalTags(int64_t const* const atomTag)
+{
+    for (size_t i = 0; i < structure.atoms.size(); i++)
+    {
+        structure.atoms.at(i).tag = atomTag[i];
+    }
+
+    return;
+}
+
+void InterfaceLammps::addNeighbor(int     i,
+                                  int     j,
+                                  int64_t tag,
+                                  int     type,
+                                  double  dx,
+                                  double  dy,
+                                  double  dz,
+                                  double  d2)
 {
     if (ignoreType[type] ||
         indexMap.at(i) == numeric_limits<size_t>::max()) return;

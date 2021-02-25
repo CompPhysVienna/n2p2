@@ -20,6 +20,7 @@
 #include "utility.h"
 #include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
 #include <cmath>     // sqrt, fabs
+#include <cstdint>   // int64_t
 #include <cstdlib>   // atoi
 #include <cstdio>    // fprintf, fopen, fclose, remove
 #include <iostream>  // std::ios::binary
@@ -163,17 +164,19 @@ void Dataset::setupRandomNumberGenerator()
 
 int Dataset::calculateBufferSize(Structure const& structure) const
 {
-    int              bs  = 0;         // Send buffer size.
-    int              is  = 0;         // int size.
-    int              ss  = 0;         // size_t size.
-    int              ds  = 0;         // double size.
-    int              cs  = 0;         // char size.
-    Structure const& s   = structure; // Shortcut for structure.
+    int              bs   = 0;         // Send buffer size.
+    int              is   = 0;         // int size.
+    int              i64s = 0;         // int64_t size.
+    int              ss   = 0;         // size_t size.
+    int              ds   = 0;         // double size.
+    int              cs   = 0;         // char size.
+    Structure const& s    = structure; // Shortcut for structure.
 
-    MPI_Pack_size(1, MPI_INT   , comm, &is);
-    MPI_Pack_size(1, MPI_SIZE_T, comm, &ss);
-    MPI_Pack_size(1, MPI_DOUBLE, comm, &ds);
-    MPI_Pack_size(1, MPI_CHAR  , comm, &cs);
+    MPI_Pack_size(1, MPI_INT    , comm, &is  );
+    MPI_Pack_size(1, MPI_INT64_T, comm, &i64s);
+    MPI_Pack_size(1, MPI_SIZE_T , comm, &ss  );
+    MPI_Pack_size(1, MPI_DOUBLE , comm, &ds  );
+    MPI_Pack_size(1, MPI_CHAR   , comm, &cs  );
 
     // Structure
     bs += 5 * cs + 4 * ss + 4 * is + 5 * ds;
@@ -189,7 +192,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     bs += s.numAtomsPerElement.size() * ss;
     // Structure.atoms
     bs += ss;
-    bs += s.atoms.size() * (4 * cs + 7 * ss + 3 * ds + 3 * 3 * ds);
+    bs += s.atoms.size() * (4 * cs + 6 * ss + i64s + 3 * ds + 3 * 3 * ds);
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
@@ -230,7 +233,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
              it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
         {
             // Neighbor
-            bs += 3 * ss + ds + 3 * ds;
+            bs += 2 * ss + i64s + ds + 3 * ds;
 #ifndef N2P2_NO_SF_CACHE
             // Neighbor.cache
             bs += ss;
@@ -308,23 +311,23 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
              it != s.atoms.end(); ++it)
         {
             // Atom
-            MPI_Pack(&(it->hasNeighborList               ), 1, MPI_CHAR  , buf, bs, &p, comm);
-            MPI_Pack(&(it->hasSymmetryFunctions          ), 1, MPI_CHAR  , buf, bs, &p, comm);
-            MPI_Pack(&(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR  , buf, bs, &p, comm);
-            MPI_Pack(&(it->useChargeNeuron               ), 1, MPI_CHAR  , buf, bs, &p, comm);
-            MPI_Pack(&(it->index                         ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->indexStructure                ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->tag                           ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->element                       ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->numNeighbors                  ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->numNeighborsUnique            ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->numSymmetryFunctions          ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->energy                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-            MPI_Pack(&(it->charge                        ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-            MPI_Pack(&(it->chargeRef                     ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-            MPI_Pack(&(it->r.r                           ), 3, MPI_DOUBLE, buf, bs, &p, comm);
-            MPI_Pack(&(it->f.r                           ), 3, MPI_DOUBLE, buf, bs, &p, comm);
-            MPI_Pack(&(it->fRef.r                        ), 3, MPI_DOUBLE, buf, bs, &p, comm);
+            MPI_Pack(&(it->hasNeighborList               ), 1, MPI_CHAR   , buf, bs, &p, comm);
+            MPI_Pack(&(it->hasSymmetryFunctions          ), 1, MPI_CHAR   , buf, bs, &p, comm);
+            MPI_Pack(&(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR   , buf, bs, &p, comm);
+            MPI_Pack(&(it->useChargeNeuron               ), 1, MPI_CHAR   , buf, bs, &p, comm);
+            MPI_Pack(&(it->index                         ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+            MPI_Pack(&(it->indexStructure                ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+            MPI_Pack(&(it->tag                           ), 1, MPI_INT64_T, buf, bs, &p, comm);
+            MPI_Pack(&(it->element                       ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+            MPI_Pack(&(it->numNeighbors                  ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+            MPI_Pack(&(it->numNeighborsUnique            ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+            MPI_Pack(&(it->numSymmetryFunctions          ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+            MPI_Pack(&(it->energy                        ), 1, MPI_DOUBLE , buf, bs, &p, comm);
+            MPI_Pack(&(it->charge                        ), 1, MPI_DOUBLE , buf, bs, &p, comm);
+            MPI_Pack(&(it->chargeRef                     ), 1, MPI_DOUBLE , buf, bs, &p, comm);
+            MPI_Pack(&(it->r.r                           ), 3, MPI_DOUBLE , buf, bs, &p, comm);
+            MPI_Pack(&(it->f.r                           ), 3, MPI_DOUBLE , buf, bs, &p, comm);
+            MPI_Pack(&(it->fRef.r                        ), 3, MPI_DOUBLE , buf, bs, &p, comm);
 
             // Atom.neighborsUnique
             size_t ts2 = it->neighborsUnique.size();
@@ -415,11 +418,11 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                      it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
                 {
                     // Neighbor
-                    MPI_Pack(&(it2->index      ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->tag        ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
+                    MPI_Pack(&(it2->index      ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+                    MPI_Pack(&(it2->tag        ), 1, MPI_INT64_T, buf, bs, &p, comm);
+                    MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+                    MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE , buf, bs, &p, comm);
+                    MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE , buf, bs, &p, comm);
 
                     size_t ts3 = 0;
 #ifndef N2P2_NO_SF_CACHE
@@ -532,23 +535,23 @@ int Dataset::recvStructure(Structure* const structure, int src)
              it != s->atoms.end(); ++it)
         {
             // Atom
-            MPI_Unpack(buf, bs, &p, &(it->hasNeighborList               ), 1, MPI_CHAR  , comm);
-            MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctions          ), 1, MPI_CHAR  , comm);
-            MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR  , comm);
-            MPI_Unpack(buf, bs, &p, &(it->useChargeNeuron               ), 1, MPI_CHAR  , comm);
-            MPI_Unpack(buf, bs, &p, &(it->index                         ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->indexStructure                ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->tag                           ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->element                       ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->numNeighbors                  ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->numNeighborsUnique            ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctions          ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->energy                        ), 1, MPI_DOUBLE, comm);
-            MPI_Unpack(buf, bs, &p, &(it->charge                        ), 1, MPI_DOUBLE, comm);
-            MPI_Unpack(buf, bs, &p, &(it->chargeRef                     ), 1, MPI_DOUBLE, comm);
-            MPI_Unpack(buf, bs, &p, &(it->r.r                           ), 3, MPI_DOUBLE, comm);
-            MPI_Unpack(buf, bs, &p, &(it->f.r                           ), 3, MPI_DOUBLE, comm);
-            MPI_Unpack(buf, bs, &p, &(it->fRef.r                        ), 3, MPI_DOUBLE, comm);
+            MPI_Unpack(buf, bs, &p, &(it->hasNeighborList               ), 1, MPI_CHAR   , comm);
+            MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctions          ), 1, MPI_CHAR   , comm);
+            MPI_Unpack(buf, bs, &p, &(it->hasSymmetryFunctionDerivatives), 1, MPI_CHAR   , comm);
+            MPI_Unpack(buf, bs, &p, &(it->useChargeNeuron               ), 1, MPI_CHAR   , comm);
+            MPI_Unpack(buf, bs, &p, &(it->index                         ), 1, MPI_SIZE_T , comm);
+            MPI_Unpack(buf, bs, &p, &(it->indexStructure                ), 1, MPI_SIZE_T , comm);
+            MPI_Unpack(buf, bs, &p, &(it->tag                           ), 1, MPI_INT64_T, comm);
+            MPI_Unpack(buf, bs, &p, &(it->element                       ), 1, MPI_SIZE_T , comm);
+            MPI_Unpack(buf, bs, &p, &(it->numNeighbors                  ), 1, MPI_SIZE_T , comm);
+            MPI_Unpack(buf, bs, &p, &(it->numNeighborsUnique            ), 1, MPI_SIZE_T , comm);
+            MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctions          ), 1, MPI_SIZE_T , comm);
+            MPI_Unpack(buf, bs, &p, &(it->energy                        ), 1, MPI_DOUBLE , comm);
+            MPI_Unpack(buf, bs, &p, &(it->charge                        ), 1, MPI_DOUBLE , comm);
+            MPI_Unpack(buf, bs, &p, &(it->chargeRef                     ), 1, MPI_DOUBLE , comm);
+            MPI_Unpack(buf, bs, &p, &(it->r.r                           ), 3, MPI_DOUBLE , comm);
+            MPI_Unpack(buf, bs, &p, &(it->f.r                           ), 3, MPI_DOUBLE , comm);
+            MPI_Unpack(buf, bs, &p, &(it->fRef.r                        ), 3, MPI_DOUBLE , comm);
 
             // Atom.neighborsUnique
             size_t ts2 = 0;
@@ -659,11 +662,11 @@ int Dataset::recvStructure(Structure* const structure, int src)
                      it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
                 {
                     // Neighbor
-                    MPI_Unpack(buf, bs, &p, &(it2->index      ), 1, MPI_SIZE_T, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_SIZE_T, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->index      ), 1, MPI_SIZE_T , comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_INT64_T, comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T , comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE , comm);
+                    MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE , comm);
 
                     size_t ts3 = 0;
 #ifndef N2P2_NO_SF_CACHE

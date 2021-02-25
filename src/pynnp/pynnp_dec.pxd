@@ -17,6 +17,7 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
+from libc.stdint cimport int64_t
 
 ###############################################################################
 # CutoffFunction
@@ -135,7 +136,7 @@ cdef extern from "Atom.h" namespace "nnp":
     cdef cppclass Atom:
         cppclass Neighbor:
             size_t         index
-            size_t         tag
+            int64_t        tag
             size_t         element
             double         d
             Vec3D          dr
@@ -154,7 +155,7 @@ cdef extern from "Atom.h" namespace "nnp":
         bool             useChargeNeuron
         size_t           index
         size_t           indexStructure
-        size_t           tag
+        int64_t          tag
         size_t           element
         size_t           numNeighbors
         size_t           numNeighborsUnique

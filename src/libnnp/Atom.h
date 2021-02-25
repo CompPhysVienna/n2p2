@@ -19,6 +19,7 @@
 
 #include "Vec3D.h"
 #include <cstddef> // std::size_t
+#include <cstdint> // int64_t
 #include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
@@ -35,7 +36,7 @@ struct Atom
         /// Index of neighbor atom.
         std::size_t                index;
         /// Tag of neighbor atom.
-        std::size_t                tag;
+        int64_t                    tag;
         /// %Element index of neighbor atom.
         std::size_t                element;
         /// Distance to neighbor atom.
@@ -98,7 +99,7 @@ struct Atom
     /// Index number of structure this atom belongs to.
     std::size_t              indexStructure;
     /// Tag number of this atom.
-    std::size_t              tag;
+    int64_t                  tag;
     /// %Element index of this atom.
     std::size_t              element;
     /// Total number of neighbors.

@@ -21,6 +21,7 @@
 #include "Structure.h"
 #include <map>     // std::map
 #include <cstddef> // std::size_t
+#include <cstdint> // int64_t
 #include <string>  // std::string
 
 namespace nnp
@@ -63,13 +64,21 @@ public:
     /** (Re)set #structure to contain only local LAMMPS atoms.
      *
      * @param[in] numAtomsLocal Number of local atoms.
-     * @param[in] atomTag LAMMPS atom tag.
      * @param[in] atomType LAMMPS atom type.
      */
     void   setLocalAtoms(int              numAtomsLocal,
-                         int const* const atomTag,
                          int const* const atomType);
-    /** Add one neighbor to atom.
+    /** Set atom tags (int version, -DLAMMPS_SMALLBIG).
+     *
+     * @param[in] atomTag LAMMPS atom tag.
+     */
+    void   setLocalTags(int const* const atomTag);
+    /** Set atom tags (int64_t version, -DLAMMPS_BIGBIG).
+     *
+     * @param[in] atomTag LAMMPS atom tag.
+     */
+    void   setLocalTags(int64_t const* const atomTag);
+    /** Add one neighbor to atom (int64_t version, -DLAMMPS_BIGBIG).
      *
      * @param[in] i Local atom index.
      * @param[in] j Neighbor atom index.
@@ -79,15 +88,17 @@ public:
      * @param[in] dy Neighbor atom distance in y direction.
      * @param[in] dz Neighbor atom distance in z direction.
      * @param[in] d2 Square of neighbor atom distance.
+     *
+     * If -DLAMMPS_SMALLBIG implicit conversion is applied for tag.
      */
-    void   addNeighbor(int    i,
-                       int    j,
-                       int    tag,
-                       int    type,
-                       double dx,
-                       double dy,
-                       double dz,
-                       double d2);
+    void   addNeighbor(int     i,
+                       int     j,
+                       int64_t tag,
+                       int     type,
+                       double  dx,
+                       double  dy,
+                       double  dz,
+                       double  d2);
     /** Calculate symmetry functions, atomic neural networks and sum of local
      * energy contributions.
      */
