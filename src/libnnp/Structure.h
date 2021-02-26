@@ -207,6 +207,12 @@ struct Structure
      * @f]
      */
     void                     calculateInverseBox();
+    /** Calculate distance between two atoms in the minimum image convenction
+     *
+     * @param[in] dr Distance vector between two atoms of the same box.
+     *
+     */
+    Vec3D applyMinimumImageConvention(Vec3D const& dr);
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();

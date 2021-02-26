@@ -69,6 +69,11 @@ struct Vec3D
      * @return Scalar product of two vectors.
      */
     double        operator*(Vec3D const& v) const;
+    /** Overload * operator to implement (left) multiplication with a matrix.
+     *
+     * @return Original vector multiplied with a matrix.
+     */
+    Vec3D&        operator*=(Vec3D const  (& A) [3]);
     /** Overload [] operator to return coordinate by index.
      *
      * @return x,y or z when index is 0, 1 or 2, respectively.
@@ -134,6 +139,11 @@ Vec3D operator-(Vec3D v);
  * @return Vector multiplied with scalar.
  */
 Vec3D operator*(Vec3D v, double const a);
+/** Overload * operator to implement (left) multiplication with a matrix.
+ *
+ * @return Vector multiplied with a matrix.
+ */
+Vec3D operator*(Vec3D const  (& A) [3], Vec3D v);
 /** Overload / operator to implement division by scalar.
  *
  * @return Vector divided by scalar.
@@ -206,6 +216,20 @@ inline Vec3D& Vec3D::operator*=(double const a)
     return *this;
 }
 
+inline Vec3D& Vec3D::operator*=(Vec3D const  (& A) [3])
+{
+    Vec3D w;
+    for (size_t i=0; i<3; ++i)
+    {
+        for (size_t j=0; j<3; ++j)
+        {
+            w.r[i] += A[i][j] * r[j];
+        }
+    }
+    *this = w;
+    return *this;
+}
+
 inline Vec3D& Vec3D::operator/=(double const a)
 {
     *this *= 1.0 / a;
@@ -217,6 +241,7 @@ inline double Vec3D::operator*(Vec3D const& v) const
 {
     return r[0] * v.r[0] + r[1] * v.r[1] + r[2] * v.r[2];
 }
+
 
 // Doxygen requires namespace prefix for arguments...
 inline double& Vec3D::operator[](std::size_t const index)
@@ -318,6 +343,11 @@ inline Vec3D operator/(Vec3D v, double const a)
 inline Vec3D operator*(double const a, Vec3D v)
 {
     return v *= a;
+}
+
+inline Vec3D operator*(Vec3D const  (& A) [3], Vec3D v)
+{
+    return v *= A;
 }
 
 }

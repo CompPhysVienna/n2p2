@@ -430,6 +430,20 @@ void Structure::calculateInverseBox()
     return;
 }
 
+Vec3D Structure::applyMinimumImageConvention(Vec3D const& dr)
+{
+    Vec3D ds = invbox * dr;
+    Vec3D dsNINT;
+
+    for (size_t i=0; i<3; ++i)
+    {
+        dsNINT[i] = round(ds[i]);
+    }
+    Vec3D drMin = box * (ds - dsNINT);
+
+    return drMin;
+}
+
 void Structure::calculateVolume()
 {
     volume = fabs(box[0] * (box[1].cross(box[2])));
@@ -477,8 +491,8 @@ double Structure::calculateElectrostaticEnergy(
     {
         // TODO: This part is not yet correct! Need to use real and reciprocal
         // cutoffs to avoid loop of order O(numAtoms^2).
-        // UPDATE: should be fixed, but needs to be tested, therefore need periodic example with
-        // electrostatic data
+        // UPDATE: should be fixed, but needs to be tested, therefore need
+        // periodic example with electrostatic data
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
@@ -497,7 +511,7 @@ double Structure::calculateElectrostaticEnergy(
                 // still needs to be tested.
                  
                  size_t const ej = aj.element;
-                 double const rij = (ai.r - aj.r).norm();
+                 double const rij = applyMinimumImageConvention(ai.r - aj.r).norm();
                  if (rij < rcutReal)
                  {
                      A(i, j) += (erfc(rij / sqrt2eta)
@@ -554,7 +568,8 @@ double Structure::calculateElectrostaticEnergy(
 
     // We need matrix E not A, which only differ by the hardness terms along the diagonal
     energyElec = 0.5 * Q.head(numAtoms).transpose()
-               * (A.topLeftCorner(numAtoms, numAtoms) - MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
+               * (A.topLeftCorner(numAtoms, numAtoms) - 
+                MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
     
     return error;
 }
