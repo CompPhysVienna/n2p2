@@ -203,6 +203,12 @@ list of keywords is provided :ref:`here <keywords>`.
 
 .. toctree::
    :hidden:
+   :caption: Miscellaneous
+
+   misc/cabanamd_build_example
+
+.. toctree::
+   :hidden:
    :caption: API
 
    api/neural_network
