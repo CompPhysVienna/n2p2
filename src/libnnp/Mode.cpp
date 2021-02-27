@@ -162,12 +162,12 @@ void Mode::loadSettingsFile(string const& fileName)
     return;
 }
 
-void Mode::setupGeneric()
+void Mode::setupGeneric(string const& nnpDir)
 {
     setupNormalization();
     setupElementMap();
     setupElements();
-    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics();
+    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics(nnpDir);
     setupCutoff();
     setupSymmetryFunctions();
 #ifndef NNP_FULL_SFD_MEMORY

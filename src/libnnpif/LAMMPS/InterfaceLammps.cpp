@@ -68,7 +68,7 @@ void InterfaceLammps::initialize(char* const& directory,
     string dir(directory);
     Mode::initialize();
     loadSettingsFile(dir + "input.nn");
-    setupGeneric();
+    setupGeneric(dir);
     setupSymmetryFunctionScaling(dir + "scaling.data");
     bool collectStatistics = false;
     bool collectExtrapolationWarnings = false;

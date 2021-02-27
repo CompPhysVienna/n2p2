@@ -112,10 +112,12 @@ public:
                                                                  = "input.nn");
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
+     * @param[in] nnpDir Optional directory where NNP files reside.
+     *
      * Sets up elements, symmetry functions, symmetry function groups, neural
      * networks. No symmetry function scaling data is read, no weights are set.
      */
-    void                     setupGeneric();
+    void                     setupGeneric(std::string const& nnpDir = "");
     /** Set up normalization.
      *
      * If the keywords `mean_energy`, `conv_length` and
