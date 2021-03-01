@@ -365,7 +365,7 @@ void Mode::setupElectrostatics(string directoryPrefix, string fileNameFormat)
         if (args.size() > 2) type = args.at(2); 
         screeningFunction.setInnerOuter(inner, outer);
         screeningFunction.setCoreFunction(type);
-	for (auto s : screeningFunction.info()) log << s;
+        for (auto s : screeningFunction.info()) log << s;
     }
     else
     {

@@ -251,7 +251,7 @@ void Structure::calculateNeighborList(double cutoffRadius)
 {
     if (isPeriodic)
     {
-        calculatePbcCopies(cutoffRadius);
+        calculatePbcCopies(cutoffRadius, pbc);
 
         // Use square of cutoffRadius (faster).
         cutoffRadius *= cutoffRadius;
@@ -369,7 +369,7 @@ size_t Structure::getMaxNumNeighbors() const
     return maxNumNeighbors;
 }
 
-void Structure::calculatePbcCopies(double cutoffRadius)
+void Structure::calculatePbcCopies(double cutoffRadius, int (&pbc)[3])
 {
     Vec3D axb;
     Vec3D axc;
@@ -570,8 +570,80 @@ double Structure::calculateElectrostaticEnergy(
     energyElec = 0.5 * Q.head(numAtoms).transpose()
                * (A.topLeftCorner(numAtoms, numAtoms) - 
                 MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
+
+    energyElec += calculateScreeningEnergy(siggam, fs);
     
     return error;
+}
+
+double Structure::calculateScreeningEnergy(
+                                        Eigen::MatrixXd          siggam,
+                                        ScreeningFunction const& fs)
+
+{
+    double energyScreen = 0;
+
+    if (isPeriodic)
+    {
+        double const rcutScreen = fs.getOuter();
+        // TODO: There is a better place for this step because we only need it
+        // once
+        calculatePbcCopies(rcutScreen, pbcScreen);
+        
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            double const Qi = ai.charge;
+            energyScreen -=  Qi * Qi / (2 * siggam(ei, ei));
+            for (size_t j = 0; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const Qj = aj.charge;
+
+                for (int l0 = -pbcScreen[0]; l0 <= pbcScreen[0]; ++l0)
+                {
+                    for (int l1 = -pbcScreen[1]; l1 <= pbcScreen[1]; ++l1)
+                    {
+                        for (int l2 = -pbcScreen[2]; l2 <= pbcScreen[2]; ++l2)
+                        {
+                            if ( !(i == j && l0 == 0 && l1 == 0 && l2 == 0))
+                            {
+                                double const rij = (ai.r - aj.r + l0 * box[0] + 
+                                        l1 * box[1] + l2 * box[2]).norm();
+                                if ( rij < rcutScreen ) 
+                                {
+                                    energyScreen += 0.5 * Qi * Qj * 
+                                        erf(rij / siggam(ei, ej)) * (fs.f(rij) - 1) / rij;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    else
+    {
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+            double const Qi = ai.charge;
+            energyScreen -=  Qi * Qi / (2 * siggam(ei, ei));
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                double const Qj = aj.charge;
+                double const rij = (ai.r - aj.r).norm();
+                energyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+            }
+        }
+    }
+    //cout << "Screening energy: \t" << energyScreen << endl;
+    return energyScreen;
 }
 
 void Structure::remap(Atom& atom)

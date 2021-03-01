@@ -69,7 +69,9 @@ struct Vec3D
      * @return Scalar product of two vectors.
      */
     double        operator*(Vec3D const& v) const;
-    /** Overload * operator to implement (left) multiplication with a matrix.
+    /** Overload * operator to implement (left) multiplication with a matrix
+     * defined as Vec3D A[3]. By convention A[i][j] gives the element of j-th
+     * row and i-th column.
      *
      * @return Original vector multiplied with a matrix.
      */
@@ -223,7 +225,7 @@ inline Vec3D& Vec3D::operator*=(Vec3D const  (& A) [3])
     {
         for (size_t j=0; j<3; ++j)
         {
-            w.r[i] += A[i][j] * r[j];
+            w.r[i] += A[j][i] * r[j];
         }
     }
     *this = w;

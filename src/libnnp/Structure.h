@@ -72,8 +72,10 @@ struct Structure
     std::size_t              numElements;
     /// Number of elements present in this structure.
     std::size_t              numElementsPresent;
-    /// Number of PBC images necessary in each direction.
+    /// Number of PBC images necessary in each direction for max cut-off.
     int                      pbc[3];
+    /// Number of PBC images necessary in each direction for screening cut-off.
+    int                      pbcScreen[3];
     /// Potential energy determined by neural network.
     double                   energy;
     /// Reference potential energy.
@@ -162,10 +164,11 @@ struct Structure
     /** Calculate required PBC copies.
      *
      * @param[in] cutoffRadius Cutoff radius for neighbor list.
+     * @param[in] pbc Array for storing the result.
      *
      * Called by #calculateNeighborList().
      */
-    void                     calculatePbcCopies(double cutoffRadius);
+    void                     calculatePbcCopies(double cutoffRadius, int (&pbc)[3]);
     /** Calculate inverse box.
      *
      * Simulation box looks like this:
@@ -233,6 +236,23 @@ struct Structure
     double                   calculateElectrostaticEnergy(
                                             double                   precision,
                                             Eigen::VectorXd          hardness,
+                                            Eigen::MatrixXd          siggam,
+                                            ScreeningFunction const& fs);
+     /** Calculate screening energy which needs to be added (!) to the
+     * electrostatic energy in order to remove contributions in the short range
+     * domain
+     *
+     * @param[in] siggam Matrix combining sigma and gamma for all elements,
+     *                   including some prefactors.
+     *                   @f$ \text{siggam}_{ij} =
+     *                   \begin{cases}
+     *                      \sqrt{\pi} \sigma_i, & \text{for } i = j \\
+     *                      \sqrt{2} \gamma_{ij} = \sqrt{2 (\sigma_i^2
+     *                          + \sigma_j^2)}, & \text{for } i \neq j
+     *                   \end{cases} @f$
+     * @param[in] fs Screening function.
+     */
+    double                   calculateScreeningEnergy(  
                                             Eigen::MatrixXd          siggam,
                                             ScreeningFunction const& fs);
     /** Translate atom back into box if outside.
