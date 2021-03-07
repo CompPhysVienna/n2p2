@@ -90,6 +90,17 @@ public:
         SHORT_CHARGE_NN
     };
 
+    /// Describes how multiple NNs in a committee should be used.
+    enum class CommitteeMode
+    {
+        /// No committee functionality used, only single NN prediction.
+        DISABLED,
+        /// Only a single NN predicts, all toghether are used for validation.
+        VALIDATION,
+        /// All committee NNs are averaged for predicition.
+        PREDICTION
+    };
+
     Mode();
     /** Write welcome message with version information.
      */
@@ -502,11 +513,15 @@ public:
 
 protected:
     NNPType                    nnpType;
+    CommitteeMode              committeeMode;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
     bool                       useChargeNN;
     std::size_t                numElements;
+    std::size_t                committeeSize;
+    std::string                committeePrefix;
     std::vector<std::size_t>   minNeighbors;
+    std::vector<std::string>   committeeIds;
     std::vector<double>        minCutoffRadius;
     double                     maxCutoffRadius;
     double                     cutoffAlpha;

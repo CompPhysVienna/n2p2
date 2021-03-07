@@ -21,7 +21,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <algorithm> // std::min, std::max, std::remove_if
+#include <algorithm> // std::min, std::max, std::remove_if, std::transform
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
 #ifndef N2P2_NO_SF_CACHE
@@ -34,16 +34,18 @@
 using namespace std;
 using namespace nnp;
 
-Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
-               normalize                 (false              ),
-               checkExtrapolationWarnings(false              ),
-               useChargeNN               (false              ),
-               numElements               (0                  ),
-               maxCutoffRadius           (0.0                ),
-               cutoffAlpha               (0.0                ),
-               meanEnergy                (0.0                ),
-               convEnergy                (1.0                ),
-               convLength                (1.0                )
+Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY    ),
+               committeeMode             (CommitteeMode::DISABLED),
+               normalize                 (false                  ),
+               checkExtrapolationWarnings(false                  ),
+               useChargeNN               (false                  ),
+               numElements               (0                      ),
+               committeeSize             (0                      ),
+               maxCutoffRadius           (0.0                    ),
+               cutoffAlpha               (0.0                    ),
+               meanEnergy                (0.0                    ),
+               convEnergy                (1.0                    ),
+               convLength                (1.0                    )
 {
 }
 
@@ -188,6 +190,35 @@ void Mode::loadSettingsFile(string const& fileName)
     else
     {
         throw runtime_error("ERROR: Unknown NNP type.\n");
+    }
+
+    if (settings.keywordExists("committee_mode"))
+    {
+        string committeeModeString = settings["committee_mode"];
+        transform(committeeModeString.begin(),
+                  committeeModeString.end(),
+                  committeeModeString.begin(),
+                  ::toupper);
+        if (committeeModeString == "disabled")
+        {
+            committeeMode == CommitteeMode::DISABLED;
+        }
+        else if (committeeModeString == "validation")
+        {
+            committeeMode == CommitteeMode::VALIDATION;
+            log << "Committee mode is set to \"validation\":\n";
+            log << "A single NN predicts, all NNs are used for validation.\n";
+        }
+        else if (committeeModeString == "prediction")
+        {
+            committeeMode == CommitteeMode::PREDICTION;
+            log << "Committee mode is set to \"prediction\":\n";
+            log << "The average of all NNs is used for prediction.\n";
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown committee mode.\n");
+        }
     }
 
     log << "*****************************************"
@@ -1073,6 +1104,27 @@ void Mode::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
+    if ((committeeMode == CommitteeMode::VALIDATION ||
+         committeeMode == CommitteeMode::PREDICTION))
+    {
+        vector<string> committeeArgs = split(settings["committee_dir_prefix"]);
+        committeePrefix = committeeArgs.at(0);
+        committeeSize = atoi(committeeArgs.at(1).c_str());
+        log << strpr("Committee-NNP dir prefix: %s\n", committeePrefix);
+        log << strpr("Committee-NNP size      : %zu\n", committeeSize);
+        for (size_t i = 0; i <= committeeSize; ++i)
+        {
+            // First committee member is NN without suffix.
+            if (i == 0) committeeIds.push_back("");
+            // All others have committee suffix appended.
+            else committeeIds.push_back(strpr("-committee-%zu", i));
+        }
+        // Set committee Ids also in each element.
+        for (auto& e : elements) e.setCommitteeIds(committeeIds);
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+    }
+
     for (size_t i = 0; i < numElements; ++i)
     {
         Element& e = elements.at(i);
@@ -1081,13 +1133,19 @@ void Mode::setupNeuralNetwork()
         t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
         // Need one extra neuron for atomic charge.
         if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
-        e.neuralNetworks.emplace(piecewise_construct,
-                                 forward_as_tuple("short"),
-                                 forward_as_tuple(
-                                     t.numLayers,
-                                     t.numNeuronsPerLayer.data(),
-                                     t.activationFunctionsPerLayer.data()));
-        e.neuralNetworks.at("short").setNormalizeNeurons(normalizeNeurons);
+        // This loop will execute at least for j = 0 (non-committee case).
+        for (size_t j = 0; j <= committeeSize; ++j)
+        {
+            string id = "short" + committeeIds.at(j);
+            e.neuralNetworks.emplace(
+                                    piecewise_construct,
+                                    forward_as_tuple(id),
+                                    forward_as_tuple(
+                                        t.numLayers,
+                                        t.numNeuronsPerLayer.data(),
+                                        t.activationFunctionsPerLayer.data()));
+            e.neuralNetworks.at(id).setNormalizeNeurons(normalizeNeurons);
+        }
         log << strpr("Atomic short range NN for "
                      "element %2s :\n", e.getSymbol().c_str());
         log << e.neuralNetworks.at("short").info();
@@ -1095,15 +1153,20 @@ void Mode::setupNeuralNetwork()
                "--------------------------------------\n";
         if (useChargeNN)
         {
-            e.neuralNetworks.emplace(
+            // This loop will execute at least for j = 0 (non-committee case).
+            for (size_t j = 0; j <= committeeSize; ++j)
+            {
+                string id = "charge" + committeeIds.at(j);
+                e.neuralNetworks.emplace(
                                     piecewise_construct,
-                                    forward_as_tuple("charge"),
+                                    forward_as_tuple(id),
                                     forward_as_tuple(
                                         t.numLayers,
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
-            e.neuralNetworks.at("charge")
-                .setNormalizeNeurons(normalizeNeurons);
+                e.neuralNetworks.at(id)
+                    .setNormalizeNeurons(normalizeNeurons);
+            }
             log << strpr("Atomic charge NN for "
                          "element %2s :\n", e.getSymbol().c_str());
             log << e.neuralNetworks.at("charge").info();
