@@ -75,6 +75,12 @@ public:
     /** Set #qsigma.
      */
     void                     setQsigma(double qsigma);
+    /** Set NN ID suffixes for all committee members.
+     *
+     * @param[in] committeeIds Vector containing all committee suffixes.
+     */
+    void                     setCommitteeIds(std::vector<
+                                             std::string> committeeIds);
     /** Get #index.
      */
     std::size_t              getIndex() const;
@@ -265,6 +271,8 @@ protected:
     std::string                           symbol;
     /// Number of relevant symmetry functions for each neighbor element.
     std::vector<std::size_t>              symmetryFunctionNumTable;
+    /// ID suffixes of neural network committee members.
+    std::vector<std::string>              committeeIds;
     /// List of symmetry function indices relevant for each neighbor element.
     std::vector<std::vector<std::size_t>> symmetryFunctionTable;
 #ifndef N2P2_NO_SF_CACHE
@@ -298,6 +306,13 @@ inline void Element::setHardness(double hardness)
 inline void Element::setQsigma(double qsigma)
 {
     this->qsigma = qsigma;
+
+    return;
+}
+
+inline void Element::setCommitteeIds(std::vector<std::string> committeeIds)
+{
+    this->committeeIds = committeeIds;
 
     return;
 }
