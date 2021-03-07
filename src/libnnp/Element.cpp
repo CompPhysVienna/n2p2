@@ -308,16 +308,6 @@ void Element::setupSymmetryFunctionMemory()
     return;
 }
 
-void Element::setupCommittee(size_t const committeeSize)
-{
-    for (size_t i = 1; i <= committeeSize; ++i)
-    {
-        committeeIds.push_back(strpr("_committee-%d", i));
-    }
-
-    return;
-}
-
 vector<string> Element::infoSymmetryFunctionGroups() const
 {
     vector<string> v;

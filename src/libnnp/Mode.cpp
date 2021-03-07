@@ -201,17 +201,17 @@ void Mode::loadSettingsFile(string const& fileName)
                   ::toupper);
         if (committeeModeString == "disabled")
         {
-            committeeMode == CommitteeMode::DISABLED;
+            committeeMode = CommitteeMode::DISABLED;
         }
         else if (committeeModeString == "validation")
         {
-            committeeMode == CommitteeMode::VALIDATION;
+            committeeMode = CommitteeMode::VALIDATION;
             log << "Committee mode is set to \"validation\":\n";
             log << "A single NN predicts, all NNs are used for validation.\n";
         }
         else if (committeeModeString == "prediction")
         {
-            committeeMode == CommitteeMode::PREDICTION;
+            committeeMode = CommitteeMode::PREDICTION;
             log << "Committee mode is set to \"prediction\":\n";
             log << "The average of all NNs is used for prediction.\n";
         }
