@@ -1,0 +1,24 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a80b6ba9363df082cf9f7aaaad56ad7c0" title="Calculate buffer size required to communicate structure via MPI. " alt="" coords="108,5,347,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure. " alt="" coords="115,57,339,98"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="395,472,479,499"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure. " alt="" coords="115,174,339,215"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Dataset.html#a1a204e7dc1bdf91a515b18a0ef06704c" title="Collect symmetry function statistics from all processors. " alt="" coords="115,239,339,281"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors. " alt="" coords="140,305,315,346"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9" title="Getter for Mode::maxCutoffRadius. " alt="" coords="113,371,341,397"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information. " alt="" coords="151,421,304,448"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory. " alt="" coords="127,472,327,499"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer. " alt="" coords="136,523,319,565"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file. " alt="" coords="125,589,330,630"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#adffbed0cbae8bc9c4f4c4556ff113b5f" title="Combine multiple setup routines and provide a basic NNP setup. " alt="" coords="136,655,319,681"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455" title="Initialize MPI with MPI_COMM_WORLD. " alt="" coords="141,705,313,732"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632" title="Initialize random number generator. " alt="" coords="126,757,329,798"/>
+<area shape="rect" id="node16" href="$classnnp_1_1Mode.html#a9a672cac54995b226d8e69bb8be2669d" title="Set up &quot;empy&quot; symmetry function scaling. " alt="" coords="127,822,328,863"/>
+<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection. " alt="" coords="127,887,328,929"/>
+<area shape="rect" id="node18" href="$classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a" title="Switch all structures to normalized units. " alt="" coords="127,953,328,994"/>
+<area shape="rect" id="node19" href="$classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451" title="Check if normalization is enabled. " alt="" coords="121,1019,333,1045"/>
+<area shape="rect" id="node20" href="$classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494" title="Calculate and write neighbor histogram. " alt="" coords="125,1070,330,1111"/>
+<area shape="rect" id="node21" href="$classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671" title="Write symmetry function legacy file (&quot;function.data&quot;). " alt="" coords="120,1135,335,1177"/>
+<area shape="rect" id="node22" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms. " alt="" coords="120,1201,335,1242"/>
+<area shape="rect" id="node23" href="$classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8" title="Write symmetry function scaling values to file. " alt="" coords="120,1266,335,1307"/>
+</map>

@@ -1,0 +1,18 @@
+<map id="nnp::Training::loop" name="nnp::Training::loop">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6c96bd09f7bae33a10ccca37cb655f0e" title="Check if training loop should be continued. " alt="" coords="234,5,402,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#ae5d67463993440b215a9b165854c8cf9" title="Calculate error metrics per epoch for all structures with file names used in training loop..." alt="" coords="232,57,404,98"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="489,455,573,481"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a3d0cecb1a3e0197fdb693186d39c8796" title="Check if selection mode should be changed. " alt="" coords="195,173,441,200"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Training.html#a86b54c7bf103e141f9870ee2bbb30c4f" title="Print preferred error metric and timing information on screen. " alt="" coords="227,224,409,251"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Training.html#a5ba30ce58e186c7f2e518355aa707863" title="Print training loop header on screen. " alt="" coords="223,275,413,301"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Training.html#adfd1869f65ece08e34f5ccea23c676f1" title="Reset neuron statistics for all elements. " alt="" coords="221,326,415,367"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Training.html#aee02964b08a2acc442add33d96dbb1a2" title="Select energies/forces schedule for one epoch. " alt="" coords="203,392,433,419"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Training.html#aacf38b0b03a3d30695ac9a9cfe70fa5a" title="Shuffle update candidates. " alt="" coords="216,443,420,485"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Training.html#a7427bd5388a7c72eec65e8a2407cb7f7" title="Sort update candidates with descending RMSE. " alt="" coords="225,509,411,550"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="239,575,397,601"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file. " alt="" coords="217,626,419,667"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Training.html#a79793fcf50af45c9b128ea972b14b6a8" title="Write neuron statistics during training loop. " alt="" coords="221,691,415,733"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Training.html#a9920793c17beef42f87017464599f464" title="Write timing data for all clocks. " alt="" coords="207,757,429,784"/>
+<area shape="rect" id="node16" href="$classnnp_1_1Training.html#ad50f7e1c48f3f558653f831aae83a38c" title="Write updater information to file. " alt="" coords="219,809,417,850"/>
+<area shape="rect" id="node17" href="$classnnp_1_1Training.html#a369e6446df8b2b39db30b799c912afde" title="Write weights to files during training loop. " alt="" coords="219,874,417,915"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="nnp::Structure::readFromLines" name="nnp::Structure::readFromLines">
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a7d4ec60f305ae52787eb7dc0995eaec3" title="Calculate inverse box. " alt="" coords="236,5,416,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a10f626682421d3690d8f1cb9ceba006f" title="Calculate volume from box vectors. " alt="" coords="236,71,416,112"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a90ee48c5fb70d20abeebe648dc07dba7" title="Replace multiple whitespaces with fill. " alt="" coords="277,137,375,163"/>
+<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a3259977e4b66dbe020c2e827d10ab18c" title="Translate atom back into box if outside. " alt="" coords="245,187,407,214"/>
+<area shape="rect" id="node6" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter. " alt="" coords="285,238,367,265"/>
+</map>

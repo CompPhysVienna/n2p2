@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['l1norm',['l1norm',['../structnnp_1_1Vec3D.html#a9420cd9675d53cfe9ab5b7846dfb531c',1,'nnp::Vec3D']]],
+  ['lambda',['lambda',['../classnnp_1_1SymFncBaseExpAng.html#a3933aa09b97cb68ae5b66d13744c86d9',1,'nnp::SymFncBaseExpAng::lambda()'],['../classnnp_1_1SymFncExpAngnWeighted.html#a3caaa53439b574e391ddeffdb7820f74',1,'nnp::SymFncExpAngnWeighted::lambda()'],['../classnnp_1_1SymGrpBaseExpAng.html#a287f4f64075d74880033c1dd1f4f63cf',1,'nnp::SymGrpBaseExpAng::lambda()'],['../classnnp_1_1SymGrpExpAngnWeighted.html#a73e5e473eb3efd2370b0daf32cdf24be',1,'nnp::SymGrpExpAngnWeighted::lambda()'],['../classnnp_1_1KalmanFilter.html#a4a55aac67a448aa95f96f76d0cd4f9d1',1,'nnp::KalmanFilter::lambda()']]],
+  ['lammps_5fns',['LAMMPS_NS',['../namespaceLAMMPS__NS.html',1,'']]],
+  ['layer',['Layer',['../structnnp_1_1NeuralNetwork_1_1Layer.html',1,'nnp::NeuralNetwork']]],
+  ['layers',['layers',['../classnnp_1_1NeuralNetwork.html#ad39acdd5f3f75914a8ed4bb28dc1f56a',1,'nnp::NeuralNetwork']]],
+  ['layout',['layout',['../classnnp_1_1ModeCabana.html#af87ecc80233e88c1c5376e60b6b06f8c',1,'nnp::ModeCabana']]],
+  ['left',['left',['../classnnp_1_1CompactFunction.html#ac5bcd77b0b0b964981afbeec0175af8d',1,'nnp::CompactFunction']]],
+  ['linenumber',['lineNumber',['../classnnp_1_1SymFnc.html#af48cd1077853706bb2af55a6aa990d13',1,'nnp::SymFnc']]],
+  ['lines',['lines',['../classnnp_1_1Settings.html#a941167254e8b99c4f3ac523df1d088cf',1,'nnp::Settings']]],
+  ['loadfile',['loadFile',['../classnnp_1_1Settings.html#a75b72141bb978f048344f4e0093f208c',1,'nnp::Settings']]],
+  ['loadsettingsfile',['loadSettingsFile',['../classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b',1,'nnp::Mode']]],
+  ['log',['Log',['../classnnp_1_1Log.html',1,'nnp::Log'],['../classnnp_1_1Log.html#af6071a60aa52b6c1b511f99b4bc1b8fe',1,'nnp::Log::Log()'],['../classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923',1,'nnp::Mode::log()'],['../classnnp_1_1Settings.html#a83e5d341a7162c8f1426f31e10b6152e',1,'nnp::Settings::log()']]],
+  ['log_2ecpp',['Log.cpp',['../Log_8cpp.html',1,'']]],
+  ['log_2eh',['Log.h',['../Log_8h.html',1,'']]],
+  ['logfile',['logFile',['../nnp-cutoff_8cpp.html#af6fd65a690619ab800f6ddc3ff64eebb',1,'nnp-cutoff.cpp']]],
+  ['loop',['loop',['../classnnp_1_1Stopwatch.html#aa8550767f22f4d2f3db21dbe5807dda7',1,'nnp::Stopwatch::loop()'],['../classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167',1,'nnp::Training::loop()']]]
+];

@@ -1,0 +1,5 @@
+<map id="nnp::NeuralNetwork::getNumConnections" name="nnp::NeuralNetwork::getNumConnections">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a9e7a7553f60ebf30dbdfb8efc64b32c0" title="Get weights from neural network class. " alt="" coords="216,5,403,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights. " alt="" coords="218,57,401,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class. " alt="" coords="217,123,402,149"/>
+</map>

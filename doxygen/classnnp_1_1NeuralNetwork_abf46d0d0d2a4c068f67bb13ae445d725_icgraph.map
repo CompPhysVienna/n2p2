@@ -1,0 +1,4 @@
+<map id="nnp::NeuralNetwork::calculateDEdG" name="nnp::NeuralNetwork::calculateDEdG">
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type. " alt="" coords="205,5,408,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="456,42,615,69"/>
+</map>

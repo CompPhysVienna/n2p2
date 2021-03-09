@@ -1,0 +1,8 @@
+<map id="nnp::Mode::calculateSymmetryFunctions" name="nnp::Mode::calculateSymmetryFunctions">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c" title="Calculate error metrics for all structures. " alt="" coords="277,5,449,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#ae22bf5b246022c4f52f45bcc98d7c4be" title="Calculate derivatives of energy with respect to weights. " alt="" coords="277,71,449,112"/>
+<area shape="rect" id="node4" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="336,137,391,163"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title="nnp::Prediction::predict" alt="" coords="277,187,449,214"/>
+<area shape="rect" id="node6" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions. " alt="" coords="279,239,447,280"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="284,305,443,331"/>
+</map>

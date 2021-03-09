@@ -1,0 +1,17 @@
+<map id="nnp::Training::setupTraining" name="nnp::Training::setupTraining">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7" title="Allocate error and Jacobian arrays for given property. " alt="" coords="272,107,479,133"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="609,136,693,163"/>
+<area shape="rect" id="node4" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream. " alt="" coords="289,392,461,419"/>
+<area shape="rect" id="node5" href="$namespacennp.html#a9d1bbacf408dac7e040ce679791bc570" title="nnp::createFileHeader" alt="" coords="293,443,457,469"/>
+<area shape="rect" id="node6" href="$structnnp_1_1Training_1_1PropertyMap.html#ab7019078f140f578655ebb1f8599e6d4" title="Check if property is present. " alt="" coords="278,494,473,535"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Training.html#a9e7a7553f60ebf30dbdfb8efc64b32c0" title="Get weights from neural network class. " alt="" coords="282,560,469,587"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Training.html#ab802ff670986203dab60c22f04b07f59" title="Initialize weights vector according to update strategy. " alt="" coords="291,158,460,199"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file. " alt="" coords="545,283,756,309"/>
+<area shape="rect" id="node10" href="$classnnp_1_1GradientDescent.html#a26d7bd9f4c4d88d27a1046364b0f779a" title="Set parameters for Adam algorithm. " alt="" coords="294,611,457,653"/>
+<area shape="rect" id="node11" href="$classnnp_1_1KalmanFilter.html#a5792beef75d223f3df178ce494c74ac6" title="Set parameters for fading memory Kalman filter. " alt="" coords="270,677,481,718"/>
+<area shape="rect" id="node12" href="$classnnp_1_1GradientDescent.html#a0fc36f84c5f9d35f75be83b1e8d54b9d" title="Set parameters for fixed step gradient descent algorithm. " alt="" coords="294,742,457,783"/>
+<area shape="rect" id="node13" href="$classnnp_1_1KalmanFilter.html#a0969a2748b485c3ca33c20c76fb4f5e2" title="Set parameters for standard Kalman filter. " alt="" coords="288,807,463,849"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Training.html#a8a99d257e8c71aaf4dba65a1b9a1b5f1" title="Set file output intervals for properties and other quantities. " alt="" coords="290,275,461,317"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Training.html#a5362ed9fa8992ca8ec88ab5c6daab978" title="Set selection mode for specific training property. " alt="" coords="253,224,497,251"/>
+<area shape="rect" id="node16" href="$classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78" title="Set up how often properties are updated. " alt="" coords="263,5,487,32"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="nnp::NeuralNetwork::calculateDFdc" name="nnp::NeuralNetwork::calculateDFdc">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#abf466a175faf1511b305ed728042edb9" title="Calculate derivatives of force with respect to weights. " alt="" coords="205,5,377,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="212,71,371,98"/>
+</map>

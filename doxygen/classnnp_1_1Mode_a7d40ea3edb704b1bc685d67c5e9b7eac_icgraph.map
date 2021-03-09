@@ -1,0 +1,5 @@
+<map id="nnp::Mode::setupNeuralNetworkWeights" name="nnp::Mode::setupNeuralNetworkWeights">
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a321c263a6b62533fb3ec85d3c6af80ec" title="Initialize the LAMMPS interface. " alt="" coords="284,5,452,47"/>
+<area shape="rect" id="node3" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="341,71,395,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title="nnp::Prediction::setup" alt="" coords="287,122,449,149"/>
+</map>

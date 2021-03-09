@@ -1,0 +1,5 @@
+<map id="nnp::Mode::removeEnergyOffset" name="nnp::Mode::removeEnergyOffset">
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors. " alt="" coords="304,5,479,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title="nnp::Prediction::readStructure\lFromFile" alt="" coords="284,71,499,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#af4cbb8263eeb79634e06fc62dc4b359d" title="Write training and test set to separate files (train.data and test.data, same format as input..." alt="" coords="304,136,479,177"/>
+</map>

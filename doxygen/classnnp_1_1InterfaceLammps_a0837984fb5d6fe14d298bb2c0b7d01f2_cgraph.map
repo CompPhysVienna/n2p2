@@ -1,0 +1,8 @@
+<map id="nnp::InterfaceLammps::process" name="nnp::InterfaceLammps::process">
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674" title="Add atomic energy offsets to reference energy. " alt="" coords="231,5,436,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type. " alt="" coords="232,57,435,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure. " alt="" coords="233,123,434,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure. " alt="" coords="221,174,445,215"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure. " alt="" coords="221,239,445,281"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#a02d558483ab82d340ee587febcfddd8f" title="Undo normalization for a given energy of structure. " alt="" coords="235,305,431,332"/>
+</map>

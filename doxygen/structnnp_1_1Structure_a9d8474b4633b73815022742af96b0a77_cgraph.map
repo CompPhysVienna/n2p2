@@ -1,0 +1,5 @@
+<map id="nnp::Structure::readFromFile" name="nnp::Structure::readFromFile">
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines. " alt="" coords="257,25,440,66"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter. " alt="" coords="496,5,579,32"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a90ee48c5fb70d20abeebe648dc07dba7" title="Replace multiple whitespaces with fill. " alt="" coords="488,60,587,87"/>
+</map>

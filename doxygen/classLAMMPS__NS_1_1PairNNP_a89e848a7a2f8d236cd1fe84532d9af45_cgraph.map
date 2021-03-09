@@ -1,0 +1,6 @@
+<map id="LAMMPS_NS::PairNNP::init_style" name="LAMMPS_NS::PairNNP::init_style">
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#ae6baf0f4691b0eb4a57feaaa6f3f10bb" title="Get largest cutoff. " alt="" coords="475,5,643,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a321c263a6b62533fb3ec85d3c6af80ec" title="Initialize the LAMMPS interface. " alt="" coords="237,35,405,76"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#a7e9dc6faa2321eb86e04f4b0e026ed7f" title="Check if this interface is correctly initialized. " alt="" coords="237,100,405,141"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Log.html#adba92381da05fda9736b776268ebccfc" title="Register new C&#45;style FILE* pointer for output. " alt="" coords="215,166,427,193"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="runTest" name="runTest">
+<area shape="rect" id="node2" href="$classnnp_1_1Stopwatch.html#a42c7014e7fffcf4c56ca6fb07f8eb31c" title="Reset stopwatch (total and loop time zero, clock not running). " alt="" coords="123,5,285,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Stopwatch.html#a8143d4e3715b33ad5675f124b2852016" title="Start the stopwatch. " alt="" coords="124,56,284,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Stopwatch.html#a64d053a5edbe3a659f09d0840d617c32" title="Stop and return total time. " alt="" coords="125,107,283,133"/>
+<area shape="rect" id="node5" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="162,157,246,184"/>
+</map>
