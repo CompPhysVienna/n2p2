@@ -212,7 +212,7 @@ void Mode::loadSettingsFile(string const& fileName)
         transform(committeeModeString.begin(),
                   committeeModeString.end(),
                   committeeModeString.begin(),
-                  ::toupper);
+                  ::tolower);
         if (committeeModeString == "disabled")
         {
             committeeMode = CommitteeMode::DISABLED;
@@ -1456,12 +1456,13 @@ void Mode::setupNeuralNetwork()
     if ((committeeMode == CommitteeMode::VALIDATION ||
          committeeMode == CommitteeMode::PREDICTION))
     {
-        vector<string> committeeArgs = split(settings["committee_dir_prefix"]);
+        vector<string> committeeArgs = split(settings["committee_data"]);
         committeePrefix = committeeArgs.at(0);
         committeeSize = atoi(committeeArgs.at(1).c_str());
-        log << strpr("Committee-NNP dir prefix: %s\n", committeePrefix);
+        log << strpr("Committee-NNP dir prefix: %s\n",
+                     committeePrefix.c_str());
         log << strpr("Committee-NNP size      : %zu\n", committeeSize);
-        for (size_t i = 0; i <= committeeSize; ++i)
+        for (size_t i = 0; i < committeeSize; ++i)
         {
             // First committee member is NN without suffix.
             if (i == 0) committeeIds.push_back("");
@@ -1482,9 +1483,10 @@ void Mode::setupNeuralNetwork()
             Element& e = elements.at(i);
             NNSetup::Topology const& t = nns.at(k).topology.at(i);
             // This loop will execute at least for j = 0 (non-committee case).
-            for (size_t j = 0; j <= committeeSize; ++j)
+            for (size_t j = 0; j < committeeSize; ++j)
             {
                 string id = k + committeeIds.at(j);
+                map<int, double> bla;
                 e.neuralNetworks.emplace(
                                     piecewise_construct,
                                     forward_as_tuple(id),
@@ -1718,15 +1720,37 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
-            NeuralNetwork& nn = elements.at(it->element)
-                                .neuralNetworks.at(id);
-            nn.setInput(&((it->G).front()));
-            nn.propagate();
-            if (derivatives)
+            if (committeeMode != CommitteeMode::DISABLED)
             {
-                nn.calculateDEdG(&((it->dEdG).front()));
+                it->dEdGCom.resize(committeeSize);
+                it->energyCom.resize(committeeSize);
             }
-            nn.getOutput(&(it->energy));
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                string const nnId = id + committeeIds.at(c);
+                NeuralNetwork& nn = elements.at(it->element)
+                                    .neuralNetworks.at(nnId);
+                nn.setInput(&((it->G).front()));
+                nn.propagate();
+                if (committeeMode == CommitteeMode::DISABLED)
+                {
+                    if (derivatives) nn.calculateDEdG(&((it->dEdG).front()));
+                    nn.getOutput(&(it->energy));
+                }
+                else
+                {
+                    it->dEdGCom.at(c).resize(it->dEdG.size());
+                    if (derivatives)
+                    {
+                        nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
+                        if (c == 0) copy(it->dEdGCom.at(c).begin(),
+                                         it->dEdGCom.at(c).end(),
+                                         it->dEdG.begin());
+                    }
+                    nn.getOutput(&(it->energyCom.at(c)));
+                    if (c == 0) it->energy = it->energyCom.at(c);
+                }
+            }
         }
     }
     else if (nnpType == NNPType::HDNNP_4G)
@@ -1913,6 +1937,8 @@ void Mode::calculateCharge(Structure& structure) const
 
 void Mode::calculateForces(Structure& structure) const
 {
+    vector<Vec3D>* f = nullptr;
+
     if (nnpType == NNPType::HDNNP_Q)
     {
         throw runtime_error("WARNING: Forces are not implemented yet.\n");
@@ -1947,6 +1973,16 @@ void Mode::calculateForces(Structure& structure) const
     #pragma omp for
 #endif
     for (size_t i = 0; i < structure.atoms.size(); ++i) {
+        //for (committees)
+        //if (committeeMode == CommitteeMode::DISABLED)
+        //{
+        //    f = ai->f;
+        //}
+        //else
+        //{
+        //    f = ai->fCom.at(c);
+        //    f.resize(committeeSize);
+        //}
         // Set pointer to atom.
         Atom &ai = structure.atoms.at(i);
 
@@ -2400,28 +2436,35 @@ void Mode::readNeuralNetworkWeights(string const& id,
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        string fileName = strpr(fileNameFormat.c_str(),
-                                it->getAtomicNumber());
-        log << strpr("Setting weights for element %2s from file: %s\n",
-                     it->getSymbol().c_str(),
-                     fileName.c_str());
-        vector<double> weights = readColumnsFromFile(fileName,
-                                                     vector<size_t>(1, 0)
-                                                    ).at(0);
-        NeuralNetwork& nn = it->neuralNetworks.at(id);
-        // setConnections() reads exactly getNumConnections() values: a file
-        // written for a different architecture would otherwise be read past
-        // its end (garbage weights) or silently truncated.
-        if (weights.size() != (size_t)nn.getNumConnections())
+        for (size_t c = 0; c < committeeSize; ++c)
         {
-            throw runtime_error(strpr("ERROR: Weights file \"%s\" contains "
-                                      "%zu weights, but the neural network "
-                                      "architecture requires %d.\n",
-                                      fileName.c_str(),
-                                      weights.size(),
-                                      nn.getNumConnections()));
+            string fileName = strpr(fileNameFormat.c_str(),
+                                    it->getAtomicNumber());
+            string committeeDir = committeePrefix + strpr("-%zu/", c);
+            if (c > 0) fileName = committeeDir + fileName;
+            log << strpr("Setting weights for element %2s from file: %s\n",
+                         it->getSymbol().c_str(),
+                         fileName.c_str());
+            vector<double> weights = readColumnsFromFile(fileName,
+                                                         vector<size_t>(1, 0)
+                                                        ).at(0);
+            NeuralNetwork& nn = it->neuralNetworks.at(id
+                                                      + committeeIds.at(c));
+            // setConnections() reads exactly getNumConnections() values: a
+            // file written for a different architecture would otherwise be
+            // read past its end (garbage weights) or silently truncated.
+            if (weights.size() != (size_t)nn.getNumConnections())
+            {
+                throw runtime_error(strpr("ERROR: Weights file \"%s\" "
+                                          "contains %zu weights, but the "
+                                          "neural network architecture "
+                                          "requires %d.\n",
+                                          fileName.c_str(),
+                                          weights.size(),
+                                          nn.getNumConnections()));
+            }
+            nn.setConnections(&(weights.front()));
         }
-        nn.setConnections(&(weights.front()));
     }
 
     return;

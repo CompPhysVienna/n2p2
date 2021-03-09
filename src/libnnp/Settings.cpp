@@ -69,7 +69,7 @@ map<string, shared_ptr<settings::Key>> const createKnownKeywordsMap()
     m["screen_electrostatics"              ] = "";
     m["four_pi_epsilon"                    ] = "";
     m["committee_mode"                     ] = "";
-    m["committee_dir_prefix"               ] = "";
+    m["committee_data"                     ] = "";
 
     // Training keywords.
     m["random_seed"                        ] = "";
