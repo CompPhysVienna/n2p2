@@ -193,6 +193,7 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: Tools
 
    tools/libnnp
+   tools/nnp-atomenv
    tools/nnp-convert
    tools/nnp-norm
    tools/nnp-predict
@@ -206,6 +207,7 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: Miscellaneous
 
    misc/cabanamd_build_example
+   misc/cg_descriptor_analysis
 
 .. toctree::
    :hidden:

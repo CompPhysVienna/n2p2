@@ -35,6 +35,8 @@ information).
 +---------------------------------+------------------------------+------------------------------------------------------+
 | nnp-symfunc                     | libnnp                       | Symmetry function shape from settings file.          |
 +---------------------------------+------------------------------+------------------------------------------------------+
+| :ref:`nnp-atomenv`              | libnnptrain                  | Write atomic environment data to files.              |
++---------------------------------+------------------------------+------------------------------------------------------+
 | nnp-comp2                       | libnnptrain                  | Compare prediction of 2 NNPs for data set.           |
 +---------------------------------+------------------------------+------------------------------------------------------+
 | nnp-dataset                     | libnnptrain                  | Calculate energies and forces for a whole data set.  |
