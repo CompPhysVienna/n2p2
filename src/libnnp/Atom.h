@@ -130,10 +130,15 @@ struct Atom
     /// Cache size for each element.
     std::vector<std::size_t> cacheSizePerElement;
 #endif
+    /// Same as #energy but for all committee members.
+    std::vector<double>      energyCom;
     /// Symmetry function values
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions.
     std::vector<double>      dEdG;
+    /// Same as dEdG, but for the whole committee.
+    std::vector<
+    std::vector<double>>     dEdGCom;
     /// Derivative of atomic charge with respect to symmetry functions.
     std::vector<double>      dQdG;
 #ifdef N2P2_FULL_SFD_MEMORY
@@ -141,6 +146,8 @@ struct Atom
     /// coordinate.
     std::vector<double>      dGdxia;
 #endif
+    /// Same as #f but for the whole committee.
+    std::vector<Vec3D>       fCom;
     /// Derivative of symmetry functions with respect to this atom's
     /// coordinates.
     std::vector<Vec3D>       dGdr;

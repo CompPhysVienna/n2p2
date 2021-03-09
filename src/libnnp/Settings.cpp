@@ -53,7 +53,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["conv_energy"                   ] = "";
     m["nnp_type"                      ] = "";
     m["committee_mode"                ] = "";
-    m["committee_dir_prefix"          ] = "";
+    m["committee_data"                ] = "";
 
     // Training keywords.
     m["random_seed"                   ] = "";
