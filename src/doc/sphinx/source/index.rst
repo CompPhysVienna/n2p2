@@ -206,6 +206,7 @@ list of keywords is provided :ref:`here <keywords>`.
    :hidden:
    :caption: Miscellaneous
 
+   misc/cabanamd_build_example
    misc/cg_descriptor_analysis
 
 .. toctree::

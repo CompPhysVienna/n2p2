@@ -134,7 +134,7 @@ void SymFncExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
             // Calculate cutoff function and derivative.
             double pfc;
             double pdfc;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             if (cacheIndices[ne].size() == 0) fc.fdf(rij, pfc, pdfc);
             else
             {
@@ -156,7 +156,7 @@ void SymFncExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
             Vec3D dij = p1 * n.dr;
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             n.dGdr[indexPerElement[ne]] -= dij;
 #else
             n.dGdr[index] -= dij;
@@ -215,7 +215,7 @@ bool SymFncExpRadWeighted::checkRelevantElement(size_t /*index*/) const
     return true;
 }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
 vector<string> SymFncExpRadWeighted::getCacheIdentifiers() const
 {
     vector<string> v;

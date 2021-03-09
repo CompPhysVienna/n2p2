@@ -61,7 +61,7 @@ void Prediction::readStructureFromFile(string const& fileName)
 void Prediction::predict()
 {
     structure.calculateNeighborList(maxCutoffRadius);
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);

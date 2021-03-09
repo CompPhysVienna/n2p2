@@ -125,7 +125,7 @@ string SymFncCompRad::getSettingsLine() const
 void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
 {
     double result = 0.0;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     bool unique = true;
     size_t c0 = 0;
     size_t c1 = 0;
@@ -148,7 +148,7 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
             double rad;
             double drad;
             double r = rij;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             if (unique) cr.fdf(r, rad, drad);
             else
             {
@@ -169,7 +169,7 @@ void SymFncCompRad::calculate(Atom& atom, bool const derivatives) const
             Vec3D dij = p1 * n.dr;
             // Save force contributions in Atom storage.
             atom.dGdr[index] += dij;
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             n.dGdr[indexPerElement[e1]] -= dij;
 #else
             n.dGdr[index] -= dij;
@@ -225,7 +225,7 @@ bool SymFncCompRad::checkRelevantElement(size_t index) const
     else return false;
 }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
 vector<string> SymFncCompRad::getCacheIdentifiers() const
 {
     vector<string> v;

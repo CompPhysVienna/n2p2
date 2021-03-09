@@ -26,7 +26,7 @@ Stopwatch::Stopwatch()
     state        = STOPPED;
     timeTotal    = 0.0;
     timeLoop     = 0.0;
-#ifdef NNP_NO_TIME
+#ifdef N2P2_NO_TIME
     //fprintf(stderr, "WARNING: Stopwatch is using dummy implementation.\n");
 #elif __linux__
     time.tv_sec  = 0;
@@ -41,7 +41,7 @@ void Stopwatch::start(bool newLoop)
 {
     if (state == STOPPED)
     {
-#ifdef NNP_NO_TIME
+#ifdef N2P2_NO_TIME
 #elif __linux__
         clock_gettime(CLOCK_MONOTONIC, &time);
 #elif __MACH__
@@ -78,7 +78,7 @@ void Stopwatch::reset()
     state        = STOPPED;
     timeTotal    = 0.0;
     timeLoop     = 0.0;
-#ifdef NNP_NO_TIME
+#ifdef N2P2_NO_TIME
 #elif __linux__
     time.tv_sec  = 0;
     time.tv_nsec = 0;
@@ -103,7 +103,7 @@ double Stopwatch::updateTime()
 {
     if (state == RUNNING)
     {
-#ifdef NNP_NO_TIME
+#ifdef N2P2_NO_TIME
         return 1.0;
 #elif __linux__
         time_t   secLast  = time.tv_sec;

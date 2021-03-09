@@ -20,7 +20,7 @@ COMP=gnu
 MODE=static
 
 # LAMMPS version string
-LAMMPS_VERSION=stable_3Mar2020
+LAMMPS_VERSION=stable_29Oct2020
 
 # Include global (project-wide) settings.
 include $(PROJECT_DIR)/src/makefile.$(COMP)
@@ -38,6 +38,7 @@ clean: clean-lammps-nnp
 ##############
 # lammps-nnp #
 ##############
+LAMMPS_DEBUG := $(filter-out -pedantic-errors,$(PROJECT_DEBUG))
 lammps-nnp:
 	if [ ! -e $(LAMMPS_VERSION).tar.gz ]; then \
 		wget https://github.com/lammps/lammps/archive/$(LAMMPS_VERSION).tar.gz; \
@@ -50,8 +51,8 @@ lammps-nnp:
 	@sed -i.bak "s/^LINK .*$$/LINK =          $(PROJECT_MPICC)/" lammps-nnp/src/MAKE/Makefile.mpi
 	@sed -i.bak "s/^LINKFLAGS .*$$/LINKFLAGS =     $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI)/" lammps-nnp/src/MAKE/Makefile.mpi
 	if [ "$(MODE)" = "test" ]; then \
-		sed -i.bak "/^CCFLAGS =/   s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
-		sed -i.bak "/^LINKFLAGS =/ s/$$/ $(PROJECT_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
+		sed -i.bak "/^CCFLAGS =/   s/$$/ $(LAMMPS_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
+		sed -i.bak "/^LINKFLAGS =/ s/$$/ $(LAMMPS_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
 	fi
 	@rm lammps-nnp/src/MAKE/Makefile.mpi.bak
 	cd lammps-nnp/src/ && $(MAKE) yes-user-nnp && $(MAKE) yes-molecule && $(MAKE) mpi

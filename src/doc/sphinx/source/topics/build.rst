@@ -162,7 +162,7 @@ time:
 Symmetry function groups
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Flag:** ``-DNNP_NO_SF_GROUPS`` (default: *disabled*)
+**Flag:** ``-DN2P2_NO_SF_GROUPS`` (default: *disabled*)
 
 If this flag is set the symmetry function group feature will be disabled
 everywhere. This will result in a much worse performance but may be useful for
@@ -172,7 +172,7 @@ will not change results, please see details in this publication [1]_.
 Improved symmetry function derivative memory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Flag:** ``-DNNP_FULL_SFD_MEMORY`` (default: *disabled*)
+**Flag:** ``-DN2P2_FULL_SFD_MEMORY`` (default: *disabled*)
 
 By default *n2p2* reduces the memory usage when multiple elements are present by
 eliminating storage for symmetry function derivatives which are zero by
@@ -188,12 +188,12 @@ sets when symmetry function derivatives are stored in memory (keyword
 However, for debugging and development purposes (see e.g. `this
 discussion <https://github.com/CompPhysVienna/n2p2/issues/68>`__) it can be
 helpful to keep the naive, full symmetry function derivative memory allocation.
-This can be achieved by enabling the flag ``-DNNP_FULL_SFD_MEMORY``. Only in
+This can be achieved by enabling the flag ``-DN2P2_FULL_SFD_MEMORY``. Only in
 this case there is a one-to-one correspondance between the list of symmetry
 functions in the :ref:`libnnp <libnnp>` output and the symmetry function
 derivative vectors in :cpp:member:`nnp::Atom::Neighbor::dGdr`.
 
-Normally, i.e. when ``-DNNP_FULL_SFD_MEMORY`` is **disabled**, an additional
+Normally, i.e. when ``-DN2P2_FULL_SFD_MEMORY`` is **disabled**, an additional
 section in the :ref:`libnnp <libnnp>` output will displayed after the ``SETUP:
 SYMMETRY FUNCTIONS`` section, which indicates the amount of still required
 memory for symmetry function derivatives. Here is how the output looks like for
@@ -221,7 +221,7 @@ Benchmarking the training program and the LAMMPS interface with the same
 system gives the following results: 
 
 +---------------------------------+-------------+------------+------------+
-| ``-DNNP_FULL_SFD_MEMORY``       | *enabled*   | *disabled* | difference |
+| ``-DN2P2_FULL_SFD_MEMORY``      | *enabled*   | *disabled* | difference |
 +=================================+=============+============+============+
 | Training (memory)               | 55.2 GB     | 37.8 GB    | -31.5 %    |
 +---------------------------------+-------------+------------+------------+
@@ -231,7 +231,7 @@ system gives the following results:
 +---------------------------------+-------------+------------+------------+
 
 Given the significant reduction in memory and the negligible impact on speed
-the improved memory layout is used by default (``-DNNP_FULL_SFD_MEMORY``
+the improved memory layout is used by default (``-DN2P2_FULL_SFD_MEMORY``
 disabled).
 
 .. [1] Singraber, A.; Behler, J.; Dellago, C. Library-Based LAMMPS

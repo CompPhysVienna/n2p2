@@ -24,7 +24,7 @@
 #include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
 #include <map>       // std::multimap
 #endif
 #include <limits>    // std::numeric_limits
@@ -49,8 +49,8 @@ Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
 
 void Mode::initialize()
 {
-    string version("" NNP_GIT_VERSION);
-    if (version == "") version = "" NNP_VERSION;
+    string version("" N2P2_GIT_VERSION);
+    if (version == "") version = "" N2P2_VERSION;
 
     log << "\n";
     log << "*****************************************"
@@ -63,16 +63,60 @@ void Mode::initialize()
     log << "\n";
     log << "n²p² version      : " + version + "\n";
     log << "------------------------------------------------------------\n";
-    log << "Git branch        : " NNP_GIT_BRANCH "\n";
-    log << "Git revision      : " NNP_GIT_REV "\n";
+    log << "Git branch        : " N2P2_GIT_BRANCH "\n";
+    log << "Git revision      : " N2P2_GIT_REV "\n";
     log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
     log << "------------------------------------------------------------\n";
     log << "\n";
+    log << "Features/Flags:\n";
+    log << "------------------------------------------------------------\n";
+    log << "Symmetry function groups     : ";
+#ifndef N2P2_NO_SF_GROUPS
+    log << "enabled\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "Symmetry function cache      : ";
+#ifndef N2P2_NO_SF_CACHE
+    log << "enabled\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "Timing function available    : ";
+#ifndef N2P2_NO_TIME
+    log << "available\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "Asymmetric polynomial SFs    : ";
+#ifndef N2P2_NO_ASYM_POLY
+    log << "available\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "SF low neighbor number check : ";
+#ifndef N2P2_NO_NEIGH_CHECK
+    log << "enabled\n";
+#else
+    log << "disabled\n";
+#endif
+    log << "SF derivative memory layout  : ";
+#ifndef N2P2_FULL_SFD_MEMORY
+    log << "reduced\n";
+#else
+    log << "full\n";
+#endif
+    log << "MPI explicitly disabled      : ";
+#ifndef N2P2_NO_MPI
+    log << "no\n";
+#else
+    log << "yes\n";
+#endif
 #ifdef _OPENMP
-    log << strpr("OpenMP threads    : %d\n", omp_get_max_threads());
+    log << strpr("OpenMP threads               : %d\n", omp_get_max_threads());
+#endif
     log << "------------------------------------------------------------\n";
     log << "\n";
-#endif
 
     log << "Please cite the following papers when publishing results "
            "obtained with n²p²:\n";
@@ -159,13 +203,13 @@ void Mode::setupGeneric()
     setupElements();
     setupCutoff();
     setupSymmetryFunctions();
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
     setupSymmetryFunctionMemory(false);
 #endif
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     setupSymmetryFunctionCache();
 #endif
-#ifndef NNP_NO_SF_GROUPS
+#ifndef N2P2_NO_SF_GROUPS
     setupSymmetryFunctionGroups();
 #endif
     setupNeuralNetwork();
@@ -750,7 +794,7 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
     return;
 }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
 void Mode::setupSymmetryFunctionCache(bool verbose)
 {
     log << "\n";
@@ -1130,11 +1174,11 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
         a->cacheSizePerElement = e->getCacheSizes();
 #endif
 
-#ifndef NNP_NO_NEIGH_CHECK
+#ifndef N2P2_NO_NEIGH_CHECK
         // Check if atom has low number of neighbors.
         size_t numNeighbors = a->getNumNeighbors(
                                             minCutoffRadius.at(e->getIndex()));
@@ -1210,11 +1254,11 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
             a->numSymmetryFunctionDerivatives
                 = e->getSymmetryFunctionNumTable();
         }
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
         a->cacheSizePerElement = e->getCacheSizes();
 #endif
 
-#ifndef NNP_NO_NEIGH_CHECK
+#ifndef N2P2_NO_NEIGH_CHECK
         // Check if atom has low number of neighbors.
         size_t numNeighbors = a->getNumNeighbors(
                                             minCutoffRadius.at(e->getIndex()));
@@ -1377,7 +1421,7 @@ void Mode::calculateForces(Structure& structure) const
         {
             // Define shortcut for atom j (aj).
             Atom& aj = structure.atoms.at(*it);
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             vector<vector<size_t> > const& tableFull
                 = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
@@ -1388,7 +1432,7 @@ void Mode::calculateForces(Structure& structure) const
                 // If atom j's neighbor is atom i add force contributions.
                 if (n->index == ai->index)
                 {
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                     vector<size_t> const& table = tableFull.at(n->element);
                     for (size_t j = 0; j < n->dGdr.size(); ++j)
                     {

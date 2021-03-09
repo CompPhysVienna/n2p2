@@ -122,7 +122,7 @@ public:
      *         otherwise.
      */
     virtual bool        checkRelevantElement(std::size_t index) const;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     /** Get unique cache identifiers.
      *
      * @return Vector of string identifying the type of cache this symmetry

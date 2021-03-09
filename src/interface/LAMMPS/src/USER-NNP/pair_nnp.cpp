@@ -9,13 +9,13 @@
 #include "pair_nnp.h"
 #include "atom.h"
 #include "comm.h"
-#include "force.h"
 #include "neighbor.h"
 #include "neigh_list.h"
 #include "neigh_request.h"
 #include "memory.h"
 #include "error.h"
 #include "update.h"
+#include "utils.h"
 
 using namespace LAMMPS_NS;
 
@@ -40,8 +40,12 @@ void PairNNP::compute(int eflag, int vflag)
   if(eflag || vflag) ev_setup(eflag,vflag);
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
 
-  // Set number of local atoms and add index and element.
-  interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
+  // Set number of local atoms and add element.
+  interface.setLocalAtoms(atom->nlocal,atom->type);
+  // Transfer tags separately. Interface::setLocalTags is overloaded internally
+  // to work with both -DLAMMPS_SMALLBIG (tagint = int) and -DLAMMPS_BIGBIG
+  // (tagint = int64_t)
+  interface.setLocalTags(atom->tag);
 
   // Transfer local neighbor list to NNP interface.
   transferNeighborList();
@@ -130,13 +134,13 @@ void PairNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg],"showewsum") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      showewsum = force->inumeric(FLERR,arg[iarg+1]);
+      showewsum = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     // maximum allowed extrapolation warnings
     } else if (strcmp(arg[iarg],"maxew") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      maxew = force->inumeric(FLERR,arg[iarg+1]);
+      maxew = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     // reset extrapolation warning counter
     } else if (strcmp(arg[iarg],"resetew") == 0) {
@@ -153,13 +157,13 @@ void PairNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg],"cflength") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      cflength = force->numeric(FLERR,arg[iarg+1]);
+      cflength = utils::numeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     // energy unit conversion factor
     } else if (strcmp(arg[iarg],"cfenergy") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      cfenergy = force->numeric(FLERR,arg[iarg+1]);
+      cfenergy = utils::numeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     } else error->all(FLERR,"Illegal pair_style command");
   }
@@ -176,10 +180,10 @@ void PairNNP::coeff(int narg, char **arg)
   if (narg != 3) error->all(FLERR,"Incorrect args for pair coefficients");
 
   int ilo,ihi,jlo,jhi;
-  force->bounds(FLERR,arg[0],atom->ntypes,ilo,ihi);
-  force->bounds(FLERR,arg[1],atom->ntypes,jlo,jhi);
+  utils::bounds(FLERR,arg[0],1,atom->ntypes,ilo,ihi,error);
+  utils::bounds(FLERR,arg[1],1,atom->ntypes,jlo,jhi,error);
 
-  maxCutoffRadius = force->numeric(FLERR,arg[2]);
+  maxCutoffRadius = utils::numeric(FLERR,arg[2],false,lmp);
 
   // TODO: Check how this flag is set.
   int count = 0;
@@ -311,6 +315,7 @@ void PairNNP::transferNeighborList()
       double dz = atom->x[i][2] - atom->x[j][2];
       double d2 = dx * dx + dy * dy + dz * dz;
       if (d2 <= rc2) {
+        // atom->tag[j] will be implicitly converted to int64_t internally.
         interface.addNeighbor(i,j,atom->tag[j],atom->type[j],dx,dy,dz,d2);
       }
     }

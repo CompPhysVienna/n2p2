@@ -6,6 +6,7 @@
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/process.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/asio.hpp>
 #include <iostream>
 #include "fileHelpers.h"
 

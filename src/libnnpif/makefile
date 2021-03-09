@@ -46,7 +46,7 @@ LIB=lib$(NAME)
 # PROJECT COMPILER AND FLAGS
 ###############################################################################
 CC=$(PROJECT_CC)
-ifneq (,$(findstring NNP_NO_MPI,${PROJECT_OPTIONS}))
+ifneq (,$(findstring N2P2_NO_MPI,${PROJECT_OPTIONS}))
 MPICC=${PROJECT_CC}
 CFLAGS=${PROJECT_CFLAGS}
 else
@@ -99,9 +99,16 @@ endif
 headers:
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
+LAMMPS_OPTIONS := $(filter -DN2P2_%,$(OPTIONS))
 lammps-mf:
-	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(OPTIONS) -I$(PROJECT_EIGEN)," LAMMPS/Makefile.lammps
+	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(LAMMPS_OPTIONS)," LAMMPS/Makefile.lammps
 	@rm LAMMPS/Makefile.lammps.bak
+	cp LAMMPS/Makefile.lammps $(PROJECT_LIB)/Makefile.lammps-extra
+	$(RM) -f $(PROJECT_LIB)/lammps-extra.cmake
+	touch $(PROJECT_LIB)/lammps-extra.cmake
+	for flag in $(LAMMPS_OPTIONS); do \
+		echo "target_compile_definitions(lammps PRIVATE $${flag})" >> $(PROJECT_LIB)/lammps-extra.cmake; \
+	done
 
 $(LIB).so: CFLAGS+= -fPIC
 $(LIB).so: $(OBJ)
@@ -125,6 +132,8 @@ clean-headers:
 
 clean-lammps-mf:
 	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1," LAMMPS/Makefile.lammps
-	@rm LAMMPS/Makefile.lammps.bak
+	$(RM) LAMMPS/Makefile.lammps.bak
+	$(RM) $(PROJECT_LIB)/Makefile.lammps-extra
+	$(RM) $(PROJECT_LIB)/lammps-extra.cmake
 
 rebuild: clean all

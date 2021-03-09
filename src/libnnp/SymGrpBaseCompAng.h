@@ -68,7 +68,7 @@ protected:
     std::vector<double>        mal;
     /// Member angleRight.
     std::vector<double>        mar;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     /// Member cache indices for actual neighbor element.
     std::vector<std::vector<
     std::vector<std::size_t>>> mci;

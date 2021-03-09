@@ -30,7 +30,7 @@ CompactFunction::CompactFunction() : center    (0.0  ),
     core.setType(CoreFunction::Type::POLY2);
 }
 
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
 bool CompactFunction::getAsymmetric() const
 {
     return core.getAsymmetric();

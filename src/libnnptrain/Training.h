@@ -455,7 +455,7 @@ private:
     std::vector<std::size_t> weightsOffset;
     /// Vector of actually used training properties.
     std::vector<std::string> pk;
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>      dGdxia;
@@ -532,7 +532,7 @@ private:
                              std::size_t isg,
                              std::size_t is,
                              std::size_t ia);
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with repect to one atom's
      * coordinate.
      *

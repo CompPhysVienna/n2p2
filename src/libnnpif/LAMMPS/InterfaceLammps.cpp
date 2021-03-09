@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
 #include <mpi.h>
 #include "mpi-extra.h"
 #endif
@@ -249,7 +249,6 @@ void InterfaceLammps::initialize(char* const& directory,
 }
 
 void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
-                                    int const* const atomTag,
                                     int const* const atomType)
 {
     for (size_t i = 0; i < numElements; ++i)
@@ -274,7 +273,6 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         Atom& a = structure.atoms.back();
         a.index                          = i;
         a.indexStructure                 = myRank;
-        a.tag                            = atomTag[i];
         a.element                        = mapTypeToElement[atomType[i]];
         a.numNeighbors                   = 0;
         a.hasSymmetryFunctions           = false;
@@ -288,14 +286,35 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
     return;
 }
 
-void InterfaceLammps::addNeighbor(int    i,
-                                  int    j,
-                                  int    tag,
-                                  int    type,
-                                  double dx,
-                                  double dy,
-                                  double dz,
-                                  double d2)
+void InterfaceLammps::setLocalTags(int const* const atomTag)
+{
+    for (size_t i = 0; i < structure.atoms.size(); i++)
+    {
+        // Implicit conversion from int to int64_t!
+        structure.atoms.at(i).tag = atomTag[i];
+    }
+
+    return;
+}
+
+void InterfaceLammps::setLocalTags(int64_t const* const atomTag)
+{
+    for (size_t i = 0; i < structure.atoms.size(); i++)
+    {
+        structure.atoms.at(i).tag = atomTag[i];
+    }
+
+    return;
+}
+
+void InterfaceLammps::addNeighbor(int     i,
+                                  int     j,
+                                  int64_t tag,
+                                  int     type,
+                                  double  dx,
+                                  double  dy,
+                                  double  dz,
+                                  double  d2)
 {
     if (ignoreType[type] ||
         indexMap.at(i) == numeric_limits<size_t>::max()) return;
@@ -324,7 +343,7 @@ void InterfaceLammps::addNeighbor(int    i,
 
 void InterfaceLammps::process()
 {
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
@@ -379,7 +398,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         // Set pointer to atom.
         a = &(structure.atoms.at(i));
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         vector<vector<size_t> > const& tableFull
             = elements.at(a->element).getSymmetryFunctionTable();
 #endif
@@ -392,7 +411,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             size_t const in = n->index;
             // Now loop over all symmetry functions and add force contributions
             // (local + ghost atoms).
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             vector<size_t> const& table = tableFull.at(n->element);
             for (size_t s = 0; s < n->dGdr.size(); ++s)
             {
@@ -429,7 +448,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
 long InterfaceLammps::getEWBufferSize() const
 {
     long bs = 0;
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
     int ss = 0; // size_t size.
     int ds = 0; // double size.
     int cs = 0; // char size.
@@ -465,7 +484,7 @@ long InterfaceLammps::getEWBufferSize() const
 
 void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
 {
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
     int p = 0;
     for (vector<Element>::const_iterator it = elements.begin();
          it != elements.end(); ++it)
@@ -498,7 +517,7 @@ void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
 
 void InterfaceLammps::extractEWBuffer(char const* const& buf, int bs)
 {
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
     int p = 0;
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)

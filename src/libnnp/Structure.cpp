@@ -185,7 +185,7 @@ void Structure::readFromLines(vector<string> const& lines)
             atoms.push_back(Atom());
             atoms.back().index          = numAtoms;
             atoms.back().indexStructure = index;
-            atoms.back().tag            = numAtoms;
+            atoms.back().tag            = numAtoms; // Implicit conversion!
             atoms.back().r[0]           = atof(splitLine.at(1).c_str());
             atoms.back().r[1]           = atof(splitLine.at(2).c_str());
             atoms.back().r[2]           = atof(splitLine.at(3).c_str());
@@ -281,7 +281,7 @@ void Structure::calculateNeighborList(double cutoffRadius)
                                     atoms[i].neighbors.
                                         back().index = j;
                                     atoms[i].neighbors.
-                                        back().tag = j;
+                                        back().tag = j; // Implicit conversion!
                                     atoms[i].neighbors.
                                         back().element = atoms[j].element;
                                     atoms[i].neighbors.
@@ -331,7 +331,7 @@ void Structure::calculateNeighborList(double cutoffRadius)
                     {
                         atoms[i].neighbors.push_back(Atom::Neighbor());
                         atoms[i].neighbors.back().index   = j;
-                        atoms[i].neighbors.back().tag     = j;
+                        atoms[i].neighbors.back().tag     = j; // Impl. conv.!
                         atoms[i].neighbors.back().element = atoms[j].element;
                         atoms[i].neighbors.back().d       = dr.norm();
                         atoms[i].neighbors.back().dr      = dr;
