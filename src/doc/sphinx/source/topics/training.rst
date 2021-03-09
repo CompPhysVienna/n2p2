@@ -57,6 +57,8 @@ Whenever the data set is changed, do not forget to repeat this step.
    unit conversion will be handled internally and no user intervention is
    necessary.
 
+.. _symfunc_setup:
+
 Step 4: Symmetry function setup
 """""""""""""""""""""""""""""""
 

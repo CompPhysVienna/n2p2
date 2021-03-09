@@ -204,6 +204,12 @@ list of keywords is provided :ref:`here <keywords>`.
 
 .. toctree::
    :hidden:
+   :caption: Miscellaneous
+
+   misc/cg_descriptor_analysis
+
+.. toctree::
+   :hidden:
    :caption: API
 
    api/neural_network

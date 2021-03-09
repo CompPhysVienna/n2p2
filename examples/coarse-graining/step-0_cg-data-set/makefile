@@ -64,7 +64,7 @@ endif
 $(APP_CORE):
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
-	cp $@ $(PROJECT_BIN)/
+	#cp $@ $(PROJECT_BIN)/
 
 # Clean everything.
 clean: $(CLEAN_APP)
@@ -73,7 +73,7 @@ clean: $(CLEAN_APP)
 $(CLEAN_APP): EXE=$(patsubst clean-%,%,$@)
 $(CLEAN_APP):
 	$(RM) $(EXE).gcno $(EXE).gcda $(EXE).o $(EXE)
-	$(RM) $(PROJECT_BIN)/$(EXE)
+	#$(RM) $(PROJECT_BIN)/$(EXE)
 
 list-core:
 	@echo $(APP_CORE)
