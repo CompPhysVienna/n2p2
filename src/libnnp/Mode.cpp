@@ -1436,13 +1436,24 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 void Mode::calculateEnergy(Structure& structure) const
 {
     // Loop over all atoms and add atomic contributions to total energy.
-    structure.energy = 0.0;
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    structure.energyCom.resize(committeeSize);
+    for (size_t c = 0; c < committeeSize; ++c)
     {
-        structure.energy += it->energy;
+        double energySum = 0.0;
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+            it != structure.atoms.end(); ++it)
+        {
+            energySum += it->energyCom.at(c);
+        }
+        structure.energyCom.at(c) = energySum;
     }
 
+    if (committeeMode != CommitteeMode::PREDICTION)
+        structure.energy = structure.energyCom.at(0);
+    else
+        structure.energy = structure.averageEnergy();
+    if (committeeMode != CommitteeMode::DISABLED)
+        structure.committeeDisagreement = structure.calcDisagreement();
     return;
 }
 
