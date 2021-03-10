@@ -1472,8 +1472,6 @@ void Mode::calculateCharge(Structure& structure) const
 
 void Mode::calculateForces(Structure& structure) const
 {
-    vector<Vec3D>* f = nullptr;
-
     Atom* ai = NULL;
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
@@ -1481,72 +1479,72 @@ void Mode::calculateForces(Structure& structure) const
 #endif
     for (size_t i = 0; i < structure.atoms.size(); ++i)
     {
-        //for (committees)
-        //if (committeeMode == CommitteeMode::DISABLED)
-        //{
-        //    f = ai->f;
-        //}
-        //else
-        //{
-        //    f = ai->fCom.at(c);
-        //    f.resize(committeeSize);
-        //}
         // Set pointer to atom.
         ai = &(structure.atoms.at(i));
-
-        // Reset forces.
-        ai->f[0] = 0.0;
-        ai->f[1] = 0.0;
-        ai->f[2] = 0.0;
-
-        // First add force contributions from atom i itself (gradient of
-        // atomic energy E_i).
-        for (size_t j = 0; j < ai->numSymmetryFunctions; ++j)
+        ai->fCom.resize(committeeSize);
+        for (size_t c = 0; c < committeeSize; ++c)
         {
-            ai->f -= ai->dEdG.at(j) * ai->dGdr.at(j);
-        }
+            // Reset forces.
+            ai->fCom.at(c)[0] = 0.0;
+            ai->fCom.at(c)[1] = 0.0;
+            ai->fCom.at(c)[2] = 0.0;
 
-        // Now loop over all neighbor atoms j of atom i. These may hold
-        // non-zero derivatives of their symmetry functions with respect to
-        // atom i's coordinates. Some atoms may appear multiple times in the
-        // neighbor list because of periodic boundary conditions. To avoid
-        // that the same contributions are added multiple times use the
-        // "unique neighbor" list (but skip the first entry, this is always
-        // atom i itself).
-        for (vector<size_t>::const_iterator it =
-             ai->neighborsUnique.begin() + 1;
-             it != ai->neighborsUnique.end(); ++it)
-        {
-            // Define shortcut for atom j (aj).
-            Atom& aj = structure.atoms.at(*it);
-#ifndef N2P2_FULL_SFD_MEMORY
-            vector<vector<size_t> > const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
-#endif
-            // Loop over atom j's neighbors (n), atom i should be one of them.
-            for (vector<Atom::Neighbor>::const_iterator n =
-                 aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
+            // First add force contributions from atom i itself (gradient of
+            // atomic energy E_i).
+            for (size_t j = 0; j < ai->numSymmetryFunctions; ++j)
             {
-                // If atom j's neighbor is atom i add force contributions.
-                if (n->index == ai->index)
-                {
+                ai->fCom.at(c) -= ai->dEdGCom.at(c).at(j) * ai->dGdr.at(j);
+            }
+
+            // Now loop over all neighbor atoms j of atom i. These may hold
+            // non-zero derivatives of their symmetry functions with respect to
+            // atom i's coordinates. Some atoms may appear multiple times in the
+            // neighbor list because of periodic boundary conditions. To avoid
+            // that the same contributions are added multiple times use the
+            // "unique neighbor" list (but skip the first entry, this is always
+            // atom i itself).
+            for (vector<size_t>::const_iterator it =
+                 ai->neighborsUnique.begin() + 1;
+                 it != ai->neighborsUnique.end(); ++it)
+            {
+                // Define shortcut for atom j (aj).
+                Atom& aj = structure.atoms.at(*it);
 #ifndef N2P2_FULL_SFD_MEMORY
-                    vector<size_t> const& table = tableFull.at(n->element);
-                    for (size_t j = 0; j < n->dGdr.size(); ++j)
-                    {
-                        ai->f -= aj.dEdG.at(table.at(j)) * n->dGdr.at(j);
-                    }
-#else
-                    for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
-                    {
-                        ai->f -= aj.dEdG.at(j) * n->dGdr.at(j);
-                    }
+                vector<vector<size_t> > const& tableFull
+                    = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
+                // Loop over atom j's neighbors (n), atom i should be one of them.
+                for (vector<Atom::Neighbor>::const_iterator n =
+                     aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
+                {
+                    // If atom j's neighbor is atom i add force contributions.
+                    if (n->index == ai->index)
+                    {
+#ifndef N2P2_FULL_SFD_MEMORY
+                        vector<size_t> const& table = tableFull.at(n->element);
+                        for (size_t j = 0; j < n->dGdr.size(); ++j)
+                        {
+                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(table.at(j)) * n->dGdr.at(j);
+                        }
+#else
+                        for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
+                        {
+                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(j) * n->dGdr.at(j);
+                        }
+#endif
+                    }
                 }
             }
         }
+        if (committeeMode != CommitteeMode::PREDICTION)
+            ai->f = ai->fCom.at(0);
+        else
+            ai->f = ai->averageForce();
+        if (committeeMode != CommitteeMode::DISABLED)
+            ai->committeeDisagreement = ai->calcDisagreement();
     }
 
+    return;
     return;
 }
 

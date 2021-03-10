@@ -514,3 +514,29 @@ vector<string> Atom::Neighbor::info() const
 
     return v;
 }
+
+Vec3D Atom::averageForce() const
+{    
+    Vec3D forceSum = {0.0,0.0,0.0};
+    for (size_t c = 0; c < fCom.size(); ++c)
+    { 
+        for (size_t i = 0; i < 3; ++i)
+            forceSum[i] += fCom.at(c)[i];
+    }
+    for (size_t i = 0; i < 3; ++i)
+        forceSum[i] = forceSum[i]/fCom.size();
+    return forceSum;
+}
+
+Vec3D Atom::calcDisagreement() const
+{   
+    Vec3D forceSum = {0.0,0.0,0.0};
+    for (size_t c = 0; c < fCom.size(); ++c)
+    { 
+        for (size_t i = 0; i < 3; ++i)
+            forceSum[i] += pow((f[i] - fCom.at(c)[i]),2);
+    }
+    for (size_t i = 0; i < 3; ++i)
+        forceSum[i] = sqrt(forceSum[i]/fCom.size());
+    return forceSum;
+} 
