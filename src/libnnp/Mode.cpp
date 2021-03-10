@@ -1375,11 +1375,8 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
-            if (committeeMode != CommitteeMode::DISABLED)
-            {
-                it->dEdGCom.resize(committeeSize);
-                it->energyCom.resize(committeeSize);
-            }
+            it->dEdGCom.resize(committeeSize);
+            it->energyCom.resize(committeeSize);
             for (size_t c = 0; c < committeeSize; ++c)
             {
                 string id = "short" + committeeIds.at(c);
@@ -1387,24 +1384,15 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                                     .neuralNetworks.at(id);
                 nn.setInput(&((it->G).front()));
                 nn.propagate();
-                if (committeeMode == CommitteeMode::DISABLED)
-                {
-                    if (derivatives) nn.calculateDEdG(&((it->dEdG).front()));
-                    nn.getOutput(&(it->energy));
-                }
-                else
-                {
+
+                if (derivatives)
                     it->dEdGCom.at(c).resize(it->dEdG.size());
-                    if (derivatives)
-                    {
-                        nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
-                        if (c == 0) copy(it->dEdGCom.at(c).begin(),
-                                         it->dEdGCom.at(c).end(),
-                                         it->dEdG.begin());
-                    }
-                    nn.getOutput(&(it->energyCom.at(c)));
-                    if (c == 0) it->energy = it->energyCom.at(c);
-                }
+                    nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
+                    if (c == 0) copy(it->dEdGCom.at(c).begin(),
+                                     it->dEdGCom.at(c).end(),
+                                     it->dEdG.begin());
+                nn.getOutput(&(it->energyCom.at(c)));
+                if (c == 0) it->energy = it->energyCom.at(c);
             }
         }
     }
