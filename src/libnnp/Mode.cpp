@@ -1950,17 +1950,29 @@ void Mode::calculateCharge(Structure& structure) const
 
 void Mode::calculateForces(Structure& structure) const
 {
-    vector<Vec3D>* f = nullptr;
-
     if (nnpType == NNPType::HDNNP_Q)
     {
         throw runtime_error("WARNING: Forces are not implemented yet.\n");
         return;
     }
 
+    // Committee of 2G-HDNNPs: forces of each committee member, from its
+    // derivatives Atom::dEdGCom (see calculateAtomicNeuralNetworks()).
+    bool const committee = (nnpType == NNPType::HDNNP_2G &&
+                            committeeMode != CommitteeMode::DISABLED);
+
     // Short-range force contributions of all neighbors of each atom.
     vector<Vec3D> pairForces;
-    calculatePairForcesShort(structure, pairForces);
+    vector<vector<Vec3D>> pairForcesCom;
+    if (committee)
+    {
+        pairForcesCom.resize(committeeSize);
+        for (size_t c = 0; c < committeeSize; ++c)
+        {
+            calculatePairForcesShort(structure, pairForcesCom.at(c), c);
+        }
+    }
+    else calculatePairForcesShort(structure, pairForces);
 
     // 4G-HDNNP: Lagrange multipliers and the sums over atoms j of
     // lambda_j * dChi_j/dr_i, needed for the electrostatic part below.
@@ -1986,18 +1998,26 @@ void Mode::calculateForces(Structure& structure) const
     #pragma omp for
 #endif
     for (size_t i = 0; i < structure.atoms.size(); ++i) {
-        //for (committees)
-        //if (committeeMode == CommitteeMode::DISABLED)
-        //{
-        //    f = ai->f;
-        //}
-        //else
-        //{
-        //    f = ai->fCom.at(c);
-        //    f.resize(committeeSize);
-        //}
         // Set pointer to atom.
         Atom &ai = structure.atoms.at(i);
+
+        if (committee)
+        {
+            ai.fCom.resize(committeeSize);
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                // Contributions of atom i itself and of its neighbors j, as
+                // below.
+                ai.fCom.at(c) = ai.calculateSelfForceShort(ai.dEdGCom.at(c));
+                ai.fCom.at(c) += pairForcesCom.at(c).at(i);
+            }
+            if (committeeMode != CommitteeMode::PREDICTION)
+                ai.f = ai.fCom.at(0);
+            else
+                ai.f = ai.averageForce();
+            ai.committeeDisagreement = ai.calcDisagreement();
+            continue;
+        }
 
         // Reset forces.
         ai.f = Vec3D{};
@@ -2041,7 +2061,8 @@ void Mode::calculateForces(Structure& structure) const
 }
 
 void Mode::calculatePairForcesShort(Structure const& structure,
-                                    vector<Vec3D>&   pairForces) const
+                                    vector<Vec3D>&   pairForces,
+                                    int const        committeeMember) const
 {
     size_t const numAtoms = structure.atoms.size();
     pairForces.assign(numAtoms, Vec3D{});
@@ -2063,11 +2084,15 @@ void Mode::calculatePairForcesShort(Structure const& structure,
             // Includes periodic images of atom j itself (cell vectors
             // shorter than the cutoff): moving atom j moves its images, so
             // their derivatives belong to the force on atom j as well.
+            vector<double> const& dEdG = (committeeMember < 0)
+                                       ? aj.dEdG
+                                       : aj.dEdGCom.at(committeeMember);
 #ifndef N2P2_FULL_SFD_MEMORY
             pairForces.at(n.index) += aj.calculatePairForceShort(n,
+                                                                dEdG,
                                                                 &tableFull);
 #else
-            pairForces.at(n.index) += aj.calculatePairForceShort(n);
+            pairForces.at(n.index) += aj.calculatePairForceShort(n, dEdG);
 #endif
         }
     }

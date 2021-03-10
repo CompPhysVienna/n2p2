@@ -132,6 +132,8 @@ struct Atom
     /// Partial derivative of electrostatic energy with respect to this atom's
     /// coordinates.
     Vec3D                    pEelecpr;
+    /// Committee energy disagreement
+    Vec3D                    committeeDisagreement;
     /// List of unique neighbor indices (don't count multiple PBC images).
     std::vector<std::size_t> neighborsUnique;
     /// Number of neighbors per element.
@@ -299,6 +301,15 @@ struct Atom
      *  @return calculated force vector.
      */
     Vec3D                    calculateSelfForceShort() const;
+    /** Same as calculateSelfForceShort(), with the given derivatives of the
+     *  atomic energy with respect to the symmetry functions instead of #dEdG
+     *  (e.g. those of a committee member, see #dEdGCom).
+     *
+     * @param[in] dEdGIn Derivatives of the atomic energy.
+     * @return calculated force vector.
+     */
+    Vec3D                    calculateSelfForceShort(
+                                    std::vector<double> const& dEdGIn) const;
      /** Calculate force resulting from gradient of this atom's (short-ranged)
      *  energy contribution with respect to neighbor's coordinate.
      *
@@ -308,6 +319,20 @@ struct Atom
      */
     Vec3D                    calculatePairForceShort(
                                     Neighbor const&  neighbor,
+                                    std::vector<std::vector <std::size_t> >
+                                    const *const     tableFull = nullptr) const;
+    /** Same as calculatePairForceShort(), with the given derivatives of the
+     *  atomic energy with respect to the symmetry functions instead of #dEdG
+     *  (e.g. those of a committee member, see #dEdGCom).
+     *
+     * @param[in] neighbor Neighbor of which the gradient is considered.
+     * @param[in] dEdGIn Derivatives of the atomic energy.
+     * @param[in] tableFull Pointer to symmetry function table if it is used.
+     * @return calculated force vector.
+     */
+    Vec3D                    calculatePairForceShort(
+                                    Neighbor const&            neighbor,
+                                    std::vector<double> const& dEdGIn,
                                     std::vector<std::vector <std::size_t> >
                                     const *const     tableFull = nullptr) const;
     /** Calculate dChi/dr of this atom's Chi with respect to the coordinates
@@ -339,6 +364,15 @@ struct Atom
      * @return Lines with atom information.
      */
     std::vector<std::string> info() const;
+    /** Calculate committee average energy.
+     *
+     * @return Return committee energy.
+     */
+    Vec3D                  averageForce() const;
+    /** Calculate committee disagreement for energy.
+     * @return Return disagreement for energy.
+     */
+    Vec3D                  calcDisagreement() const;
 };
 
 inline bool Atom::Neighbor::operator!=(Atom::Neighbor const& rhs) const

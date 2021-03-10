@@ -739,13 +739,18 @@ private:
      * @param[out] pairForces For each atom i the sum over its neighbors j
      *                        (including periodic images of i itself) of
      *                        -dE_j/dr_i.
+     * @param[in] committeeMember Use the derivatives Atom::dEdGCom of this
+     *                            committee member instead of Atom::dEdG
+     *                            (default -1: Atom::dEdG).
      *
      * Collected from the side of atom j in one pass over its neighbors
      * within the symmetry function cutoff.
      */
     void                       calculatePairForcesShort(
                                      Structure const&       structure,
-                                     std::vector<Vec3D>&    pairForces) const;
+                                     std::vector<Vec3D>&    pairForces,
+                                     int const              committeeMember
+                                                                = -1) const;
     /** Sum over all atoms j of the derivatives of their electronegativities
      *  with respect to the coordinates of each atom i, weighted with the
      *  force Lagrange multipliers (4G-HDNNP forces).
