@@ -1882,12 +1882,37 @@ void Mode::calculateEnergy(Structure& structure) const
     // Loop over all atoms and add atomic contributions to total energy.
     structure.energy = 0.0;
     structure.energyShort = 0.0;
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    if (nnpType == NNPType::HDNNP_2G)
     {
-        structure.energyShort += it->energy;
+        structure.energyCom.resize(committeeSize);
+        for (size_t c = 0; c < committeeSize; ++c)
+        {
+            double energySum = 0.0;
+            for (vector<Atom>::iterator it = structure.atoms.begin();
+                it != structure.atoms.end(); ++it)
+            {
+                energySum += it->energyCom.at(c);
+            }
+            structure.energyCom.at(c) = energySum;
+        }
+
+        if (committeeMode != CommitteeMode::PREDICTION)
+            structure.energyShort = structure.energyCom.at(0);
+        else
+            structure.energyShort = structure.averageEnergy();
+        structure.energy = structure.energyShort + structure.energyElec;
+        if (committeeMode != CommitteeMode::DISABLED)
+            structure.committeeDisagreement = structure.calcDisagreement();
     }
-    structure.energy = structure.energyShort + structure.energyElec;
+    else
+    {
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            structure.energyShort += it->energy;
+        }
+        structure.energy = structure.energyShort + structure.energyElec;
+    }
 
     //cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
     //cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
