@@ -1743,6 +1743,7 @@ double Structure::averageEnergy()
     double energySum = 0.0;
     for (auto& en : energyCom)
         energySum += en;
+
     return energySum/energyCom.size();
 }
 
@@ -1751,5 +1752,6 @@ double Structure::calcDisagreement()
     double energySum = 0.0;
     for (auto& en : energyCom)
         energySum += pow((energy - en),2);
+        
     return sqrt(energySum/energyCom.size());
 } 
