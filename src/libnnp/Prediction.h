@@ -31,6 +31,7 @@ public:
     void readStructureFromFile(std::string const& fileName = "input.data");
     void setup();
     void predict();
+    void print();
 
     std::string fileNameSettings;
     std::string fileNameScaling;

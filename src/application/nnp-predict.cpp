@@ -65,21 +65,7 @@ int main(int argc, char* argv[])
     prediction.log << "\n";
     prediction.log << "-----------------------------------------"
                       "--------------------------------------\n";
-    prediction.log << strpr("NNP energy: %16.8E\n",
-                            prediction.structure.energy);
-    prediction.log << "\n";
-    prediction.log << "NNP forces:\n";
-    for (vector<Atom>::const_iterator it = s.atoms.begin();
-         it != s.atoms.end(); ++it)
-    {
-        prediction.log << strpr("%10zu %2s %16.8E %16.8E %16.8E\n",
-                                it->index + 1,
-                                prediction.elementMap[it->element].c_str(),
-                                it->element,
-                                it->f[0],
-                                it->f[1],
-                                it->f[2]);
-    }
+    prediction.print();
     prediction.log << "-----------------------------------------"
                       "--------------------------------------\n";
     prediction.log << "Writing output files...\n";
