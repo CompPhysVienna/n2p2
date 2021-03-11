@@ -105,10 +105,16 @@ void Prediction::print()
         log << strpr("Committee has %i members.\n",committeeSize);
         log << "-----------------------------------------"
                   "--------------------------------------\n";
-        log << strpr("NNP committee energy | committee energy disagreement:\n    %16.8E | %16.8E\n",
-                                structure.energy, structure.committeeDisagreement);
+        if (committeeMode == CommitteeMode::VALIDATION) 
+            log << strpr("NNP energy | committee energy disagreement:\n");
+        else
+            log << strpr("NNP committee energy | committee energy disagreement:\n");
+        log << strpr("    %16.8E | %16.8E\n",structure.energy, structure.committeeDisagreement);                                
         log << "\n";
-        log << "NNP committee forces | committee forces disagreement:\n";
+        if (committeeMode == CommitteeMode::VALIDATION) 
+            log << "NNP forces | committee forces disagreement:\n";
+        else
+            log << "NNP committee forces | committee forces disagreement:\n";
         for (vector<Atom>::const_iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
@@ -123,5 +129,34 @@ void Prediction::print()
                             it->committeeDisagreement[1],
                             it->committeeDisagreement[2]);
         }
+        ofstream committee;
+        committee.open("committee.log");
+        committee << "-----------------------------------------"
+                      "--------------------------------------\n";
+        committee << "Committee energy:\n";
+        committee << "-----------------------------------------"
+                      "--------------------------------------\n";        
+        for (auto& ecom : structure.energyCom)
+            committee << strpr("\t%16.8E\n",ecom);
+        committee << "\n-----------------------------------------"
+                      "--------------------------------------\n";
+        committee << "Committee forces (x,y,z):\n"; 
+        committee << "-----------------------------------------"
+                      "--------------------------------------\n";
+        for (vector<Atom>::const_iterator it = structure.atoms.begin();
+         it != structure.atoms.end(); ++it)
+        {
+            for (size_t c = 0; c < it->fCom.size(); ++c)
+            {
+                committee << strpr("%10zu %2s %16.8E %16.8E %16.8E\n",
+                                    it->index + 1,
+                                    elementMap[it->element].c_str(),
+                                    it->element,
+                                    it->fCom.at(c)[0],
+                                    it->fCom.at(c)[1],
+                                    it->fCom.at(c)[2]);
+            }
+        }
+        committee.close();
     }
 }
