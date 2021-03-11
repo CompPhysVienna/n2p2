@@ -42,7 +42,7 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G      ),
                normalize                 (false                  ),
                checkExtrapolationWarnings(false                  ),
                numElements               (0                      ),
-               committeeSize             (0                      ),
+               committeeSize             (1                      ),
                maxCutoffRadius           (0.0                    ),
                cutoffAlpha               (0.0                    ),
                meanEnergy                (0.0                    ),
@@ -1462,18 +1462,19 @@ void Mode::setupNeuralNetwork()
         log << strpr("Committee-NNP dir prefix: %s\n",
                      committeePrefix.c_str());
         log << strpr("Committee-NNP size      : %zu\n", committeeSize);
-        for (size_t i = 0; i < committeeSize; ++i)
-        {
-            // First committee member is NN without suffix.
-            if (i == 0) committeeIds.push_back("");
-            // All others have committee suffix appended.
-            else committeeIds.push_back(strpr("-committee-%zu", i));
-        }
-        // Set committee Ids also in each element.
-        for (auto& e : elements) e.setCommitteeIds(committeeIds);
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
     }
+    for (size_t i = 0; i < committeeSize; ++i)
+    {
+        // First committee member is NN without suffix.
+        if (i == 0) committeeIds.push_back("");
+        // All others have committee suffix appended.
+        else committeeIds.push_back(strpr("-committee-%zu", i));
+    }
+    // Set committee Ids also in each element.
+    for (auto& e : elements) e.setCommitteeIds(committeeIds);
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    
 
     // Finally, allocate all neural networks.
     for (auto& k : nnk)
@@ -1485,6 +1486,7 @@ void Mode::setupNeuralNetwork()
             // This loop will execute at least for j = 0 (non-committee case).
             for (size_t j = 0; j < committeeSize; ++j)
             {
+                log << strpr("Inside loop\n");
                 string id = k + committeeIds.at(j);
                 map<int, double> bla;
                 e.neuralNetworks.emplace(
@@ -1495,6 +1497,7 @@ void Mode::setupNeuralNetwork()
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
                 e.neuralNetworks.at(id).setNormalizeNeurons(normalizeNeurons);
+                log << strpr("End of loop\n");
             }
             log << strpr("Atomic %s NN for "
                          "element %2s :\n",
