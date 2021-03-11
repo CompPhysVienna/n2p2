@@ -112,7 +112,7 @@ void Prediction::print()
         log << strpr("    %16.8E | %16.8E\n",structure.energy, structure.committeeDisagreement);                                
         log << "\n";
         if (committeeMode == CommitteeMode::VALIDATION) 
-            log << "NNP forces | committee forces disagreement:\n";
+            log << "NNP forces | committee force disagreements:\n";
         else
             log << "NNP committee forces | committee forces disagreement:\n";
         for (vector<Atom>::const_iterator it = structure.atoms.begin();
@@ -144,7 +144,7 @@ void Prediction::print()
         committee << "-----------------------------------------"
                       "--------------------------------------\n";
         for (vector<Atom>::const_iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+            it != structure.atoms.end(); ++it)
         {
             for (size_t c = 0; c < it->fCom.size(); ++c)
             {

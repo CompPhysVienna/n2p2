@@ -262,13 +262,13 @@ struct Atom
      * @return Lines with atom information.
      */
     std::vector<std::string> info() const;
-    /** Calculate committee average energy.
+    /** Calculate committee average force.
      *
-     * @return Return committee energy.
+     * @return Return committee force.
      */
     Vec3D                  averageForce() const;
-    /** Calculate committee disagreement for energy.
-     * @return Return disagreement for energy.
+    /** Calculate committee disagreement for force.
+     * @return Return commitee disagreement for force.
      */
     Vec3D                  calcDisagreement() const;
 };

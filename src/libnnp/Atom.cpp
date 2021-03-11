@@ -526,18 +526,21 @@ Vec3D Atom::averageForce() const
         for (size_t i = 0; i < 3; ++i)
             forceSum[i] += fCom.at(c)[i];
     }
+
     return forceSum/fCom.size();
 }
 
 Vec3D Atom::calcDisagreement() const
 {   
     Vec3D forceSum = {0.0,0.0,0.0};
-    for (size_t c = 0; c < fCom.size(); ++c)
+    size_t comSize = fCom.size();
+    for (size_t c = 0; c < comSize; ++c)
     { 
         for (size_t i = 0; i < 3; ++i)
             forceSum[i] += pow((f[i] - fCom.at(c)[i]),2);
     }
     for (size_t i = 0; i < 3; ++i)
-        forceSum[i] = sqrt(forceSum[i]/fCom.size());
+        forceSum[i] = sqrt(forceSum[i]/comSize);
+
     return forceSum;
 } 

@@ -1455,6 +1455,7 @@ void Mode::calculateEnergy(Structure& structure) const
         structure.energy = structure.averageEnergy();
     if (committeeMode != CommitteeMode::DISABLED)
         structure.committeeDisagreement = structure.calcDisagreement();
+    
     return;
 }
 
@@ -1544,8 +1545,7 @@ void Mode::calculateForces(Structure& structure) const
         if (committeeMode != CommitteeMode::DISABLED)
             ai->committeeDisagreement = ai->calcDisagreement();
     }
-
-    return;
+    
     return;
 }
 

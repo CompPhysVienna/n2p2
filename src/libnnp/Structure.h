@@ -338,7 +338,7 @@ struct Structure
      */
     double                  averageEnergy();
     /** Calculate committee disagreement for energy.
-     * @return Return disagreement for energy.
+     * @return Return committee disagreement for energy.
      */
     double                  calcDisagreement();
 
