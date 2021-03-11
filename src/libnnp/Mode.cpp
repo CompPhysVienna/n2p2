@@ -2230,6 +2230,11 @@ void Mode::addEnergyOffset(Structure& structure, bool ref)
         {
             structure.energy += structure.numAtomsPerElement.at(i)
                               * elements.at(i).getAtomicEnergyOffset();
+            for (size_t c = 0; c < structure.energyCom.size(); ++c)
+            {
+                structure.energyCom.at(c) += structure.numAtomsPerElement.at(i)
+                                  * elements.at(i).getAtomicEnergyOffset();
+            }
         }
     }
 
