@@ -130,6 +130,9 @@ void Atom::toPhysicalUnits(double convEnergy,
     fRef /= convEnergy / convLength;
     charge /= convCharge;
     chargeRef /= convCharge;
+    for (auto& f : fCom)
+        f /= convEnergy / convLength;
+    committeeDisagreement /= convEnergy / convLength;
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
@@ -668,9 +671,10 @@ Vec3D Atom::averageForce() const
         for (size_t i = 0; i < 3; ++i)
             forceSum[i] += fCom.at(c)[i];
     }
-    for (size_t i = 0; i < 3; ++i)
-        forceSum[i] = forceSum[i]/fCom.size();
-    return forceSum;
+    //for (size_t i = 0; i < 3; ++i)
+    //    forceSum[i] = forceSum[i]/fCom.size();
+    //return forceSum;
+    return forceSum/fCom.size();
 }
 
 Vec3D Atom::calcDisagreement() const
