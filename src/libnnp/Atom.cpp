@@ -526,9 +526,6 @@ Vec3D Atom::averageForce() const
         for (size_t i = 0; i < 3; ++i)
             forceSum[i] += fCom.at(c)[i];
     }
-    //for (size_t i = 0; i < 3; ++i)
-    //    forceSum[i] = forceSum[i]/fCom.size();
-    //return forceSum;
     return forceSum/fCom.size();
 }
 
