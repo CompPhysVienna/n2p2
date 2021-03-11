@@ -1138,7 +1138,6 @@ void Mode::setupNeuralNetwork()
         // This loop will execute at least for j = 0 (non-committee case).
         for (size_t j = 0; j < committeeSize; ++j)
         {
-            log << strpr("Inside loop\n");
             string id = "short" + committeeIds.at(j);
             map<int, double> bla;
             e.neuralNetworks.emplace(
@@ -1149,7 +1148,6 @@ void Mode::setupNeuralNetwork()
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
             e.neuralNetworks.at(id).setNormalizeNeurons(normalizeNeurons);
-            log << strpr("End of loop\n");
         }
         log << strpr("Atomic short range NN for "
                      "element %2s :\n", e.getSymbol().c_str());
