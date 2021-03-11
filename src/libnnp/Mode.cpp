@@ -1545,7 +1545,7 @@ void Mode::calculateForces(Structure& structure) const
         if (committeeMode != CommitteeMode::DISABLED)
             ai->committeeDisagreement = ai->calcDisagreement();
     }
-    
+
     return;
 }
 
@@ -1562,6 +1562,11 @@ void Mode::addEnergyOffset(Structure& structure, bool ref)
         {
             structure.energy += structure.numAtomsPerElement.at(i)
                               * elements.at(i).getAtomicEnergyOffset();
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                structure.energyCom.at(c) += structure.numAtomsPerElement.at(i)
+                                  * elements.at(i).getAtomicEnergyOffset();
+            }
         }
     }
 
