@@ -76,3 +76,65 @@ void Prediction::predict()
 
     return;
 }
+
+void Prediction::print()
+{
+    if (committeeMode == CommitteeMode::DISABLED)
+    {
+        log << strpr("NNP         total energy: %16.8E\n",
+                     structure.energy);
+        if (nnpType == NNPType::HDNNP_4G)
+        {
+            log << strpr("NNP electrostatic energy: %16.8E\n",
+                         structure.energyElec);
+            log << "\n";
+            log << "NNP charges:\n";
+            for (auto const& a : structure.atoms)
+            {
+                log << strpr("%10zu %2s %16.8E\n",
+                             a.index + 1,
+                             elementMap[a.element].c_str(),
+                             a.charge);
+            }
+            log << strpr("NNP total charge: %16.8E (ref: %16.8E)\n",
+                         structure.charge, structure.chargeRef);
+        }
+        log << "\n";
+        log << "NNP forces:\n";
+        for (vector<Atom>::const_iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            log << strpr("%10zu %2s %16.8E %16.8E %16.8E\n",
+                            it->index + 1,
+                            elementMap[it->element].c_str(),
+                            it->element,
+                            it->f[0],
+                            it->f[1],
+                            it->f[2]);
+        }
+    }
+    else
+    {
+        log << strpr("Committee has %i members.\n",committeeSize);
+        log << "-----------------------------------------"
+                  "--------------------------------------\n";
+        log << strpr("NNP committee energy | committee energy disagreement:\n    %16.8E | %16.8E\n",
+                                structure.energy, structure.committeeDisagreement);
+        log << "\n";
+        log << "NNP committee forces | committee forces disagreement:\n";
+        for (vector<Atom>::const_iterator it = structure.atoms.begin();
+             it != structure.atoms.end(); ++it)
+        {
+            log << strpr("%10zu %2s %16.8E %16.8E %16.8E | %16.8E %16.8E %16.8E\n",
+                            it->index + 1,
+                            elementMap[it->element].c_str(),
+                            it->element,
+                            it->f[0],
+                            it->f[1],
+                            it->f[2],
+                            it->committeeDisagreement[0],
+                            it->committeeDisagreement[1],
+                            it->committeeDisagreement[2]);
+        }
+    }
+}
