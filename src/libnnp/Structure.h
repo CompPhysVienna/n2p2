@@ -60,6 +60,8 @@ struct Structure
     bool                     isTriclinic;
     /// If the neighbor list has been calculated.
     bool                     hasNeighborList;
+    /// If the neighbor list has been sorted by distance.
+    bool                     NeighborListIsSorted;
     /// If symmetry function values are saved for each atom.
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for each atom.
@@ -74,8 +76,6 @@ struct Structure
     std::size_t              numElementsPresent;
     /// Number of PBC images necessary in each direction for max cut-off.
     int                      pbc[3];
-    /// Number of PBC images necessary in each direction for screening cut-off.
-    int                      pbcScreen[3];
     /// Potential energy determined by neural network.
     double                   energy;
     /// Reference potential energy.
@@ -155,12 +155,29 @@ struct Structure
      */
     void                     readFromLines(std::vector<
                                            std::string> const& lines);
+    /** Calculate maximal cut-off if cut-off of screening and real part Ewald
+     * summation are also considered.
+     *
+     * @param[in] precision Precision for Ewald summation.
+     * @param[in] rcutScreen Cut-off for Screening of the electrostatic
+     *                         interaction.
+     * @param[in] maxCutoffRadius maximal cut-off of symmetry functions.
+     */
+    double                   getMaxCutoffRadiusOverall(
+                                                        double precision,
+                                                        double rcutScreen,
+                                                        double maxCutoffRadius);
     /** Calculate neighbor list for all atoms.
      *
      * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
      *                         than the cutoff radius.
+     * @param[in] sortByDistance Sort neighborlist from nearest to farthest neighbor.
+     *
+     * @return Maximum of {maxCutoffRadius, rcutScreen, rcutReal}.
      */
-    void                     calculateNeighborList(double cutoffRadius);
+    void                     calculateNeighborList(
+                                                    double  cutoffRadius, 
+                                                    bool    sortByDistance = false);
     /** Calculate required PBC copies.
      *
      * @param[in] cutoffRadius Cutoff radius for neighbor list.
@@ -210,12 +227,19 @@ struct Structure
      * @f]
      */
     void                     calculateInverseBox();
-    /** Calculate distance between two atoms in the minimum image convenction
+    /** Check if cut-off radius is small enough to apply minimum image
+    * convention.
+    *
+    * @param[in] cutoffRadius cut-off radius for which condition should be
+    * checked.
+    */
+    bool                     canMinimumImageConventionBeApplied(double cutoffRadius);
+    /** Calculate distance between two atoms in the minimum image convention.
      *
      * @param[in] dr Distance vector between two atoms of the same box.
      *
      */
-    Vec3D applyMinimumImageConvention(Vec3D const& dr);
+    Vec3D                    applyMinimumImageConvention(Vec3D const& dr);
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();
@@ -223,37 +247,33 @@ struct Structure
      *
      * @param[in] precision Ewald precision parameters.
      * @param[in] hardness Vector containing the hardness of all elements.
-     * @param[in] siggam Matrix combining sigma and gamma for all elements,
-     *                   including some prefactors.
-     *                   @f$ \text{siggam}_{ij} =
-     *                   \begin{cases}
-     *                      \sqrt{\pi} \sigma_i, & \text{for } i = j \\
-     *                      \sqrt{2} \gamma_{ij} = \sqrt{2 (\sigma_i^2
-     *                          + \sigma_j^2)}, & \text{for } i \neq j
-     *                   \end{cases} @f$
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
+     *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
      * @param[in] fs Screening function.
      */
     double                   calculateElectrostaticEnergy(
                                             double                   precision,
                                             Eigen::VectorXd          hardness,
-                                            Eigen::MatrixXd          siggam,
+                                            Eigen::MatrixXd          gammaSqrt2,
+                                            Eigen::VectorXd          sigmaSqrtPi,
                                             ScreeningFunction const& fs);
      /** Calculate screening energy which needs to be added (!) to the
      * electrostatic energy in order to remove contributions in the short range
      * domain
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
+     *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
      *
-     * @param[in] siggam Matrix combining sigma and gamma for all elements,
-     *                   including some prefactors.
-     *                   @f$ \text{siggam}_{ij} =
-     *                   \begin{cases}
-     *                      \sqrt{\pi} \sigma_i, & \text{for } i = j \\
-     *                      \sqrt{2} \gamma_{ij} = \sqrt{2 (\sigma_i^2
-     *                          + \sigma_j^2)}, & \text{for } i \neq j
-     *                   \end{cases} @f$
      * @param[in] fs Screening function.
      */
     double                   calculateScreeningEnergy(  
-                                            Eigen::MatrixXd          siggam,
+                                            Eigen::MatrixXd          gammaSqrt2,
+                                            Eigen::VectorXd          sigmaSqrtPi,
                                             ScreeningFunction const& fs);
     /** Translate atom back into box if outside.
      *

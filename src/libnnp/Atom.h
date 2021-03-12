@@ -87,6 +87,8 @@ struct Atom
 
     /// If the neighbor list has been calculated for this atom.
     bool                     hasNeighborList;
+    /// If the neighbor list is sorted by distance.
+    bool                     NeighborListIsSorted;
     /// If symmetry function values are saved for this atom.
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for this atom.

@@ -34,6 +34,7 @@ Structure::Structure() :
     isPeriodic                    (false     ),
     isTriclinic                   (false     ),
     hasNeighborList               (false     ),
+    NeighborListIsSorted          (false     ),
     hasSymmetryFunctions          (false     ),
     hasSymmetryFunctionDerivatives(false     ),
     index                         (0         ),
@@ -247,7 +248,24 @@ void Structure::readFromLines(vector<string> const& lines)
     return;
 }
 
-void Structure::calculateNeighborList(double cutoffRadius)
+double Structure::getMaxCutoffRadiusOverall(
+                                            double precision, 
+                                            double rcutScreen,
+                                            double maxCutoffRadius)
+{
+    double maxCutoffRadiusOverall = max(rcutScreen, maxCutoffRadius);
+    if (isPeriodic)
+    {
+        double rcutReal = getRcutReal(box, precision);
+        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, rcutReal);
+
+    }
+    return maxCutoffRadiusOverall;
+}
+
+void Structure::calculateNeighborList(
+                                        double      cutoffRadius, 
+                                        bool        sortByDistance)
 {
     if (isPeriodic)
     {
@@ -310,6 +328,12 @@ void Structure::calculateNeighborList(double cutoffRadius)
                     }
                 }
             }
+            if (sortByDistance)
+            {
+                sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
+                //TODO: maybe sort neighborsUnique too?
+                atoms[i].NeighborListIsSorted = true;
+            }
             atoms[i].hasNeighborList = true;
         }
     }
@@ -347,11 +371,18 @@ void Structure::calculateNeighborList(double cutoffRadius)
                     }
                 }
             }
+            if (sortByDistance)
+            {
+                sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
+                //TODO: maybe sort neighborsUnique too?
+                atoms[i].NeighborListIsSorted = true;
+            }
             atoms[i].hasNeighborList = true;
         }
     }
 
     hasNeighborList = true;
+    if (sortByDistance) NeighborListIsSorted = true;
 
     return;
 }
@@ -430,6 +461,26 @@ void Structure::calculateInverseBox()
     return;
 }
 
+// TODO: Not needed anymore, should we keep it?
+bool Structure::canMinimumImageConventionBeApplied(double cutoffRadius)
+{
+    Vec3D axb;
+    Vec3D axc;
+    Vec3D bxc;
+
+    axb = box[0].cross(box[1]).normalize();
+    axc = box[0].cross(box[2]).normalize();
+    bxc = box[1].cross(box[2]).normalize();
+
+    double proj[3];
+    proj[0] = fabs(box[0] * bxc);
+    proj[1] = fabs(box[1] * axc);
+    proj[2] = fabs(box[2] * axb);
+
+    double minProj = *min_element(proj, proj+3);
+    return (cutoffRadius < minProj / 2.0);
+}
+
 Vec3D Structure::applyMinimumImageConvention(Vec3D const& dr)
 {
     Vec3D ds = invbox * dr;
@@ -454,31 +505,13 @@ void Structure::calculateVolume()
 double Structure::calculateElectrostaticEnergy(
                                             double                   precision,
                                             VectorXd                 hardness,
-                                            MatrixXd                 siggam,
+                                            MatrixXd                 gammaSqrt2,
+                                            VectorXd                 sigmaSqrtPi,
                                             ScreeningFunction const& fs)
 {
     KspaceGrid grid;
     double rcutReal;
-    if (isPeriodic)
-    {
-        rcutReal = grid.setup(box, precision);
-
-        //cout << "Reciprocal lattice: " << endl;
-        //for (int i = 0; i < 3; ++i)
-        //{
-        //    for (int j = 0; j < 3; ++j)
-        //    {
-        //        cout << strpr(" %12f", grid.kbox[j][i]);
-        //    }
-        //    cout << endl;
-        //}
-        //cout << "eta       = " << grid.eta << endl;
-        //cout << "rcutReal  = " << rcutReal << endl;
-        //cout << "rcutRecip = " << grid.rcut << endl;
-        //cout << "n[0]      = " << grid.n[0] << endl;
-        //cout << "n[1]      = " << grid.n[1] << endl;
-        //cout << "n[2]      = " << grid.n[2] << endl;
-    }
+    if (isPeriodic) rcutReal = grid.setup(box, precision);
 
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
@@ -489,43 +522,57 @@ double Structure::calculateElectrostaticEnergy(
 
     if (isPeriodic)
     {
-        // TODO: This part is not yet correct! Need to use real and reciprocal
-        // cutoffs to avoid loop of order O(numAtoms^2).
-        // UPDATE: should be fixed, but needs to be tested, therefore need
-        // periodic example with electrostatic data
+        //TODO: Add a good exit command
+        if (!NeighborListIsSorted) cout << "Error: Neighbor list needs to "
+                                            "be sorted for Ewald summation!"
+                                            << endl;
+
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
-            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+
+            // diagonal including self interaction
+            // TODO: eta term cancels with A_{recip} on the diagonal, however
+            // this doesn't cancel exactly because of cut-off in reciprocal
+            // space. At the moment both terms are included to match the results
+            // with RuNNer.
+            //A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
+            A(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI));
+            
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
-            for (size_t j = i + 1; j < numAtoms; ++j)
+
+            // real part
+            for (auto const& aj : ai.neighbors)
+            {
+                size_t j = aj.index;
+                if (j < i) continue;
+
+                double const rij = aj.d;
+                if (rij >= rcutReal) break;
+                size_t const ej = aj.element;
+                A(i, j) += (erfc(rij / sqrt2eta)
+                          - erfc(rij / gammaSqrt2(ei, ej))) / rij;
+            }
+
+            
+            // reciprocal part
+            //for (size_t j = i + 1; j < numAtoms; ++j)
+            for (size_t j = i; j < numAtoms; ++j)
             {
                 Atom const& aj = atoms.at(j);
                 for (auto const& gv : grid.kvectors)
                 {
-                    A(i, j) += gv.coeff * cos(gv.k * (ai.r - aj.r));
+                    // Multiply by 2 because our grid is only a half-sphere
+                    A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
                 }
-
-                // still needs to be tested.
-                 
-                 size_t const ej = aj.element;
-                 double const rij = applyMinimumImageConvention(ai.r - aj.r).norm();
-                 if (rij < rcutReal)
-                 {
-                     A(i, j) += (erfc(rij / sqrt2eta)
-                               - erfc(rij / siggam(ei, ej))) / rij;
-                 }
-
                 A(j, i) = A(i, j);
             }
         }
     }
     else
     {
-        // TODO: This part needs to be verified and modified to include the
-        // screening function! It is passed in this function as the argument
         // "fs" and can be directly used like this:
         // fs.f(rij) .... returns screening function value.
         // fs.df(rij) ... returns screening function derivative.
@@ -533,12 +580,11 @@ double Structure::calculateElectrostaticEnergy(
         // double f;
         // double df;
         // fs.fdf(rij, f, df)
-        // UPDATE: Probably not needed here
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
-            A(i, i) = hardness(ei) + 1.0 / siggam(ei, ei);
+            A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
@@ -546,7 +592,7 @@ double Structure::calculateElectrostaticEnergy(
                 Atom const& aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const rij = (ai.r - aj.r).norm();
-                A(i, j) = erf(rij / siggam(ei, ej)) / rij;
+                A(i, j) = erf(rij / gammaSqrt2(ei, ej)) / rij;
                 A(j, i) = A(i, j);
             }
         }
@@ -565,65 +611,46 @@ double Structure::calculateElectrostaticEnergy(
     }
     lambda = Q(numAtoms);
     double error = (A * Q - b).norm() / b.norm();
-
+    
     // We need matrix E not A, which only differ by the hardness terms along the diagonal
     energyElec = 0.5 * Q.head(numAtoms).transpose()
                * (A.topLeftCorner(numAtoms, numAtoms) - 
                 MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
 
-    energyElec += calculateScreeningEnergy(siggam, fs);
+    energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
     
     return error;
 }
 
 double Structure::calculateScreeningEnergy(
-                                        Eigen::MatrixXd          siggam,
+                                        Eigen::MatrixXd          gammaSqrt2,
+                                        VectorXd                 sigmaSqrtPi,
                                         ScreeningFunction const& fs)
 
 {
     double energyScreen = 0;
+    double const rcutScreen = fs.getOuter();
 
     if (isPeriodic)
     {
-        double const rcutScreen = fs.getOuter();
-        // TODO: There is a better place for this step because we only need it
-        // once
-        calculatePbcCopies(rcutScreen, pbcScreen);
-        
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
             double const Qi = ai.charge;
-            energyScreen -=  Qi * Qi / (2 * siggam(ei, ei));
-            for (size_t j = 0; j < numAtoms; ++j)
+            energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei));
+            for (auto const& aj : ai.neighbors)
             {
-                Atom const& aj = atoms.at(j);
+                double const rij = aj.d;
+                size_t const j = aj.index;
+                if ( rij >= rcutScreen ) break;
                 size_t const ej = aj.element;
-                double const Qj = aj.charge;
-
-                for (int l0 = -pbcScreen[0]; l0 <= pbcScreen[0]; ++l0)
-                {
-                    for (int l1 = -pbcScreen[1]; l1 <= pbcScreen[1]; ++l1)
-                    {
-                        for (int l2 = -pbcScreen[2]; l2 <= pbcScreen[2]; ++l2)
-                        {
-                            if ( !(i == j && l0 == 0 && l1 == 0 && l2 == 0))
-                            {
-                                double const rij = (ai.r - aj.r + l0 * box[0] + 
-                                        l1 * box[1] + l2 * box[2]).norm();
-                                if ( rij < rcutScreen ) 
-                                {
-                                    energyScreen += 0.5 * Qi * Qj * 
-                                        erf(rij / siggam(ei, ej)) * (fs.f(rij) - 1) / rij;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                //TODO: Maybe add charge to neighbor class?
+                double const Qj = atoms.at(j).charge;
+                energyScreen += 0.5 * Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                                * (fs.f(rij) - 1) / rij;
+           }
         }
-
     }
     else
     {
@@ -632,17 +659,19 @@ double Structure::calculateScreeningEnergy(
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
             double const Qi = ai.charge;
-            energyScreen -=  Qi * Qi / (2 * siggam(ei, ei));
+            energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei));
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
                 Atom const& aj = atoms.at(j);
                 double const Qj = aj.charge;
                 double const rij = (ai.r - aj.r).norm();
-                energyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+                if ( rij < rcutScreen ) 
+                {
+                    energyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+                }
             }
         }
     }
-    //cout << "Screening energy: \t" << energyScreen << endl;
     return energyScreen;
 }
 

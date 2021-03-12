@@ -18,6 +18,7 @@
 #include "NeuralNetwork.h"
 #include "utility.h"
 #include "version.h"
+#include <cmath>
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -1590,24 +1591,25 @@ void Mode::chargeEquilibration(Structure& structure)
 
     // Prepare hardness vector and precalculate gamma(i, j).
     VectorXd hardness(numElements);
-    MatrixXd siggam(numElements, numElements);
+    MatrixXd gammaSqrt2(numElements, numElements);
+    VectorXd sigmaSqrtPi(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
         hardness(i) = elements.at(i).getHardness();
         double const iSigma = elements.at(i).getQsigma();
+        sigmaSqrtPi(i) = sqrt(M_PI) * iSigma;
         for (size_t j = 0; j < numElements; ++j)
         {
             double const jSigma = elements.at(j).getQsigma();
-            if (i == j) siggam(i, j) = sqrt(M_PI) * iSigma;
-            else        siggam(i, j) = sqrt(2.0 * (iSigma * iSigma
-                                                + jSigma * jSigma));
+            gammaSqrt2(i, j) = sqrt(2.0 * (iSigma * iSigma + jSigma * jSigma));
         }
     }
 
     double const error = s.calculateElectrostaticEnergy(ewaldPrecision,
 		                                        hardness,
-		                                        siggam,
-							screeningFunction);
+		                                        gammaSqrt2,
+                                                sigmaSqrtPi,
+                                                screeningFunction);
 
     //cout << "A: " << endl;
     //cout << s.A << endl;

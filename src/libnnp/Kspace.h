@@ -80,7 +80,17 @@ private:
      */
     void calculatePbcCopies(double cutoffRadius);
 };
-
+    /** Compute Cut-off in real space for Ewald summation.
+     *
+     * @param[in] box Real box vectors.
+     * @param[in] precision Desired presicion for Ewald summation.
+     * @param[in] numAtoms Number of atoms in system. Optional, if provided
+     *                     will use "regular" Ewald optimal eta, otherwise use
+     *                     "matrix" version of eta.
+     *
+     * @return Real space cutoff radius.
+     */
+    double getRcutReal(Vec3D box[3], double precision, size_t numAtoms = 0);
 }
 
 #endif

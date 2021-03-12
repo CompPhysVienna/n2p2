@@ -24,6 +24,7 @@ using namespace std;
 using namespace nnp;
 
 Atom::Atom() : hasNeighborList               (false),
+               NeighborListIsSorted          (false),
                hasSymmetryFunctions          (false),
                hasSymmetryFunctionDerivatives(false),
                useChargeNeuron               (false),
@@ -481,8 +482,10 @@ bool Atom::Neighbor::operator==(Atom::Neighbor const& rhs) const
 
 bool Atom::Neighbor::operator<(Atom::Neighbor const& rhs) const
 {
-    if      (element < rhs.element) return true;
-    else if (element > rhs.element) return false;
+    // sorting according to elements deactivated
+    // TODO: resolve this issue for nnp-sfclust
+    //if      (element < rhs.element) return true;
+    //else if (element > rhs.element) return false;
     if      (d       < rhs.d      ) return true;
     else if (d       > rhs.d      ) return false;
     return false;

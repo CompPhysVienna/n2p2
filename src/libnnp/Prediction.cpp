@@ -64,7 +64,17 @@ void Prediction::readStructureFromFile(string const& fileName)
 
 void Prediction::predict()
 {
-    structure.calculateNeighborList(maxCutoffRadius);
+    // TODO: Maybe we can simply overwrite maxCutoffRadius? Not sure.
+    double maxCutoffRadiusOverall = maxCutoffRadius;
+    // TODO: Is this the right case distinction?
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        maxCutoffRadiusOverall = structure.getMaxCutoffRadiusOverall(
+                                                ewaldPrecision, 
+                                                screeningFunction.getOuter(),
+                                                maxCutoffRadius);
+    }
+    structure.calculateNeighborList(maxCutoffRadiusOverall, true);
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
