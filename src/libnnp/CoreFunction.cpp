@@ -118,12 +118,12 @@ vector<string> CoreFunction::info() const
         v.push_back(strpr("CoreFunction::Type::POLY1 (%d):\n", type));
         v.push_back("f(x) := (2x - 3)x^2 + 1\n");
     }
-    else if (type == Type::POLY4)
+    else if (type == Type::POLY2)
     {
         v.push_back(strpr("CoreFunction::Type::POLY2 (%d):\n", type));
         v.push_back("f(x) := ((15 - 6x)x - 10)x^3 + 1\n");
     }
-    else if (type == Type::POLY4)
+    else if (type == Type::POLY3)
     {
         v.push_back(strpr("CoreFunction::Type::POLY3 (%d):\n", type));
         v.push_back("f(x) := (x(x(20x - 70) + 84) - 35)x^4 + 1\n");
