@@ -124,6 +124,10 @@ public:
      */
     void                     loadSettingsFile(std::string const& fileName
                                                                  = "input.nn");
+    /** Check if committeeSize is 1. If not, throw error.
+     * Committee training is not implemented.
+     */
+    void                    committeeException();
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.

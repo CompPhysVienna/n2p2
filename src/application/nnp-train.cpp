@@ -52,6 +52,7 @@ int main(int argc, char* argv[])
     training.setupMPI();
     training.initialize();
     training.loadSettingsFile();
+    training.committeeException();
     training.setStage(stage);
     // If initial-weights-based normalization is enabled skip normalization
     // setup here.
