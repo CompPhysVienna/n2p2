@@ -219,12 +219,28 @@ void Mode::loadSettingsFile(string const& fileName)
         {
             throw runtime_error("ERROR: Unknown committee mode.\n");
         }
-    }
+        if ((committeeMode == CommitteeMode::VALIDATION ||
+            committeeMode == CommitteeMode::PREDICTION))
+        {
+            vector<string> committeeArgs = split(settings["committee_data"]);
+            committeePrefix = committeeArgs.at(0);
+            committeeSize = atoi(committeeArgs.at(1).c_str());
+            log << strpr("Committee-NNP dir prefix: %s\n",
+                        committeePrefix.c_str());
+            log << strpr("Committee-NNP size      : %zu\n", committeeSize);
+        }
+    }    
 
     log << "*****************************************"
            "**************************************\n";
 
     return;
+}
+
+void Mode::committeeException()
+{
+    if (committeeSize != 1)
+        throw runtime_error("ERROR: Committee training is not implemented. Set committee size to 1.\n");
 }
 
 void Mode::setupGeneric()
