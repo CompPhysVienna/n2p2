@@ -1611,9 +1611,9 @@ void Mode::chargeEquilibration(Structure& structure)
                                                 sigmaSqrtPi,
                                                 screeningFunction);
 
-    //cout << "A: " << endl;
-    //cout << s.A << endl;
     log << strpr("Solve relative error: %16.8E\n", error);
+
+    s.calculatedAdrQ(ewaldPrecision, gammaSqrt2);
 
     for (auto const& a : structure.atoms)
     {

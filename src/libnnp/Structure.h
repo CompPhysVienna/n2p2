@@ -275,6 +275,16 @@ struct Structure
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
                                             ScreeningFunction const& fs);
+    /** Calculate derivative of A-matrix with respect to the atoms positions and
+     * contract it with Q.
+     * @param[in] precision Ewald precision parameters.
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     */
+    void                     calculatedAdrQ(
+                                    double              precision, 
+                                    Eigen::MatrixXd     gammaSqrt2);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.

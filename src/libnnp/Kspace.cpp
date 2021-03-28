@@ -89,7 +89,8 @@ double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
     }
 
     // Return real space cutoff radius.
-    return sqrt(-2.0 * log(precision)) * eta;
+    rcutReal = sqrt(-2.0 * log(precision)) * eta;
+    return rcutReal;
 }
 
 void KspaceGrid::calculatePbcCopies(double cutoffRadius)

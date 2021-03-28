@@ -46,6 +46,8 @@ public:
     double               eta;
     /// Cutoff in reciprocal space.
     double               rcut;
+    /// Cutoff in real space.
+    double               rcutReal;
     /// Volume of real box.
     double               volume;
     /// Ewald sum prefactor @f$\frac{2\pi}{V}@f$.

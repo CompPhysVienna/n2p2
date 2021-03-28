@@ -147,6 +147,9 @@ struct Atom
     /// Derivative of symmetry functions with respect to this atom's
     /// coordinates.
     std::vector<Vec3D>       dGdr;
+    /// Derivative of A-matrix with respect to this atom's coordinates
+    // contracted with the charges.
+    std::vector<Vec3D>       dAdrQ;
     /// Neighbor array (maximum number defined in macros.h.
     std::vector<Neighbor>    neighbors;
 
