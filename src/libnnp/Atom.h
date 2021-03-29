@@ -139,6 +139,8 @@ struct Atom
     std::vector<double>      dEdG;
     /// Derivative of atomic charge with respect to symmetry functions.
     std::vector<double>      dQdG;
+    /// Derivative of electronegativity with respect to symmetry functions.
+    std::vector<double>      dChidG;
 #ifdef NNP_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.

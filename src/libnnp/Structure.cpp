@@ -677,7 +677,7 @@ double Structure::calculateScreeningEnergy(
 }
 
 
-void Structure::calculatedAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
+void Structure::calculateDAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
 {
     // TODO: This initialization loop could probably be avoid, maybe use
     // default constructor?
@@ -729,8 +729,6 @@ void Structure::calculatedAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
                 aj.dAdrQ[i] -= dAijdri * Qj;
 
             }
-
-            //cout << "ai.dAdrQ inside 1: " << ai.dAdrQ[i][0] << ai.dAdrQ[i][1] << ai.dAdrQ[i][2] << endl;
             
             // reciprocal part
             for (size_t j = i+1; j < numAtoms; ++j)

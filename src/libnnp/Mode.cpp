@@ -1519,6 +1519,11 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                                     .neuralNetworks.at(id);
                 nn.setInput(&((a.G).front()));
                 nn.propagate();
+                if (derivatives)
+                {
+                    // Calculation of dEdG is identical to dChidG
+                    nn.calculateDEdG(&((a.dChidG).front()));
+                }
                 nn.getOutput(&(a.chi));
                 log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
                              a.index, elementMap[a.element].c_str(), a.chi);
@@ -1613,7 +1618,7 @@ void Mode::chargeEquilibration(Structure& structure)
 
     log << strpr("Solve relative error: %16.8E\n", error);
 
-    s.calculatedAdrQ(ewaldPrecision, gammaSqrt2);
+    s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
 
     for (auto const& a : structure.atoms)
     {

@@ -282,7 +282,7 @@ struct Structure
      *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
      */
-    void                     calculatedAdrQ(
+    void                     calculateDAdrQ(
                                     double              precision, 
                                     Eigen::MatrixXd     gammaSqrt2);
     /** Translate atom back into box if outside.

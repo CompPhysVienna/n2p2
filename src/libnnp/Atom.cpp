@@ -194,6 +194,7 @@ void Atom::allocate(bool all)
         if (useChargeNeuron) dEdG.resize(numSymmetryFunctions + 1, 0.0);
         else                 dEdG.resize(numSymmetryFunctions, 0.0);
         dQdG.resize(numSymmetryFunctions, 0.0);
+        dChidG.resize(numSymmetryFunctions,0.0);
 #ifdef NNP_FULL_SFD_MEMORY
         dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
