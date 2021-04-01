@@ -1,0 +1,282 @@
+###############################################################################
+# HDNNP for copper sulfide Cu2S
+###############################################################################
+# Length unit     : Angstrom
+# Energy unit     : eV
+# Reference method: PBE
+###############################################################################
+
+###############################################################################
+# DATA SET NORMALIZATION
+###############################################################################
+# This section was automatically added by nnp-norm.
+mean_energy  -3.8640662064628053E+00
+conv_energy   7.3890846653659121E+00
+conv_length   6.1376931796181502E+00
+###############################################################################
+
+###############################################################################
+# GENERAL NNP SETTINGS
+###############################################################################
+# These keywords are (almost) always required.
+number_of_elements              2              # Number of elements.
+elements                        S Cu           # Specification of elements.
+#atom_energy                     S  0.0         # Free atom reference energy (S).
+#atom_energy                     Cu 0.0         # Free atom reference energy (Cu).
+cutoff_type                     6 0.0          # Cutoff type.
+#scale_symmetry_functions                       # Scale all symmetry functions with min/max values.
+scale_symmetry_functions_sigma                 # Scale all symmetry functions with sigma.
+scale_min_short                 0.0            # Minimum value for scaling.
+scale_max_short                 1.0            # Maximum value for scaling.
+#center_symmetry_functions                      # Center all symmetry functions, i.e. subtract mean value.
+global_hidden_layers_short      2              # Number of hidden layers.
+global_nodes_short              25 25          # Number of nodes in each hidden layer.
+global_activation_short         p p l          # Activation function for each hidden layer and output layer.
+#normalize_nodes                                # Normalize input of nodes.
+
+###############################################################################
+# ADDITIONAL SETTINGS FOR DATASET TOOLS
+###############################################################################
+# These keywords are used only by some tools handling data sets:
+# nnp-comp2, nnp-scaling, nnp-dataset, nnp-train.
+use_short_forces                               # Use forces.
+random_seed                     1234567        # Random number generator seed.
+
+###############################################################################
+# SYMMETRY FUNCTIONS
+###############################################################################
+
+# Radial symmetry function (type 2):
+#symfunction_short <element-central> 2 <element-neighbor> <eta> <rshift> <rcutoff>
+
+# Narrow Angular symmetry function (type 3):
+#symfunction_short <element-central> 3 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
+
+# Wide Angular symmetry function (type 9):
+#symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
+
+# Generating radial symmetry function set:
+# mode  = shift    
+# r_0   = 1.500E+00
+# r_c   = 6.000E+00
+# r_N   = 5.500E+00
+# N     =         9
+# grid  = 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5
+# Radial symmetry functions for element S 
+symfunction_short S  2 S  2.000E+00 1.500E+00 6.000E+00
+symfunction_short S  2 S  2.000E+00 2.000E+00 6.000E+00
+symfunction_short S  2 S  2.000E+00 2.500E+00 6.000E+00
+# symfunction_short S  2 S  2.000E+00 3.000E+00 6.000E+00
+# symfunction_short S  2 S  2.000E+00 3.500E+00 6.000E+00
+# symfunction_short S  2 S  2.000E+00 4.000E+00 6.000E+00
+# symfunction_short S  2 S  2.000E+00 4.500E+00 6.000E+00
+# symfunction_short S  2 S  2.000E+00 5.000E+00 6.000E+00
+# symfunction_short S  2 S  2.000E+00 5.500E+00 6.000E+00
+
+symfunction_short S  2 Cu 2.000E+00 1.500E+00 6.000E+00
+symfunction_short S  2 Cu 2.000E+00 2.000E+00 6.000E+00
+symfunction_short S  2 Cu 2.000E+00 2.500E+00 6.000E+00
+symfunction_short S  2 Cu 2.000E+00 3.000E+00 6.000E+00
+# symfunction_short S  2 Cu 2.000E+00 3.500E+00 6.000E+00
+# symfunction_short S  2 Cu 2.000E+00 4.000E+00 6.000E+00
+# symfunction_short S  2 Cu 2.000E+00 4.500E+00 6.000E+00
+# symfunction_short S  2 Cu 2.000E+00 5.000E+00 6.000E+00
+# symfunction_short S  2 Cu 2.000E+00 5.500E+00 6.000E+00
+
+# Radial symmetry functions for element Cu
+symfunction_short Cu 2 S  2.000E+00 1.500E+00 6.000E+00
+symfunction_short Cu 2 S  2.000E+00 2.000E+00 6.000E+00
+symfunction_short Cu 2 S  2.000E+00 2.500E+00 6.000E+00
+symfunction_short Cu 2 S  2.000E+00 3.000E+00 6.000E+00
+# symfunction_short Cu 2 S  2.000E+00 3.500E+00 6.000E+00
+symfunction_short Cu 2 S  2.000E+00 4.000E+00 6.000E+00
+# symfunction_short Cu 2 S  2.000E+00 4.500E+00 6.000E+00
+symfunction_short Cu 2 S  2.000E+00 5.000E+00 6.000E+00
+# symfunction_short Cu 2 S  2.000E+00 5.500E+00 6.000E+00
+
+# symfunction_short Cu 2 Cu 2.000E+00 1.500E+00 6.000E+00
+symfunction_short Cu 2 Cu 2.000E+00 2.000E+00 6.000E+00
+symfunction_short Cu 2 Cu 2.000E+00 2.500E+00 6.000E+00
+symfunction_short Cu 2 Cu 2.000E+00 3.000E+00 6.000E+00
+# symfunction_short Cu 2 Cu 2.000E+00 3.500E+00 6.000E+00
+# symfunction_short Cu 2 Cu 2.000E+00 4.000E+00 6.000E+00
+# symfunction_short Cu 2 Cu 2.000E+00 4.500E+00 6.000E+00
+# symfunction_short Cu 2 Cu 2.000E+00 5.000E+00 6.000E+00
+# symfunction_short Cu 2 Cu 2.000E+00 5.500E+00 6.000E+00
+
+# Generating narrow angular symmetry function set:
+# mode  = center   
+# r_0   = 1.500E+00
+# r_c   = 6.000E+00
+# r_N   = 5.500E+00
+# N     =         3
+# grid  = 1.5 3.5 5.5
+# zetas = 1.0 6.0
+# Narrow angular symmetry functions for element S 
+symfunction_short S  3 S  S  2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short S  3 S  S  2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  S  1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short S  3 S  Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short S  3 S  Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 S  Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+# symfunction_short S  3 Cu Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short S  3 Cu Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+# symfunction_short S  3 Cu Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  3 Cu Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+# Narrow angular symmetry functions for element Cu
+symfunction_short Cu 3 S  S  2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 S  S  2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  S  1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+# symfunction_short Cu 3 S  Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 S  Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 S  Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 S  Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 S  Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 S  Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 S  Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+# symfunction_short Cu 3 Cu Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 Cu Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 Cu Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 3 Cu Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 3 Cu Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+# Generating wide angular symmetry function set:
+# mode  = center   
+# r_0   = 1.500E+00
+# r_c   = 6.000E+00
+# r_N   = 5.500E+00
+# N     =         3
+# grid  = 1.5 3.5 5.5
+# zetas = 1.0 6.0
+# Wide angular symmetry functions for element S 
+symfunction_short S  9 S  S  2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short S  9 S  S  2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  S  1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short S  9 S  Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 S  Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short S  9 Cu Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short S  9 Cu Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short S  9 Cu Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+# Wide angular symmetry functions for element Cu
+symfunction_short Cu 9 S  S  2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 9 S  S  2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  S  1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short Cu 9 S  Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 9 S  Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 S  Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
+symfunction_short Cu 9 Cu Cu 2.222E-01 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 2.222E-01  1 1.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 9 Cu Cu 2.222E-01 -1 6.000E+00 6.000E+00 0.000E+00
+# symfunction_short Cu 9 Cu Cu 2.222E-01  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 4.082E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 4.082E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 4.082E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 4.082E-02  1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.653E-02 -1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.653E-02  1 1.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.653E-02 -1 6.000E+00 6.000E+00 0.000E+00
+symfunction_short Cu 9 Cu Cu 1.653E-02  1 6.000E+00 6.000E+00 0.000E+00
+
