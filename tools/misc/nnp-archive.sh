@@ -33,7 +33,7 @@
 # 
 ###############################################################################
 
-last_epoch=$(grep TIMING nnp-train.log.0000 | tail -n 1 | awk '{print $2}')
+last_epoch=$(grep -E "TIMING +[0-9]{1,}" nnp-train.log.0000 | tail -n 1 | awk '{print $2}')
 
 keep_dir="nnp-archive_TMP"
 zip_dir="nnp-archive"
