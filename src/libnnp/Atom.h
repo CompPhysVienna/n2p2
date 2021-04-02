@@ -111,6 +111,8 @@ struct Atom
     std::size_t              numSymmetryFunctions;
     /// Atomic energy determined by neural network.
     double                   energy;
+    /// Derivative of electrostatic energy with respect to this atom's charge.
+    double                   dEelecdQ;
     /// Atomic electronegativity determined by neural network.
     double                   chi;
     /// Atomic charge determined by neural network.
@@ -121,8 +123,13 @@ struct Atom
     Vec3D                    r;
     /// Force vector calculated by neural network.
     Vec3D                    f;
+    /// Force vector resulting from electrostatics.
+    Vec3D                    fElec;
     /// Reference force vector from data set.
     Vec3D                    fRef;
+    /// Partial derivative of electrostatic energy with respect to this atom's
+    /// coordinates.
+    Vec3D                    pEelecpr;
     /// List of unique neighbor indices (don't count multiple PBC images).
     std::vector<std::size_t> neighborsUnique;
     /// Number of neighbors per element.

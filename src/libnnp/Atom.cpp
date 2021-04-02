@@ -36,6 +36,7 @@ Atom::Atom() : hasNeighborList               (false),
                numNeighborsUnique            (0    ),
                numSymmetryFunctions          (0    ),
                energy                        (0.0  ),
+               dEelecdQ                      (0.0  ),
                chi                           (0.0  ),
                charge                        (0.0  ),
                chargeRef                     (0.0  )

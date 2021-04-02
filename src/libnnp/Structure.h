@@ -262,7 +262,7 @@ struct Structure
                                             ScreeningFunction const& fs);
      /** Calculate screening energy which needs to be added (!) to the
      * electrostatic energy in order to remove contributions in the short range
-     * domain
+     * domain.
      * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
      *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
@@ -275,16 +275,32 @@ struct Structure
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
                                             ScreeningFunction const& fs);
-    /** Calculate derivative of A-matrix with respect to the atoms positions and
-     * contract it with Q.
+     /** Calculates derivative of A-matrix with respect to the atoms positions and
+     * contract it with Q. 
      * @param[in] precision Ewald precision parameters.
      * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
      *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] fs Screening function.
      */
     void                     calculateDAdrQ(
-                                    double              precision, 
-                                    Eigen::MatrixXd     gammaSqrt2);
+                                        double                   precision, 
+                                        Eigen::MatrixXd          gammaSqrt2);
+     /** Calculates partial derivatives of electrostatic Energy with respect
+     * to atom's coordinates and charges.
+     * @param[in] hardness Vector containing the hardness of all elements.
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
+     *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
+     * @param[in] fs Screening function.
+     */
+    void                     calculateElectrostaticEnergyDerivatives(
+                                        Eigen::VectorXd          hardness,
+                                        Eigen::MatrixXd          gammaSqrt2,
+                                        Eigen::VectorXd          sigmaSqrtPi,
+                                        ScreeningFunction const& fs);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.

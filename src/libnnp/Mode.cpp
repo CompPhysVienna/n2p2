@@ -22,6 +22,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+#include <Eigen/QR>
 #include <algorithm> // std::min, std::max, std::remove_if
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
@@ -30,6 +31,7 @@
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 #include <utility>   // std::piecewise_construct, std::forward_as_tuple
+//#include <iomanip>
 
 using namespace std;
 using namespace nnp;
@@ -1544,6 +1546,11 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 // Set additional charge neuron.
                 nn.setInput(a.G.size(), a.charge);
                 nn.propagate();
+                if (derivatives)
+                {
+                    // last element of vector dEdG is dEdQ
+                    nn.calculateDEdG(&((a.dEdG).front()));
+                }
                 nn.getOutput(&(a.energy));
                 log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
                              a.index, elementMap[a.element].c_str(), a.energy);
@@ -1618,7 +1625,13 @@ void Mode::chargeEquilibration(Structure& structure)
 
     log << strpr("Solve relative error: %16.8E\n", error);
 
+    // TODO: leave these 2 functions here or shift it to e.g. forces? Needs to be
+    // executed after calculateElectrostaticEnergy.
     s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
+    s.calculateElectrostaticEnergyDerivatives(hardness,
+                                            gammaSqrt2,
+                                            sigmaSqrtPi,
+                                            screeningFunction);
 
     for (auto const& a : structure.atoms)
     {
@@ -1682,7 +1695,7 @@ void Mode::calculateCharge(Structure& structure) const
 
 void Mode::calculateForces(Structure& structure) const
 {
-    if (nnpType != NNPType::HDNNP_2G)
+    if (nnpType == NNPType::HDNNP_Q)
     {
         cout << "WARNING: Forces are not yet implemented.\n";
         return;
@@ -1749,6 +1762,71 @@ void Mode::calculateForces(Structure& structure) const
             }
         }
     }
+
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        Structure& s = structure;
+        VectorXd dEdQ(s.numAtoms+1);
+        VectorXd dEelecdQ(s.numAtoms+1);
+        dEdQ.setZero();
+        dEelecdQ.setZero();
+        for (size_t i = 0; i < s.numAtoms; ++i)
+        {
+            Atom const& ai = s.atoms.at(i);
+            dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
+            dEelecdQ(i) = ai.dEelecdQ;
+        }
+        VectorXd const lambdaTotal = s.A.colPivHouseholderQr().solve(-dEdQ);
+        VectorXd const lambdaElec = s.A.colPivHouseholderQr().solve(-dEelecdQ);
+        for (auto& ai : s.atoms)
+        {
+            ai.fElec = Vec3D{0,0,0};
+
+            ai.f -= ai.pEelecpr;
+            ai.fElec -= ai.pEelecpr;
+            
+            for (size_t j = 0; j < s.numAtoms; ++j)
+            {
+
+                Atom const& aj = s.atoms.at(j);
+
+#ifndef NNP_FULL_SFD_MEMORY
+                vector<vector<size_t> > const& tableFull
+                   = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+                Vec3D dChidr;
+                // need to add this case because the loop over the neighbors
+                // does not include the contribution dChi_i/dr_i.
+                if (ai.tag == j)
+                {
+                    for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+                    {
+                        dChidr += aj.dChidG.at(k) * aj.dGdr.at(k);
+                    }
+                }
+                for (auto const& n : aj.neighbors)
+                {
+                    if (n.tag == ai.tag)
+                    {
+#ifndef NNP_FULL_SFD_MEMORY
+                        vector<size_t> const& table = tableFull.at(n.element);
+                        for (size_t k = 0; k < n.dGdr.size(); ++k)
+                        {
+                            dChidr += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
+                        }
+#else
+                        for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+                        {
+                            dChidr += aj.dChidG.at(k) * n.dGdr.at(k);
+                        }
+#endif
+                    }
+                }
+                ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
+                ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
+            }
+        }
+   }
 
     return;
 }

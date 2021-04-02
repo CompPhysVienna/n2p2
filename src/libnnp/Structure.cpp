@@ -16,6 +16,7 @@
 
 #include "Kspace.h"
 #include "Structure.h"
+#include "Vec3D.h"
 #include "utility.h"
 #include <Eigen/Dense>
 #include <algorithm> // std::max
@@ -642,16 +643,19 @@ double Structure::calculateScreeningEnergy(
             energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei));
             for (auto const& aj : ai.neighbors)
             {
-                double const rij = aj.d;
                 size_t const j = aj.index;
+                if (j < i) continue;
+                double const rij = aj.d;
                 if ( rij >= rcutScreen ) break;
                 size_t const ej = aj.element;
                 //TODO: Maybe add charge to neighbor class?
                 double const Qj = atoms.at(j).charge;
-                energyScreen += 0.5 * Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
                                 * (fs.f(rij) - 1) / rij;
+
            }
         }
+        cout << "screening energy: " << energyScreen << endl;
     }
     else
     {
@@ -677,7 +681,9 @@ double Structure::calculateScreeningEnergy(
 }
 
 
-void Structure::calculateDAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
+void Structure::calculateDAdrQ(
+                            double                   precision, 
+                            MatrixXd                 gammaSqrt2)
 {
     // TODO: This initialization loop could probably be avoid, maybe use
     // default constructor?
@@ -692,7 +698,7 @@ void Structure::calculateDAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
     {
         // TODO: We need same Kspace grid as in calculateScreeningEnergy, should
         // we cache it for reuse? Note that we can't calculate dAdrQ already in
-        // the loops of calculateScreeningEnergy because at this point we don't
+        // the loops of calculateElectrostaticEnergy because at this point we don't
         // have the charges.
         KspaceGrid grid;
         double rcutReal = grid.setup(box, precision);
@@ -722,12 +728,12 @@ void Structure::calculateDAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
                             / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei,ej), 2)) 
                             / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta) 
                             - erfc(rij/gammaSqrt2(ei,ej))));
-
+                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i 
+                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j 
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
                 aj.dAdrQ[i] -= dAijdri * Qj;
-
             }
             
             // reciprocal part
@@ -741,7 +747,6 @@ void Structure::calculateDAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
                     // Multiply by 2 because our grid is only a half-sphere
                     dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
                 }
-                //cout << "dAijdri_recip: " << dAijdri[0] << dAijdri[1] << dAijdri[2] << endl;
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
@@ -778,21 +783,100 @@ void Structure::calculateDAdrQ(double precision, Eigen::MatrixXd gammaSqrt2)
             }
         }
     }
-    //for (size_t i = 0; i < 10; ++i)
-    //{
-    //    Atom& ai = atoms.at(i);
-    //    cout << "Atom Nr.: " << i << endl;
-    //    for (size_t j = 0; j < 10; ++j)
-    //    {
-    //        cout << setprecision(8) 
-    //            << setw(16) << ai.dAdrQ[j][0] 
-    //            << setw(16) << ai.dAdrQ[j][1] 
-    //            << setw(16) << ai.dAdrQ[j][2] << endl;
-    //    }
-    //}
     return;
 }
 
+void Structure::calculateElectrostaticEnergyDerivatives(
+                                        Eigen::VectorXd          hardness,
+                                        Eigen::MatrixXd          gammaSqrt2,
+                                        VectorXd                 sigmaSqrtPi,
+                                        ScreeningFunction const& fs)
+{
+    double rcutScreen = fs.getOuter();
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom& ai = atoms.at(i);
+        size_t const ei = ai.element;
+        double const Qi = ai.charge;
+
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            Atom& aj = atoms.at(j);
+            double const Qj = aj.charge;
+            
+            ai.pEelecpr += 0.5 * Qj * ai.dAdrQ[j];
+
+            // Diagonal terms contain self-interaction --> screened
+            if (i != j) ai.dEelecdQ += Qj * A(i,j);
+            else if (isPeriodic)
+            {
+                ai.dEelecdQ += Qi * (A(i,i) - hardness(ei)
+                                - 1 / sigmaSqrtPi(ei));
+            }
+        }
+
+        if (isPeriodic)
+        {
+            for (auto const& ajN : ai.neighbors)
+            {
+                size_t j = ajN.index;
+                Atom& aj = atoms.at(j);
+                if (j < i) continue;
+                double const rij = ajN.d;
+                if (rij >= rcutScreen) break;
+
+                size_t const ej = aj.element;
+                double const Qj = atoms.at(j).charge;
+
+                double erfRij = erf(rij / gammaSqrt2(ei,ej));
+                double fsRij = fs.f(rij);
+
+                // corrections due to screening
+                Vec3D Tij = Qi * Qj * ajN.dr / pow(rij,2) 
+                                * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
+                                * exp(- pow(rij / gammaSqrt2(ei,ej),2))
+                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
+                                * (fsRij - 1) / rij);
+                
+                ai.pEelecpr += Tij;
+                aj.pEelecpr -= Tij;
+
+                double Sij = erfRij * (fsRij - 1) / rij;
+                ai.dEelecdQ += Qj * Sij;
+                aj.dEelecdQ += Qi * Sij;
+            }
+        }
+        else
+        {
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom& aj = atoms.at(j);
+                double const rij = (ai.r - aj.r).norm();
+
+                size_t const ej = aj.element;
+                double const Qj = atoms.at(j).charge;
+
+                double erfRij = erf(rij / gammaSqrt2(ei,ej));
+                double fsRij = fs.f(rij);
+
+                // corrections due to screening
+                Vec3D Tij = Qi * Qj * (ai.r - aj.r) / pow(rij,2) 
+                                * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
+                                * exp(- pow(rij / gammaSqrt2(ei,ej),2))
+                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
+                                * (fsRij - 1) / rij);
+                
+                ai.pEelecpr += Tij;
+                aj.pEelecpr -= Tij;
+
+                double Sij = erfRij * (fsRij - 1) / rij;
+                ai.dEelecdQ += Qj * Sij;
+                aj.dEelecdQ += Qi * Sij;
+            }
+        }
+    }
+   return;
+}
 
 void Structure::remap(Atom& atom)
 {
