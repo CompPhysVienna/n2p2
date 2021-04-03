@@ -56,6 +56,8 @@ struct Structure
     bool                     isPeriodic;
     /// If the simulation box is triclinic.
     bool                     isTriclinic;
+    /// If the simulation box includes stresses.
+    bool                     hasStress;
     /// If the neighbor list has been calculated.
     bool                     hasNeighborList;
     /// If symmetry function values are saved for each atom.
@@ -88,6 +90,8 @@ struct Structure
     std::string              comment;
     /// Simulation box vectors.
     Vec3D                    box[3];
+    /// Stress box vectors.
+    Vec3D                    stress[3];
     /// Inverse simulation box vectors.
     Vec3D                    invbox[3];
     /// Number of atoms of each element in this structure.
@@ -220,6 +224,9 @@ struct Structure
     void                     toPhysicalUnits(double meanEnergy,
                                              double convEnergy,
                                              double convLength);
+    // Separate functions for stress since we will not always use these methods
+    void                     toNormalizedUnitsStress(double meanStress);
+    void                     toPhysicalUnitsStress(double meanStress);
     /** Find maximum number of neighbors.
      *
      * @return Maximum numbor of neighbors of all atoms in this structure.
