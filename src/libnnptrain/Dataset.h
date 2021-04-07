@@ -128,14 +128,17 @@ public:
      */
     void        writeSymmetryFunctionFile(std::string fileName
                                               = "function.data");
-    /** Calculate and write neighbor histogram.
+    /** Calculate and write neighbor histogram and per-structure statistics.
      *
-     * @param[in] fileName Name of histogram file.
+     * @param[in] fileNameHisto Name of histogram file.
+     * @param[in] fileNameStructure Name of per-structure file.
      *
      * @return Maximum number of neighbors.
      */
-    std::size_t writeNeighborHistogram(std::string const& fileName
-                                           = "neighbors.histo");
+    std::size_t writeNeighborHistogram(std::string const& fileNameHisto
+                                           = "neighbors.histo",
+                                       std::string const& fileNameStructure
+                                           = "neighbors.out");
     /** Sort all neighbor lists according to element and distance.
      */
     void        sortNeighborLists();

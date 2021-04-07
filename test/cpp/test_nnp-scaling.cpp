@@ -18,6 +18,7 @@ void nnpToolTestBody(Example_nnp_scaling const /*example*/)
     BOOST_REQUIRE(bfs::exists("nnp-scaling.log.0000"));
     BOOST_REQUIRE(bfs::exists("scaling.data"));
     BOOST_REQUIRE(bfs::exists("neighbors.histo"));
+    BOOST_REQUIRE(bfs::exists("neighbors.out"));
 
     return;
 }
