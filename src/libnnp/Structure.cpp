@@ -30,6 +30,7 @@ using namespace nnp;
 Structure::Structure() :
     isPeriodic                    (false     ),
     isTriclinic                   (false     ),
+    hasStress                     (false      ),
     hasNeighborList               (false     ),
     hasSymmetryFunctions          (false     ),
     hasSymmetryFunctionDerivatives(false     ),
@@ -54,6 +55,9 @@ Structure::Structure() :
         invbox[i][0] = 0.0;
         invbox[i][1] = 0.0;
         invbox[i][2] = 0.0;
+        stress[i][0] = 0.0;
+        stress[i][1] = 0.0;
+        stress[i][2] = 0.0;
     }
 }
 
@@ -131,6 +135,7 @@ void Structure::readFromFile(ifstream& file)
 void Structure::readFromLines(vector<string> const& lines)
 {
     size_t         iBoxVector = 0;
+    size_t         iStressVector = 0;
     vector<string> splitLine;
 
     // read first line, should be keyword "begin".
@@ -180,6 +185,18 @@ void Structure::readFromLines(vector<string> const& lines)
                 calculateVolume();
             }
         }
+        else if (splitLine.at(0) == "stress")
+        {
+            hasStress = true;
+            if (iStressVector > 2)
+            {
+                throw runtime_error("ERROR: Too many stress vectors.\n");
+            }
+            stress[iStressVector][0] = atof(splitLine.at(1).c_str());
+            stress[iStressVector][1] = atof(splitLine.at(2).c_str());
+            stress[iStressVector][2] = atof(splitLine.at(3).c_str());
+            iStressVector++;
+        }
         else if (splitLine.at(0) == "atom")
         {
             atoms.push_back(Atom());
@@ -211,6 +228,11 @@ void Structure::readFromLines(vector<string> const& lines)
             if (!(iBoxVector == 0 || iBoxVector == 3))
             {
                 throw runtime_error("ERROR: Strange number of box vectors.\n");
+            }
+            break;
+            if (!(iStressVector == 0 || iStressVector == 3))
+            {
+                throw runtime_error("ERROR: Strange number of stress vectors.\n");
             }
             break;
         }
@@ -488,25 +510,41 @@ void Structure::toPhysicalUnits(double meanEnergy,
                                 double convEnergy,
                                 double convLength)
 {
-    if (isPeriodic)
-    {
-        box[0] /= convLength;
-        box[1] /= convLength;
-        box[2] /= convLength;
-        invbox[0] *= convLength;
-        invbox[1] *= convLength;
-        invbox[2] *= convLength;
-    }
+   if (isPeriodic)
+   {
+       box[0] /= convLength;
+       box[1] /= convLength;
+       box[2] /= convLength;
+       invbox[0] *= convLength;
+       invbox[0] *= convLength;
+       invbox[1] *= convLength;
+       invbox[2] *= convLength;
+   }
+   energyRef = energyRef / convEnergy + numAtoms * meanEnergy;
+   energy = energy / convEnergy + numAtoms * meanEnergy;
+   volume /= convLength * convLength * convLength;
 
-    energyRef = energyRef / convEnergy + numAtoms * meanEnergy;
-    energy = energy / convEnergy + numAtoms * meanEnergy;
-    volume /= convLength * convLength * convLength;
+   for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
+   {
+       it->toPhysicalUnits(convEnergy, convLength);
+   }
 
-    for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
-    {
-        it->toPhysicalUnits(convEnergy, convLength);
-    }
+}
 
+void Structure::toNormalizedUnitsStress(double meanStress)
+{
+    stress[0] *= meanStress;
+    stress[1] *= meanStress;
+    stress[2] *= meanStress;
+    return;
+}
+
+
+void Structure::toPhysicalUnitsStress(double meanStress)
+{
+    stress[0] /= meanStress;
+    stress[1] /= meanStress;
+    stress[2] /= meanStress;
     return;
 }
 
@@ -526,6 +564,7 @@ void Structure::reset()
 {
     isPeriodic                     = false     ;
     isTriclinic                    = false     ;
+    hasStress                      = false     ;
     hasNeighborList                = false     ;
     hasSymmetryFunctions           = false     ;
     hasSymmetryFunctionDerivatives = false     ;
@@ -842,6 +881,7 @@ vector<string> Structure::info() const
     v.push_back(strpr("index                          : %d\n", index));
     v.push_back(strpr("isPeriodic                     : %d\n", isPeriodic        ));
     v.push_back(strpr("isTriclinic                    : %d\n", isTriclinic       ));
+    v.push_back(strpr("hasStress                      : %d\n", hasStress   ));
     v.push_back(strpr("hasNeighborList                : %d\n", hasNeighborList   ));
     v.push_back(strpr("hasSymmetryFunctions           : %d\n", hasSymmetryFunctions));
     v.push_back(strpr("hasSymmetryFunctionDerivatives : %d\n", hasSymmetryFunctionDerivatives));
@@ -862,6 +902,9 @@ vector<string> Structure::info() const
     v.push_back(strpr("invbox[0]                      : %16.8E %16.8E %16.8E\n", invbox[0][0], invbox[0][1], invbox[0][2]));
     v.push_back(strpr("invbox[1]                      : %16.8E %16.8E %16.8E\n", invbox[1][0], invbox[1][1], invbox[1][2]));
     v.push_back(strpr("invbox[2]                      : %16.8E %16.8E %16.8E\n", invbox[2][0], invbox[2][1], invbox[2][2]));
+    v.push_back(strpr("stress[0]                      : %16.8E %16.8E %16.8E\n", stress[0][0], stress[0][1], stress[0][2]));
+    v.push_back(strpr("stress[1]                      : %16.8E %16.8E %16.8E\n", stress[1][0], stress[1][1], stress[1][2]));
+    v.push_back(strpr("stress[2]                      : %16.8E %16.8E %16.8E\n", stress[2][0], stress[2][1], stress[2][2]));
     v.push_back(strpr("--------------------------------\n"));
     v.push_back(strpr("numAtomsPerElement         [*] : %d\n", numAtomsPerElement.size()));
     v.push_back(strpr("--------------------------------\n"));
