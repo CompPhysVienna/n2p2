@@ -44,17 +44,17 @@ InterfaceLammps::InterfaceLammps() : myRank      (0    ),
 {
 }
 
-void InterfaceLammps::initialize(char* const& directory,
-                                 char* const& emap,
-                                 bool         showew,
-                                 bool         resetew,
-                                 int          showewsum,
-                                 int          maxew,
-                                 double       cflength,
-                                 double       cfenergy,
-                                 double       lammpsCutoff,
-                                 int          lammpsNtypes,
-                                 int          myRank)
+void InterfaceLammps::initialize(char const* const& directory,
+                                 char const* const& emap,
+                                 bool               showew,
+                                 bool               resetew,
+                                 int                showewsum,
+                                 int                maxew,
+                                 double             cflength,
+                                 double             cfenergy,
+                                 double             lammpsCutoff,
+                                 int                lammpsNtypes,
+                                 int                myRank)
 {
     this->emap = emap;
     this->showew = showew;
@@ -66,6 +66,8 @@ void InterfaceLammps::initialize(char* const& directory,
     this->myRank = myRank;
     log.writeToStdout = false;
     string dir(directory);
+    char const separator = '/';
+    if (dir.back() != separator) dir += separator;
     Mode::initialize();
     loadSettingsFile(dir + "input.nn");
     setupGeneric();
