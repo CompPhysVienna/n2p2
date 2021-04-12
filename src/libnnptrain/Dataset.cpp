@@ -883,6 +883,70 @@ int Dataset::distributeStructures(bool          randomize,
     return bytesTransferred;
 }
 
+size_t Dataset::prepareNumericForces(Structure& original, double delta)
+{
+    // Be sure that structure memory is cleared.
+    vector<Structure>().swap(structures);
+
+    // Send original to all processors.
+    for (int p = 1; p < numProcs; ++p)
+    {
+        if (myRank == 0) sendStructure(original, p);
+        else if (myRank == p) recvStructure(&original, 0);
+    }
+
+    vector<size_t> numStructuresPerProc(numProcs, 0);
+    // Number of structures that need to be calculated:
+    // - Original structure +
+    // - Two times for each force component.
+    numStructures = 1 + 6 * original.numAtoms;
+    size_t quotient = numStructures / numProcs;
+    size_t remainder = numStructures % numProcs;
+    for (size_t i = 0; i < (size_t) numProcs; i++)
+    {
+        numStructuresPerProc.at(i) = quotient;
+        if (remainder > 0 && i < remainder) numStructuresPerProc.at(i)++;
+    }
+
+    // Rank 0 needs an unaltered version.
+    if (myRank == 0)
+    {
+        structures.push_back(original);
+        structures.back().setElementMap(elementMap);
+        structures.back().comment = "original";
+    }
+    // Now make as many copies as each processor needs.
+    size_t count = 0;
+    size_t iAtom = 0;
+    size_t ixyz = 0;
+    int sign = 0;
+    for (int p = 0; p < numProcs; ++p)
+    {
+        size_t istart = 0;
+        if (p == 0) istart = 1;
+        for (size_t i = istart; i < numStructuresPerProc.at(p); ++i)
+        {
+            iAtom = count / 6;
+            ixyz = count % 3;
+            sign = 2 * ((count % 6) / 3) - 1;
+            if (p == myRank)
+            {
+                structures.push_back(original);
+                Structure& s = structures.back();
+                s.setElementMap(elementMap);
+                // Write identifiers to comment field.
+                s.comment = strpr("%zu %zu %zu %d", count, iAtom, ixyz, sign);
+                // Modify atom position.
+                s.atoms.at(iAtom).r[ixyz] += sign * delta;
+                if (s.isPeriodic) s.remap(s.atoms.at(iAtom));
+            }
+            count++;
+        }
+    }
+
+    return numStructures;
+}
+
 void Dataset::toNormalizedUnits()
 {
     for (vector<Structure>::iterator it = structures.begin();

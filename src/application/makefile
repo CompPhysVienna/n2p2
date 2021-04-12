@@ -52,6 +52,7 @@ APP_CORE=nnp-convert \
 # Applications which require libnnp and libnnptrain:
 # (nnp-train itself is actually a special case).
 APP_TRAIN=nnp-atomenv \
+	  nnp-checkf \
 	  nnp-comp2 \
           nnp-dataset \
           nnp-norm \

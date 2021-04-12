@@ -194,6 +194,7 @@ list of keywords is provided :ref:`here <keywords>`.
 
    tools/libnnp
    tools/nnp-atomenv
+   tools/nnp-checkf
    tools/nnp-convert
    tools/nnp-norm
    tools/nnp-predict
