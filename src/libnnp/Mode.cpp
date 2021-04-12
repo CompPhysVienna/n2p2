@@ -1413,10 +1413,11 @@ void Mode::calculateForces(Structure& structure) const
         // atom i's coordinates. Some atoms may appear multiple times in the
         // neighbor list because of periodic boundary conditions. To avoid
         // that the same contributions are added multiple times use the
-        // "unique neighbor" list (but skip the first entry, this is always
-        // atom i itself).
-        for (vector<size_t>::const_iterator it =
-             ai->neighborsUnique.begin() + 1;
+        // "unique neighbor" list. This list contains also the central atom
+        // index as first entry and hence also adds contributions of periodic
+        // images of the central atom (happens when cutoff radii larger than
+        // cell vector lengths are used).
+        for (vector<size_t>::const_iterator it = ai->neighborsUnique.begin();
              it != ai->neighborsUnique.end(); ++it)
         {
             // Define shortcut for atom j (aj).
