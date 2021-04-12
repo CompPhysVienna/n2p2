@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
                          delta);
     if (myRank == 0)
     {
-        string fileName = "forces.out";
+        string fileName = "checkf-forces.out";
         dataset.log << strpr("Individual analytic/numeric forces will be "
                              "written to \"%s\"\n", fileName.c_str());
         outFileForces.open(fileName.c_str());
@@ -113,9 +113,10 @@ int main(int argc, char* argv[])
         appendLinesToFile(outFileForces,
                           createFileHeader(title, colSize, colName, colInfo));
 
-        fileName = "summary.out";
+        fileName = "checkf-summary.out";
         dataset.log << strpr("Per-structure summary of analytic/numeric force "
-                             "comparison will be written to \"%s\"\n",
+                             "comparison will be \n"
+                             "written to \"%s\"\n",
                              fileName.c_str());
         outFileSummary.open(fileName.c_str());
         // File header.

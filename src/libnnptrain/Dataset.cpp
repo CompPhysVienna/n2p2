@@ -938,7 +938,7 @@ size_t Dataset::prepareNumericForces(Structure& original, double delta)
                 s.comment = strpr("%zu %zu %zu %d", count, iAtom, ixyz, sign);
                 // Modify atom position.
                 s.atoms.at(iAtom).r[ixyz] += sign * delta;
-                s.remap(s.atoms.at(iAtom));
+                if (s.isPeriodic) s.remap(s.atoms.at(iAtom));
             }
             count++;
         }
