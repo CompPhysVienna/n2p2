@@ -38,7 +38,8 @@ int main(int argc, char* argv[])
     double   delta = 0.0;
     ifstream dataFile;
     ofstream myLog;
-    ofstream outFile;
+    ofstream outFileForces;
+    ofstream outFileSummary;
 
     if (argc > 2)
     {
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
     dataset.setupGeneric();
     bool normalize = dataset.useNormalization();
     dataset.setupSymmetryFunctionScaling();
-    dataset.setupSymmetryFunctionStatistics(false, false, true, false);
+    dataset.setupSymmetryFunctionStatistics(false, false, false, false);
     dataset.setupNeuralNetworkWeights();
 
     dataset.log << "\n";
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
         string fileName = "forces.out";
         dataset.log << strpr("Individual analytic/numeric forces will be "
                              "written to \"%s\"\n", fileName.c_str());
-        outFile.open(fileName.c_str());
+        outFileForces.open(fileName.c_str());
         // File header.
         vector<string> title;
         vector<string> colName;
@@ -109,7 +110,36 @@ int main(int argc, char* argv[])
         colName.push_back("F_numeric");
         colInfo.push_back("Force computed numerically from symmetric "
                           "difference quotient.");
-        appendLinesToFile(outFile,
+        appendLinesToFile(outFileForces,
+                          createFileHeader(title, colSize, colName, colInfo));
+
+        fileName = "summary.out";
+        dataset.log << strpr("Per-structure summary of analytic/numeric force "
+                             "comparison will be written to \"%s\"\n",
+                             fileName.c_str());
+        outFileSummary.open(fileName.c_str());
+        // File header.
+        title.clear();
+        colName.clear();
+        colInfo.clear();
+        colSize.clear();
+        title.push_back(strpr("Per-structure summary of analytic vs. numeric "
+                              "force comparison (delta = %11.3E).", delta));
+        colSize.push_back(10);
+        colName.push_back("struct");
+        colInfo.push_back("Structure index (starting with 1).");
+        colSize.push_back(16);
+        colName.push_back("numForces");
+        colInfo.push_back("Number of forces in this structure");
+        colSize.push_back(16);
+        colName.push_back("meanAbsError");
+        colInfo.push_back("Mean over all absolute differences between "
+                          "analytic and numeric forces in this structure.");
+        colSize.push_back(16);
+        colName.push_back("maxAbsError");
+        colInfo.push_back("Maximum over all absolute differences between "
+                          "analytic and numeric forces in this structure.");
+        appendLinesToFile(outFileSummary,
                           createFileHeader(title, colSize, colName, colInfo));
     }
 
@@ -236,14 +266,24 @@ int main(int argc, char* argv[])
                     double const error = fabs(a.f[j] - a.fRef[j]);
                     meanAbsError += error;
                     maxAbsError = max(error, maxAbsError);
-                    outFile << strpr("%10zu %10zu %3zu %24.16E %24.16E\n",
-                                     is + 1, i + 1, j, a.fRef[j], a.f[j]);
+                    outFileForces << strpr("%10zu %10zu %3zu %24.16E "
+                                           "%24.16E\n",
+                                           is + 1,
+                                           i + 1,
+                                           j,
+                                           a.fRef[j],
+                                           a.f[j]);
                 }
             }
             size_t const numForces = 3 * original.atoms.size();
             meanAbsError /= numForces;
             dataset.log << strpr("Configuration %6zu: %10zu %12.3E %12.3E",
                                  is + 1, numForces, meanAbsError, maxAbsError);
+            outFileSummary << strpr("%10zu %16zu %16.8E %16.8E\n",
+                                    is + 1,
+                                    numForces,
+                                    meanAbsError,
+                                    maxAbsError);
             if (maxAbsError > 10 * delta * delta)
             {
                 dataset.log << "  WARNING!\n";
@@ -266,7 +306,8 @@ int main(int argc, char* argv[])
                            "           could be higher than 10, hence, as long as there is a O(delta²)\n"
                            "           scaling the analytic forces are probably correct.\n";
         }
-        outFile.close();
+        outFileForces.close();
+        outFileSummary.close();
         dataFile.close();
     }
 

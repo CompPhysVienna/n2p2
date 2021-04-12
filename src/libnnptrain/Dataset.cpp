@@ -932,12 +932,13 @@ size_t Dataset::prepareNumericForces(Structure& original, double delta)
             if (p == myRank)
             {
                 structures.push_back(original);
-                structures.back().setElementMap(elementMap);
+                Structure& s = structures.back();
+                s.setElementMap(elementMap);
                 // Write identifiers to comment field.
-                structures.back().comment = strpr("%zu %zu %zu %d",
-                                                  count, iAtom, ixyz, sign);
+                s.comment = strpr("%zu %zu %zu %d", count, iAtom, ixyz, sign);
                 // Modify atom position.
-                structures.back().atoms.at(iAtom).r[ixyz] += sign * delta;
+                s.atoms.at(iAtom).r[ixyz] += sign * delta;
+                s.remap(s.atoms.at(iAtom));
             }
             count++;
         }
