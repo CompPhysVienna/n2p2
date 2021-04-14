@@ -116,38 +116,38 @@ class Test___ne__:
         n1.element = n2.element
         assert (n1 != n2) is False, "Equal neighbors are not not different."
 
-class Test___lt__:
-    def test_less_than(self, n1, n2):
-        assert n1 < n2, "Wrong ordering of neighbors."
-    def test_greater_than(self, n1, n2):
-        assert (n2 < n1) is False, "Wrong ordering of neighbors."
-    def test_equal_distance(self, n1, n2):
-        n1.d = n2.d
-        assert n1 < n2, "Wrong ordering of neighbors."
-    def test_equal_element(self, n1, n2):
-        n1.element = n2.element
-        assert n1 < n2, "Wrong ordering of neighbors."
-    def test_equal(self, n1, n2):
-        n1.d = n2.d
-        n1.element = n2.element
-        assert (n1 < n2) is False, "Wrong ordering of neighbors."
-
-class Test___gt__:
-    def test_less_than(self, n1, n2):
-        assert (n1 > n2) is False, "Wrong ordering of neighbors."
-    def test_greater_than(self, n1, n2):
-        assert n2 > n1, "Wrong ordering of neighbors."
-    def test_equal_distance(self, n1, n2):
-        n1.d = n2.d
-        assert n2 > n1, "Wrong ordering of neighbors."
-    def test_equal_element(self, n1, n2):
-        n1.element = n2.element
-        assert n2 > n1, "Wrong ordering of neighbors."
-    def test_equal(self, n1, n2):
-        n1.d = n2.d
-        n1.element = n2.element
-        assert (n2 > n1) is False, "Wrong ordering of neighbors."
-
+#class Test___lt__:
+#    def test_less_than(self, n1, n2):
+#        assert n1 < n2, "Wrong ordering of neighbors."
+#    def test_greater_than(self, n1, n2):
+#        assert (n2 < n1) is False, "Wrong ordering of neighbors."
+#    def test_equal_distance(self, n1, n2):
+#        n1.d = n2.d
+#        assert n1 < n2, "Wrong ordering of neighbors."
+#    def test_equal_element(self, n1, n2):
+#        n1.element = n2.element
+#        assert n1 < n2, "Wrong ordering of neighbors."
+#    def test_equal(self, n1, n2):
+#        n1.d = n2.d
+#        n1.element = n2.element
+#        assert (n1 < n2) is False, "Wrong ordering of neighbors."
+#
+#class Test___gt__:
+#    def test_less_than(self, n1, n2):
+#        assert (n1 > n2) is False, "Wrong ordering of neighbors."
+#    def test_greater_than(self, n1, n2):
+#        assert n2 > n1, "Wrong ordering of neighbors."
+#    def test_equal_distance(self, n1, n2):
+#        n1.d = n2.d
+#        assert n2 > n1, "Wrong ordering of neighbors."
+#    def test_equal_element(self, n1, n2):
+#        n1.element = n2.element
+#        assert n2 > n1, "Wrong ordering of neighbors."
+#    def test_equal(self, n1, n2):
+#        n1.d = n2.d
+#        n1.element = n2.element
+#        assert (n2 > n1) is False, "Wrong ordering of neighbors."
+#
 class Test___le__:
     def test_less_than(self, n1, n2):
         assert n1 <= n2, "Wrong ordering of neighbors."
