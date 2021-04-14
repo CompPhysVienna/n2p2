@@ -363,6 +363,12 @@ void Training::setStage(size_t stage)
             }
             nnId = "short";
         }
+        else
+        {
+            throw runtime_error(strpr("ERROR: No or incorrect training stage "
+                                      "specified: %zu (must be 1 or 2).\n",
+                                      stage));
+        }
     }
 
     // Initialize all training properties which will be used.
@@ -385,7 +391,7 @@ void Training::setupTraining()
     if (nnpType == NNPType::HDNNP_4G ||
         nnpType == NNPType::HDNNP_Q)
     {
-        log << strpr("Running stage %zu of training:", stage);
+        log << strpr("Running stage %zu of training: ", stage);
         if      (stage == 1) log << "electrostatic NN fitting.\n";
         else if (stage == 2) log << "short-range NN fitting.\n";
         else throw runtime_error("\nERROR: Unknown training stage.\n");
@@ -412,7 +418,7 @@ void Training::setupTraining()
         }
         else
         {
-            log << "Only energies will used for training.\n";
+            log << "Only energies will be used for training.\n";
         }
     }
     log << "Training will act on \"" << nns.at(nnId).name
@@ -2630,7 +2636,7 @@ void Training::collectDGdxia(Atom const& atom,
 
 void Training::randomizeNeuralNetworkWeights(string const& id)
 {
-    string keywordNW = "nguyen_widrow_weights" + nns.at(id).keywordSuffix;
+    string keywordNW = "nguyen_widrow_weights" + nns.at(id).keywordSuffix2;
 
     double minWeights = atof(settings["weights_min"].c_str());
     double maxWeights = atof(settings["weights_max"].c_str());

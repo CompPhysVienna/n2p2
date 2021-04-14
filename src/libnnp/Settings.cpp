@@ -84,6 +84,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["use_old_weights_charge"             ] = "";
     m["weights_min"                        ] = "";
     m["weights_max"                        ] = "";
+    m["initial_hardness"                   ] = "";
     m["nguyen_widrow_weights_short"        ] = "";
     m["nguyen_widrow_weights_charge"       ] = "";
     m["precondition_weights"               ] = "";
@@ -393,7 +394,8 @@ pair<size_t, size_t> Settings::sanityCheck()
             && (*it).first != "symfunction_short"
             && (*it).first != "atom_energy"
             && (*it).first != "element_nodes_short"
-            && (*it).first != "fixed_gausswidth")
+            && (*it).first != "fixed_gausswidth"
+            && (*it).first != "initial_hardness")
         {
             countProblems++;
             countCritical++;

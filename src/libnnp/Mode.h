@@ -113,11 +113,13 @@ public:
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.
+     * @param[in] training Signalizes that this is a setup for training.
      *
      * Sets up elements, symmetry functions, symmetry function groups, neural
      * networks. No symmetry function scaling data is read, no weights are set.
      */
-    void                     setupGeneric(std::string const& nnpDir = "");
+    void                     setupGeneric(std::string const& nnpDir = "",
+                                          bool               training = false);
     /** Set up normalization.
      *
      * If the keywords `mean_energy`, `conv_length` and
@@ -258,12 +260,16 @@ public:
                                           std::string>());
     /** Set up electrostatics related stuff (hardness, screening, ...).
      *
+     * @param[in] initialHardness Use initial hardness from keyword in settings
+     *                            file (useful for training).
      * @param[in] directoryPrefix Directory prefix which is applied to
      *                            fileNameFormat.
      * @param[in] fileNameFormat Name format of file containing atomic
      *                           hardness data.
      */
-    virtual void             setupElectrostatics(std::string directoryPrefix =
+    virtual void             setupElectrostatics(bool initialHardness =
+                                                 false,
+                                                 std::string directoryPrefix =
                                                  "",
                                                  std::string fileNameFormat =
                                                  "hardness.%03zu.data");
