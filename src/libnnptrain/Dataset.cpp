@@ -1245,7 +1245,7 @@ void Dataset::writeSymmetryFunctionFile(string fileName)
     {
         // If this proc holds structure with matching index,
         // open file and write symmetry functions.
-        if (i == it->index)
+        if (it != structures.end() && i == it->index)
         {
             ofstream file;
             file.open(fileName.c_str(), ios_base::app);
