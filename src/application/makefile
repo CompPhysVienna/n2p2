@@ -49,17 +49,21 @@ APP_CORE=nnp-convert \
          nnp-select \
          nnp-symfunc
 
+# Applications which require libnnp and libnnptrain
+# but do not use class Training (only Dataset):
+APP_DATASET=nnp-atomenv \
+	    nnp-checkf \
+	    nnp-comp2 \
+            nnp-dataset \
+            nnp-norm \
+            nnp-scaling
+
 # Applications which require libnnp and libnnptrain:
-# (nnp-train itself is actually a special case).
-APP_TRAIN=nnp-atomenv \
-	  nnp-checkf \
-	  nnp-comp2 \
-          nnp-dataset \
-          nnp-norm \
-          nnp-scaling
+APP_TRAINING=nnp-checkdw \
+	     nnp-train
 
 # All applications together.
-APP=$(APP_CORE) $(APP_TRAIN) nnp-train
+APP=$(APP_CORE) $(APP_DATASET) $(APP_TRAINING)
 
 # Targets for cleaning.
 CLEAN_APP=$(patsubst %, clean-%, $(APP))
@@ -68,9 +72,9 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all $(CLEAN_APP) list-core list-train list-all
+.PHONY: all $(CLEAN_APP) list-libnnp list-libnnptrain list-all
 
-all: $(APP_CORE) $(APP_TRAIN) nnp-train
+all: $(APP_CORE) $(APP_DATASET) $(APP_TRAINING)
 
 # Applications which require only libnnp:
 $(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
@@ -84,27 +88,27 @@ $(APP_CORE):
 	$(CC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
 	cp $@ $(PROJECT_BIN)/
 
-# Applications which require libnnp and libnnptrain:
-# (nnp-train itself is actually a special case).
-$(APP_TRAIN): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_GSL)
+# Applications which require libnnp and libnnptrain
+# but do not use class Training (only Dataset):
+$(APP_DATASET): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_GSL)
 ifeq ($(MODE), shared)
-$(APP_TRAIN): LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLAGS_BLAS)
+$(APP_DATASET): LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLAGS_BLAS)
 else
-$(APP_TRAIN): LDFLAGS=$(PROJECT_LIB)/libnnptrain.a $(PROJECT_LIB)/libnnp.a -lgsl $(PROJECT_LDFLAGS_BLAS)
+$(APP_DATASET): LDFLAGS=$(PROJECT_LIB)/libnnptrain.a $(PROJECT_LIB)/libnnp.a -lgsl $(PROJECT_LDFLAGS_BLAS)
 endif
-$(APP_TRAIN):
+$(APP_DATASET):
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
 	cp $@ $(PROJECT_BIN)/
 
-# Separate rule for nnp-train, requires Eigen.
-nnp-train: INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_GSL) -I$(PROJECT_EIGEN)
+# Applications which require libnnp and libnnptrain, requires Eigen.
+$(APP_TRAINING): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_GSL) -I$(PROJECT_EIGEN)
 ifeq ($(MODE), shared)
-nnp-train: LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLAGS_BLAS)
+$(APP_TRAINING): LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLAGS_BLAS)
 else
-nnp-train: LDFLAGS=$(PROJECT_LIB)/libnnptrain.a $(PROJECT_LIB)/libnnp.a -lgsl $(PROJECT_LDFLAGS_BLAS)
+$(APP_TRAINING): LDFLAGS=$(PROJECT_LIB)/libnnptrain.a $(PROJECT_LIB)/libnnp.a -lgsl $(PROJECT_LDFLAGS_BLAS)
 endif
-nnp-train: nnp-train.cpp
+$(APP_TRAINING): nnp-train.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
 	cp $@ $(PROJECT_BIN)/
@@ -118,11 +122,11 @@ $(CLEAN_APP):
 	$(RM) $(EXE).gcno $(EXE).gcda $(EXE).o $(EXE)
 	$(RM) $(PROJECT_BIN)/$(EXE)
 
-list-core:
+list-libnnp:
 	@echo $(APP_CORE)
 
-list-train:
-	@echo $(APP_TRAIN) nnp-train
+list-libnnptrain:
+	@echo $(APP_DATASET) $(APP_TRAINING)
 
 list-all:
-	@echo $(APP_CORE) $(APP_TRAIN) nnp-train
+	@echo $(APP_CORE) $(APP_DATASET) $(APP_TRAINING)

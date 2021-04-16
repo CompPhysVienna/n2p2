@@ -43,8 +43,8 @@ INTERFACES=LAMMPS CabanaMD
 # APPLICATION TARGET NAMES
 ###############################################################################
 # Call makefile in "application" directory to list targets.
-APP_CORE=$(shell cd application && make list-core)
-APP_TRAIN=$(shell cd application && make list-train)
+APP_LIBNNP=$(shell cd application && make list-libnnp)
+APP_LIBNNPTRAIN=$(shell cd application && make list-libnnptrain)
 APP=$(shell cd application && make list-all)
 
 # Targets for cleaning.
@@ -150,10 +150,10 @@ clean-app:
 	cd application && $(MAKE) clean
 
 # Individual applications.
-$(APP_CORE): libnnp
+$(APP_LIBNNP): libnnp
 	cd application && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
-$(APP_TRAIN): libnnptrain
+$(APP_LIBNNPTRAIN): libnnptrain
 	cd application && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
 $(CLEAN_APP):

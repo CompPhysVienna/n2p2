@@ -852,6 +852,42 @@ void Training::setupTraining()
     return;
 }
 
+vector<string> Training::setupNumericDerivCheck()
+{
+    log << "\n";
+    log << "*** SETUP WEIGHT DERIVATIVES CHECK ******"
+           "**************************************\n";
+    log << "\n";
+
+    log << "Weight derivatives will be checked for these properties:\n";
+    for (auto k : pk) log << " - " + p[k].plural + "\n";
+    log << "\n";
+
+    if (nnpType == NNPType::SHORT_ONLY)
+    {
+        nnId = "short";
+        readNeuralNetworkWeights(nnId, "weights.%03zu.data");
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+    {
+        nnId = "charge";
+        readNeuralNetworkWeights(nnId, "weightse.%03zu.data");
+    }
+    else if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 2)
+    {
+        nnId = "short";
+        readNeuralNetworkWeights("charge", "weightse.%03zu.data");
+        readNeuralNetworkWeights(nnId, "weights.%03zu.data");
+    }
+    initializeWeightsMemory();
+    getWeights();
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return pk;
+}
+
 void Training::calculateNeighborLists()
 {
     sw["nl"].start();
@@ -2491,6 +2527,195 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
 void Training::setTrainingLogFileName(string fileName)
 {
     trainingLogFileName = fileName;
+
+    return;
+}
+
+size_t Training::getNumConnections(string id) const
+{
+    size_t n = 0;
+    for (auto const& e : elements)
+    {
+        n += e.neuralNetworks.at(id).getNumConnections();
+    }
+
+    return n;
+}
+
+vector<size_t> Training::getNumConnectionsPerElement(string id) const
+{
+    vector<size_t> npe;
+    for (auto const& e : elements)
+    {
+        npe.push_back(e.neuralNetworks.at(id).getNumConnections());
+    }
+
+    return npe;
+}
+
+vector<size_t> Training::getConnectionOffsets(string id) const
+{
+    vector<size_t> offset;
+    size_t n = 0;
+    for (auto const& e : elements)
+    {
+        offset.push_back(n);
+        n += e.neuralNetworks.at(id).getNumConnections();
+    }
+
+    return offset;
+}
+
+void Training::dPdc(string                  property,
+                    Structure&              structure,
+                    vector<vector<double>>& dPdc)
+{
+    auto npe = getNumConnectionsPerElement();
+    auto off = getConnectionOffsets();
+    dPdc.clear();
+
+    if (property == "energy")
+    {
+        dPdc.resize(1);
+        dPdc.at(0).resize(getNumConnections(), 0.0);
+        for (auto const& a : structure.atoms)
+        {
+            size_t e = a.element;
+            NeuralNetwork& nn = elements.at(e).neuralNetworks.at(nnId);
+            nn.setInput(a.G.data());
+            nn.propagate();
+            vector<double> tmp(npe.at(e), 0.0);
+            nn.calculateDEdc(tmp.data());
+            for (size_t j = 0; j < tmp.size(); ++j)
+            {
+                dPdc.at(0).at(off.at(e) + j) += tmp.at(j);
+            }
+        }
+    }
+    else if (property == "force")
+    {
+        dPdc.resize(3 * structure.numAtoms);
+        size_t count = 0;
+        for (size_t ia = 0; ia < structure.numAtoms; ++ia)
+        {
+            for (size_t ixyz = 0; ixyz < 3; ++ixyz)
+            {
+                dPdc.at(count).resize(getNumConnections(), 0.0);
+                for (auto& a : structure.atoms)
+                {
+#ifndef N2P2_FULL_SFD_MEMORY
+                    collectDGdxia(a, ia, ixyz);
+#else
+                    a.collectDGdxia(ia, ixyz);
+#endif
+                    size_t e = a.element;
+                    NeuralNetwork& nn = elements.at(e).neuralNetworks.at(nnId);
+                    nn.setInput(a.G.data());
+                    nn.propagate();
+                    nn.calculateDEdG(a.dEdG.data());
+                    nn.getOutput(&(a.energy));
+                    vector<double> tmp(npe.at(e), 0.0);
+#ifndef N2P2_FULL_SFD_MEMORY
+                    nn.calculateDFdc(tmp.data(), dGdxia.data());
+#else
+                    nn.calculateDFdc(tmp.data(), a.dGdxia.data());
+#endif
+                    for (size_t j = 0; j < tmp.size(); ++j)
+                    {
+                        dPdc.at(count).at(off.at(e) + j) += tmp.at(j);
+                    }
+                }
+                count++;
+            }
+        }
+    }
+    else
+    {
+        throw runtime_error("ERROR: Weight derivatives not implemented for "
+                            "property \"" + property + "\".\n");
+    }
+
+    return;
+}
+
+void Training::dPdcN(string                  property,
+                     Structure&              structure,
+                     vector<vector<double>>& dPdc,
+                     double                  delta)
+{
+    auto npe = getNumConnectionsPerElement();
+    auto off = getConnectionOffsets();
+    dPdc.clear();
+
+    if (property == "energy")
+    {
+        dPdc.resize(1);
+        for (size_t ie = 0; ie < numElements; ++ie)
+        {
+            for (size_t ic = 0; ic < npe.at(ie); ++ic)
+            {
+                size_t const o = off.at(ie) + ic;
+                double const w = weights.at(0).at(o);
+
+                weights.at(0).at(o) += delta;
+                setWeights();
+                calculateAtomicNeuralNetworks(structure, false);
+                calculateEnergy(structure);
+                double energyHigh = structure.energy;
+
+                weights.at(0).at(o) -= 2.0 * delta;
+                setWeights();
+                calculateAtomicNeuralNetworks(structure, false);
+                calculateEnergy(structure);
+                double energyLow = structure.energy;
+
+                dPdc.at(0).push_back((energyHigh - energyLow) / (2.0 * delta));
+                weights.at(0).at(o) = w;
+            }
+        }
+    }
+    else if (property == "force")
+    {
+        size_t count = 0;
+        dPdc.resize(3 * structure.numAtoms);
+        for (size_t ia = 0; ia < structure.numAtoms; ++ia)
+        {
+            for (size_t ixyz = 0; ixyz < 3; ++ixyz)
+            {
+                for (size_t ie = 0; ie < numElements; ++ie)
+                {
+                    for (size_t ic = 0; ic < npe.at(ie); ++ic)
+                    {
+                        size_t const o = off.at(ie) + ic;
+                        double const w = weights.at(0).at(o);
+
+                        weights.at(0).at(o) += delta;
+                        setWeights();
+                        calculateAtomicNeuralNetworks(structure, true);
+                        calculateForces(structure);
+                        double forceHigh = structure.atoms.at(ia).f[ixyz];
+
+                        weights.at(0).at(o) -= 2.0 * delta;
+                        setWeights();
+                        calculateAtomicNeuralNetworks(structure, true);
+                        calculateForces(structure);
+                        double forceLow = structure.atoms.at(ia).f[ixyz];
+
+                        dPdc.at(count).push_back((forceHigh - forceLow)
+                                                 / (2.0 * delta));
+                        weights.at(0).at(o) = w;
+                    }
+                }
+                count++;
+            }
+        }
+    }
+    else
+    {
+        throw runtime_error("ERROR: Numeric weight derivatives not "
+                            "implemented for property \""
+                            + property + "\".\n");
+    }
 
     return;
 }

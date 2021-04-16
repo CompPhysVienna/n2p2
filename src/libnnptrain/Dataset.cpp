@@ -1688,4 +1688,3 @@ void Dataset::combineFiles(string filePrefix) const
 
     return;
 }
-
