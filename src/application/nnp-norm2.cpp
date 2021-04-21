@@ -305,10 +305,10 @@ int main(int argc, char* argv[])
         fileSettings << "# DATA SET NORMALIZATION\n";
         fileSettings << "#########################################"
                         "######################################\n";
-        fileSettings << "# This section was automatically added by nnp-norm.\n";
-        fileSettings << strpr("mean_energy %24.16E\n", meanEnergyPerAtomRef);
-        fileSettings << strpr("conv_energy %24.16E\n", convEnergy);
-        fileSettings << strpr("conv_length %24.16E\n", convLength);
+        fileSettings << strpr("mean_energy %24.16E # nnp-norm2\n",
+                              meanEnergyPerAtomRef);
+        fileSettings << strpr("conv_energy %24.16E # nnp-norm2\n", convEnergy);
+        fileSettings << strpr("conv_length %24.16E # nnp-norm2\n", convLength);
         fileSettings << "#########################################"
                         "######################################\n";
         fileSettings << "\n";

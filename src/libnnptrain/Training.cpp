@@ -385,6 +385,264 @@ void Training::setStage(size_t stage)
     return;
 }
 
+void Training::dataSetNormalization()
+{
+    log << "\n";
+    log << "*** DATA SET NORMALIZATION **************"
+           "**************************************\n";
+    log << "\n";
+
+    log << "Now running data set normalization using property predictions\n";
+    log << "collected with initial weights...\n";
+    log << "\n";
+
+    if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
+    {
+        throw runtime_error("ERROR: Normalization of charges not yet "
+                            "implemented\n.");
+    }
+    writeWeights("short", "weights.%03zu.norm");
+    if (nnpType == Training::NNPType::SHORT_CHARGE_NN && stage == 2)
+    {
+        writeWeights("charge", "weightse.%03zu.norm");
+    }
+    if (!settings.keywordExists("use_short_forces"))
+    {
+        throw runtime_error("ERROR: Normalization is only possible if forces "
+                            "are used (keyword \"use_short_forces\").\n");
+    }
+
+    ofstream fileEvsV;
+    fileEvsV.open(strpr("evsv.dat.%04d", myRank).c_str());
+    if (myRank == 0)
+    {
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Energy vs. volume comparison.");
+        colSize.push_back(16);
+        colName.push_back("V_atom");
+        colInfo.push_back("Volume per atom.");
+        colSize.push_back(16);
+        colName.push_back("Eref_atom");
+        colInfo.push_back("Reference energy per atom.");
+        colSize.push_back(10);
+        colName.push_back("N");
+        colInfo.push_back("Number of atoms.");
+        colSize.push_back(16);
+        colName.push_back("V");
+        colInfo.push_back("Volume of structure.");
+        colSize.push_back(16);
+        colName.push_back("Eref");
+        colInfo.push_back("Reference energy of structure.");
+        colSize.push_back(16);
+        colName.push_back("Eref_offset");
+        colInfo.push_back("Reference energy of structure (including offset).");
+        appendLinesToFile(fileEvsV,
+                          createFileHeader(title, colSize, colName, colInfo));
+    }
+
+    size_t numAtomsTotal         = 0;
+    size_t numStructures         = 0;
+    double meanEnergyPerAtomRef  = 0.0;
+    double meanEnergyPerAtomNnp  = 0.0;
+    double sigmaEnergyPerAtomRef = 0.0;
+    double sigmaEnergyPerAtomNnp = 0.0;
+    double meanForceRef          = 0.0;
+    double meanForceNnp          = 0.0;
+    double sigmaForceRef         = 0.0;
+    double sigmaForceNnp         = 0.0;
+    log << "Computing initial prediction for all structures...\n";
+    for (auto& s : structures)
+    {
+        // File output for evsv.dat.
+        fileEvsV << strpr("%16.8E %16.8E %10zu %16.8E %16.8E %16.8E\n",
+                          s.volume / s.numAtoms,
+                          s.energyRef / s.numAtoms,
+                          s.numAtoms,
+                          s.volume,
+                          s.energyRef,
+                          getEnergyWithOffset(s, true));
+        s.calculateNeighborList(maxCutoffRadius);
+#ifdef N2P2_NO_SF_GROUPS
+        calculateSymmetryFunctions(s, true);
+#else
+        calculateSymmetryFunctionGroups(s, true);
+#endif
+        calculateAtomicNeuralNetworks(s, true);
+        calculateEnergy(s);
+        calculateForces(s);
+        s.clearNeighborList();
+
+        numStructures++;
+        numAtomsTotal += s.numAtoms;
+        meanEnergyPerAtomRef += s.energyRef / s.numAtoms;
+        meanEnergyPerAtomNnp += s.energy    / s.numAtoms;
+        for (auto& a : s.atoms)
+        {
+            meanForceRef += a.fRef[0] + a.fRef[1] + a.fRef[2];
+            meanForceNnp += a.f   [0] + a.f   [1] + a.f   [2];
+        }
+    }
+
+    fileEvsV.flush();
+    fileEvsV.close();
+    MPI_Barrier(MPI_COMM_WORLD);
+    log << "Writing energy/atom vs. volume/atom data to \"evsv.dat\".\n";
+    if (myRank == 0) combineFiles("evsv.dat");
+    MPI_Allreduce(MPI_IN_PLACE, &numStructures       , 1, MPI_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &numAtomsTotal       , 1, MPI_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    meanEnergyPerAtomRef /= numStructures;
+    meanEnergyPerAtomNnp /= numStructures;
+    meanForceRef /= 3 * numAtomsTotal;
+    meanForceNnp /= 3 * numAtomsTotal;
+    for (auto const& s : structures)
+    {
+        double ediffRef = s.energyRef / s.numAtoms - meanEnergyPerAtomRef;
+        double ediffNnp = s.energy    / s.numAtoms - meanEnergyPerAtomNnp;
+        sigmaEnergyPerAtomRef += ediffRef * ediffRef;
+        sigmaEnergyPerAtomNnp += ediffNnp * ediffNnp;
+        for (auto const& a : s.atoms)
+        {
+            double fdiffRef = a.fRef[0] - meanForceRef;
+            double fdiffNnp = a.f   [0] - meanForceNnp;
+            sigmaForceRef += fdiffRef * fdiffRef;
+            sigmaForceNnp += fdiffNnp * fdiffNnp;
+            fdiffRef = a.fRef[1] - meanForceRef;
+            fdiffNnp = a.f   [1] - meanForceNnp;
+            sigmaForceRef += fdiffRef * fdiffRef;
+            sigmaForceNnp += fdiffNnp * fdiffNnp;
+            fdiffRef = a.fRef[2] - meanForceRef;
+            fdiffNnp = a.f   [2] - meanForceNnp;
+            sigmaForceRef += fdiffRef * fdiffRef;
+            sigmaForceNnp += fdiffNnp * fdiffNnp;
+        }
+    }
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    sigmaEnergyPerAtomRef = sqrt(sigmaEnergyPerAtomRef / (numStructures - 1));
+    sigmaEnergyPerAtomNnp = sqrt(sigmaEnergyPerAtomNnp / (numStructures - 1));
+    sigmaForceRef = sqrt(sigmaForceRef / (3 * numAtomsTotal - 1));
+    sigmaForceNnp = sqrt(sigmaForceNnp / (3 * numAtomsTotal - 1));
+    log << "\n";
+    log << strpr("Total number of structures: %zu\n", numStructures);
+    log << strpr("Total number of atoms     : %zu\n", numAtomsTotal);
+    log << "----------------------------------\n";
+    log << "Reference data statistics:\n";
+    log << "----------------------------------\n";
+    log << strpr("Mean/sigma energy per atom: %16.8E +/- %16.8E\n",
+                 meanEnergyPerAtomRef,
+                 sigmaEnergyPerAtomRef);
+    log << strpr("Mean/sigma force          : %16.8E +/- %16.8E\n",
+                 meanForceRef,
+                 sigmaForceRef);
+    log << "----------------------------------\n";
+    log << "Initial NNP prediction statistics:\n";
+    log << "----------------------------------\n";
+    log << strpr("Mean/sigma energy per atom: %16.8E +/- %16.8E\n",
+                 meanEnergyPerAtomNnp,
+                 sigmaEnergyPerAtomNnp);
+    log << strpr("Mean/sigma force          : %16.8E +/- %16.8E\n",
+                 meanForceNnp,
+                 sigmaForceNnp);
+    log << "----------------------------------\n";
+    // Now set conversion quantities of Mode class.
+    meanEnergy = meanEnergyPerAtomRef;
+    convEnergy = sigmaForceNnp / sigmaForceRef;
+    convLength = sigmaForceNnp;
+    log << "Final conversion data:\n";
+    log << strpr("Mean ref. energy per atom = %24.16E\n", meanEnergy);
+    log << strpr("Conversion factor energy  = %24.16E\n", convEnergy);
+    log << strpr("Conversion factor length  = %24.16E\n", convLength);
+    log << "----------------------------------\n";
+
+    if (myRank == 0)
+    {
+        log << "\n";
+        log << "Writing backup of original settings file to "
+               "\"input.nn.bak\".\n";
+        ofstream fileSettings;
+        fileSettings.open("input.nn.bak");
+        writeSettingsFile(&fileSettings);
+        fileSettings.close();
+
+        log << "\n";
+        log << "Writing normalization data to settings file \"input.nn\".\n";
+        string n1 = strpr("mean_energy %24.16E # nnp-train\n",
+                          meanEnergyPerAtomRef);
+        string n2 = strpr("conv_energy %24.16E # nnp-train\n",
+                          convEnergy);
+        string n3 = strpr("conv_length %24.16E # nnp-train\n",
+                          convLength);
+        // Check for existing normalization header and record line numbers
+        // to replace.
+        auto lines = settings.getSettingsLines();
+        map<size_t, string> replace;
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            vector<string> sl = split(lines.at(i));
+            if (sl.size() > 0)
+            {
+                if (sl.at(0) == "mean_energy") replace[i] = n1;
+                if (sl.at(0) == "conv_energy") replace[i] = n2;
+                if (sl.at(0) == "conv_length") replace[i] = n3;
+            }
+        }
+
+        fileSettings.open("input.nn");
+        if (replace.empty())
+        {
+            fileSettings << "#########################################"
+                            "######################################\n";
+            fileSettings << "# DATA SET NORMALIZATION\n";
+            fileSettings << "#########################################"
+                            "######################################\n";
+            fileSettings << n1;
+            fileSettings << n2;
+            fileSettings << n3;
+            fileSettings << "#########################################"
+                            "######################################\n";
+            fileSettings << "\n";
+        }
+        settings.writeSettingsFile(&fileSettings, replace);
+        fileSettings.close();
+    }
+
+    // Now make up for left-out normalization setup, need to repeat entire
+    // symmetry function setup.
+    log << "\n";
+    log << "Silently repeating symmetry function setup...\n";
+    log.silent = true;
+    normalize = true;
+    for (auto& e : elements) e.clearSymmetryFunctions();
+    setupSymmetryFunctions();
+#ifndef N2P2_FULL_SFD_MEMORY
+    setupSymmetryFunctionMemory(false);
+#endif
+#ifndef N2P2_NO_SF_CACHE
+    setupSymmetryFunctionCache();
+#endif
+#ifndef N2P2_NO_SF_GROUPS
+    setupSymmetryFunctionGroups();
+#endif
+    setupSymmetryFunctionScaling();
+    setupSymmetryFunctionStatistics(false, false, false, false);
+    log.silent = false;
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return;
+}
+
 void Training::setupTraining()
 {
     log << "\n";
