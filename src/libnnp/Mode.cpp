@@ -165,12 +165,12 @@ void Mode::loadSettingsFile(string const& fileName)
     return;
 }
 
-void Mode::setupGeneric(string const& nnpDir)
+void Mode::setupGeneric(string const& nnpDir, bool training)
 {
     setupNormalization();
     setupElementMap();
     setupElements();
-    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics(nnpDir);
+    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics(training, nnpDir);
     setupCutoff();
     setupSymmetryFunctions();
 #ifndef NNP_FULL_SFD_MEMORY
@@ -303,7 +303,9 @@ void Mode::setupElements()
     return;
 }
 
-void Mode::setupElectrostatics(string directoryPrefix, string fileNameFormat)
+void Mode::setupElectrostatics(bool   initialHardness,
+                               string directoryPrefix,
+                               string fileNameFormat)
 {
     log << "\n";
     log << "*** SETUP: ELECTROSTATICS ***************"
@@ -311,24 +313,45 @@ void Mode::setupElectrostatics(string directoryPrefix, string fileNameFormat)
     log << "\n";
 
     // Atomic hardness.
-    string actualFileNameFormat = directoryPrefix + fileNameFormat;
-    log << strpr("Atomic hardness file name format: %s\n",
-                 actualFileNameFormat.c_str());
-    for (size_t i = 0; i < numElements; ++i)
+    if (initialHardness)
     {
-        string fileName = strpr(actualFileNameFormat.c_str(),
-                                elements.at(i).getAtomicNumber());
-        log << strpr("Atomic hardness for element %2s from file %s: ",
-                     elements.at(i).getSymbol().c_str(),
-                     fileName.c_str());
-        vector<double> const data = readColumnsFromFile(fileName, {0}).at(0);
-        if (data.size() != 1)
+        Settings::KeyRange r = settings.getValues("initial_hardness");
+        for (Settings::KeyMap::const_iterator it = r.first;
+             it != r.second; ++it)
         {
-            throw runtime_error("ERROR: Atomic hardness data is "
-                                "inconsistent.\n");
+            vector<string> args    = split(reduce(it->second.first));
+            size_t         element = elementMap[args.at(0)];
+            elements.at(element).setHardness(atof(args.at(1).c_str()));
         }
-        elements.at(i).setHardness(data.at(0));
-        log << strpr("%16.8E\n", elements.at(i).getHardness());
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            log << strpr("Initial atomic hardness for element %2s: %16.8E\n",
+                         elements.at(i).getSymbol().c_str(),
+                         elements.at(i).getHardness());
+        }
+    }
+    else
+    {
+        string actualFileNameFormat = directoryPrefix + fileNameFormat;
+        log << strpr("Atomic hardness file name format: %s\n",
+                     actualFileNameFormat.c_str());
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            string fileName = strpr(actualFileNameFormat.c_str(),
+                                    elements.at(i).getAtomicNumber());
+            log << strpr("Atomic hardness for element %2s from file %s: ",
+                         elements.at(i).getSymbol().c_str(),
+                         fileName.c_str());
+            vector<double> const data = readColumnsFromFile(fileName,
+                                                            {0}).at(0);
+            if (data.size() != 1)
+            {
+                throw runtime_error("ERROR: Atomic hardness data is "
+                                    "inconsistent.\n");
+            }
+            elements.at(i).setHardness(data.at(0));
+            log << strpr("%16.8E\n", elements.at(i).getHardness());
+        }
     }
     log << "\n";
 
@@ -372,10 +395,10 @@ void Mode::setupElectrostatics(string directoryPrefix, string fileNameFormat)
     }
     else
     {
-	// Set screening function in such way that it will always be 1.0.
-	// This may not be very efficient, may optimize later.
+	    // Set screening function in such way that it will always be 1.0.
+	    // This may not be very efficient, may optimize later.
         screeningFunction.setInnerOuter(-2.0, -1.0);
-	log << "Screening function not used.\n";
+	    log << "Screening function not used.\n";
     }
 
     log << "*****************************************"

@@ -74,7 +74,10 @@ void Prediction::predict()
                                                 screeningFunction.getOuter(),
                                                 maxCutoffRadius);
     }
-    structure.calculateNeighborList(maxCutoffRadiusOverall, true);
+    // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
+    // CI tests because of small numeric changes).
+    structure.calculateNeighborList(maxCutoffRadiusOverall,
+                                    nnpType == NNPType::HDNNP_4G);
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
