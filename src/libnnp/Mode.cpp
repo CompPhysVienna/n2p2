@@ -1744,6 +1744,7 @@ void Mode::calculateForces(Structure& structure) const
                  aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
             {
                 // If atom j's neighbor is atom i add force contributions.
+                if (n->d > maxCutoffRadius) break;
                 if (n->index == ai->index)
                 {
 #ifndef NNP_FULL_SFD_MEMORY
@@ -1797,7 +1798,7 @@ void Mode::calculateForces(Structure& structure) const
                 Vec3D dChidr;
                 // need to add this case because the loop over the neighbors
                 // does not include the contribution dChi_i/dr_i.
-                if (ai.tag == j)
+                if (ai.index == j)
                 {
                     for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
                     {
@@ -1806,7 +1807,8 @@ void Mode::calculateForces(Structure& structure) const
                 }
                 for (auto const& n : aj.neighbors)
                 {
-                    if (n.tag == ai.tag)
+                    if (n.d > maxCutoffRadius) break;
+                    if (n.index == ai.index)
                     {
 #ifndef NNP_FULL_SFD_MEMORY
                         vector<size_t> const& table = tableFull.at(n.element);
