@@ -17,7 +17,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define N2P2_VERSION "v2.1.2"
+#define N2P2_VERSION "v2.1.3"
 #define N2P2_GIT_VERSION ""
 #define N2P2_GIT_REV ""
 #define N2P2_GIT_BRANCH ""
