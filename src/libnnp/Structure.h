@@ -286,6 +286,16 @@ struct Structure
     void                     calculateDAdrQ(
                                         double                   precision, 
                                         Eigen::MatrixXd          gammaSqrt2);
+    /** Calculates derivative of the charges with respect to electronegativities.
+     *  @param[in] dQdChi vector to store the result. dQdChi[i](j) represents the
+     *  derivative for the i-th electronegativity and the j-th charge.
+     */
+    void                     calculateDQdChi(std::vector<Eigen::VectorXd> &dQdChi);
+    /** Calculates derivative of the charges with respect to atomic hardness.
+     *  @param[in] dQdJ vector to store the result. dQdJ[i](j) represents the
+     *  derivative for the i-th hardness and the j-th charge.
+     */
+    void                     calculateDQdJ(std::vector<Eigen::VectorXd> &dQdJ);
      /** Calculates partial derivatives of electrostatic Energy with respect
      * to atom's coordinates and charges.
      * @param[in] hardness Vector containing the hardness of all elements.

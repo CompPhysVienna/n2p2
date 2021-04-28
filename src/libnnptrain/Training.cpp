@@ -548,6 +548,12 @@ void Training::setupTraining()
                             "combined with Jacobian mode JM_SUM.\n");
     }
 
+    if (updateStrategy == US_ELEMENT && nnpType != NNPType::HDNNP_2G)
+    {
+        throw runtime_error("ERROR: US_ELEMENT only implemented for "
+                            "HDNNP_2G.\n");
+    }
+
     updateStrategy = (UpdateStrategy)atoi(settings["update_strategy"].c_str());
     // This section is pushed into a separate function because it's needed also
     // for testing purposes.
@@ -869,7 +875,15 @@ void Training::calculateNeighborLists()
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
-        it->calculateNeighborList(maxCutoffRadius);
+        // List only needs to be sorted for 4G
+        if (nnpType == NNPType::HDNNP_4G)
+        {
+            it->calculateNeighborList(maxCutoffRadius,true);
+        }
+        else
+        {
+            it->calculateNeighborList(maxCutoffRadius);
+        }
     }
 #ifdef _OPENMP
     omp_set_num_threads(num_threads);
@@ -2026,20 +2040,32 @@ void Training::update(string const& property)
         }
         else if (k == "charge")
         {
+            // Shortcut to selected atom.
+            Atom& a = s.atoms.at(c->a);
+            size_t i = a.element;
+            NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+            nn.setInput(&(a.G.front()));
+            nn.propagate();
+
             // Assume stage 1.
             if (nnpType == NNPType::HDNNP_4G)
             {
+                nn.getOutput(&(a.chi));
+                // Compute derivative of output node with respect to all
+                // neural network connections (weights + biases).
+                nn.calculateDEdc(&(dXdc.at(i).front()));
+
                 // TODO: Lots of stuff.
-                throw runtime_error("ERROR: Not implemented.\n");
+                //throw runtime_error("ERROR: Not implemented.\n");
+                chargeEquilibration(s);
+                vector<Eigen::VectorXd> dQdChi;
+                vector<Eigen::VectorXd> dQdJ;
+                s.calculateDQdChi(dQdChi);
+                s.calculateDQdJ(dQdJ);
             }
+
             else if (nnpType == NNPType::HDNNP_Q)
             {
-                // Shortcut to selected atom.
-                Atom& a = s.atoms.at(c->a);
-                size_t i = a.element;
-                NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
-                nn.setInput(&(a.G.front()));
-                nn.propagate();
                 nn.getOutput(&(a.charge));
                 // Compute derivative of output node with respect to all
                 // neural network connections (weights + biases).

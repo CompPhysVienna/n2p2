@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define NNP_VERSION "v2.1.1"
-#define NNP_GIT_VERSION ""
-#define NNP_GIT_REV ""
-#define NNP_GIT_BRANCH ""
+#define NNP_GIT_VERSION "v2.1.1-52-g02f1adb"
+#define NNP_GIT_REV "02f1adb31641aa7bd3fce2bbb118e54503b69934"
+#define NNP_GIT_BRANCH "4G-HDNNP-training"
 
 #endif

@@ -518,10 +518,11 @@ double Structure::calculateElectrostaticEnergy(
 
     if (isPeriodic)
     {
-        //TODO: Add a good exit command
-        if (!NeighborListIsSorted) cout << "Error: Neighbor list needs to "
-                                            "be sorted for Ewald summation!"
-                                            << endl;
+        if (!NeighborListIsSorted)
+        {
+            throw runtime_error("ERROR: Neighbor list needs to "
+                                "be sorted for Ewald summation!\n");
+        }
 
         KspaceGrid grid;
         double rcutReal = grid.setup(box, precision);
@@ -782,6 +783,40 @@ void Structure::calculateDAdrQ(
                 aj.dAdrQ[i] = -dAijdri * Qj;
             }
         }
+    }
+    return;
+}
+
+void Structure::calculateDQdChi(vector<Eigen::VectorXd> &dQdChi)
+{
+    dQdChi.resize(numAtoms);
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        // Including Lagrange multiplier equation.
+        VectorXd b(numAtoms+1);
+        b.setZero();
+        b(i) = -1.;
+        //cout << "A: " << A.rows() << ", " << A.cols() <<endl;
+        //cout << "b: " << b.size() << endl;
+        dQdChi.at(i) = A.colPivHouseholderQr().solve(b).head(numAtoms);
+    }
+    return;
+}
+
+void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
+{
+    dQdJ.resize(numElements);
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        // Including Lagrange multiplier equation.
+        VectorXd b(numAtoms+1);
+        b.setZero();
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            Atom const &aj = atoms.at(j);
+            if (i == aj.element) b(j) = -aj.charge;
+        }
+        dQdJ.at(i) = A.colPivHouseholderQr().solve(b).head(numAtoms);
     }
     return;
 }
