@@ -1,0 +1,185 @@
+## #############################################################
+### This is the input file for RuNNer 
+### #############################################################
+### General remarks: 
+### - commands can be switched off by using the # character at the BEGINNING of the line
+### - the input file can be structured by blank lines and comment lines
+### - the order of the keywords is arbitrary
+### - if keywords are missing, default values will be used and written to runner.out
+### - if mandatory keywords or keyword options are missing, RuNNer will stop with an error message 
+
+### THIS INPUT.NN IS AN EXAMPLE, IT IS NOT A REALISTIC CASE
+### It contains only a subset of all keywords
+
+########################################################################################################################
+### general keywords
+########################################################################################################################
+use_electrostatics
+use_short_nn
+nnp_gen 4 # nnp_type_gen --> nnp_gen 
+runner_mode 3
+parallel_mode 1                         
+number_of_elements 2                  
+elements  C H                          
+random_seed 10                         
+random_number_type 5                      
+remove_atom_energies                     
+atom_energy H -0.458907306351869
+atom_energy C -37.748111931202914
+initial_hardness H 10.0 ## fixed_atomhardness--> initial_hardness 
+initial_hardness C 10.0 
+fixed_gausswidth H 0.585815056466
+fixed_gausswidth C 1.379499971678
+energy_threshold 100.0d0              
+bond_threshold 0.4d0                 
+ewald_prec 1.0e-6 # for optimal combination of ewald parameters
+screen_electrostatics 4.8 8.0
+########################################################################################################################
+### NN structure of the electrostatic-range NN  
+########################################################################################################################
+global_hidden_layers_electrostatic 2              
+global_nodes_electrostatic 15 15                 
+global_activation_electrostatic t t l            
+global_hidden_layers_short 2              
+global_nodes_short 10 10                 
+global_activation_short t t l            
+## element_hidden_layers_electrostatic needs to take care !!! should check the output  
+########################################################################################################################
+### symmetry function generation ( mode 1): 
+########################################################################################################################
+test_fraction 0.1      
+
+########################################################################################################################
+### symmetry function definitions (all modes): 
+########################################################################################################################
+cutoff_type 2
+
+
+# radial H H
+symfunction H  2  H 0.000000      0.000000      8.000000  
+symfunction H  2  H 0.006000      0.000000      8.000000  
+symfunction H  2  H 0.011000      0.000000      8.000000  
+symfunction H  2  H 0.018000      0.000000      8.000000  
+symfunction H  2  H 0.026000      0.000000      8.000000  
+symfunction H  2  H 0.035000      0.000000      8.000000  
+
+#radial C H
+symfunction C  2  H 0.000000      0.000000      8.000000  
+symfunction C  2  H 0.013000      0.000000      8.000000  
+symfunction C  2  H 0.029000      0.000000      8.000000  
+symfunction C  2  H 0.054000      0.000000      8.000000  
+symfunction C  2  H 0.093000      0.000000      8.000000  
+symfunction C  2  H 0.161000      0.000000      8.000000  
+
+symfunction H  2  C 0.000000      0.000000      8.000000  
+symfunction H  2  C 0.013000      0.000000      8.000000  
+symfunction H  2  C 0.029000      0.000000      8.000000  
+symfunction H  2  C 0.054000      0.000000      8.000000  
+symfunction H  2  C 0.093000      0.000000      8.000000  
+symfunction H  2  C 0.161000      0.000000      8.000000  
+
+# radial C C 
+symfunction C  2  C 0.000000      0.000000      8.000000
+symfunction C  2  C 0.010000      0.000000      8.000000
+symfunction C  2  C 0.023000      0.000000      8.000000
+symfunction C  2  C 0.041000      0.000000      8.000000
+symfunction C  2  C 0.065000      0.000000      8.000000
+symfunction C  2  C 0.103000      0.000000      8.000000
+
+
+#
+# angular
+
+symfunction C 3 C C 0.0  1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  -1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  -1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  -1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C C 0.0  -1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+
+symfunction C 3 H H 0.0  1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  -1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  -1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  -1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 H H 0.0  -1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+
+symfunction C 3 C H 0.0  1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  -1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  -1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  -1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction C 3 C H 0.0  -1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+
+
+symfunction H 3 C C 0.0  1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 C C 0.0  1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 C C 0.0  1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 C C 0.0  1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 C C 0.0  -1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 C C 0.0  -1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+#symfunction H 3 C C 0.0  -1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+#symfunction H 3 C C 0.0  -1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+
+symfunction H 3 H C 0.0  1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 H C 0.0  1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 H C 0.0  1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 H C 0.0  1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 H C 0.0  -1.0 1.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+symfunction H 3 H C 0.0  -1.0 2.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+#symfunction H 3 H C 0.0  -1.0 4.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+#symfunction H 3 H C 0.0  -1.0 8.0  8.000000     ! central_atom type neighbor_atom1 neighbor_atom2 eta lambda zeta funccutoff
+
+
+########################################################################################################################
+### fitting (mode 2):general inputs for electrostatic range AND electrostatic part:
+########################################################################################################################
+epochs 10                          
+points_in_memory 500                
+mix_all_points                       
+scale_symmetry_functions             
+center_symmetry_functions             
+fitting_unit  eV                      
+########################################################################################################################
+### fitting options ( mode 2): electrostatic range part only:
+########################################################################################################################
+optmode_short_energy 1                 
+optmode_short_force 1                   
+short_energy_error_threshold 0.8	 
+short_force_error_threshold 0.8		 
+kalman_lambda_charge 0.98000                
+kalman_nue_charge 0.99870                   
+kalman_lambda_short 0.98000                
+kalman_nue_short 0.99870                   
+#use_old_weights_electrostatic               
+#force_update_scaling -1.0d0          
+#electrostatic_energy_group 1         
+#electrostatic_energy_fraction 1.00           
+#electrostatic_force_group 1                 
+
+short_force_fraction 0.025            
+use_short_forces                    
+weights_min -1.0                 
+weights_max 1.0                  
+precondition_weights            
+repeated_energy_update          
+nguyen_widrow_weights_short     
+regularize_fit_param 0.00001 ## 4G cases L2 regularization 
+########################################################################################################################
+### output options for mode 2 (fitting):  
+########################################################################################################################
+write_trainpoints              
+write_trainforces      
+#write_traincharges
+########################################################################################################################
+### output options for mode 3 (prediction):  
+########################################################################################################################
+calculate_forces     
+#calculate_stress       
+

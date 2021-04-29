@@ -350,6 +350,7 @@ void InterfaceLammps::process() //TODO : add comments
         } else
         {
             calculateAtomicNeuralNetworks(structure, true, "short");
+            isElecDone = false;
             calculateEnergy(structure);
             if (normalize)
             {
@@ -373,6 +374,19 @@ double InterfaceLammps::getEnergy() const
     return structure.energy / cfenergy;
 }
 
+double InterfaceLammps::getTotalCharge() const
+{
+    return structure.chargeRef;
+}
+
+void InterfaceLammps::getScreeningInfo(double* const& rScreen) const
+{
+    // TODO: pull latest changes and read these properly !!
+    rScreen[0] = 4.8;
+    rScreen[1] = 8.0;
+    rScreen[2] = 1.0 / (rScreen[1] - rScreen[0]); // scale
+}
+
 double InterfaceLammps::getAtomicEnergy(int index) const
 {
     Atom const& a = structure.atoms.at(index);
@@ -381,33 +395,32 @@ double InterfaceLammps::getAtomicEnergy(int index) const
     else return a.energy / cfenergy;
 }
 
-void InterfaceLammps::getQeqArrays(double* const& atomChi, double* const& atomJ,
-                     double* const* const& Gij) const
+void InterfaceLammps::getQeqParams(double* const& atomChi, double* const& atomJ,
+                     double* const& atomSigma) const
 {
-    // TODO: check later
-    // 1-loop over atoms for chi, 2-loop over elements for hardness and sigma terms
     Atom const* a = NULL;
     for (size_t i = 0; i < structure.atoms.size(); ++i)
     {
        a = &(structure.atoms.at(i));
-       atomChi[i] = a->chi;
-
-    }
-
-    for (size_t i = 0; i < getNumElements(); i++)
-    {
-        atomJ[i] = elements.at(i).getHardness();
-        double const iSigma = elements.at(i).getQsigma();
-        for (size_t j = 0; j < getNumElements(); j++)
-        {
-            double const jSigma = elements.at(j).getQsigma();
-            if (i == j) Gij[i][j] = sqrt(M_PI) * iSigma;
-            else        Gij[i][j] = sqrt(2.0 * (iSigma * iSigma
-                    + jSigma * jSigma));
-        }
+       size_t const ia = a->index;
+       size_t const ea = a->element;
+       atomChi[ia] = a->chi;
+       atomJ[ia] = elements.at(ea).getHardness();
+       atomSigma[ia] = elements.at(ea).getQsigma();
     }
 
     return;
+}
+
+void InterfaceLammps::addCharge(int index, double Q)
+{
+    Atom& a = structure.atoms.at(index);
+    a.charge = Q;
+}
+
+void InterfaceLammps::setElecDone()
+{
+    if (isElecDone) isElecDone = false;
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const
