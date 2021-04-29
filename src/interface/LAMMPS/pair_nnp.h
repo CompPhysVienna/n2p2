@@ -19,7 +19,7 @@ PairStyle(nnp,PairNNP)
 namespace LAMMPS_NS {
 
 class PairNNP : public Pair {
-
+    friend class FixNNP;
  public:
 
   PairNNP(class LAMMPS *);
@@ -29,33 +29,47 @@ class PairNNP : public Pair {
   virtual void coeff(int, char **);
   virtual void init_style();
   virtual double init_one(int, int);
+  void init_list(int,class NeighList *);
   virtual void write_restart(FILE *);
   virtual void read_restart(FILE *);
   virtual void write_restart_settings(FILE *);
   virtual void read_restart_settings(FILE *);
 
- protected:
+  //void getInterface(nnp::InterfaceLammps*&);
 
-  virtual void allocate();
-  void transferNeighborList();
-  void transferCharges();
-  void handleExtrapolationWarnings();
+protected:
 
-  bool showew;
-  bool resetew;
-  int showewsum;
-  int maxew;
-  long numExtrapolationWarningsTotal;
-  long numExtrapolationWarningsSummary;
-  double cflength;
-  double cfenergy;
-  double maxCutoffRadius;
-  char* directory;
-  char* emap;
-  nnp::InterfaceLammps interface;
-  // TODO: check this later
-  double *chi,*hardness;
-  double **gammaij;
+    class FixNNP *fix_nnp;
+
+    double eElec; // electrostatic contribution to total energy
+
+    // Do we need them here ?
+    double *dQdxyz,*dQdchi,*dQdhardness,*dchidxyz,*b_der;
+    double *dAdxyzQ;
+
+    virtual void allocate();
+    void transferNeighborList();
+
+    void transferCharges();
+    void handleExtrapolationWarnings();
+
+    void deallocateQEq();
+
+
+    bool showew;
+    bool resetew;
+    int showewsum;
+    int maxew;
+    long numExtrapolationWarningsTotal;
+    long numExtrapolationWarningsSummary;
+    double cflength;
+    double cfenergy;
+    double maxCutoffRadius;
+    char* directory;
+    char* emap;
+    class NeighList *list;
+    nnp::InterfaceLammps interface;
+
 };
 
 }

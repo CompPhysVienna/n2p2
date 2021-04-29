@@ -1,0 +1,497 @@
+ -------------------------------------------------------------
+ ---------------------- Welcome to the -----------------------
+     RuNNer Neural Network Energy Representation - RuNNer     
+ ----------  (c) 2008-2020 Prof. Dr. Joerg Behler   ----------
+ ----------  Georg-August-Universitaet Goettingen   ----------
+ ----------           Theoretische Chemie           ----------
+ ----------              Tammannstr. 6              ----------
+ ----------        37077 Goettingen, Germany        ----------
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+  This program is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the 
+  Free Software Foundation, either version 3 of the License, or 
+  (at your option) any later version.
+    
+  This program is distributed in the hope that it will be useful, but 
+  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+  for more details.
+      
+  You should have received a copy of the GNU General Public License along
+  with this program. If not, see http://www.gnu.org/licenses. 
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+ When using RuNNer, please cite the following papers:
+ J. Behler, Angew. Chem. Int. Ed. 56, 12828 (2017).
+ J. Behler, Int. J. Quant. Chem. 115, 1032 (2015).
+ -------------------------------------------------------------
+ Whenever using high-dimensional NNPs irrespective of the Code please cite:
+ J. Behler and M. Parrinello, Phys. Rev. Lett. 98, 146401 (2007).
+ -------------------------------------------------------------
+ The reference for the atom-centered symmetry functions is:
+ J. Behler, J. Chem. Phys. 134, 074106 (2011).
+ -------------------------------------------------------------
+ For high-dimensional NNs including electrostatics:
+ N. Artrith, T. Morawietz, and J. Behler, Phys. Rev. B 83, 153101 (2011).
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+ RuNNer has been written by Joerg Behler
+  
+ *** with contributions from some friends ***
+  
+ Tobias Morawietz - Nguyen Widrow weights and electrostatic screening
+ Jovan Jose Kochumannil Varghese - Pair symmetry functions and pair NNPs
+ Michael Gastegger and Philipp Marquetand - element decoupled Kalman filter
+ Andreas Singraber - more efficient symmetry function type 3 implementation
+ Sinja Klees and Mariana Rossi - some infrastructure for i-Pi compatibility
+ Emir Kocer - Symmetry function groups
+ Fenfei Wei and Emir Kocer - Hessian, frequencies and normal modes
+ Alexander Knoll - vdW corrections long ranged
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+ General job information:
+ -------------------------------------------------------------
+ Executing host    : Emir-MacBook-Pro.loc
+ User name         : emirkocer           
+ Starting date     :  8. 2.2021
+ Starting time     : 10 h 29 min 
+ Working directory :                                                             
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+ Serial run requested
+ -------------------------------------------------------------
+ Reading control parameters from input.nn
+ =============================================================
+ -------------------------------------------------------------
+ ### WARNING ### use_atom_charges is switched on for electrostatic NN
+ WARNING: reducing points_in_memory to max_num_atoms           12
+ =============================================================
+ General input parameters:
+ -------------------------------------------------------------
+ Short range NN is on
+ Electrostatic NN is off
+ vdW corrections switched off
+ -------------------------------------------------------------
+ RuNNer nn_type_short                                   3
+ RuNNer is started in mode for prediction (3)
+ debugging mode is                                       F
+ parallelization mode                                     1
+ enable detailed time measurement                        F
+ using symmetry function groups                          F
+ silent mode                                             F
+ NN force check                                          F
+ number of elements                                       2
+ elements (sorted):
+  1 H 
+  6 C 
+ seed for random number generator                        10
+ random number generator type                             5
+ remove free atom reference energies                     T
+ remove vdw dispersion energy and forces             F
+ shortest allowed bond in structure                   0.400
+ Cutoff_type for symmetry function is                     2
+ Cutoff_alpha for inner cutoff radius is              0.000
+ -------------------------------------------------------------
+ Short range NN specifications:
+ -------------------------------------------------------------
+ global hidden layers short range NN                      2
+ global nodes hidden layers short NN                10   10
+ global activation functions short                      ttl
+ -------------------------------------------------------------
+ Electrostatic specifications:
+ -------------------------------------------------------------
+ electrostatic_type (nn_type_elec)                        0
+ Ewald alpha                                          0.000
+ Ewald cutoff                                         0.000
+ Ewald kmax                                               0
+ Screening electrostatics                                  4.800000      8.000000
+ -------------------------------------------------------------
+ Parameters for symmetry function generation: short range part:
+ -------------------------------------------------------------
+ using forces for fitting                                T
+ using atomic energies for fitting                       F
+ -------------------------------------------------------------
+ Options for prediction mode:
+ -------------------------------------------------------------
+ rescale symmetry functions                              T
+ remove CMS from symmetry functions                      T
+ rescale atomic charges                                  F
+ remove CMS from atomic charges                          F
+ Reading formatted files 
+ calculation of analytic forces                          T
+ calculation of analytic Hessian                         F
+ calculation of analytic stress                          F
+ write symmetry functions                                F
+ prepare md                                              F
+ =============================================================
+ Element pairs:   3    , shortest distance (Bohr)
+ pair    2 H  C       2.046
+ pair    3 C  C       2.348
+ =============================================================
+ => short range NN weights type 3                 H        381
+ => short range NN weights type 3                 C        501
+ => electrostatic NN weights                      H        631
+ => electrostatic NN weights                      C        811
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+ Atomic reference energies read from input.nn:
+ H         -0.45890731
+ C        -37.74811193
+ -------------------------------------------------------------
+ -------------------------------------------------
+ Atomic short range NN for element: H 
+ architecture       25   10   10    1
+ -------------------------------------------------
+   1   G  t  t  l
+   2   G  t  t   
+   3   G  t  t   
+   4   G  t  t   
+   5   G  t  t   
+   6   G  t  t   
+   7   G  t  t   
+   8   G  t  t   
+   9   G  t  t   
+  10   G  t  t   
+  11   G
+  12   G
+  13   G
+  14   G
+  15   G
+  16   G
+  17   G
+  18   G
+  19   G
+  20   G
+  21   G
+  22   G
+  23   G
+  24   G
+  25   G
+ -------------------------------------------------
+ Atomic short range NN for element: C 
+ architecture       37   10   10    1
+ -------------------------------------------------
+   1   G  t  t  l
+   2   G  t  t   
+   3   G  t  t   
+   4   G  t  t   
+   5   G  t  t   
+   6   G  t  t   
+   7   G  t  t   
+   8   G  t  t   
+   9   G  t  t   
+  10   G  t  t   
+  11   G
+  12   G
+  13   G
+  14   G
+  15   G
+  16   G
+  17   G
+  18   G
+  19   G
+  20   G
+  21   G
+  22   G
+  23   G
+  24   G
+  25   G
+  26   G
+  27   G
+  28   G
+  29   G
+  30   G
+  31   G
+  32   G
+  33   G
+  34   G
+  35   G
+  36   G
+  37   G
+ ---------------------------------------------------
+ Electrostatic NN for element: H 
+ architecture       24   15   15    1
+ ---------------------------------------------------
+   1   G  t  t  l
+   2   G  t  t   
+   3   G  t  t   
+   4   G  t  t   
+   5   G  t  t   
+   6   G  t  t   
+   7   G  t  t   
+   8   G  t  t   
+   9   G  t  t   
+  10   G  t  t   
+  11   G  t  t   
+  12   G  t  t   
+  13   G  t  t   
+  14   G  t  t   
+  15   G  t  t   
+  16   G
+  17   G
+  18   G
+  19   G
+  20   G
+  21   G
+  22   G
+  23   G
+  24   G
+ ---------------------------------------------------
+ Electrostatic NN for element: C 
+ architecture       36   15   15    1
+ ---------------------------------------------------
+   1   G  t  t  l
+   2   G  t  t   
+   3   G  t  t   
+   4   G  t  t   
+   5   G  t  t   
+   6   G  t  t   
+   7   G  t  t   
+   8   G  t  t   
+   9   G  t  t   
+  10   G  t  t   
+  11   G  t  t   
+  12   G  t  t   
+  13   G  t  t   
+  14   G  t  t   
+  15   G  t  t   
+  16   G
+  17   G
+  18   G
+  19   G
+  20   G
+  21   G
+  22   G
+  23   G
+  24   G
+  25   G
+  26   G
+  27   G
+  28   G
+  29   G
+  30   G
+  31   G
+  32   G
+  33   G
+  34   G
+  35   G
+  36   G
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+  short range atomic symmetry functions element H  :
+ -------------------------------------------------------------
+    1 H   2  H               0.000   0.000   8.000
+    2 H   2  C               0.000   0.000   8.000
+    3 H   2  H               0.006   0.000   8.000
+    4 H   2  H               0.011   0.000   8.000
+    5 H   2  C               0.013   0.000   8.000
+    6 H   2  H               0.018   0.000   8.000
+    7 H   2  H               0.026   0.000   8.000
+    8 H   2  C               0.029   0.000   8.000
+    9 H   2  H               0.035   0.000   8.000
+   10 H   2  C               0.054   0.000   8.000
+   11 H   2  C               0.093   0.000   8.000
+   12 H   2  C               0.161   0.000   8.000
+   13 H   3  H  C    0.000  -1.000   1.000   8.000
+   14 H   3  C  C    0.000  -1.000   1.000   8.000
+   15 H   3  H  C    0.000   1.000   1.000   8.000
+   16 H   3  C  C    0.000   1.000   1.000   8.000
+   17 H   3  H  C    0.000  -1.000   2.000   8.000
+   18 H   3  C  C    0.000  -1.000   2.000   8.000
+   19 H   3  H  C    0.000   1.000   2.000   8.000
+   20 H   3  C  C    0.000   1.000   2.000   8.000
+   21 H   3  H  C    0.000   1.000   4.000   8.000
+   22 H   3  C  C    0.000   1.000   4.000   8.000
+   23 H   3  H  C    0.000   1.000   8.000   8.000
+   24 H   3  C  C    0.000   1.000   8.000   8.000
+ -------------------------------------------------------------
+  short range atomic symmetry functions element C  :
+ -------------------------------------------------------------
+    1 C   2  H               0.000   0.000   8.000
+    2 C   2  C               0.000   0.000   8.000
+    3 C   2  C               0.010   0.000   8.000
+    4 C   2  H               0.013   0.000   8.000
+    5 C   2  C               0.023   0.000   8.000
+    6 C   2  H               0.029   0.000   8.000
+    7 C   2  C               0.041   0.000   8.000
+    8 C   2  H               0.054   0.000   8.000
+    9 C   2  C               0.065   0.000   8.000
+   10 C   2  H               0.093   0.000   8.000
+   11 C   2  C               0.103   0.000   8.000
+   12 C   2  H               0.161   0.000   8.000
+   13 C   3  H  H    0.000  -1.000   1.000   8.000
+   14 C   3  H  C    0.000  -1.000   1.000   8.000
+   15 C   3  C  C    0.000  -1.000   1.000   8.000
+   16 C   3  H  H    0.000   1.000   1.000   8.000
+   17 C   3  H  C    0.000   1.000   1.000   8.000
+   18 C   3  C  C    0.000   1.000   1.000   8.000
+   19 C   3  H  H    0.000  -1.000   2.000   8.000
+   20 C   3  H  C    0.000  -1.000   2.000   8.000
+   21 C   3  C  C    0.000  -1.000   2.000   8.000
+   22 C   3  H  H    0.000   1.000   2.000   8.000
+   23 C   3  H  C    0.000   1.000   2.000   8.000
+   24 C   3  C  C    0.000   1.000   2.000   8.000
+   25 C   3  H  H    0.000  -1.000   4.000   8.000
+   26 C   3  H  C    0.000  -1.000   4.000   8.000
+   27 C   3  C  C    0.000  -1.000   4.000   8.000
+   28 C   3  H  H    0.000   1.000   4.000   8.000
+   29 C   3  H  C    0.000   1.000   4.000   8.000
+   30 C   3  C  C    0.000   1.000   4.000   8.000
+   31 C   3  H  H    0.000  -1.000   8.000   8.000
+   32 C   3  H  C    0.000  -1.000   8.000   8.000
+   33 C   3  C  C    0.000  -1.000   8.000   8.000
+   34 C   3  H  H    0.000   1.000   8.000   8.000
+   35 C   3  H  C    0.000   1.000   8.000   8.000
+   36 C   3  C  C    0.000   1.000   8.000   8.000
+ -------------------------------------------------------------
+ Prediction Mode for all configurations
+ NNconfiguration:         1    Number of atoms:        12
+ -------------------------------------------------------------
+ begin
+ atom     -8.608984064     0.117211016     0.098323591 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom    -10.887890664     0.411792493     0.694909677 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom    -12.930485451     0.525063826     0.728090534 H       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom     -3.691531520    -0.334149933    -0.210885725 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom     -6.068029911    -0.002562026    -0.070543208 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom      1.172907332    -0.172505960    -0.667418102 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom     -1.159581745    -0.350637841    -0.467599512 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom      3.725909424    -0.083808446    -0.229808086 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom      6.077591425    -0.166746722    -0.144998207 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom      8.591666759    -0.080658784     0.402206506 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom     10.870494591     0.515802237     0.435854441 C       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ atom     12.661796982     1.194828208     1.168905426 H       0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+ energy         0.00000000
+ charge         0.00000000
+ end
+ -------------------------------------------------------------
+ =============================================================
+ Short range symmetry function values for element H 
+ Training set:  min           max       average         range 
+   1     0.00000000    0.16847433    0.05143660    0.16847433
+   2     0.30405858    0.41710478    0.34591559    0.11304620
+   3     0.00000000    0.15946523    0.04769325    0.15946523
+   4     0.00000000    0.15232677    0.04478431    0.15232677
+   5     0.27036724    0.37728930    0.31224289    0.10692206
+   6     0.00000000    0.14286655    0.04100957    0.14286655
+   7     0.00000000    0.13277213    0.03708637    0.13277213
+   8     0.23624129    0.33657312    0.27800313    0.10033183
+   9     0.00000000    0.12226589    0.03312272    0.12226589
+  10     0.19404378    0.28607654    0.23585771    0.09203276
+  11     0.14641396    0.23097961    0.18800041    0.08456565
+  12     0.09432878    0.16744424    0.13330093    0.07311545
+  13     0.00000000    0.00394060    0.00076628    0.00394060
+  14     0.00000000    0.00217985    0.00039524    0.00217985
+  15     0.00000000    0.02261515    0.00668807    0.02261515
+  16     0.00679906    0.01478606    0.00985450    0.00798700
+  17     0.00000000    0.00075421    0.00011847    0.00075421
+  18     0.00000000    0.00030711    0.00003118    0.00030711
+  19     0.00000000    0.02017145    0.00604027    0.02017145
+  20     0.00644757    0.01299704    0.00949044    0.00654947
+  21     0.00000000    0.01674922    0.00500244    0.01674922
+  22     0.00579909    0.01111309    0.00884495    0.00531401
+  23     0.00000000    0.01266231    0.00356524    0.01266231
+  24     0.00441798    0.01101955    0.00782196    0.00660157
+ =============================================================
+ Short range symmetry function values for element C 
+ Training set:  min           max       average         range 
+   1     0.00000000    0.52808592    0.08649996    0.52808592
+   2     0.24355100    0.57639765    0.47819195    0.33284665
+   3     0.22048695    0.52746937    0.43763560    0.30698242
+   4     0.00000000    0.50353455    0.07807973    0.50353455
+   5     0.19509715    0.47330565    0.39251071    0.27820850
+   6     0.00000000    0.47487956    0.06951771    0.47487956
+   7     0.16625451    0.41178373    0.34093485    0.24552922
+   8     0.00000000    0.43333727    0.05897878    0.43333727
+   9     0.13622094    0.34796466    0.28640072    0.21174372
+  10     0.00000000    0.37567165    0.04701155    0.37567165
+  11     0.10158128    0.27309231    0.22197774    0.17151103
+  12     0.00000000    0.29287798    0.03333335    0.29287798
+  13     0.00000000    0.01526781    0.00060792    0.01526781
+  14     0.00000000    0.02036732    0.00232310    0.02036732
+  15     0.00000000    0.00665803    0.00399047    0.00665803
+  16     0.00000000    0.00928448    0.00032410    0.00928448
+  17     0.00000000    0.02498584    0.00280302    0.02498584
+  18     0.00352236    0.01252347    0.00802997    0.00900111
+  19     0.00000000    0.01192185    0.00042997    0.01192185
+  20     0.00000000    0.01555842    0.00202393    0.01555842
+  21     0.00000000    0.00651859    0.00394164    0.00651859
+  22     0.00000000    0.00382338    0.00014615    0.00382338
+  23     0.00000000    0.02344629    0.00250385    0.02344629
+  24     0.00351299    0.01243332    0.00798114    0.00892033
+  25     0.00000000    0.00867873    0.00022911    0.00867873
+  26     0.00000000    0.01071420    0.00169575    0.01071420
+  27     0.00000000    0.00638443    0.00387839    0.00638443
+  28     0.00000000    0.00175837    0.00006004    0.00175837
+  29     0.00000000    0.02109576    0.00231908    0.02109576
+  30     0.00350470    0.01233977    0.00794786    0.00883507
+  31     0.00000000    0.00469998    0.00006919    0.00469998
+  32     0.00000000    0.01070123    0.00135740    0.01070123
+  33     0.00000000    0.00633887    0.00375782    0.00633887
+  34     0.00000000    0.00094265    0.00002301    0.00094265
+  35     0.00000000    0.01713776    0.00211168    0.01713776
+  36     0.00347687    0.01215547    0.00788315    0.00867860
+ -------------------------------------------------------------
+ eshortmin from scaling.data:        -0.2691374625
+ eshortmax from scaling.data:        -0.2381480047
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+ NN sum of free atom energies,short range and electrostatic energy for configuration         1
+ NN sum of free atom energies         0.00000000 Ha
+ NN short range energy             -381.61079700 Ha
+ NN electrostatic energy             -0.00001574 Ha
+ NN vdw dispersion energy             0.00000000 Ha
+ NNenergy                          -381.61081274 Ha
+ -------------------------------------------------------------
+ NN atomenergies with configuration            1
+NNatomenergy      1 C      -37.952909
+NNatomenergy      2 C      -37.919421
+NNatomenergy      3 H       -0.880328
+NNatomenergy      4 C      -38.022413
+NNatomenergy      5 C      -38.018132
+NNatomenergy      6 C      -38.020613
+NNatomenergy      7 C      -38.009915
+NNatomenergy      8 C      -38.018981
+NNatomenergy      9 C      -38.012933
+NNatomenergy     10 C      -37.952059
+NNatomenergy     11 C      -37.922947
+NNatomenergy     12 H       -0.880147
+ -------------------------------------------------------------
+ NNcharges for configuration            1
+ NNcharge      1   -0.03245864
+ NNcharge      2   -0.05614178
+ NNcharge      3    0.10294145
+ NNcharge      4   -0.00715563
+ NNcharge      5    0.00083433
+ NNcharge      6   -0.00235997
+ NNcharge      7   -0.00849072
+ NNcharge      8   -0.01053411
+ NNcharge      9    0.00081462
+ NNcharge     10   -0.02834599
+ NNcharge     11   -0.06064734
+ NNcharge     12    0.10154379
+ -------------------------------------------------------------
+ NN forces for the configuration            1
+ NNforces      1     -0.03084848      0.00994372      0.02035300 Ha/Bohr
+ NNforces      2      0.03575321     -0.00812376     -0.02060840 Ha/Bohr
+ NNforces      3      0.00817873      0.00018015      0.00264405 Ha/Bohr
+ NNforces      4     -0.03267242      0.01204150     -0.00185729 Ha/Bohr
+ NNforces      5      0.03596400     -0.01308899     -0.00394444 Ha/Bohr
+ NNforces      6      0.03510320     -0.00092789      0.01613691 Ha/Bohr
+ NNforces      7     -0.02021497      0.00168076     -0.00075111 Ha/Bohr
+ NNforces      8     -0.01645840     -0.00579815     -0.01639606 Ha/Bohr
+ NNforces      9      0.00292959     -0.00079391      0.01370348 Ha/Bohr
+ NNforces     10      0.01224082      0.01734497     -0.01609327 Ha/Bohr
+ NNforces     11     -0.02441314     -0.00593162      0.01477905 Ha/Bohr
+ NNforces     12     -0.00556215     -0.00652678     -0.00796590 Ha/Bohr
+ -------------------------------------------------------------
+ -------------------------------------------------------------
+  extrapolation warnings for configuration         1
+           extrapolation warnings (energy)         0
+extrapolation warnings (symmetry functions         0
+ -------------------------------------------------------------
+ Total runtime (s)  :          0.014
+ Total runtime (min):          0.000
+ Total runtime (h)  :          0.000
+ Normal termination of RuNNer
+ -------------------------------------------------------------

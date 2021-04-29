@@ -5,17 +5,30 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <mpi.h>
+#include <iostream>
+#include <cmath>
 #include <string.h>
+#include <stdlib.h>  //exit(0);
 #include "pair_nnp.h"
 #include "atom.h"
 #include "comm.h"
+#include "force.h"
 #include "neighbor.h"
 #include "neigh_list.h"
 #include "neigh_request.h"
 #include "memory.h"
 #include "error.h"
 #include "update.h"
-#include "utils.h"
+#include "domain.h" // for the periodicity check (to be used)
+//#include "fix_qeq_gaussian.h"
+
+
+#define SQR(x) ((x)*(x))
+#define MIN_NBRS 100
+#define MIN_CAP  50
+#define DANGER_ZONE    0.90
+#define SAFE_ZONE      1.2
+
 
 using namespace LAMMPS_NS;
 
@@ -23,6 +36,7 @@ using namespace LAMMPS_NS;
 
 PairNNP::PairNNP(LAMMPS *lmp) : Pair(lmp)
 {
+
 }
 
 /* ----------------------------------------------------------------------
@@ -31,12 +45,6 @@ PairNNP::PairNNP(LAMMPS *lmp) : Pair(lmp)
 
 PairNNP::~PairNNP()
 {
-    if (interface.getNnpType() == 4)
-    {
-        memory->destroy(chi);
-        memory->destroy(hardness);
-        memory->destroy(gammaij);
-    }
 }
 
 /* ---------------------------------------------------------------------- */
@@ -46,35 +54,30 @@ void PairNNP::compute(int eflag, int vflag)
   if(eflag || vflag) ev_setup(eflag,vflag);
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
 
-  // Set number of local atoms and add index and element.
-  interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
-
-  // Transfer local neighbor list to NNP interface.
-  transferNeighborList();
-
   if (interface.getNnpType() == 2) //2G-HDNNPs
   {
+      // Set number of local atoms and add index and element.
+      interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
+
+      // Transfer local neighbor list to NNP interface.
+      transferNeighborList();
+
       // Compute symmetry functions, atomic neural networks and add up energy.
       interface.process();
+
   }else if (interface.getNnpType() == 4) //4G-HDNNPs
   {
-      // First call for electronegativity NN
+
+      // TODO: dQdr and other derivative arrays to be included
+      //transferCharges();
+
+      // calculate elec contributions to energy and forces
+      //electrostaticsSerial(eElec,atom->f);
+
+      // run second NN for the short range contributions
+      //std::cout << 14555 << '\n';
       interface.process();
-
-      error->all(FLERR,"sikişşş");
-
-      // Transfer required information to be used in Qeq
-      interface.getQeqArrays(chi,hardness,gammaij);
-
-
-
-      // TODO: Charge equilibration to get Q and dQdr
-
-      // TODO: add a routine to transfer Q and dQdr to n2p2
-      transferCharges();
-
-      // Second call for short range energy
-      interface.process();
+      //exit(0);
   }
 
   // Do all stuff related to extrapolation warnings.
@@ -82,12 +85,16 @@ void PairNNP::compute(int eflag, int vflag)
     handleExtrapolationWarnings();
   }
 
-  // Calculate forces of local and ghost atoms.
+  // get short-range forces of local and ghost atoms.
   interface.getForces(atom->f);
+
+    //for (int i=0; i<13; i++) {
+    //    std::cout << atom->f[i][0] << '\n';
+    //}
 
   // Add energy contribution to total energy.
   if (eflag_global)
-     ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),0.0,0.0,0.0,0.0,0.0);
+     ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),eElec,0.0,0.0,0.0,0.0);
 
   // Add atomic energy if requested (CAUTION: no physical meaning!).
   if (eflag_atom)
@@ -158,13 +165,13 @@ void PairNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg],"showewsum") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      showewsum = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
+      showewsum = force->inumeric(FLERR,arg[iarg+1]);
       iarg += 2;
     // maximum allowed extrapolation warnings
     } else if (strcmp(arg[iarg],"maxew") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      maxew = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
+      maxew = force->inumeric(FLERR,arg[iarg+1]);
       iarg += 2;
     // reset extrapolation warning counter
     } else if (strcmp(arg[iarg],"resetew") == 0) {
@@ -181,13 +188,13 @@ void PairNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg],"cflength") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      cflength = utils::numeric(FLERR,arg[iarg+1],false,lmp);
+      cflength = force->numeric(FLERR,arg[iarg+1]);
       iarg += 2;
     // energy unit conversion factor
     } else if (strcmp(arg[iarg],"cfenergy") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      cfenergy = utils::numeric(FLERR,arg[iarg+1],false,lmp);
+      cfenergy = force->numeric(FLERR,arg[iarg+1]);
       iarg += 2;
     } else error->all(FLERR,"Illegal pair_style command");
   }
@@ -204,10 +211,10 @@ void PairNNP::coeff(int narg, char **arg)
   if (narg != 3) error->all(FLERR,"Incorrect args for pair coefficients");
 
   int ilo,ihi,jlo,jhi;
-  utils::bounds(FLERR,arg[0],1,atom->ntypes,ilo,ihi,error);
-  utils::bounds(FLERR,arg[1],1,atom->ntypes,jlo,jhi,error);
+  force->bounds(FLERR,arg[0],atom->ntypes,ilo,ihi);
+  force->bounds(FLERR,arg[1],atom->ntypes,jlo,jhi);
 
-  maxCutoffRadius = utils::numeric(FLERR,arg[2],false,lmp);
+  maxCutoffRadius = force->numeric(FLERR,arg[2]);
 
   // TODO: Check how this flag is set.
   int count = 0;
@@ -260,6 +267,16 @@ void PairNNP::init_style()
   // maximum symmetry function cutoff radius.
   if (maxCutoffRadius < interface.getMaxCutoffRadius())
     error->all(FLERR,"Inconsistent cutoff radius");
+
+}
+
+/* ----------------------------------------------------------------------
+   init neighbor list(TODO: check this)
+------------------------------------------------------------------------- */
+
+void PairNNP::init_list(int /*id*/, NeighList *ptr)
+{
+    list = ptr;
 }
 
 /* ----------------------------------------------------------------------
@@ -324,20 +341,7 @@ void PairNNP::allocate()
 
   memory->create(cutsq,n+1,n+1,"pair:cutsq");
 
-  // TODO: check this later
-  // memory allocation for 4G-HDNNPs
-  if (interface.getNnpType() == 4)
-  {
-      int nloc = atom->nlocal;
-      int nall = atom->nghost + atom->nlocal;
-      memory->create(chi,nall,"qeq_gaussian:chi");
-      memory->create(hardness,nall,"qeq_gaussian:hardness");
-      memory->create(gammaij,nall,"qeq_gaussian:gammaij");
-  }
 }
-
-void PairNNP::transferCharges()
-{}
 
 void PairNNP::transferNeighborList()
 {
@@ -357,6 +361,15 @@ void PairNNP::transferNeighborList()
       }
     }
   }
+}
+
+// TODO
+void PairNNP::transferCharges()
+{
+    // Transfer charges and charge derivative arrays to n2p2 for the calculation of short range energy & forces
+    for (int i = 0; i < atom->nlocal; ++i) {
+        interface.addCharge(i,atom->q[i]);
+    }
 }
 
 void PairNNP::handleExtrapolationWarnings()
@@ -449,3 +462,8 @@ void PairNNP::handleExtrapolationWarnings()
   // Reset internal extrapolation warnings counters.
   interface.clearExtrapolationWarnings();
 }
+
+
+
+
+

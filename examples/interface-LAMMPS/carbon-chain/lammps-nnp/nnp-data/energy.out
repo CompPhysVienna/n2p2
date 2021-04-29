@@ -1,0 +1,16 @@
+################################################################################
+# Energy comparison.
+################################################################################
+# Col  Name     Description
+################################################################################
+# 1    conf     Configuration index (starting with 1).
+# 2    natoms   Number of atoms in configuration.
+# 3    Eref     Reference potential energy.
+# 4    Ennp     Potential energy predicted by NNP.
+# 5    Ediff    Difference in energy per atom between reference and NNP prediction.
+# 6    E_offset Sum of atomic offset energies (included in column Ennp).
+#########################################################################################################################
+#        1          2                        3                        4                        5                        6
+#     conf     natoms                     Eref                     Ennp                    Ediff                 E_offset
+#########################################################################################################################
+         1         12   0.0000000000000000E+00  -3.8161081273904063E+02   3.1800901061586718E+01  -3.7839893392473289E+02

@@ -39,7 +39,8 @@ InterfaceLammps::InterfaceLammps() : myRank      (0    ),
                                      showewsum   (0    ),
                                      maxew       (0    ),
                                      cflength    (1.0  ),
-                                     cfenergy    (1.0  )
+                                     cfenergy    (1.0  ),
+                                     isElecDone  (false)
                                      
 {
 }
@@ -322,27 +323,41 @@ void InterfaceLammps::addNeighbor(int    i,
     return;
 }
 
-void InterfaceLammps::process()
+void InterfaceLammps::process() //TODO : add comments
 {
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
-    calculateAtomicNeuralNetworks(structure, true);
-    if (nnpType == NNPType::HDNNP_4G)
+    if (nnpType == NNPType::HDNNP_2G)
     {
-        chargeEquilibration(structure);
-        calculateAtomicNeuralNetworks(structure, true, "short");
+        calculateAtomicNeuralNetworks(structure, true);
+        calculateEnergy(structure);
+        if (normalize)
+        {
+            structure.energy = physicalEnergy(structure, false);
+        }
+        addEnergyOffset(structure, false);
     }
-    calculateEnergy(structure);
-    if (nnpType == NNPType::HDNNP_4G ||
-        nnpType == NNPType::HDNNP_Q) calculateCharge(structure);
-    if (normalize)
+    else if (nnpType == NNPType::HDNNP_4G)
     {
-        structure.energy = physicalEnergy(structure, false);
+        if (!isElecDone)
+        {
+            calculateAtomicNeuralNetworks(structure, true, "elec");
+            isElecDone = true;
+        } else
+        {
+            calculateAtomicNeuralNetworks(structure, true, "short");
+            isElecDone = false;
+            calculateEnergy(structure);
+            if (normalize)
+            {
+                structure.energy = physicalEnergy(structure, false);
+            }
+            addEnergyOffset(structure, false);
+        }
     }
-    addEnergyOffset(structure, false);
 
     return;
 }
@@ -358,12 +373,53 @@ double InterfaceLammps::getEnergy() const
     return structure.energy / cfenergy;
 }
 
+double InterfaceLammps::getTotalCharge() const
+{
+    return structure.chargeRef;
+}
+
+void InterfaceLammps::getScreeningInfo(double* const& rScreen) const
+{
+    // TODO: pull latest changes and read these properly !!
+    rScreen[0] = 4.8;
+    rScreen[1] = 8.0;
+    rScreen[2] = 1.0 / (rScreen[1] - rScreen[0]); // scale
+}
+
 double InterfaceLammps::getAtomicEnergy(int index) const
 {
     Atom const& a = structure.atoms.at(index);
 
     if (normalize) return physical("energy", a.energy) / cfenergy;
     else return a.energy / cfenergy;
+}
+
+void InterfaceLammps::getQeqParams(double* const& atomChi, double* const& atomJ,
+                     double* const& atomSigma) const
+{
+    Atom const* a = NULL;
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
+       a = &(structure.atoms.at(i));
+       size_t const ia = a->index;
+       size_t const ea = a->element;
+       atomChi[ia] = a->chi;
+       atomJ[ia] = elements.at(ea).getHardness();
+       atomSigma[ia] = elements.at(ea).getQsigma();
+    }
+
+    return;
+}
+
+void InterfaceLammps::addCharge(int index, double Q)
+{
+    Atom& a = structure.atoms.at(index);
+    a.charge = Q;
+}
+
+void InterfaceLammps::setElecDone()
+{
+    if (isElecDone) isElecDone = false;
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const

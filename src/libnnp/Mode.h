@@ -454,6 +454,11 @@ public:
     /** Erase all extrapolation warnings and reset counters.
      */
     void                     resetExtrapolationWarnings();
+    /** Getter for Mode::nnpType.
+     *
+     * @return NNP type.
+     */
+    int                   getNnpType() const;
     /** Getter for Mode::meanEnergy.
      *
      * @return Mean energy per atom.
@@ -621,6 +626,10 @@ protected:
 inline double Mode::getMeanEnergy() const
 {
     return meanEnergy;
+}
+inline int Mode::getNnpType() const
+{
+    return (int)nnpType;
 }
 
 inline double Mode::getConvEnergy() const

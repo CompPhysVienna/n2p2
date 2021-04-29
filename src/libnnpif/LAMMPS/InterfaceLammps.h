@@ -97,6 +97,16 @@ public:
      * @return Sum of local energy contributions.
      */
     double getEnergy() const;
+    /** Reads reference charge.
+     *
+     * @return Reference total charge of a structure.
+     */
+    double getTotalCharge() const;
+    /** Read inner and outer radii for screening electrostatics.
+     *
+     * @param[in] vector containing inner radius, outer radius and scale value.
+     */
+    void getScreeningInfo(double* const& rScreen) const;
     /** Return energy contribution of one atom.
      *
      * @param[in] index Atom index.
@@ -144,7 +154,14 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
+    /** TODO: Add missing comments later during clean-up
+     */
+    void   addCharge(int index, double Q);
 
+    void   getQeqParams(double* const& atomChi, double* const& atomJ,
+            double* const& atomSigma) const;
+
+    void   setElecDone();
 protected:
     /// Process rank.
     int                        myRank;
@@ -174,6 +191,8 @@ protected:
     std::map<std::size_t, int> mapElementToType;
     /// Structure containing local atoms.
     Structure                  structure;
+    /// True if first NN is calculated
+    bool                       isElecDone;
 };
 
 //////////////////////////////////

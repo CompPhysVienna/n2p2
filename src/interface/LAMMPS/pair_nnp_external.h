@@ -6,24 +6,25 @@
 
 #ifdef PAIR_CLASS
 
-PairStyle(nnp,PairNNP)
+PairStyle(nnp/external,PairNNPExternal)
 
 #else
 
-#ifndef LMP_PAIR_NNP_H
-#define LMP_PAIR_NNP_H
+#ifndef LMP_PAIR_NNP_EXTERNAL_H
+#define LMP_PAIR_NNP_EXTERNAL_H
 
 #include "pair.h"
-#include "InterfaceLammps.h"
+#include "ElementMap.h"
+#include "Structure.h"
 
 namespace LAMMPS_NS {
 
-class PairNNP : public Pair {
+class PairNNPExternal : public Pair {
 
  public:
 
-  PairNNP(class LAMMPS *);
-  virtual ~PairNNP();
+  PairNNPExternal(class LAMMPS *);
+  virtual ~PairNNPExternal();
   virtual void compute(int, int);
   virtual void settings(int, char **);
   virtual void coeff(int, char **);
@@ -37,25 +38,15 @@ class PairNNP : public Pair {
  protected:
 
   virtual void allocate();
-  void transferNeighborList();
-  void transferCharges();
-  void handleExtrapolationWarnings();
 
-  bool showew;
-  bool resetew;
-  int showewsum;
-  int maxew;
-  long numExtrapolationWarningsTotal;
-  long numExtrapolationWarningsSummary;
   double cflength;
   double cfenergy;
   double maxCutoffRadius;
   char* directory;
-  char* emap;
-  nnp::InterfaceLammps interface;
-  // TODO: check this later
-  double *chi,*hardness;
-  double **gammaij;
+  char* elements;
+  char* command;
+  nnp::ElementMap em;
+  nnp::Structure structure;
 };
 
 }
