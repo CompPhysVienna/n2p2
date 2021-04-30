@@ -234,13 +234,13 @@ void Mode::loadSettingsFile(string const& fileName)
             throw runtime_error("ERROR: Unknown committee mode.\n");
         }
         if ((committeeMode == CommitteeMode::VALIDATION ||
-            committeeMode == CommitteeMode::PREDICTION))
+             committeeMode == CommitteeMode::PREDICTION))
         {
             vector<string> committeeArgs = split(settings["committee_data"]);
             committeePrefix = committeeArgs.at(0);
             committeeSize = atoi(committeeArgs.at(1).c_str());
             log << strpr("Committee-NNP dir prefix: %s\n",
-                        committeePrefix.c_str());
+                         committeePrefix.c_str());
             log << strpr("Committee-NNP size      : %zu\n", committeeSize);
         }
     }    
@@ -254,7 +254,10 @@ void Mode::loadSettingsFile(string const& fileName)
 void Mode::committeeException()
 {
     if (committeeSize != 1)
-        throw runtime_error("ERROR: Committee training is not implemented. Set committee size to 1.\n");
+    {
+        throw runtime_error("ERROR: Committee training is not implemented. "
+                            "Set committee size to 1.\n");
+    }
 }
 
 void Mode::setupGeneric(string const& nnpDir,
@@ -1503,7 +1506,6 @@ void Mode::setupNeuralNetwork()
             for (size_t j = 0; j < committeeSize; ++j)
             {
                 string id = k + committeeIds.at(j);
-                map<int, double> bla;
                 e.neuralNetworks.emplace(
                                     piecewise_construct,
                                     forward_as_tuple(id),
@@ -1748,11 +1750,13 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 nn.propagate();
 
                 if (derivatives)
+                {
                     it->dEdGCom.at(c).resize(it->dEdG.size());
                     nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
                     if (c == 0) copy(it->dEdGCom.at(c).begin(),
                                      it->dEdGCom.at(c).end(),
                                      it->dEdG.begin());
+                }
                 nn.getOutput(&(it->energyCom.at(c)));
                 if (c == 0) it->energy = it->energyCom.at(c);
             }
@@ -1914,12 +1918,19 @@ void Mode::calculateEnergy(Structure& structure) const
         }
 
         if (committeeMode != CommitteeMode::PREDICTION)
+        {
             structure.energyShort = structure.energyCom.at(0);
+        }
         else
+        {
             structure.energyShort = structure.averageEnergy();
+        }
         structure.energy = structure.energyShort + structure.energyElec;
+
         if (committeeMode != CommitteeMode::DISABLED)
+        {
             structure.committeeDisagreement = structure.calcDisagreement();
+        }
     }
     else
     {
@@ -2249,7 +2260,7 @@ void Mode::addEnergyOffset(Structure& structure, bool ref)
             for (size_t c = 0; c < structure.energyCom.size(); ++c)
             {
                 structure.energyCom.at(c) += structure.numAtomsPerElement.at(i)
-                                  * elements.at(i).getAtomicEnergyOffset();
+                    * elements.at(i).getAtomicEnergyOffset();
             }
         }
     }

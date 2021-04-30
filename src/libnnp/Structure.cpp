@@ -1336,7 +1336,9 @@ void Structure::toPhysicalUnits(double meanEnergy,
     chargeRef /= convCharge;
     charge /= convCharge;
     for (auto& en : energyCom)
+    {
         en = en / convEnergy + numAtoms * meanEnergy;
+    }
     committeeDisagreement = committeeDisagreement / convEnergy;
     volume /= convLength * convLength * convLength;
 
@@ -1738,20 +1740,21 @@ vector<string> Structure::info() const
     return v;
 }
 
-double Structure::averageEnergy()
+double Structure::averageEnergy() const
 {    
     double energySum = 0.0;
-    for (auto& en : energyCom)
-        energySum += en;
+    for (auto const& en : energyCom) energySum += en;
 
-    return energySum/energyCom.size();
+    return energySum / energyCom.size();
 }
 
-double Structure::calcDisagreement()
+double Structure::calcDisagreement() const
 {    
     double energySum = 0.0;
-    for (auto& en : energyCom)
-        energySum += pow((energy - en),2);
+    for (auto const& en : energyCom)
+    {
+        energySum += (energy - en) * (energy - en);
+    }
         
-    return sqrt(energySum/energyCom.size());
+    return sqrt(energySum / energyCom.size());
 } 

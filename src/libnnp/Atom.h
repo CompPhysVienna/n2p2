@@ -132,7 +132,7 @@ struct Atom
     /// Partial derivative of electrostatic energy with respect to this atom's
     /// coordinates.
     Vec3D                    pEelecpr;
-    /// Committee energy disagreement
+    /// Committee force disagreement
     Vec3D                    committeeDisagreement;
     /// List of unique neighbor indices (don't count multiple PBC images).
     std::vector<std::size_t> neighborsUnique;
