@@ -796,8 +796,6 @@ void Structure::calculateDQdChi(vector<Eigen::VectorXd> &dQdChi)
         VectorXd b(numAtoms+1);
         b.setZero();
         b(i) = -1.;
-        //cout << "A: " << A.rows() << ", " << A.cols() <<endl;
-        //cout << "b: " << b.size() << endl;
         dQdChi.at(i) = A.colPivHouseholderQr().solve(b).head(numAtoms);
     }
     return;

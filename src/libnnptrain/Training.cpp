@@ -299,6 +299,8 @@ void Training::initializeWeightsMemory(UpdateStrategy updateStrategy)
             weightsOffset.push_back(numWeights);
             numWeights += elements.at(i).neuralNetworks.at(nnId)
                           .getNumConnections();
+            // sqrt of Hardness of element is included in weights vector
+            if (nnpType == NNPType::HDNNP_4G) numWeights ++;
         }
         weights.resize(numUpdaters);
         weights.at(0).resize(numWeights, 0.0);
@@ -870,6 +872,8 @@ void Training::calculateNeighborLists()
     log << "Calculating neighbor lists for all structures.\n";
     double maxCutoffRadiusPhys = maxCutoffRadius;
     if (normalize) maxCutoffRadiusPhys = maxCutoffRadius / convLength;
+    // TODO: may not actually be cutoff (ewald real space cutoff is often
+    // larger)
     log << strpr("Cutoff radius for neighbor lists: %f\n",
                  maxCutoffRadiusPhys);
     for (vector<Structure>::iterator it = structures.begin();
@@ -1938,17 +1942,22 @@ void Training::update(string const& property)
             else iu = 0;
             if (parallelMode == PM_TRAIN_ALL && jacobianMode != JM_SUM)
             {
+                // Offset from multiple streams/tasks
                 offset.at(i) += pu.offsetPerTask.at(myRank)
                               * numWeightsPerUpdater.at(iu);
                 //log << strpr("%zu os 1: %zu ", i, offset.at(i));
             }
             if (jacobianMode == JM_FULL)
             {
+                // Offset from batch training (multiple contributions from
+                // single stream/task 
                 offset.at(i) += b * numWeightsPerUpdater.at(iu);
                 //log << strpr("%zu os 2: %zu ", i, offset.at(i));
             }
             if (updateStrategy == US_COMBINED)
             {
+                // Offset from multiple elements in contribution from single
+                // stream/task
                 offset.at(i) += weightsOffset.at(i);
                 //log << strpr("%zu os 3: %zu", i, offset.at(i));
             }
@@ -2040,32 +2049,77 @@ void Training::update(string const& property)
         }
         else if (k == "charge")
         {
-            // Shortcut to selected atom.
-            Atom& a = s.atoms.at(c->a);
-            size_t i = a.element;
-            NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
-            nn.setInput(&(a.G.front()));
-            nn.propagate();
-
             // Assume stage 1.
             if (nnpType == NNPType::HDNNP_4G)
             {
-                nn.getOutput(&(a.chi));
-                // Compute derivative of output node with respect to all
-                // neural network connections (weights + biases).
-                nn.calculateDEdc(&(dXdc.at(i).front()));
+                
+                // Vector for storing all atoms dChi/dc
+                vector<vector<double>> dChidc;
+                dChidc.resize(s.numAtoms);
+                for (size_t k = 0; k < s.numAtoms; ++k)
+                {
+                    Atom& ak = s.atoms.at(k);
+                    size_t n = elements.at(ak.element).neuralNetworks.at(nnId)
+                               .getNumConnections();
+                    dChidc.at(k).resize(n, 0.0);
 
-                // TODO: Lots of stuff.
-                //throw runtime_error("ERROR: Not implemented.\n");
+                    NeuralNetwork& nn = 
+                        elements.at(ak.element).neuralNetworks.at(nnId);
+                    nn.setInput(&(ak.G.front()));
+                    nn.propagate();
+                    nn.getOutput(&(ak.chi));
+                    // Compute derivative of output node with respect to all
+                    // neural network connections (weights + biases).
+                    nn.calculateDEdc(&(dChidc.at(k).front()));
+                }
+                // TODO: this function generates log, but runs on multiple
+                // processes --> logs interfere with each other.
                 chargeEquilibration(s);
+
+                // for testing:
+                cout << "hardness: " << endl;
+                for (size_t k = 0; k < numElements; ++k)
+                {
+                    cout << "El Nr.:" << k << ", J: " << elements.at(k).getHardness() << endl;
+                }
+
                 vector<Eigen::VectorXd> dQdChi;
-                vector<Eigen::VectorXd> dQdJ;
                 s.calculateDQdChi(dQdChi);
+                vector<Eigen::VectorXd> dQdJ;
                 s.calculateDQdJ(dQdJ);
+
+                // Shortcut to element of selected atom.
+                size_t i = s.atoms.at(c->a).element;
+                // Finally sum up Jacobian.
+                // weights
+                for (size_t k = 0; k < s.numAtoms; ++k)
+                {
+                    size_t l = s.atoms.at(k).element;
+                    for (size_t j = 0; j < dChidc.at(k).size(); ++j)
+                    {
+                        // dQ/dChi * dChi/dc 
+                        pu.jacobian.at(0).at(offset.at(l) + j) +=
+                            dQdChi.at(k)(i) * dChidc.at(k).at(j);
+                    }
+                }
+                // hardness (actually h, where J=h^2)
+                for (size_t k = 0; k < numElements; ++k)
+                {
+                    size_t n = elements.at(k).neuralNetworks.at(nnId)
+                               .getNumConnections();
+                    pu.jacobian.at(0).at(offset.at(k) + n) = dQdJ.at(k)(i) 
+                                    * 2 * sqrt(elements.at(k).getHardness());
+                }
             }
 
             else if (nnpType == NNPType::HDNNP_Q)
             {
+                // Shortcut to selected atom.
+                Atom& a = s.atoms.at(c->a);
+                size_t i = a.element;
+                NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
+                nn.setInput(&(a.G.front()));
+                nn.propagate();
                 nn.getOutput(&(a.charge));
                 // Compute derivative of output node with respect to all
                 // neural network connections (weights + biases).
@@ -2538,6 +2592,13 @@ void Training::getWeights()
             NeuralNetwork const& nn = elements.at(i).neuralNetworks.at(nnId);
             nn.getConnections(&(weights.at(0).at(pos)));
             pos += nn.getNumConnections();
+            // Leave slot for sqrt of hardness
+            if (nnpType == NNPType::HDNNP_4G) 
+            {
+                // TODO: check that hardnes is positive?
+                weights.at(0).at(pos) = sqrt(elements.at(i).getHardness());
+                pos ++;
+            }
         }
     }
     else if (updateStrategy == US_ELEMENT)
@@ -2562,6 +2623,12 @@ void Training::setWeights()
             NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
             nn.setConnections(&(weights.at(0).at(pos)));
             pos += nn.getNumConnections();
+            // hardness
+            if (nnpType == NNPType::HDNNP_4G)
+            {
+                elements.at(i).setHardness(pow(weights.at(0).at(pos),2));
+                pos ++;
+            }
         }
     }
     else if (updateStrategy == US_ELEMENT)

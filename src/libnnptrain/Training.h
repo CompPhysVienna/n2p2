@@ -437,7 +437,7 @@ private:
     std::size_t              writeNeuronStatisticsAlways;
     /// Update counter (for all training quantities together).
     std::size_t              countUpdates;
-    /// Total number of weights.
+    /// Total number of weights. If nnpType 4G also h = sqrt(J) is counted.
     std::size_t              numWeights;
     /// Force update weight.
     double                   forceWeight;
@@ -449,9 +449,11 @@ private:
     std::ofstream            trainingLog;
     /// Update schedule epoch (false = energy update, true = force update).
     std::vector<int>         epochSchedule;
-    /// Number of weights per updater.
+    /// Number of weights per updater. If nnpType 4G also h = sqrt(J) is 
+    /// counted.
     std::vector<std::size_t> numWeightsPerUpdater;
-    /// Offset of each element's weights in combined array.
+    /// Offset of each element's weights in combined array. If nnpType 4G also 
+    /// h = sqrt(J) is counted.
     std::vector<std::size_t> weightsOffset;
     /// Vector of actually used training properties.
     std::vector<std::string> pk;
@@ -460,7 +462,8 @@ private:
     /// coordinate.
     std::vector<double>      dGdxia;
 #endif
-    /// Neural network weights and biases for each element.
+    /// Neural network weights and biases for each element. If nnpType 4G also
+    ///  h = sqrt(J) included.
     std::vector<
     std::vector<double> >    weights;
     /// Weight updater (combined or for each element).
