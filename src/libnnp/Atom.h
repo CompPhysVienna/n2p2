@@ -120,7 +120,7 @@ struct Atom
     Vec3D                    f;
     /// Reference force vector from data set.
     Vec3D                    fRef;
-    /// Committee energy disagreement
+    /// Committee force disagreement
     Vec3D                    committeeDisagreement;
     /// List of unique neighbor indices (don't count multiple PBC images).
     std::vector<std::size_t> neighborsUnique;

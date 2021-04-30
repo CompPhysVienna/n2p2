@@ -220,13 +220,13 @@ void Mode::loadSettingsFile(string const& fileName)
             throw runtime_error("ERROR: Unknown committee mode.\n");
         }
         if ((committeeMode == CommitteeMode::VALIDATION ||
-            committeeMode == CommitteeMode::PREDICTION))
+             committeeMode == CommitteeMode::PREDICTION))
         {
             vector<string> committeeArgs = split(settings["committee_data"]);
             committeePrefix = committeeArgs.at(0);
             committeeSize = atoi(committeeArgs.at(1).c_str());
             log << strpr("Committee-NNP dir prefix: %s\n",
-                        committeePrefix.c_str());
+                         committeePrefix.c_str());
             log << strpr("Committee-NNP size      : %zu\n", committeeSize);
         }
     }    
@@ -240,7 +240,10 @@ void Mode::loadSettingsFile(string const& fileName)
 void Mode::committeeException()
 {
     if (committeeSize != 1)
-        throw runtime_error("ERROR: Committee training is not implemented. Set committee size to 1.\n");
+    {
+        throw runtime_error("ERROR: Committee training is not implemented. "
+                            "Set committee size to 1.\n");
+    }
 }
 
 void Mode::setupGeneric()
@@ -1155,7 +1158,6 @@ void Mode::setupNeuralNetwork()
         for (size_t j = 0; j < committeeSize; ++j)
         {
             string id = "short" + committeeIds.at(j);
-            map<int, double> bla;
             e.neuralNetworks.emplace(
                                     piecewise_construct,
                                     forward_as_tuple(id),
@@ -1403,11 +1405,13 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 nn.propagate();
 
                 if (derivatives)
+                {
                     it->dEdGCom.at(c).resize(it->dEdG.size());
                     nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
                     if (c == 0) copy(it->dEdGCom.at(c).begin(),
                                      it->dEdGCom.at(c).end(),
                                      it->dEdG.begin());
+                }
                 nn.getOutput(&(it->energyCom.at(c)));
                 if (c == 0) it->energy = it->energyCom.at(c);
             }
@@ -1466,11 +1470,18 @@ void Mode::calculateEnergy(Structure& structure) const
     }
 
     if (committeeMode != CommitteeMode::PREDICTION)
+    {
         structure.energy = structure.energyCom.at(0);
+    }
     else
+    {
         structure.energy = structure.averageEnergy();
+    }
+
     if (committeeMode != CommitteeMode::DISABLED)
+    {
         structure.committeeDisagreement = structure.calcDisagreement();
+    }
     
     return;
 }
@@ -1516,13 +1527,13 @@ void Mode::calculateForces(Structure& structure) const
 
             // Now loop over all neighbor atoms j of atom i. These may hold
             // non-zero derivatives of their symmetry functions with respect to
-            // atom i's coordinates. Some atoms may appear multiple times in the
-            // neighbor list because of periodic boundary conditions. To avoid
-            // that the same contributions are added multiple times use the
-            // "unique neighbor" list (but skip the first entry, this is always
-            // atom i itself).
+            // atom i's coordinates. Some atoms may appear multiple times in
+            // the neighbor list because of periodic boundary conditions. To
+            // avoid that the same contributions are added multiple times use
+            // the "unique neighbor" list (but skip the first entry, this is
+            // always atom i itself).
             for (vector<size_t>::const_iterator it =
-                 ai->neighborsUnique.begin() + 1;
+                 ai->neighborsUnique.begin();
                  it != ai->neighborsUnique.end(); ++it)
             {
                 // Define shortcut for atom j (aj).
@@ -1531,7 +1542,8 @@ void Mode::calculateForces(Structure& structure) const
                 vector<vector<size_t> > const& tableFull
                     = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
-                // Loop over atom j's neighbors (n), atom i should be one of them.
+                // Loop over atom j's neighbors (n), atom i should be one of
+                // them.
                 for (vector<Atom::Neighbor>::const_iterator n =
                      aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
                 {
@@ -1542,24 +1554,26 @@ void Mode::calculateForces(Structure& structure) const
                         vector<size_t> const& table = tableFull.at(n->element);
                         for (size_t j = 0; j < n->dGdr.size(); ++j)
                         {
-                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(table.at(j)) * n->dGdr.at(j);
+                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(table.at(j))
+                                            * n->dGdr.at(j);
                         }
 #else
                         for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
                         {
-                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(j) * n->dGdr.at(j);
+                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(j)
+                                            * n->dGdr.at(j);
                         }
 #endif
                     }
                 }
             }
         }
-        if (committeeMode != CommitteeMode::PREDICTION)
-            ai->f = ai->fCom.at(0);
-        else
-            ai->f = ai->averageForce();
+        if (committeeMode != CommitteeMode::PREDICTION) ai->f = ai->fCom.at(0);
+        else ai->f = ai->averageForce();
         if (committeeMode != CommitteeMode::DISABLED)
+        {
             ai->committeeDisagreement = ai->calcDisagreement();
+        }
     }
 
     return;
@@ -1581,7 +1595,7 @@ void Mode::addEnergyOffset(Structure& structure, bool ref)
             for (size_t c = 0; c < committeeSize; ++c)
             {
                 structure.energyCom.at(c) += structure.numAtomsPerElement.at(i)
-                                  * elements.at(i).getAtomicEnergyOffset();
+                    * elements.at(i).getAtomicEnergyOffset();
             }
         }
     }

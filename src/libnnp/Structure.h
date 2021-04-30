@@ -336,11 +336,11 @@ struct Structure
      *
      * @return Return committee energy.
      */
-    double                  averageEnergy();
+    double                  averageEnergy() const;
     /** Calculate committee disagreement for energy.
      * @return Return committee disagreement for energy.
      */
-    double                  calcDisagreement();
+    double                  calcDisagreement() const;
 
 };
 

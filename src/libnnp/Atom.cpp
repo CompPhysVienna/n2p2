@@ -117,7 +117,9 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
     f /= convEnergy / convLength;
     fRef /= convEnergy / convLength;
     for (auto& f : fCom)
+    {
         f /= convEnergy / convLength;
+    }
     committeeDisagreement /= convEnergy / convLength;
     if (hasSymmetryFunctionDerivatives)
     {
@@ -520,11 +522,13 @@ vector<string> Atom::Neighbor::info() const
 
 Vec3D Atom::averageForce() const
 {    
-    Vec3D forceSum = {0.0,0.0,0.0};
+    Vec3D forceSum = {0.0, 0.0, 0.0};
     for (size_t c = 0; c < fCom.size(); ++c)
     { 
         for (size_t i = 0; i < 3; ++i)
+        {
             forceSum[i] += fCom.at(c)[i];
+        }
     }
 
     return forceSum/fCom.size();
@@ -532,15 +536,20 @@ Vec3D Atom::averageForce() const
 
 Vec3D Atom::calcDisagreement() const
 {   
-    Vec3D forceSum = {0.0,0.0,0.0};
+    Vec3D forceSum = {0.0, 0.0, 0.0};
     size_t comSize = fCom.size();
     for (size_t c = 0; c < comSize; ++c)
     { 
         for (size_t i = 0; i < 3; ++i)
-            forceSum[i] += pow((f[i] - fCom.at(c)[i]),2);
+        {
+            double const diff = f[i] - fCom.at(c)[i];
+            forceSum[i] += diff * diff;
+        }
     }
     for (size_t i = 0; i < 3; ++i)
-        forceSum[i] = sqrt(forceSum[i]/comSize);
+    {
+        forceSum[i] = sqrt(forceSum[i] / comSize);
+    }
 
     return forceSum;
 } 
