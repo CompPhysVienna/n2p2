@@ -165,13 +165,13 @@ void PairNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg],"showewsum") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      showewsum = force->inumeric(FLERR,arg[iarg+1]);
+      showewsum = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     // maximum allowed extrapolation warnings
     } else if (strcmp(arg[iarg],"maxew") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      maxew = force->inumeric(FLERR,arg[iarg+1]);
+      maxew = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     // reset extrapolation warning counter
     } else if (strcmp(arg[iarg],"resetew") == 0) {
@@ -188,13 +188,13 @@ void PairNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg],"cflength") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      cflength = force->numeric(FLERR,arg[iarg+1]);
+      cflength = utils::numeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     // energy unit conversion factor
     } else if (strcmp(arg[iarg],"cfenergy") == 0) {
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
-      cfenergy = force->numeric(FLERR,arg[iarg+1]);
+      cfenergy = utils::numeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     } else error->all(FLERR,"Illegal pair_style command");
   }
@@ -211,10 +211,11 @@ void PairNNP::coeff(int narg, char **arg)
   if (narg != 3) error->all(FLERR,"Incorrect args for pair coefficients");
 
   int ilo,ihi,jlo,jhi;
-  force->bounds(FLERR,arg[0],atom->ntypes,ilo,ihi);
-  force->bounds(FLERR,arg[1],atom->ntypes,jlo,jhi);
 
-  maxCutoffRadius = force->numeric(FLERR,arg[2]);
+  utils::bounds(FLERR,arg[0],1,atom->ntypes,ilo,ihi,error);
+  utils::bounds(FLERR,arg[1],1,atom->ntypes,jlo,jhi,error);
+
+  maxCutoffRadius = utils::numeric(FLERR,arg[2],false,lmp);
 
   // TODO: Check how this flag is set.
   int count = 0;

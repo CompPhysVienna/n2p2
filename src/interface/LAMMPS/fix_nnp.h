@@ -67,9 +67,11 @@ namespace LAMMPS_NS {
         double *fLambda,*dchidxyz,*dEdQ;
 
         bigint ngroup;
+        int nprev,dum1,dum2;
 
         // charges
         double *Q;
+        double **Q_hist; // do we need this ???
 
         void allocate_qeq();
         void deallocate_qeq();
@@ -112,13 +114,13 @@ namespace LAMMPS_NS {
         void calculate_fLambda();
 
         // Minimization Setup for QEq energy
-        double QEq_energy(const gsl_vector*);
-        void dEdQ(const gsl_vector*, gsl_vector*);
-        void EdEdQ(const gsl_vector*, double*, gsl_vector*);
+        double QEq_f(const gsl_vector*);
+        void QEq_df(const gsl_vector*, gsl_vector*);
+        void QEq_fdf(const gsl_vector*, double*, gsl_vector*);
 
-        static double QEq_energy_wrap(const gsl_vector*, void*);
-        static void dEdQ_wrap(const gsl_vector*, void*, gsl_vector*);
-        static void EdEdQ_wrap(const gsl_vector*, void*, double*, gsl_vector*);
+        static double QEq_f_wrap(const gsl_vector*, void*);
+        static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*);
+        static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*);
 
         void calculate_QEqCharges();
 
@@ -131,7 +133,7 @@ namespace LAMMPS_NS {
         double screen_df(double);
         void screen_fdf();
 
-        /// Matrix Approach (DEPRECATED)
+        /// Matrix Approach (DEPRECATED and to be cleaned up)
 
         typedef struct{
             int n, m;
@@ -155,7 +157,6 @@ namespace LAMMPS_NS {
         void init_A();
         virtual void compute_A();
         double calculate_A(int, int, double);
-        virtual void calculate_Q();
 
         void compute_dAdxyzQ();
         double calculate_dAdxyzQ(double, double, int, int);

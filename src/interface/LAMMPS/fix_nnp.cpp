@@ -32,8 +32,7 @@
 #include "memory.h"
 #include "citeme.h"
 #include "error.h"
-#include "cg.h"  // for the CG library
-
+#include "utils.h"
 
 
 using namespace LAMMPS_NS;
@@ -54,13 +53,13 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     //TODO: this is designed for a normal fix that is invoked in the LAMMPS script
     if (narg<8 || narg>9) error->all(FLERR,"Illegal fix nnp command");
 
-    nevery = force->inumeric(FLERR,arg[3]);
+    nevery = utils::inumeric(FLERR,arg[3],false,lmp);
     if (nevery <= 0) error->all(FLERR,"Illegal fix nnp command");
 
-    dum1 = force->numeric(FLERR,arg[4]);
-    dum2 = force->numeric(FLERR,arg[5]);
+    dum1 = utils::numeric(FLERR,arg[4],false,lmp);
+    dum2 = utils::numeric(FLERR,arg[5],false,lmp);
 
-    tolerance = force->numeric(FLERR,arg[6]);
+    tolerance = utils::numeric(FLERR,arg[6],false,lmp);
     int len = strlen(arg[7]) + 1;
     pertype_option = new char[len];
     strcpy(pertype_option,arg[7]);
@@ -90,20 +89,6 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     b_der = NULL;
     b_prc = NULL;
     b_prm = NULL;
-
-    // CG
-    p = NULL;
-    q = NULL;
-    r = NULL;
-    d = NULL;
-
-    // H matrix
-    A.firstnbr = NULL;
-    A.numnbrs = NULL;
-    A.jlist = NULL;
-    A.val = NULL;
-    A.val2d = NULL;
-    A.dvalq = NULL;
 
     comm_forward = comm_reverse = 1;
 
@@ -461,7 +446,7 @@ void FixNNP::pre_force(int /*vflag*/) {
     }
 }
 
-double FixNNP::QEq_energy(const gsl_vector *v)
+double FixNNP::QEq_f(const gsl_vector *v)
 {
     int i,j;
 
@@ -522,12 +507,12 @@ double FixNNP::QEq_energy(const gsl_vector *v)
     return E_qeq;
 }
 
-double FixNNP::QEq_energy_wrap(const gsl_vector *v, void *params)
+double FixNNP::QEq_f_wrap(const gsl_vector *v, void *params)
 {
-    return static_cast<FixNNP*>(params)->QEq_energy(v);
+    return static_cast<FixNNP*>(params)->QEq_f(v);
 }
 
-void FixNNP::dEdQ(const gsl_vector *v, gsl_vector *dEdQ)
+void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
 {
     int i,j;
     int nlocal = atom->nlocal;
@@ -572,20 +557,20 @@ void FixNNP::dEdQ(const gsl_vector *v, gsl_vector *dEdQ)
     //MPI_Allreduce(dEdQ, MPI_SUM...)
 }
 
-void FixNNP::dEdQ_wrap(const gsl_vector *v, void *params, gsl_vector *df)
+void FixNNP::QEq_df_wrap(const gsl_vector *v, void *params, gsl_vector *df)
 {
-    static_cast<FixNNP*>(params)->dEdQ(v, df);
+    static_cast<FixNNP*>(params)->QEq_df(v, df);
 }
 
-void FixNNP::EdEdQ(const gsl_vector *v, double *f, gsl_vector *df)
+void FixNNP::QEq_fdf(const gsl_vector *v, double *f, gsl_vector *df)
 {
-    *f = QEq_energy(v);
-    dEdQ(v, df);
+    *f = QEq_f(v);
+    QEq_df(v, df);
 }
 
-void FixNNP::EdEdQ_wrap(const gsl_vector *v, void *params, double *E, gsl_vector *df)
+void FixNNP::QEq_fdf_wrap(const gsl_vector *v, void *params, double *E, gsl_vector *df)
 {
-    static_cast<FixNNP*>(params)->EdEdQ(v, E, df);
+    static_cast<FixNNP*>(params)->QEq_fdf(v, E, df);
 }
 
 
@@ -614,11 +599,11 @@ void FixNNP::calculate_QEqCharges()
 
     gsl_vector *x; // charge vector in our case
 
-    QEq_fdf.n = nsize; // it should be n_all in the future
-    QEq_fdf.f = &QEq_energy_wrap; // function pointer f(x)
-    QEq_fdf.df = &dEdQ_wrap; // function pointer df(x)
-    QEq_fdf.fdf = &EdEdQ_wrap;
-    QEq_fdf.params = this;
+    QEq_minimizer.n = nsize; // it should be n_all in the future
+    QEq_minimizer.f = &QEq_f_wrap; // function pointer f(x)
+    QEq_minimizer.df = &QEq_df_wrap; // function pointer df(x)
+    QEq_minimizer.fdf = &QEq_fdf_wrap;
+    QEq_minimizer.params = this;
 
     // Starting point is the current charge vector ???
     x = gsl_vector_alloc(nsize); // +1 for LM
@@ -636,7 +621,7 @@ void FixNNP::calculate_QEqCharges()
     step = 1e-2;
     maxit = 100;
 
-    gsl_multimin_fdfminimizer_set(s, &QEq_fdf, x, step, min_tol); // tol = 0 might be expensive ???
+    gsl_multimin_fdfminimizer_set(s, &QEq_minimizer, x, step, min_tol); // tol = 0 might be expensive ???
     do
     {
         iter++;
@@ -683,63 +668,7 @@ void FixNNP::calculate_QEqCharges()
 
 double FixNNP::fLambda_f(const gsl_vector *v)
 {
-    int i,j;
 
-    int *type = atom->type;
-    int nlocal = atom->nlocal;
-    int nall = atom->natoms;
-
-    double dx, dy, dz, rij;
-    double qi,qj;
-    double **x = atom->x;
-
-    double E_qeq;
-    double E_scr;
-    double iiterm,ijterm;
-
-    xall = new double[nall];
-    yall = new double[nall];
-    zall = new double[nall];
-
-    xall = yall = zall = NULL;
-
-    //MPI_Allgather(&x[0],nlocal,MPI_DOUBLE,&xall,nall,MPI_DOUBLE,world);
-    //MPI_Allgather(&x[1],nlocal,MPI_DOUBLE,&yall,nall,MPI_DOUBLE,world);
-    //MPI_Allgather(&x[2],nlocal,MPI_DOUBLE,&zall,nall,MPI_DOUBLE,world);
-
-    // TODO: indices
-    E_qeq = 0.0;
-    E_scr = 0.0;
-    E_elec = 0.0;
-    // first loop over local atoms
-    for (i = 0; i < nlocal; i++) {
-        qi = gsl_vector_get(v,i);
-        // add i terms here
-        iiterm = qi * qi / (2.0 * sigma[i] * sqrt(M_PI));
-        E_qeq += iiterm + chi[i]*qi + 0.5*hardness[i]*qi*qi;
-        E_elec += iiterm;
-        E_scr -= iiterm;
-        // second loop over 'all' atoms
-        for (j = i + 1; j < nall; j++) {
-            qj = gsl_vector_get(v, j);
-            dx = x[j][0] - x[i][0];
-            dy = x[j][1] - x[i][1];
-            dz = x[j][2] - x[i][2];
-            rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-            ijterm = qi * qj * (erf(rij / sqrt(2.0 * (pow(sigma[i], 2) + pow(sigma[j], 2)))) / rij);
-            E_qeq += ijterm;
-            E_elec += ijterm;
-            if(rij <= rscr[1]) {
-                E_scr += ijterm * (screen_f(rij) - 1);
-            }
-        }
-    }
-
-    E_elec = E_elec + E_scr; // electrostatic energy
-
-    //MPI_Allreduce(E_elec, MPI_SUM...)
-
-    return E_qeq;
 }
 
 double FixNNP::fLambda_f_wrap(const gsl_vector *v, void *params)
@@ -749,47 +678,7 @@ double FixNNP::fLambda_f_wrap(const gsl_vector *v, void *params)
 
 void FixNNP::fLambda_df(const gsl_vector *v, gsl_vector *dEdQ)
 {
-    int i,j;
-    int nlocal = atom->nlocal;
-    int nall = atom->natoms;
 
-    double dx, dy, dz, rij;
-    double qi,qj;
-    double **x = atom->x;
-
-    double val;
-    double grad_sum;
-    double grad_i;
-    double local_sum;
-
-    grad_sum = 0.0;
-    // first loop over local atoms
-    for (i = 0; i < nlocal; i++) { // TODO: indices
-        qi = gsl_vector_get(v,i);
-        local_sum = 0.0;
-        // second loop over 'all' atoms
-        for (j = 0; j < nall; j++) {
-            if (j != i) {
-                qj = gsl_vector_get(v, j);
-                dx = x[j][0] - x[i][0];
-                dy = x[j][1] - x[i][1];
-                dz = x[j][2] - x[i][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                local_sum += qj * erf(rij / sqrt(2.0 * (pow(sigma[i], 2) + pow(sigma[j], 2)))) / rij;
-            }
-        }
-        val = chi[i] + hardness[i]*qi + qi/(sigma[i]*sqrt(M_PI)) + local_sum;
-        grad_sum = grad_sum + val;
-        gsl_vector_set(dEdQ,i,val);
-    }
-
-    // Gradient projection //TODO: communication ?
-    for (i = 0; i < nall; i++){
-        grad_i = gsl_vector_get(dEdQ,i);
-        gsl_vector_set(dEdQ,i,grad_i - (grad_sum)/nall);
-    }
-
-    //MPI_Allreduce(dEdQ, MPI_SUM...)
 }
 
 void FixNNP::fLambda_df_wrap(const gsl_vector *v, void *params, gsl_vector *df)
@@ -799,8 +688,8 @@ void FixNNP::fLambda_df_wrap(const gsl_vector *v, void *params, gsl_vector *df)
 
 void FixNNP::fLambda_fdf(const gsl_vector *v, double *f, gsl_vector *df)
 {
-    *f = QEq_energy(v);
-    dEdQ(v, df);
+    *f = fLambda_f(v);
+    fLambda_df(v, df);
 }
 
 void FixNNP::fLambda_fdf_wrap(const gsl_vector *v, void *params, double *f, gsl_vector *df)
@@ -810,93 +699,7 @@ void FixNNP::fLambda_fdf_wrap(const gsl_vector *v, void *params, double *f, gsl_
 
 void FixNNP::calculate_fLambda()
 {
-    size_t iter = 0;
-    int status;
-    int i,j;
-    int nsize;
-    int maxit;
 
-    double *q = atom->q;
-    double qsum_it;
-    double gradsum;
-    double qi;
-
-    double grad_tol,min_tol;
-    double step;
-
-    double df,alpha;
-
-
-    // TODO: backward/forward communication ??
-
-    nsize = atom->natoms;
-
-    gsl_vector *x; // charge vector in our case
-
-    QEq_fdf.n = nsize; // it should be n_all in the future
-    QEq_fdf.f = &QEq_energy_wrap; // function pointer f(x)
-    QEq_fdf.df = &dEdQ_wrap; // function pointer df(x)
-    QEq_fdf.fdf = &EdEdQ_wrap;
-    QEq_fdf.params = this;
-
-    // Starting point is the current charge vector ???
-    x = gsl_vector_alloc(nsize); // +1 for LM
-    for (i = 0; i < nsize; i++) {
-        gsl_vector_set(x,i,q[i]);
-    }
-
-    T = gsl_multimin_fdfminimizer_conjugate_fr; // minimization algorithm
-    //T = gsl_multimin_fdfminimizer_vector_bfgs2;
-    s = gsl_multimin_fdfminimizer_alloc(T, nsize);
-
-    // Minimizer Params TODO: user-defined ?
-    grad_tol = 1e-5;
-    min_tol = 1e-7;
-    step = 1e-2;
-    maxit = 100;
-
-    gsl_multimin_fdfminimizer_set(s, &QEq_fdf, x, step, min_tol); // tol = 0 might be expensive ???
-    do
-    {
-        iter++;
-        qsum_it = 0.0;
-        gradsum = 0.0;
-
-        std::cout << "iter : " << iter << '\n';
-        std::cout << "E_qeq: " << s->f << '\n';
-        std::cout << "E_elec: " << E_elec << '\n';
-        std::cout << "-------------" << '\n';
-
-        status = gsl_multimin_fdfminimizer_iterate(s);
-
-        // Projection
-        for(i = 0; i < nsize; i++) {
-            qsum_it = qsum_it + gsl_vector_get(s->x, i);
-            gradsum = gradsum + gsl_vector_get(s->gradient,i);
-        }
-
-        for(i = 0; i < nsize; i++) {
-            qi = gsl_vector_get(s->x,i);
-            gsl_vector_set(s->x,i, qi - (qsum_it-qref)/nsize); // charge projection
-        }
-
-        //if (status)
-        //    break;
-        status = gsl_multimin_test_gradient(s->gradient, grad_tol);
-
-        if (status == GSL_SUCCESS)
-            printf ("Minimum found at:\n");
-
-    }
-    while (status == GSL_CONTINUE && iter < maxit);
-
-    // read charges before deallocating x - be careful with indices !
-    for (i = 0; i < nsize; i++) {
-        q[i] = gsl_vector_get(s->x,i);
-    }
-
-    gsl_multimin_fdfminimizer_free(s);
-    gsl_vector_free(x);
 }
 
 
@@ -1189,40 +992,6 @@ void FixNNP::sparse_matvec( sparse_matrix *A, double *x, double *b)
 
 }
 
-void FixNNP::calculate_Q()
-{
-    int i, k;
-    double u, Q_sum;
-    double *q = atom->q;
-
-    int nn, ii;
-    int *ilist;
-
-    nn = list->inum;
-    ilist = list->ilist;
-
-    // TODO: be careful with indexing and LM here
-    Q_sum = parallel_vector_acc( Q, nn);
-
-    //std::cout << Q_sum << '\n';
-
-    for (ii = 0; ii < nn; ++ii) {
-        i = ilist[ii];
-        if (atom->mask[i] & groupbit) {
-            q[i] = Q[i];
-
-            /* backup */
-            for (k = nprev-1; k > 0; --k) {
-                Q_hist[i][k] = Q_hist[i][k-1];
-            }
-            Q_hist[i][0] = Q[i];
-        }
-    }
-
-    pack_flag = 4;
-    comm->forward_comm_fix(this); //Dist_vector( atom->q );
-}
-
 void FixNNP::compute_dAdxyzQ()
 {
     int inum, jnum, *ilist, *jlist, *numneigh, **firstneigh;
@@ -1384,7 +1153,7 @@ double FixNNP::memory_usage()
 {
     double bytes;
 
-    bytes = atom->nmax*nprev*2 * sizeof(double); // Q_hist
+    bytes = atom->nmax*2 * sizeof(double); // Q_hist
     bytes += atom->nmax*11 * sizeof(double); // storage
     bytes += n_cap*2 * sizeof(int); // matrix...
     bytes += m_cap * sizeof(int);
@@ -1547,36 +1316,6 @@ void FixNNP::isPeriodic()
     else                          periodic = false;
 }
 
-///////////OLD////////////
-void FixNNP::QEqSerial()
-{
-    double t_start, t_end;
-    double sum;
 
-    n = atom->nlocal;
-    N = atom->nlocal + atom->nghost;
-
-    // grow arrays if necessary
-    // need to be atom->nmax in length
-
-    //if (atom->nmax > nmax) reallocate_storage();
-    if (n > n_cap*DANGER_ZONE || m_fill > m_cap*DANGER_ZONE)
-        reallocate_matrix();
-
-    init_matvec();
-    //matvecs = CGSerial(b, Q);
-
-    // external C library (serial)
-    r8ge_cg(n+1,A.val,b,Q);
-    r8ge_cg(n+1,A.val,b,Q);
-
-    // TODO: be careful with indexing here
-    sum = 0.0;
-    for (int i=0; i<n; i++)
-    {
-        atom->q[i] = Q[i];
-    }
-
-}
 
 
