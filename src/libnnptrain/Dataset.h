@@ -97,6 +97,17 @@ public:
                                      bool               excludeRank0 = false,
                                      std::string const& fileName
                                          = "input.data");
+    /** Prepare numeric force check for a single structure.
+     *
+     * @param[inout] original The structure under investigation.
+     * @param[in] delta Central difference delta for positions
+     *
+     * @return Number of structures distributed (= 1 + 6 * numAtoms).
+     *
+     * Distributes copies of original structure among all processors and
+     * modifies positions for central difference.
+     */
+    std::size_t prepareNumericForces(Structure& original, double delta);
     /** Switch all structures to normalized units.
      */
     void        toNormalizedUnits();

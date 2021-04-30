@@ -51,9 +51,6 @@ Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY    ),
 
 void Mode::initialize()
 {
-    string version("" N2P2_GIT_VERSION);
-    if (version == "") version = "" N2P2_VERSION;
-
     log << "\n";
     log << "*****************************************"
            "**************************************\n";
@@ -63,11 +60,12 @@ void Mode::initialize()
     log << "-------------------------------------------------------"
            "-----------\n";
     log << "\n";
-    log << "n²p² version      : " + version + "\n";
+    log << "n²p² version  (from git): " N2P2_GIT_VERSION "\n";
+    log << "             (version.h): " N2P2_VERSION "\n";
     log << "------------------------------------------------------------\n";
-    log << "Git branch        : " N2P2_GIT_BRANCH "\n";
-    log << "Git revision      : " N2P2_GIT_REV "\n";
-    log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
+    log << "Git branch              : " N2P2_GIT_BRANCH "\n";
+    log << "Git revision            : " N2P2_GIT_REV "\n";
+    log << "Compile date/time       : " __DATE__ " " __TIME__ "\n";
     log << "------------------------------------------------------------\n";
     log << "\n";
     log << "Features/Flags:\n";
@@ -1530,8 +1528,10 @@ void Mode::calculateForces(Structure& structure) const
             // atom i's coordinates. Some atoms may appear multiple times in
             // the neighbor list because of periodic boundary conditions. To
             // avoid that the same contributions are added multiple times use
-            // the "unique neighbor" list (but skip the first entry, this is
-            // always atom i itself).
+            // the "unique neighbor" list. This list contains also the central
+            // atom index as first entry and hence also adds contributions of
+            // periodic images of the central atom (happens when cutoff radii
+            // larger than cell vector lengths are used).
             for (vector<size_t>::const_iterator it =
                  ai->neighborsUnique.begin();
                  it != ai->neighborsUnique.end(); ++it)
