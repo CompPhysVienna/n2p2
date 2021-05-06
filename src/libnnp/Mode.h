@@ -334,8 +334,12 @@ public:
     /** Perform global charge equilibration method.
      *
      * @param[in] structure Input structure.
+     * @param[in] suppressOutput Turn on/off output generation (for example
+     *                          during training.
      */
-    void                     chargeEquilibration(Structure& structure);
+    void                     chargeEquilibration(
+                                                Structure& structure,
+                                                bool const suppressOutput = false);
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.

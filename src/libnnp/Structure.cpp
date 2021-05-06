@@ -656,7 +656,7 @@ double Structure::calculateScreeningEnergy(
 
            }
         }
-        cout << "screening energy: " << energyScreen << endl;
+        //cout << "screening energy: " << energyScreen << endl;
     }
     else
     {
@@ -792,6 +792,7 @@ void Structure::calculateDQdChi(vector<Eigen::VectorXd> &dQdChi)
     dQdChi.resize(numAtoms);
     for (size_t i = 0; i < numAtoms; ++i)
     {
+        dQdChi.at(i).resize(numAtoms);
         // Including Lagrange multiplier equation.
         VectorXd b(numAtoms+1);
         b.setZero();
@@ -806,6 +807,7 @@ void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
     dQdJ.resize(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
+        dQdJ.at(i).resize(numAtoms);
         // Including Lagrange multiplier equation.
         VectorXd b(numAtoms+1);
         b.setZero();

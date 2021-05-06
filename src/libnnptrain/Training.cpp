@@ -2072,9 +2072,7 @@ void Training::update(string const& property)
                     // neural network connections (weights + biases).
                     nn.calculateDEdc(&(dChidc.at(k).front()));
                 }
-                // TODO: this function generates log, but runs on multiple
-                // processes --> logs interfere with each other.
-                chargeEquilibration(s);
+                chargeEquilibration(s, true);
 
                 // for testing:
                 cout << "hardness: " << endl;
@@ -2088,8 +2086,8 @@ void Training::update(string const& property)
                 vector<Eigen::VectorXd> dQdJ;
                 s.calculateDQdJ(dQdJ);
 
-                // Shortcut to element of selected atom.
-                size_t i = s.atoms.at(c->a).element;
+                // Shortcut to index of selected atom.
+                size_t i = c->a;
                 // Finally sum up Jacobian.
                 // weights
                 for (size_t k = 0; k < s.numAtoms; ++k)

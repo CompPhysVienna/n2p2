@@ -1620,7 +1620,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 }
 
 // TODO: Make this const?
-void Mode::chargeEquilibration(Structure& structure)
+void Mode::chargeEquilibration(Structure& structure, bool const suppressOutput)
 {
     Structure& s = structure;
 
@@ -1646,7 +1646,8 @@ void Mode::chargeEquilibration(Structure& structure)
                                                 sigmaSqrtPi,
                                                 screeningFunction);
 
-    log << strpr("Solve relative error: %16.8E\n", error);
+    if (!suppressOutput)
+        log << strpr("Solve relative error: %16.8E\n", error);
 
     // TODO: leave these 2 functions here or shift it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
@@ -1658,14 +1659,19 @@ void Mode::chargeEquilibration(Structure& structure)
 
     for (auto const& a : structure.atoms)
     {
-        log << strpr("Atom %5zu (%2s) q: %16.8E\n",
+        if (!suppressOutput)
+            log << strpr("Atom %5zu (%2s) q: %16.8E\n",
                      a.index, elementMap[a.element].c_str(), a.charge);
         structure.charge += a.charge;
     }
-    log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
-                 structure.charge, structure.chargeRef);
+    
+    if (!suppressOutput)
+    {
+        log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
+                     structure.charge, structure.chargeRef);
 
-    log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
+        log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
+    }
 
     return;
 }
