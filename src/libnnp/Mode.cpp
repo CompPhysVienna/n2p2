@@ -1553,11 +1553,10 @@ void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
             actualFileNameFormat = fileNameFormats.at(k);
         }
         else actualFileNameFormat = nns.at(k).weightFileFormat;
-        actualFileNameFormat = directoryPrefix + actualFileNameFormat;
         log << strpr("%s weight file name format: %s\n",
                      cap(nns.at(k).name).c_str(),
-                     actualFileNameFormat.c_str());
-        readNeuralNetworkWeights(k, actualFileNameFormat);
+                     (directoryPrefix + actualFileNameFormat).c_str());
+        readNeuralNetworkWeights(k, actualFileNameFormat, directoryPrefix);
     }
 
     log << "*****************************************"
@@ -2502,7 +2501,8 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
 }
 
 void Mode::readNeuralNetworkWeights(string const& id,
-                                    string const& fileNameFormat)
+                                    string const& fileNameFormat,
+                                    string const& fileDir)
 {
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
@@ -2512,7 +2512,8 @@ void Mode::readNeuralNetworkWeights(string const& id,
             string fileName = strpr(fileNameFormat.c_str(),
                                     it->getAtomicNumber());
             string committeeDir = committeePrefix + strpr("-%zu/", c);
-            if (c > 0) fileName = committeeDir + fileName;
+            if (c > 0) fileName = fileDir + committeeDir + fileName;
+            else fileName = fileDir + fileName;
             log << strpr("Setting weights for element %2s from file: %s\n",
                          it->getSymbol().c_str(),
                          fileName.c_str());

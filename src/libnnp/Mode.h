@@ -292,10 +292,15 @@ public:
      *
      * @param[in] id Actual network type to initialize ("short" or "elec").
      * @param[in] fileNameFormat Weights file name format.
+     * @param[in] fileDir Directory of the weight files (prefix of
+     *                    fileNameFormat); the weights of committee member c
+     *                    > 0 are read from fileDir + committee prefix + "-c/"
+     *                    + fileNameFormat.
      */
     void                     readNeuralNetworkWeights(
                                  std::string const& id,
-                                 std::string const& fileNameFormat);
+                                 std::string const& fileNameFormat,
+                                 std::string const& fileDir = "");
     /** Read in atomic hardness of all elements from files (4G-HDNNP).
      *
      * @param[in] fileNameFormat Name format of file containing atomic
