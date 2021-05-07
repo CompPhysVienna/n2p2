@@ -84,7 +84,7 @@ void InterfaceLammps::initialize(char const* const& directory,
                                     collectExtrapolationWarnings,
                                     writeExtrapolationWarnings,
                                     stopOnExtrapolationWarnings);
-    setupNeuralNetworkWeights(dir + "weights.%03d.data");
+    setupNeuralNetworkWeights(dir,"weights.%03d.data");
 
     log << "\n";
     log << "*** SETUP: LAMMPS INTERFACE *************"

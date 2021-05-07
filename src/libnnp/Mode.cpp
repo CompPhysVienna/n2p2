@@ -1200,7 +1200,8 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
+void Mode::setupNeuralNetworkWeights(string const& fileDir,
+                                     string const& fileNameFormatShort,
                                      string const& fileNameFormatCharge)
 {
     log << "\n";
@@ -1210,12 +1211,12 @@ void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
 
     log << strpr("Short  NN weight file name format: %s\n",
                  fileNameFormatShort.c_str());
-    readNeuralNetworkWeights("short", fileNameFormatShort);
+    readNeuralNetworkWeights("short", fileDir, fileNameFormatShort);
     if (useChargeNN)
     {
         log << strpr("Charge NN weight file name format: %s\n",
                      fileNameFormatCharge.c_str());
-        readNeuralNetworkWeights("charge", fileNameFormatCharge);
+        readNeuralNetworkWeights("charge", fileDir, fileNameFormatCharge);
     }
 
     log << "*****************************************"
@@ -1823,6 +1824,7 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
 }
 
 void Mode::readNeuralNetworkWeights(string const& type,
+                                    string const& fileDir,
                                     string const& fileNameFormat)
 {
     string s = "";
@@ -1840,7 +1842,8 @@ void Mode::readNeuralNetworkWeights(string const& type,
             string fileName = strpr(fileNameFormat.c_str(),
                                     it->getAtomicNumber());
             string committeeDir = committeePrefix + strpr("-%zu/", c);
-            if (c > 0) fileName = committeeDir + fileName;
+            if (c > 0) fileName = fileDir + committeeDir + fileName;
+            else fileName = fileDir + fileName;
             log << strpr("Setting %s weights for element %2s from file: %s\n",
                          s.c_str(),
                          it->getSymbol().c_str(),

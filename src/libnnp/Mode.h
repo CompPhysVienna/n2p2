@@ -237,6 +237,8 @@ public:
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     virtual void             setupNeuralNetworkWeights(
+                                std::string const& fileDir
+                                                      = "",
                                 std::string const& fileNameFormatShort
                                                       = "weights.%03zu.data",
                                 std::string const& fileNameFormatCharge
@@ -543,6 +545,7 @@ protected:
      * @param[in] fileNameFormat Weights file name format.
      */
     void readNeuralNetworkWeights(std::string const& type,
+                                  std::string const& fileDir,
                                   std::string const& fileName);
 };
 

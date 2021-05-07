@@ -268,7 +268,7 @@ void Training::initializeWeights()
             (stage == 2))
         {
             log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights("charge", "weightse.%03zu.data");
+            readNeuralNetworkWeights("charge", "", "weightse.%03zu.data");
         }
         else randomizeNeuralNetworkWeights("charge");
     }
@@ -280,7 +280,7 @@ void Training::initializeWeights()
         if (settings.keywordExists("use_old_weights_short"))
         {
             log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights("short", "weights.%03zu.data");
+            readNeuralNetworkWeights("short", "", "weights.%03zu.data");
         }
         else randomizeNeuralNetworkWeights("short");
     }
@@ -290,7 +290,7 @@ void Training::initializeWeights()
         if (settings.keywordExists("use_old_weights_short"))
         {
             log << "Reading old weights from files.\n";
-            readNeuralNetworkWeights("short", "weights.%03zu.data");
+            readNeuralNetworkWeights("short", "", "weights.%03zu.data");
         }
         else randomizeNeuralNetworkWeights("short");
     }

@@ -25,6 +25,7 @@ using namespace nnp;
 Prediction::Prediction() : Mode(),
                            fileNameSettings        ("input.nn"          ),
                            fileNameScaling         ("scaling.data"      ),
+                           formatWeightsDir        (""),
                            formatWeightsFilesShort ("weights.%03zu.data" ),
                            formatWeightsFilesCharge("weightse.%03zu.data")
 {
@@ -36,7 +37,8 @@ void Prediction::setup()
     loadSettingsFile(fileNameSettings);
     setupGeneric();
     setupSymmetryFunctionScaling(fileNameScaling);
-    setupNeuralNetworkWeights(formatWeightsFilesShort,
+    setupNeuralNetworkWeights(formatWeightsDir,
+                              formatWeightsFilesShort,
                               formatWeightsFilesCharge);
     setupSymmetryFunctionStatistics(false, false, true, false);
 }
