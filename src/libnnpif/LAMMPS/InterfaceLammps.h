@@ -97,11 +97,6 @@ public:
      * @return Sum of local energy contributions.
      */
     double getEnergy() const;
-    /** Reads reference charge.
-     *
-     * @return Reference total charge of a structure.
-     */
-    double getTotalCharge() const;
     /** Read inner and outer radii for screening electrostatics.
      *
      * @param[in] vector containing inner radius, outer radius and scale value.
@@ -157,11 +152,30 @@ public:
     /** TODO: Add missing comments later during clean-up
      */
     void   addCharge(int index, double Q);
-
-    void   getQeqParams(double* const& atomChi, double* const& atomJ,
-            double* const& atomSigma) const;
-
+    /** Transfer QEq arrays to LAMMPS
+     *
+     * @param[in] atomChi Electronegativities.
+     * @param[in] atomJ Atomic hardness.
+     * @param[in] atomSigma Gaussian width.
+     * @param[in] qRef Reference charge of the structure.
+     */
+    void   getQEqParams(double* const& atomChi, double* const& atomJ,
+            double* const& atomSigma, double qRef) const;
+    /** Transfer necessary derivative arrays to LAMMPS
+     *
+     * @param[in] dEtotdQ Derivative of the total energy w.r.t. atomic charge.
+     */
+    void   getdEdQ(double* const& dEtotdQ) const;
+    /**
+     *
+     * @param ind
+     * @param dChidxyz
+     */
+    void   getdChidxyz(int ind, double* const* const& dChidxyz) const;
+    /** Set isElecDone true.
+     */
     void   setElecDone();
+
 protected:
     /// Process rank.
     int                        myRank;

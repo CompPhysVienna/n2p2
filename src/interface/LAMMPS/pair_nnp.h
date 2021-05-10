@@ -15,6 +15,8 @@ PairStyle(nnp,PairNNP)
 
 #include "pair.h"
 #include "InterfaceLammps.h"
+#include <gsl/gsl_multimin.h>
+
 
 namespace LAMMPS_NS {
 
@@ -35,27 +37,20 @@ class PairNNP : public Pair {
   virtual void write_restart_settings(FILE *);
   virtual void read_restart_settings(FILE *);
 
-  //void getInterface(nnp::InterfaceLammps*&);
 
 protected:
 
     class FixNNP *fix_nnp;
 
-    double eElec; // electrostatic contribution to total energy
+    // QEq arrays
+    double *chi,*hardness,*sigma;
 
-    // Do we need them here ?
-    double *dQdxyz,*dQdchi,*dQdhardness,*dchidxyz,*b_der;
-    double *dAdxyzQ;
+    double eElec; // electrostatic contribution to total energy (calculated in fix_nnp.cpp
 
-    virtual void allocate();
-    void transferNeighborList();
+    double *dEdQ,*forceLambda;
+    double **dChidxyz,**pEelecpr;
 
-    void transferCharges();
-    void handleExtrapolationWarnings();
-
-    void deallocateQEq();
-
-
+    bool isPeriodic;
     bool showew;
     bool resetew;
     int showewsum;
@@ -69,6 +64,38 @@ protected:
     char* emap;
     class NeighList *list;
     nnp::InterfaceLammps interface;
+
+    virtual void allocate();
+    void transferNeighborList();
+
+    void transferCharges();
+    void handleExtrapolationWarnings();
+
+    void deallocateQEq();
+
+    // Minimization Setup for Force Lambda
+    const gsl_multimin_fdfminimizer_type *T;
+    gsl_multimin_fdfminimizer *s;
+
+    gsl_multimin_function_fdf forceLambda_minimizer;
+
+    double forceLambda_f(const gsl_vector*);
+    void forceLambda_df(const gsl_vector*, gsl_vector*);
+    void forceLambda_fdf(const gsl_vector*, double*, gsl_vector*);
+    static double forceLambda_f_wrap(const gsl_vector*, void*);
+    static void forceLambda_df_wrap(const gsl_vector*, void*, gsl_vector*);
+    static void forceLambda_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*);
+
+
+    // Electrostatics
+    void calculateForceLambda();
+    void calculateElecDerivatives(double*);
+    void calculateElecForceTerm(double**);
+    void initializeChi();
+
+    double *screenInfo; // info array
+    double screen_f(double);
+    double screen_df(double);
 
 };
 

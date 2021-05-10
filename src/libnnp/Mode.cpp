@@ -1785,58 +1785,59 @@ void Mode::calculateForces(Structure& structure) const
                 }
             }
         }
+        cout << "Short : " << '\t' <<  ai->f[0] << '\t' << ai->f[1] << '\t' << ai->f[2] << '\n';
     }
 
-    if (nnpType == NNPType::HDNNP_4G)
-    {
-        Structure& s = structure;
-        VectorXd dEdQ(s.numAtoms+1);
-        VectorXd dEelecdQ(s.numAtoms+1);
+
+    if (nnpType == NNPType::HDNNP_4G) {
+        Structure &s = structure;
+        VectorXd dEdQ(s.numAtoms + 1);
+        VectorXd dEelecdQ(s.numAtoms + 1);
         dEdQ.setZero();
         dEelecdQ.setZero();
-        for (size_t i = 0; i < s.numAtoms; ++i)
-        {
-            Atom const& ai = s.atoms.at(i);
+        for (size_t i = 0; i < s.numAtoms; ++i) {
+            Atom const &ai = s.atoms.at(i);
+            //cout << ai.dEelecdQ << '\t' << ai.dEdG.back() << '\n';
             dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
             dEelecdQ(i) = ai.dEelecdQ;
         }
         VectorXd const lambdaTotal = s.A.colPivHouseholderQr().solve(-dEdQ);
         VectorXd const lambdaElec = s.A.colPivHouseholderQr().solve(-dEelecdQ);
-        for (auto& ai : s.atoms)
-        {
-            ai.fElec = Vec3D{0,0,0};
+
+
+        for (size_t i = 0; i < s.numAtoms; ++i) {
+            //cout << lambdaTotal(i) << '\n';
+        }
+
+        for (auto &ai : s.atoms) {
+            ai.fElec = Vec3D{0, 0, 0};
 
             ai.f -= ai.pEelecpr;
+            //cout << ai.pEelecpr[0] << '\t' << ai.pEelecpr[1] << '\t' << ai.pEelecpr[2] << '\n';
             ai.fElec -= ai.pEelecpr;
-            
-            for (size_t j = 0; j < s.numAtoms; ++j)
-            {
 
-                Atom const& aj = s.atoms.at(j);
+            for (size_t j = 0; j < s.numAtoms; ++j) {
+
+                Atom const &aj = s.atoms.at(j);
 
 #ifndef NNP_FULL_SFD_MEMORY
-                vector<vector<size_t> > const& tableFull
-                   = elements.at(aj.element).getSymmetryFunctionTable();
+                vector <vector<size_t>> const &tableFull
+                        = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
                 Vec3D dChidr;
                 // need to add this case because the loop over the neighbors
                 // does not include the contribution dChi_i/dr_i.
-                if (ai.index == j)
-                {
-                    for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
-                    {
+                if (ai.index == j) {
+                    for (size_t k = 0; k < aj.numSymmetryFunctions; ++k) {
                         dChidr += aj.dChidG.at(k) * aj.dGdr.at(k);
                     }
                 }
-                for (auto const& n : aj.neighbors)
-                {
+                for (auto const &n : aj.neighbors) {
                     if (n.d > maxCutoffRadius) break;
-                    if (n.index == ai.index)
-                    {
+                    if (n.index == ai.index) {
 #ifndef NNP_FULL_SFD_MEMORY
-                        vector<size_t> const& table = tableFull.at(n.element);
-                        for (size_t k = 0; k < n.dGdr.size(); ++k)
-                        {
+                        vector <size_t> const &table = tableFull.at(n.element);
+                        for (size_t k = 0; k < n.dGdr.size(); ++k) {
                             dChidr += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
                         }
 #else
@@ -1847,12 +1848,14 @@ void Mode::calculateForces(Structure& structure) const
 #endif
                     }
                 }
-                ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
+
+                //ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
+                ai.f -= (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }
+            cout << "Elec : " << '\t' << ai.f[0] << '\t' << ai.f[1] << '\t' << ai.f[2] << '\n';
         }
-   }
-
+    }
     return;
 }
 

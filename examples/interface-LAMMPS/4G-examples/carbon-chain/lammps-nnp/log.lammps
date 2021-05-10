@@ -1,0 +1,994 @@
+LAMMPS (29 Oct 2020)
+###############################################################################
+# MD simulation for carbon chain
+###############################################################################
+
+###############################################################################
+# VARIABLES
+###############################################################################
+clear
+# Configuration files
+variable cfgFile         string "carbon-chain.data"
+# Timesteps
+variable numSteps        equal  5
+variable dt              equal  0.0005
+# NN
+variable nnpCutoff       equal  8.01
+variable nnpDir          string "nnp-data"
+# Masses
+variable mass_H          equal  1.00794
+variable mass_C          equal  12.0107
+
+###############################################################################
+# GENERAL SETUP
+###############################################################################
+units metal
+boundary s s s
+atom_style atomic
+read_data ${cfgFile}
+read_data carbon-chain.data
+Reading data file ...
+  orthogonal box = (-12.940000 -0.36 -0.67) to (12.670000 1.2000000 1.1700000)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  12 atoms
+  read_data CPU = 0.000 seconds
+mass 1 ${mass_H}
+mass 1 1.00794
+mass 2 ${mass_C}
+mass 2 12.0107
+timestep ${dt}
+timestep 0.0005
+thermo 1
+
+###############################################################################
+# NN
+###############################################################################
+pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:H,2:C"
+pair_style nnp dir nnp-data showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:H,2:C"
+pair_coeff * * ${nnpCutoff}
+pair_coeff * * 8.01
+
+###############################################################################
+# INTEGRATOR
+###############################################################################
+fix INT all nve
+#dump 1 all atom 1 traj.dump
+
+###############################################################################
+# SIMULATION
+###############################################################################
+run ${numSteps}
+run 5
+
+*******************************************************************************
+
+WELCOME TO n²p², A SOFTWARE PACKAGE FOR NEURAL NETWORK POTENTIALS!
+------------------------------------------------------------------
+
+n²p² version      : v2.1.1-43-g417919d
+------------------------------------------------------------
+Git branch        : 4G-HDNNP-prediction
+Git revision      : 417919d7ff1bc727b4f9032afc6a574811f7a75b
+Compile date/time : Feb 27 2021 23:33:56
+------------------------------------------------------------
+
+Please cite the following papers when publishing results obtained with n²p²:
+-------------------------------------------------------------------------------
+ * General citation for n²p² and the LAMMPS interface:
+
+ Singraber, A.; Behler, J.; Dellago, C.
+ Library-Based LAMMPS Implementation of High-Dimensional
+ Neural Network Potentials.
+ J. Chem. Theory Comput. 2019 15 (3), 1827–1840.
+ https://doi.org/10.1021/acs.jctc.8b00770
+-------------------------------------------------------------------------------
+ * Additionally, if you use the NNP training features of n²p²:
+
+ Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C.
+ Parallel Multistream Training of High-Dimensional Neural
+ Network Potentials.
+ J. Chem. Theory Comput. 2019, 15 (5), 3075–3092.
+ https://doi.org/10.1021/acs.jctc.8b01092
+-------------------------------------------------------------------------------
+ * Additionally, if polynomial symmetry functions are used:
+
+ Bircher, M. P.; Singraber, A.; Dellago, C.
+ Improved Description of Atomic Environments Using Low-Cost
+ Polynomial Functions with Compact Support.
+ arXiv:2010.14414 [cond-mat, physics:physics] 2020.
+ https://arxiv.org/abs/2010.14414
+*******************************************************************************
+
+*** SETUP: SETTINGS FILE ******************************************************
+
+Settings file name: nnp-data/input.nn
+Read 185 lines.
+WARNING: Unknown keyword "bond_threshold" at line 34.
+WARNING: Unknown keyword "calculate_forces" at line 183.
+WARNING: Unknown keyword "energy_threshold" at line 33.
+WARNING: Unknown keyword "fitting_unit" at line 148.
+WARNING: Unknown keyword "initial_hardness" at line 29.
+WARNING: Unknown keyword "initial_hardness" at line 30.
+WARNING: Unknown keyword "kalman_lambda_charge" at line 156.
+WARNING: Unknown keyword "kalman_nue_charge" at line 157.
+WARNING: Unknown keyword "mix_all_points" at line 145.
+WARNING: Unknown keyword "optmode_short_energy" at line 152.
+WARNING: Unknown keyword "optmode_short_force" at line 153.
+WARNING: Unknown keyword "points_in_memory" at line 144.
+WARNING: Unknown keyword "random_number_type" at line 25.
+WARNING: Unknown keyword "regularize_fit_param" at line 173.
+WARNING: Unknown keyword "remove_atom_energies" at line 26.
+WARNING: Unknown keyword "runner_mode" at line 20.
+WARNING: Unknown keyword "use_electrostatics" at line 17.
+WARNING: Unknown keyword "use_short_nn" at line 18.
+WARNING: 18 problems detected (0 critical).
+Found 113 lines with keywords.
+This settings file defines a NNP with electrostatics and
+non-local charge transfer (4G-HDNNP).
+*******************************************************************************
+
+*** SETUP: NORMALIZATION ******************************************************
+
+Data set normalization is not used.
+*******************************************************************************
+
+*** SETUP: ELEMENT MAP ********************************************************
+
+Number of element strings found: 2
+Element  0:  H (  1)
+Element  1:  C (  6)
+*******************************************************************************
+
+*** SETUP: ELEMENTS ***********************************************************
+
+Number of elements is consistent: 2
+Atomic energy offsets per element:
+Element  0:  -4.58907306E-01
+Element  1:  -3.77481119E+01
+Energy offsets are automatically subtracted from reference energies.
+*******************************************************************************
+
+*** SETUP: ELECTROSTATICS *****************************************************
+
+Atomic hardness file name format: nnp-data/hardness.%03zu.data
+Atomic hardness for element  H from file nnp-data/hardness.001.data:   8.89533120E-03
+Atomic hardness for element  C from file nnp-data/hardness.006.data:   6.61189426E-02
+
+Gaussian width of charge distribution per element:
+Element  0:   5.85815056E-01
+Element  1:   1.37949997E+00
+
+Ewald precision:   1.00000000E-06
+
+Screening function information:
+Inner radius :   4.80000000E+00
+Outer radius :   8.00000000E+00
+Transition region functional form:
+x     := (r - inner) / (outer - inner)
+fs(x) := 1 - f(x)
+CoreFunction::Type::COS (0):
+f(x) := 1/2 * (cos(pi*x) + 1)
+*******************************************************************************
+
+*** SETUP: CUTOFF FUNCTIONS ***************************************************
+
+Parameter alpha for inner cutoff: 0.000000
+Inner cutoff = Symmetry function cutoff * alpha
+Equal cutoff function type for all symmetry functions:
+CutoffFunction::CT_TANHU (2)
+f(r) = tanh^3(1 - r/rc)
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTIONS *************************************************
+
+Abbreviations:
+--------------
+ind .... Symmetry function index.
+ec ..... Central atom element.
+tp ..... Symmetry function type.
+sbtp ... Symmetry function subtype (e.g. cutoff type).
+e1 ..... Neighbor 1 element.
+e2 ..... Neighbor 2 element.
+eta .... Gaussian width eta.
+rs/rl... Shift distance of Gaussian or left cutoff radius for polynomial.
+angl.... Left cutoff angle for polynomial.
+angr.... Right cutoff angle for polynomial.
+la ..... Angle prefactor lambda.
+zeta ... Angle term exponent zeta.
+rc ..... Cutoff radius / right cutoff radius for polynomial.
+a ...... Free parameter alpha (e.g. cutoff alpha).
+ln ..... Line number in settings file.
+
+Short range atomic symmetry functions element  H :
+-------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln
+-------------------------------------------------------------------------------------------------
+   1  H  2  ct2  H    0.000E+00  0.000E+00  8.000E+00                       0.00    59
+   2  H  2  ct2  C    0.000E+00  0.000E+00  8.000E+00                       0.00    74
+   3  H  2  ct2  H    6.000E-03  0.000E+00  8.000E+00                       0.00    60
+   4  H  2  ct2  H    1.100E-02  0.000E+00  8.000E+00                       0.00    61
+   5  H  2  ct2  C    1.300E-02  0.000E+00  8.000E+00                       0.00    75
+   6  H  2  ct2  H    1.800E-02  0.000E+00  8.000E+00                       0.00    62
+   7  H  2  ct2  H    2.600E-02  0.000E+00  8.000E+00                       0.00    63
+   8  H  2  ct2  C    2.900E-02  0.000E+00  8.000E+00                       0.00    76
+   9  H  2  ct2  H    3.500E-02  0.000E+00  8.000E+00                       0.00    64
+  10  H  2  ct2  C    5.400E-02  0.000E+00  8.000E+00                       0.00    77
+  11  H  2  ct2  C    9.300E-02  0.000E+00  8.000E+00                       0.00    78
+  12  H  2  ct2  C    1.610E-01  0.000E+00  8.000E+00                       0.00    79
+  13  H  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00               -1  1.0 0.00   134
+  14  H  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00               -1  1.0 0.00   125
+  15  H  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  1.0 0.00   130
+  16  H  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  1.0 0.00   121
+  17  H  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00               -1  2.0 0.00   135
+  18  H  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00               -1  2.0 0.00   126
+  19  H  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  2.0 0.00   131
+  20  H  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  2.0 0.00   122
+  21  H  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  4.0 0.00   132
+  22  H  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  4.0 0.00   123
+  23  H  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  8.0 0.00   133
+  24  H  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  8.0 0.00   124
+-------------------------------------------------------------------------------------------------
+Short range atomic symmetry functions element  C :
+-------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln
+-------------------------------------------------------------------------------------------------
+   1  C  2  ct2  H    0.000E+00  0.000E+00  8.000E+00                       0.00    67
+   2  C  2  ct2  C    0.000E+00  0.000E+00  8.000E+00                       0.00    82
+   3  C  2  ct2  C    1.000E-02  0.000E+00  8.000E+00                       0.00    83
+   4  C  2  ct2  H    1.300E-02  0.000E+00  8.000E+00                       0.00    68
+   5  C  2  ct2  C    2.300E-02  0.000E+00  8.000E+00                       0.00    84
+   6  C  2  ct2  H    2.900E-02  0.000E+00  8.000E+00                       0.00    69
+   7  C  2  ct2  C    4.100E-02  0.000E+00  8.000E+00                       0.00    85
+   8  C  2  ct2  H    5.400E-02  0.000E+00  8.000E+00                       0.00    70
+   9  C  2  ct2  C    6.500E-02  0.000E+00  8.000E+00                       0.00    86
+  10  C  2  ct2  H    9.300E-02  0.000E+00  8.000E+00                       0.00    71
+  11  C  2  ct2  C    1.030E-01  0.000E+00  8.000E+00                       0.00    87
+  12  C  2  ct2  H    1.610E-01  0.000E+00  8.000E+00                       0.00    72
+  13  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00               -1  1.0 0.00   106
+  14  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00               -1  1.0 0.00   115
+  15  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00               -1  1.0 0.00    97
+  16  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00                1  1.0 0.00   102
+  17  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  1.0 0.00   111
+  18  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  1.0 0.00    93
+  19  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00               -1  2.0 0.00   107
+  20  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00               -1  2.0 0.00   116
+  21  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00               -1  2.0 0.00    98
+  22  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00                1  2.0 0.00   103
+  23  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  2.0 0.00   112
+  24  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  2.0 0.00    94
+  25  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00               -1  4.0 0.00   108
+  26  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00               -1  4.0 0.00   117
+  27  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00               -1  4.0 0.00    99
+  28  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00                1  4.0 0.00   104
+  29  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  4.0 0.00   113
+  30  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  4.0 0.00    95
+  31  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00               -1  8.0 0.00   109
+  32  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00               -1  8.0 0.00   118
+  33  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00               -1  8.0 0.00   100
+  34  C  3  ct2  H  H 0.000E+00  0.000E+00  8.000E+00                1  8.0 0.00   105
+  35  C  3  ct2  H  C 0.000E+00  0.000E+00  8.000E+00                1  8.0 0.00   114
+  36  C  3  ct2  C  C 0.000E+00  0.000E+00  8.000E+00                1  8.0 0.00    96
+-------------------------------------------------------------------------------------------------
+Minimum cutoff radius for element  H: 8.000000
+Minimum cutoff radius for element  C: 8.000000
+Maximum cutoff radius (global)      : 8.000000
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION MEMORY *******************************************
+
+Symmetry function derivatives memory table for element  H :
+-------------------------------------------------------------------------------
+Relevant symmetry functions for neighbors with element:
+-  H:   12 of   24 ( 50.0 %)
+-  C:   18 of   24 ( 75.0 %)
+-------------------------------------------------------------------------------
+Symmetry function derivatives memory table for element  C :
+-------------------------------------------------------------------------------
+Relevant symmetry functions for neighbors with element:
+-  H:   22 of   36 ( 61.1 %)
+-  C:   22 of   36 ( 61.1 %)
+-------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION CACHE ********************************************
+
+Element  H: in total 4 caches, used 15.00 times on average.
+Element  C: in total 4 caches, used 22.00 times on average.
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION GROUPS *******************************************
+
+Abbreviations:
+--------------
+ind .... Symmetry function index.
+ec ..... Central atom element.
+tp ..... Symmetry function type.
+sbtp ... Symmetry function subtype (e.g. cutoff type).
+e1 ..... Neighbor 1 element.
+e2 ..... Neighbor 2 element.
+eta .... Gaussian width eta.
+rs/rl... Shift distance of Gaussian or left cutoff radius for polynomial.
+angl.... Left cutoff angle for polynomial.
+angr.... Right cutoff angle for polynomial.
+la ..... Angle prefactor lambda.
+zeta ... Angle term exponent zeta.
+rc ..... Cutoff radius / right cutoff radius for polynomial.
+a ...... Free parameter alpha (e.g. cutoff alpha).
+ln ..... Line number in settings file.
+mi ..... Member index.
+sfi .... Symmetry function index.
+e ...... Recalculate exponential term.
+
+Short range atomic symmetry function groups element  H :
+----------------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln   mi  sfi e
+----------------------------------------------------------------------------------------------------------
+   1  H  2  ct2  H            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    0.000E+00  0.000E+00          -                          -    59    1    1  
+   -  -  -    -  -    6.000E-03  0.000E+00          -                          -    60    2    3  
+   -  -  -    -  -    1.100E-02  0.000E+00          -                          -    61    3    4  
+   -  -  -    -  -    1.800E-02  0.000E+00          -                          -    62    4    6  
+   -  -  -    -  -    2.600E-02  0.000E+00          -                          -    63    5    7  
+   -  -  -    -  -    3.500E-02  0.000E+00          -                          -    64    6    9  
+   2  H  2  ct2  C            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    0.000E+00  0.000E+00          -                          -    74    1    2  
+   -  -  -    -  -    1.300E-02  0.000E+00          -                          -    75    2    5  
+   -  -  -    -  -    2.900E-02  0.000E+00          -                          -    76    3    8  
+   -  -  -    -  -    5.400E-02  0.000E+00          -                          -    77    4   10  
+   -  -  -    -  -    9.300E-02  0.000E+00          -                          -    78    5   11  
+   -  -  -    -  -    1.610E-01  0.000E+00          -                          -    79    6   12  
+   3  H  3  ct2  H  C         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  1.0    -   134    1   13 1
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  1.0    -   130    2   15 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  2.0    -   135    3   17 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  2.0    -   131    4   19 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  4.0    -   132    5   21 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  8.0    -   133    6   23 0
+   4  H  3  ct2  C  C         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  1.0    -   125    1   14 1
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  1.0    -   121    2   16 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  2.0    -   126    3   18 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  2.0    -   122    4   20 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  4.0    -   123    5   22 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  8.0    -   124    6   24 0
+----------------------------------------------------------------------------------------------------------
+Short range atomic symmetry function groups element  C :
+----------------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln   mi  sfi e
+----------------------------------------------------------------------------------------------------------
+   1  C  2  ct2  H            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    0.000E+00  0.000E+00          -                          -    67    1    1  
+   -  -  -    -  -    1.300E-02  0.000E+00          -                          -    68    2    4  
+   -  -  -    -  -    2.900E-02  0.000E+00          -                          -    69    3    6  
+   -  -  -    -  -    5.400E-02  0.000E+00          -                          -    70    4    8  
+   -  -  -    -  -    9.300E-02  0.000E+00          -                          -    71    5   10  
+   -  -  -    -  -    1.610E-01  0.000E+00          -                          -    72    6   12  
+   2  C  2  ct2  C            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    0.000E+00  0.000E+00          -                          -    82    1    2  
+   -  -  -    -  -    1.000E-02  0.000E+00          -                          -    83    2    3  
+   -  -  -    -  -    2.300E-02  0.000E+00          -                          -    84    3    5  
+   -  -  -    -  -    4.100E-02  0.000E+00          -                          -    85    4    7  
+   -  -  -    -  -    6.500E-02  0.000E+00          -                          -    86    5    9  
+   -  -  -    -  -    1.030E-01  0.000E+00          -                          -    87    6   11  
+   3  C  3  ct2  H  H         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  1.0    -   106    1   13 1
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  1.0    -   102    2   16 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  2.0    -   107    3   19 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  2.0    -   103    4   22 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  4.0    -   108    5   25 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  4.0    -   104    6   28 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  8.0    -   109    7   31 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  8.0    -   105    8   34 0
+   4  C  3  ct2  H  C         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  1.0    -   115    1   14 1
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  1.0    -   111    2   17 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  2.0    -   116    3   20 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  2.0    -   112    4   23 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  4.0    -   117    5   26 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  4.0    -   113    6   29 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  8.0    -   118    7   32 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  8.0    -   114    8   35 0
+   5  C  3  ct2  C  C         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  1.0    -    97    1   15 1
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  1.0    -    93    2   18 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  2.0    -    98    3   21 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  2.0    -    94    4   24 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  4.0    -    99    5   27 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  4.0    -    95    6   30 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -               -1  8.0    -   100    7   33 0
+   -  -  -    -  -  - 0.000E+00  0.000E+00          -                1  8.0    -    96    8   36 0
+----------------------------------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: NEURAL NETWORKS ****************************************************
+
+Normalize neurons (all elements): 0
+-------------------------------------------------------------------------------
+Atomic electronegativity NN for element  H :
+Number of weights    :    600
+Number of biases     :     31
+Number of connections:    631
+Architecture       24   15   15    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G   t   t    
+  12   G   t   t    
+  13   G   t   t    
+  14   G   t   t    
+  15   G   t   t    
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+-------------------------------------------------------------------------------
+Atomic electronegativity NN for element  C :
+Number of weights    :    780
+Number of biases     :     31
+Number of connections:    811
+Architecture       36   15   15    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G   t   t    
+  12   G   t   t    
+  13   G   t   t    
+  14   G   t   t    
+  15   G   t   t    
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+  26   G            
+  27   G            
+  28   G            
+  29   G            
+  30   G            
+  31   G            
+  32   G            
+  33   G            
+  34   G            
+  35   G            
+  36   G            
+-------------------------------------------------------------------------------
+Atomic short range NN for element  H :
+Number of weights    :    360
+Number of biases     :     21
+Number of connections:    381
+Architecture       25   10   10    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G            
+  12   G            
+  13   G            
+  14   G            
+  15   G            
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+-------------------------------------------------------------------------------
+Atomic short range NN for element  C :
+Number of weights    :    480
+Number of biases     :     21
+Number of connections:    501
+Architecture       37   10   10    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G            
+  12   G            
+  13   G            
+  14   G            
+  15   G            
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+  26   G            
+  27   G            
+  28   G            
+  29   G            
+  30   G            
+  31   G            
+  32   G            
+  33   G            
+  34   G            
+  35   G            
+  36   G            
+  37   G            
+-------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION SCALING ******************************************
+
+Equal scaling type for all symmetry functions:
+Scaling type::ST_SCALECENTER (3)
+Gs = Smin + (Smax - Smin) * (G - Gmean) / (Gmax - Gmin)
+WARNING: Keyword "scale_min_short" not found.
+         Default value for Smin = 0.0.
+WARNING: Keyword "scale_max_short" not found.
+         Default value for Smax = 1.0.
+Smin = 0.000000
+Smax = 1.000000
+Symmetry function scaling statistics from file: nnp-data/scaling.data
+-------------------------------------------------------------------------------
+
+Abbreviations:
+--------------
+ind ..... Symmetry function index.
+min ..... Minimum symmetry function value.
+max ..... Maximum symmetry function value.
+mean .... Mean symmetry function value.
+sigma ... Standard deviation of symmetry function values.
+sf ...... Scaling factor for derivatives.
+Smin .... Desired minimum scaled symmetry function value.
+Smax .... Desired maximum scaled symmetry function value.
+t ....... Scaling type.
+
+Scaling data for symmetry functions element  H :
+-------------------------------------------------------------------------------
+ ind       min       max      mean     sigma        sf  Smin  Smax t
+-------------------------------------------------------------------------------
+   1  0.00E+00  1.68E-01  5.14E-02  0.00E+00  5.94E+00  0.00  1.00 3
+   2  3.04E-01  4.17E-01  3.46E-01  0.00E+00  8.85E+00  0.00  1.00 3
+   3  0.00E+00  1.59E-01  4.77E-02  0.00E+00  6.27E+00  0.00  1.00 3
+   4  0.00E+00  1.52E-01  4.48E-02  0.00E+00  6.56E+00  0.00  1.00 3
+   5  2.70E-01  3.77E-01  3.12E-01  0.00E+00  9.35E+00  0.00  1.00 3
+   6  0.00E+00  1.43E-01  4.10E-02  0.00E+00  7.00E+00  0.00  1.00 3
+   7  0.00E+00  1.33E-01  3.71E-02  0.00E+00  7.53E+00  0.00  1.00 3
+   8  2.36E-01  3.37E-01  2.78E-01  0.00E+00  9.97E+00  0.00  1.00 3
+   9  0.00E+00  1.22E-01  3.31E-02  0.00E+00  8.18E+00  0.00  1.00 3
+  10  1.94E-01  2.86E-01  2.36E-01  0.00E+00  1.09E+01  0.00  1.00 3
+  11  1.46E-01  2.31E-01  1.88E-01  0.00E+00  1.18E+01  0.00  1.00 3
+  12  9.43E-02  1.67E-01  1.33E-01  0.00E+00  1.37E+01  0.00  1.00 3
+  13  0.00E+00  3.94E-03  7.66E-04  0.00E+00  2.54E+02  0.00  1.00 3
+  14  0.00E+00  2.18E-03  3.95E-04  0.00E+00  4.59E+02  0.00  1.00 3
+  15  0.00E+00  2.26E-02  6.69E-03  0.00E+00  4.42E+01  0.00  1.00 3
+  16  6.80E-03  1.48E-02  9.85E-03  0.00E+00  1.25E+02  0.00  1.00 3
+  17  0.00E+00  7.54E-04  1.18E-04  0.00E+00  1.33E+03  0.00  1.00 3
+  18  0.00E+00  3.07E-04  3.12E-05  0.00E+00  3.26E+03  0.00  1.00 3
+  19  0.00E+00  2.02E-02  6.04E-03  0.00E+00  4.96E+01  0.00  1.00 3
+  20  6.45E-03  1.30E-02  9.49E-03  0.00E+00  1.53E+02  0.00  1.00 3
+  21  0.00E+00  1.67E-02  5.00E-03  0.00E+00  5.97E+01  0.00  1.00 3
+  22  5.80E-03  1.11E-02  8.84E-03  0.00E+00  1.88E+02  0.00  1.00 3
+  23  0.00E+00  1.27E-02  3.57E-03  0.00E+00  7.90E+01  0.00  1.00 3
+  24  4.42E-03  1.10E-02  7.82E-03  0.00E+00  1.51E+02  0.00  1.00 3
+-------------------------------------------------------------------------------
+Scaling data for symmetry functions element  C :
+-------------------------------------------------------------------------------
+ ind       min       max      mean     sigma        sf  Smin  Smax t
+-------------------------------------------------------------------------------
+   1  0.00E+00  5.28E-01  8.65E-02  0.00E+00  1.89E+00  0.00  1.00 3
+   2  2.44E-01  5.76E-01  4.78E-01  0.00E+00  3.00E+00  0.00  1.00 3
+   3  2.20E-01  5.27E-01  4.38E-01  0.00E+00  3.26E+00  0.00  1.00 3
+   4  0.00E+00  5.04E-01  7.81E-02  0.00E+00  1.99E+00  0.00  1.00 3
+   5  1.95E-01  4.73E-01  3.93E-01  0.00E+00  3.59E+00  0.00  1.00 3
+   6  0.00E+00  4.75E-01  6.95E-02  0.00E+00  2.11E+00  0.00  1.00 3
+   7  1.66E-01  4.12E-01  3.41E-01  0.00E+00  4.07E+00  0.00  1.00 3
+   8  0.00E+00  4.33E-01  5.90E-02  0.00E+00  2.31E+00  0.00  1.00 3
+   9  1.36E-01  3.48E-01  2.86E-01  0.00E+00  4.72E+00  0.00  1.00 3
+  10  0.00E+00  3.76E-01  4.70E-02  0.00E+00  2.66E+00  0.00  1.00 3
+  11  1.02E-01  2.73E-01  2.22E-01  0.00E+00  5.83E+00  0.00  1.00 3
+  12  0.00E+00  2.93E-01  3.33E-02  0.00E+00  3.41E+00  0.00  1.00 3
+  13  0.00E+00  1.53E-02  6.08E-04  0.00E+00  6.55E+01  0.00  1.00 3
+  14  0.00E+00  2.04E-02  2.32E-03  0.00E+00  4.91E+01  0.00  1.00 3
+  15  0.00E+00  6.66E-03  3.99E-03  0.00E+00  1.50E+02  0.00  1.00 3
+  16  0.00E+00  9.28E-03  3.24E-04  0.00E+00  1.08E+02  0.00  1.00 3
+  17  0.00E+00  2.50E-02  2.80E-03  0.00E+00  4.00E+01  0.00  1.00 3
+  18  3.52E-03  1.25E-02  8.03E-03  0.00E+00  1.11E+02  0.00  1.00 3
+  19  0.00E+00  1.19E-02  4.30E-04  0.00E+00  8.39E+01  0.00  1.00 3
+  20  0.00E+00  1.56E-02  2.02E-03  0.00E+00  6.43E+01  0.00  1.00 3
+  21  0.00E+00  6.52E-03  3.94E-03  0.00E+00  1.53E+02  0.00  1.00 3
+  22  0.00E+00  3.82E-03  1.46E-04  0.00E+00  2.62E+02  0.00  1.00 3
+  23  0.00E+00  2.34E-02  2.50E-03  0.00E+00  4.27E+01  0.00  1.00 3
+  24  3.51E-03  1.24E-02  7.98E-03  0.00E+00  1.12E+02  0.00  1.00 3
+  25  0.00E+00  8.68E-03  2.29E-04  0.00E+00  1.15E+02  0.00  1.00 3
+  26  0.00E+00  1.07E-02  1.70E-03  0.00E+00  9.33E+01  0.00  1.00 3
+  27  0.00E+00  6.38E-03  3.88E-03  0.00E+00  1.57E+02  0.00  1.00 3
+  28  0.00E+00  1.76E-03  6.00E-05  0.00E+00  5.69E+02  0.00  1.00 3
+  29  0.00E+00  2.11E-02  2.32E-03  0.00E+00  4.74E+01  0.00  1.00 3
+  30  3.50E-03  1.23E-02  7.95E-03  0.00E+00  1.13E+02  0.00  1.00 3
+  31  0.00E+00  4.70E-03  6.92E-05  0.00E+00  2.13E+02  0.00  1.00 3
+  32  0.00E+00  1.07E-02  1.36E-03  0.00E+00  9.34E+01  0.00  1.00 3
+  33  0.00E+00  6.34E-03  3.76E-03  0.00E+00  1.58E+02  0.00  1.00 3
+  34  0.00E+00  9.43E-04  2.30E-05  0.00E+00  1.06E+03  0.00  1.00 3
+  35  0.00E+00  1.71E-02  2.11E-03  0.00E+00  5.84E+01  0.00  1.00 3
+  36  3.48E-03  1.22E-02  7.88E-03  0.00E+00  1.15E+02  0.00  1.00 3
+-------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION STATISTICS ***************************************
+
+Equal symmetry function statistics for all elements.
+Collect min/max/mean/sigma                        : 0
+Collect extrapolation warnings                    : 1
+Write extrapolation warnings immediately to stderr: 0
+Halt on any extrapolation warning                 : 0
+*******************************************************************************
+
+*** SETUP: NEURAL NETWORK WEIGHTS *********************************************
+
+Electronegativity weight file name format: nnp-data/weightse.%03zu.data
+Setting weights for element  H from file: nnp-data/weightse.001.data
+Setting weights for element  C from file: nnp-data/weightse.006.data
+Short range weight file name format: nnp-data/weights.%03zu.data
+Setting weights for element  H from file: nnp-data/weights.001.data
+Setting weights for element  C from file: nnp-data/weights.006.data
+*******************************************************************************
+
+*** SETUP: LAMMPS INTERFACE ***************************************************
+
+Individual extrapolation warnings will not be shown.
+Extrapolation warning summary will be shown every 10 timesteps.
+The simulation will be stopped when 100 extrapolation warnings are exceeded.
+Extrapolation warnings are accumulated over all time steps.
+-------------------------------------------------------------------------------
+CAUTION: If the LAMMPS unit system differs from the one used
+         during NN training, appropriate conversion factors
+         must be provided (see keywords cflength and cfenergy).
+
+Length unit conversion factor:   1.0000000000000000E+00
+Energy unit conversion factor:   1.0000000000000000E+00
+
+Checking consistency of cutoff radii (in LAMMPS units):
+LAMMPS Cutoff (via pair_coeff)  :   8.010E+00
+Maximum symmetry function cutoff:   8.000E+00
+Cutoff radii are consistent.
+-------------------------------------------------------------------------------
+Element mapping string from LAMMPS to n2p2: "1:H,2:C"
+
+CAUTION: Please ensure that this mapping between LAMMPS
+         atom types and NNP elements is consistent:
+
+---------------------------
+LAMMPS type  |  NNP element
+---------------------------
+          1 <->  H (  1)
+          2 <->  C (  6)
+---------------------------
+
+NNP setup for LAMMPS completed.
+*******************************************************************************
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 10.01
+  ghost atom cutoff = 10.01
+  binsize = 5.005, bins = 6 1 1
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair nnp, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+WARNING: Proc sub-domain size < neighbor skin, could lead to lost atoms (../domain.cpp:963)
+Atom     0 ( C) chi:  -1.46678106E-01
+Atom     1 ( C) chi:  -1.62293124E-01
+Atom     2 ( H) chi:  -2.28364821E-01
+Atom     3 ( C) chi:  -1.49337351E-01
+Atom     4 ( C) chi:  -1.48569008E-01
+Atom     5 ( C) chi:  -1.50037876E-01
+Atom     6 ( C) chi:  -1.49461645E-01
+Atom     7 ( C) chi:  -1.49033407E-01
+Atom     8 ( C) chi:  -1.48516909E-01
+Atom     9 ( C) chi:  -1.46830562E-01
+Atom    10 ( C) chi:  -1.60724572E-01
+Atom    11 ( H) chi:  -2.25977980E-01
+Solve relative error:             -NAN
+Atom     0 ( C) q:             -NAN
+Atom     1 ( C) q:             -NAN
+Atom     2 ( H) q:             -NAN
+Atom     3 ( C) q:             -NAN
+Atom     4 ( C) q:             -NAN
+Atom     5 ( C) q:             -NAN
+Atom     6 ( C) q:             -NAN
+Atom     7 ( C) q:             -NAN
+Atom     8 ( C) q:             -NAN
+Atom     9 ( C) q:             -NAN
+Atom    10 ( C) q:             -NAN
+Atom    11 ( H) q:             -NAN
+Total charge:             -NAN (ref:   0.00000000E+00)
+Electrostatic energy:             -NAN
+Atom     0 ( C) energy:             -NAN
+Atom     1 ( C) energy:             -NAN
+Atom     2 ( H) energy:             -NAN
+Atom     3 ( C) energy:             -NAN
+Atom     4 ( C) energy:             -NAN
+Atom     5 ( C) energy:             -NAN
+Atom     6 ( C) energy:             -NAN
+Atom     7 ( C) energy:             -NAN
+Atom     8 ( C) energy:             -NAN
+Atom     9 ( C) energy:             -NAN
+Atom    10 ( C) energy:             -NAN
+Atom    11 ( H) energy:             -NAN
+### NNP EW SUMMARY ### TS:          0 EW          0 EWPERSTEP  0.000E+00
+Per MPI rank memory allocation (min/avg/max) = 3.063 | 3.063 | 3.063 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0            0         -nan            0         -nan            0    72.695271 
+Atom     0 ( C) chi:  -1.46678106E-01
+Atom     1 ( C) chi:  -1.62293124E-01
+Atom     2 ( H) chi:  -2.28364821E-01
+Atom     3 ( C) chi:  -1.49337351E-01
+Atom     4 ( C) chi:  -1.48569008E-01
+Atom     5 ( C) chi:  -1.50037876E-01
+Atom     6 ( C) chi:  -1.49461645E-01
+Atom     7 ( C) chi:  -1.49033407E-01
+Atom     8 ( C) chi:  -1.48516909E-01
+Atom     9 ( C) chi:  -1.46830562E-01
+Atom    10 ( C) chi:  -1.60724572E-01
+Atom    11 ( H) chi:  -2.25977980E-01
+Solve relative error:             -NAN
+Atom     0 ( C) q:             -NAN
+Atom     1 ( C) q:             -NAN
+Atom     2 ( H) q:             -NAN
+Atom     3 ( C) q:             -NAN
+Atom     4 ( C) q:             -NAN
+Atom     5 ( C) q:             -NAN
+Atom     6 ( C) q:             -NAN
+Atom     7 ( C) q:             -NAN
+Atom     8 ( C) q:             -NAN
+Atom     9 ( C) q:             -NAN
+Atom    10 ( C) q:             -NAN
+Atom    11 ( H) q:             -NAN
+Total charge:             -NAN (ref:   0.00000000E+00)
+Electrostatic energy:             -NAN
+Atom     0 ( C) energy:             -NAN
+Atom     1 ( C) energy:             -NAN
+Atom     2 ( H) energy:             -NAN
+Atom     3 ( C) energy:             -NAN
+Atom     4 ( C) energy:             -NAN
+Atom     5 ( C) energy:             -NAN
+Atom     6 ( C) energy:             -NAN
+Atom     7 ( C) energy:             -NAN
+Atom     8 ( C) energy:             -NAN
+Atom     9 ( C) energy:             -NAN
+Atom    10 ( C) energy:             -NAN
+Atom    11 ( H) energy:             -NAN
+       1            0         -nan            0         -nan            0    72.695271 
+Atom     0 ( C) chi:  -1.46678106E-01
+Atom     1 ( C) chi:  -1.62293124E-01
+Atom     2 ( H) chi:  -2.28364821E-01
+Atom     3 ( C) chi:  -1.49337351E-01
+Atom     4 ( C) chi:  -1.48569008E-01
+Atom     5 ( C) chi:  -1.50037876E-01
+Atom     6 ( C) chi:  -1.49461645E-01
+Atom     7 ( C) chi:  -1.49033407E-01
+Atom     8 ( C) chi:  -1.48516909E-01
+Atom     9 ( C) chi:  -1.46830562E-01
+Atom    10 ( C) chi:  -1.60724572E-01
+Atom    11 ( H) chi:  -2.25977980E-01
+Solve relative error:             -NAN
+Atom     0 ( C) q:             -NAN
+Atom     1 ( C) q:             -NAN
+Atom     2 ( H) q:             -NAN
+Atom     3 ( C) q:             -NAN
+Atom     4 ( C) q:             -NAN
+Atom     5 ( C) q:             -NAN
+Atom     6 ( C) q:             -NAN
+Atom     7 ( C) q:             -NAN
+Atom     8 ( C) q:             -NAN
+Atom     9 ( C) q:             -NAN
+Atom    10 ( C) q:             -NAN
+Atom    11 ( H) q:             -NAN
+Total charge:             -NAN (ref:   0.00000000E+00)
+Electrostatic energy:             -NAN
+Atom     0 ( C) energy:             -NAN
+Atom     1 ( C) energy:             -NAN
+Atom     2 ( H) energy:             -NAN
+Atom     3 ( C) energy:             -NAN
+Atom     4 ( C) energy:             -NAN
+Atom     5 ( C) energy:             -NAN
+Atom     6 ( C) energy:             -NAN
+Atom     7 ( C) energy:             -NAN
+Atom     8 ( C) energy:             -NAN
+Atom     9 ( C) energy:             -NAN
+Atom    10 ( C) energy:             -NAN
+Atom    11 ( H) energy:             -NAN
+       2            0         -nan            0         -nan            0    72.695271 
+Atom     0 ( C) chi:  -1.46678106E-01
+Atom     1 ( C) chi:  -1.62293124E-01
+Atom     2 ( H) chi:  -2.28364821E-01
+Atom     3 ( C) chi:  -1.49337351E-01
+Atom     4 ( C) chi:  -1.48569008E-01
+Atom     5 ( C) chi:  -1.50037876E-01
+Atom     6 ( C) chi:  -1.49461645E-01
+Atom     7 ( C) chi:  -1.49033407E-01
+Atom     8 ( C) chi:  -1.48516909E-01
+Atom     9 ( C) chi:  -1.46830562E-01
+Atom    10 ( C) chi:  -1.60724572E-01
+Atom    11 ( H) chi:  -2.25977980E-01
+Solve relative error:             -NAN
+Atom     0 ( C) q:             -NAN
+Atom     1 ( C) q:             -NAN
+Atom     2 ( H) q:             -NAN
+Atom     3 ( C) q:             -NAN
+Atom     4 ( C) q:             -NAN
+Atom     5 ( C) q:             -NAN
+Atom     6 ( C) q:             -NAN
+Atom     7 ( C) q:             -NAN
+Atom     8 ( C) q:             -NAN
+Atom     9 ( C) q:             -NAN
+Atom    10 ( C) q:             -NAN
+Atom    11 ( H) q:             -NAN
+Total charge:             -NAN (ref:   0.00000000E+00)
+Electrostatic energy:             -NAN
+Atom     0 ( C) energy:             -NAN
+Atom     1 ( C) energy:             -NAN
+Atom     2 ( H) energy:             -NAN
+Atom     3 ( C) energy:             -NAN
+Atom     4 ( C) energy:             -NAN
+Atom     5 ( C) energy:             -NAN
+Atom     6 ( C) energy:             -NAN
+Atom     7 ( C) energy:             -NAN
+Atom     8 ( C) energy:             -NAN
+Atom     9 ( C) energy:             -NAN
+Atom    10 ( C) energy:             -NAN
+Atom    11 ( H) energy:             -NAN
+       3            0         -nan            0         -nan            0    72.695271 
+Atom     0 ( C) chi:  -1.46678106E-01
+Atom     1 ( C) chi:  -1.62293124E-01
+Atom     2 ( H) chi:  -2.28364821E-01
+Atom     3 ( C) chi:  -1.49337351E-01
+Atom     4 ( C) chi:  -1.48569008E-01
+Atom     5 ( C) chi:  -1.50037876E-01
+Atom     6 ( C) chi:  -1.49461645E-01
+Atom     7 ( C) chi:  -1.49033407E-01
+Atom     8 ( C) chi:  -1.48516909E-01
+Atom     9 ( C) chi:  -1.46830562E-01
+Atom    10 ( C) chi:  -1.60724572E-01
+Atom    11 ( H) chi:  -2.25977980E-01
+Solve relative error:             -NAN
+Atom     0 ( C) q:             -NAN
+Atom     1 ( C) q:             -NAN
+Atom     2 ( H) q:             -NAN
+Atom     3 ( C) q:             -NAN
+Atom     4 ( C) q:             -NAN
+Atom     5 ( C) q:             -NAN
+Atom     6 ( C) q:             -NAN
+Atom     7 ( C) q:             -NAN
+Atom     8 ( C) q:             -NAN
+Atom     9 ( C) q:             -NAN
+Atom    10 ( C) q:             -NAN
+Atom    11 ( H) q:             -NAN
+Total charge:             -NAN (ref:   0.00000000E+00)
+Electrostatic energy:             -NAN
+Atom     0 ( C) energy:             -NAN
+Atom     1 ( C) energy:             -NAN
+Atom     2 ( H) energy:             -NAN
+Atom     3 ( C) energy:             -NAN
+Atom     4 ( C) energy:             -NAN
+Atom     5 ( C) energy:             -NAN
+Atom     6 ( C) energy:             -NAN
+Atom     7 ( C) energy:             -NAN
+Atom     8 ( C) energy:             -NAN
+Atom     9 ( C) energy:             -NAN
+Atom    10 ( C) energy:             -NAN
+Atom    11 ( H) energy:             -NAN
+       4            0         -nan            0         -nan            0    72.695271 
+Atom     0 ( C) chi:  -1.46678106E-01
+Atom     1 ( C) chi:  -1.62293124E-01
+Atom     2 ( H) chi:  -2.28364821E-01
+Atom     3 ( C) chi:  -1.49337351E-01
+Atom     4 ( C) chi:  -1.48569008E-01
+Atom     5 ( C) chi:  -1.50037876E-01
+Atom     6 ( C) chi:  -1.49461645E-01
+Atom     7 ( C) chi:  -1.49033407E-01
+Atom     8 ( C) chi:  -1.48516909E-01
+Atom     9 ( C) chi:  -1.46830562E-01
+Atom    10 ( C) chi:  -1.60724572E-01
+Atom    11 ( H) chi:  -2.25977980E-01
+Solve relative error:             -NAN
+Atom     0 ( C) q:             -NAN
+Atom     1 ( C) q:             -NAN
+Atom     2 ( H) q:             -NAN
+Atom     3 ( C) q:             -NAN
+Atom     4 ( C) q:             -NAN
+Atom     5 ( C) q:             -NAN
+Atom     6 ( C) q:             -NAN
+Atom     7 ( C) q:             -NAN
+Atom     8 ( C) q:             -NAN
+Atom     9 ( C) q:             -NAN
+Atom    10 ( C) q:             -NAN
+Atom    11 ( H) q:             -NAN
+Total charge:             -NAN (ref:   0.00000000E+00)
+Electrostatic energy:             -NAN
+Atom     0 ( C) energy:             -NAN
+Atom     1 ( C) energy:             -NAN
+Atom     2 ( H) energy:             -NAN
+Atom     3 ( C) energy:             -NAN
+Atom     4 ( C) energy:             -NAN
+Atom     5 ( C) energy:             -NAN
+Atom     6 ( C) energy:             -NAN
+Atom     7 ( C) energy:             -NAN
+Atom     8 ( C) energy:             -NAN
+Atom     9 ( C) energy:             -NAN
+Atom    10 ( C) energy:             -NAN
+Atom    11 ( H) energy:             -NAN
+       5            0         -nan            0         -nan            0    72.695271 
+Loop time of 0.00210395 on 1 procs for 5 steps with 12 atoms
+
+Performance: 102.664 ns/day, 0.234 hours/ns, 2376.482 timesteps/s
+29.9% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0019988  | 0.0019988  | 0.0019988  |   0.0 | 95.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 4.048e-06  | 4.048e-06  | 4.048e-06  |   0.0 |  0.19
+Output  | 7.6602e-05 | 7.6602e-05 | 7.6602e-05 |   0.0 |  3.64
+Modify  | 6.668e-06  | 6.668e-06  | 6.668e-06  |   0.0 |  0.32
+Other   |            | 1.783e-05  |            |       |  0.85
+
+Nlocal:        12.0000 ave          12 max          12 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:        0.00000 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:        0.00000 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:      76.0000 ave          76 max          76 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 76
+Ave neighs/atom = 6.3333333
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:00:00

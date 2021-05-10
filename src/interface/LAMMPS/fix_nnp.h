@@ -27,6 +27,7 @@ FixStyle(nnp,FixNNP)
 namespace LAMMPS_NS {
 
     class FixNNP : public Fix {
+        friend class PairNNP;
     public:
         FixNNP(class LAMMPS *, int, char **);
         ~FixNNP();
@@ -35,7 +36,6 @@ namespace LAMMPS_NS {
         virtual void post_constructor();
         virtual void init();
         void init_list(int,class NeighList *);
-        virtual void init_storage();
         void setup_pre_force(int);
         virtual void pre_force(int);
 
@@ -58,13 +58,7 @@ namespace LAMMPS_NS {
 
 
         double tolerance;     // tolerance for the norm of the rel residual in CG
-        bool periodic;
-
-        // QEq arrays
-        double *chi,*hardness,*sigma;
-
-        // Forces
-        double *fLambda,*dchidxyz,*dEdQ;
+        bool periodic; // check for periodicity
 
         bigint ngroup;
         int nprev,dum1,dum2;
@@ -73,45 +67,28 @@ namespace LAMMPS_NS {
         double *Q;
         double **Q_hist; // do we need this ???
 
-        void allocate_qeq();
-        void deallocate_qeq();
-        void setup_qeq();
-        void pre_force_qeq();
+        void allocate_QEq();
+        void deallocate_QEq();
+        double qRef;
+
+        void calculate_electronegativities();
+
         void run_network();
 
         //TODO:to be removed
         char *pertype_option;
         virtual void pertype_parameters(char*);
-        virtual void allocate_storage();
-        virtual void deallocate_storage();
-        void reallocate_storage();
-        virtual void allocate_matrix();
-        void deallocate_matrix();
-        void reallocate_matrix();
-
 
         //// Function Minimization Approach
 
         double *xall,*yall,*zall; // all atoms (parallelization)
 
         gsl_multimin_function_fdf QEq_minimizer; // find a better name
-        gsl_multimin_function_fdf fLambda_minimizer; // fLambda calculator
 
-        double qref; // TODO: total ref charge of the system, normally it will be read from n2p2 ?
+
 
         const gsl_multimin_fdfminimizer_type *T;
         gsl_multimin_fdfminimizer *s;
-
-        // Minimization Setup for Force Lambda
-        double fLambda_f(const gsl_vector*);
-        void fLambda_df(const gsl_vector*, gsl_vector*);
-        void fLambda_fdf(const gsl_vector*, double*, gsl_vector*);
-
-        static double fLambda_f_wrap(const gsl_vector*, void*);
-        static void fLambda_df_wrap(const gsl_vector*, void*, gsl_vector*);
-        static void fLambda_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*);
-
-        void calculate_fLambda();
 
         // Minimization Setup for QEq energy
         double QEq_f(const gsl_vector*);
@@ -127,43 +104,12 @@ namespace LAMMPS_NS {
         //// Electrostatics
         double E_elec; // electrostatic energy
 
-        double *rscr; // screening cutoff radii
-
-        double screen_f(double);
-        double screen_df(double);
-        void screen_fdf();
 
         /// Matrix Approach (DEPRECATED and to be cleaned up)
-
-        typedef struct{
-            int n, m;
-            int *firstnbr;
-            int *numnbrs;
-            int *jlist;
-            double *val;
-            double **val2d;
-            double ***dvalq; // dAdxyzQ
-        } sparse_matrix;
-
-        sparse_matrix A;
-        double *Adia_inv;
-        double *b,*b_der; // b_der is the b vector during the derivative calculation, it has more entries than b
-        double *b_prc, *b_prm;
 
         //CG storage
         double *p, *q, *r, *d;
 
-        virtual void init_matvec();
-        void init_A();
-        virtual void compute_A();
-        double calculate_A(int, int, double);
-
-        void compute_dAdxyzQ();
-        double calculate_dAdxyzQ(double, double, int, int);
-
-        virtual int CG(double*,double*);
-
-        virtual void sparse_matvec(sparse_matrix*,double*,double*);
 
         virtual int pack_forward_comm(int, int *, double *, int, int *);
         virtual void unpack_forward_comm(int, int, double *);

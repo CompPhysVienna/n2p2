@@ -1,0 +1,53 @@
+###############################################################################
+# MD simulation for MgO with Al/Au
+###############################################################################
+
+###############################################################################
+# VARIABLES
+###############################################################################
+clear
+# Configuration files
+variable cfgFile         string "AlAuMgO.data"
+# Timesteps
+variable numSteps        equal  5
+variable dt              equal  0.0005
+# NN
+variable nnpCutoff       equal  8.01
+variable nnpDir          string "nnp-data"
+# Masses
+variable mass_O          equal  15.9994
+variable mass_Mg         equal  24.305
+variable mass_Al         equal  26.981539
+variable mass_Au         equal  196.96657
+
+###############################################################################
+# GENERAL SETUP
+###############################################################################
+units metal
+boundary p p p
+atom_style charge
+read_data ${cfgFile}
+mass 1 ${mass_O}
+mass 2 ${mass_Mg}
+mass 3 ${mass_Al}
+mass 4 ${mass_Au}
+timestep ${dt}
+thermo 1
+
+###############################################################################
+# NN
+###############################################################################
+pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
+pair_coeff * * ${nnpCutoff}
+fix 1 all nnp 1 1.0 2.0 1.0e-6 nnp 
+
+###############################################################################
+# INTEGRATOR
+###############################################################################
+fix INT all nve
+#dump 1 all atom 1 traj.dump
+
+###############################################################################
+# SIMULATION
+###############################################################################
+run ${numSteps}

@@ -373,17 +373,12 @@ double InterfaceLammps::getEnergy() const
     return structure.energy / cfenergy;
 }
 
-double InterfaceLammps::getTotalCharge() const
+void InterfaceLammps::getScreeningInfo(double* const& screenInfo) const
 {
-    return structure.chargeRef;
-}
-
-void InterfaceLammps::getScreeningInfo(double* const& rScreen) const
-{
-    // TODO: pull latest changes and read these properly !!
-    rScreen[0] = 4.8;
-    rScreen[1] = 8.0;
-    rScreen[2] = 1.0 / (rScreen[1] - rScreen[0]); // scale
+    screenInfo[0] = (double) screeningFunction.getCoreFunctionType(); //TODO: this should be changed
+    screenInfo[1] = screeningFunction.getInner();
+    screenInfo[2] = screeningFunction.getOuter();
+    screenInfo[3] = 1.0 / (screenInfo[2] - screenInfo[1]); // scale
 }
 
 double InterfaceLammps::getAtomicEnergy(int index) const
@@ -394,8 +389,8 @@ double InterfaceLammps::getAtomicEnergy(int index) const
     else return a.energy / cfenergy;
 }
 
-void InterfaceLammps::getQeqParams(double* const& atomChi, double* const& atomJ,
-                     double* const& atomSigma) const
+void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
+                     double* const& atomSigma, double qRef) const
 {
     Atom const* a = NULL;
     for (size_t i = 0; i < structure.atoms.size(); ++i)
@@ -407,9 +402,63 @@ void InterfaceLammps::getQeqParams(double* const& atomChi, double* const& atomJ,
        atomJ[ia] = elements.at(ea).getHardness();
        atomSigma[ia] = elements.at(ea).getQsigma();
     }
+    qRef = structure.chargeRef;
 
-    return;
 }
+
+void InterfaceLammps::getdEdQ(double* const& dEtotdQ) const
+{
+    Atom const* ai = NULL;
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
+        ai = &(structure.atoms.at(i));
+        size_t const ia = ai->index;
+        //std::cout << dEtotdQ[ia] << '\t' << ai->dEdG.back() << '\n';
+        dEtotdQ[ia] += ai->dEdG.back();
+    }
+}
+
+void InterfaceLammps::getdChidxyz(int ind, double *const *const &dChidxyz) const
+{
+    Atom const &ai = structure.atoms.at(ind);
+
+    for (size_t j = 0; j < structure.numAtoms; ++j) {
+        Atom const &aj = structure.atoms.at(j);
+#ifndef NNP_FULL_SFD_MEMORY
+        vector <vector<size_t>> const &tableFull
+                = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+        Vec3D dChi;
+        // need to add this case because the loop over the neighbors
+        // does not include the contribution dChi_i/dr_i.
+        if (ai.index == j) {
+            for (size_t k = 0; k < aj.numSymmetryFunctions; ++k) {
+                dChi += aj.dChidG.at(k) * aj.dGdr.at(k);
+            }
+        }
+
+        for (auto const &n : aj.neighbors) {
+            if (n.d > maxCutoffRadius) break;
+            if (n.index == ai.index) {
+#ifndef NNP_FULL_SFD_MEMORY
+                vector <size_t> const &table = tableFull.at(n.element);
+                for (size_t k = 0; k < n.dGdr.size(); ++k) {
+                    dChi += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
+                }
+#else
+                for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+                        {
+                            dChi += aj.dChidG.at(k) * n.dGdr.at(k);
+                        }
+#endif
+                }
+            }
+        dChidxyz[j][0] = dChi[0];
+        dChidxyz[j][1] = dChi[1];
+        dChidxyz[j][2] = dChi[2];
+        }
+}
+
 
 void InterfaceLammps::addCharge(int index, double Q)
 {

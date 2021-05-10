@@ -1,0 +1,48 @@
+###############################################################################
+# MD simulation for carbon chain
+###############################################################################
+
+###############################################################################
+# VARIABLES
+###############################################################################
+clear
+# Configuration files
+variable cfgFile         string "carbon-chain.data"
+# Timesteps
+variable numSteps        equal  5
+variable dt              equal  0.0005
+# NN
+variable nnpCutoff       equal  8.01
+variable nnpDir          string "nnp-data"
+# Masses
+variable mass_H          equal  1.00794
+variable mass_C          equal  12.0107
+
+###############################################################################
+# GENERAL SETUP
+###############################################################################
+units metal
+boundary s s s
+atom_style atomic
+read_data ${cfgFile}
+mass 1 ${mass_H}
+mass 2 ${mass_C}
+timestep ${dt}
+thermo 1
+
+###############################################################################
+# NN
+###############################################################################
+pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:H,2:C"
+pair_coeff * * ${nnpCutoff}
+
+###############################################################################
+# INTEGRATOR
+###############################################################################
+fix INT all nve
+#dump 1 all atom 1 traj.dump
+
+###############################################################################
+# SIMULATION
+###############################################################################
+run ${numSteps}
