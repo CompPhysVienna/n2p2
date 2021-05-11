@@ -163,6 +163,7 @@ $(CLEAN_APP):
 # lammps-nnp #
 ##############
 lammps-nnp: libnnpif
+	cd libnnpif && $(MAKE) lammps-mf-internal
 	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
 clean-lammps-nnp:
