@@ -384,6 +384,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
 {
     double const cfforce = cflength / cfenergy;
     double convForce = 1.0;
+    Vec3D fSum;
     if (normalize)
     {
         convForce = convLength / convEnergy;
@@ -417,16 +418,27 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             vector<size_t> const& table = tableFull.at(n->element);
             for (size_t s = 0; s < n->dGdr.size(); ++s)
             {
-                double const dEdG = a->dEdG[table.at(s)] * cfforce * convForce;
+                fSum = {0.0,0.0,0.0};
+                double const* const dGdr = n->dGdr[s].r;
+                for (size_t c = 0; c < committeeSize; ++c)
+                {
+                    double const dEdG = a->dEdGCom.at(c)[table.at(s)] * cfforce * convForce;
 #else
             for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
             {
-                double const dEdG = a->dEdG[s] * cfforce * convForce;
-#endif
+                fSum = {0.0,0.0,0.0};
                 double const* const dGdr = n->dGdr[s].r;
-                atomF[in][0] -= dEdG * dGdr[0];
-                atomF[in][1] -= dEdG * dGdr[1];
-                atomF[in][2] -= dEdG * dGdr[2];
+                for (size_t c = 0; c < committeeSize; ++c)
+                {
+                    double const dEdG = a->dEdGCom.at(c)[s] * cfforce * convForce;
+#endif
+                    fSum[0] += dEdG * dGdr[0];
+                    fSum[1] += dEdG * dGdr[1];
+                    fSum[2] += dEdG * dGdr[2];
+                }
+                atomF[in][0] -= fSum[0]/committeeSize;
+                atomF[in][1] -= fSum[1]/committeeSize;
+                atomF[in][2] -= fSum[2]/committeeSize;
             }
         }
         // Temporarily save the atom index. Note: this is the index for
@@ -436,11 +448,18 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         // atoms).
         for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
         {
-            double const dEdG = a->dEdG[s] * cfforce * convForce;
+            fSum = {0.0,0.0,0.0};
             double const* const dGdr = a->dGdr[s].r;
-            atomF[ia][0] -= dEdG * dGdr[0];
-            atomF[ia][1] -= dEdG * dGdr[1];
-            atomF[ia][2] -= dEdG * dGdr[2];
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                double const dEdG = a->dEdGCom.at(c)[s] * cfforce * convForce;
+                fSum[0] += dEdG * dGdr[0];
+                fSum[1] += dEdG * dGdr[1];
+                fSum[2] += dEdG * dGdr[2];
+            }    
+            atomF[ia][0] -= fSum[0]/committeeSize;
+            atomF[ia][1] -= fSum[1]/committeeSize;
+            atomF[ia][2] -= fSum[2]/committeeSize;
         }
     }
 
