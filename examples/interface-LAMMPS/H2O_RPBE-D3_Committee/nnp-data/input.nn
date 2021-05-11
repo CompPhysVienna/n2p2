@@ -24,6 +24,8 @@ global_hidden_layers_short      2              # Number of hidden layers.
 global_nodes_short              25 25          # Number of nodes in each hidden layer.
 global_activation_short         t t l          # Activation function for each hidden layer and output layer.
 #normalize_nodes                                # Normalize input of nodes.
+committee_mode                  prediction     # Enables Committee-HDNNP, possible modes = prediction, validation.
+committee_data                  nnp-data 8     # Committee data directory prefix and committee size.
 
 ###############################################################################
 # ADDITIONAL SETTINGS FOR TRAINING
