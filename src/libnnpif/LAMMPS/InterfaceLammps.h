@@ -138,6 +138,16 @@ public:
      * energy contributions.
      */
     void   process();
+    /** Return committee size.
+     *
+     * @return Return committee size.
+     */
+    int getComSize() const;
+    /** Get global number of atoms.
+     *
+     * @return Return global number of atoms.
+     */
+    int reduceNumAtoms() const;
     /** Calculate symmetry functions, atomic neural networks and sum of local
      * energy contributions (development version for "hdnnp/develop" pair style).
      */
@@ -147,6 +157,14 @@ public:
      * @return Sum of local energy contributions.
      */
     double getEnergy() const;
+    /** Return global committee energy disagreement.
+     *      
+     * @param[in] globalEnergyCom Reduced energy committee.
+     * @param[in] globalNumAtoms Global number of atoms.
+     *
+     * @return Return global committee energy disagreement.
+     */
+    double getCommitteeDisagreement(const std::vector<double> &globalEnergyCom, const int &globalNumAtoms);
     /** Return energy contribution of one atom.
      *
      * @param[in] index Atom index.
@@ -156,6 +174,11 @@ public:
      * @attention These atomic contributions are not physical!
      */
     double getAtomicEnergy(int index) const;
+    /** Reduce local committee energy contributions to global committee energy.
+     *
+     * @return Return global committee energy.
+     */
+    std::vector<double> reduceEnergyCom();
     /** Adds electrostatic energy contribution to the total structure energy
      *
      * @param[in] electrostatic energy (calculated in LAMMPS with
@@ -233,6 +256,9 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
+    /** Write committee energies and committee disagreement to file.
+     */
+    void   writeCommittee() const;
     /** Read atomic charges from LAMMPS into n2p2.
      *
      * Charges in units of e (normalized internally for normalized models).

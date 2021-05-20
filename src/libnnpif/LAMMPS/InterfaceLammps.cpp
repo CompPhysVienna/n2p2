@@ -500,6 +500,20 @@ void InterfaceLammps::process() //TODO : add comments
     return;
 }
 
+int InterfaceLammps::getComSize() const
+{
+    return committeeSize;
+}
+
+int InterfaceLammps::reduceNumAtoms() const
+{
+    int globalNumAtoms{0};
+    // MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Reduce(&structure.numAtoms, &globalNumAtoms, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    return globalNumAtoms;
+}
+
 void InterfaceLammps::processDevelop()
 {
 #ifdef N2P2_NO_SF_GROUPS
@@ -553,6 +567,24 @@ double InterfaceLammps::getEnergy() const
     return structure.energy / cfenergy;
 }
 
+double InterfaceLammps::getCommitteeDisagreement(const std::vector<double> &globalEnergyCom, const int &globalNumAtoms)
+{
+    structure.energyCom = globalEnergyCom;
+    structure.numAtoms = globalNumAtoms;
+    structure.energy = structure.averageEnergy();
+    structure.committeeDisagreement = structure.calcDisagreement();
+    if (normalize)
+    {
+        structure.committeeDisagreement = structure.committeeDisagreement / convEnergy;
+        structure.energy = physicalEnergy(structure, false);
+    }
+    addEnergyOffset(structure, false);
+    structure.energy = getEnergy();
+    structure.committeeDisagreement = structure.committeeDisagreement / cfenergy;
+
+    return structure.committeeDisagreement;
+}
+
 double InterfaceLammps::getAtomicEnergy(int index) const
 {
     Atom const& a = structure.atoms.at(index);
@@ -568,6 +600,17 @@ double InterfaceLammps::getAtomicEnergy(int index) const
     {
         return (a.energy + e.getAtomicEnergyOffset()) / cfenergy;
     }
+}
+
+std::vector<double> InterfaceLammps::reduceEnergyCom()
+{
+    std::vector<double> globalEnergyCom(committeeSize,0);
+    double* pLocalEnergyCom = &structure.energyCom[0];
+    double* pGlobalEnergyCom = &globalEnergyCom[0];
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Reduce(pLocalEnergyCom, pGlobalEnergyCom, committeeSize, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    return globalEnergyCom;
 }
 
 void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
@@ -1146,4 +1189,13 @@ void InterfaceLammps::add3DVecToArray(double *const & arr, Vec3D const& v) const
     arr[0] += v[0];
     arr[1] += v[1];
     arr[2] += v[2];
+}
+
+void InterfaceLammps::writeCommittee() const
+{
+    ofstream outfile;
+    outfile.open("committee.txt", std::ios_base::app);
+    outfile << strpr("%16.12E\t%16.6E\t%16.6E\n",
+                structure.energy, structure.committeeDisagreement, structure.committeeDisagreement/structure.numAtoms);
+    outfile.close(); 
 }

@@ -101,9 +101,19 @@ void PairHDNNP::compute(int eflag, int vflag)
   // Calculate forces of local and ghost atoms.
   interface->getForces(atom->f);
 
+  comSize = interface->getComSize();
   // Add energy contribution to total energy.
-  if (eflag_global)
+  if (eflag_global) {
     ev_tally(0, 0, atom->nlocal, 1, interface->getEnergy(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    if (comSize > 1) {
+      std::vector<double> globalEnergyCom = interface->reduceEnergyCom();
+      globalNumAtoms = interface->reduceNumAtoms();
+      if (comm->me == 0) {
+        committeeDisagreement = interface->getCommitteeDisagreement(globalEnergyCom, globalNumAtoms);
+        interface->writeCommittee();
+      }
+    }
+  }
 
   // Add atomic energy if requested (CAUTION: no physical meaning!).
   if (eflag_atom)
@@ -131,9 +141,13 @@ void PairHDNNP::settings(int narg, char **arg)
   showew = true;
   showewsum = 0;
   maxew = 0;
+  globalNumAtoms = 1;
+  comSize = 1;
+  maxcd = 0.0;
   resetew = false;
   cflength = 1.0;
   cfenergy = 1.0;
+  committeeDisagreement = 0.0;
   numExtrapolationWarningsTotal = 0;
   numExtrapolationWarningsSummary = 0;
 
@@ -173,6 +187,11 @@ void PairHDNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg], "cfenergy") == 0) {
       if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
       cfenergy = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
+      iarg += 2;
+      // committee disagreement threshold
+    } else if (strcmp(arg[iarg], "maxcd") == 0) {
+      if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
+      maxcd = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
       iarg += 2;
     } else
       error->all(FLERR, "Illegal pair_style command");
@@ -358,6 +377,13 @@ void PairHDNNP::handleExtrapolationWarnings()
   // Stop if maximum number of extrapolation warnings is exceeded.
   if (numExtrapolationWarningsTotal > maxew) {
     error->one(FLERR, "Too many extrapolation warnings");
+  }
+
+  // Stop if energy committee disagreement is exceeded.
+  if (comSize > 1) {
+    if (committeeDisagreement / globalNumAtoms > maxcd) {
+      error->one(FLERR, "Committee energy per atom exceeded set threshold");
+    }
   }
 
   // Reset internal extrapolation warnings counters.

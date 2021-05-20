@@ -55,11 +55,15 @@ class PairHDNNP : public Pair {
   bool resetew;
   int showewsum;
   int maxew;
+  int globalNumAtoms;
+  int comSize;
   long numExtrapolationWarningsTotal;
   long numExtrapolationWarningsSummary;
   double cflength;
   double cfenergy;
   double maxCutoffRadius;
+  double committeeDisagreement;
+  double maxcd;
   char *directory;
   std::string emap;
   nnp::InterfaceLammps *interface;
