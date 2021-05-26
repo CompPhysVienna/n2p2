@@ -43,6 +43,10 @@ cdef class Mode:
         self.thisptr.setupSymmetryFunctionScaling(fileName)
     def setupSymmetryFunctionGroups(self):
         self.thisptr.setupSymmetryFunctionGroups()
+    def setupSymmetryFunctionCache(self, verbose=False):
+        self.thisptr.setupSymmetryFunctionCache(verbose)
+    def setupSymmetryFunctionMemory(self, verbose=False):
+        self.thisptr.setupSymmetryFunctionMemory(verbose)
     def setupSymmetryFunctionStatistics(self,
                                         collectStatistics,
                                         collectExtrapolationWarnings,

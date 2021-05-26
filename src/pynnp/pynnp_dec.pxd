@@ -272,6 +272,8 @@ cdef extern from "Mode.h" namespace "nnp":
         void           setupSymmetryFunctionScalingNone() except +
         void           setupSymmetryFunctionScaling(string fileName) except +
         void           setupSymmetryFunctionGroups() except +
+        void           setupSymmetryFunctionCache(bool verbose) except +
+        void           setupSymmetryFunctionMemory(bool verbose) except +
         void           setupSymmetryFunctionStatistics(
                                      bool collectStatistics,
                                      bool collectExtrapolationWarnings,

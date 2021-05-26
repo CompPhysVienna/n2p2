@@ -12,6 +12,8 @@ m.setupElementMap()
 m.setupElements()
 m.setupCutoff()
 m.setupSymmetryFunctions()
+m.setupSymmetryFunctionMemory() # comment out when compiled with N2P2_FULL_SFD_MEMORY
+m.setupSymmetryFunctionCache() # comment out when compiled with N2P2_NO_SF_CACHE
 m.setupSymmetryFunctionGroups()
 m.setupNeuralNetwork()
 m.setupSymmetryFunctionScaling("scaling.data")
