@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Training.h"
+#include "Eigen/src/Core/Matrix.h"
 #include "GradientDescent.h"
 #include "KalmanFilter.h"
 #include "NeuralNetwork.h"
@@ -144,14 +145,21 @@ void Training::selectSets()
             k = "charge";
             if (p.exists(k))
             {
-                p[k].numTrainPatterns += s.numAtoms;
-                for (vector<Atom>::const_iterator it = s.atoms.begin();
-                     it != s.atoms.end(); ++it)
-                {
-                    p[k].updateCandidates.push_back(UpdateCandidate());
-                    p[k].updateCandidates.back().s = i;
-                    p[k].updateCandidates.back().a = it->index;
-                }
+                // Old method where each charge was selected independently
+                //
+                //p[k].numTrainPatterns += s.numAtoms;
+                //for (vector<Atom>::const_iterator it = s.atoms.begin();
+                //     it != s.atoms.end(); ++it)
+                //{
+                //    p[k].updateCandidates.push_back(UpdateCandidate());
+                //    p[k].updateCandidates.back().s = i;
+                //    p[k].updateCandidates.back().a = it->index;
+                //
+
+                // New method similar to energy training
+                p[k].numTrainPatterns++;
+                p[k].updateCandidates.push_back(UpdateCandidate());
+                p[k].updateCandidates.back().s = i;
             }
         }
     }
@@ -1025,6 +1033,7 @@ void Training::calculateError(
         calculateAtomicNeuralNetworks((*it), useForces);
         calculateEnergy((*it));
         if (useForces) calculateForces((*it));
+        if ( nnpType == NNPType::HDNNP_4G ) chargeEquilibration((*it), true);
         for (auto k : pk)
         {
             map<string, double>* error = nullptr;
@@ -1253,6 +1262,36 @@ void Training::writeWeightsEpoch() const
             weightFileFormat = "weightse" + weightFileFormat;
         }
         writeWeights(nnId, weightFileFormat);
+    }
+
+    return;
+}
+
+void Training::writeHardness(string const& fileNameFormat) const
+{
+    ofstream file;
+
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        string fileName = strpr(fileNameFormat.c_str(),
+                                elements.at(i).getAtomicNumber());
+        file.open(fileName.c_str());
+        file << elements.at(i).getHardness() << endl;
+        file.close();
+    }
+
+    return;
+}
+
+void Training::writeHardnessEpoch() const
+{
+    if (writeWeightsEvery > 0 &&
+        (epoch % writeWeightsEvery == 0 || epoch <= writeWeightsAlways) &&
+        nnpType == NNPType::HDNNP_4G && stage == 1)
+    {
+        string hardnessFileFormat = strpr(".%%03zu.%06d.out", epoch);
+        hardnessFileFormat = "hardness" + hardnessFileFormat;
+        writeHardness(hardnessFileFormat);
     }
 
     return;
@@ -1651,6 +1690,10 @@ void Training::loop()
     // Write initial weights to files.
     if (myRank == 0) writeWeightsEpoch();
 
+    // Write initial hardness to files (checks for corresponding type and 
+    // stage)
+    if (myRank == 0) writeHardnessEpoch();
+
     // Write learning curve.
     if (myRank == 0) writeLearningCurve(false);
 
@@ -1709,6 +1752,9 @@ void Training::loop()
 
         // Write weights to files.
         if (myRank == 0) writeWeightsEpoch();
+
+        // Write hardness to files (checks for corresponding type and stage).
+        if (myRank == 0) writeHardnessEpoch();
 
         // Append to learning curve.
         if (myRank == 0) writeLearningCurve(true);
@@ -1927,6 +1973,10 @@ void Training::update(string const& property)
         // dEdc, dFdc or dQdc for energy, force or charge update, respectively.
         vector<vector<double>> dXdc;
         dXdc.resize(numElements);
+        // Temporary storage ector for charge deviations in structure
+        Eigen::VectorXd QError;
+        QError.resize(s.numAtoms);
+        double QErrorNorm = 0;
         for (size_t i = 0; i < numElements; ++i)
         {
             size_t n = elements.at(i).neuralNetworks.at(nnId)
@@ -2075,39 +2125,78 @@ void Training::update(string const& property)
                 chargeEquilibration(s, true);
 
                 // for testing:
-                cout << "hardness: " << endl;
-                for (size_t k = 0; k < numElements; ++k)
-                {
-                    cout << "El Nr.:" << k << ", J: " << elements.at(k).getHardness() << endl;
-                }
+                //cout << "hardness: " << endl;
+                //for (size_t k = 0; k < numElements; ++k)
+                //{
+                //    cout << "El Nr.:" << k << ", J: " << elements.at(k).getHardness() << endl;
+                //}
 
                 vector<Eigen::VectorXd> dQdChi;
                 s.calculateDQdChi(dQdChi);
                 vector<Eigen::VectorXd> dQdJ;
                 s.calculateDQdJ(dQdJ);
-
-                // Shortcut to index of selected atom.
-                size_t i = c->a;
-                // Finally sum up Jacobian.
-                // weights
-                for (size_t k = 0; k < s.numAtoms; ++k)
+                
+                for (size_t i = 0; i < s.numAtoms; ++i)
                 {
-                    size_t l = s.atoms.at(k).element;
-                    for (size_t j = 0; j < dChidc.at(k).size(); ++j)
+                    QError(i) = s.atoms.at(i).charge
+                                        - s.atoms.at(i).chargeRef;
+                }
+                QErrorNorm = QError.norm();
+                //if (myRank == 0) cout << QErrorNorm / sqrt(s.numAtoms)<< endl;
+
+                //// Shortcut to index of selected atom.
+                //size_t i = c->a;
+                //// Finally sum up Jacobian.
+                //// weights
+                //for (size_t k = 0; k < s.numAtoms; ++k)
+                //{
+                //    size_t l = s.atoms.at(k).element;
+                //    for (size_t j = 0; j < dChidc.at(k).size(); ++j)
+                //    {
+                //        // dQ/dChi * dChi/dc 
+                //        pu.jacobian.at(0).at(offset.at(l) + j) +=
+                //            dQdChi.at(k)(i) * dChidc.at(k).at(j);
+                //    }
+                //}
+                //// hardness (actually h, where J=h^2)
+                //for (size_t k = 0; k < numElements; ++k)
+                //{
+                //    size_t n = elements.at(k).neuralNetworks.at(nnId)
+                //               .getNumConnections();
+                //    pu.jacobian.at(0).at(offset.at(k) + n) = dQdJ.at(k)(i) 
+                //                    * 2 * sqrt(elements.at(k).getHardness());
+                //}
+
+                if (QErrorNorm != 0)
+                {
+                    // Finally sum up Jacobian.
+                    for (size_t i = 0; i < s.numAtoms; ++i)
                     {
-                        // dQ/dChi * dChi/dc 
-                        pu.jacobian.at(0).at(offset.at(l) + j) +=
-                            dQdChi.at(k)(i) * dChidc.at(k).at(j);
+                        // weights
+                        for (size_t k = 0; k < s.numAtoms; ++k)
+                        {
+                            size_t l = s.atoms.at(k).element;
+                            for (size_t j = 0; j < dChidc.at(k).size(); ++j)
+                            {
+                                // 1 / QErrorNorm * (Q-Qref) * dQ/dChi * dChi/dc 
+                                pu.jacobian.at(0).at(offset.at(l) + j) +=
+                                    -1 / QErrorNorm * QError(i) 
+                                    * dQdChi.at(k)(i) * dChidc.at(k).at(j);
+                            }
+                        }
+                        // hardness (actually h, where J=h^2)
+                        for (size_t k = 0; k < numElements; ++k)
+                        {
+                            size_t n = elements.at(k).neuralNetworks.at(nnId)
+                                       .getNumConnections();
+                            pu.jacobian.at(0).at(offset.at(k) + n) += 
+                                        -1 / QErrorNorm 
+                                        * QError(i) * dQdJ.at(k)(i) * 2
+                                        * sqrt(elements.at(k).getHardness());
+                        }
                     }
                 }
-                // hardness (actually h, where J=h^2)
-                for (size_t k = 0; k < numElements; ++k)
-                {
-                    size_t n = elements.at(k).neuralNetworks.at(nnId)
-                               .getNumConnections();
-                    pu.jacobian.at(0).at(offset.at(k) + n) = dQdJ.at(k)(i) 
-                                    * 2 * sqrt(elements.at(k).getHardness());
-                }
+
             }
 
             else if (nnpType == NNPType::HDNNP_Q)
@@ -2150,9 +2239,9 @@ void Training::update(string const& property)
         }
         else if (k == "charge")
         {
-            Atom const& a = s.atoms.at(c->a);
-            currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
-                                      / pu.errorTrain.at("RMSE");
+            //Atom const& a = s.atoms.at(c->a);
+            //currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
+            //                          / pu.errorTrain.at("RMSE");
         }
 
         // Now symmetry function memory is not required any more for this
@@ -2188,8 +2277,9 @@ void Training::update(string const& property)
             }
             else if (k == "charge")
             {
-                Atom const& a = s.atoms.at(c->a);
-                pu.error.at(0).at(offset2) +=  a.chargeRef - a.charge;
+                //Atom const& a = s.atoms.at(c->a);
+                //pu.error.at(0).at(offset2) +=  a.chargeRef - a.charge;
+                pu.error.at(0).at(offset2) +=  QErrorNorm;
             }
         }
         else if (updateStrategy == US_ELEMENT)
@@ -2211,8 +2301,9 @@ void Training::update(string const& property)
                 }
                 else if (k == "charge")
                 {
-                    Atom const& a = s.atoms.at(c->a);
-                    pu.error.at(i).at(offset2) += a.chargeRef - a.charge;
+                    throw runtime_error("ERROR: US_ELEMENT only implemented for "
+                                        "HDNNP_2G.\n");
+
                 }
             }
         }

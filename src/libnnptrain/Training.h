@@ -178,6 +178,16 @@ public:
     /** Write weights to files during training loop.
      */
     void                  writeWeightsEpoch() const;
+    /** Write hardness to files (one file for each element).
+     *
+     * @param[in] fileNameFormat String with file name format.
+     */
+    void                  writeHardness(
+                                      std::string const& fileNameFormat) const;
+    /** Write hardness to files during training loop.
+     */
+    void                  writeHardnessEpoch() const;
+
     /** Write current RMSEs and epoch information to file.
      *
      * @param[in] append If true, append to file, otherwise create new file.
@@ -447,7 +457,8 @@ private:
     std::string              nnId;
     /// Training log file.
     std::ofstream            trainingLog;
-    /// Update schedule epoch (false = energy update, true = force update).
+    /// Update schedule epoch (stage 1: 0 = charge update; 
+    ///                        stage 2: 0 = energy update, 1 = force update (optional)).
     std::vector<int>         epochSchedule;
     /// Number of weights per updater. If nnpType 4G also h = sqrt(J) is 
     /// counted.
