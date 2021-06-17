@@ -49,68 +49,45 @@ namespace LAMMPS_NS {
         double qeq_time;
 
     protected:
-        int nevery,nnpflag;
-        int n, N, m_fill;
-        int n_cap, nmax, m_cap;
-        int pack_flag;
+
+        class PairNNP *nnp; // interface to NNP pair_style
         class NeighList *list;
-        class PairNNP *nnp;
-
-
-        double tolerance;     // tolerance for the norm of the rel residual in CG
-        bool periodic; // check for periodicity
-
-        bigint ngroup;
-        int nprev,dum1,dum2;
-
-        // charges
-        double *Q;
-        double **Q_hist; // do we need this ???
-
-        void allocate_QEq();
-        void deallocate_QEq();
-        double qRef;
-
-        void calculate_electronegativities();
-
-        void run_network();
-
-        //TODO:to be removed
         char *pertype_option;
+
+        bool periodic; // true if periodic
+        double grad_tol,min_tol,step,maxit; // user-defined minimization parameters
+        double qRef; // total reference charge of the system
+        double *Q;
+
         virtual void pertype_parameters(char*);
+        void   isPeriodic(); // true if periodic
+        void calculate_electronegativities();
+        void process_first_network(); // run first NN and calculate atomic electronegativities
+        void allocate_QEq(); // allocate QEq arrays
+        void deallocate_QEq(); // deallocate QEq arrays
 
-        //// Function Minimization Approach
-
-        double *xall,*yall,*zall; // all atoms (parallelization)
-
+        /// QEq energy minimization via gsl
         gsl_multimin_function_fdf QEq_minimizer; // find a better name
-
-
-
         const gsl_multimin_fdfminimizer_type *T;
         gsl_multimin_fdfminimizer *s;
-
-        // Minimization Setup for QEq energy
-        double QEq_f(const gsl_vector*);
-        void QEq_df(const gsl_vector*, gsl_vector*);
-        void QEq_fdf(const gsl_vector*, double*, gsl_vector*);
-
-        static double QEq_f_wrap(const gsl_vector*, void*);
-        static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*);
-        static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*);
-
-        void calculate_QEqCharges();
-
-        //// Electrostatics
-        double E_elec; // electrostatic energy
+        double QEq_f(const gsl_vector*); // f : QEq energy as a function of atomic charges
+        void QEq_df(const gsl_vector*, gsl_vector*); // df : Gradient of QEq energy with respect to atomic charges
+        void QEq_fdf(const gsl_vector*, double*, gsl_vector*); // fdf
+        static double QEq_f_wrap(const gsl_vector*, void*); // wrapper function of f
+        static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*); // wrapper function of df
+        static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*); // wrapper function of fdf
+        void calculate_QEqCharges(); // QEq minimizer
 
 
-        /// Matrix Approach (DEPRECATED and to be cleaned up)
-
-        //CG storage
+        /// Matrix Approach (DEPRECATED and to be deleted)
+        int nevery,nnpflag;
+        int n, N, m_fill;
+        int n_cap, m_cap;
+        int pack_flag;
+        bigint ngroup;
+        int nprev;
+        double **Q_hist;
         double *p, *q, *r, *d;
-
-
         virtual int pack_forward_comm(int, int *, double *, int, int *);
         virtual void unpack_forward_comm(int, int, double *);
         virtual int pack_reverse_comm(int, int, double *);
@@ -127,11 +104,6 @@ namespace LAMMPS_NS {
 
         virtual void vector_sum(double*,double,double*,double,double*,int);
         virtual void vector_add(double*, double, double*,int);
-
-        void   isPeriodic(); // periodicity check to decide on how to fill A matrix
-
-        //TODO:old versions
-        void QEqSerial();
 
     };
 

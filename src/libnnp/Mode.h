@@ -474,6 +474,12 @@ public:
      * @return Length unit conversion factor.
      */
     double                   getConvLength() const;
+    /** Getter for Mode::ewaldPrecision.
+     *
+     * @return Ewald precision in 4G-HDNNPs.
+     *
+     */
+    double                   getEwaldPrecision() const;
     /** Getter for Mode::maxCutoffRadius.
      *
      * @return Maximum cutoff radius of all symmetry functions.
@@ -645,6 +651,11 @@ inline double Mode::getConvLength() const
 inline double Mode::getMaxCutoffRadius() const
 {
     return maxCutoffRadius;
+}
+
+inline double Mode::getEwaldPrecision() const
+{
+    return ewaldPrecision;
 }
 
 inline std::size_t Mode::getNumElements() const

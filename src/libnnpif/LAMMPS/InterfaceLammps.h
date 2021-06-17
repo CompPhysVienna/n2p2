@@ -97,11 +97,6 @@ public:
      * @return Sum of local energy contributions.
      */
     double getEnergy() const;
-    /** Read inner and outer radii for screening electrostatics.
-     *
-     * @param[in] vector containing inner radius, outer radius and scale value.
-     */
-    void getScreeningInfo(double* const& rScreen) const;
     /** Return energy contribution of one atom.
      *
      * @param[in] index Atom index.
@@ -149,10 +144,10 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
-    /** TODO: Add missing comments later during clean-up
+    /** Read atomic charges from LAMMPS into n2p2
      */
     void   addCharge(int index, double Q);
-    /** Transfer QEq arrays to LAMMPS
+    /** Write QEq arrays from n2p2 to LAMMPS
      *
      * @param[in] atomChi Electronegativities.
      * @param[in] atomJ Atomic hardness.
@@ -161,18 +156,24 @@ public:
      */
     void   getQEqParams(double* const& atomChi, double* const& atomJ,
             double* const& atomSigma, double qRef) const;
-    /** Transfer necessary derivative arrays to LAMMPS
+    /** Write the derivative of total energy with respect to atomic charges
+     * from n2p2 into LAMMPS
      *
      * @param[in] dEtotdQ Derivative of the total energy w.r.t. atomic charge.
      */
     void   getdEdQ(double* const& dEtotdQ) const;
-    /**
+    /** Read screening function information from n2p2 into LAMMPS.
      *
-     * @param ind
+     * @param[in] rScreen Array that contains screening radii.
+     */
+    void getScreeningInfo(double* const& rScreen) const;
+    /** Transfer spatial derivatives of atomic electronegativities
+     *
+     * @param ai
      * @param dChidxyz
      */
-    void   getdChidxyz(int ind, double* const* const& dChidxyz) const;
-    /** Set isElecDone true.
+    void   getdChidxyz(int ai, double* const* const& dChidxyz) const;
+    /** Set isElecDone true after running the first NN in 4G-HDNNPs
      */
     void   setElecDone();
 

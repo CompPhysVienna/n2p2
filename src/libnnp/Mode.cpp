@@ -1797,7 +1797,6 @@ void Mode::calculateForces(Structure& structure) const
         dEelecdQ.setZero();
         for (size_t i = 0; i < s.numAtoms; ++i) {
             Atom const &ai = s.atoms.at(i);
-            //cout << ai.dEelecdQ << '\t' << ai.dEdG.back() << '\n';
             dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
             dEelecdQ(i) = ai.dEelecdQ;
         }
@@ -1848,9 +1847,7 @@ void Mode::calculateForces(Structure& structure) const
 #endif
                     }
                 }
-
-                //ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
-                ai.f -= (ai.dAdrQ[j] + dChidr);
+                ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }
             cout << "Elec : " << '\t' << ai.f[0] << '\t' << ai.f[1] << '\t' << ai.f[2] << '\n';

@@ -50,7 +50,9 @@ protected:
     double *dEdQ,*forceLambda;
     double **dChidxyz,**pEelecpr;
 
-    bool isPeriodic;
+    double overallCutoff;
+
+    bool periodic;
     bool showew;
     bool resetew;
     int showewsum;
@@ -67,6 +69,8 @@ protected:
 
     virtual void allocate();
     void transferNeighborList();
+    void isPeriodic();
+    double getOverallCutoffRadius(double, int natoms = 0);
 
     void transferCharges();
     void handleExtrapolationWarnings();
@@ -86,16 +90,45 @@ protected:
     static void forceLambda_df_wrap(const gsl_vector*, void*, gsl_vector*);
     static void forceLambda_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*);
 
-
     // Electrostatics
-    void calculateForceLambda();
-    void calculateElecDerivatives(double*);
-    void calculateElecForceTerm(double**);
-    void initializeChi();
+    double gsqmx,volume;
+    double unitk[3];
+    double q2,g_ewald;
+    double ewaldPrecision; // 'accuracy' in LAMMPS
+    double ewaldEta; //  '1/g_ewald' in LAMMPS
+    double recip_cut,real_cut;
+    double E_elec;
 
-    double *screenInfo; // info array
-    double screen_f(double);
-    double screen_df(double);
+    int *kxvecs,*kyvecs,*kzvecs;
+    int kxmax_orig,kymax_orig,kzmax_orig,kmax_created;
+    int kxmax,kymax,kzmax,kmax,kmax3d;
+    int kcount;
+    int nmax;
+    double *kcoeff;
+    double **eg,**vg; // forces and virial
+    double **ek; // forces ?
+    double **sfexp_rl,**sfexp_im;
+    double **sfexp_rl_all,*sfexp_im_all; // structure factors after communications ?
+    double ***cs,***sn; // cosine and sine grid, TODO: should we change this ?
+
+    void calculateForceLambda();
+    void calculateElecDerivatives(double*,double**);
+    void calculateElecForce(double**);
+    void reinitialize_dChidxyz();
+
+    void kspace_setup();
+    void kspace_coeffs();
+    void kspace_sfexp();
+    void kspace_pbc(double);
+    double kspace_rms(int, double, bigint, double);
+
+    void allocate_kspace();
+    void deallocate_kspace();
+
+    // Screening
+    double *screening_info;
+    double screening_f(double);
+    double screening_df(double);
 
 };
 

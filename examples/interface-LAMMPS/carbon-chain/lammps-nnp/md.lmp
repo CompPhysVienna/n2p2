@@ -24,6 +24,7 @@ variable mass_C          equal  12.0107
 units metal
 boundary s s s
 atom_style charge
+atom_modify map yes
 read_data ${cfgFile}
 mass 1 ${mass_H}
 mass 2 ${mass_C}
@@ -35,7 +36,8 @@ thermo 1
 ###############################################################################
 pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:H,2:C"
 pair_coeff * * ${nnpCutoff}
-fix 1 all nnp 1 1.0 2.0 1.0e-6 nnp 
+fix 1 all nnp 1 1.0e-4 1.0e-4 1.0e-2 30 nnp 
+
 
 
 ###############################################################################

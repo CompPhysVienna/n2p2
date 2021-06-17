@@ -272,7 +272,6 @@ void Structure::calculateNeighborList(
     if (isPeriodic)
     {
         calculatePbcCopies(cutoffRadius, pbc);
-
         // Use square of cutoffRadius (faster).
         cutoffRadius *= cutoffRadius;
 
@@ -729,13 +728,12 @@ void Structure::calculateDAdrQ(
                             / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta) 
                             - erfc(rij/gammaSqrt2(ei,ej))));
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i 
-                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j 
+                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
                 aj.dAdrQ[i] -= dAijdri * Qj;
             }
-            
             // reciprocal part
             for (size_t j = i+1; j < numAtoms; ++j)
             {
@@ -810,6 +808,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
             if (i != j) ai.dEelecdQ += Qj * A(i,j);
             else if (isPeriodic)
             {
+                // TODO: should this part moved below ?
                 ai.dEelecdQ += Qi * (A(i,i) - hardness(ei)
                                 - 1 / sigmaSqrtPi(ei));
             }
@@ -832,7 +831,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                 double fsRij = fs.f(rij);
 
                 // corrections due to screening
-                Vec3D Tij = Qi * Qj * ajN.dr / pow(rij,2) 
+                Vec3D Tij = Qi * Qj * ajN.dr / pow(rij,2)
                                 * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
                                 * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
@@ -860,7 +859,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                 double fsRij = fs.f(rij);
 
                 // corrections due to screening
-                Vec3D Tij = Qi * Qj * (ai.r - aj.r) / pow(rij,2) 
+                Vec3D Tij = Qi * Qj *(ai.r - aj.r) / pow(rij,2)
                                 * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
                                 * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
