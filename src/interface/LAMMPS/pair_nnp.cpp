@@ -56,8 +56,7 @@ void PairNNP::compute(int eflag, int vflag)
   if(eflag || vflag) ev_setup(eflag,vflag);
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
 
-  // TODO: cleanup
-  if (interface.getNnpType() == 2) //2G-HDNNPs
+  if (interface.getNnpType() == 2) //2G-HDNNPs // TODO: replace integers with types
   {
       // Set number of local atoms and add index and element.
       interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
@@ -80,31 +79,23 @@ void PairNNP::compute(int eflag, int vflag)
   {
       transferCharges();
 
-      // run second NN for the short range contributions
+      // Run second set of NNs for the short range contributions
       interface.process();
 
-      // get short-range forces of local and ghost atoms.
+      // Get short-range forces of local and ghost atoms.
       interface.getForces(atom->f);
 
-      // Calculates dEelecdQ vector and adds pEelecpr contribution to total force
-      //TODO: calculate fElec separately
-      calculateElecDerivatives(dEdQ,atom->f);
+      // Calculate dEelecdQ and add pEelecpr contribution to the total force vector
+      calculateElecDerivatives(dEdQ,atom->f); // TODO: calculate fElec separately ?
 
-      // Adds dEdG term from n2p2
+      // Read dEdG array from n2p2
       interface.getdEdQ(dEdQ);
 
-      // Calculates lambda vector that is necessary for force calculation using minimization
-      calculateForceLambda();
+      // Calculate lambda vector that is necessary for optimized force calculation
+      calculateForceLambda(); // TODO: calculate lambdaElec separately ?
 
-      //TODO: add pEelecpr to f array
+      // Add electrostatic contributions and calculate final force vector
       calculateElecForce(atom->f);
-
-      for(int i=0; i < atom->nlocal; i++)
-      {
-          //std::cout << "Elec : " << '\t' << atom->f[i][0]<< '\t' << atom->f[i][1] << '\t' << atom->f[i][2] << '\n';
-          //std::cout << "Pelec : " << '\t' << pEelecpr[i][0]<< '\t' << pEelecpr[i][1] << '\t' << pEelecpr[i][2] << '\n';
-          //std::cout << dEdQ[i] << '\n';
-      }
 
       // Do all stuff related to extrapolation warnings.
       if(showew == true || showewsum > 0 || maxew >= 0) {
@@ -114,7 +105,7 @@ void PairNNP::compute(int eflag, int vflag)
   }
   // Add energy contribution to total energy.
   if (eflag_global)
-     ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),E_elec,0.0,0.0,0.0,0.0);
+     ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),E_elec,0.0,0.0,0.0,0.0); //TODO: check if Eelec is added
 
   // Add atomic energy if requested (CAUTION: no physical meaning!).
   if (eflag_atom)
@@ -378,24 +369,19 @@ void PairNNP::allocate()
 
   memory->create(cutsq,n+1,n+1,"pair:cutsq");
 
-  //if(interface.getNnpType() == 4) ///TODO: this if does not work in this way, change initialize()
+  // TODO: add an if an initialize only for 4G
+  // Allocate and initialize 4g-related arrays
+  dEdQ = NULL;
+  forceLambda = NULL;
+  memory->create(dEdQ,natoms+1,"pair:dEdQ");
+  memory->create(forceLambda,natoms+1,"pair:forceLambda");
+  memory->create(dChidxyz,natoms+1,3,"pair:dChidxyz");
+  for (int i = 0; i < natoms+1; i++) // TODO: do we need these initializations ?
   {
-      dEdQ = NULL;
-      forceLambda = NULL;
-
-      memory->create(dEdQ,natoms+1,"pair:dEdQ");
-      memory->create(pEelecpr,natoms+1,3,"pair:pEelecpr");
-      memory->create(forceLambda,natoms+1,"pair:forceLambda");
-      memory->create(dChidxyz,natoms+1,3,"pair:dChidxyz");
-      for (int i = 0; i < natoms+1; i++)
-      {
-          forceLambda[i] = 0.0;
-          dEdQ[i] = 0.0;
-          for (int j = 0; j < 3; j++)
-              pEelecpr[i][j] = 0.0;
-      }
+      forceLambda[i] = 0.0;
+      dEdQ[i] = 0.0;
   }
-
+  // Allocate and initialize k-space related arrays if periodic
   if (periodic)
   {
       allocate_kspace();
@@ -403,13 +389,14 @@ void PairNNP::allocate()
       kmax_created = 0;
       kxvecs = kyvecs = kzvecs = nullptr;
       kcoeff = nullptr;
-      //sfacrl = sfacim = sfacrl_all = sfacim_all = nullptr;
+      //sfacrl = sfacim = sfacrl_all = sfacim_all = nullptr; // these are from LAMMPS, might be needed
       cs = sn = nullptr;
       kcount = 0;
   }
 
 }
 
+// TODO: check, j became jmap
 void PairNNP::transferNeighborList()
 {
   // Transfer neighbor list to NNP.
@@ -419,7 +406,7 @@ void PairNNP::transferNeighborList()
     for (int jj = 0; jj < list->numneigh[i]; ++jj) {
       int j = list->firstneigh[i][jj];
       j &= NEIGHMASK;
-      int jmap = atom->map(atom->tag[j]); //TODO:check me
+      int jmap = atom->map(atom->tag[j]);
       double dx = atom->x[i][0] - atom->x[j][0];
       double dy = atom->x[i][1] - atom->x[j][1];
       double dz = atom->x[i][2] - atom->x[j][2];
@@ -429,15 +416,6 @@ void PairNNP::transferNeighborList()
       }
     }
   }
-}
-
-// TODO: is indexing correct ?
-void PairNNP::transferCharges()
-{
-    // Transfer charges into n2p2
-    for (int i = 0; i < atom->nlocal; ++i) {
-        interface.addCharge(i,atom->q[i]);
-    }
 }
 
 void PairNNP::handleExtrapolationWarnings()
@@ -531,7 +509,15 @@ void PairNNP::handleExtrapolationWarnings()
   interface.clearExtrapolationWarnings();
 }
 
-//// forceLambda TODO: parallelization
+// Write atomic charges into n2p2
+void PairNNP::transferCharges()
+{
+    for (int i = 0; i < atom->nlocal; ++i) {
+        interface.addCharge(i,atom->q[i]);
+    }
+}
+
+// forceLambda function
 double PairNNP::forceLambda_f(const gsl_vector *v)
 {
     int i,j,jmap;
@@ -619,11 +605,13 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
     return E_lambda;
 }
 
+// forceLambda function - wrapper
 double PairNNP::forceLambda_f_wrap(const gsl_vector *v, void *params)
 {
     return static_cast<PairNNP*>(params)->forceLambda_f(v);
 }
 
+// forceLambda gradient
 void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
 {
     int i,j,jmap;
@@ -717,34 +705,35 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
 
 }
 
+// forceLambda gradient - wrapper
 void PairNNP::forceLambda_df_wrap(const gsl_vector *v, void *params, gsl_vector *df)
 {
     static_cast<PairNNP*>(params)->forceLambda_df(v, df);
 }
 
+// forceLambda f*df
 void PairNNP::forceLambda_fdf(const gsl_vector *v, double *f, gsl_vector *df)
 {
     *f = forceLambda_f(v);
     forceLambda_df(v, df);
 }
 
+// forceLambda f*df - wrapper
 void PairNNP::forceLambda_fdf_wrap(const gsl_vector *v, void *params, double *f, gsl_vector *df)
 {
     static_cast<PairNNP*>(params)->forceLambda_fdf(v, f, df);
 }
 
+// Calculate forcelambda vector $\lambda_i$ that is required for optimized force calculation
 void PairNNP::calculateForceLambda()
 {
     size_t iter = 0;
     int i,j;
-    int nsize,maxit,status;
+    int nsize,status;
 
     double psum_it;
     double gradsum;
     double lambda_i;
-    double grad_tol,min_tol,step;
-
-    // TODO: communication ?
 
     nsize = atom->natoms;
     gsl_vector *x; // charge vector in our case
@@ -755,8 +744,7 @@ void PairNNP::calculateForceLambda()
     forceLambda_minimizer.fdf = &forceLambda_fdf_wrap;
     forceLambda_minimizer.params = this;
 
-
-    // TODO:how should we initialize these ?
+    // TODO : check
     x = gsl_vector_alloc(nsize);
     for (i = 0; i < nsize; i++) {
         gsl_vector_set(x,i,forceLambda[i]);
@@ -766,20 +754,11 @@ void PairNNP::calculateForceLambda()
     T = gsl_multimin_fdfminimizer_vector_bfgs2;
     s = gsl_multimin_fdfminimizer_alloc(T, nsize);
 
-    // Minimizer Params TODO: user-defined ?
-    grad_tol = 1e-5;
-    min_tol = 1e-5;
-    step = 1e-2;
-    maxit = 30;
-
     gsl_multimin_fdfminimizer_set(s, &forceLambda_minimizer, x, step, min_tol); // tol = 0 might be expensive ???
     do
     {
         iter++;
         psum_it = 0.0;
-        //std::cout << "iter : " << iter << '\n';
-        //std::cout << "-------------" << '\n';
-
         status = gsl_multimin_fdfminimizer_iterate(s);
 
         // Projection
@@ -794,7 +773,7 @@ void PairNNP::calculateForceLambda()
         status = gsl_multimin_test_gradient(s->gradient, grad_tol);
 
         if (status == GSL_SUCCESS)
-            printf ("Minimum found at iteration: %d\n",iter);
+            printf ("Minimum forceLambda is found at iteration: %d\n",iter);
 
     }
     while (status == GSL_CONTINUE && iter < maxit);
@@ -807,6 +786,122 @@ void PairNNP::calculateForceLambda()
     gsl_vector_free(x);
 }
 
+// Calculate $dEelec/dQ_i$ and add $\partial Eelec/\partial Q_i$ contribution to the total force vector
+void PairNNP::calculateElecDerivatives(double *dEelecdQ, double **f)
+{
+    int i,j,jmap;
+    int nlocal = atom->nlocal;
+    int nall = atom->natoms;
+    int *tag = atom->tag;
+
+    double **x = atom->x;
+    double *q = atom->q;
+    double qi,qj;
+    double dx,dy,dz;
+    double rij,rij2,erfrij;
+    double gams2;
+    double sij,tij;
+    double fsrij,dfsrij; // corrections due to screening
+
+    // TODO: parallelization
+    for (i = 0; i < nlocal; i++)
+    {
+        double sigi2 = pow(sigma[i], 2);
+        qi = q[i];
+        if (periodic)
+        {
+            double sqrt2eta = (sqrt(2.0) * ewaldEta);
+            double ksum = 0.0;
+            //TODO: do we need this loop?
+            for (j = 0; j < nall; j++)
+            {
+                double Aij = 0.0;
+                qj = q[j];
+                if (i != j)
+                {
+                    dx = x[i][0] - x[j][0];
+                    dy = x[i][1] - x[j][1];
+                    dz = x[i][2] - x[j][2];
+                    // Reciprocal part
+                    for (int k = 0; k < kcount; k++) {
+                        double kdr = dx*kxvecs[k]*unitk[0] + dy*kyvecs[k]*unitk[1]
+                                + dz*kzvecs[k]*unitk[2];
+                        Aij += 2.0 * kcoeff[k] * cos(kdr);
+                    }
+                    dEelecdQ[i] += qj * Aij;
+                }
+            }
+            // Kspace term // TODO: could this be done in above loop ?
+            for (int k = 0; k < kcount; k++)
+            {
+                ksum += 2 * kcoeff[k];
+            }
+            dEelecdQ[i] += qi * (ksum - 2 / (sqrt2eta * sqrt(M_PI)));
+            // Real term over neighbors
+            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
+                j = list->firstneigh[i][jj];
+                j &= NEIGHMASK;
+                jmap = atom->map(tag[j]);
+                qj = q[jmap];
+                dx = x[i][0] - x[j][0];
+                dy = x[i][1] - x[j][1];
+                dz = x[i][2] - x[j][2];
+                rij2 = SQR(dx) + SQR(dy) + SQR(dz);
+                rij = sqrt(rij2);
+
+                //if (rij >= screening_info[2]) break; // TODO: check
+
+                gams2 = sqrt(2.0 * (sigi2 + pow(sigma[jmap], 2)));
+                erfrij = erf(rij / gams2);
+                fsrij = screening_f(rij);
+                dfsrij = screening_df(rij);
+
+                sij = erfrij * (fsrij - 1) / rij;
+                tij = (2 / (sqrt(M_PI)*gams2) * exp(- pow(rij / gams2,2)) *
+                       (fsrij - 1) + erfrij*dfsrij - erfrij*(fsrij-1)/rij) / rij2;
+                double Aij = (erfc(rij / sqrt2eta) - erfc(rij / gams2)) / rij;
+
+                dEelecdQ[i] += qj * (sij + Aij);
+                /*pEelecpr[i][0] += qi * qj * dx * tij;
+                pEelecpr[i][1] += qi * qj * dy * tij;
+                pEelecpr[i][2] += qi * qj * dz * tij;*/
+                f[i][0] -= qi * qj * dx * tij;
+                f[i][1] -= qi * qj * dy * tij;
+                f[i][2] -= qi * qj * dz * tij;
+            }
+        }else
+        {
+            for (j = 0; j < nall; j++)
+            {
+                if (i != j)
+                {
+                    dx = x[i][0] - x[j][0];
+                    dy = x[i][1] - x[j][1];
+                    dz = x[i][2] - x[j][2];
+                    qj = q[j];
+                    rij2 = SQR(dx) + SQR(dy) + SQR(dz);
+                    rij = sqrt(rij2);
+                    gams2 = sqrt(2.0 * (sigi2 + pow(sigma[j], 2)));
+
+                    erfrij = erf(rij / gams2);
+                    fsrij = screening_f(rij);
+                    dfsrij = screening_df(rij);
+
+                    sij = erfrij * (fsrij - 1) / rij;
+                    tij = (2 / (sqrt(M_PI)*gams2) * exp(- pow(rij / gams2,2)) *
+                           (fsrij - 1) + erfrij*dfsrij - erfrij*(fsrij-1)/rij) / rij2;
+
+                    dEelecdQ[i] += qj * ((erfrij/rij) + sij);
+                    f[i][0] -= qi * qj * dx * tij;
+                    f[i][1] -= qi * qj * dy * tij;
+                    f[i][2] -= qi * qj * dz * tij;
+                }
+            }
+        }
+    }
+}
+
+// Calculate electrostatic forces and add to atomic force vectors
 void PairNNP::calculateElecForce(double **f)
 {
 
@@ -822,16 +917,16 @@ void PairNNP::calculateElecForce(double **f)
     double delr,gams2;
     double dx,dy,dz;
 
-    // TODO:parallelization..
+    // TODO:parallelization
     for (i = 0; i < nlocal; i++) {
         qi = q[i];
+        int ne = 0;
         double sigi2 = pow(sigma[i], 2);
         reinitialize_dChidxyz();
         interface.getdChidxyz(i, dChidxyz);
         if (periodic)
         {
             double sqrt2eta = (sqrt(2.0) * ewaldEta);
-
             for (j = 0; j < nall; j++) {
                 double jt0 = 0;
                 double jt1 = 0;
@@ -883,7 +978,6 @@ void PairNNP::calculateElecForce(double **f)
                         jt0 += dx * delr * qk;
                         jt1 += dy * delr * qk;
                         jt2 += dz * delr * qk;
-
                     }
 
                 }else {
@@ -907,27 +1001,35 @@ void PairNNP::calculateElecForce(double **f)
                     jt1 += ksy * qi;
                     jt2 += ksz * qi;
                     /// Real Contribution
-                    double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
-                    rij = sqrt(rij2);
-                    if (rij < maxCutoffRadius) // check if atom j is a neighbor of i
-                    {
-                        gams2 = sqrt(2.0 * (sigi2 + pow(sigma[j], 2)));
-                        delr = (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
-                                                  / sqrt2eta + exp(-pow(rij / gams2, 2)) / gams2)
-                                - 1 / rij * (erfc(rij / sqrt2eta) - erfc(rij / gams2))) / rij2;
-
-                        jt0 += dx * delr * qi;
-                        jt1 += dy * delr * qi;
-                        jt2 += dz * delr * qi;
+                    for (int jj = 0; jj < list->numneigh[j]; ++jj) {
+                        k = list->firstneigh[j][jj]; // use k here as j was used above
+                        k &= NEIGHMASK;
+                        int jmap = atom->map(tag[k]); // local index of a global neighbor
+                        if (jmap == i)
+                        {
+                            //qk = q[jmap]; // neighbor charge
+                            dx = x[k][0] - x[j][0];
+                            dy = x[k][1] - x[j][1];
+                            dz = x[k][2] - x[j][2];
+                            double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
+                            rij = sqrt(rij2);
+                            if (rij >= real_cut) break;
+                            gams2 = sqrt(2.0 * (sigi2 + pow(sigma[j], 2)));
+                            delr = (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
+                                                      / sqrt2eta + exp(-pow(rij / gams2, 2)) / gams2)
+                                    -  1 / rij * (erfc(rij / sqrt2eta) - erfc(rij / gams2)))/ rij2;
+                            jt0 += dx * delr * qi;
+                            jt1 += dy * delr * qi;
+                            jt2 += dz * delr * qi;
+                        }
                     }
-
                 }
-                pEelecpr[i][0] += 0.5 * qj * jt0;
-                pEelecpr[i][1] += 0.5 * qj * jt1;
-                pEelecpr[i][2] += 0.5 * qj * jt2;
-                f[i][0] -= forceLambda[j] * (jt0 + dChidxyz[j][0]);
-                f[i][1] -= forceLambda[j] * (jt1 + dChidxyz[j][1]);
-                f[i][2] -= forceLambda[j] * (jt2 + dChidxyz[j][2]);
+                //pEelecpr[i][0] += 0.5 * qj * jt0;
+                //pEelecpr[i][1] += 0.5 * qj * jt1;
+                //pEelecpr[i][2] += 0.5 * qj * jt2;
+                f[i][0] -= (forceLambda[j] * (jt0 + dChidxyz[j][0]) + 0.5 * qj * jt0);
+                f[i][1] -= (forceLambda[j] * (jt1 + dChidxyz[j][1]) + 0.5 * qj * jt1);
+                f[i][2] -= (forceLambda[j] * (jt2 + dChidxyz[j][2]) + 0.5 * qj * jt2);
             }
         }else
         {
@@ -959,7 +1061,6 @@ void PairNNP::calculateElecForce(double **f)
                             jt2 += (dz/rij2) * delr * qk;
                         }
                     }
-
                 }else
                 {
                     dx = x[i][0] - x[j][0];
@@ -975,143 +1076,15 @@ void PairNNP::calculateElecForce(double **f)
                     jt1 = (dy/rij2) * delr * qi;
                     jt2 = (dz/rij2) * delr * qi;
                 }
-                pEelecpr[i][0] += 0.5 * qj * jt0;
-                pEelecpr[i][1] += 0.5 * qj * jt1;
-                pEelecpr[i][2] += 0.5 * qj * jt2;
-                f[i][0] -= forceLambda[j] * (jt0 + dChidxyz[j][0]);
-                f[i][1] -= forceLambda[j] * (jt1 + dChidxyz[j][1]);
-                f[i][2] -= forceLambda[j] * (jt2 + dChidxyz[j][2]);
+                f[i][0] -= (forceLambda[j] * (jt0 + dChidxyz[j][0]) + 0.5 * qj * jt0);
+                f[i][1] -= (forceLambda[j] * (jt1 + dChidxyz[j][1]) + 0.5 * qj * jt1);
+                f[i][2] -= (forceLambda[j] * (jt2 + dChidxyz[j][2]) + 0.5 * qj * jt2);
             }
         }
     }
 }
 
-//// Electrostatic Force
-//TODO: add pEelecpr contribution directly to the force vector ?
-void PairNNP::calculateElecDerivatives(double *dEelecdQ, double **f)
-{
-
-    int i,j,jmap;
-    int nlocal = atom->nlocal;
-    int nall = atom->natoms;
-    int *tag = atom->tag;
-
-    double **x = atom->x;
-    double *q = atom->q;
-    double qi,qj;
-    double dx,dy,dz;
-    double rij,rij2,erfrij;
-    double gams2;
-    double sij,tij;
-    double fsrij,dfsrij; // corrections due to screening
-
-
-    // TODO: parallelization
-    for (i = 0; i < nlocal; i++)
-    {
-        double sigi2 = pow(sigma[i], 2);
-        qi = q[i];
-        if (periodic)
-        {
-            double sqrt2eta = (sqrt(2.0) * ewaldEta);
-            double ksum = 0.0;
-            //TODO: do we need this loop?
-            for (j = 0; j < nall; j++)
-            {
-                double Aij = 0.0;
-                qj = q[j];
-                if (i != j)
-                {
-                    dx = x[i][0] - x[j][0];
-                    dy = x[i][1] - x[j][1];
-                    dz = x[i][2] - x[j][2];
-                    // reciprocal part
-                    for (int k = 0; k < kcount; k++) {
-                        double kdr = dx*kxvecs[k]*unitk[0] + dy*kyvecs[k]*unitk[1]
-                                + dz*kzvecs[k]*unitk[2];
-                        Aij += 2.0 * kcoeff[k] * cos(kdr);
-                    }
-                    dEelecdQ[i] += qj * Aij;
-                }
-            }
-            /// Kspace term
-            for (int k = 0; k < kcount; k++)
-            {
-                ksum += 2 * kcoeff[k]; // TODO: could this be stored before ?
-            }
-            dEelecdQ[i] += qi * (ksum - 2 / (sqrt2eta * sqrt(M_PI)));
-            /// Neighbor term TODO: could this loop be combined with above j-loop ?
-            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
-                j = list->firstneigh[i][jj];
-                j &= NEIGHMASK;
-                jmap = atom->map(tag[j]);
-                qj = q[jmap];
-                dx = x[i][0] - x[j][0];
-                dy = x[i][1] - x[j][1];
-                dz = x[i][2] - x[j][2];
-                rij2 = SQR(dx) + SQR(dy) + SQR(dz);
-                rij = sqrt(rij2);
-
-                //if (rij >= screening_info[2]) break; // TODO: check
-
-                gams2 = sqrt(2.0 * (sigi2 + pow(sigma[jmap], 2)));
-                erfrij = erf(rij / gams2);
-                fsrij = screening_f(rij);
-                dfsrij = screening_df(rij);
-
-                sij = erfrij * (fsrij - 1) / rij;
-                tij = (2 / (sqrt(M_PI)*gams2) * exp(- pow(rij / gams2,2)) *
-                       (fsrij - 1) + erfrij*dfsrij - erfrij*(fsrij-1)/rij) / rij2;
-
-                double Aij = (erfc(rij / sqrt2eta) - erfc(rij / gams2)) / rij;
-
-                dEelecdQ[i] += qj * (sij + Aij);
-
-                pEelecpr[i][0] += qi * qj * dx * tij;
-                pEelecpr[i][1] += qi * qj * dy * tij;
-                pEelecpr[i][2] += qi * qj * dz * tij;
-                //f[i][0] -= qi * qj * dx * tij;
-                //f[i][1] -= qi * qj * dy * tij;
-                //f[i][2] -= qi * qj * dz * tij;
-            }
-        }else
-        {
-            for (j = 0; j < nall; j++)
-            {
-                // Diagonal terms contain self-interaction
-                if (i != j)
-                {
-                    dx = x[i][0] - x[j][0];
-                    dy = x[i][1] - x[j][1];
-                    dz = x[i][2] - x[j][2];
-                    qj = q[j];
-                    rij2 = SQR(dx) + SQR(dy) + SQR(dz);
-                    rij = sqrt(rij2);
-                    gams2 = sqrt(2.0 * (sigi2 + pow(sigma[j], 2)));
-
-                    erfrij = erf(rij / gams2);
-                    fsrij = screening_f(rij);
-                    dfsrij = screening_df(rij);
-
-                    sij = erfrij * (fsrij - 1) / rij;
-                    tij = (2 / (sqrt(M_PI)*gams2) * exp(- pow(rij / gams2,2)) *
-                           (fsrij - 1) + erfrij*dfsrij - erfrij*(fsrij-1)/rij) / rij2;
-
-                    dEelecdQ[i] += qj * ((erfrij/rij) + sij);
-
-                    pEelecpr[i][0] += qi * qj * dx * tij;
-                    pEelecpr[i][1] += qi * qj * dy * tij;
-                    pEelecpr[i][2] += qi * qj * dz * tij;
-                    //f[i][0] -= qi * qj * dx * tij;
-                    //f[i][1] -= qi * qj * dy * tij;
-                    //f[i][2] -= qi * qj * dz * tij;
-                }
-            }
-        }
-    }
-}
-
-// Re-initialize dChidxyz array
+// Re-initialize $\partial \Chi/\partial x_i$ array (derivatives of electronegativities w.r.t. positions)
 // TODO: check, do we really need this ?
 void PairNNP::reinitialize_dChidxyz()
 {
@@ -1120,10 +1093,12 @@ void PairNNP::reinitialize_dChidxyz()
             dChidxyz[i][j] = 0.0;
 }
 
+// Calculate screening function
 // TODO : add other function types
 double PairNNP::screening_f(double r)
 {
     double x;
+
     if (r >= screening_info[2]) return 1.0;
     else if (r <= screening_info[1]) return 0.0;
     else
@@ -1131,11 +1106,12 @@ double PairNNP::screening_f(double r)
         x = (r-screening_info[1])*screening_info[3];
         return 1.0 - 0.5*(cos(M_PI*x)+1);
     }
-
 }
 
+// Calculate derivative of the screening function
 // TODO : add other function types
 double PairNNP::screening_df(double r) {
+
     double x;
 
     if (r >= screening_info[2] || r <= screening_info[1]) return 0.0;
@@ -1145,13 +1121,15 @@ double PairNNP::screening_df(double r) {
     }
 }
 
+// Check for periodicity
 void PairNNP::isPeriodic()
 {
     if (domain->nonperiodic == 0) periodic = true;
     else                          periodic = false;
 }
 
-// TODO: do we need this ?
+// Calculate overall cutoff radius for 4G-neighlist
+// TODO: not implemented yet
 double PairNNP::getOverallCutoffRadius(double sfCutoff, int numAtoms)
 {
     double xprd = domain->xprd;
@@ -1161,7 +1139,7 @@ double PairNNP::getOverallCutoffRadius(double sfCutoff, int numAtoms)
     double volume = xprd * yprd * zprd;
     double eta = 1.0 / sqrt(2.0 * M_PI);
 
-    double precision = interface.getEwaldPrecision(); //TODO: remove this from fix_nnp
+    double precision = interface.getEwaldPrecision(); //TODO: remove this from fix_nnp?
 
     // Regular Ewald eta.
     if (numAtoms != 0) eta *= pow(volume * volume / numAtoms, 1.0 / 6.0);
@@ -1175,8 +1153,7 @@ double PairNNP::getOverallCutoffRadius(double sfCutoff, int numAtoms)
 
 }
 
-//// K-SPACE
-// Allocate Kspace arrays
+// Allocate k-space arrays
 void PairNNP::allocate_kspace()
 {
     int nloc = atom->nlocal;
@@ -1196,7 +1173,7 @@ void PairNNP::allocate_kspace()
     //sfacim_all = new double[kmax3d];
 }
 
-// Deallocate Kspace arrays
+// Deallocate k-space arrays
 void PairNNP::deallocate_kspace()
 {
     memory->destroy(kxvecs);
@@ -1213,10 +1190,12 @@ void PairNNP::deallocate_kspace()
     //delete [] sfacim_all;
 }
 
-// TODO: 'called initially and whenever the volume is changed' ?
+// Setup k-space grid and run necessary subroutines
 void PairNNP::kspace_setup() {
     allocate_kspace();
     deallocate_kspace();
+
+    // TODO: 'called initially and whenever the volume is changed' ? from LAMMPS version
 
     int natoms = atom->natoms;
 
@@ -1270,7 +1249,7 @@ void PairNNP::kspace_setup() {
     deallocate_kspace();
     allocate_kspace();
 
-    //TODO: if size has grown ???
+    //TODO: if size has grown ?
     if (kmax > kmax_old) {
         //memory->destroy(ek);
         memory->destroy3d_offset(cs, -kmax_created);
@@ -1282,15 +1261,12 @@ void PairNNP::kspace_setup() {
         kmax_created = kmax;
     }
 
-    // calculate k-space coeff
     kspace_coeffs();
-
-    // calculate exponential terms in structure factors
     kspace_sfexp();
 }
 
-// Calculate K-space coefficients
-//TODO: add vg and eg arrays if necessary
+// Calculate k-space coefficients
+//TODO: add vg and eg arrays if necessary (virial ?)
 void PairNNP::kspace_coeffs()
 {
     int k,l,m;
@@ -1430,7 +1406,7 @@ void PairNNP::kspace_coeffs()
 
 }
 
-// Calculate K-space structure factors
+// Calculate k-space structure factor
 void PairNNP::kspace_sfexp()
 {
     int i,k,l,m,n,ic;
@@ -1581,7 +1557,7 @@ void PairNNP::kspace_sfexp()
     }
 }
 
-// Generate K-space grid
+// Generate k-space grid
 void PairNNP::kspace_pbc(double rcut)
 {
 

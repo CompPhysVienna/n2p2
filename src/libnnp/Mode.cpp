@@ -1785,9 +1785,7 @@ void Mode::calculateForces(Structure& structure) const
                 }
             }
         }
-        cout << "Short : " << '\t' <<  ai->f[0] << '\t' << ai->f[1] << '\t' << ai->f[2] << '\n';
     }
-
 
     if (nnpType == NNPType::HDNNP_4G) {
         Structure &s = structure;
@@ -1803,16 +1801,10 @@ void Mode::calculateForces(Structure& structure) const
         VectorXd const lambdaTotal = s.A.colPivHouseholderQr().solve(-dEdQ);
         VectorXd const lambdaElec = s.A.colPivHouseholderQr().solve(-dEelecdQ);
 
-
-        for (size_t i = 0; i < s.numAtoms; ++i) {
-            //cout << lambdaTotal(i) << '\n';
-        }
-
         for (auto &ai : s.atoms) {
             ai.fElec = Vec3D{0, 0, 0};
 
             ai.f -= ai.pEelecpr;
-            //cout << ai.pEelecpr[0] << '\t' << ai.pEelecpr[1] << '\t' << ai.pEelecpr[2] << '\n';
             ai.fElec -= ai.pEelecpr;
 
             for (size_t j = 0; j < s.numAtoms; ++j) {
@@ -1850,7 +1842,6 @@ void Mode::calculateForces(Structure& structure) const
                 ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }
-            cout << "Elec : " << '\t' << ai.f[0] << '\t' << ai.f[1] << '\t' << ai.f[2] << '\n';
         }
     }
     return;

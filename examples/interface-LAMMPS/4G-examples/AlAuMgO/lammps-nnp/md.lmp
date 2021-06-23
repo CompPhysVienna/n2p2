@@ -9,7 +9,7 @@ clear
 # Configuration files
 variable cfgFile         string "input.data"
 # Timesteps
-variable numSteps        equal  10000
+variable numSteps        equal  0
 variable dt              equal  0.0005
 # NN
 variable nnpCutoff       equal  8.01

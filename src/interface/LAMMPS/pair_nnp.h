@@ -42,16 +42,6 @@ protected:
 
     class FixNNP *fix_nnp;
 
-    // QEq arrays
-    double *chi,*hardness,*sigma;
-
-    double eElec; // electrostatic contribution to total energy (calculated in fix_nnp.cpp
-
-    double *dEdQ,*forceLambda;
-    double **dChidxyz,**pEelecpr;
-
-    double overallCutoff;
-
     bool periodic;
     bool showew;
     bool resetew;
@@ -67,10 +57,17 @@ protected:
     class NeighList *list;
     nnp::InterfaceLammps interface;
 
+    double *chi,*hardness,*sigma; // QEq arrays
+    double eElec; // electrostatic contribution to total energy (calculated in fix_nnp.cpp
+    double *dEdQ,*forceLambda,**dChidxyz;
+    double overallCutoff; // TODO
+    double grad_tol,min_tol,step; // user-defined minimization parameters
+    int maxit;
+
     virtual void allocate();
     void transferNeighborList();
     void isPeriodic();
-    double getOverallCutoffRadius(double, int natoms = 0);
+    double getOverallCutoffRadius(double, int natoms = 0); // TODO
 
     void transferCharges();
     void handleExtrapolationWarnings();

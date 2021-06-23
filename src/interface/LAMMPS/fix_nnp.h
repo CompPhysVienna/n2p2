@@ -55,7 +55,6 @@ namespace LAMMPS_NS {
         char *pertype_option;
 
         bool periodic; // true if periodic
-        double grad_tol,min_tol,step,maxit; // user-defined minimization parameters
         double qRef; // total reference charge of the system
         double *Q;
 

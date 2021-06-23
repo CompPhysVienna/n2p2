@@ -52,12 +52,6 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     nevery = utils::inumeric(FLERR,arg[3],false,lmp);
     if (nevery <= 0) error->all(FLERR,"Illegal fix nnp command");
 
-    /// User-defined minimization parameters
-    grad_tol = utils::numeric(FLERR,arg[4],false,lmp); //tolerance for gradient check
-    min_tol = utils::numeric(FLERR,arg[5],false,lmp); //tolerance
-    step = utils::numeric(FLERR,arg[6],false,lmp); //initial step size
-    maxit = utils::numeric(FLERR,arg[7],false,lmp); //maximum number of iterations
-
     int len = strlen(arg[8]) + 1;
     pertype_option = new char[len];
     strcpy(pertype_option,arg[8]);
@@ -68,6 +62,12 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     nnp->hardness = NULL;
     nnp->sigma = NULL;
     nnp->screening_info = NULL;
+
+    // User-defined minimization parameters used in pair_nnp as well
+    nnp->grad_tol = utils::numeric(FLERR,arg[4],false,lmp); //tolerance for gradient check
+    nnp->min_tol = utils::numeric(FLERR,arg[5],false,lmp); //tolerance
+    nnp->step = utils::numeric(FLERR,arg[6],false,lmp); //initial nnp->step size
+    nnp->maxit = utils::inumeric(FLERR,arg[7],false,lmp); //maximum number of iterations
 
     /*
      *
@@ -152,7 +152,6 @@ void FixNNP::init()
 
 }
 
-// TODO: check this, it might be redundant in our case
 void FixNNP::pertype_parameters(char *arg)
 {
     if (strcmp(arg,"nnp") == 0) {
@@ -245,7 +244,7 @@ void FixNNP::min_pre_force(int vflag)
     pre_force(vflag);
 }
 
-// Main calculation routine, runs before pair->compute at each timestep
+// Main calculation routine, runs before pair->compute at each timennp->step
 void FixNNP::pre_force(int /*vflag*/) {
 
     // Calculate atomic electronegativities \Chi_i
@@ -265,7 +264,7 @@ void FixNNP::pre_force(int /*vflag*/) {
 
     /*double t_start, t_end;
 
-    if (update->ntimestep % nevery) return;
+    if (update->ntimennp->step % nevery) return;
     if (comm->me == 0) t_start = MPI_Wtime();
 
     n = atom->nlocal;
@@ -304,7 +303,6 @@ double FixNNP::QEq_f(const gsl_vector *v)
     double E_real,E_recip,E_self; // for periodic examples
     double iiterm,ijterm;
     double sf_real,sf_im;
-
 
     //xall = new double[nall];
     //yall = new double[nall];
@@ -535,7 +533,6 @@ void FixNNP::calculate_QEqCharges()
     int status;
     int i,j;
     int nsize;
-    int maxit;
 
     double *q = atom->q;
     double qsum_it;
@@ -562,23 +559,18 @@ void FixNNP::calculate_QEqCharges()
     //T = gsl_multimin_fdfminimizer_conjugate_pr; // minimization algorithm
     T = gsl_multimin_fdfminimizer_vector_bfgs2;
     s = gsl_multimin_fdfminimizer_alloc(T, nsize);
-    gsl_multimin_fdfminimizer_set(s, &QEq_minimizer, Q, step, min_tol); // tol = 0 might be expensive ???
+    gsl_multimin_fdfminimizer_set(s, &QEq_minimizer, Q, nnp->step, nnp->min_tol); // tol = 0 might be expensive ???
     do
     {
         iter++;
         qsum_it = 0.0;
         gradsum = 0.0;
-
-        /*std::cout << "iter : " << iter << '\n';
-        std::cout << "E_qeq: " << s->f << '\n';
-        std::cout << "-------------" << '\n';*/
-
         status = gsl_multimin_fdfminimizer_iterate(s);
 
         // Projection (enforcing constraints)
         // TODO: could this be done more efficiently ?
         for(i = 0; i < nsize; i++) {
-            qsum_it = qsum_it + gsl_vector_get(s->x, i); // total charge after the minimization step
+            qsum_it = qsum_it + gsl_vector_get(s->x, i); // total charge after the minimization nnp->step
         }
 
         for(i = 0; i < nsize; i++) {
@@ -586,13 +578,13 @@ void FixNNP::calculate_QEqCharges()
             gsl_vector_set(s->x,i, qi - (qsum_it-qRef)/nsize); // charge projection
         }
 
-        status = gsl_multimin_test_gradient(s->gradient, grad_tol); // check for convergence
+        status = gsl_multimin_test_gradient(s->gradient, nnp->grad_tol); // check for convergence
 
         if (status == GSL_SUCCESS)
             printf ("Minimum charge distribution is found at iteration : %d\n", iter);
 
     }
-    while (status == GSL_CONTINUE && iter < maxit);
+    while (status == GSL_CONTINUE && iter < nnp->maxit);
 
     // Read charges into LAMMPS atom->q array before deallocating
     for (i = 0; i < nsize; i++) {
