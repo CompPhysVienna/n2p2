@@ -1728,8 +1728,7 @@ void Mode::calculateForces(Structure& structure) const
 #ifdef _OPENMP
     #pragma omp parallel for private(ai)
 #endif
-    for (size_t i = 0; i < structure.atoms.size(); ++i)
-    {
+    for (size_t i = 0; i < structure.atoms.size(); ++i) {
         // Set pointer to atom.
         ai = &(structure.atoms.at(i));
 
@@ -1740,8 +1739,7 @@ void Mode::calculateForces(Structure& structure) const
 
         // First add force contributions from atom i itself (gradient of
         // atomic energy E_i).
-        for (size_t j = 0; j < ai->numSymmetryFunctions; ++j)
-        {
+        for (size_t j = 0; j < ai->numSymmetryFunctions; ++j) {
             ai->f -= ai->dEdG.at(j) * ai->dGdr.at(j);
         }
 
@@ -1753,27 +1751,23 @@ void Mode::calculateForces(Structure& structure) const
         // "unique neighbor" list (but skip the first entry, this is always
         // atom i itself).
         for (vector<size_t>::const_iterator it =
-             ai->neighborsUnique.begin() + 1;
-             it != ai->neighborsUnique.end(); ++it)
-        {
+                ai->neighborsUnique.begin() + 1;
+             it != ai->neighborsUnique.end(); ++it) {
             // Define shortcut for atom j (aj).
-            Atom& aj = structure.atoms.at(*it);
+            Atom &aj = structure.atoms.at(*it);
 #ifndef NNP_FULL_SFD_MEMORY
-            vector<vector<size_t> > const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
+            vector <vector<size_t>> const &tableFull
+                    = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
             // Loop over atom j's neighbors (n), atom i should be one of them.
             for (vector<Atom::Neighbor>::const_iterator n =
-                 aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
-            {
+                    aj.neighbors.begin(); n != aj.neighbors.end(); ++n) {
                 // If atom j's neighbor is atom i add force contributions.
                 if (n->d > maxCutoffRadius) break;
-                if (n->index == ai->index)
-                {
+                if (n->index == ai->index) {
 #ifndef NNP_FULL_SFD_MEMORY
-                    vector<size_t> const& table = tableFull.at(n->element);
-                    for (size_t j = 0; j < n->dGdr.size(); ++j)
-                    {
+                    vector <size_t> const &table = tableFull.at(n->element);
+                    for (size_t j = 0; j < n->dGdr.size(); ++j) {
                         ai->f -= aj.dEdG.at(table.at(j)) * n->dGdr.at(j);
                     }
 #else
@@ -1785,6 +1779,7 @@ void Mode::calculateForces(Structure& structure) const
                 }
             }
         }
+        //std::cout << "Short : " << ai->f[0] << '\t' << ai->f[1] << '\t' << ai->f[2] << '\n';
     }
 
     if (nnpType == NNPType::HDNNP_4G) {
@@ -1842,6 +1837,7 @@ void Mode::calculateForces(Structure& structure) const
                 ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }
+            //std::cout << "Total : " << ai.f[0] << '\t' << ai.f[1] << '\t' << ai.f[2] << '\n';
         }
     }
     return;

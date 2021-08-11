@@ -57,7 +57,7 @@ protected:
     class NeighList *list;
     nnp::InterfaceLammps interface;
 
-    double *chi,*hardness,*sigma; // QEq arrays
+    double *chi,*hardness,*sigmaSqrtPi,**gammaSqrt2; // QEq arrays
     double eElec; // electrostatic contribution to total energy (calculated in fix_nnp.cpp
     double *dEdQ,*forceLambda,**dChidxyz;
     double overallCutoff; // TODO

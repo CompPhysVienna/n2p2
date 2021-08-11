@@ -155,7 +155,7 @@ public:
      * @param[in] qRef Reference charge of the structure.
      */
     void   getQEqParams(double* const& atomChi, double* const& atomJ,
-            double* const& atomSigma, double qRef) const;
+            double* const& sigmaSqrtPi, double *const *const& gammaSqrt2, double qRef) const;
     /** Write the derivative of total energy with respect to atomic charges
      * from n2p2 into LAMMPS
      *

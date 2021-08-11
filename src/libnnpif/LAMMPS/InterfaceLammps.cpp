@@ -382,17 +382,27 @@ double InterfaceLammps::getAtomicEnergy(int index) const
 }
 
 void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
-                     double* const& atomSigma, double qRef) const
+                     double* const& sigmaSqrtPi, double *const *const& gammaSqrt2, double qRef) const
 {
     Atom const* a = NULL;
-    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    for (size_t i = 0; i < structure.atoms.size(); ++i) {
+        a = &(structure.atoms.at(i));
+        size_t const ia = a->index;
+        size_t const ea = a->element;
+        atomChi[ia] = a->chi;
+        //atomJ[ia] = elements.at(ea).getHardness();
+        //atomSigma[ia] = elements.at(ea).getQsigma();
+    }
+    for (size_t i = 0; i < numElements; ++i)
     {
-       a = &(structure.atoms.at(i));
-       size_t const ia = a->index;
-       size_t const ea = a->element;
-       atomChi[ia] = a->chi;
-       atomJ[ia] = elements.at(ea).getHardness();
-       atomSigma[ia] = elements.at(ea).getQsigma();
+        double const iSigma = elements.at(i).getQsigma();
+        atomJ[i+1] = elements.at(i).getHardness();
+        sigmaSqrtPi[i+1] = sqrt(M_PI) * iSigma;
+        for (size_t j = 0; j < numElements; j++)
+        {
+            double const jSigma = elements.at(j).getQsigma();
+            gammaSqrt2[i+1][j+1] = sqrt(2.0 * (iSigma * iSigma + jSigma * jSigma));
+        }
     }
     qRef = structure.chargeRef;
 }

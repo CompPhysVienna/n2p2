@@ -64,6 +64,7 @@ namespace LAMMPS_NS {
         void process_first_network(); // run first NN and calculate atomic electronegativities
         void allocate_QEq(); // allocate QEq arrays
         void deallocate_QEq(); // deallocate QEq arrays
+        void map_localids();
 
         /// QEq energy minimization via gsl
         gsl_multimin_function_fdf QEq_minimizer; // find a better name
@@ -76,6 +77,15 @@ namespace LAMMPS_NS {
         static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*); // wrapper function of df
         static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*); // wrapper function of fdf
         void calculate_QEqCharges(); // QEq minimizer
+
+        /// Global storage
+        double *coords,*xf,*yf,*zf; // global arrays for atom positions
+        double *xbuf; // memory for atom positions
+        int ntotal;
+        int xbufsize;
+
+        void pack_positions(); // pack atom->x into xbuf
+        void gather_positions();
 
 
         /// Matrix Approach (DEPRECATED and to be deleted)

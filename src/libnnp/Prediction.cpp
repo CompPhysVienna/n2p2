@@ -69,12 +69,12 @@ void Prediction::predict()
     // TODO: Is this the right case distinction?
     if (nnpType == NNPType::HDNNP_4G)
     {
-        //maxCutoffRadiusOverall = structure.getMaxCutoffRadiusOverall(
-                                                //ewaldPrecision,
-                                                //screeningFunction.getOuter(),
-                                                //maxCutoffRadius);
+        maxCutoffRadiusOverall = structure.getMaxCutoffRadiusOverall(
+                                                ewaldPrecision,
+                                                screeningFunction.getOuter(),
+                                                maxCutoffRadius);
     }
-    maxCutoffRadiusOverall = 8.01; // fixing cutoff for testing at the moment
+    //maxCutoffRadiusOverall = 8.01; // fixing cutoff for testing at the moment
     // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
     // CI tests because of small numeric changes).
     structure.calculateNeighborList(maxCutoffRadiusOverall,
