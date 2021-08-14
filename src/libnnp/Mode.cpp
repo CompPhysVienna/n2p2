@@ -165,12 +165,13 @@ void Mode::loadSettingsFile(string const& fileName)
     return;
 }
 
-void Mode::setupGeneric(string const& nnpDir, bool training)
+void Mode::setupGeneric(string const& nnpDir, bool initialHardness)
 {
     setupNormalization();
     setupElementMap();
     setupElements();
-    if (nnpType == NNPType::HDNNP_4G) setupElectrostatics(training, nnpDir);
+    if (nnpType == NNPType::HDNNP_4G) 
+        setupElectrostatics(initialHardness, nnpDir);
     setupCutoff();
     setupSymmetryFunctions();
 #ifndef NNP_FULL_SFD_MEMORY
@@ -1514,7 +1515,8 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                                          bool const derivatives,
-                                         string id)
+                                         string id,
+                                         bool const suppressOutput)
 {
     if (id == "") id = nnk.front();
 
@@ -1550,6 +1552,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     nn.calculateDEdG(&((a.dChidG).front()));
                 }
                 nn.getOutput(&(a.chi));
+                if (!suppressOutput)
                 log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
                              a.index, elementMap[a.element].c_str(), a.chi);
             }
@@ -1560,7 +1563,8 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             {
                 NeuralNetwork& nn = elements.at(a.element)
                                     .neuralNetworks.at(id);
-                nn.setInput(&((a.G).front()));
+                // This line is probably obsolete
+                //nn.setInput(&((a.G).front()));
                 // TODO: This part should simplify with improved NN class.
                 for (size_t i = 0; i < a.G.size(); ++i)
                 {
@@ -1575,6 +1579,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     nn.calculateDEdG(&((a.dEdG).front()));
                 }
                 nn.getOutput(&(a.energy));
+                if (!suppressOutput)
                 log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
                              a.index, elementMap[a.element].c_str(), a.energy);
             }
@@ -1620,7 +1625,9 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 }
 
 // TODO: Make this const?
-void Mode::chargeEquilibration(Structure& structure, bool const suppressOutput)
+void Mode::chargeEquilibration( Structure& structure, 
+                                bool const derivativesElec, 
+                                bool const suppressOutput)
 {
     Structure& s = structure;
 
@@ -1652,7 +1659,8 @@ void Mode::chargeEquilibration(Structure& structure, bool const suppressOutput)
     // TODO: leave these 2 functions here or shift it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
     s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
-    s.calculateElectrostaticEnergyDerivatives(hardness,
+    if (derivativesElec)
+        s.calculateElectrostaticEnergyDerivatives(hardness,
                                             gammaSqrt2,
                                             sigmaSqrtPi,
                                             screeningFunction);
@@ -1688,17 +1696,17 @@ void Mode::calculateEnergy(Structure& structure) const
     }
     structure.energy = structure.energyShort + structure.energyElec;
 
-    cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
-    cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
-    cout << strpr("Sum           energy: %24.16E\n", structure.energy);
-    cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
-    cout << "---------------------\n";
-    cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
-    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
-    cout << "---------------------\n";
-    cout << "without offset:      \n";
-    cout << strpr("Total         energy: %24.16E\n", structure.energy);
-    cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
+    //cout << strpr("Electrostatic energy: %24.16E\n", structure.energyElec);
+    //cout << strpr("Short-range   energy: %24.16E\n", structure.energyShort);
+    //cout << strpr("Sum           energy: %24.16E\n", structure.energy);
+    //cout << strpr("Offset        energy: %24.16E\n", getEnergyOffset(structure));
+    //cout << "---------------------\n";
+    //cout << strpr("Total         energy: %24.16E\n", structure.energy + getEnergyOffset(structure));
+    //cout << strpr("Reference     energy: %24.16E\n", structure.energyRef + getEnergyOffset(structure));
+    //cout << "---------------------\n";
+    //cout << "without offset:      \n";
+    //cout << strpr("Total         energy: %24.16E\n", structure.energy);
+    //cout << strpr("Reference     energy: %24.16E\n", structure.energyRef);
 
     return;
 }

@@ -47,6 +47,7 @@ Structure::Structure() :
     energyRef                     (0.0       ),
     energyShort                   (0.0       ),
     energyElec                    (0.0       ),
+    hasCharges                    (false     ),
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
@@ -821,6 +822,72 @@ void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
     return;
 }
 
+void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
+                                vector<Element> const&  elements)
+{
+    for (size_t const& i : atomsAndComponents)
+    {
+        const size_t index = i / 3;
+        const size_t comp = i % 3;
+        
+        Atom& a = atoms.at(index);
+        //if ( a.hasdQdr[comp] ) continue;
+        a.dQdr.resize(numAtoms);
+
+        // b stores (-dChidr - dAdrQ)
+        VectorXd b(numAtoms);
+        b.setZero();
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            Atom const& aj = atoms.at(j);
+
+            // need to add this case because the loop over the neighbors
+            // does not include the contribution dChi_i/dr_i.
+            if (j == i)
+            {
+                for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+                {
+                    b(j) -= aj.dChidG.at(k) * aj.dGdr.at(k)[comp];
+                }
+            }
+
+#ifndef NNP_FULL_SFD_MEMORY
+            vector<vector<size_t> > const& tableFull
+                = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+
+            for (auto const& n : aj.neighbors)
+            {
+                if (n.index == i)
+                {
+#ifndef NNP_FULL_SFD_MEMORY
+
+                    vector<size_t> const& table = tableFull.at(n.element);
+                    for (size_t k = 0; k < n.dGdr.size(); ++k)
+                    {
+                        b(j) -= aj.dChidG.at(table.at(k)) 
+                                        * n.dGdr.at(k)[comp];
+                    }
+#else
+                    for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+                    {
+                        b(j) -= aj.dChidG.at(k) * n.dGdr.at(k)[comp];
+                    }
+#endif
+                }
+            }
+            b(j) -= a.dAdrQ.at(j)[comp];
+        }
+        VectorXd dQdr = A.colPivHouseholderQr().solve(b);
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            a.dQdr.at(j)[comp] = dQdr(j);
+        }
+        //a.hasdQdr[comp] = true;
+    }
+    return;
+}
+
 void Structure::calculateElectrostaticEnergyDerivatives(
                                         Eigen::VectorXd          hardness,
                                         Eigen::MatrixXd          gammaSqrt2,
@@ -1056,6 +1123,21 @@ void Structure::clearNeighborList()
     return;
 }
 
+void Structure::clearElectrostatics(bool clearDQdr)
+{
+    A.resize(0,0);
+    for (auto& a : atoms)
+    {
+        a.dAdrQ.clear();
+        a.dAdrQ.shrink_to_fit();
+        if (clearDQdr)
+        {
+            a.dQdr.clear();
+            a.dQdr.shrink_to_fit();
+        }
+    }
+}
+
 void Structure::updateError(string const&        property,
                             map<string, double>& error,
                             size_t&              count) const
@@ -1088,6 +1170,7 @@ void Structure::updateError(string const&        property,
 
 string Structure::getEnergyLine() const
 {
+    //cout << (energyRef - energy) / numAtoms << endl;
     return strpr("%10zu %16.8E %16.8E\n",
                  index,
                  energyRef / numAtoms,

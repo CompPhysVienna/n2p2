@@ -86,7 +86,7 @@ void Prediction::predict()
     calculateAtomicNeuralNetworks(structure, true);
     if (nnpType == NNPType::HDNNP_4G)
     {
-        chargeEquilibration(structure);
+        chargeEquilibration(structure, true);
         calculateAtomicNeuralNetworks(structure, true, "short");
     }
     calculateEnergy(structure);

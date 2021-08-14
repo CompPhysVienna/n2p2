@@ -113,13 +113,14 @@ public:
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.
-     * @param[in] training Signalizes that this is a setup for training.
+     * @param[in] initialHardness Signalizes to use initial hardness in NN
+     *                  settings.
      *
      * Sets up elements, symmetry functions, symmetry function groups, neural
      * networks. No symmetry function scaling data is read, no weights are set.
      */
     void                     setupGeneric(std::string const& nnpDir = "",
-                                          bool               training = false);
+                                          bool      initialHardness = false);
     /** Set up normalization.
      *
      * If the keywords `mean_energy`, `conv_length` and
@@ -325,20 +326,27 @@ public:
      *                        networks with respect to input layer neurons
      *                        (required for force calculation).
      * @param[in] id Neural network ID to use. If empty, the first entry
-     *               nnk.front() is used.
+     *                        nnk.front() is used.
+     * @param[in] suppressOutput Turn on/off output generation (for example
+     *                        during training.
      */
     void                     calculateAtomicNeuralNetworks(
-                                                       Structure&  structure,
-                                                       bool const  derivatives,
-                                                       std::string id = "");
+                                           Structure&  structure,
+                                           bool const  derivatives,
+                                           std::string id = "",
+                                           bool const  suppressOutput = false);
     /** Perform global charge equilibration method.
      *
      * @param[in] structure Input structure.
+     * @param[in] derivativesElec Turn on/off calculation of dElecdQ and
+     *                          pElecpr (Typically needed for elecstrosttic
+     *                          forces).
      * @param[in] suppressOutput Turn on/off output generation (for example
      *                          during training.
      */
     void                     chargeEquilibration(
                                                 Structure& structure,
+                                                bool const derivativesElec,
                                                 bool const suppressOutput = false);
     /** Calculate potential energy for a given structure.
      *

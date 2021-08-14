@@ -156,6 +156,10 @@ struct Atom
     /// Derivative of symmetry functions with respect to this atom's
     /// coordinates.
     std::vector<Vec3D>       dGdr;
+    /// Derivative of charges with respect to this atom's coordinates.
+    std::vector<Vec3D>       dQdr;
+    /// If dQdr has been calculated for respective components.
+    //bool                    hasdQdr[3];
     /// Derivative of A-matrix with respect to this atom's coordinates
     // contracted with the charges.
     std::vector<Vec3D>       dAdrQ;

@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
     training.initialize();
     training.loadSettingsFile();
     training.setStage(stage);
-    training.setupGeneric("", true);
+    if (stage == 1) training.setupGeneric("", true);
+    else training.setupGeneric();
     training.setupSymmetryFunctionScaling();
     training.setupSymmetryFunctionStatistics(false, false, false, false);
     training.setupRandomNumberGenerator();

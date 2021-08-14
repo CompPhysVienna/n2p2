@@ -18,6 +18,7 @@
 #define STRUCTURE_H
 
 #include "Atom.h"
+#include "Element.h"
 #include "ElementMap.h"
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
@@ -86,6 +87,9 @@ struct Structure
     // TODO: MPI_Pack
     /// Electrostatics part of the potential energy predicted by NNP.
     double                   energyElec;
+    /// If all charges of this structure have been calculated (and stay the
+    /// same, e.g. for stage 2).
+    bool                     hasCharges;
     /// Charge determined by neural network potential.
     double                   charge;
     /// Reference charge.
@@ -296,6 +300,16 @@ struct Structure
      *  derivative for the i-th hardness and the j-th charge.
      */
     void                     calculateDQdJ(std::vector<Eigen::VectorXd> &dQdJ);
+    /** Calculates derivative of the charges with respect to the atom's
+     * position.
+     * @param[in] atomsAndComponents Vector telling for which atoms and for
+     *                  which component the derivatives should be calculated.
+     *                  int(value/3) gives the atom's index, (value % 3) gives
+     *                  the component.
+     */
+    void                    calculateDQdr(
+                                std::vector<size_t> const&  atomsAndComponents,
+                                std::vector<Element> const& elements);
      /** Calculates partial derivatives of electrostatic Energy with respect
      * to atom's coordinates and charges.
      * @param[in] hardness Vector containing the hardness of all elements.
@@ -350,6 +364,10 @@ struct Structure
     /** Clear neighbor list of all atoms.
      */
     void                     clearNeighborList();
+    /** Clear A-matrix, dAdrQ and optionally dQdr
+     * @param[in] clearDqdr Specify if dQdr should also be cleared.
+     */
+    void                     clearElectrostatics(bool clearDQdr = false);
     /** Update property error metrics with this structure.
      *
      * @param[in] property One of "energy", "force" or "charge".

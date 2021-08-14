@@ -161,6 +161,15 @@ public:
      * Also write training curve to file.
      */
     void                  calculateErrorEpoch();
+    /** Calculate vector of charge errors in one structure.
+     *
+     * @param[in] s Structure of interest.
+     * @param[in] cVec Vector to store result of charge errors.
+     * @param[in] cNorm Euclidean norm of the error vector.
+     */
+    void                  calculateChargeErrorVec( Structure const &s,
+                                                   Eigen::VectorXd &cVec,
+                                                   double          &cNorm);
     /** Print training loop header on screen.
      */
     void                  printHeader();
@@ -299,17 +308,40 @@ public:
     void                  setTrainingLogFileName(std::string fileName);
 
 private:
+    /// Contains update candidate which is grouped with others to specific
+    /// parent update candidate (e.g. forces belonging to same structure).
+    struct SubCandidate
+    {
+        /// Atom index (only used for force candidates).
+        std::size_t a;
+        /// Component index (x,y,z -> 0,1,2, only used for force candidates).
+        std::size_t c;
+        /// Absolute value of error with respect to reference value.
+        double error;
+
+        /// Overload < operator to sort in \em descending order.
+        bool operator<(SubCandidate const& rhs) const {
+            return this->error > rhs.error;
+        }
+    };
     /// Contains location of one update candidate (energy or force).
     struct UpdateCandidate
     {
         /// Structure index.
         std::size_t s;
         /// Atom index (only used for force candidates).
-        std::size_t a;
+        //std::size_t a;
         /// Component index (x,y,z -> 0,1,2, only used for force candidates).
-        std::size_t c;
-        /// Absolute value of error with respect to reference value.
+        //std::size_t c;
+        /// Absolute value of error with respect to reference value (in case of
+        /// subcandidates, average is taken)
         double      error;
+        /// Current position in sub-candidate list (SM_SORT/_THRESHOLD).
+        std::size_t                  posSubCandidates;
+
+        /// Vector containing grouped candidates. If no grouping intended,
+        /// vector will contain only single entry.
+        std::vector<SubCandidate> subCandidates;
 
         /// Overload < operator to sort in \em descending order.
         bool operator<(UpdateCandidate const& rhs) const {
@@ -343,8 +375,14 @@ private:
         std::size_t                  writeCompEvery;
         /// Up to this epoch comparison is written every epoch.
         std::size_t                  writeCompAlways;
-        /// Current position in update candidate list (SM_SORT).
+        /// Current position in update candidate list (SM_SORT/_THRESHOLD).
         std::size_t                  posUpdateCandidates;
+        /// Number of subcandidates which are considered before changing the
+        /// update candidate.
+        std::size_t                  numGroupedSubCand;
+        /// Counter for number of used subcandidates belonging to same update
+        /// candidate.
+        std::size_t                  countGroupedSubCand;
         /// Maximum trials for SM_THRESHOLD selection mode.
         std::size_t                  rmseThresholdTrials;
         /// Counter for updates per epoch.
