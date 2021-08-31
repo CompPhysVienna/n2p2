@@ -13,10 +13,10 @@
 #include "atom.h"
 #include "comm.h"
 #include "domain.h"
+#include "force.h"
 #include "memory.h"
 #include "error.h"
 #include "update.h"
-#include "utils.h"
 #include "Atom.h" // nnp::Atom
 #include "utility.h" // nnp::
 
@@ -239,6 +239,7 @@ void PairNNPExternal::coeff(int narg, char **arg)
   if (narg != 3) error->all(FLERR,"Incorrect args for pair coefficients");
 
   int ilo,ihi,jlo,jhi;
+
   utils::bounds(FLERR,arg[0],1,atom->ntypes,ilo,ihi,error);
   utils::bounds(FLERR,arg[1],1,atom->ntypes,jlo,jhi,error);
 

@@ -1,0 +1,9 @@
+begin
+comment LAMMPS data file via BUILD_WATER.f
+comment Values for ['energy', 'charge'] were set to default values
+lattice    13.443890     0.000000     0.000000
+lattice     0.000000    13.443890     0.000000
+lattice     0.000000     0.000000    13.443890
+energy  99.999999
+charge  0.0
+end

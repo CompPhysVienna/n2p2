@@ -1,5 +1,5 @@
 ###############################################################################
-# MD simulation for MgO with Al/Au
+# MD simulation for carbon chain
 ###############################################################################
 
 ###############################################################################
@@ -7,7 +7,7 @@
 ###############################################################################
 clear
 # Configuration files
-variable cfgFile         string "input.data"
+variable cfgFile         string "carbon-chain.data"
 # Timesteps
 variable numSteps        equal  0
 variable dt              equal  0.0005
@@ -15,35 +15,29 @@ variable dt              equal  0.0005
 variable nnpCutoff       equal  8.01
 variable nnpDir          string "nnp-data"
 # Masses
-variable mass_O          equal  15.9994
-variable mass_Mg         equal  24.305
-variable mass_Al         equal  26.981539
-variable mass_Au         equal  196.96657
+variable mass_H          equal  1.00794
+variable mass_C          equal  12.0107
 
 ###############################################################################
 # GENERAL SETUP
 ###############################################################################
 units metal
-boundary p p p
+boundary s s s
 atom_style charge
 atom_modify map yes
 read_data ${cfgFile}
-mass 1 ${mass_O}
-mass 2 ${mass_Mg}
-mass 3 ${mass_Al}
-mass 4 ${mass_Au}
+mass 1 ${mass_H}
+mass 2 ${mass_C}
 timestep ${dt}
-velocity all create 300.0 12345
 thermo 1
-
-neighbor 0.0 bin
 
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew yes showewsum 10 resetew no maxew 1000000 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
+pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:H,2:C"
 pair_coeff * * ${nnpCutoff}
-fix 1 all nnp 1 1.0e-4 1.0e-4 1.0e-2 50 nnp 
+fix 1 all nnp 1 1.0e-8 1.0e-8 1.0e-2 100 nnp 
+
 
 ###############################################################################
 # INTEGRATOR

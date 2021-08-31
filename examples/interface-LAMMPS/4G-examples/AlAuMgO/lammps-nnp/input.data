@@ -1,15 +1,12 @@
-gO with Al/Au, first structure from input.data (wrapped into box)
+MgO with Al/Au, first structure from input.data (wrapped into box)
 
 110 atoms
 
 4 atom types
 
-#0.0 1.7097166001000002E+01 xlo xhi
-#0.0 1.7097166001000002E+01 ylo yhi
-#0.0 5.0000000000999997E+01 zlo zhi
--1.0 1.6097166001000002E+01 xlo xhi
--1.0 1.6097166001000002E+01 ylo yhi
--1.0 4.0000000000999997E+01 zlo zhi
+0.0 1.7097166001000002E+01 xlo xhi
+0.0 1.7097166001000002E+01 ylo yhi
+0.0 5.0000000000999997E+01 zlo zhi
 
 Atoms
 

@@ -8,9 +8,9 @@ LAMMPS (29 Oct 2020)
 ###############################################################################
 clear
 # Configuration files
-variable cfgFile         string "AlAuMgO.data"
+variable cfgFile         string "input.data"
 # Timesteps
-variable numSteps        equal  5
+variable numSteps        equal  0
 variable dt              equal  0.0005
 # NN
 variable nnpCutoff       equal  8.01
@@ -27,14 +27,15 @@ variable mass_Au         equal  196.96657
 units metal
 boundary p p p
 atom_style charge
+atom_modify map yes
 read_data ${cfgFile}
-read_data AlAuMgO.data
+read_data input.data
 Reading data file ...
   orthogonal box = (0.0000000 0.0000000 0.0000000) to (17.097166 17.097166 50.000000)
   1 by 1 by 1 MPI processor grid
   reading atoms ...
   110 atoms
-  read_data CPU = 0.004 seconds
+  read_data CPU = 0.006 seconds
 mass 1 ${mass_O}
 mass 1 15.9994
 mass 2 ${mass_Mg}
@@ -45,16 +46,19 @@ mass 4 ${mass_Au}
 mass 4 196.96657
 timestep ${dt}
 timestep 0.0005
+velocity all create 300.0 12345
 thermo 1
+
+neighbor 0.0 bin
 
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
-pair_style nnp dir nnp-data showew no showewsum 10 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
+pair_style nnp dir ${nnpDir} showew yes showewsum 10 resetew no maxew 1000000 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
+pair_style nnp dir nnp-data showew yes showewsum 10 resetew no maxew 1000000 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
 pair_coeff * * ${nnpCutoff}
 pair_coeff * * 8.01
-fix 1 all nnp 1 1.0 2.0 1.0e-6 nnp
+fix 1 all nnp 1 1.0e-4 1.0e-4 1.0e-2 50 nnp
 
 ###############################################################################
 # INTEGRATOR
@@ -66,18 +70,18 @@ fix INT all nve
 # SIMULATION
 ###############################################################################
 run ${numSteps}
-run 5
+run 0
 
 *******************************************************************************
 
 WELCOME TO n²p², A SOFTWARE PACKAGE FOR NEURAL NETWORK POTENTIALS!
 ------------------------------------------------------------------
 
-n²p² version      : v2.1.1-60-g4879eaf
+n²p² version      : v2.1.1-64-g2a23f3c
 ------------------------------------------------------------
 Git branch        : 4G-HDNNP-prediction
-Git revision      : 4879eaf6b871d899aeddd6392607574370819da2
-Compile date/time : May  9 2021 19:04:23
+Git revision      : 2a23f3c1c22f39ccd382d9112ddc376edd242797
+Compile date/time : Aug 30 2021 20:10:57
 ------------------------------------------------------------
 
 Please cite the following papers when publishing results obtained with n²p²:
@@ -1253,9 +1257,9 @@ Setting weights for element Au from file: nnp-data/weights.079.data
 
 *** SETUP: LAMMPS INTERFACE ***************************************************
 
-Individual extrapolation warnings will not be shown.
+Individual extrapolation warnings will be shown.
 Extrapolation warning summary will be shown every 10 timesteps.
-The simulation will be stopped when 100 extrapolation warnings are exceeded.
+The simulation will be stopped when 1000000 extrapolation warnings are exceeded.
 Extrapolation warnings are accumulated over all time steps.
 -------------------------------------------------------------------------------
 CAUTION: If the LAMMPS unit system differs from the one used
@@ -1289,9 +1293,9 @@ NNP setup for LAMMPS completed.
 Neighbor list info ...
   update every 1 steps, delay 10 steps, check yes
   max neighbors/atom: 2000, page size: 100000
-  master list distance cutoff = 10.01
-  ghost atom cutoff = 10.01
-  binsize = 5.005, bins = 4 4 10
+  master list distance cutoff = 8.01
+  ghost atom cutoff = 8.01
+  binsize = 4.005, bins = 5 5 13
   2 neighbor lists, perpetual/occasional/extra = 2 0 0
   (1) pair nnp, perpetual
       attributes: full, newton on
@@ -1299,84 +1303,84 @@ Neighbor list info ...
       stencil: full/bin/3d
       bin: standard
   (2) fix nnp, perpetual
-      attributes: half, newton off, ghost
-      pair build: half/bin/newtoff/ghost
-      stencil: half/ghost/bin/3d/newtoff
+      attributes: full, newton off, ghost
+      pair build: full/bin/ghost
+      stencil: full/ghost/bin/3d
       bin: standard
 WARNING: Structure      0 Atom      0 : 1 neighbors.
 Atom     0 (Au) chi:   1.25471471E+00
 Atom     1 (Au) chi:   1.29070142E+00
 Atom     2 ( O) chi:   5.82485715E+00
-Atom     3 (Mg) chi:  -3.96766886E+00
-Atom     4 ( O) chi:   6.56287110E+00
-Atom     5 (Mg) chi:  -3.89886604E+00
-Atom     6 (Mg) chi:  -4.60376968E+00
-Atom     7 ( O) chi:   6.54549954E+00
-Atom     8 ( O) chi:   6.55123306E+00
-Atom     9 ( O) chi:   6.56849355E+00
-Atom    10 (Mg) chi:  -4.58090247E+00
-Atom    11 ( O) chi:   6.55375543E+00
-Atom    12 ( O) chi:   6.54013276E+00
-Atom    13 (Mg) chi:  -4.81186189E+00
-Atom    14 (Mg) chi:  -4.16601563E+00
-Atom    15 ( O) chi:   6.55805423E+00
-Atom    16 (Mg) chi:  -4.73406116E+00
-Atom    17 (Mg) chi:  -4.31669771E+00
-Atom    18 (Mg) chi:  -4.79986159E+00
+Atom     3 ( O) chi:   6.56287110E+00
+Atom     4 (Mg) chi:  -4.60376968E+00
+Atom     5 ( O) chi:   6.54549954E+00
+Atom     6 ( O) chi:   6.55123306E+00
+Atom     7 (Mg) chi:  -3.96766886E+00
+Atom     8 (Mg) chi:  -4.58090247E+00
+Atom     9 (Mg) chi:  -3.89886604E+00
+Atom    10 ( O) chi:   6.55375543E+00
+Atom    11 (Mg) chi:  -4.81186189E+00
+Atom    12 ( O) chi:   6.56849355E+00
+Atom    13 (Mg) chi:  -4.73406116E+00
+Atom    14 (Mg) chi:  -4.79986159E+00
+Atom    15 ( O) chi:   6.54013276E+00
+Atom    16 (Mg) chi:  -4.16601563E+00
+Atom    17 ( O) chi:   6.55805423E+00
+Atom    18 (Mg) chi:  -4.31669771E+00
 Atom    19 ( O) chi:   6.51095031E+00
 Atom    20 (Mg) chi:  -3.41145322E+00
-Atom    21 ( O) chi:   5.83026013E+00
-Atom    22 (Mg) chi:  -3.57085493E+00
-Atom    23 ( O) chi:   5.81162891E+00
-Atom    24 (Mg) chi:  -3.56406796E+00
-Atom    25 (Mg) chi:  -3.49235461E+00
-Atom    26 ( O) chi:   5.83491908E+00
-Atom    27 (Mg) chi:  -3.45899741E+00
-Atom    28 ( O) chi:   5.82039553E+00
+Atom    21 (Mg) chi:  -3.57085493E+00
+Atom    22 (Mg) chi:  -3.56406796E+00
+Atom    23 ( O) chi:   5.83026013E+00
+Atom    24 (Mg) chi:  -3.49235461E+00
+Atom    25 ( O) chi:   5.81162891E+00
+Atom    26 ( O) chi:   5.82039553E+00
+Atom    27 ( O) chi:   5.83491908E+00
+Atom    28 (Mg) chi:  -3.45899741E+00
 Atom    29 ( O) chi:   5.80542344E+00
-Atom    30 (Mg) chi:  -3.57860584E+00
-Atom    31 ( O) chi:   5.88034992E+00
-Atom    32 (Mg) chi:  -3.41756216E+00
-Atom    33 ( O) chi:   5.83606444E+00
-Atom    34 (Mg) chi:  -3.53246594E+00
-Atom    35 ( O) chi:   5.82231273E+00
-Atom    36 ( O) chi:   5.86325585E+00
+Atom    30 ( O) chi:   5.86325585E+00
+Atom    31 (Mg) chi:  -3.57860584E+00
+Atom    32 ( O) chi:   5.88034992E+00
+Atom    33 (Mg) chi:  -3.41756216E+00
+Atom    34 ( O) chi:   5.83606444E+00
+Atom    35 (Mg) chi:  -3.53246594E+00
+Atom    36 ( O) chi:   5.82231273E+00
 Atom    37 (Mg) chi:  -3.57164516E+00
 Atom    38 ( O) chi:   5.84180216E+00
-Atom    39 (Mg) chi:  -3.48615935E+00
-Atom    40 (Mg) chi:  -3.48678097E+00
-Atom    41 ( O) chi:   5.74058701E+00
-Atom    42 (Mg) chi:  -3.52155941E+00
-Atom    43 ( O) chi:   5.27757457E+00
-Atom    44 ( O) chi:   5.80232986E+00
-Atom    45 ( O) chi:   5.75377524E+00
-Atom    46 (Mg) chi:  -3.60318432E+00
-Atom    47 (Mg) chi:  -3.46842566E+00
-Atom    48 ( O) chi:   5.72098287E+00
-Atom    49 (Mg) chi:  -3.60250637E+00
-Atom    50 (Mg) chi:  -3.47506674E+00
-Atom    51 ( O) chi:   5.80504839E+00
-Atom    52 (Mg) chi:  -3.67232806E+00
-Atom    53 ( O) chi:   5.86746946E+00
-Atom    54 (Mg) chi:  -3.60314482E+00
-Atom    55 ( O) chi:   5.71668529E+00
-Atom    56 ( O) chi:   5.82719702E+00
-Atom    57 (Mg) chi:  -3.57490705E+00
-Atom    58 (Mg) chi:  -3.42979674E+00
-Atom    59 (Mg) chi:  -3.49800507E+00
-Atom    60 ( O) chi:   5.83346523E+00
-Atom    61 ( O) chi:   5.73137600E+00
-Atom    62 (Mg) chi:  -3.49692417E+00
-Atom    63 ( O) chi:   5.26875358E+00
-Atom    64 ( O) chi:   5.26606196E+00
-Atom    65 ( O) chi:   5.85519667E+00
-Atom    66 (Mg) chi:  -3.58089748E+00
-Atom    67 ( O) chi:   5.86824031E+00
+Atom    39 (Mg) chi:  -3.52155941E+00
+Atom    40 ( O) chi:   5.80232986E+00
+Atom    41 (Mg) chi:  -3.47506674E+00
+Atom    42 ( O) chi:   5.80504839E+00
+Atom    43 (Mg) chi:  -3.48678097E+00
+Atom    44 (Mg) chi:  -3.46842566E+00
+Atom    45 ( O) chi:   5.82719702E+00
+Atom    46 (Mg) chi:  -3.60250637E+00
+Atom    47 ( O) chi:   5.83346523E+00
+Atom    48 ( O) chi:   5.86746946E+00
+Atom    49 (Mg) chi:  -3.42979674E+00
+Atom    50 (Mg) chi:  -3.46696650E+00
+Atom    51 (Mg) chi:  -3.49800507E+00
+Atom    52 ( O) chi:   5.85519667E+00
+Atom    53 ( O) chi:   5.86824031E+00
+Atom    54 (Mg) chi:  -3.56861760E+00
+Atom    55 ( O) chi:   5.81116471E+00
+Atom    56 (Mg) chi:  -3.48615935E+00
+Atom    57 ( O) chi:   5.75377524E+00
+Atom    58 (Mg) chi:  -3.60318432E+00
+Atom    59 ( O) chi:   5.72098287E+00
+Atom    60 (Mg) chi:  -3.67232806E+00
+Atom    61 ( O) chi:   5.74058701E+00
+Atom    62 ( O) chi:   5.27757457E+00
+Atom    63 (Mg) chi:  -3.57490705E+00
+Atom    64 ( O) chi:   5.73137600E+00
+Atom    65 (Mg) chi:  -3.49692417E+00
+Atom    66 (Mg) chi:  -3.60314482E+00
+Atom    67 ( O) chi:   5.71668529E+00
 Atom    68 ( O) chi:   5.76670364E+00
-Atom    69 (Mg) chi:  -3.62648390E+00
-Atom    70 (Mg) chi:  -3.56861760E+00
-Atom    71 (Mg) chi:  -3.46696650E+00
-Atom    72 ( O) chi:   5.81116471E+00
+Atom    69 ( O) chi:   5.26875358E+00
+Atom    70 ( O) chi:   5.26606196E+00
+Atom    71 (Mg) chi:  -3.58089748E+00
+Atom    72 (Mg) chi:  -3.62648390E+00
 Atom    73 (Mg) chi:  -3.55793488E+00
 Atom    74 (Al) chi:   6.68403620E-01
 Atom    75 ( O) chi:   4.96924578E+00
@@ -1384,33 +1388,176 @@ Atom    76 (Mg) chi:  -3.51612758E+00
 Atom    77 ( O) chi:   5.30961342E+00
 Atom    78 (Mg) chi:  -3.52320539E+00
 Atom    79 ( O) chi:   5.30538663E+00
-Atom    80 (Mg) chi:  -3.48294431E+00
-Atom    81 ( O) chi:   5.27750183E+00
-Atom    82 (Al) chi:   6.73423066E-01
-Atom    83 ( O) chi:   5.03013091E+00
-Atom    84 (Mg) chi:  -3.50049122E+00
-Atom    85 (Mg) chi:  -3.54114898E+00
-Atom    86 ( O) chi:   5.31173833E+00
-Atom    87 ( O) chi:   5.32470066E+00
-Atom    88 (Mg) chi:  -3.53648591E+00
-Atom    89 ( O) chi:   5.28488417E+00
-Atom    90 (Al) chi:   6.75949132E-01
+Atom    80 (Al) chi:   6.73423066E-01
+Atom    81 ( O) chi:   5.03013091E+00
+Atom    82 (Mg) chi:  -3.48294431E+00
+Atom    83 (Mg) chi:  -3.50049122E+00
+Atom    84 ( O) chi:   5.31173833E+00
+Atom    85 ( O) chi:   5.27750183E+00
+Atom    86 (Mg) chi:  -3.53648591E+00
+Atom    87 (Al) chi:   6.75949132E-01
+Atom    88 (Mg) chi:  -3.54114898E+00
+Atom    89 ( O) chi:   5.32470066E+00
+Atom    90 ( O) chi:   5.28488417E+00
 Atom    91 ( O) chi:   4.96149567E+00
 Atom    92 (Mg) chi:  -4.29073673E+00
-Atom    93 ( O) chi:   6.43143413E+00
-Atom    94 (Mg) chi:  -4.55424378E+00
-Atom    95 (Mg) chi:  -4.45562219E+00
-Atom    96 (Mg) chi:  -4.48767005E+00
-Atom    97 ( O) chi:   5.94422185E+00
-Atom    98 (Mg) chi:  -4.30855886E+00
-Atom    99 ( O) chi:   6.46246223E+00
-Atom   100 (Mg) chi:  -4.48470979E+00
-Atom   101 (Mg) chi:  -4.42359988E+00
-Atom   102 ( O) chi:   6.41033166E+00
-Atom   103 ( O) chi:   6.47172191E+00
-Atom   104 (Mg) chi:  -4.39461350E+00
-Atom   105 ( O) chi:   5.91167278E+00
-Atom   106 ( O) chi:   6.43228267E+00
+Atom    93 (Mg) chi:  -4.55424378E+00
+Atom    94 (Mg) chi:  -4.45562219E+00
+Atom    95 ( O) chi:   6.43143413E+00
+Atom    96 ( O) chi:   5.94422185E+00
+Atom    97 ( O) chi:   6.46246223E+00
+Atom    98 (Mg) chi:  -4.48767005E+00
+Atom    99 ( O) chi:   6.47172191E+00
+Atom   100 (Mg) chi:  -4.30855886E+00
+Atom   101 ( O) chi:   5.87146044E+00
+Atom   102 ( O) chi:   6.43228267E+00
+Atom   103 (Mg) chi:  -4.48470979E+00
+Atom   104 (Mg) chi:  -4.42359988E+00
+Atom   105 ( O) chi:   6.41033166E+00
+Atom   106 (Mg) chi:  -4.39461350E+00
 Atom   107 ( O) chi:   6.44161010E+00
-Atom   108 ( O) chi:   5.87146044E+00
+Atom   108 ( O) chi:   5.91167278E+00
 Atom   109 (Mg) chi:  -4.27182459E+00
+Atom     0 (Au) energy:   5.87373652E-04
+Atom     1 (Au) energy:  -1.52329937E-02
+Atom     2 ( O) energy:   1.21779174E-02
+Atom     3 ( O) energy:   1.35966083E-02
+Atom     4 (Mg) energy:   2.79978259E-03
+Atom     5 ( O) energy:   1.69747832E-02
+Atom     6 ( O) energy:   1.65918180E-02
+Atom     7 (Mg) energy:   9.52982302E-04
+Atom     8 (Mg) energy:   3.86591437E-03
+Atom     9 (Mg) energy:   1.83136240E-03
+Atom    10 ( O) energy:   1.71603482E-02
+Atom    11 (Mg) energy:  -8.44331315E-04
+Atom    12 ( O) energy:   1.86226419E-02
+Atom    13 (Mg) energy:  -3.03615237E-03
+Atom    14 (Mg) energy:  -1.50296518E-03
+Atom    15 ( O) energy:   2.00266208E-02
+Atom    16 (Mg) energy:   4.73649647E-03
+Atom    17 ( O) energy:   1.79655321E-02
+Atom    18 (Mg) energy:  -3.49664173E-04
+Atom    19 ( O) energy:   2.17717778E-02
+Atom    20 (Mg) energy:   1.56630318E-03
+Atom    21 (Mg) energy:  -7.82027394E-03
+Atom    22 (Mg) energy:  -7.67791852E-03
+Atom    23 ( O) energy:  -7.49628526E-03
+Atom    24 (Mg) energy:  -2.43789511E-03
+Atom    25 ( O) energy:  -6.22271301E-03
+Atom    26 ( O) energy:  -7.96606235E-03
+Atom    27 ( O) energy:  -8.32258625E-03
+Atom    28 (Mg) energy:  -1.14613437E-03
+Atom    29 ( O) energy:  -1.37254393E-03
+Atom    30 ( O) energy:  -1.57475331E-02
+Atom    31 (Mg) energy:  -8.26927056E-03
+Atom    32 ( O) energy:  -1.91389028E-02
+Atom    33 (Mg) energy:   1.65836227E-03
+Atom    34 ( O) energy:  -9.21897789E-03
+Atom    35 (Mg) energy:  -5.88358991E-03
+Atom    36 ( O) energy:  -7.42198624E-03
+Atom    37 (Mg) energy:  -8.11068071E-03
+Atom    38 ( O) energy:  -1.21334129E-02
+Atom    39 (Mg) energy:  -4.26080099E-03
+Atom    40 ( O) energy:  -3.32268768E-03
+Atom    41 (Mg) energy:  -2.19693898E-03
+Atom    42 ( O) energy:  -2.77070871E-03
+Atom    43 (Mg) energy:  -2.73070363E-03
+Atom    44 (Mg) energy:  -1.86777425E-03
+Atom    45 ( O) energy:  -9.20757123E-03
+Atom    46 (Mg) energy:  -9.61283006E-03
+Atom    47 ( O) energy:  -1.01005053E-02
+Atom    48 ( O) energy:  -1.77018541E-02
+Atom    49 (Mg) energy:   6.57306809E-04
+Atom    50 (Mg) energy:  -1.72111914E-03
+Atom    51 (Mg) energy:  -3.26479187E-03
+Atom    52 ( O) energy:  -1.29795386E-02
+Atom    53 ( O) energy:  -1.73584971E-02
+Atom    54 (Mg) energy:  -7.07615737E-03
+Atom    55 ( O) energy:  -4.01408277E-03
+Atom    56 (Mg) energy:  -2.46871696E-04
+Atom    57 ( O) energy:  -8.04228894E-03
+Atom    58 (Mg) energy:  -1.19085555E-03
+Atom    59 ( O) energy:  -3.90492055E-03
+Atom    60 (Mg) energy:  -5.33909672E-03
+Atom    61 ( O) energy:  -8.61028851E-03
+Atom    62 ( O) energy:  -1.38867116E-02
+Atom    63 (Mg) energy:  -7.48683885E-03
+Atom    64 ( O) energy:  -1.88315231E-03
+Atom    65 (Mg) energy:   6.42035512E-03
+Atom    66 (Mg) energy:   2.10343452E-04
+Atom    67 ( O) energy:  -1.28869328E-03
+Atom    68 ( O) energy:  -6.38184860E-03
+Atom    69 ( O) energy:  -1.33351054E-02
+Atom    70 ( O) energy:  -5.26134324E-03
+Atom    71 (Mg) energy:   1.03397442E-03
+Atom    72 (Mg) energy:  -2.81693653E-03
+Atom    73 (Mg) energy:  -5.37043471E-03
+Atom    74 (Al) energy:   6.43774406E-03
+Atom    75 ( O) energy:  -4.17011945E-02
+Atom    76 (Mg) energy:  -4.60986212E-03
+Atom    77 ( O) energy:  -2.92490257E-03
+Atom    78 (Mg) energy:  -3.91930749E-03
+Atom    79 ( O) energy:  -1.12571108E-02
+Atom    80 (Al) energy:   6.29425604E-03
+Atom    81 ( O) energy:  -3.95318695E-02
+Atom    82 (Mg) energy:  -1.95239457E-03
+Atom    83 (Mg) energy:  -1.29158889E-03
+Atom    84 ( O) energy:  -8.77867137E-03
+Atom    85 ( O) energy:  -9.31604232E-03
+Atom    86 (Mg) energy:  -3.12911744E-03
+Atom    87 (Al) energy:   7.08330050E-03
+Atom    88 (Mg) energy:  -5.68382681E-03
+Atom    89 ( O) energy:  -1.49781416E-02
+Atom    90 ( O) energy:  -6.41744486E-03
+Atom    91 ( O) energy:  -3.74379933E-02
+Atom    92 (Mg) energy:  -4.78161872E-03
+Atom    93 (Mg) energy:  -5.42995721E-03
+Atom    94 (Mg) energy:  -4.75339719E-04
+Atom    95 ( O) energy:   2.35431647E-02
+Atom    96 ( O) energy:   2.13043838E-02
+Atom    97 ( O) energy:   2.28106468E-02
+Atom    98 (Mg) energy:  -2.40929348E-03
+Atom    99 ( O) energy:   1.86518321E-02
+Atom   100 (Mg) energy:  -3.39272150E-03
+Atom   101 ( O) energy:   2.07741984E-02
+Atom   102 ( O) energy:   2.57440591E-02
+Atom   103 (Mg) energy:  -3.90354996E-03
+Atom   104 (Mg) energy:   1.83972016E-04
+Atom   105 ( O) energy:   2.86588478E-02
+Atom   106 (Mg) energy:   1.12363810E-03
+Atom   107 ( O) energy:   2.17477024E-02
+Atom   108 ( O) energy:   1.73316406E-02
+Atom   109 (Mg) energy:  -4.00509179E-03
+### NNP EW SUMMARY ### TS:          0 EW          0 EWPERSTEP  0.000E+00
+Per MPI rank memory allocation (min/avg/max) = 5.455 | 5.455 | 5.455 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0          300    -54395.66            0   -54391.433    347.47324 
+Loop time of 1e-06 on 1 procs for 0 steps with 110 atoms
+
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 1e-06      |            |       |100.00
+
+Nlocal:        110.000 ave         110 max         110 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:        264.000 ave         264 max         264 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:        0.00000 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:      2592.00 ave        2592 max        2592 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 2592
+Ave neighs/atom = 23.563636
+Neighbor list builds = 0
+Dangerous builds = 0
+ERROR: Trying to delete non-existent Atom::grow() callback (../atom.cpp:2280)
+Last command: run ${numSteps}

@@ -1,0 +1,1365 @@
+
+*******************************************************************************
+
+WELCOME TO n²p², A SOFTWARE PACKAGE FOR NEURAL NETWORK POTENTIALS!
+------------------------------------------------------------------
+
+n²p² version      : v2.1.1-64-g2a23f3c
+------------------------------------------------------------
+Git branch        : 4G-HDNNP-prediction
+Git revision      : 2a23f3c1c22f39ccd382d9112ddc376edd242797
+Compile date/time : Aug 30 2021 20:10:57
+------------------------------------------------------------
+
+Please cite the following papers when publishing results obtained with n²p²:
+-------------------------------------------------------------------------------
+ * General citation for n²p² and the LAMMPS interface:
+
+ Singraber, A.; Behler, J.; Dellago, C.
+ Library-Based LAMMPS Implementation of High-Dimensional
+ Neural Network Potentials.
+ J. Chem. Theory Comput. 2019 15 (3), 1827–1840.
+ https://doi.org/10.1021/acs.jctc.8b00770
+-------------------------------------------------------------------------------
+ * Additionally, if you use the NNP training features of n²p²:
+
+ Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C.
+ Parallel Multistream Training of High-Dimensional Neural
+ Network Potentials.
+ J. Chem. Theory Comput. 2019, 15 (5), 3075–3092.
+ https://doi.org/10.1021/acs.jctc.8b01092
+-------------------------------------------------------------------------------
+ * Additionally, if polynomial symmetry functions are used:
+
+ Bircher, M. P.; Singraber, A.; Dellago, C.
+ Improved Description of Atomic Environments Using Low-Cost
+ Polynomial Functions with Compact Support.
+ arXiv:2010.14414 [cond-mat, physics:physics] 2020.
+ https://arxiv.org/abs/2010.14414
+*******************************************************************************
+
+*** SETUP: SETTINGS FILE ******************************************************
+
+Settings file name: input.nn
+Read 175 lines.
+WARNING: Unknown keyword "bond_threshold" at line 34.
+WARNING: Unknown keyword "calculate_forces" at line 173.
+WARNING: Unknown keyword "energy_threshold" at line 33.
+WARNING: Unknown keyword "fitting_unit" at line 138.
+WARNING: Unknown keyword "kalman_lambda_charge" at line 146.
+WARNING: Unknown keyword "kalman_nue_charge" at line 147.
+WARNING: Unknown keyword "mix_all_points" at line 135.
+WARNING: Unknown keyword "optmode_short_energy" at line 142.
+WARNING: Unknown keyword "optmode_short_force" at line 143.
+WARNING: Unknown keyword "points_in_memory" at line 134.
+WARNING: Unknown keyword "random_number_type" at line 25.
+WARNING: Unknown keyword "regularize_fit_param" at line 163.
+WARNING: Unknown keyword "remove_atom_energies" at line 26.
+WARNING: Unknown keyword "runner_mode" at line 20.
+WARNING: Unknown keyword "use_electrostatics" at line 17.
+WARNING: Unknown keyword "use_short_nn" at line 18.
+WARNING: 16 problems detected (0 critical).
+Found 100 lines with keywords.
+This settings file defines a NNP with electrostatics and
+non-local charge transfer (4G-HDNNP).
+*******************************************************************************
+
+*** SETUP: NORMALIZATION ******************************************************
+
+Data set normalization is not used.
+*******************************************************************************
+
+*** SETUP: ELEMENT MAP ********************************************************
+
+Number of element strings found: 2
+Element  0:  H (  1)
+Element  1:  O (  8)
+*******************************************************************************
+
+*** SETUP: ELEMENTS ***********************************************************
+
+Number of elements is consistent: 2
+Atomic energy offsets per element:
+Element  0:  -4.58907306E-01
+Element  1:  -7.49451852E+01
+Energy offsets are automatically subtracted from reference energies.
+*******************************************************************************
+
+*** SETUP: ELECTROSTATICS *****************************************************
+
+Atomic hardness file name format: hardness.%03zu.data
+Atomic hardness for element  H from file hardness.001.data:   1.25140142E+01
+Atomic hardness for element  O from file hardness.008.data:   9.01762097E+00
+
+Gaussian width of charge distribution per element:
+Element  0:   5.85815056E-01
+Element  1:   1.37949997E+00
+
+Ewald precision:   1.00000000E-06
+
+Screening function information:
+Inner radius :   4.80000000E+00
+Outer radius :   8.00000000E+00
+Transition region functional form:
+x     := (r - inner) / (outer - inner)
+fs(x) := 1 - f(x)
+CoreFunction::Type::COS (0):
+f(x) := 1/2 * (cos(pi*x) + 1)
+*******************************************************************************
+
+*** SETUP: CUTOFF FUNCTIONS ***************************************************
+
+Parameter alpha for inner cutoff: 0.000000
+Inner cutoff = Symmetry function cutoff * alpha
+Equal cutoff function type for all symmetry functions:
+CutoffFunction::CT_TANHU (2)
+f(r) = tanh^3(1 - r/rc)
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTIONS *************************************************
+
+Abbreviations:
+--------------
+ind .... Symmetry function index.
+ec ..... Central atom element.
+tp ..... Symmetry function type.
+sbtp ... Symmetry function subtype (e.g. cutoff type).
+e1 ..... Neighbor 1 element.
+e2 ..... Neighbor 2 element.
+eta .... Gaussian width eta.
+rs/rl... Shift distance of Gaussian or left cutoff radius for polynomial.
+angl.... Left cutoff angle for polynomial.
+angr.... Right cutoff angle for polynomial.
+la ..... Angle prefactor lambda.
+zeta ... Angle term exponent zeta.
+rc ..... Cutoff radius / right cutoff radius for polynomial.
+a ...... Free parameter alpha (e.g. cutoff alpha).
+ln ..... Line number in settings file.
+
+Short range atomic symmetry functions element  H :
+-------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln
+-------------------------------------------------------------------------------------------------
+   1  H  2  ct2  H    1.000E-03  0.000E+00  8.000E+00                       0.00    59
+   2  H  2  ct2  O    1.000E-03  0.000E+00  8.000E+00                       0.00    69
+   3  H  2  ct2  H    1.000E-02  0.000E+00  8.000E+00                       0.00    60
+   4  H  2  ct2  O    1.000E-02  0.000E+00  8.000E+00                       0.00    70
+   5  H  2  ct2  H    3.000E-02  0.000E+00  8.000E+00                       0.00    61
+   6  H  2  ct2  O    3.000E-02  0.000E+00  8.000E+00                       0.00    71
+   7  H  2  ct2  H    6.000E-02  0.000E+00  8.000E+00                       0.00    62
+   8  H  2  ct2  O    6.000E-02  0.000E+00  8.000E+00                       0.00    72
+   9  H  2  ct2  O    1.500E-01  9.000E-01  8.000E+00                       0.00    73
+  10  H  2  ct2  H    1.500E-01  1.900E+00  8.000E+00                       0.00    63
+  11  H  2  ct2  O    3.000E-01  9.000E-01  8.000E+00                       0.00    74
+  12  H  2  ct2  H    3.000E-01  1.900E+00  8.000E+00                       0.00    64
+  13  H  2  ct2  O    6.000E-01  9.000E-01  8.000E+00                       0.00    75
+  14  H  2  ct2  H    6.000E-01  1.900E+00  8.000E+00                       0.00    65
+  15  H  2  ct2  O    1.500E+00  9.000E-01  8.000E+00                       0.00    76
+  16  H  2  ct2  H    1.500E+00  1.900E+00  8.000E+00                       0.00    66
+  17  H  3  ct2  O  O 1.000E-03  0.000E+00  8.000E+00               -1  4.0 0.00   123
+  18  H  3  ct2  O  O 1.000E-03  0.000E+00  8.000E+00                1  4.0 0.00   122
+  19  H  3  ct2  H  O 1.000E-02  0.000E+00  8.000E+00               -1  4.0 0.00   113
+  20  H  3  ct2  H  O 1.000E-02  0.000E+00  8.000E+00                1  4.0 0.00   111
+  21  H  3  ct2  H  O 3.000E-02  0.000E+00  8.000E+00               -1  1.0 0.00   108
+  22  H  3  ct2  O  O 3.000E-02  0.000E+00  8.000E+00               -1  1.0 0.00   121
+  23  H  3  ct2  H  O 3.000E-02  0.000E+00  8.000E+00                1  1.0 0.00   106
+  24  H  3  ct2  O  O 3.000E-02  0.000E+00  8.000E+00                1  1.0 0.00   120
+  25  H  3  ct2  H  O 7.000E-02  0.000E+00  8.000E+00               -1  1.0 0.00   103
+  26  H  3  ct2  H  O 7.000E-02  0.000E+00  8.000E+00                1  1.0 0.00   101
+  27  H  3  ct2  H  O 2.000E-01  0.000E+00  8.000E+00                1  1.0 0.00    98
+-------------------------------------------------------------------------------------------------
+Short range atomic symmetry functions element  O :
+-------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln
+-------------------------------------------------------------------------------------------------
+   1  O  2  ct2  H    1.000E-03  0.000E+00  8.000E+00                       0.00    78
+   2  O  2  ct2  O    1.000E-03  0.000E+00  8.000E+00                       0.00    88
+   3  O  2  ct2  H    1.000E-02  0.000E+00  8.000E+00                       0.00    79
+   4  O  2  ct2  O    1.000E-02  0.000E+00  8.000E+00                       0.00    89
+   5  O  2  ct2  H    3.000E-02  0.000E+00  8.000E+00                       0.00    80
+   6  O  2  ct2  O    3.000E-02  0.000E+00  8.000E+00                       0.00    90
+   7  O  2  ct2  H    6.000E-02  0.000E+00  8.000E+00                       0.00    81
+   8  O  2  ct2  O    6.000E-02  0.000E+00  8.000E+00                       0.00    91
+   9  O  2  ct2  H    1.500E-01  9.000E-01  8.000E+00                       0.00    82
+  10  O  2  ct2  O    1.500E-01  4.000E+00  8.000E+00                       0.00    92
+  11  O  2  ct2  H    3.000E-01  9.000E-01  8.000E+00                       0.00    83
+  12  O  2  ct2  O    3.000E-01  4.000E+00  8.000E+00                       0.00    93
+  13  O  2  ct2  H    6.000E-01  9.000E-01  8.000E+00                       0.00    84
+  14  O  2  ct2  O    6.000E-01  4.000E+00  8.000E+00                       0.00    94
+  15  O  2  ct2  H    1.500E+00  9.000E-01  8.000E+00                       0.00    85
+  16  O  2  ct2  O    1.500E+00  4.000E+00  8.000E+00                       0.00    95
+  17  O  3  ct2  H  O 1.000E-03  0.000E+00  8.000E+00               -1  4.0 0.00   118
+  18  O  3  ct2  H  O 1.000E-03  0.000E+00  8.000E+00                1  4.0 0.00   117
+  19  O  3  ct2  H  H 1.000E-02  0.000E+00  8.000E+00               -1  4.0 0.00   112
+  20  O  3  ct2  H  H 1.000E-02  0.000E+00  8.000E+00                1  4.0 0.00   110
+  21  O  3  ct2  H  H 3.000E-02  0.000E+00  8.000E+00               -1  1.0 0.00   107
+  22  O  3  ct2  H  O 3.000E-02  0.000E+00  8.000E+00               -1  1.0 0.00   116
+  23  O  3  ct2  H  H 3.000E-02  0.000E+00  8.000E+00                1  1.0 0.00   105
+  24  O  3  ct2  H  O 3.000E-02  0.000E+00  8.000E+00                1  1.0 0.00   115
+  25  O  3  ct2  H  H 7.000E-02  0.000E+00  8.000E+00               -1  1.0 0.00   102
+  26  O  3  ct2  H  H 7.000E-02  0.000E+00  8.000E+00                1  1.0 0.00   100
+-------------------------------------------------------------------------------------------------
+Minimum cutoff radius for element  H: 8.000000
+Minimum cutoff radius for element  O: 8.000000
+Maximum cutoff radius (global)      : 8.000000
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION MEMORY *******************************************
+
+Symmetry function derivatives memory table for element  H :
+-------------------------------------------------------------------------------
+Relevant symmetry functions for neighbors with element:
+-  H:   15 of   27 ( 55.6 )
+-  O:   19 of   27 ( 70.4 )
+-------------------------------------------------------------------------------
+Symmetry function derivatives memory table for element  O :
+-------------------------------------------------------------------------------
+Relevant symmetry functions for neighbors with element:
+-  H:   18 of   26 ( 69.2 )
+-  O:   12 of   26 ( 46.2 )
+-------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION CACHE ********************************************
+
+Element  H: in total 4 caches, used 17.00 times on average.
+Element  O: in total 4 caches, used 15.00 times on average.
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION GROUPS *******************************************
+
+Abbreviations:
+--------------
+ind .... Symmetry function index.
+ec ..... Central atom element.
+tp ..... Symmetry function type.
+sbtp ... Symmetry function subtype (e.g. cutoff type).
+e1 ..... Neighbor 1 element.
+e2 ..... Neighbor 2 element.
+eta .... Gaussian width eta.
+rs/rl... Shift distance of Gaussian or left cutoff radius for polynomial.
+angl.... Left cutoff angle for polynomial.
+angr.... Right cutoff angle for polynomial.
+la ..... Angle prefactor lambda.
+zeta ... Angle term exponent zeta.
+rc ..... Cutoff radius / right cutoff radius for polynomial.
+a ...... Free parameter alpha (e.g. cutoff alpha).
+ln ..... Line number in settings file.
+mi ..... Member index.
+sfi .... Symmetry function index.
+e ...... Recalculate exponential term.
+
+Short range atomic symmetry function groups element  H :
+----------------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln   mi  sfi e
+----------------------------------------------------------------------------------------------------------
+   1  H  2  ct2  H            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    1.000E-03  0.000E+00          -                          -    59    1    1  
+   -  -  -    -  -    1.000E-02  0.000E+00          -                          -    60    2    3  
+   -  -  -    -  -    3.000E-02  0.000E+00          -                          -    61    3    5  
+   -  -  -    -  -    6.000E-02  0.000E+00          -                          -    62    4    7  
+   -  -  -    -  -    1.500E-01  1.900E+00          -                          -    63    5   10  
+   -  -  -    -  -    3.000E-01  1.900E+00          -                          -    64    6   12  
+   -  -  -    -  -    6.000E-01  1.900E+00          -                          -    65    7   14  
+   -  -  -    -  -    1.500E+00  1.900E+00          -                          -    66    8   16  
+   2  H  2  ct2  O            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    1.000E-03  0.000E+00          -                          -    69    1    2  
+   -  -  -    -  -    1.000E-02  0.000E+00          -                          -    70    2    4  
+   -  -  -    -  -    3.000E-02  0.000E+00          -                          -    71    3    6  
+   -  -  -    -  -    6.000E-02  0.000E+00          -                          -    72    4    8  
+   -  -  -    -  -    1.500E-01  9.000E-01          -                          -    73    5    9  
+   -  -  -    -  -    3.000E-01  9.000E-01          -                          -    74    6   11  
+   -  -  -    -  -    6.000E-01  9.000E-01          -                          -    75    7   13  
+   -  -  -    -  -    1.500E+00  9.000E-01          -                          -    76    8   15  
+   3  H  3  ct2  H  O         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 1.000E-02  0.000E+00          -               -1  4.0    -   113    1   19 1
+   -  -  -    -  -  - 1.000E-02  0.000E+00          -                1  4.0    -   111    2   20 0
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -               -1  1.0    -   108    3   21 1
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -                1  1.0    -   106    4   23 0
+   -  -  -    -  -  - 7.000E-02  0.000E+00          -               -1  1.0    -   103    5   25 1
+   -  -  -    -  -  - 7.000E-02  0.000E+00          -                1  1.0    -   101    6   26 0
+   -  -  -    -  -  - 2.000E-01  0.000E+00          -                1  1.0    -    98    7   27 1
+   4  H  3  ct2  O  O         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 1.000E-03  0.000E+00          -               -1  4.0    -   123    1   17 1
+   -  -  -    -  -  - 1.000E-03  0.000E+00          -                1  4.0    -   122    2   18 0
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -               -1  1.0    -   121    3   22 1
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -                1  1.0    -   120    4   24 0
+----------------------------------------------------------------------------------------------------------
+Short range atomic symmetry function groups element  O :
+----------------------------------------------------------------------------------------------------------
+ ind ec tp sbtp e1 e2       eta      rs/rl         rc   angl   angr la zeta    a    ln   mi  sfi e
+----------------------------------------------------------------------------------------------------------
+   1  O  2  ct2  H            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    1.000E-03  0.000E+00          -                          -    78    1    1  
+   -  -  -    -  -    1.000E-02  0.000E+00          -                          -    79    2    3  
+   -  -  -    -  -    3.000E-02  0.000E+00          -                          -    80    3    5  
+   -  -  -    -  -    6.000E-02  0.000E+00          -                          -    81    4    7  
+   -  -  -    -  -    1.500E-01  9.000E-01          -                          -    82    5    9  
+   -  -  -    -  -    3.000E-01  9.000E-01          -                          -    83    6   11  
+   -  -  -    -  -    6.000E-01  9.000E-01          -                          -    84    7   13  
+   -  -  -    -  -    1.500E+00  9.000E-01          -                          -    85    8   15  
+   2  O  2  ct2  O            *          *  8.000E+00                       0.00     *    *    *  
+   -  -  -    -  -    1.000E-03  0.000E+00          -                          -    88    1    2  
+   -  -  -    -  -    1.000E-02  0.000E+00          -                          -    89    2    4  
+   -  -  -    -  -    3.000E-02  0.000E+00          -                          -    90    3    6  
+   -  -  -    -  -    6.000E-02  0.000E+00          -                          -    91    4    8  
+   -  -  -    -  -    1.500E-01  4.000E+00          -                          -    92    5   10  
+   -  -  -    -  -    3.000E-01  4.000E+00          -                          -    93    6   12  
+   -  -  -    -  -    6.000E-01  4.000E+00          -                          -    94    7   14  
+   -  -  -    -  -    1.500E+00  4.000E+00          -                          -    95    8   16  
+   3  O  3  ct2  H  H         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 1.000E-02  0.000E+00          -               -1  4.0    -   112    1   19 1
+   -  -  -    -  -  - 1.000E-02  0.000E+00          -                1  4.0    -   110    2   20 0
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -               -1  1.0    -   107    3   21 1
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -                1  1.0    -   105    4   23 0
+   -  -  -    -  -  - 7.000E-02  0.000E+00          -               -1  1.0    -   102    5   25 1
+   -  -  -    -  -  - 7.000E-02  0.000E+00          -                1  1.0    -   100    6   26 0
+   4  O  3  ct2  H  O         *          *  8.000E+00                *    * 0.00     *    *    * *
+   -  -  -    -  -  - 1.000E-03  0.000E+00          -               -1  4.0    -   118    1   17 1
+   -  -  -    -  -  - 1.000E-03  0.000E+00          -                1  4.0    -   117    2   18 0
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -               -1  1.0    -   116    3   22 1
+   -  -  -    -  -  - 3.000E-02  0.000E+00          -                1  1.0    -   115    4   24 0
+----------------------------------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: NEURAL NETWORKS ****************************************************
+
+Normalize neurons (all elements): 0
+-------------------------------------------------------------------------------
+Atomic electronegativity NN for element  H :
+Number of weights    :    645
+Number of biases     :     31
+Number of connections:    676
+Architecture       27   15   15    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G   t   t    
+  12   G   t   t    
+  13   G   t   t    
+  14   G   t   t    
+  15   G   t   t    
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+  26   G            
+  27   G            
+-------------------------------------------------------------------------------
+Atomic electronegativity NN for element  O :
+Number of weights    :    630
+Number of biases     :     31
+Number of connections:    661
+Architecture       26   15   15    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G   t   t    
+  12   G   t   t    
+  13   G   t   t    
+  14   G   t   t    
+  15   G   t   t    
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+  26   G            
+-------------------------------------------------------------------------------
+Atomic short range NN for element  H :
+Number of weights    :    660
+Number of biases     :     31
+Number of connections:    691
+Architecture       28   15   15    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G   t   t    
+  12   G   t   t    
+  13   G   t   t    
+  14   G   t   t    
+  15   G   t   t    
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+  26   G            
+  27   G            
+  28   G            
+-------------------------------------------------------------------------------
+Atomic short range NN for element  O :
+Number of weights    :    645
+Number of biases     :     31
+Number of connections:    676
+Architecture       27   15   15    1
+-------------------------------------------------------------------------------
+   1   G   t   t   l
+   2   G   t   t    
+   3   G   t   t    
+   4   G   t   t    
+   5   G   t   t    
+   6   G   t   t    
+   7   G   t   t    
+   8   G   t   t    
+   9   G   t   t    
+  10   G   t   t    
+  11   G   t   t    
+  12   G   t   t    
+  13   G   t   t    
+  14   G   t   t    
+  15   G   t   t    
+  16   G            
+  17   G            
+  18   G            
+  19   G            
+  20   G            
+  21   G            
+  22   G            
+  23   G            
+  24   G            
+  25   G            
+  26   G            
+  27   G            
+-------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION SCALING ******************************************
+
+Equal scaling type for all symmetry functions:
+Scaling type::ST_SCALECENTER (3)
+Gs = Smin + (Smax - Smin) * (G - Gmean) / (Gmax - Gmin)
+WARNING: Keyword "scale_min_short" not found.
+         Default value for Smin = 0.0.
+WARNING: Keyword "scale_max_short" not found.
+         Default value for Smax = 1.0.
+Smin = 0.000000
+Smax = 1.000000
+Symmetry function scaling statistics from file: scaling.data
+-------------------------------------------------------------------------------
+
+Abbreviations:
+--------------
+ind ..... Symmetry function index.
+min ..... Minimum symmetry function value.
+max ..... Maximum symmetry function value.
+mean .... Mean symmetry function value.
+sigma ... Standard deviation of symmetry function values.
+sf ...... Scaling factor for derivatives.
+Smin .... Desired minimum scaled symmetry function value.
+Smax .... Desired maximum scaled symmetry function value.
+t ....... Scaling type.
+
+Scaling data for symmetry functions element  H :
+-------------------------------------------------------------------------------
+ ind       min       max      mean     sigma        sf  Smin  Smax t
+-------------------------------------------------------------------------------
+   1  3.33E-01  8.02E-01  5.29E-01  0.00E+00  2.13E+00  0.00  1.00 3
+   2  3.02E-01  5.60E-01  4.45E-01  0.00E+00  3.89E+00  0.00  1.00 3
+   3  2.79E-01  6.89E-01  4.47E-01  0.00E+00  2.44E+00  0.00  1.00 3
+   4  2.82E-01  5.01E-01  4.06E-01  0.00E+00  4.57E+00  0.00  1.00 3
+   5  1.85E-01  5.01E-01  3.16E-01  0.00E+00  3.16E+00  0.00  1.00 3
+   6  2.47E-01  4.12E-01  3.40E-01  0.00E+00  6.06E+00  0.00  1.00 3
+   7  1.08E-01  3.22E-01  1.97E-01  0.00E+00  4.69E+00  0.00  1.00 3
+   8  2.07E-01  3.33E-01  2.75E-01  0.00E+00  7.91E+00  0.00  1.00 3
+   9  1.92E-01  3.37E-01  2.69E-01  0.00E+00  6.89E+00  0.00  1.00 3
+  10  1.38E-01  4.39E-01  2.58E-01  0.00E+00  3.32E+00  0.00  1.00 3
+  11  1.23E-01  2.64E-01  2.11E-01  0.00E+00  7.08E+00  0.00  1.00 3
+  12  7.90E-02  3.24E-01  1.65E-01  0.00E+00  4.08E+00  0.00  1.00 3
+  13  6.03E-02  2.24E-01  1.49E-01  0.00E+00  6.11E+00  0.00  1.00 3
+  14  2.79E-02  2.04E-01  9.19E-02  0.00E+00  5.67E+00  0.00  1.00 3
+  15  8.30E-03  1.47E-01  6.13E-02  0.00E+00  7.20E+00  0.00  1.00 3
+  16  2.35E-03  1.05E-01  2.86E-02  0.00E+00  9.72E+00  0.00  1.00 3
+  17  3.01E-06  5.58E-03  1.55E-03  0.00E+00  1.79E+02  0.00  1.00 3
+  18  1.99E-05  5.24E-04  2.16E-04  0.00E+00  1.98E+03  0.00  1.00 3
+  19  1.49E-05  3.70E-03  6.87E-04  0.00E+00  2.71E+02  0.00  1.00 3
+  20  1.42E-02  3.38E-02  2.22E-02  0.00E+00  5.10E+01  0.00  1.00 3
+  21  9.23E-04  6.11E-03  2.65E-03  0.00E+00  1.93E+02  0.00  1.00 3
+  22  7.17E-06  2.12E-03  5.29E-04  0.00E+00  4.73E+02  0.00  1.00 3
+  23  1.19E-02  2.92E-02  1.88E-02  0.00E+00  5.78E+01  0.00  1.00 3
+  24  7.56E-06  3.78E-04  1.04E-04  0.00E+00  2.70E+03  0.00  1.00 3
+  25  3.24E-04  2.42E-03  1.01E-03  0.00E+00  4.78E+02  0.00  1.00 3
+  26  4.38E-03  1.39E-02  8.12E-03  0.00E+00  1.05E+02  0.00  1.00 3
+  27  2.47E-04  2.44E-03  8.54E-04  0.00E+00  4.55E+02  0.00  1.00 3
+-------------------------------------------------------------------------------
+Scaling data for symmetry functions element  O :
+-------------------------------------------------------------------------------
+ ind       min       max      mean     sigma        sf  Smin  Smax t
+-------------------------------------------------------------------------------
+   1  6.94E-01  1.10E+00  8.90E-01  0.00E+00  2.48E+00  0.00  1.00 3
+   2  5.45E-02  2.05E-01  1.28E-01  0.00E+00  6.66E+00  0.00  1.00 3
+   3  6.41E-01  9.93E-01  8.12E-01  0.00E+00  2.84E+00  0.00  1.00 3
+   4  3.89E-02  1.58E-01  9.77E-02  0.00E+00  8.37E+00  0.00  1.00 3
+   5  5.52E-01  8.21E-01  6.81E-01  0.00E+00  3.72E+00  0.00  1.00 3
+   6  1.85E-02  9.30E-02  5.38E-02  0.00E+00  1.34E+01  0.00  1.00 3
+   7  4.57E-01  6.67E-01  5.50E-01  0.00E+00  4.76E+00  0.00  1.00 3
+   8  6.11E-03  4.23E-02  2.24E-02  0.00E+00  2.77E+01  0.00  1.00 3
+   9  4.37E-01  6.65E-01  5.38E-01  0.00E+00  4.38E+00  0.00  1.00 3
+  10  2.91E-02  1.67E-01  9.41E-02  0.00E+00  7.25E+00  0.00  1.00 3
+  11  3.21E-01  5.14E-01  4.22E-01  0.00E+00  5.18E+00  0.00  1.00 3
+  12  1.54E-02  1.37E-01  6.98E-02  0.00E+00  8.21E+00  0.00  1.00 3
+  13  1.97E-01  4.09E-01  2.98E-01  0.00E+00  4.72E+00  0.00  1.00 3
+  14  4.54E-03  1.00E-01  4.13E-02  0.00E+00  1.04E+01  0.00  1.00 3
+  15  5.00E-02  2.46E-01  1.23E-01  0.00E+00  5.09E+00  0.00  1.00 3
+  16  1.29E-04  4.20E-02  1.14E-02  0.00E+00  2.39E+01  0.00  1.00 3
+  17  9.81E-06  4.48E-04  1.70E-04  0.00E+00  2.28E+03  0.00  1.00 3
+  18  1.93E-03  1.78E-02  8.60E-03  0.00E+00  6.32E+01  0.00  1.00 3
+  19  2.33E-03  1.04E-02  5.88E-03  0.00E+00  1.23E+02  0.00  1.00 3
+  20  9.56E-04  1.06E-02  3.17E-03  0.00E+00  1.04E+02  0.00  1.00 3
+  21  7.04E-03  2.24E-02  1.29E-02  0.00E+00  6.51E+01  0.00  1.00 3
+  22  1.89E-05  4.71E-04  1.54E-04  0.00E+00  2.21E+03  0.00  1.00 3
+  23  4.52E-03  1.56E-02  8.55E-03  0.00E+00  9.02E+01  0.00  1.00 3
+  24  3.79E-04  5.67E-03  2.38E-03  0.00E+00  1.89E+02  0.00  1.00 3
+  25  2.69E-03  9.40E-03  5.67E-03  0.00E+00  1.49E+02  0.00  1.00 3
+  26  1.50E-03  6.70E-03  3.47E-03  0.00E+00  1.93E+02  0.00  1.00 3
+-------------------------------------------------------------------------------
+*******************************************************************************
+
+*** SETUP: NEURAL NETWORK WEIGHTS *********************************************
+
+Electronegativity weight file name format: weightse.%03zu.data
+Setting weights for element  H from file: weightse.001.data
+Setting weights for element  O from file: weightse.008.data
+Short range weight file name format: weights.%03zu.data
+Setting weights for element  H from file: weights.001.data
+Setting weights for element  O from file: weights.008.data
+*******************************************************************************
+
+*** SETUP: SYMMETRY FUNCTION STATISTICS ***************************************
+
+Equal symmetry function statistics for all elements.
+Collect min/max/mean/sigma                        : 0
+Collect extrapolation warnings                    : 0
+Write extrapolation warnings immediately to stderr: 1
+Halt on any extrapolation warning                 : 0
+*******************************************************************************
+
+*** PREDICTION ****************************************************************
+
+Reading structure file...
+Structure contains 192 atoms (2 elements).
+Calculating NNP prediction...
+Atom     0 ( O) chi:   8.89874616E-01
+Atom     1 ( H) chi:  -2.16135136E+00
+Atom     2 ( H) chi:  -2.39200122E+00
+Atom     3 ( O) chi:   9.77842224E-01
+Atom     4 ( H) chi:  -2.57515151E+00
+Atom     5 ( H) chi:  -2.93838057E+00
+Atom     6 ( O) chi:   1.34238864E+00
+Atom     7 ( H) chi:  -2.50218539E+00
+Atom     8 ( H) chi:  -2.28033426E+00
+Atom     9 ( O) chi:   1.94292728E+00
+Atom    10 ( H) chi:  -2.07380542E+00
+Atom    11 ( H) chi:  -2.74507848E+00
+Atom    12 ( O) chi:   1.59770603E+00
+Atom    13 ( H) chi:  -2.35315072E+00
+Atom    14 ( H) chi:  -2.31521827E+00
+Atom    15 ( O) chi:   1.47575658E+00
+Atom    16 ( H) chi:  -2.38814483E+00
+Atom    17 ( H) chi:  -2.47249427E+00
+Atom    18 ( O) chi:   1.57990788E+00
+Atom    19 ( H) chi:  -2.62886984E+00
+Atom    20 ( H) chi:  -2.65526329E+00
+Atom    21 ( O) chi:   1.25283565E+00
+Atom    22 ( H) chi:  -2.42857192E+00
+Atom    23 ( H) chi:  -2.66000871E+00
+Atom    24 ( O) chi:   1.16696579E+00
+Atom    25 ( H) chi:  -2.74039512E+00
+Atom    26 ( H) chi:  -2.54738550E+00
+Atom    27 ( O) chi:   1.43945267E+00
+Atom    28 ( H) chi:  -2.08236057E+00
+Atom    29 ( H) chi:  -2.89468137E+00
+Atom    30 ( O) chi:   1.62104387E+00
+Atom    31 ( H) chi:  -2.58783719E+00
+Atom    32 ( H) chi:  -2.52937585E+00
+Atom    33 ( O) chi:   1.37813826E+00
+Atom    34 ( H) chi:  -2.35599702E+00
+Atom    35 ( H) chi:  -2.32227943E+00
+Atom    36 ( O) chi:   1.42557886E+00
+Atom    37 ( H) chi:  -2.85159852E+00
+Atom    38 ( H) chi:  -2.63286009E+00
+Atom    39 ( O) chi:   1.86123949E+00
+Atom    40 ( H) chi:  -2.31877731E+00
+Atom    41 ( H) chi:  -1.98481050E+00
+Atom    42 ( O) chi:   1.47912832E+00
+Atom    43 ( H) chi:  -2.65202374E+00
+Atom    44 ( H) chi:  -2.58345695E+00
+Atom    45 ( O) chi:   1.08596209E+00
+Atom    46 ( H) chi:  -2.34209111E+00
+Atom    47 ( H) chi:  -2.72846556E+00
+Atom    48 ( O) chi:   1.39325318E+00
+Atom    49 ( H) chi:  -2.31525811E+00
+Atom    50 ( H) chi:  -2.63522203E+00
+Atom    51 ( O) chi:   1.76343253E+00
+Atom    52 ( H) chi:  -2.59397788E+00
+Atom    53 ( H) chi:  -2.28283902E+00
+Atom    54 ( O) chi:   1.60741026E+00
+Atom    55 ( H) chi:  -2.29937908E+00
+Atom    56 ( H) chi:  -2.44927793E+00
+Atom    57 ( O) chi:   1.69223344E+00
+Atom    58 ( H) chi:  -2.59294914E+00
+Atom    59 ( H) chi:  -2.67015391E+00
+Atom    60 ( O) chi:   1.71266655E+00
+Atom    61 ( H) chi:  -2.53513190E+00
+Atom    62 ( H) chi:  -2.16631182E+00
+Atom    63 ( O) chi:   1.22303915E+00
+Atom    64 ( H) chi:  -2.61517789E+00
+Atom    65 ( H) chi:  -2.56541664E+00
+Atom    66 ( O) chi:   1.20883146E+00
+Atom    67 ( H) chi:  -2.75501607E+00
+Atom    68 ( H) chi:  -2.15667873E+00
+Atom    69 ( O) chi:   1.42793795E+00
+Atom    70 ( H) chi:  -2.21751575E+00
+Atom    71 ( H) chi:  -2.91670669E+00
+Atom    72 ( O) chi:   1.28727893E+00
+Atom    73 ( H) chi:  -2.36097762E+00
+Atom    74 ( H) chi:  -2.68205158E+00
+Atom    75 ( O) chi:   1.43861167E+00
+Atom    76 ( H) chi:  -2.49302426E+00
+Atom    77 ( H) chi:  -2.39620743E+00
+Atom    78 ( O) chi:   1.12937219E+00
+Atom    79 ( H) chi:  -2.29738033E+00
+Atom    80 ( H) chi:  -2.50375957E+00
+Atom    81 ( O) chi:   1.48527913E+00
+Atom    82 ( H) chi:  -2.67790848E+00
+Atom    83 ( H) chi:  -2.53868605E+00
+Atom    84 ( O) chi:   1.33453386E+00
+Atom    85 ( H) chi:  -2.12561106E+00
+Atom    86 ( H) chi:  -2.31251717E+00
+Atom    87 ( O) chi:   1.28894398E+00
+Atom    88 ( H) chi:  -2.54353988E+00
+Atom    89 ( H) chi:  -2.52503273E+00
+Atom    90 ( O) chi:   1.26297334E+00
+Atom    91 ( H) chi:  -2.46194285E+00
+Atom    92 ( H) chi:  -2.34834323E+00
+Atom    93 ( O) chi:   1.39800174E+00
+Atom    94 ( H) chi:  -2.46172145E+00
+Atom    95 ( H) chi:  -2.57431238E+00
+Atom    96 ( O) chi:   1.42565175E+00
+Atom    97 ( H) chi:  -2.73360286E+00
+Atom    98 ( H) chi:  -2.12287960E+00
+Atom    99 ( O) chi:   1.20288917E+00
+Atom   100 ( H) chi:  -2.53338720E+00
+Atom   101 ( H) chi:  -2.50512654E+00
+Atom   102 ( O) chi:   1.16136199E+00
+Atom   103 ( H) chi:  -2.93940791E+00
+Atom   104 ( H) chi:  -2.31766185E+00
+Atom   105 ( O) chi:   1.61921060E+00
+Atom   106 ( H) chi:  -2.44515107E+00
+Atom   107 ( H) chi:  -2.41048587E+00
+Atom   108 ( O) chi:   1.00028073E+00
+Atom   109 ( H) chi:  -2.80763447E+00
+Atom   110 ( H) chi:  -2.64192322E+00
+Atom   111 ( O) chi:   1.15516899E+00
+Atom   112 ( H) chi:  -2.52418467E+00
+Atom   113 ( H) chi:  -2.25960484E+00
+Atom   114 ( O) chi:   1.54336738E+00
+Atom   115 ( H) chi:  -2.60250433E+00
+Atom   116 ( H) chi:  -2.57257518E+00
+Atom   117 ( O) chi:   1.64911865E+00
+Atom   118 ( H) chi:  -2.20883618E+00
+Atom   119 ( H) chi:  -2.52671176E+00
+Atom   120 ( O) chi:   1.37212230E+00
+Atom   121 ( H) chi:  -2.58696685E+00
+Atom   122 ( H) chi:  -2.61399950E+00
+Atom   123 ( O) chi:   1.74997796E+00
+Atom   124 ( H) chi:  -2.72614275E+00
+Atom   125 ( H) chi:  -2.48079708E+00
+Atom   126 ( O) chi:   1.12812261E+00
+Atom   127 ( H) chi:  -2.38855900E+00
+Atom   128 ( H) chi:  -2.81949362E+00
+Atom   129 ( O) chi:   1.04775361E+00
+Atom   130 ( H) chi:  -2.20247360E+00
+Atom   131 ( H) chi:  -2.42180793E+00
+Atom   132 ( O) chi:   1.82691906E+00
+Atom   133 ( H) chi:  -2.22104999E+00
+Atom   134 ( H) chi:  -2.50867055E+00
+Atom   135 ( O) chi:   1.18907307E+00
+Atom   136 ( H) chi:  -2.88053603E+00
+Atom   137 ( H) chi:  -2.64353774E+00
+Atom   138 ( O) chi:   1.76276484E+00
+Atom   139 ( H) chi:  -2.66339060E+00
+Atom   140 ( H) chi:  -2.57897361E+00
+Atom   141 ( O) chi:   1.30311715E+00
+Atom   142 ( H) chi:  -2.23344493E+00
+Atom   143 ( H) chi:  -2.41418553E+00
+Atom   144 ( O) chi:   1.34707355E+00
+Atom   145 ( H) chi:  -2.65919953E+00
+Atom   146 ( H) chi:  -2.52758205E+00
+Atom   147 ( O) chi:   1.24167932E+00
+Atom   148 ( H) chi:  -2.85395605E+00
+Atom   149 ( H) chi:  -2.64808775E+00
+Atom   150 ( O) chi:   1.36183769E+00
+Atom   151 ( H) chi:  -2.48649206E+00
+Atom   152 ( H) chi:  -2.44232134E+00
+Atom   153 ( O) chi:   1.42563105E+00
+Atom   154 ( H) chi:  -2.48905534E+00
+Atom   155 ( H) chi:  -2.45189714E+00
+Atom   156 ( O) chi:   1.20867675E+00
+Atom   157 ( H) chi:  -2.44246573E+00
+Atom   158 ( H) chi:  -2.60263682E+00
+Atom   159 ( O) chi:   1.61124589E+00
+Atom   160 ( H) chi:  -2.16436952E+00
+Atom   161 ( H) chi:  -2.38227002E+00
+Atom   162 ( O) chi:   1.56887834E+00
+Atom   163 ( H) chi:  -2.46014967E+00
+Atom   164 ( H) chi:  -2.31262696E+00
+Atom   165 ( O) chi:   9.68249337E-01
+Atom   166 ( H) chi:  -2.27290938E+00
+Atom   167 ( H) chi:  -2.28912353E+00
+Atom   168 ( O) chi:   1.06690728E+00
+Atom   169 ( H) chi:  -2.63763123E+00
+Atom   170 ( H) chi:  -2.61079078E+00
+Atom   171 ( O) chi:   1.08071129E+00
+Atom   172 ( H) chi:  -2.45422653E+00
+Atom   173 ( H) chi:  -2.68118749E+00
+Atom   174 ( O) chi:   1.25375845E+00
+Atom   175 ( H) chi:  -1.92942994E+00
+Atom   176 ( H) chi:  -2.44712873E+00
+Atom   177 ( O) chi:   1.52226616E+00
+Atom   178 ( H) chi:  -2.52474877E+00
+Atom   179 ( H) chi:  -2.47109862E+00
+Atom   180 ( O) chi:   1.08061250E+00
+Atom   181 ( H) chi:  -2.37957353E+00
+Atom   182 ( H) chi:  -2.33174754E+00
+Atom   183 ( O) chi:   9.86672679E-01
+Atom   184 ( H) chi:  -2.51963439E+00
+Atom   185 ( H) chi:  -2.25632140E+00
+Atom   186 ( O) chi:   1.31444398E+00
+Atom   187 ( H) chi:  -2.20696444E+00
+Atom   188 ( H) chi:  -2.37371996E+00
+Atom   189 ( O) chi:   1.25983069E+00
+Atom   190 ( H) chi:  -2.50443360E+00
+Atom   191 ( H) chi:  -2.44891965E+00
+Solve relative error:   9.22648611E-16
+Atom     0 ( O) q:  -1.98743413E-01
+Atom     1 ( H) q:   1.02050450E-01
+Atom     2 ( H) q:   1.14180864E-01
+Atom     3 ( O) q:  -2.09059258E-01
+Atom     4 ( H) q:   1.29611884E-01
+Atom     5 ( H) q:   1.55175991E-01
+Atom     6 ( O) q:  -2.44786284E-01
+Atom     7 ( H) q:   1.26726304E-01
+Atom     8 ( H) q:   1.06697358E-01
+Atom     9 ( O) q:  -3.08962317E-01
+Atom    10 ( H) q:   9.35152817E-02
+Atom    11 ( H) q:   1.44958699E-01
+Atom    12 ( O) q:  -2.71350391E-01
+Atom    13 ( H) q:   1.17925711E-01
+Atom    14 ( H) q:   1.10435504E-01
+Atom    15 ( O) q:  -2.57769712E-01
+Atom    16 ( H) q:   1.18196398E-01
+Atom    17 ( H) q:   1.25715219E-01
+Atom    18 ( O) q:  -2.73185994E-01
+Atom    19 ( H) q:   1.35130361E-01
+Atom    20 ( H) q:   1.42115102E-01
+Atom    21 ( O) q:  -2.38540530E-01
+Atom    22 ( H) q:   1.17861222E-01
+Atom    23 ( H) q:   1.35039498E-01
+Atom    24 ( O) q:  -2.29298716E-01
+Atom    25 ( H) q:   1.43990814E-01
+Atom    26 ( H) q:   1.27544204E-01
+Atom    27 ( O) q:  -2.58271698E-01
+Atom    28 ( H) q:   9.21001186E-02
+Atom    29 ( H) q:   1.56983353E-01
+Atom    30 ( O) q:  -2.74511542E-01
+Atom    31 ( H) q:   1.34203986E-01
+Atom    32 ( H) q:   1.27812802E-01
+Atom    33 ( O) q:  -2.47341210E-01
+Atom    34 ( H) q:   1.13213216E-01
+Atom    35 ( H) q:   1.10843887E-01
+Atom    36 ( O) q:  -2.58048224E-01
+Atom    37 ( H) q:   1.53083875E-01
+Atom    38 ( H) q:   1.34188190E-01
+Atom    39 ( O) q:  -3.01073603E-01
+Atom    40 ( H) q:   1.16740303E-01
+Atom    41 ( H) q:   8.76097382E-02
+Atom    42 ( O) q:  -2.58079322E-01
+Atom    43 ( H) q:   1.36275329E-01
+Atom    44 ( H) q:   1.32357703E-01
+Atom    45 ( O) q:  -2.18719687E-01
+Atom    46 ( H) q:   1.11671090E-01
+Atom    47 ( H) q:   1.42000075E-01
+Atom    48 ( O) q:  -2.48343682E-01
+Atom    49 ( H) q:   1.16502515E-01
+Atom    50 ( H) q:   1.39204381E-01
+Atom    51 ( O) q:  -2.87859946E-01
+Atom    52 ( H) q:   1.38304765E-01
+Atom    53 ( H) q:   1.12539018E-01
+Atom    54 ( O) q:  -2.74175524E-01
+Atom    55 ( H) q:   1.12165300E-01
+Atom    56 ( H) q:   1.24441017E-01
+Atom    57 ( O) q:  -2.84796355E-01
+Atom    58 ( H) q:   1.34825631E-01
+Atom    59 ( H) q:   1.39782574E-01
+Atom    60 ( O) q:  -2.88690321E-01
+Atom    61 ( H) q:   1.28197248E-01
+Atom    62 ( H) q:   9.84364583E-02
+Atom    63 ( O) q:  -2.36036191E-01
+Atom    64 ( H) q:   1.34194244E-01
+Atom    65 ( H) q:   1.29858895E-01
+Atom    66 ( O) q:  -2.32489956E-01
+Atom    67 ( H) q:   1.44948938E-01
+Atom    68 ( H) q:   9.81287169E-02
+Atom    69 ( O) q:  -2.55196259E-01
+Atom    70 ( H) q:   1.05117658E-01
+Atom    71 ( H) q:   1.58967057E-01
+Atom    72 ( O) q:  -2.34437050E-01
+Atom    73 ( H) q:   1.15725604E-01
+Atom    74 ( H) q:   1.38485232E-01
+Atom    75 ( O) q:  -2.54247825E-01
+Atom    76 ( H) q:   1.25498378E-01
+Atom    77 ( H) q:   1.17587123E-01
+Atom    78 ( O) q:  -2.23953373E-01
+Atom    79 ( H) q:   1.09919273E-01
+Atom    80 ( H) q:   1.26481021E-01
+Atom    81 ( O) q:  -2.62683938E-01
+Atom    82 ( H) q:   1.38935212E-01
+Atom    83 ( H) q:   1.30019420E-01
+Atom    84 ( O) q:  -2.43612626E-01
+Atom    85 ( H) q:   9.84882617E-02
+Atom    86 ( H) q:   1.12849848E-01
+Atom    87 ( O) q:  -2.40432510E-01
+Atom    88 ( H) q:   1.26221665E-01
+Atom    89 ( H) q:   1.27117938E-01
+Atom    90 ( O) q:  -2.39674152E-01
+Atom    91 ( H) q:   1.20902340E-01
+Atom    92 ( H) q:   1.14376554E-01
+Atom    93 ( O) q:  -2.52182468E-01
+Atom    94 ( H) q:   1.21623689E-01
+Atom    95 ( H) q:   1.29424270E-01
+Atom    96 ( O) q:  -2.55592867E-01
+Atom    97 ( H) q:   1.47627808E-01
+Atom    98 ( H) q:   9.52049257E-02
+Atom    99 ( O) q:  -2.32569954E-01
+Atom   100 ( H) q:   1.25386791E-01
+Atom   101 ( H) q:   1.26059327E-01
+Atom   102 ( O) q:  -2.31575895E-01
+Atom   103 ( H) q:   1.55605238E-01
+Atom   104 ( H) q:   1.07983413E-01
+Atom   105 ( O) q:  -2.73662497E-01
+Atom   106 ( H) q:   1.25114468E-01
+Atom   107 ( H) q:   1.20103380E-01
+Atom   108 ( O) q:  -2.10180915E-01
+Atom   109 ( H) q:   1.50106252E-01
+Atom   110 ( H) q:   1.37084023E-01
+Atom   111 ( O) q:  -2.28143828E-01
+Atom   112 ( H) q:   1.26790728E-01
+Atom   113 ( H) q:   1.05229726E-01
+Atom   114 ( O) q:  -2.70499857E-01
+Atom   115 ( H) q:   1.32475672E-01
+Atom   116 ( H) q:   1.32733164E-01
+Atom   117 ( O) q:  -2.77954662E-01
+Atom   118 ( H) q:   1.05592966E-01
+Atom   119 ( H) q:   1.28568807E-01
+Atom   120 ( O) q:  -2.47680964E-01
+Atom   121 ( H) q:   1.31994400E-01
+Atom   122 ( H) q:   1.36083401E-01
+Atom   123 ( O) q:  -2.90709842E-01
+Atom   124 ( H) q:   1.44837626E-01
+Atom   125 ( H) q:   1.24082393E-01
+Atom   126 ( O) q:  -2.22451186E-01
+Atom   127 ( H) q:   1.16273217E-01
+Atom   128 ( H) q:   1.49388880E-01
+Atom   129 ( O) q:  -2.15776923E-01
+Atom   130 ( H) q:   1.00706306E-01
+Atom   131 ( H) q:   1.15477523E-01
+Atom   132 ( O) q:  -2.98161906E-01
+Atom   133 ( H) q:   1.04092282E-01
+Atom   134 ( H) q:   1.27021800E-01
+Atom   135 ( O) q:  -2.27931700E-01
+Atom   136 ( H) q:   1.56067438E-01
+Atom   137 ( H) q:   1.36267118E-01
+Atom   138 ( O) q:  -2.89640930E-01
+Atom   139 ( H) q:   1.39021224E-01
+Atom   140 ( H) q:   1.33415725E-01
+Atom   141 ( O) q:  -2.40934014E-01
+Atom   142 ( H) q:   1.07247354E-01
+Atom   143 ( H) q:   1.22296166E-01
+Atom   144 ( O) q:  -2.44577154E-01
+Atom   145 ( H) q:   1.39637835E-01
+Atom   146 ( H) q:   1.28801969E-01
+Atom   147 ( O) q:  -2.37924668E-01
+Atom   148 ( H) q:   1.52652217E-01
+Atom   149 ( H) q:   1.33787218E-01
+Atom   150 ( O) q:  -2.47868410E-01
+Atom   151 ( H) q:   1.25278327E-01
+Atom   152 ( H) q:   1.20996357E-01
+Atom   153 ( O) q:  -2.52743309E-01
+Atom   154 ( H) q:   1.27604841E-01
+Atom   155 ( H) q:   1.20279418E-01
+Atom   156 ( O) q:  -2.30367591E-01
+Atom   157 ( H) q:   1.21998494E-01
+Atom   158 ( H) q:   1.34257818E-01
+Atom   159 ( O) q:  -2.69726424E-01
+Atom   160 ( H) q:   1.00915418E-01
+Atom   161 ( H) q:   1.16255386E-01
+Atom   162 ( O) q:  -2.66377512E-01
+Atom   163 ( H) q:   1.25383914E-01
+Atom   164 ( H) q:   1.17064531E-01
+Atom   165 ( O) q:  -2.05135785E-01
+Atom   166 ( H) q:   1.05544664E-01
+Atom   167 ( H) q:   1.09484251E-01
+Atom   168 ( O) q:  -2.10664084E-01
+Atom   169 ( H) q:   1.35347563E-01
+Atom   170 ( H) q:   1.35702961E-01
+Atom   171 ( O) q:  -2.20639753E-01
+Atom   172 ( H) q:   1.20480023E-01
+Atom   173 ( H) q:   1.36448495E-01
+Atom   174 ( O) q:  -2.35799034E-01
+Atom   175 ( H) q:   8.06704679E-02
+Atom   176 ( H) q:   1.17521245E-01
+Atom   177 ( O) q:  -2.58888228E-01
+Atom   178 ( H) q:   1.29254664E-01
+Atom   179 ( H) q:   1.26549875E-01
+Atom   180 ( O) q:  -2.23057929E-01
+Atom   181 ( H) q:   1.13046935E-01
+Atom   182 ( H) q:   1.07703193E-01
+Atom   183 ( O) q:  -2.10176738E-01
+Atom   184 ( H) q:   1.25177331E-01
+Atom   185 ( H) q:   1.07292425E-01
+Atom   186 ( O) q:  -2.42698297E-01
+Atom   187 ( H) q:   1.01495222E-01
+Atom   188 ( H) q:   1.15979898E-01
+Atom   189 ( O) q:  -2.35691200E-01
+Atom   190 ( H) q:   1.25039359E-01
+Atom   191 ( H) q:   1.23541506E-01
+Total charge:   2.81719092E-15 (ref:   0.00000000E+00)
+Electrostatic energy:  -7.96430537E-02
+Atom     0 ( O) energy:  -2.00983557E+00
+Atom     1 ( H) energy:   3.66326424E-02
+Atom     2 ( H) energy:   2.07096667E-01
+Atom     3 ( O) energy:  -2.65552928E+00
+Atom     4 ( H) energy:   1.66735898E+00
+Atom     5 ( H) energy:   2.17195724E+00
+Atom     6 ( O) energy:  -2.59836570E+00
+Atom     7 ( H) energy:   1.09841238E+00
+Atom     8 ( H) energy:  -3.90382506E-01
+Atom     9 ( O) energy:  -2.57945112E+00
+Atom    10 ( H) energy:   8.78433636E-01
+Atom    11 ( H) energy:   1.73873019E+00
+Atom    12 ( O) energy:  -3.32087830E+00
+Atom    13 ( H) energy:   7.93374497E-01
+Atom    14 ( H) energy:   2.16683794E-01
+Atom    15 ( O) energy:  -3.12279686E+00
+Atom    16 ( H) energy:   1.72845694E+00
+Atom    17 ( H) energy:   1.53739677E+00
+Atom    18 ( O) energy:  -2.78596920E+00
+Atom    19 ( H) energy:   1.81794288E+00
+Atom    20 ( H) energy:   1.41754521E+00
+Atom    21 ( O) energy:  -2.42769503E+00
+Atom    22 ( H) energy:   9.64474054E-01
+Atom    23 ( H) energy:   1.48823999E+00
+Atom    24 ( O) energy:  -2.76990036E+00
+Atom    25 ( H) energy:   1.91678869E+00
+Atom    26 ( H) energy:   1.97783010E+00
+Atom    27 ( O) energy:  -2.78762868E+00
+Atom    28 ( H) energy:   2.12488628E-01
+Atom    29 ( H) energy:   1.91201083E+00
+Atom    30 ( O) energy:  -3.16556639E+00
+Atom    31 ( H) energy:   1.63946306E+00
+Atom    32 ( H) energy:   1.19781454E+00
+Atom    33 ( O) energy:  -3.60511631E+00
+Atom    34 ( H) energy:   8.40523943E-01
+Atom    35 ( H) energy:   1.10339288E+00
+Atom    36 ( O) energy:  -2.98081719E+00
+Atom    37 ( H) energy:   1.67989041E+00
+Atom    38 ( H) energy:   1.48200287E+00
+Atom    39 ( O) energy:  -3.44572481E+00
+Atom    40 ( H) energy:   1.05111972E+00
+Atom    41 ( H) energy:  -1.34630274E-01
+Atom    42 ( O) energy:  -3.78291426E+00
+Atom    43 ( H) energy:   1.55169954E+00
+Atom    44 ( H) energy:   1.26026082E+00
+Atom    45 ( O) energy:  -3.06117227E+00
+Atom    46 ( H) energy:   3.60316988E-01
+Atom    47 ( H) energy:   1.59263268E+00
+Atom    48 ( O) energy:  -3.18424705E+00
+Atom    49 ( H) energy:   9.46721429E-01
+Atom    50 ( H) energy:   1.77868184E+00
+Atom    51 ( O) energy:  -2.96195597E+00
+Atom    52 ( H) energy:   1.68163502E+00
+Atom    53 ( H) energy:   7.21121418E-01
+Atom    54 ( O) energy:  -3.32608984E+00
+Atom    55 ( H) energy:   1.54371449E+00
+Atom    56 ( H) energy:   1.53759603E+00
+Atom    57 ( O) energy:  -2.80545009E+00
+Atom    58 ( H) energy:   1.48751136E+00
+Atom    59 ( H) energy:   1.46817056E+00
+Atom    60 ( O) energy:  -3.39321311E+00
+Atom    61 ( H) energy:   1.43279494E+00
+Atom    62 ( H) energy:   1.05332915E+00
+Atom    63 ( O) energy:  -3.65022491E+00
+Atom    64 ( H) energy:   1.68812584E+00
+Atom    65 ( H) energy:   1.39869682E+00
+Atom    66 ( O) energy:  -2.69537338E+00
+Atom    67 ( H) energy:   1.67151588E+00
+Atom    68 ( H) energy:   6.14077178E-01
+Atom    69 ( O) energy:  -2.94642641E+00
+Atom    70 ( H) energy:   2.86394546E-01
+Atom    71 ( H) energy:   1.84067744E+00
+Atom    72 ( O) energy:  -2.88338979E+00
+Atom    73 ( H) energy:  -9.90398452E-02
+Atom    74 ( H) energy:   1.55287627E+00
+Atom    75 ( O) energy:  -3.69059666E+00
+Atom    76 ( H) energy:   1.43140949E+00
+Atom    77 ( H) energy:   1.48309035E+00
+Atom    78 ( O) energy:  -2.98525628E+00
+Atom    79 ( H) energy:   3.62171576E-01
+Atom    80 ( H) energy:   1.64231853E+00
+Atom    81 ( O) energy:  -3.42413904E+00
+Atom    82 ( H) energy:   1.81128196E+00
+Atom    83 ( H) energy:   1.20673026E+00
+Atom    84 ( O) energy:  -2.50625644E+00
+Atom    85 ( H) energy:  -1.95940703E-01
+Atom    86 ( H) energy:   8.12418651E-01
+Atom    87 ( O) energy:  -2.92784266E+00
+Atom    88 ( H) energy:   1.04888673E+00
+Atom    89 ( H) energy:   9.88649785E-01
+Atom    90 ( O) energy:  -2.73060131E+00
+Atom    91 ( H) energy:   7.28751557E-01
+Atom    92 ( H) energy:   1.10916225E+00
+Atom    93 ( O) energy:  -3.31570673E+00
+Atom    94 ( H) energy:   4.25095165E-01
+Atom    95 ( H) energy:   1.18545326E+00
+Atom    96 ( O) energy:  -2.97154321E+00
+Atom    97 ( H) energy:   1.62955785E+00
+Atom    98 ( H) energy:   3.99270768E-01
+Atom    99 ( O) energy:  -2.51639924E+00
+Atom   100 ( H) energy:   1.17606100E+00
+Atom   101 ( H) energy:   1.51269748E+00
+Atom   102 ( O) energy:  -2.84685013E+00
+Atom   103 ( H) energy:   1.75924278E+00
+Atom   104 ( H) energy:   1.21504163E+00
+Atom   105 ( O) energy:  -3.41473888E+00
+Atom   106 ( H) energy:   1.07420831E+00
+Atom   107 ( H) energy:   1.26098001E+00
+Atom   108 ( O) energy:  -2.65147782E+00
+Atom   109 ( H) energy:   1.77635668E+00
+Atom   110 ( H) energy:   1.96024965E+00
+Atom   111 ( O) energy:  -2.50025578E+00
+Atom   112 ( H) energy:   7.26522761E-01
+Atom   113 ( H) energy:   7.79732431E-01
+Atom   114 ( O) energy:  -2.92250506E+00
+Atom   115 ( H) energy:   1.35211779E+00
+Atom   116 ( H) energy:   1.37278859E+00
+Atom   117 ( O) energy:  -3.26314028E+00
+Atom   118 ( H) energy:   7.00554108E-01
+Atom   119 ( H) energy:   1.23808239E+00
+Atom   120 ( O) energy:  -2.77990707E+00
+Atom   121 ( H) energy:   1.71846061E+00
+Atom   122 ( H) energy:   1.34600289E+00
+Atom   123 ( O) energy:  -2.58715639E+00
+Atom   124 ( H) energy:   1.44278158E+00
+Atom   125 ( H) energy:   1.17186583E+00
+Atom   126 ( O) energy:  -2.49676324E+00
+Atom   127 ( H) energy:   8.41974209E-01
+Atom   128 ( H) energy:   1.70294369E+00
+Atom   129 ( O) energy:  -2.15433103E+00
+Atom   130 ( H) energy:   5.37052377E-01
+Atom   131 ( H) energy:   4.19825403E-01
+Atom   132 ( O) energy:  -3.04561634E+00
+Atom   133 ( H) energy:   6.58866383E-01
+Atom   134 ( H) energy:   1.39147060E+00
+Atom   135 ( O) energy:  -3.39707006E+00
+Atom   136 ( H) energy:   1.88046333E+00
+Atom   137 ( H) energy:   1.71361291E+00
+Atom   138 ( O) energy:  -2.52716657E+00
+Atom   139 ( H) energy:   1.41096810E+00
+Atom   140 ( H) energy:   1.37751455E+00
+Atom   141 ( O) energy:  -2.86489329E+00
+Atom   142 ( H) energy:  -4.48382695E-01
+Atom   143 ( H) energy:   7.98628246E-01
+Atom   144 ( O) energy:  -3.41687515E+00
+Atom   145 ( H) energy:   1.70140578E+00
+Atom   146 ( H) energy:   1.21434609E+00
+Atom   147 ( O) energy:  -2.90222444E+00
+Atom   148 ( H) energy:   1.54692551E+00
+Atom   149 ( H) energy:   1.37703880E+00
+Atom   150 ( O) energy:  -3.36348478E+00
+Atom   151 ( H) energy:   9.50962708E-01
+Atom   152 ( H) energy:   1.52304738E+00
+Atom   153 ( O) energy:  -3.31494905E+00
+Atom   154 ( H) energy:   1.44610569E+00
+Atom   155 ( H) energy:   1.06517800E+00
+Atom   156 ( O) energy:  -3.01803401E+00
+Atom   157 ( H) energy:   1.14026314E+00
+Atom   158 ( H) energy:   1.67263096E+00
+Atom   159 ( O) energy:  -3.71502961E+00
+Atom   160 ( H) energy:   3.47449719E-01
+Atom   161 ( H) energy:   1.64838327E+00
+Atom   162 ( O) energy:  -3.41092181E+00
+Atom   163 ( H) energy:   1.16122372E+00
+Atom   164 ( H) energy:   6.71246491E-01
+Atom   165 ( O) energy:  -2.55071927E+00
+Atom   166 ( H) energy:   1.80474421E+00
+Atom   167 ( H) energy:   1.26077757E+00
+Atom   168 ( O) energy:  -3.15690762E+00
+Atom   169 ( H) energy:   1.45258029E+00
+Atom   170 ( H) energy:   1.19229493E+00
+Atom   171 ( O) energy:  -2.22644719E+00
+Atom   172 ( H) energy:   4.86999588E-01
+Atom   173 ( H) energy:   2.17313215E+00
+Atom   174 ( O) energy:  -2.20430888E+00
+Atom   175 ( H) energy:   2.16054711E-02
+Atom   176 ( H) energy:   1.05675729E+00
+Atom   177 ( O) energy:  -3.12870940E+00
+Atom   178 ( H) energy:   1.02618592E+00
+Atom   179 ( H) energy:   1.39494177E+00
+Atom   180 ( O) energy:  -2.36855686E+00
+Atom   181 ( H) energy:   1.32607777E+00
+Atom   182 ( H) energy:   8.48349715E-01
+Atom   183 ( O) energy:  -1.85357349E+00
+Atom   184 ( H) energy:   1.26068534E+00
+Atom   185 ( H) energy:   2.56420136E-01
+Atom   186 ( O) energy:  -2.77874367E+00
+Atom   187 ( H) energy:   8.79645645E-01
+Atom   188 ( H) energy:   6.54536888E-01
+Atom   189 ( O) energy:  -2.56017334E+00
+Atom   190 ( H) energy:   1.60551321E+00
+Atom   191 ( H) energy:   7.60311334E-01
+
+-------------------------------------------------------------------------------
+NNP energy:  -4.89426192E+03
+
+NNP forces:
+         1  O  -6.81436416E-02   1.57857493E+00   6.45271444E-01
+         2  H  -7.03311046E-01  -2.00697616E+00  -1.25398879E+00
+         3  H   9.89417758E-01  -1.71478966E+00  -3.92712083E+00
+         4  O  -1.21437154E+00   7.90605085E-01  -9.71517412E-01
+         5  H  -1.58485021E+00  -2.23424666E+00   4.95057566E-01
+         6  H   1.63992053E+00   1.70922929E+00  -1.11451398E+00
+         7  O   9.43123531E-01   1.19347232E+00   1.02664997E+00
+         8  H  -9.85197267E-01  -2.71148369E+00   7.91723528E-01
+         9  H   4.56135575E-01  -1.81784201E+00   4.86530179E-01
+        10  O  -1.31696450E+00   2.96201861E+00  -3.04133138E+00
+        11  H   1.47378046E+00  -2.85264899E+00   3.62190596E+00
+        12  H   1.21376275E+00  -1.03136381E+00   6.31465648E-01
+        13  O   4.12565038E-02  -4.92054574E-01  -2.38947868E-01
+        14  H   1.74226910E-01  -5.13610897E-02  -4.90848480E-01
+        15  H  -1.79340451E-01   1.08783048E+00   4.11223359E-01
+        16  O  -1.37371809E+00  -1.94108575E+00   2.34210415E+00
+        17  H  -1.20414506E+00   7.25641656E-01  -1.53511633E+00
+        18  H   8.92909088E-01   6.08510820E-01  -8.04449771E-01
+        19  O  -1.23891407E+00  -2.01265975E+00   2.38212471E+00
+        20  H   4.62611472E-01   8.37555538E-01  -1.89697304E+00
+        21  H   1.06743413E+00   1.35041434E+00  -9.74786955E-01
+        22  O   1.16445940E+00  -4.15340725E-01   1.62549248E+00
+        23  H  -1.49990876E+00   1.27115323E+00   8.06090754E-01
+        24  H  -7.19821022E-02  -1.25047040E-01  -9.70406582E-01
+        25  O   5.98694984E-01  -6.16487991E-01  -9.69655132E-01
+        26  H   2.45126062E+00   1.04320264E+00   3.79161792E-01
+        27  H  -1.50589888E+00  -7.39040634E-01  -1.90282596E+00
+        28  O   1.74544816E+00  -2.06037959E+00   9.52290835E-01
+        29  H  -1.60137929E+00  -4.62950509E-01   1.63504039E+00
+        30  H  -1.37616636E+00   1.39853323E+00  -1.01461891E+00
+        31  O   4.25980088E-01   1.55958447E+00   2.24088092E+00
+        32  H  -3.34773677E-01  -2.26857053E+00  -1.86932179E+00
+        33  H  -1.59536036E-01  -2.46707165E-01  -2.72749798E-02
+        34  O   2.88382654E+00  -6.31734835E+00   2.09990478E+00
+        35  H  -4.47030147E-01   3.74634566E+00  -3.50481285E+00
+        36  H   1.04514136E-01   4.20248935E+00   1.12893238E+00
+        37  O   3.56096877E+00   3.62784275E-01  -1.50560262E+00
+        38  H  -2.92042006E-01  -8.89278168E-01   5.35441861E-01
+        39  H  -1.66089530E+00  -7.31810045E-01   4.42087598E-01
+        40  O   8.11651140E-01   3.45842874E+00  -4.04846942E+00
+        41  H   2.53942088E-01  -7.92089781E-01   3.40795051E-01
+        42  H  -2.48647949E-01  -1.53293200E+00   1.71371602E+00
+        43  O   6.95390991E-01  -2.51671373E-01  -2.02750959E-01
+        44  H   2.28247655E-01   5.06322433E-01  -5.73657297E-01
+        45  H   4.17979655E-01   1.33391534E-01   3.08027499E-01
+        46  O  -1.56703813E+00  -1.46992290E+00  -2.50421592E+00
+        47  H  -2.31133165E+00  -1.03022771E+00   2.05594148E+00
+        48  H   2.10703850E+00   3.11625259E+00   1.03115000E+00
+        49  O  -1.87247909E+00   1.37285689E+00  -3.59968440E-01
+        50  H   2.58483818E-01   5.96989253E-01  -5.05593007E-01
+        51  H   9.92856391E-01  -1.97915297E+00   1.51768861E+00
+        52  O  -1.17143313E+00   2.71903499E-01  -9.73438848E-01
+        53  H   3.08313454E-01  -4.31173073E-01   6.42421233E-02
+        54  H  -2.79823434E-01  -1.05929295E-01   6.54407235E-01
+        55  O  -2.75559589E-01  -3.86935895E+00  -5.85435733E-01
+        56  H   4.41124156E-01   1.78415575E+00  -1.60996413E+00
+        57  H  -1.48326115E-01   1.63689586E+00   1.90690658E+00
+        58  O   3.33497429E+00   1.16850201E+00   7.61913864E-01
+        59  H  -1.60131782E+00   5.18077530E-01  -5.13994868E-01
+        60  H  -9.75508746E-01  -8.04712410E-01  -4.09374252E-01
+        61  O   1.79209604E+00  -1.06440011E+00   1.24077572E+00
+        62  H   7.05079845E-01  -1.95507715E-01  -2.06034276E-01
+        63  H  -2.64583598E+00   1.80894316E+00  -7.07409033E-01
+        64  O   2.93276681E+00  -2.24492893E+00   9.92093113E-01
+        65  H  -2.78669959E+00   1.98012496E+00  -4.98446467E-01
+        66  H  -4.00029650E-01  -8.46856849E-01  -4.32336860E-01
+        67  O  -3.28511080E-01  -8.15090216E-03   9.29244000E-01
+        68  H   1.67891390E+00   1.62526262E-01   8.19801746E-02
+        69  H  -3.80321939E-01  -3.83824515E-01  -1.41451459E+00
+        70  O   3.33158362E+00  -5.46673871E-01   2.19735834E+00
+        71  H  -4.88680271E+00   1.44362465E+00  -1.53674694E+00
+        72  H   2.70927527E-01  -1.15534841E+00   1.02641696E+00
+        73  O   1.48953665E+00  -4.12520845E+00   1.99706951E+00
+        74  H  -2.07594898E+00   1.36749465E+00   1.35901509E+00
+        75  H   1.74641638E+00   3.04624699E+00  -1.60883909E+00
+        76  O   1.18389358E+00  -4.90788649E-01   8.94448353E-01
+        77  H  -1.08942332E+00   6.76504103E-01  -4.79043439E-01
+        78  H  -5.44478736E-01  -2.28381285E-01  -2.94401528E-01
+        79  O   2.81430783E+00   2.44343799E+00  -3.66420110E+00
+        80  H  -1.80289684E+00  -3.13435729E+00  -2.49891600E-01
+        81  H  -2.97520747E+00   4.41021587E-01   2.97494495E+00
+        82  O   7.95668590E-01   5.55486902E-01  -1.03559213E+00
+        83  H  -1.81668825E+00   4.72040142E-01   8.41302715E-01
+        84  H  -6.93948759E-01   1.79986135E-01   4.35197759E-02
+        85  O   5.78928339E-01  -4.09804174E-01  -1.01910697E+00
+        86  H   1.46794961E+00   3.05230097E-01  -6.61231151E-01
+        87  H  -1.33531185E+00  -3.54299527E-01  -3.52467976E-02
+        88  O   1.27368137E+00   4.68523281E-01   9.64365021E-02
+        89  H  -8.19651295E-01   5.22292935E-01  -4.57401322E-02
+        90  H  -1.84080128E+00   2.51318575E-01   4.81025661E-01
+        91  O   1.11329616E+00  -7.52168792E-01  -1.85799762E+00
+        92  H  -4.66002807E-01   4.53575768E-02   5.99553995E-01
+        93  H  -1.53557976E+00  -3.27101564E-02  -4.29467723E-01
+        94  O   8.87825548E-01   7.17868322E-01   4.57749873E+00
+        95  H  -9.43890527E-01   2.79051008E+00  -2.29766192E+00
+        96  H   9.22549979E-01  -8.27307140E-01  -1.46122476E+00
+        97  O  -1.48990784E+00   1.86097160E+00  -1.85968794E+00
+        98  H   9.24361720E-01  -1.85184648E+00   1.87601887E+00
+        99  H   3.54584017E-01  -2.27486781E-02   1.22483971E-01
+       100  O  -1.36344108E+00  -2.17463148E-01   3.12719732E+00
+       101  H  -3.15310008E+00   5.27316238E-01  -2.01372239E+00
+       102  H   2.84220807E+00  -8.59986681E-01  -3.09138285E+00
+       103  O   1.58916082E+00  -4.09977782E-01   2.22274112E+00
+       104  H   1.41051868E-01   4.15317219E-01   1.41669434E-03
+       105  H  -6.98850851E-01   7.75905566E-01  -4.42622152E-01
+       106  O  -2.60868295E+00   2.93517244E-01   2.31475310E+00
+       107  H   3.74946235E+00   6.55346930E-01  -3.88898855E+00
+       108  H  -7.35052661E-01  -3.87750654E-01   1.54861755E-01
+       109  O  -1.46680227E-01  -3.99323509E-01  -3.30413129E+00
+       110  H  -1.77064988E+00   1.22234446E+00   2.50519633E+00
+       111  H   2.17362036E+00   2.95156409E+00   1.88860419E+00
+       112  O  -8.28600975E-01   2.57127682E+00  -5.55707820E-01
+       113  H   1.64290625E+00  -7.55178375E-01   4.92864748E-01
+       114  H  -1.10849915E+00  -4.35778493E+00   1.70613250E-01
+       115  O   1.56308112E+00  -1.56365100E+00  -1.41115173E+00
+       116  H  -1.43564257E+00   5.11551657E-01  -2.08430995E-01
+       117  H  -8.71181552E-01   1.49888568E+00   5.30925582E-01
+       118  O   1.29525238E+00  -6.30083418E-01  -1.88309772E+00
+       119  H  -3.07710457E+00   3.72475493E-01   9.06532419E-01
+       120  H   3.78528783E-01   2.36770066E-01   1.27393178E-01
+       121  O  -3.41387101E+00  -1.69279264E+00   3.27940924E-01
+       122  H   2.46342238E+00   3.68125907E+00  -2.44942372E-01
+       123  H   7.15085739E-01   1.41766662E+00   1.38074237E+00
+       124  O   1.95015086E+00  -5.49112131E-01   2.48722033E-02
+       125  H  -6.74188645E-01   4.08677244E-01   4.46405344E-01
+       126  H  -2.13328257E+00   5.77568596E-01   2.08140077E-01
+       127  O  -2.06270005E-02  -1.79375672E+00   1.94588689E+00
+       128  H   3.04717619E+00   1.38532171E+00   5.49305145E-01
+       129  H  -2.06149673E-01   2.45920229E+00  -4.65034663E-01
+       130  O  -3.27350990E+00   1.63321407E+00  -1.19737140E+00
+       131  H   3.39508993E-01   4.13876517E-01   2.14720376E+00
+       132  H   4.56562511E+00  -3.44044892E+00   9.42599256E-01
+       133  O  -4.55184854E-01  -2.04349925E+00   2.29473345E+00
+       134  H   2.61061590E-01   1.21418198E+00  -4.11686613E+00
+       135  H  -3.10631254E+00   1.69702852E+00   1.12529458E+00
+       136  O  -2.55135397E+00  -1.37837364E+00  -4.23254733E-01
+       137  H   5.60981393E-01   1.96795607E-01  -9.82897487E-02
+       138  H   1.10649845E+00   8.15395827E-01   9.41410931E-01
+       139  O  -1.74809247E+00   1.81093431E+00  -8.75408498E-01
+       140  H   1.03929639E+00  -9.24964361E-01   4.07985130E-01
+       141  H   1.71524753E+00  -1.56822012E+00   1.14994567E+00
+       142  O  -1.55346934E+00   6.77847872E-01   1.04566364E+00
+       143  H  -2.32509264E+00  -1.88622751E+00  -7.77425943E-01
+       144  H   1.79667628E+00  -1.43192677E+00  -3.33131712E+00
+       145  O  -9.65865947E-01   1.15312886E+00  -1.75735749E+00
+       146  H   1.36773094E-01  -1.07344597E+00   7.72606660E-01
+       147  H   4.39198214E-01  -6.60223021E-01   2.66609871E-01
+       148  O  -2.41635287E+00  -8.33533279E-01   1.71649981E+00
+       149  H   1.34373390E+00  -2.94750436E-01  -5.55610118E-01
+       150  H   8.50619543E-01   1.40850616E+00   4.83611401E-01
+       151  O   5.91531387E-01   2.05490709E+00  -2.02871710E+00
+       152  H  -2.04855088E+00   2.10634603E-01   1.31141162E+00
+       153  H   1.93391043E+00  -2.73418215E+00  -6.60448880E-01
+       154  O   9.14198416E-01   2.46051783E+00   5.71734731E-01
+       155  H  -1.07133885E-01  -2.46316120E+00  -3.13770678E-01
+       156  H   2.04546285E-02  -9.21263544E-01  -1.10994652E+00
+       157  O   4.47679700E+00  -1.15307797E+00  -2.81238370E+00
+       158  H  -1.78646453E+00  -3.45686773E+00  -8.67463947E-01
+       159  H  -3.95805365E+00   7.26043441E-01   3.56297480E+00
+       160  O   2.36145743E+00   2.02306135E+00   9.41671075E-01
+       161  H  -9.56136577E-02  -4.03850252E-01  -8.49617191E-01
+       162  H  -3.32128045E-01  -2.62221807E+00  -1.69562741E-01
+       163  O   1.91794812E+00  -3.24653610E+00   4.55880893E+00
+       164  H  -1.76194856E-01   2.25376543E+00   1.76456820E+00
+       165  H   1.07851895E-01   2.65950401E+00  -6.78414872E+00
+       166  O  -1.56001223E+00   1.31472178E+00  -2.96043397E+00
+       167  H   6.96770100E-01  -4.65128217E-02  -6.80375125E-02
+       168  H   1.24309237E+00  -9.31557173E-01   7.38285307E-01
+       169  O  -1.83846777E+00   5.33691468E-03   3.06708630E+00
+       170  H   3.32646368E-02   9.82664898E-01   1.63898733E+00
+       171  H   1.01565624E+00  -2.52336484E+00  -3.39778415E+00
+       172  O   1.74671318E+00  -1.03638283E+00  -2.91214224E+00
+       173  H  -1.61690389E+00  -4.60804914E-01   2.24062966E+00
+       174  H   5.48221379E-02   4.29499996E+00   2.27032270E+00
+       175  O   2.73771926E+00   1.16038321E+00   3.42803847E+00
+       176  H   1.14435455E-01   8.14588362E-01   9.04146516E-02
+       177  H  -1.73478369E+00   6.82980941E-01  -3.35259151E+00
+       178  O  -6.96580298E-02  -1.97148048E+00   9.82943388E-01
+       179  H   7.04594788E-01   1.53279971E+00  -5.59549117E-01
+       180  H   1.26127039E+00   1.21237363E+00   1.25417774E+00
+       181  O  -2.40431798E+00  -2.13799079E+00   3.66775664E-01
+       182  H   1.63179669E+00  -2.41369916E+00  -1.10367618E+00
+       183  H  -6.74311000E-01   9.91009033E-01  -9.37733550E-01
+       184  O  -1.99047942E+00  -5.52099222E+00   1.87123738E+00
+       185  H   5.73934306E+00   4.48732063E+00   4.31657962E-01
+       186  H  -1.97509292E+00   2.69128481E+00  -1.33512742E+00
+       187  O   8.03052836E-01  -2.25755288E-01   4.58739252E+00
+       188  H  -8.29218886E-01   1.85983243E+00  -6.76909140E-01
+       189  H  -2.24312890E-01  -1.63298764E+00  -2.78070632E+00
+       190  O  -1.32359876E+00  -4.05219635E+00  -1.63442356E-01
+       191  H  -8.42673411E-01   2.25994432E+00   3.42945028E+00
+       192  H   2.13967390E+00   1.59652793E+00  -5.12375504E-01
+-------------------------------------------------------------------------------
+Writing output files...
+ - energy.out
+ - nnatoms.out
+ - nnforces.out
+Writing structure with NNP prediction to "output.data".
+Finished.
+*******************************************************************************
