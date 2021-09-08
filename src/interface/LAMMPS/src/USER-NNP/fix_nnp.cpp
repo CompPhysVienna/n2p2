@@ -36,6 +36,7 @@
 using namespace LAMMPS_NS;
 using namespace FixConst;
 using namespace std::chrono;
+using namespace nnp;
 
 #define EV_TO_KCAL_PER_MOL 14.4
 #define SQR(x) ((x)*(x))
@@ -47,7 +48,37 @@ using namespace std::chrono;
 
 
 FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
-        Fix(lmp, narg, arg), pertype_option(NULL)
+        Fix(lmp, narg, arg),
+        matvecs       (0      ),
+        qeq_time      (0.0    ),
+        nnp           (nullptr),
+        list          (nullptr),
+        pertype_option(nullptr),
+        periodic      (false  ),
+        qRef          (0.0    ),
+        Q             (nullptr),
+        coords        (nullptr),
+        xf            (nullptr),
+        yf            (nullptr),
+        zf            (nullptr),
+        xbuf          (nullptr),
+        ntotal        (0      ),
+        xbufsize      (0      ),
+        nevery        (0      ),
+        nnpflag       (0      ),
+        n             (0      ),
+        N             (0      ),
+        m_fill        (0      ),
+        n_cap         (0      ),
+        m_cap         (0      ),
+        pack_flag     (0      ),
+        ngroup        (0      ),
+        nprev         (0      ),
+        Q_hist        (nullptr),
+        p             (nullptr),
+        q             (nullptr),
+        r             (nullptr),
+        d             (nullptr)
 {
     if (narg<9 || narg>10) error->all(FLERR,"Illegal fix nnp command");
 
@@ -58,13 +89,13 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     pertype_option = new char[len];
     strcpy(pertype_option,arg[8]);
 
-    nnp = NULL;
+    nnp = nullptr;
     nnp = (PairNNP *) force->pair_match("^nnp",0);
-    nnp->chi = NULL;
-    nnp->hardness = NULL;
-    nnp->sigmaSqrtPi = NULL;
-    nnp->gammaSqrt2 = NULL;
-    nnp->screening_info = NULL;
+    nnp->chi = nullptr;
+    nnp->hardness = nullptr;
+    nnp->sigmaSqrtPi = nullptr;
+    nnp->gammaSqrt2 = nullptr;
+    nnp->screening_info = nullptr;
 
     // User-defined minimization parameters used in pair_nnp as well
     // TODO: read only on proc 0 and then Bcast ?
@@ -236,7 +267,7 @@ void FixNNP::calculate_electronegativities()
 // Runs interface.process for electronegativities
 void FixNNP::process_first_network()
 {
-    if(nnp->interface.getNnpType() == 4) //TODO
+    if(nnp->interface.getNnpType() == InterfaceLammps::NNPType::HDNNP_4G)
     {
         // Set number of local atoms and add index and element.
         nnp->interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
@@ -646,7 +677,7 @@ void FixNNP::calculate_QEqCharges()
         status = gsl_multimin_test_gradient(s->gradient, nnp->grad_tol); // check for convergence
 
         if (status == GSL_SUCCESS)
-            printf ("Minimum charge distribution is found at iteration : %d\n", iter);
+            printf ("Minimum charge distribution is found at iteration : %zu\n", iter);
 
     }
     while (status == GSL_CONTINUE && iter < nnp->maxit);

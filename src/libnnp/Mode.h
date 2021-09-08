@@ -458,7 +458,7 @@ public:
      *
      * @return NNP type.
      */
-    int                   getNnpType() const;
+    NNPType               getNnpType() const;
     /** Getter for Mode::meanEnergy.
      *
      * @return Mean energy per atom.
@@ -633,9 +633,9 @@ inline double Mode::getMeanEnergy() const
 {
     return meanEnergy;
 }
-inline int Mode::getNnpType() const
+inline Mode::NNPType Mode::getNnpType() const
 {
-    return (int)nnpType;
+    return nnpType;
 }
 
 inline double Mode::getConvEnergy() const

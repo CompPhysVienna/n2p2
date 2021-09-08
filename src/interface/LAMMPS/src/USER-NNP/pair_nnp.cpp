@@ -33,10 +33,73 @@
 
 using namespace LAMMPS_NS;
 using namespace std::chrono;
+using namespace nnp;
 
 /* ---------------------------------------------------------------------- */
 
-PairNNP::PairNNP(LAMMPS *lmp) : Pair(lmp)
+PairNNP::PairNNP(LAMMPS *lmp) : Pair(lmp),
+    periodic                       (false  ),
+    showew                         (false  ),
+    resetew                        (false  ),
+    showewsum                      (0      ),
+    maxew                          (0      ),
+    numExtrapolationWarningsTotal  (0      ),
+    numExtrapolationWarningsSummary(0      ),
+    cflength                       (0.0    ),
+    cfenergy                       (0.0    ),
+    maxCutoffRadius                (0.0    ),
+    directory                      (nullptr),
+    emap                           (nullptr),
+    list                           (nullptr),
+    chi                            (nullptr),
+    hardness                       (nullptr),
+    sigmaSqrtPi                    (nullptr),
+    gammaSqrt2                     (nullptr),
+    eElec                          (0.0    ),
+    dEdQ                           (nullptr),
+    forceLambda                    (nullptr),
+    dChidxyz                       (nullptr),
+    overallCutoff                  (0.0    ),
+    grad_tol                       (0.0    ),
+    min_tol                        (0.0    ),
+    step                           (0.0    ),
+    maxit                          (0      ),
+    T                              (nullptr),
+    s                              (nullptr),
+    gsqmx                          (0.0    ),
+    volume                         (0.0    ),
+    q2                             (0.0    ),
+    g_ewald                        (0.0    ),
+    ewaldPrecision                 (0.0    ),
+    ewaldEta                       (0.0    ),
+    recip_cut                      (0.0    ),
+    real_cut                       (0.0    ),
+    E_elec                         (0.0    ),
+    kxvecs                         (nullptr),
+    kyvecs                         (nullptr),
+    kzvecs                         (nullptr),
+    kxmax_orig                     (0      ),
+    kymax_orig                     (0      ),
+    kzmax_orig                     (0      ),
+    kmax_created                   (0      ),
+    kxmax                          (0      ),
+    kymax                          (0      ),
+    kzmax                          (0      ),
+    kmax                           (0      ),
+    kmax3d                         (0      ),
+    kcount                         (0      ),
+    nmax                           (0      ),
+    kcoeff                         (nullptr),
+    eg                             (nullptr),
+    vg                             (nullptr),
+    ek                             (nullptr),
+    sfexp_rl                       (nullptr),
+    sfexp_im                       (nullptr),
+    sfexp_rl_all                   (nullptr),
+    sfexp_im_all                   (nullptr),
+    cs                             (nullptr),
+    sn                             (nullptr),
+    screening_info                 (nullptr)
 {
 
 }
@@ -58,7 +121,7 @@ void PairNNP::compute(int eflag, int vflag)
   if(eflag || vflag) ev_setup(eflag,vflag);
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
 
-  if (interface.getNnpType() == 2) //2G-HDNNPs // TODO: replace integers with types
+  if (interface.getNnpType() == InterfaceLammps::NNPType::HDNNP_2G)
   {
       // Set number of local atoms and add index and element.
       interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
@@ -77,7 +140,8 @@ void PairNNP::compute(int eflag, int vflag)
       // get short-range forces of local and ghost atoms.
       interface.getForces(atom->f);
 
-  }else if (interface.getNnpType() == 4) //4G-HDNNPs
+  }
+  else if (interface.getNnpType() == InterfaceLammps::NNPType::HDNNP_4G)
   {
 
       //auto start = high_resolution_clock::now();
@@ -269,9 +333,9 @@ void PairNNP::init_style()
   // Activate screen and logfile output only for rank 0.
   if (comm->me == 0) {
     if (lmp->screen != NULL)
-      interface.log.registerCFilePointer(&(lmp->screen));    
+      interface.log.registerCFilePointer(&(lmp->screen));
     if (lmp->logfile != NULL)
-      interface.log.registerCFilePointer(&(lmp->logfile));    
+      interface.log.registerCFilePointer(&(lmp->logfile));
   }
 
   ///TODO: add nnpType
@@ -293,7 +357,7 @@ void PairNNP::init_style()
   if (maxCutoffRadius < interface.getMaxCutoffRadius())
     error->all(FLERR,"Inconsistent cutoff radius");
 
-  if (interface.getNnpType() == 4)
+  if (interface.getNnpType() == InterfaceLammps::NNPType::HDNNP_4G)
   {
       isPeriodic();
       // TODO: add cutoff update
@@ -383,8 +447,8 @@ void PairNNP::allocate()
 
   // TODO: add an if an initialize only for 4G
   // Allocate and initialize 4g-related arrays
-  dEdQ = NULL;
-  forceLambda = NULL;
+  dEdQ = nullptr;
+  forceLambda = nullptr;
   memory->create(dEdQ,natoms+1,"pair:dEdQ");
   memory->create(forceLambda,natoms+1,"pair:forceLambda");
   memory->create(dChidxyz,natoms+1,3,"pair:dChidxyz");
@@ -396,7 +460,7 @@ void PairNNP::allocate()
   // Allocate and initialize k-space related arrays if periodic
   //if (periodic)
   {
-      allocate_kspace();
+      //allocate_kspace();
       kmax = 0;
       kmax_created = 0;
       kxvecs = kyvecs = kzvecs = nullptr;
@@ -780,7 +844,7 @@ void PairNNP::calculateForceLambda()
         status = gsl_multimin_test_gradient(s->gradient, grad_tol);
 
         if (status == GSL_SUCCESS)
-            printf ("Minimum forceLambda is found at iteration: %d\n",iter);
+            printf ("Minimum forceLambda is found at iteration: %zu\n",iter);
 
     }
     while (status == GSL_CONTINUE && iter < maxit);
@@ -1191,8 +1255,8 @@ void PairNNP::deallocate_kspace()
 
 // Setup k-space grid and run necessary subroutines
 void PairNNP::kspace_setup() {
-    allocate_kspace();
-    deallocate_kspace();
+    //allocate_kspace();
+    //deallocate_kspace();
 
     // TODO: 'called initially and whenever the volume is changed' ? from LAMMPS version
 
@@ -1593,5 +1657,5 @@ double PairNNP::kspace_rms(int km, double prd, bigint natoms, double q2)
 
     return value;
      */
-
+    return 0.0;
 }

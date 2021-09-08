@@ -1560,7 +1560,6 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
             {
                 NeuralNetwork& nn = elements.at(a.element)
                                     .neuralNetworks.at(id);
-                nn.setInput(&((a.G).front()));
                 // TODO: This part should simplify with improved NN class.
                 for (size_t i = 0; i < a.G.size(); ++i)
                 {
