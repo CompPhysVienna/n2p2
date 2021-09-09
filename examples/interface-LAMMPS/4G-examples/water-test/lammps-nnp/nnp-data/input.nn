@@ -17,7 +17,7 @@
 use_electrostatics
 use_short_nn
 nnp_gen 4 # nnp_type_gen --> nnp_gen 
-runner_mode 2
+runner_mode 3
 parallel_mode 1                         
 number_of_elements 2                  
 elements  H O                          
@@ -32,7 +32,7 @@ fixed_gausswidth H 0.585815056466
 fixed_gausswidth O 1.379499971678
 energy_threshold 100.0d0              
 bond_threshold 0.4d0                 
-ewald_prec 1.0e-6 # for optimal combination of ewald parameters
+ewald_prec 1.0e-4 # for optimal combination of ewald parameters
 screen_electrostatics 4.8 8.0
 ########################################################################################################################
 ### NN structure of the electrostatic-range NN  

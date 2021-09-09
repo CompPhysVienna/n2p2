@@ -12,7 +12,7 @@ variable cfgFile         string "water.data"
 variable numSteps        equal  0
 variable dt              equal  0.0005
 # NN
-variable nnpCutoff       equal  8.01
+variable nnpCutoff       equal  4.238709440998 #8.01
 variable nnpDir          string "nnp-data"
 # Masses
 variable mass_H          equal  1.00794
@@ -42,7 +42,7 @@ neighbor 0.0 bin
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:H,2:O"
+pair_style nnp dir ${nnpDir} showew yes showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:H,2:O"
 pair_coeff * * ${nnpCutoff}
 fix 1 all nnp 1 1.0e-4 1.0e-4 1.0e-2 20 nnp 
 

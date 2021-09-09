@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "Prediction.h"
+#include "Stopwatch.h"
 #include <fstream>   // std::ifstream
 #include <map>       // std::map
 #include <stdexcept> // std::runtime_error
@@ -77,8 +78,12 @@ void Prediction::predict()
     //maxCutoffRadiusOverall = 8.01; // fixing cutoff for testing at the moment
     // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
     // CI tests because of small numeric changes).
+    Stopwatch sw;
+    sw.start();
     structure.calculateNeighborList(maxCutoffRadiusOverall,
                                     nnpType == NNPType::HDNNP_4G);
+    sw.stop();
+
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
@@ -100,6 +105,8 @@ void Prediction::predict()
     }
     addEnergyOffset(structure, false);
     addEnergyOffset(structure, true);
+
+    log << strpr("TIMING NeighList only: %.2f seconds.\n", sw.getTotal());
 
     return;
 }

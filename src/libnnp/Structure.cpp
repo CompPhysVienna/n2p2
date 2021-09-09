@@ -524,6 +524,9 @@ double Structure::calculateElectrostaticEnergy(
 
         KspaceGrid grid;
         double rcutReal = grid.setup(box, precision);
+        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
+        rcutReal = 8.00;
+        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
         double const sqrt2eta = sqrt(2.0) * grid.eta;
 
         for (size_t i = 0; i < numAtoms; ++i)

@@ -243,12 +243,6 @@ void FixNNP::init_list(int /*id*/, NeighList *ptr)
 
 void FixNNP::setup_pre_force(int vflag)
 {
-    deallocate_QEq();
-    allocate_QEq();
-
-    //TODO: is this the right place to call this ?
-    if(periodic) nnp->kspace_setup();
-
     pre_force(vflag);
 }
 
@@ -297,6 +291,11 @@ void FixNNP::min_pre_force(int vflag)
 void FixNNP::pre_force(int /*vflag*/) {
 
     double *q = atom->q;
+
+    deallocate_QEq();
+    allocate_QEq();
+
+    if(periodic) nnp->kspace_setup();
 
     // Calculate atomic electronegativities \Chi_i
     calculate_electronegativities();

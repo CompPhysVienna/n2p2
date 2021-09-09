@@ -32,7 +32,7 @@ fixed_gausswidth H 0.585815056466
 fixed_gausswidth O 1.379499971678
 energy_threshold 100.0d0              
 bond_threshold 0.4d0                 
-ewald_prec 1.0e-6 # for optimal combination of ewald parameters
+ewald_prec 1.0e-4 # for optimal combination of ewald parameters
 screen_electrostatics 4.8 8.0
 ########################################################################################################################
 ### NN structure of the electrostatic-range NN  
