@@ -1550,7 +1550,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     nn.calculateDEdG(&((a.dChidG).front()));
                 }
                 nn.getOutput(&(a.chi));
-                log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
+                log << strpr("Atom %5zu (%2s) chi: %24.16E\n",
                              a.index, elementMap[a.element].c_str(), a.chi);
             }
         }
@@ -1574,7 +1574,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     nn.calculateDEdG(&((a.dEdG).front()));
                 }
                 nn.getOutput(&(a.energy));
-                log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
+                log << strpr("Atom %5zu (%2s) energy: %24.16E\n",
                              a.index, elementMap[a.element].c_str(), a.energy);
             }
         }
@@ -1657,7 +1657,7 @@ void Mode::chargeEquilibration(Structure& structure)
 
     for (auto const& a : structure.atoms)
     {
-        log << strpr("Atom %5zu (%2s) q: %16.8E\n",
+        log << strpr("Atom %5zu (%2s) q: %24.16E\n",
                      a.index, elementMap[a.element].c_str(), a.charge);
         structure.charge += a.charge;
     }

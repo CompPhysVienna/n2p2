@@ -307,6 +307,8 @@ void FixNNP::pre_force(int /*vflag*/) {
     for (int i = 0; i < n; i++) {
         Qtot += q[i];
     }
+    // TODO: qRef was just set before in calculate_electronegativities() to
+    // structure.chargeRef, why is it reset here already?
     qRef = Qtot;
 
     auto start = high_resolution_clock::now();
@@ -642,6 +644,24 @@ void FixNNP::calculate_QEqCharges()
     Q = gsl_vector_alloc(nsize);
     for (i = 0; i < nsize; i++) {
         gsl_vector_set(Q,i,q[i]);
+    }
+
+
+    // Numeric vs. analytic derivatives check:
+    gsl_vector *dEdQ = gsl_vector_calloc(nsize);
+    QEq_df(Q, dEdQ);
+    double const delta = 1.0E-5;
+    for (i = 0; i < nsize; ++i)
+    {
+        double const qi = gsl_vector_get(Q, i);
+        gsl_vector_set(Q, i, qi - delta);
+        double const low = QEq_f(Q);
+        gsl_vector_set(Q, i, qi + delta);
+        double const high = QEq_f(Q);
+        gsl_vector_set(Q, i, qi);
+        double const numeric = (high - low) / (2.0 * delta);
+        double const analytic = gsl_vector_get(dEdQ, i);
+        fprintf(stderr, "NA-Check: dEQeq/dq(%3d) = %16.8E / %16.8E (Numeric/Analytic), Diff: %16.8E\n", i, numeric, analytic, numeric - analytic);
     }
 
     // TODO: is bfgs2 standard ?
