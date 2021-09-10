@@ -622,8 +622,8 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
             double lambda_i2 = lambda_i * lambda_i;
 
             // Self term
-            E_self += lambda_i2 * (1 / (2.0 * sigmaSqrtPi[type[i]]) - 1 / (sqrt(2.0 * M_PI) * ewaldEta));
-            E_lambda += dEdQ[i] * lambda_i + 0.5 * hardness[type[i]] * lambda_i2;
+            E_self += lambda_i2 * (1 / (2.0 * sigmaSqrtPi[type[i]-1]) - 1 / (sqrt(2.0 * M_PI) * ewaldEta));
+            E_lambda += dEdQ[i] * lambda_i + 0.5 * hardness[type[i]-1] * lambda_i2;
             // Real Term
             // TODO: we loop over the full neighbor list, this can be optimized
             for (int jj = 0; jj < list->numneigh[i]; ++jj) {
@@ -635,7 +635,7 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
                 dy = x[i][1] - x[j][1];
                 dz = x[i][2] - x[j][2];
                 rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]][type[jmap]])) / rij;
+                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
                 double real = 0.5 * lambda_i * lambda_j * erfcRij;
                 E_real += real;
             }
@@ -660,8 +660,8 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
         for (i = 0; i < nlocal; i++) {
             lambda_i = gsl_vector_get(v,i);
             // add i terms here
-            iiterm = lambda_i * lambda_i / (2.0 * sigmaSqrtPi[type[i]]);
-            E_lambda += iiterm + dEdQ[i]*lambda_i + 0.5*hardness[type[i]]*lambda_i*lambda_i;
+            iiterm = lambda_i * lambda_i / (2.0 * sigmaSqrtPi[type[i]-1]);
+            E_lambda += iiterm + dEdQ[i]*lambda_i + 0.5*hardness[type[i]-1]*lambda_i*lambda_i;
             // second loop over 'all' atoms
             for (j = i + 1; j < nall; j++) {
                 lambda_j = gsl_vector_get(v, j);
@@ -669,7 +669,7 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
                 dy = x[j][1] - x[i][1];
                 dz = x[j][2] - x[i][2];
                 rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                ijterm = lambda_i * lambda_j * (erf(rij / gammaSqrt2[type[i]][type[j]]) / rij);
+                ijterm = lambda_i * lambda_j * (erf(rij / gammaSqrt2[type[i]-1][type[j]-1]) / rij);
                 E_lambda += ijterm;
             }
         }
@@ -736,11 +736,11 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
                 dy = x[i][1] - x[j][1];
                 dz = x[i][2] - x[j][2];
                 rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]][type[jmap]]));
+                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]-1][type[jmap]-1]));
                 jsum += lambda_j * erfcRij / rij;
             }
-            grad = jsum + ksum + dEdQ[i] + hardness[type[i]]*lambda_i +
-                   lambda_i * (1/(sigmaSqrtPi[type[i]])- 2/(ewaldEta * sqrt(2.0 * M_PI)));
+            grad = jsum + ksum + dEdQ[i] + hardness[type[i]-1]*lambda_i +
+                   lambda_i * (1/(sigmaSqrtPi[type[i]-1])- 2/(ewaldEta * sqrt(2.0 * M_PI)));
             grad_sum += grad;
             gsl_vector_set(dEdLambda,i,grad);
         }
@@ -758,11 +758,11 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
                     dy = x[j][1] - x[i][1];
                     dz = x[j][2] - x[i][2];
                     rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                    local_sum += lambda_j * erf(rij / gammaSqrt2[type[i]][type[j]]) / rij;
+                    local_sum += lambda_j * erf(rij / gammaSqrt2[type[i]-1][type[j]-1]) / rij;
                 }
             }
-            val = dEdQ[i] + hardness[type[i]]*lambda_i +
-                  lambda_i/(sigmaSqrtPi[type[i]]) + local_sum;
+            val = dEdQ[i] + hardness[type[i]-1]*lambda_i +
+                  lambda_i/(sigmaSqrtPi[type[i]-1]) + local_sum;
             grad_sum = grad_sum + val;
             gsl_vector_set(dEdLambda,i,val);
         }
@@ -922,7 +922,7 @@ void PairNNP::calculateElecDerivatives(double *dEelecdQ, double **f)
 
                 //if (rij >= screening_info[2]) break; // TODO: check
 
-                gams2 = gammaSqrt2[type[i]][type[jmap]];
+                gams2 = gammaSqrt2[type[i]-1][type[jmap]-1];
                 erfrij = erf(rij / gams2);
                 fsrij = screening_f(rij);
                 dfsrij = screening_df(rij);
@@ -952,7 +952,7 @@ void PairNNP::calculateElecDerivatives(double *dEelecdQ, double **f)
                     qj = q[j];
                     rij2 = SQR(dx) + SQR(dy) + SQR(dz);
                     rij = sqrt(rij2);
-                    gams2 = gammaSqrt2[type[i]][type[j]];
+                    gams2 = gammaSqrt2[type[i]-1][type[j]-1];
 
                     erfrij = erf(rij / gams2);
                     fsrij = screening_f(rij);
@@ -1038,7 +1038,7 @@ void PairNNP::calculateElecForce(double **f)
                         dz = x[i][2] - x[k][2];
                         double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
                         rij = sqrt(rij2);
-                        gams2 = gammaSqrt2[type[i]][type[jmap]];
+                        gams2 = gammaSqrt2[type[i]-1][type[jmap]-1];
                         delr = (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
                                                   / sqrt2eta + exp(-pow(rij / gams2, 2)) / gams2)
                                 - 1 / rij * (erfc(rij / sqrt2eta) - erfc(rij / gams2))) / rij2;
@@ -1080,7 +1080,7 @@ void PairNNP::calculateElecForce(double **f)
                             double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
                             rij = sqrt(rij2);
                             if (rij >= real_cut) break;
-                            gams2 = gammaSqrt2[type[i]][type[j]];
+                            gams2 = gammaSqrt2[type[i]-1][type[j]-1];
                             delr = (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
                                                       / sqrt2eta + exp(-pow(rij / gams2, 2)) / gams2)
                                     - 1 / rij * (erfc(rij / sqrt2eta) - erfc(rij / gams2))) / rij2;
@@ -1115,7 +1115,7 @@ void PairNNP::calculateElecForce(double **f)
                             double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
                             rij = sqrt(rij2);
 
-                            gams2 = gammaSqrt2[type[i]][type[k]];
+                            gams2 = gammaSqrt2[type[i]-1][type[k]-1];
                             delr = (2 / (sqrt(M_PI) * gams2) * exp(-pow(rij / gams2, 2)) - erf(rij / gams2) / rij);
 
                             jt0 += (dx / rij2) * delr * qk;
@@ -1130,7 +1130,7 @@ void PairNNP::calculateElecForce(double **f)
                     double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
                     rij = sqrt(rij2);
 
-                    gams2 = gammaSqrt2[type[i]][type[j]];
+                    gams2 = gammaSqrt2[type[i]-1][type[j]-1];
                     delr = (2 / (sqrt(M_PI) * gams2) * exp(-pow(rij / gams2, 2)) - erf(rij / gams2) / rij);
 
                     jt0 = (dx / rij2) * delr * qi;
@@ -1308,6 +1308,11 @@ void PairNNP::kspace_setup() {
     gsqmx = MAX(gsqxmx, gsqymx);
     gsqmx = MAX(gsqmx, gsqzmx);
 
+    // LAMMPS cutoff criterion seems to be different, hence we feed now "our"
+    // cutoff radius:
+    gsqmx = recip_cut * recip_cut;
+    //kmax3d = 9;
+
     // size change ?
     kxmax_orig = kxmax;
     kymax_orig = kymax;
@@ -1352,11 +1357,13 @@ void PairNNP::kspace_coeffs()
 
     kcount = 0;
 
+    fprintf(stderr, "gsqmx = %24.16E\n", sqrt(gsqmx));
     // (k,0,0), (0,l,0), (0,0,m)
 
     for (m = 1; m <= kmax; m++) {
         sqk = (m*unitk[0]) * (m*unitk[0]);
         if (sqk <= gsqmx) {
+            fprintf(stderr, "sqk 1x = %24.16E, m %d\n", sqrt(sqk), m);
             kxvecs[kcount] = m;
             kyvecs[kcount] = 0;
             kzvecs[kcount] = 0;
@@ -1365,6 +1372,7 @@ void PairNNP::kspace_coeffs()
         }
         sqk = (m*unitk[1]) * (m*unitk[1]);
         if (sqk <= gsqmx) {
+            fprintf(stderr, "sqk 1y = %24.16E, m %d\n", sqrt(sqk), m);
             kxvecs[kcount] = 0;
             kyvecs[kcount] = m;
             kzvecs[kcount] = 0;
@@ -1373,6 +1381,7 @@ void PairNNP::kspace_coeffs()
         }
         sqk = (m*unitk[2]) * (m*unitk[2]);
         if (sqk <= gsqmx) {
+            fprintf(stderr, "sqk 1z = %24.16E, m %d\n", sqrt(sqk), m);
             kxvecs[kcount] = 0;
             kyvecs[kcount] = 0;
             kzvecs[kcount] = m;
@@ -1387,6 +1396,7 @@ void PairNNP::kspace_coeffs()
         for (l = 1; l <= kymax; l++) {
             sqk = (unitk[0]*k) * (unitk[0]*k) + (unitk[1]*l) * (unitk[1]*l);
             if (sqk <= gsqmx) {
+                fprintf(stderr, "sqk 2 = %24.16E, k %d l %d\n", sqrt(sqk), k, l);
                 kxvecs[kcount] = k;
                 kyvecs[kcount] = l;
                 kzvecs[kcount] = 0;
@@ -1408,6 +1418,7 @@ void PairNNP::kspace_coeffs()
         for (m = 1; m <= kzmax; m++) {
             sqk = (unitk[1]*l) * (unitk[1]*l) + (unitk[2]*m) * (unitk[2]*m);
             if (sqk <= gsqmx) {
+                fprintf(stderr, "sqk 3 = %24.16E, l %d m %d\n", sqrt(sqk), l, m);
                 kxvecs[kcount] = 0;
                 kyvecs[kcount] = l;
                 kzvecs[kcount] = m;
@@ -1429,6 +1440,7 @@ void PairNNP::kspace_coeffs()
         for (m = 1; m <= kzmax; m++) {
             sqk = (unitk[0]*k) * (unitk[0]*k) + (unitk[2]*m) * (unitk[2]*m);
             if (sqk <= gsqmx) {
+                fprintf(stderr, "sqk 4 = %24.16E, k %d m %d\n", sqrt(sqk), k, m);
                 kxvecs[kcount] = k;
                 kyvecs[kcount] = 0;
                 kzvecs[kcount] = m;
@@ -1452,6 +1464,7 @@ void PairNNP::kspace_coeffs()
                 sqk = (unitk[0]*k) * (unitk[0]*k) + (unitk[1]*l) * (unitk[1]*l) +
                       (unitk[2]*m) * (unitk[2]*m);
                 if (sqk <= gsqmx) {
+                    fprintf(stderr, "sqk 5 = %24.16E, k %d l %d m %d\n", sqrt(sqk), k, l, m);
                     kxvecs[kcount] = k;
                     kyvecs[kcount] = l;
                     kzvecs[kcount] = m;
@@ -1501,8 +1514,8 @@ void PairNNP::kspace_sfexp()
             for (i = 0; i < nlocal; i++) {
                 cs[0][ic][i] = 1.0;
                 sn[0][ic][i] = 0.0;
-                cs[1][ic][i] = cos(unitk[ic]*x[i][ic]);
-                sn[1][ic][i] = sin(unitk[ic]*x[i][ic]);
+                cs[1][ic][i] = cos(unitk[ic]*x[i][ic]*cflength);
+                sn[1][ic][i] = sin(unitk[ic]*x[i][ic]*cflength);
                 cs[-1][ic][i] = cs[1][ic][i];
                 sn[-1][ic][i] = -sn[1][ic][i];
                 sfexp_rl[n][i] = cs[1][ic][i];

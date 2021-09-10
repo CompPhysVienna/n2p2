@@ -452,6 +452,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
                 sf_im += qi * nnp->sfexp_im[k][i];
             }
             // TODO: sf_real->sf_real_all or MPIAllreduce for E_recip ?
+            fprintf(stderr, "sfexp %d : %24.16E\n", k, nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2)));
             E_recip += nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2));
         }
         nnp->E_elec = E_real + E_self + E_recip;
@@ -462,8 +463,8 @@ double FixNNP::QEq_f(const gsl_vector *v)
         for (i = 0; i < nlocal; i++) {
             double const qi = gsl_vector_get(v,i);
             // add i terms here
-            iiterm = qi * qi / (2.0 * nnp->sigmaSqrtPi[type[i]]);
-            E_qeq += iiterm + nnp->chi[i]*qi + 0.5*nnp->hardness[type[i]]*qi*qi;
+            iiterm = qi * qi / (2.0 * nnp->sigmaSqrtPi[type[i]-1]);
+            E_qeq += iiterm + nnp->chi[i]*qi + 0.5*nnp->hardness[type[i]-1]*qi*qi;
             nnp->E_elec += iiterm;
             E_scr -= iiterm;
             // second loop over 'all' atoms
@@ -473,7 +474,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
                 double const dy = x[j][1] - x[i][1];
                 double const dz = x[j][2] - x[i][2];
                 double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                ijterm = (erf(rij / nnp->gammaSqrt2[type[i]][type[j]]) / rij);
+                ijterm = (erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij);
                 E_qeq += ijterm * qi * qj;
                 nnp->E_elec += ijterm;
                 if(rij <= nnp->screening_info[2]) {
@@ -557,12 +558,12 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
                 dy = x[i][1] - x[j][1];
                 dz = x[i][2] - x[j][2];
                 rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]][type[jmap]]));
+                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1]));
                 jsum += qj * erfcRij / rij;
                 //count = count + 1;
             }
-            grad = jsum + ksum + nnp->chi[i] + nnp->hardness[type[i]]*qi +
-                   qi * (1/(nnp->sigmaSqrtPi[type[i]])- 2/(nnp->ewaldEta * sqrt(2.0 * M_PI)));
+            grad = jsum + ksum + nnp->chi[i] + nnp->hardness[type[i]-1]*qi +
+                   qi * (1/(nnp->sigmaSqrtPi[type[i]-1])- 2/(nnp->ewaldEta * sqrt(2.0 * M_PI)));
             grad_sum += grad;
             gsl_vector_set(dEdQ,i,grad);
         }
@@ -581,10 +582,10 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
                     dy = x[j][1] - x[i][1];
                     dz = x[j][2] - x[i][2];
                     rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                    jsum += qj * erf(rij / nnp->gammaSqrt2[type[i]][type[j]]) / rij;
+                    jsum += qj * erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij;
                 }
             }
-            grad = nnp->chi[i] + nnp->hardness[type[i]]*qi + qi/(nnp->sigmaSqrtPi[type[i]]) + jsum;
+            grad = nnp->chi[i] + nnp->hardness[type[i]-1]*qi + qi/(nnp->sigmaSqrtPi[type[i]-1]) + jsum;
             grad_sum += grad;
             gsl_vector_set(dEdQ,i,grad);
         }
