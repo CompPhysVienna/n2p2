@@ -1262,10 +1262,11 @@ void PairNNP::kspace_setup() {
 
     int natoms = atom->natoms;
 
+    // WARNING: Immediately convert to NNP units!
     // volume-dependent factors
-    double xprd = domain->xprd;
-    double yprd = domain->yprd;
-    double zprd = domain->zprd;
+    double const xprd = domain->xprd * cflength;
+    double const yprd = domain->yprd * cflength;
+    double const zprd = domain->zprd * cflength;
 
     // adjustment of z dimension for 2d slab Ewald
     // 3d Ewald just uses zprd since slab_volfactor = 1.0
@@ -1276,6 +1277,9 @@ void PairNNP::kspace_setup() {
     unitk[0] = 2.0 * M_PI / xprd;
     unitk[1] = 2.0 * M_PI / yprd;
     unitk[2] = 2.0 * M_PI / zprd;
+    fprintf(stderr, "unitk[0] = %24.16E\n", unitk[0]);
+    fprintf(stderr, "unitk[1] = %24.16E\n", unitk[1]);
+    fprintf(stderr, "unitk[2] = %24.16E\n", unitk[2]);
     //unitk[2] = 2.0*MY_PI/zprd_slab;
 
     ewaldEta = 1.0 / sqrt(2.0 * M_PI);
@@ -1329,7 +1333,7 @@ void PairNNP::kspace_setup() {
 
     std::cout << "Box vol :" << volume << '\n';
     std::cout << "Real cut :" << real_cut << '\n';
-    std::cout << "Recip cut :" << recip_cut << '\n';
+    fprintf(stderr, "Recip cut : %24.16E\n", recip_cut);
     std::cout << "KXMAX :" << kxmax << '\n';
     std::cout << "KYMAX :" << kymax << '\n';
     std::cout << "KZMAX :" << kzmax << '\n';

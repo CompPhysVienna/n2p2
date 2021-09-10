@@ -65,13 +65,17 @@ public:
      *
      * @param[in] box Real box vectors.
      * @param[in] precision Desired presicion for Ewald summation.
+     * @param[in] halfSphere Generate only k-vectors for half sphere.
      * @param[in] numAtoms Number of atoms in system. Optional, if provided
      *                     will use "regular" Ewald optimal eta, otherwise use
      *                     "matrix" version of eta.
      *
      * @return Real space cutoff radius.
      */
-    double setup(Vec3D box[3], double precision, std::size_t numAtoms = 0);
+    double setup(Vec3D       box[3],
+                 double      precision,
+                 bool        halfSphere = true,
+                 std::size_t numAtoms = 0);
 
 private:
     /** Compute box copies in each direction.

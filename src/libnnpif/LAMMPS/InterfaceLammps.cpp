@@ -395,12 +395,12 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
     for (size_t i = 0; i < numElements; ++i)
     {
         double const iSigma = elements.at(i).getQsigma();
-        atomJ[i+1] = elements.at(i).getHardness();
-        sigmaSqrtPi[i+1] = sqrt(M_PI) * iSigma;
+        atomJ[i] = elements.at(i).getHardness();
+        sigmaSqrtPi[i] = sqrt(M_PI) * iSigma;
         for (size_t j = 0; j < numElements; j++)
         {
             double const jSigma = elements.at(j).getQsigma();
-            gammaSqrt2[i+1][j+1] = sqrt(2.0 * (iSigma * iSigma + jSigma * jSigma));
+            gammaSqrt2[i][j] = sqrt(2.0 * (iSigma * iSigma + jSigma * jSigma));
         }
     }
     qRef = structure.chargeRef;
@@ -463,7 +463,7 @@ void InterfaceLammps::addCharge(int index, double Q)
     Atom& a = structure.atoms.at(index);
     a.charge = Q;
     log << strpr("Atom %5zu (%2s) q: %24.16E\n",
-                 a.index, elementMap[a.element].c_str(), a.charge);
+                 a.tag, elementMap[a.element].c_str(), a.charge);
 }
 
 void InterfaceLammps::getScreeningInfo(double* const& screenInfo) const

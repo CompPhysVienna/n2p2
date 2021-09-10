@@ -620,8 +620,80 @@ double Structure::calculateElectrostaticEnergy(
     energyElec = 0.5 * Q.head(numAtoms).transpose()
                * (A.topLeftCorner(numAtoms, numAtoms) - 
                 MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
+    double const EQeq = 0.5 * Q.head(numAtoms).transpose() * A.topLeftCorner(numAtoms, numAtoms) * Q.head(numAtoms) - Q.head(numAtoms).dot(b.head(numAtoms));
+    fprintf(stderr, "EQeq(A) = %24.16E\n", EQeq);
 
     energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
+
+    {
+        MatrixXd D(numAtoms, numAtoms);
+        D.setZero();
+        VectorXd chi(numAtoms);
+        chi.setZero();
+        KspaceGrid grid;
+        double rcutReal = grid.setup(box, precision);
+        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
+        rcutReal = 8.00;
+        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
+        double const sqrt2eta = sqrt(2.0) * grid.eta;
+        fprintf(stderr, "ETA = %24.16E\n", grid.eta);
+
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const& ai = atoms.at(i);
+            size_t const ei = ai.element;
+
+            // diagonal including self interaction
+            // TODO: eta term cancels with A_{recip} on the diagonal, however
+            // this doesn't cancel exactly because of cut-off in reciprocal
+            // space. At the moment both terms are included to match the results
+            // with RuNNer.
+            //A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
+            D(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei)
+                     - 2 / (sqrt2eta * sqrt(M_PI));
+
+            hardnessJ(i) = hardness(ei);
+            chi(i) = ai.chi;
+
+            // real part
+            for (auto const& aj : ai.neighbors)
+            {
+                size_t j = aj.index;
+                if (j < i) continue;
+
+                double const rij = aj.d;
+                if (rij >= rcutReal) break;
+                size_t const ej = aj.element;
+                D(i, j) += (erfc(rij / sqrt2eta)
+                          - erfc(rij / gammaSqrt2(ei, ej))) / rij;
+            }
+
+            for (size_t k = 0; k< grid.kvectors.size(); ++k)
+            {
+                fprintf(stderr, "H: kcoeff[%zu] = %24.16E %24.16E\n", k, grid.kvectors.at(k).coeff, sqrt(grid.kvectors.at(k).knorm2));
+            }
+            KspaceGrid gridFull;
+            gridFull.setup(box, precision, false);
+            for (size_t k = 0; k< gridFull.kvectors.size(); ++k)
+            {
+                fprintf(stderr, "F: kcoeff[%zu] = %24.16E %24.16E\n", k, gridFull.kvectors.at(k).coeff, sqrt(gridFull.kvectors.at(k).knorm2));
+            }
+            // reciprocal part
+            //for (size_t j = i + 1; j < numAtoms; ++j)
+            for (size_t j = i; j < numAtoms; ++j)
+            {
+                Atom const& aj = atoms.at(j);
+                for (auto const& gv : grid.kvectors)
+                {
+                    // Multiply by 2 because our grid is only a half-sphere
+                    D(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
+                }
+                D(j, i) = D(i, j);
+            }
+        }
+        double const EQeq = 0.5 * Q.head(numAtoms).transpose() * D * Q.head(numAtoms) + Q.head(numAtoms).dot(chi); // + calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
+        fprintf(stderr, "EQeq = %24.16E\n", EQeq);
+    }
 
     return error;
 }
@@ -652,10 +724,9 @@ double Structure::calculateScreeningEnergy(
                 size_t const ej = aj.element;
                 //TODO: Maybe add charge to neighbor class?
                 double const Qj = atoms.at(j).charge;
-                energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej))
                                 * (fs.f(rij) - 1) / rij;
-
-           }
+            }
         }
         cout << "screening energy: " << energyScreen << endl;
     }

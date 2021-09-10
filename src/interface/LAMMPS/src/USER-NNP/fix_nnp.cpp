@@ -215,11 +215,11 @@ void FixNNP::pertype_parameters(char *arg)
 void FixNNP::allocate_QEq()
 {
     int ne = atom->ntypes;
-    memory->create(nnp->chi,atom->natoms + 1,"qeq:nnp->chi");
-    memory->create(nnp->hardness,ne+1,"qeq:nnp->hardness");
-    memory->create(nnp->sigmaSqrtPi,ne+1,"qeq:nnp->sigmaSqrtPi");
-    memory->create(nnp->gammaSqrt2,ne+1,ne+1,"qeq:nnp->gammaSqrt2");
-    memory->create(nnp->screening_info,5,"qeq:screening");
+    memory->create(nnp->chi,atom->natoms,"qeq:nnp->chi");
+    memory->create(nnp->hardness,ne,"qeq:nnp->hardness");
+    memory->create(nnp->sigmaSqrtPi,ne,"qeq:nnp->sigmaSqrtPi");
+    memory->create(nnp->gammaSqrt2,ne,ne,"qeq:nnp->gammaSqrt2");
+    memory->create(nnp->screening_info,4,"qeq:screening");
 
     // TODO: check, these communications are from original LAMMPS code
     /*MPI_Bcast(&nnp->chi[1],nloc,MPI_DOUBLE,0,world);
@@ -383,8 +383,6 @@ double FixNNP::QEq_f(const gsl_vector *v)
     int nall = atom->natoms;
     int count = 0;
 
-    double dx, dy, dz, rij;
-    double qi,qj;
     double **x = atom->x;
     double *q = atom->q;
 
@@ -407,31 +405,34 @@ double FixNNP::QEq_f(const gsl_vector *v)
         E_recip = 0.0;
         E_real = 0.0;
         E_self = 0.0;
+        fprintf(stderr, "ETA = %24.16E\n", nnp->ewaldEta);
         for (i = 0; i < nlocal; i++) // over local atoms
         {
-            qi = gsl_vector_get(v, i);
+            double const qi = gsl_vector_get(v, i);
             double qi2 = qi * qi;
             // Self term
-            E_self += qi2 * (1 / (2.0 * nnp->sigmaSqrtPi[type[i]]) -
-                       1 / (sqrt(2.0 * M_PI) * nnp->ewaldEta));
-            E_qeq += nnp->chi[i] * qi + 0.5 * nnp->hardness[type[i]] * qi2;
-            E_scr -= qi2 / (2.0 * nnp->sigmaSqrtPi[type[i]]); // self screening term
+            E_self += qi2 * (1 / (2.0 * nnp->sigmaSqrtPi[type[i]-1])
+                    - 1 / (sqrt(2.0 * M_PI) * nnp->ewaldEta));
+            fprintf(stderr, "q(%3d) = %24.16E, J = %24.16E\n", i, qi, nnp->hardness[type[i]-1]);
+            E_qeq += nnp->chi[i] * qi
+                  + 0.5 * nnp->hardness[type[i]-1] * qi2;
+            E_scr -= qi2 / (2.0 * nnp->sigmaSqrtPi[type[i]-1]); // self screening term
             // Real Term
             // TODO: we loop over the full neighbor list, this can be optimized
             for (int jj = 0; jj < list->numneigh[i]; ++jj) {
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 jmap = atom->map(tag[j]); //TODO: check
-                qj = gsl_vector_get(v, jmap);
-                dx = x[i][0] - x[j][0];
-                dy = x[i][1] - x[j][1];
-                dz = x[i][2] - x[j][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
-                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]][type[jmap]])) / rij;
+                double const qj = gsl_vector_get(v, jmap);
+                double const dx = x[i][0] - x[j][0];
+                double const dy = x[i][1] - x[j][1];
+                double const dz = x[i][2] - x[j][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
+                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
                 double real = 0.5 * qi * qj * erfcRij;
                 E_real += real;
                 if (rij <= nnp->screening_info[2]) {
-                    E_scr += 0.5 * qi * qj * erf(rij/nnp->gammaSqrt2[type[i]][type[jmap]])*(nnp->screening_f(rij) - 1) / rij;
+                    E_scr += 0.5 * qi * qj * erf(rij/nnp->gammaSqrt2[type[i]-1][type[jmap]-1])*(nnp->screening_f(rij) - 1) / rij;
                 }
                 //count = count + 1;
             }
@@ -440,12 +441,13 @@ double FixNNP::QEq_f(const gsl_vector *v)
         // Reciprocal Term
         for (int k = 0; k < nnp->kcount; k++) // over k-space
         {
+            fprintf(stderr, "kcoeff[%d] = %24.16E\n", k, nnp->kcoeff[k]);
             sf_real = 0.0;
             sf_im = 0.0;
             // TODO: this loop over all atoms can be replaced by a MPIallreduce ?
             for (i = 0; i < nall; i++) //TODO: discuss this additional inner loop
             {
-                qi = gsl_vector_get(v,i);
+                double const qi = gsl_vector_get(v,i);
                 sf_real += qi * nnp->sfexp_rl[k][i];
                 sf_im += qi * nnp->sfexp_im[k][i];
             }
@@ -458,7 +460,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
     {
         // first loop over local atoms
         for (i = 0; i < nlocal; i++) {
-            qi = gsl_vector_get(v,i);
+            double const qi = gsl_vector_get(v,i);
             // add i terms here
             iiterm = qi * qi / (2.0 * nnp->sigmaSqrtPi[type[i]]);
             E_qeq += iiterm + nnp->chi[i]*qi + 0.5*nnp->hardness[type[i]]*qi*qi;
@@ -466,11 +468,11 @@ double FixNNP::QEq_f(const gsl_vector *v)
             E_scr -= iiterm;
             // second loop over 'all' atoms
             for (j = i + 1; j < nall; j++) {
-                qj = gsl_vector_get(v, j);
-                dx = x[j][0] - x[i][0];
-                dy = x[j][1] - x[i][1];
-                dz = x[j][2] - x[i][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                double const qj = gsl_vector_get(v, j);
+                double const dx = x[j][0] - x[i][0];
+                double const dy = x[j][1] - x[i][1];
+                double const dz = x[j][2] - x[i][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
                 ijterm = (erf(rij / nnp->gammaSqrt2[type[i]][type[j]]) / rij);
                 E_qeq += ijterm * qi * qj;
                 nnp->E_elec += ijterm;
@@ -592,6 +594,7 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     for (i = 0; i < nall; i++){
         grad_i = gsl_vector_get(dEdQ,i);
         gsl_vector_set(dEdQ,i,grad_i - (grad_sum)/nall);
+        //gsl_vector_set(dEdQ,i,grad_i);
     }
 
     //MPI_Allreduce(dEdQ_loc,dEdQ,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
@@ -640,14 +643,52 @@ void FixNNP::calculate_QEqCharges()
     QEq_minimizer.fdf = &QEq_fdf_wrap;
     QEq_minimizer.params = this;
 
+    q[ 0] =  9.0172983387062006E-02;
+    q[ 1] =  1.3641844939732600E-01;
+    q[ 2] =  1.1534057032122748E-01;
+    q[ 3] = -2.6183165626861749E-01;
+    q[ 4] =  1.2478853272527497E-01;
+    q[ 5] =  9.9154652510639193E-02;
+    q[ 6] = -2.0320633594884582E-01;
+    q[ 7] =  1.5077528010356031E-01;
+    q[ 8] =  1.0545961981723477E-01;
+    q[ 9] =  1.0721155781927211E-01;
+    q[10] = -2.5637106920821656E-01;
+    q[11] =  1.3767024849619425E-01;
+    q[12] = -2.2006091505768430E-01;
+    q[13] = -2.3518637803977813E-01;
+    q[14] =  1.1004800576876206E-01;
+    q[15] =  1.2457842239861068E-01;
+    q[16] =  1.1434733344402730E-01;
+    q[17] = -2.8256347534442394E-01;
+    q[18] =  1.2747526484297361E-01;
+    q[19] = -2.3412971681479519E-01;
+    q[20] =  1.1415705913922840E-01;
+    q[21] = -2.7263628991795930E-01;
+    q[22] =  1.1263403257973484E-01;
+    q[23] =  1.1034962117814638E-01;
+    q[24] =  1.1847178479117916E-01;
+    q[25] =  1.3658196132808181E-01;
+    q[26] =  1.3761295680984550E-01;
+    q[27] = -2.7372231339107417E-01;
+    q[28] = -2.2955663167309948E-01;
+    q[29] =  1.3433991100513271E-01;
+    q[30] =  1.2277837277223856E-01;
+    q[31] = -2.2058240732065956E-01;
+    q[32] =  1.1917909653994410E-01;
+    q[33] =  1.2797577200732246E-01;
+    q[34] = -2.0590918634609698E-01;
+    q[35] =  1.1823488614823419E-01;
+
     // Allocation : set initial guess is the current charge vector
     Q = gsl_vector_alloc(nsize);
     for (i = 0; i < nsize; i++) {
         gsl_vector_set(Q,i,q[i]);
+        fprintf(stderr, "q(%3d) = %16.8E\n", i, q[i]);
     }
 
-
     // Numeric vs. analytic derivatives check:
+    fprintf(stderr, "EQeq = %24.16E\n", QEq_f(Q));
     gsl_vector *dEdQ = gsl_vector_calloc(nsize);
     QEq_df(Q, dEdQ);
     double const delta = 1.0E-5;
@@ -661,8 +702,9 @@ void FixNNP::calculate_QEqCharges()
         gsl_vector_set(Q, i, qi);
         double const numeric = (high - low) / (2.0 * delta);
         double const analytic = gsl_vector_get(dEdQ, i);
-        fprintf(stderr, "NA-Check: dEQeq/dq(%3d) = %16.8E / %16.8E (Numeric/Analytic), Diff: %16.8E\n", i, numeric, analytic, numeric - analytic);
+        fprintf(stderr, "NA-Check: dEQeq/dq(%3d) = %16.8E / %16.8E (Numeric/Analytic), Diff: %16.8E (low: %16.8E, high: %16.8E)\n", i, numeric, analytic, numeric - analytic, low, high);
     }
+    gsl_vector_free(dEdQ);
 
     // TODO: is bfgs2 standard ?
     //T = gsl_multimin_fdfminimizer_conjugate_pr; // minimization algorithm
@@ -704,6 +746,8 @@ void FixNNP::calculate_QEqCharges()
     // Read charges into LAMMPS atom->q array before deallocating
     for (i = 0; i < nsize; i++) {
         q[i] = gsl_vector_get(s->x,i);
+        //fprintf(stderr, "q(%3d) = %16.8E\n", i, q[i]);
+        //gsl_vector_set(Q, i, q[i]);
     }
 
     // Deallocation
