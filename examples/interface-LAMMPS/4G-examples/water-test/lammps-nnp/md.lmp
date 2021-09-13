@@ -44,7 +44,7 @@ neighbor 0.0 bin
 ###############################################################################
 pair_style nnp dir ${nnpDir} showew yes showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:H,2:O"
 pair_coeff * * ${nnpCutoff}
-fix 1 all nnp 1 1.0e-4 1.0e-4 1.0e-2 20 nnp 
+fix 1 all nnp 1 1.0e-5 1.0e-4 1.0e-2 100 nnp
 
 
 ###############################################################################

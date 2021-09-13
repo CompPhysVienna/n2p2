@@ -405,7 +405,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
         E_recip = 0.0;
         E_real = 0.0;
         E_self = 0.0;
-        fprintf(stderr, "ETA = %24.16E\n", nnp->ewaldEta);
+        //fprintf(stderr, "ETA = %24.16E\n", nnp->ewaldEta);
         for (i = 0; i < nlocal; i++) // over local atoms
         {
             double const qi = gsl_vector_get(v, i);
@@ -413,7 +413,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
             // Self term
             E_self += qi2 * (1 / (2.0 * nnp->sigmaSqrtPi[type[i]-1])
                     - 1 / (sqrt(2.0 * M_PI) * nnp->ewaldEta));
-            fprintf(stderr, "q(%3d) = %24.16E, J = %24.16E\n", i, qi, nnp->hardness[type[i]-1]);
+            //fprintf(stderr, "q(%3d) = %24.16E, J = %24.16E\n", i, qi, nnp->hardness[type[i]-1]);
             E_qeq += nnp->chi[i] * qi
                   + 0.5 * nnp->hardness[type[i]-1] * qi2;
             E_scr -= qi2 / (2.0 * nnp->sigmaSqrtPi[type[i]-1]); // self screening term
@@ -441,7 +441,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
         // Reciprocal Term
         for (int k = 0; k < nnp->kcount; k++) // over k-space
         {
-            fprintf(stderr, "kcoeff[%d] = %24.16E\n", k, nnp->kcoeff[k]);
+            //fprintf(stderr, "kcoeff[%d] = %24.16E\n", k, nnp->kcoeff[k]);
             sf_real = 0.0;
             sf_im = 0.0;
             // TODO: this loop over all atoms can be replaced by a MPIallreduce ?
@@ -452,7 +452,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
                 sf_im += qi * nnp->sfexp_im[k][i];
             }
             // TODO: sf_real->sf_real_all or MPIAllreduce for E_recip ?
-            fprintf(stderr, "sfexp %d : %24.16E\n", k, nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2)));
+            //fprintf(stderr, "sfexp %d : %24.16E\n", k, nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2)));
             E_recip += nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2));
         }
         nnp->E_elec = E_real + E_self + E_recip;
@@ -473,7 +473,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
                 double const dx = x[j][0] - x[i][0];
                 double const dy = x[j][1] - x[i][1];
                 double const dz = x[j][2] - x[i][2];
-                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
                 ijterm = (erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij);
                 E_qeq += ijterm * qi * qj;
                 nnp->E_elec += ijterm;
@@ -557,7 +557,7 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
                 dx = x[i][0] - x[j][0];
                 dy = x[i][1] - x[j][1];
                 dz = x[i][2] - x[j][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
                 double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1]));
                 jsum += qj * erfcRij / rij;
                 //count = count + 1;
@@ -581,7 +581,7 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
                     dx = x[j][0] - x[i][0];
                     dy = x[j][1] - x[i][1];
                     dz = x[j][2] - x[i][2];
-                    rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                    rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
                     jsum += qj * erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij;
                 }
             }
@@ -644,68 +644,69 @@ void FixNNP::calculate_QEqCharges()
     QEq_minimizer.fdf = &QEq_fdf_wrap;
     QEq_minimizer.params = this;
 
-    q[ 0] =  9.0172983387062006E-02;
-    q[ 1] =  1.3641844939732600E-01;
-    q[ 2] =  1.1534057032122748E-01;
-    q[ 3] = -2.6183165626861749E-01;
-    q[ 4] =  1.2478853272527497E-01;
-    q[ 5] =  9.9154652510639193E-02;
-    q[ 6] = -2.0320633594884582E-01;
-    q[ 7] =  1.5077528010356031E-01;
-    q[ 8] =  1.0545961981723477E-01;
-    q[ 9] =  1.0721155781927211E-01;
-    q[10] = -2.5637106920821656E-01;
-    q[11] =  1.3767024849619425E-01;
-    q[12] = -2.2006091505768430E-01;
-    q[13] = -2.3518637803977813E-01;
-    q[14] =  1.1004800576876206E-01;
-    q[15] =  1.2457842239861068E-01;
-    q[16] =  1.1434733344402730E-01;
-    q[17] = -2.8256347534442394E-01;
-    q[18] =  1.2747526484297361E-01;
-    q[19] = -2.3412971681479519E-01;
-    q[20] =  1.1415705913922840E-01;
-    q[21] = -2.7263628991795930E-01;
-    q[22] =  1.1263403257973484E-01;
-    q[23] =  1.1034962117814638E-01;
-    q[24] =  1.1847178479117916E-01;
-    q[25] =  1.3658196132808181E-01;
-    q[26] =  1.3761295680984550E-01;
-    q[27] = -2.7372231339107417E-01;
-    q[28] = -2.2955663167309948E-01;
-    q[29] =  1.3433991100513271E-01;
-    q[30] =  1.2277837277223856E-01;
-    q[31] = -2.2058240732065956E-01;
-    q[32] =  1.1917909653994410E-01;
-    q[33] =  1.2797577200732246E-01;
-    q[34] = -2.0590918634609698E-01;
-    q[35] =  1.1823488614823419E-01;
+    //q[ 0] =  9.0172983387062006E-02;
+    //q[ 1] =  1.3641844939732600E-01;
+    //q[ 2] =  1.1534057032122748E-01;
+    //q[ 3] = -2.6183165626861749E-01;
+    //q[ 4] =  1.2478853272527497E-01;
+    //q[ 5] =  9.9154652510639193E-02;
+    //q[ 6] = -2.0320633594884582E-01;
+    //q[ 7] =  1.5077528010356031E-01;
+    //q[ 8] =  1.0545961981723477E-01;
+    //q[ 9] =  1.0721155781927211E-01;
+    //q[10] = -2.5637106920821656E-01;
+    //q[11] =  1.3767024849619425E-01;
+    //q[12] = -2.2006091505768430E-01;
+    //q[13] = -2.3518637803977813E-01;
+    //q[14] =  1.1004800576876206E-01;
+    //q[15] =  1.2457842239861068E-01;
+    //q[16] =  1.1434733344402730E-01;
+    //q[17] = -2.8256347534442394E-01;
+    //q[18] =  1.2747526484297361E-01;
+    //q[19] = -2.3412971681479519E-01;
+    //q[20] =  1.1415705913922840E-01;
+    //q[21] = -2.7263628991795930E-01;
+    //q[22] =  1.1263403257973484E-01;
+    //q[23] =  1.1034962117814638E-01;
+    //q[24] =  1.1847178479117916E-01;
+    //q[25] =  1.3658196132808181E-01;
+    //q[26] =  1.3761295680984550E-01;
+    //q[27] = -2.7372231339107417E-01;
+    //q[28] = -2.2955663167309948E-01;
+    //q[29] =  1.3433991100513271E-01;
+    //q[30] =  1.2277837277223856E-01;
+    //q[31] = -2.2058240732065956E-01;
+    //q[32] =  1.1917909653994410E-01;
+    //q[33] =  1.2797577200732246E-01;
+    //q[34] = -2.0590918634609698E-01;
+    //q[35] =  1.1823488614823419E-01;
 
     // Allocation : set initial guess is the current charge vector
     Q = gsl_vector_alloc(nsize);
     for (i = 0; i < nsize; i++) {
         gsl_vector_set(Q,i,q[i]);
-        fprintf(stderr, "q(%3d) = %16.8E\n", i, q[i]);
+        //fprintf(stderr, "q(%3d) = %16.8E\n", i, q[i]);
     }
 
     // Numeric vs. analytic derivatives check:
-    fprintf(stderr, "EQeq = %24.16E\n", QEq_f(Q));
-    gsl_vector *dEdQ = gsl_vector_calloc(nsize);
-    QEq_df(Q, dEdQ);
-    double const delta = 1.0E-5;
-    for (i = 0; i < nsize; ++i)
-    {
-        double const qi = gsl_vector_get(Q, i);
-        gsl_vector_set(Q, i, qi - delta);
-        double const low = QEq_f(Q);
-        gsl_vector_set(Q, i, qi + delta);
-        double const high = QEq_f(Q);
-        gsl_vector_set(Q, i, qi);
-        double const numeric = (high - low) / (2.0 * delta);
-        double const analytic = gsl_vector_get(dEdQ, i);
-        fprintf(stderr, "NA-Check: dEQeq/dq(%3d) = %16.8E / %16.8E (Numeric/Analytic), Diff: %16.8E (low: %16.8E, high: %16.8E)\n", i, numeric, analytic, numeric - analytic, low, high);
-    }
-    gsl_vector_free(dEdQ);
+    //fprintf(stderr, "EQeq = %24.16E\n", QEq_f(Q));
+    //gsl_vector *dEdQ = gsl_vector_calloc(nsize);
+    //QEq_df(Q, dEdQ);
+    //double const delta = 1.0E-5;
+    //for (i = 0; i < nsize; ++i)
+    //{
+    //    double const qi = gsl_vector_get(Q, i);
+    //    gsl_vector_set(Q, i, qi - delta);
+    //    double const low = QEq_f(Q);
+    //    gsl_vector_set(Q, i, qi + delta);
+    //    double const high = QEq_f(Q);
+    //    gsl_vector_set(Q, i, qi);
+    //    double const numeric = (high - low) / (2.0 * delta);
+    //    double const analytic = gsl_vector_get(dEdQ, i);
+    //    fprintf(stderr, "NA-Check: q = %16.8E dEQeq/dq(%3d) = %16.8E / %16.8E (Numeric/Analytic), Diff: %16.8E (low: %16.8E, high: %16.8E)\n", qi, i, numeric, analytic, numeric - analytic, low, high);
+    //}
+    //gsl_vector_free(dEdQ);
+    //exit(1);
 
     // TODO: is bfgs2 standard ?
     //T = gsl_multimin_fdfminimizer_conjugate_pr; // minimization algorithm
@@ -740,6 +741,7 @@ void FixNNP::calculate_QEqCharges()
 
         if (status == GSL_SUCCESS)
             printf ("Minimum charge distribution is found at iteration : %zu\n", iter);
+        //fprintf(stderr, "iter %10ld q %24.16E\n", iter, gsl_vector_get(s->x, 0));
 
     }
     while (status == GSL_CONTINUE && iter < nnp->maxit);
