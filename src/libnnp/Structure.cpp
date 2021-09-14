@@ -52,7 +52,8 @@ Structure::Structure() :
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
     sampleType                    (ST_UNKNOWN),
-    comment                       (""        )
+    comment                       (""        ),
+    hasAMatrix                    (false     )
 {
     for (size_t i = 0; i < 3; i++)
     {
@@ -535,11 +536,6 @@ double Structure::calculateElectrostaticEnergy(
             size_t const ei = ai.element;
 
             // diagonal including self interaction
-            // TODO: eta term cancels with A_{recip} on the diagonal, however
-            // this doesn't cancel exactly because of cut-off in reciprocal
-            // space. At the moment both terms are included to match the results
-            // with RuNNer.
-            //A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
             A(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI));
             
             hardnessJ(i) = hardness(ei);
@@ -574,13 +570,6 @@ double Structure::calculateElectrostaticEnergy(
     }
     else
     {
-        // "fs" and can be directly used like this:
-        // fs.f(rij) .... returns screening function value.
-        // fs.df(rij) ... returns screening function derivative.
-        // or get both at the same time (store in 2nd and 3rd argument):
-        // double f;
-        // double df;
-        // fs.fdf(rij, f, df)
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
@@ -605,14 +594,18 @@ double Structure::calculateElectrostaticEnergy(
     A.col(numAtoms).setOnes();
     A.row(numAtoms).setOnes();
     A(numAtoms, numAtoms) = 0.0;
+    hasAMatrix = true;
     b(numAtoms) = chargeRef;
 
+    //TODO: sometimes only recalculation of A matrix is needed, because Qs are
+    //stored. 
     VectorXd const Q = A.colPivHouseholderQr().solve(b);
 
     for (size_t i = 0; i < numAtoms; ++i)
     {
         atoms.at(i).charge = Q(i); 
     }
+    hasCharges = true; 
     lambda = Q(numAtoms);
     double error = (A * Q - b).norm() / b.norm();
     
@@ -829,13 +822,15 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
     {
         const size_t index = i / 3;
         const size_t comp = i % 3;
-        
+
         Atom& a = atoms.at(index);
-        //if ( a.hasdQdr[comp] ) continue;
+        if ( a.dAdrQ.size() == 0 ) 
+            throw runtime_error("ERROR: dAdrQ needs to be calculated before "
+                                "calculating dQdr");
         a.dQdr.resize(numAtoms);
 
-        // b stores (-dChidr - dAdrQ)
-        VectorXd b(numAtoms);
+        // b stores (-dChidr - dAdrQ), last element for charge conservation.
+        VectorXd b(numAtoms + 1);
         b.setZero();
         for (size_t j = 0; j < numAtoms; ++j)
         {
@@ -856,6 +851,7 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
                 = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
 
+            // TODO: break loop after sym-func cutoff
             for (auto const& n : aj.neighbors)
             {
                 if (n.index == i)
@@ -878,7 +874,7 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
             }
             b(j) -= a.dAdrQ.at(j)[comp];
         }
-        VectorXd dQdr = A.colPivHouseholderQr().solve(b);
+        VectorXd dQdr = A.colPivHouseholderQr().solve(b).head(numAtoms);
         for (size_t j = 0; j < numAtoms; ++j)
         {
             a.dQdr.at(j)[comp] = dQdr(j);
@@ -1126,6 +1122,7 @@ void Structure::clearNeighborList()
 void Structure::clearElectrostatics(bool clearDQdr)
 {
     A.resize(0,0);
+    hasAMatrix = false;
     for (auto& a : atoms)
     {
         a.dAdrQ.clear();

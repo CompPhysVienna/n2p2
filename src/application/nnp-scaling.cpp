@@ -60,7 +60,9 @@ int main(int argc, char* argv[])
     dataset.setupMPI();
     dataset.initialize();
     dataset.loadSettingsFile();
-    dataset.setupGeneric();
+    // TODO: is there a better way than setting initial_hardness true? stage is
+    // not accessible here.
+    dataset.setupGeneric("", true);
     dataset.setupSymmetryFunctionScalingNone();
     dataset.setupSymmetryFunctionStatistics(true, false, false, false);
     dataset.setupRandomNumberGenerator();

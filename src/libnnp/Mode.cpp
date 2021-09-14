@@ -1658,12 +1658,14 @@ void Mode::chargeEquilibration( Structure& structure,
 
     // TODO: leave these 2 functions here or shift it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
-    s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
     if (derivativesElec)
+    {
+        s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
         s.calculateElectrostaticEnergyDerivatives(hardness,
                                             gammaSqrt2,
                                             sigmaSqrtPi,
                                             screeningFunction);
+    }
 
     for (auto const& a : structure.atoms)
     {

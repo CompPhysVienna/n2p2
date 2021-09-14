@@ -161,7 +161,7 @@ struct Atom
     /// If dQdr has been calculated for respective components.
     //bool                    hasdQdr[3];
     /// Derivative of A-matrix with respect to this atom's coordinates
-    // contracted with the charges.
+    /// contracted with the charges.
     std::vector<Vec3D>       dAdrQ;
     /// Neighbor array (maximum number defined in macros.h.
     std::vector<Neighbor>    neighbors;

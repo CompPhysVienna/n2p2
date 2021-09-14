@@ -109,6 +109,8 @@ struct Structure
     Vec3D                    invbox[3];
     /// Global charge equilibration matrix A'.
     Eigen::MatrixXd          A;
+    /// If A matrix of this structure is currently stored.
+    bool                     hasAMatrix;
     /// Number of atoms of each element in this structure.
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.

@@ -1059,10 +1059,30 @@ void Training::calculateError(
 #else
         calculateSymmetryFunctionGroups((*it), useForces);
 #endif
-        calculateAtomicNeuralNetworks((*it), useForces, nnId, true);
-        if ( nnpType == NNPType::HDNNP_4G ) chargeEquilibration((*it), useForces, true);
-        if ( nnpType != NNPType::HDNNP_4G || stage == 2 )
+
+        if ( nnpType == Mode::NNPType::HDNNP_4G )
         {
+            if ( stage == 1 )
+            {
+                calculateAtomicNeuralNetworks((*it), useForces, nnId, true);
+                chargeEquilibration((*it), useForces, true);
+            }
+            else
+            {
+                if ( !it->hasCharges || (!it->hasAMatrix && useForces) ) 
+                {
+                    calculateAtomicNeuralNetworks((*it), useForces, 
+                                                    "elec", true);
+                    chargeEquilibration((*it), useForces, true);
+                }
+                calculateAtomicNeuralNetworks((*it), useForces, "short", true);
+                calculateEnergy((*it));
+                if (useForces) calculateForces((*it));
+            }
+        }
+        else
+        {
+            calculateAtomicNeuralNetworks((*it), useForces, nnId, true);
             calculateEnergy((*it));
             if (useForces) calculateForces((*it));
         }
@@ -1100,6 +1120,7 @@ void Training::calculateError(
             }
         }
         if (freeMemory) it->freeAtoms(true);
+        it->clearElectrostatics();
     }
 
     for (auto k : pk)
@@ -1893,9 +1914,7 @@ void Training::update(string const& property)
     vector<size_t> thresholdLoopCount(batchSize, 0);
     vector<double> currentRmseFraction(batchSize, 0.0);
 
-    bool useSubCandidates = false;
-    if (k == "force" && nnpType == NNPType::HDNNP_4G)
-        useSubCandidates = true;
+    bool useSubCandidates = (k == "force" && nnpType == NNPType::HDNNP_4G);
         
     // Either consider only UpdateCandidates or SubCandidates 
     vector<size_t> currentUpdateCandidates(batchSize, 0);
@@ -1981,7 +2000,6 @@ void Training::update(string const& property)
                         {
                             calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
                             chargeEquilibration(s, derivatives, true);
-                            s.hasCharges = true;
                         }
                         calculateAtomicNeuralNetworks(s, derivatives, "short", true);
                         calculateEnergy(s);
@@ -2011,11 +2029,10 @@ void Training::update(string const& property)
                     // Assume stage 2.
                     else if (nnpType == NNPType::HDNNP_4G)
                     {
-                        if (!s.hasCharges)
+                        if (!s.hasAMatrix)
                         {
                             calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
                             chargeEquilibration(s, derivatives, true);
-                            s.hasCharges = true;
                         }
                         calculateAtomicNeuralNetworks(s, derivatives, "short");
                         calculateForces(s);
@@ -2075,6 +2092,8 @@ void Training::update(string const& property)
                 {
                     s.freeAtoms(true);
                 }
+                if (!useSubCandidates) s.clearElectrostatics();
+
                 if (currentRmseFraction.at(b) > rmseFractionBest)
                 {
                     rmseFractionBest = currentRmseFraction.at(b);
@@ -2129,6 +2148,8 @@ void Training::update(string const& property)
                                 c->subCandidates.size() * pu.epochFraction);
                 MPI_Allreduce(  MPI_IN_PLACE, &(pu.numGroupedSubCand), 1, 
                                 MPI_INT, MPI_MIN, comm);
+                //if (myRank == 0)
+                //    cout << "group size: " << pu.numGroupedSubCand << endl;
             }
             pu.countGroupedSubCand++;
         }
@@ -2188,13 +2209,26 @@ void Training::update(string const& property)
         {
             if (nnpType == NNPType::HDNNP_2G || nnpType == NNPType::HDNNP_4G)
             {
+                if (nnpType == NNPType::HDNNP_4G && !s.hasCharges) 
+                {
+                   calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
+                   chargeEquilibration(s, derivatives, true);
+                }
                 // Loop over atoms and calculate atomic energy contributions.
                 for (vector<Atom>::iterator it = s.atoms.begin();
                      it != s.atoms.end(); ++it)
                 {
                     size_t i = it->element;
                     NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
-                    nn.setInput(&((it->G).front()));
+
+                    // TODO: This part should simplify with improved NN class.
+                    for (size_t j = 0; j < it->G.size(); ++j)
+                    {
+                        nn.setInput(j, it->G.at(j));
+                    }
+                    if (nnpType == NNPType::HDNNP_4G)
+                        nn.setInput(it->G.size(), it->charge);
+                    //cout << "charge of nr. " << it->index << ": " << it->charge << endl;
                     nn.propagate();
                     nn.getOutput(&(it->energy));
                     // Compute derivative of output node with respect to all
@@ -2223,6 +2257,12 @@ void Training::update(string const& property)
             {
                 if (nnpType == NNPType::HDNNP_4G)
                 {
+                    if (!s.hasAMatrix) 
+                    {
+                       calculateAtomicNeuralNetworks(s, derivatives, "elec", 
+                                                        true);
+                       chargeEquilibration(s, derivatives, true);
+                    }
                     vector<size_t> atomsAndComponents = { 3 * sC->a + sC->c };
                     s.calculateDQdr(atomsAndComponents, elements);
                 }
@@ -2252,7 +2292,13 @@ void Training::update(string const& property)
 #endif
                     size_t i = it->element;
                     NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
-                    nn.setInput(&((it->G).front()));
+                    // TODO: This part should simplify with improved NN class.
+                    for (size_t j = 0; j < it->G.size(); ++j)
+                    {
+                        nn.setInput(j, it->G.at(j));
+                    }
+                    if (nnpType == NNPType::HDNNP_4G)
+                        nn.setInput(it->G.size(), it->charge);
                     nn.propagate();
                     if (derivatives) nn.calculateDEdG(&((it->dEdG).front()));
                     nn.getOutput(&(it->energy));
@@ -2402,6 +2448,8 @@ void Training::update(string const& property)
         // Now symmetry function memory is not required any more for this
         // update.
         if (freeMemory) s.freeAtoms(true);
+        if (nnpType == NNPType::HDNNP_4G && !useSubCandidates)
+            s.clearElectrostatics();
 
         // Precalculate offset in error array.
         size_t offset2 = 0;
@@ -2424,8 +2472,6 @@ void Training::update(string const& property)
             if (k == "energy")
             {
                 pu.error.at(0).at(offset2) += s.energyRef - s.energy;
-                //cout << "energy Error" << endl;
-                //cout << (s.energyRef - s.energy)/s.numAtoms << endl;
             }
             else if (k == "force")
             {
