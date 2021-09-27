@@ -79,12 +79,26 @@ cdef class Mode:
         self.thisptr.calculateEnergy(deref(structure.thisptr))
     def calculateForces(self, Structure structure):
         self.thisptr.calculateForces(deref(structure.thisptr))
+    def addEnergyOffset(self, Structure structure, ref=True):
+        self.thisptr.addEnergyOffset(deref(structure.thisptr), ref)
+    def removeEnergyOffset(self, Structure structure, ref=True):
+        self.thisptr.removeEnergyOffset(deref(structure.thisptr), ref)
     def getMaxCutoffRadius(self):
         return self.thisptr.getMaxCutoffRadius()
     def settingsKeywordExists(self, keyword):
         return self.thisptr.settingsKeywordExists(keyword)
     def settingsGetValue(self, keyword):
         return self.thisptr.settingsGetValue(keyword)
+    def getMeanEnergy(self):
+        return self.thisptr.getMeanEnergy()
+    def getConvEnergy(self):
+        return self.thisptr.getConvEnergy()
+    def getConvLength(self):
+        return self.thisptr.getConvLength()
+    def getConvLength(self):
+        return self.thisptr.getConvLength()
+    def useNormalization(self):
+        return self.thisptr.useNormalization()
 
     # log
     property log:

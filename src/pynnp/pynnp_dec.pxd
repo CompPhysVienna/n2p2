@@ -223,12 +223,12 @@ cdef extern from "Structure.h" namespace "nnp":
         #void                     calculateInverseBox();
         #void                     calculateVolume();
         #void                     remap(Atom& atom);
-        #void                     toNormalizedUnits(double meanEnergy,
-        #                                           double convEnergy,
-        #                                           double convLength);
-        #void                     toPhysicalUnits(double meanEnergy,
-        #                                         double convEnergy,
-        #                                         double convLength);
+        void           toNormalizedUnits(double meanEnergy,
+                                         double convEnergy,
+                                         double convLength) except +
+        void           toPhysicalUnits(double meanEnergy,
+                                       double convEnergy,
+                                       double convLength) except +
         size_t         getMaxNumNeighbors() except +
         #void                     freeAtoms(bool all);
         void           reset() except +
@@ -294,10 +294,9 @@ cdef extern from "Mode.h" namespace "nnp":
                                                 bool      derivatives) except +
         void           calculateEnergy(Structure structure) except +
         void           calculateForces(Structure structure) except +
-        #void                     addEnergyOffset(Structure& structure,
-        #                                         bool       ref = true);
-        #void                     removeEnergyOffset(Structure& structure,
-        #                                            bool       ref = true);
+        void           addEnergyOffset(Structure structure, bool ref) except +
+        void           removeEnergyOffset(Structure structure,
+                                          bool      ref) except +
         #double                   getEnergyOffset(Structure const& structure) const;
         #double                   getEnergyWithOffset(
         #                                        Structure const& structure,
@@ -316,13 +315,13 @@ cdef extern from "Mode.h" namespace "nnp":
         #                                               Structure& structure) const;
         #std::size_t              getNumExtrapolationWarnings() const;
         #void                     resetExtrapolationWarnings();
-        #double                   getMeanEnergy() const;
-        #double                   getConvEnergy() const;
-        #double                   getConvLength() const;
+        double         getMeanEnergy() except +
+        double         getConvEnergy() except +
+        double         getConvLength() except +
         double         getMaxCutoffRadius() except +
         #std::size_t              getNumElements() const;
         #std::vector<std::size_t> getNumSymmetryFunctions() const;
-        #bool                     useNormalization() const;
+        bool           useNormalization() except +
         bool           settingsKeywordExists(string keyword) except +
         string         settingsGetValue(string keyword) except +
         #std::vector<std::size_t> pruneSymmetryFunctionsRange(double threshold);
@@ -336,7 +335,7 @@ cdef extern from "Mode.h" namespace "nnp":
         #                                                      = "output.nn") const;
         #void                     writeSettingsFile(
         #                                 std::ofstream* const& file) const;
-        
+
 ###############################################################################
 # Prediction
 ###############################################################################
