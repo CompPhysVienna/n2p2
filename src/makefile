@@ -43,9 +43,9 @@ INTERFACES=LAMMPS CabanaMD
 # APPLICATION TARGET NAMES
 ###############################################################################
 # Call makefile in "application" directory to list targets.
-APP_LIBNNP=$(shell cd application && make list-libnnp)
-APP_LIBNNPTRAIN=$(shell cd application && make list-libnnptrain)
-APP=$(shell cd application && make list-all)
+APP_LIBNNP=$(shell cd application && $(MAKE) $(MFLAGS) list-libnnp)
+APP_LIBNNPTRAIN=$(shell cd application && $(MAKE) $(MFLAGS) list-libnnptrain)
+APP=$(shell cd application && $(MAKE) $(MFLAGS) list-all)
 
 # Targets for cleaning.
 CLEAN_APP=$(patsubst %, clean-%, $(APP))
@@ -163,6 +163,7 @@ $(CLEAN_APP):
 # lammps-nnp #
 ##############
 lammps-nnp: libnnpif
+	cd libnnpif && $(MAKE) lammps-mf-internal
 	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 
 clean-lammps-nnp:

@@ -49,9 +49,6 @@ Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
 
 void Mode::initialize()
 {
-    string version("" N2P2_GIT_VERSION);
-    if (version == "") version = "" N2P2_VERSION;
-
     log << "\n";
     log << "*****************************************"
            "**************************************\n";
@@ -61,11 +58,12 @@ void Mode::initialize()
     log << "-------------------------------------------------------"
            "-----------\n";
     log << "\n";
-    log << "n²p² version      : " + version + "\n";
+    log << "n²p² version  (from git): " N2P2_GIT_VERSION "\n";
+    log << "             (version.h): " N2P2_VERSION "\n";
     log << "------------------------------------------------------------\n";
-    log << "Git branch        : " N2P2_GIT_BRANCH "\n";
-    log << "Git revision      : " N2P2_GIT_REV "\n";
-    log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
+    log << "Git branch              : " N2P2_GIT_BRANCH "\n";
+    log << "Git revision            : " N2P2_GIT_REV "\n";
+    log << "Compile date/time       : " __DATE__ " " __TIME__ "\n";
     log << "------------------------------------------------------------\n";
     log << "\n";
     log << "Features/Flags:\n";
