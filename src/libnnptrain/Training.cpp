@@ -392,9 +392,11 @@ void Training::dataSetNormalization()
            "**************************************\n";
     log << "\n";
 
-    log << "Now running data set normalization using property predictions\n";
-    log << "collected with initial weights...\n";
+    log << "Computing statistics from reference data and initial "
+           "prediction...\n";
     log << "\n";
+
+    bool useForcesLocal = settings.keywordExists("use_short_forces");
 
     if (nnpType == NNPType::SHORT_CHARGE_NN && stage == 1)
     {
@@ -405,11 +407,6 @@ void Training::dataSetNormalization()
     if (nnpType == Training::NNPType::SHORT_CHARGE_NN && stage == 2)
     {
         writeWeights("charge", "weightse.%03zu.norm");
-    }
-    if (!settings.keywordExists("use_short_forces"))
-    {
-        throw runtime_error("ERROR: Normalization is only possible if forces "
-                            "are used (keyword \"use_short_forces\").\n");
     }
 
     ofstream fileEvsV;
@@ -454,7 +451,6 @@ void Training::dataSetNormalization()
     double meanForceNnp          = 0.0;
     double sigmaForceRef         = 0.0;
     double sigmaForceNnp         = 0.0;
-    log << "Computing initial prediction for all structures...\n";
     for (auto& s : structures)
     {
         // File output for evsv.dat.
@@ -473,7 +469,7 @@ void Training::dataSetNormalization()
 #endif
         calculateAtomicNeuralNetworks(s, true);
         calculateEnergy(s);
-        calculateForces(s);
+        if (useForcesLocal) calculateForces(s);
         s.clearNeighborList();
 
         numStructures++;
@@ -533,31 +529,70 @@ void Training::dataSetNormalization()
     sigmaForceRef = sqrt(sigmaForceRef / (3 * numAtomsTotal - 1));
     sigmaForceNnp = sqrt(sigmaForceNnp / (3 * numAtomsTotal - 1));
     log << "\n";
-    log << strpr("Total number of structures: %zu\n", numStructures);
-    log << strpr("Total number of atoms     : %zu\n", numAtomsTotal);
+    log << strpr("Total number of structures : %zu\n", numStructures);
+    log << strpr("Total number of atoms      : %zu\n", numAtomsTotal);
     log << "----------------------------------\n";
     log << "Reference data statistics:\n";
     log << "----------------------------------\n";
-    log << strpr("Mean/sigma energy per atom: %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma energy per atom : %16.8E +/- %16.8E\n",
                  meanEnergyPerAtomRef,
                  sigmaEnergyPerAtomRef);
-    log << strpr("Mean/sigma force          : %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma force           : %16.8E +/- %16.8E\n",
                  meanForceRef,
                  sigmaForceRef);
     log << "----------------------------------\n";
     log << "Initial NNP prediction statistics:\n";
     log << "----------------------------------\n";
-    log << strpr("Mean/sigma energy per atom: %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma energy per atom : %16.8E +/- %16.8E\n",
                  meanEnergyPerAtomNnp,
                  sigmaEnergyPerAtomNnp);
-    log << strpr("Mean/sigma force          : %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma force           : %16.8E +/- %16.8E\n",
                  meanForceNnp,
                  sigmaForceNnp);
     log << "----------------------------------\n";
     // Now set conversion quantities of Mode class.
-    meanEnergy = meanEnergyPerAtomRef;
-    convEnergy = sigmaForceNnp / sigmaForceRef;
-    convLength = sigmaForceNnp;
+    if (settings["normalize_data_set"] == "no")
+    {
+        log << "Normalization is not activated, using raw data \n";
+        log << "(except for subtraction of \"atom_energy\" values).\n";
+        log << "\n";
+        meanEnergy = 0.0;
+        convEnergy = 1.0;
+        convLength = 1.0;
+    }
+    else if (settings["normalize_data_set"] == "ref")
+    {
+        log << "Normalization based on standard deviation of reference data "
+               "selected:\n";
+        log << "\n";
+        log << "  sigma(E_ref) = sigma(F_ref) = 1\n";
+        log << "\n";
+        meanEnergy = meanEnergyPerAtomRef;
+        convEnergy = 1.0 / sigmaEnergyPerAtomRef;
+        if (useForcesLocal) convLength = sigmaForceRef / sigmaEnergyPerAtomRef;
+        else convLength = 1.0;
+    }
+    else if (settings["normalize_data_set"] == "force")
+    {
+        if (!useForcesLocal)
+        {
+            throw runtime_error("ERROR: Selected normalization mode only "
+                                "possible when forces are available.\n");
+        }
+        log << "Normalization based on standard deviation of reference forces "
+               "and their\n";
+        log << "initial prediction selected:\n";
+        log << "\n";
+        log << "  sigma(F_ref) = sigma(F_nnp) = 1\n";
+        log << "\n";
+        meanEnergy = meanEnergyPerAtomRef;
+        convEnergy = sigmaForceNnp / sigmaForceRef;
+        convLength = sigmaForceNnp;
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown data set normalization mode.\n");
+    }
     log << "Final conversion data:\n";
     log << strpr("Mean ref. energy per atom = %24.16E\n", meanEnergy);
     log << strpr("Conversion factor energy  = %24.16E\n", convEnergy);
