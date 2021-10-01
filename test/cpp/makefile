@@ -81,6 +81,6 @@ clean-coverage:
 
 test_nnp-train: test_nnp-train.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
-	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+	-./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 	cat nnp-train.log.0000.*
 	cat learning-curve.out.*
