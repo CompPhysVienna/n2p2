@@ -18,7 +18,7 @@ COMP=gnu # WARNING: Testing so far only works with "gnu" compiler.
 #COMP=$(shell grep "^COMP=" ${PROJECT_DIR}/src/makefile | cut -d"=" -f2)
 
 # Log level for boost tests, may be overriden by command line.
-LOG_LEVEL=error
+LOG_LEVEL=all
 
 # Include global (project-wide) settings.
 include $(PROJECT_DIR)/src/makefile.$(COMP)
@@ -78,3 +78,9 @@ clean-coverage:
 	$(RM) $(PROJECT_DIR)/src/application/*.gcda
 	$(RM) *.gcda *.base *.run *.info
 	$(RM) -r htmlcov
+
+test_nnp-train: test_nnp-train.cpp
+	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
+	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+	cat nnp-train.log.0000.*
+	cat learning-curve.out.*
