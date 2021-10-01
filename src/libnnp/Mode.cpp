@@ -215,12 +215,15 @@ void Mode::setupGeneric(bool skipNormalize)
     return;
 }
 
-void Mode::setupNormalization()
+void Mode::setupNormalization(bool standalone)
 {
-    log << "\n";
-    log << "*** SETUP: NORMALIZATION ****************"
-           "**************************************\n";
-    log << "\n";
+    if (standalone)
+    {
+        log << "\n";
+        log << "*** SETUP: NORMALIZATION ****************"
+               "**************************************\n";
+        log << "\n";
+    }
 
     if (settings.keywordExists("mean_energy") &&
         settings.keywordExists("conv_energy") &&
@@ -258,8 +261,11 @@ void Mode::setupNormalization()
                             "\"conv_energy\" and \"conv_length\".\n");
     }
 
-    log << "*****************************************"
-           "**************************************\n";
+    if (standalone)
+    {
+        log << "*****************************************"
+               "**************************************\n";
+    }
 
     return;
 }

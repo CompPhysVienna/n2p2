@@ -551,14 +551,12 @@ void Training::dataSetNormalization()
                  sigmaForceNnp);
     log << "----------------------------------\n";
     // Now set conversion quantities of Mode class.
-    if (settings["normalize_data_set"] == "no")
+    if (settings["normalize_data_set"] == "stats-only")
     {
-        log << "Normalization is not activated, using raw data \n";
-        log << "(except for subtraction of \"atom_energy\" values).\n";
+        log << "Data set statistics computation completed, now make up for \n";
+        log << "initially skipped normalization setup...\n";
         log << "\n";
-        meanEnergy = 0.0;
-        convEnergy = 1.0;
-        convLength = 1.0;
+        setupNormalization(false);
     }
     else if (settings["normalize_data_set"] == "ref")
     {
@@ -571,6 +569,7 @@ void Training::dataSetNormalization()
         convEnergy = 1.0 / sigmaEnergyPerAtomRef;
         if (useForcesLocal) convLength = sigmaForceRef / sigmaEnergyPerAtomRef;
         else convLength = 1.0;
+        normalize = true;
     }
     else if (settings["normalize_data_set"] == "force")
     {
@@ -588,18 +587,24 @@ void Training::dataSetNormalization()
         meanEnergy = meanEnergyPerAtomRef;
         convEnergy = sigmaForceNnp / sigmaForceRef;
         convLength = sigmaForceNnp;
+        normalize = true;
     }
     else
     {
         throw runtime_error("ERROR: Unknown data set normalization mode.\n");
     }
-    log << "Final conversion data:\n";
-    log << strpr("Mean ref. energy per atom = %24.16E\n", meanEnergy);
-    log << strpr("Conversion factor energy  = %24.16E\n", convEnergy);
-    log << strpr("Conversion factor length  = %24.16E\n", convLength);
-    log << "----------------------------------\n";
 
-    if (myRank == 0)
+    if (settings["normalize_data_set"] != "stats-only")
+    {
+        log << "Final conversion data:\n";
+        log << strpr("Mean ref. energy per atom = %24.16E\n", meanEnergy);
+        log << strpr("Conversion factor energy  = %24.16E\n", convEnergy);
+        log << strpr("Conversion factor length  = %24.16E\n", convLength);
+        log << "----------------------------------\n";
+    }
+
+    if ((myRank == 0) &&
+        (settings["normalize_data_set"] != "stats-only"))
     {
         log << "\n";
         log << "Writing backup of original settings file to "
@@ -659,23 +664,25 @@ void Training::dataSetNormalization()
     // Now make up for left-out normalization setup, need to repeat entire
     // symmetry function setup.
     log << "\n";
-    log << "Silently repeating symmetry function setup...\n";
-    log.silent = true;
-    normalize = true;
-    for (auto& e : elements) e.clearSymmetryFunctions();
-    setupSymmetryFunctions();
+    if (normalize)
+    {
+        log << "Silently repeating symmetry function setup...\n";
+        log.silent = true;
+        for (auto& e : elements) e.clearSymmetryFunctions();
+        setupSymmetryFunctions();
 #ifndef N2P2_FULL_SFD_MEMORY
-    setupSymmetryFunctionMemory(false);
+        setupSymmetryFunctionMemory(false);
 #endif
 #ifndef N2P2_NO_SF_CACHE
-    setupSymmetryFunctionCache();
+        setupSymmetryFunctionCache();
 #endif
 #ifndef N2P2_NO_SF_GROUPS
-    setupSymmetryFunctionGroups();
+        setupSymmetryFunctionGroups();
 #endif
-    setupSymmetryFunctionScaling();
-    setupSymmetryFunctionStatistics(false, false, false, false);
-    log.silent = false;
+        setupSymmetryFunctionScaling();
+        setupSymmetryFunctionStatistics(false, false, false, false);
+        log.silent = false;
+    }
 
     log << "*****************************************"
            "**************************************\n";

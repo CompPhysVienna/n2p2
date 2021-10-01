@@ -110,11 +110,13 @@ public:
     void                     setupGeneric(bool skipNormalize = false);
     /** Set up normalization.
      *
+     * @param[in] standalone Whether to write section header and footer.
+     *
      * If the keywords `mean_energy`, `conv_length` and
      * `conv_length` are present, the provided conversion factors are used to
      * internally use a different unit system.
      */
-    void                     setupNormalization();
+    void                     setupNormalization(bool standalone = true);
     /** Set up the element map.
      *
      * Uses keyword `elements`. This function should follow immediately after
