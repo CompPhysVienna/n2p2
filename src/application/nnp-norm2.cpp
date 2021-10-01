@@ -233,31 +233,31 @@ int main(int argc, char* argv[])
     sigmaForceRef = sqrt(sigmaForceRef / (3 * numAtomsTotal - 1));
     sigmaForceNnp = sqrt(sigmaForceNnp / (3 * numAtomsTotal - 1));
     training.log << "\n";
-    training.log << strpr("Total number of structures: %zu\n", numStructures);
-    training.log << strpr("Total number of atoms     : %zu\n", numAtomsTotal);
+    training.log << strpr("Total number of structures : %zu\n", numStructures);
+    training.log << strpr("Total number of atoms      : %zu\n", numAtomsTotal);
     training.log << "----------------------------------\n";
     training.log << "Reference data statistics:\n";
     training.log << "----------------------------------\n";
-    training.log << strpr("Mean/sigma energy per atom: %16.8E +/- %16.8E\n",
+    training.log << strpr("Mean/sigma energy per atom : %16.8E +/- %16.8E\n",
                          meanEnergyPerAtomRef,
                          sigmaEnergyPerAtomRef);
-    training.log << strpr("Mean/sigma force          : %16.8E +/- %16.8E\n",
+    training.log << strpr("Mean/sigma force           : %16.8E +/- %16.8E\n",
                          meanForceRef,
                          sigmaForceRef);
     training.log << "----------------------------------\n";
     training.log << "Initial NNP prediction statistics:\n";
     training.log << "----------------------------------\n";
-    training.log << strpr("Mean/sigma energy per atom: %16.8E +/- %16.8E\n",
+    training.log << strpr("Mean/sigma energy per atom : %16.8E +/- %16.8E\n",
                          meanEnergyPerAtomNnp,
                          sigmaEnergyPerAtomNnp);
-    training.log << strpr("Mean/sigma force          : %16.8E +/- %16.8E\n",
+    training.log << strpr("Mean/sigma force           : %16.8E +/- %16.8E\n",
                          meanForceNnp,
                          sigmaForceNnp);
     training.log << "----------------------------------\n";
     double convEnergy = sigmaForceNnp / sigmaForceRef;
     double convLength = sigmaForceNnp;
-    training.log << strpr("Conversion factor energy  : %24.16E\n", convEnergy);
-    training.log << strpr("Conversion factor length  : %24.16E\n", convLength);
+    training.log << strpr("Conversion factor energy   : %24.16E\n", convEnergy);
+    training.log << strpr("Conversion factor length   : %24.16E\n", convLength);
 
     //ofstream fileCfg;
     //fileCfg.open(strpr("output.data.%04d", myRank).c_str());

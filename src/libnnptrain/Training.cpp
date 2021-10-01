@@ -631,6 +631,11 @@ void Training::dataSetNormalization()
                 if (sl.at(0) == "conv_length") replace[i] = n3;
             }
         }
+        if (!replace.empty())
+        {
+            log << "WARNING: Preexisting normalization data was found and "
+                   "replaced in original \"input.nn\" file.\n";
+        }
 
         fileSettings.open("input.nn");
         if (replace.empty())
