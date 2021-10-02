@@ -69,6 +69,11 @@ public:
     void   setLocalAtoms(int              numAtomsLocal,
                          int const* const atomTag,
                          int const* const atomType);
+    /** Set absolute atom positions from LAMMPS (nnp/develop only).
+     *
+     * @param[in] atomPos Atom coordinate array in LAMMPS units.
+     */
+    void   setLocalAtomPositions(double const* const* const atomPos);
     /** Add one neighbor to atom.
      *
      * @param[in] i Local atom index.

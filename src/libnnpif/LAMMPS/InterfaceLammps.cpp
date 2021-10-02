@@ -288,6 +288,25 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
     return;
 }
 
+void InterfaceLammps::setLocalAtomPositions(double const* const* const atomPos)
+{
+    for (size_t i = 0; i < structure.numAtoms; ++i)
+    {
+        Atom& a = structure.atoms.at(i);
+        a.r[0] = atomPos[i][0] * cflength;
+        a.r[1] = atomPos[i][1] * cflength;
+        a.r[2] = atomPos[i][2] * cflength;
+        if (normalize)
+        {
+            a.r[0] *= convLength;
+            a.r[1] *= convLength;
+            a.r[2] *= convLength;
+        }
+    }
+
+    return;
+}
+
 void InterfaceLammps::addNeighbor(int    i,
                                   int    j,
                                   int    tag,

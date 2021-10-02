@@ -24,6 +24,7 @@ class PairNNPDevelop : public PairNNP {
   PairNNPDevelop(class LAMMPS *);
   virtual ~PairNNPDevelop() {}
   virtual void compute(int, int);
+  virtual void init_style();
 
  protected:
 

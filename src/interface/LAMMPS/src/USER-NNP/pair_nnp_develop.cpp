@@ -17,7 +17,10 @@
 #include "update.h"
 #include "utils.h"
 
+#include <stdexcept>
+
 using namespace LAMMPS_NS;
+using namespace std;
 
 
 /* ---------------------------------------------------------------------- */
@@ -33,6 +36,9 @@ void PairNNPDevelop::compute(int eflag, int vflag)
 
   // Set number of local atoms and add index and element.
   interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
+
+  // Also set absolute atom positions.
+  interface.setLocalAtomPositions(atom->x);
 
   // Transfer local neighbor list to NNP interface.
   transferNeighborList();
@@ -59,4 +65,18 @@ void PairNNPDevelop::compute(int eflag, int vflag)
 
   // If virial needed calculate via F dot r.
   if (vflag_fdotr) virial_fdotr_compute();
+}
+
+/* ----------------------------------------------------------------------
+   init specific to this pair style
+------------------------------------------------------------------------- */
+
+void PairNNPDevelop::init_style()
+{
+  if (comm->nprocs > 1) {
+    throw runtime_error("ERROR: Pair style \"nnp/develop\" can only be used "
+                        "with a single MPI task.\n");
+  }
+
+  PairNNP::init_style();
 }
