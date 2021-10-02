@@ -37,8 +37,8 @@ class PairNNP : public Pair {
  protected:
 
   virtual void allocate();
-  void transferNeighborList();
-  void handleExtrapolationWarnings();
+  virtual void transferNeighborList();
+  virtual void handleExtrapolationWarnings();
 
   bool showew;
   bool resetew;
