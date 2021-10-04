@@ -105,6 +105,7 @@ protected:
     double **eg,**vg; // forces and virial
     double **ek; // forces ?
     double **sfexp_rl,**sfexp_im;
+    double *sf_real, *sf_im;
     double **sfexp_rl_all,*sfexp_im_all; // structure factors after communications ?
     double ***cs,***sn; // cosine and sine grid, TODO: should we change this ?
 

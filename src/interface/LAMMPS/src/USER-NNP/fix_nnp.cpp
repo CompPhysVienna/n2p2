@@ -381,7 +381,6 @@ double FixNNP::QEq_f(const gsl_vector *v)
     int *type = atom->type;
     int nlocal = atom->nlocal;
     int nall = atom->natoms;
-    int count = 0;
 
     double **x = atom->x;
     double *q = atom->q;
@@ -390,7 +389,6 @@ double FixNNP::QEq_f(const gsl_vector *v)
     double E_elec_loc,E_scr_loc,E_scr;
     double E_real,E_recip,E_self; // for periodic examples
     double iiterm,ijterm;
-    double sf_real,sf_im;
 
 
     // TODO: indices & electrostatic energy
@@ -434,26 +432,24 @@ double FixNNP::QEq_f(const gsl_vector *v)
                 if (rij <= nnp->screening_info[2]) {
                     E_scr += 0.5 * qi * qj * erf(rij/nnp->gammaSqrt2[type[i]-1][type[jmap]-1])*(nnp->screening_f(rij) - 1) / rij;
                 }
-                //count = count + 1;
             }
         }
-        //std::cout << "f : " << count << '\n';
         // Reciprocal Term
         for (int k = 0; k < nnp->kcount; k++) // over k-space
         {
             //fprintf(stderr, "kcoeff[%d] = %24.16E\n", k, nnp->kcoeff[k]);
-            sf_real = 0.0;
-            sf_im = 0.0;
+            nnp->sf_real[k] = 0.0;
+            nnp->sf_im[k] = 0.0;
             // TODO: this loop over all atoms can be replaced by a MPIallreduce ?
             for (i = 0; i < nall; i++) //TODO: discuss this additional inner loop
             {
                 double const qi = gsl_vector_get(v,i);
-                sf_real += qi * nnp->sfexp_rl[k][i];
-                sf_im += qi * nnp->sfexp_im[k][i];
+                nnp->sf_real[k] += qi * nnp->sfexp_rl[k][i];
+                nnp->sf_im[k] += qi * nnp->sfexp_im[k][i];
             }
             // TODO: sf_real->sf_real_all or MPIAllreduce for E_recip ?
             //fprintf(stderr, "sfexp %d : %24.16E\n", k, nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2)));
-            E_recip += nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2));
+            E_recip += nnp->kcoeff[k] * (pow(nnp->sf_real[k],2) + pow(nnp->sf_im[k],2));
         }
         nnp->E_elec = E_real + E_self + E_recip;
         E_qeq += nnp->E_elec;
@@ -486,7 +482,6 @@ double FixNNP::QEq_f(const gsl_vector *v)
 
     nnp->E_elec = nnp->E_elec + E_scr; // add screening energy
 
-
     //MPI_Allreduce(E_qeq_loc,E_qeq,1,MPI_DOUBLE,MPI_SUM,world);
 
     return E_qeq;
@@ -507,10 +502,7 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     int nall = atom->natoms;
     int *tag = atom->tag;
     int *type = atom->type;
-    int count = 0;
 
-    double dx, dy, dz, rij;
-    double qi,qj;
     double **x = atom->x;
     double *q = atom->q;
 
@@ -519,7 +511,6 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     double grad_i;
     double jsum,ksum; //summation over neighbors & kspace respectively
     double recip_sum;
-    double sf_real,sf_im;
 
     //gsl_vector *dEdQ_loc;
     //dEdQ_loc = gsl_vector_alloc(nsize);
@@ -530,22 +521,13 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
         double sqrt2eta = (sqrt(2.0) * nnp->ewaldEta);
         for (i = 0; i < nlocal; i++) // over local atoms
         {
-            qi = gsl_vector_get(v,i);
+            double const qi = gsl_vector_get(v,i);
             // Reciprocal contribution
             ksum = 0.0;
             for (int k = 0; k < nnp->kcount; k++) // over k-space
             {
-                sf_real = 0.0;
-                sf_im = 0.0;
-                //TODO: this second loop should be over all, could this be saved ?
-                for (j = 0; j < nlocal; j++)
-                {
-                    qj = gsl_vector_get(v,j);
-                    sf_real += qj * nnp->sfexp_rl[k][j];
-                    sf_im += qj * nnp->sfexp_im[k][j];
-                }
                 ksum += 2.0 * nnp->kcoeff[k] *
-                        (sf_real * nnp->sfexp_rl[k][i] + sf_im * nnp->sfexp_im[k][i]);
+                        (nnp->sf_real[k] * nnp->sfexp_rl[k][i] + nnp->sf_im[k] * nnp->sfexp_im[k][i]);
             }
             // Real contribution - over neighbors
             jsum = 0.0;
@@ -553,35 +535,33 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 jmap = atom->map(tag[j]); //TODO: check
-                qj = gsl_vector_get(v, jmap);
-                dx = x[i][0] - x[j][0];
-                dy = x[i][1] - x[j][1];
-                dz = x[i][2] - x[j][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
+                double const qj = gsl_vector_get(v, jmap);
+                double const dx = x[i][0] - x[j][0];
+                double const dy = x[i][1] - x[j][1];
+                double const dz = x[i][2] - x[j][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
                 double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1]));
                 jsum += qj * erfcRij / rij;
-                //count = count + 1;
             }
             grad = jsum + ksum + nnp->chi[i] + nnp->hardness[type[i]-1]*qi +
                    qi * (1/(nnp->sigmaSqrtPi[type[i]-1])- 2/(nnp->ewaldEta * sqrt(2.0 * M_PI)));
             grad_sum += grad;
             gsl_vector_set(dEdQ,i,grad);
         }
-        //std::cout << "df : " << count << '\n';
     }else
     {
         // first loop over local atoms
         for (i = 0; i < nlocal; i++) { // TODO: indices
-            qi = gsl_vector_get(v,i);
+            double const qi = gsl_vector_get(v,i);
             // second loop over 'all' atoms
             jsum = 0.0;
             for (j = 0; j < nall; j++) {
                 if (j != i) {
-                    qj = gsl_vector_get(v, j);
-                    dx = x[j][0] - x[i][0];
-                    dy = x[j][1] - x[i][1];
-                    dz = x[j][2] - x[i][2];
-                    rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
+                    double const qj = gsl_vector_get(v, j);
+                    double const dx = x[j][0] - x[i][0];
+                    double const dy = x[j][1] - x[i][1];
+                    double const dz = x[j][2] - x[i][2];
+                    double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
                     jsum += qj * erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij;
                 }
             }

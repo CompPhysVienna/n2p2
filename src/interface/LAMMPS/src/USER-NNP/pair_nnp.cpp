@@ -95,6 +95,8 @@ PairNNP::PairNNP(LAMMPS *lmp) : Pair(lmp),
     ek                             (nullptr),
     sfexp_rl                       (nullptr),
     sfexp_im                       (nullptr),
+    sf_real                        (nullptr),
+    sf_im                          (nullptr),
     sfexp_rl_all                   (nullptr),
     sfexp_im_all                   (nullptr),
     cs                             (nullptr),
@@ -603,24 +605,21 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
     int nall = atom->natoms;
 
     double **x = atom->x;
-    double dx, dy, dz, rij;
-    double lambda_i,lambda_j;
+    double E_real, E_recip, E_self;
     double E_lambda;
     double iiterm,ijterm;
-    double sf_real,sf_im;
 
     E_lambda = 0.0;
     if (periodic)
     {
         double sqrt2eta = (sqrt(2.0) * ewaldEta);
-        double E_recip = 0.0;
-        double E_real = 0.0;
-        double E_self = 0.0;
+        E_recip = 0.0;
+        E_real = 0.0;
+        E_self = 0.0;
         for (i = 0; i < nlocal; i++) // over local atoms
         {
-            lambda_i = gsl_vector_get(v, i);
+            double const lambda_i = gsl_vector_get(v, i);
             double lambda_i2 = lambda_i * lambda_i;
-
             // Self term
             E_self += lambda_i2 * (1 / (2.0 * sigmaSqrtPi[type[i]-1]) - 1 / (sqrt(2.0 * M_PI) * ewaldEta));
             E_lambda += dEdQ[i] * lambda_i + 0.5 * hardness[type[i]-1] * lambda_i2;
@@ -630,11 +629,11 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 jmap = atom->map(tag[j]); //TODO: check, required for the function minimization ?
-                lambda_j = gsl_vector_get(v, jmap);
-                dx = x[i][0] - x[j][0];
-                dy = x[i][1] - x[j][1];
-                dz = x[i][2] - x[j][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                double const lambda_j = gsl_vector_get(v, jmap);
+                double const dx = x[i][0] - x[j][0];
+                double const dy = x[i][1] - x[j][1];
+                double const dz = x[i][2] - x[j][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
                 double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
                 double real = 0.5 * lambda_i * lambda_j * erfcRij;
                 E_real += real;
@@ -643,32 +642,32 @@ double PairNNP::forceLambda_f(const gsl_vector *v)
         // Reciprocal Term
         for (int k = 0; k < kcount; k++) // over k-space
         {
-            sf_real = 0.0;
-            sf_im = 0.0;
+            sf_real[k] = 0.0;
+            sf_im[k] = 0.0;
             for (i = 0; i < nlocal; i++) //TODO: discuss this additional inner loop
             {
-                lambda_i = gsl_vector_get(v,i);
-                sf_real += lambda_i * sfexp_rl[k][i];
-                sf_im += lambda_i * sfexp_im[k][i];
+                double const lambda_i = gsl_vector_get(v,i);
+                sf_real[k] += lambda_i * sfexp_rl[k][i];
+                sf_im[k] += lambda_i * sfexp_im[k][i];
             }
-            E_recip += kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2));
+            E_recip += kcoeff[k] * (pow(sf_real[k],2) + pow(sf_im[k],2));
         }
         E_lambda += E_real + E_self + E_recip;
     }else
     {
         // first loop over local atoms
         for (i = 0; i < nlocal; i++) {
-            lambda_i = gsl_vector_get(v,i);
+            double const lambda_i = gsl_vector_get(v,i);
             // add i terms here
             iiterm = lambda_i * lambda_i / (2.0 * sigmaSqrtPi[type[i]-1]);
             E_lambda += iiterm + dEdQ[i]*lambda_i + 0.5*hardness[type[i]-1]*lambda_i*lambda_i;
             // second loop over 'all' atoms
             for (j = i + 1; j < nall; j++) {
-                lambda_j = gsl_vector_get(v, j);
-                dx = x[j][0] - x[i][0];
-                dy = x[j][1] - x[i][1];
-                dz = x[j][2] - x[i][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                double const lambda_j = gsl_vector_get(v, j);
+                double const dx = x[j][0] - x[i][0];
+                double const dy = x[j][1] - x[i][1];
+                double const dz = x[j][2] - x[i][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
                 ijterm = lambda_i * lambda_j * (erf(rij / gammaSqrt2[type[i]-1][type[j]-1]) / rij);
                 E_lambda += ijterm;
             }
@@ -693,15 +692,11 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
     int *tag = atom->tag;
     int *type = atom->type;
 
-    double dx, dy, dz, rij;
-    double lambda_i,lambda_j;
     double **x = atom->x;
-
     double val;
     double grad;
     double grad_sum,grad_i;
     double local_sum;
-    double sf_real,sf_im;
 
     grad_sum = 0.0;
     if (periodic)
@@ -709,21 +704,13 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
         double sqrt2eta = (sqrt(2.0) * ewaldEta);
         for (i = 0; i < nlocal; i++) // over local atoms
         {
-            lambda_i = gsl_vector_get(v,i);
+            double const lambda_i = gsl_vector_get(v,i);
             // Reciprocal contribution
             double ksum = 0.0;
             for (int k = 0; k < kcount; k++) // over k-space
             {
-                sf_real = 0.0;
-                sf_im = 0.0;
-                //TODO: this second loop should be over all, could this be saved ?
-                for (j = 0; j < nlocal; j++)
-                {
-                    lambda_j = gsl_vector_get(v,j);
-                    sf_real += lambda_j * sfexp_rl[k][j];
-                    sf_im += lambda_j * sfexp_im[k][j];
-                }
-                ksum += 2.0 * kcoeff[k] * (sf_real * sfexp_rl[k][i] + sf_im * sfexp_im[k][i]);
+                ksum += 2.0 * kcoeff[k] *
+                        (sf_real[k] * sfexp_rl[k][i] + sf_im[k] * sfexp_im[k][i]);
             }
             // Real contribution - over neighbors
             double jsum = 0.0;
@@ -731,11 +718,11 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 jmap = atom->map(tag[j]);
-                lambda_j = gsl_vector_get(v, jmap);
-                dx = x[i][0] - x[j][0];
-                dy = x[i][1] - x[j][1];
-                dz = x[i][2] - x[j][2];
-                rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                double const lambda_j = gsl_vector_get(v, jmap);
+                double const dx = x[i][0] - x[j][0];
+                double const dy = x[i][1] - x[j][1];
+                double const dz = x[i][2] - x[j][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
                 double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]-1][type[jmap]-1]));
                 jsum += lambda_j * erfcRij / rij;
             }
@@ -748,16 +735,16 @@ void PairNNP::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
     {
         // first loop over local atoms
         for (i = 0; i < nlocal; i++) { // TODO: indices
-            lambda_i = gsl_vector_get(v,i);
+            double const lambda_i = gsl_vector_get(v,i);
             local_sum = 0.0;
             // second loop over 'all' atoms
             for (j = 0; j < nall; j++) {
                 if (j != i) {
-                    lambda_j = gsl_vector_get(v, j);
-                    dx = x[j][0] - x[i][0];
-                    dy = x[j][1] - x[i][1];
-                    dz = x[j][2] - x[i][2];
-                    rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
+                    double const lambda_j = gsl_vector_get(v, j);
+                    double const dx = x[j][0] - x[i][0];
+                    double const dy = x[j][1] - x[i][1];
+                    double const dz = x[j][2] - x[i][2];
+                    double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz));
                     local_sum += lambda_j * erf(rij / gammaSqrt2[type[i]-1][type[j]-1]) / rij;
                 }
             }
@@ -1232,6 +1219,9 @@ void PairNNP::allocate_kspace()
 
     memory->create(sfexp_rl,kmax3d,nloc,"ewald:sfexp_rl");
     memory->create(sfexp_im,kmax3d,nloc,"ewald:sfexp_im");
+
+    memory->create(sf_real,kmax3d,"ewald:sfexp_im");
+    memory->create(sf_im,kmax3d,"ewald:sfexp_im");
     //sfacrl_all = new double[kmax3d];
     //sfacim_all = new double[kmax3d];
 }
@@ -1249,6 +1239,9 @@ void PairNNP::deallocate_kspace()
 
     memory->destroy(sfexp_rl);
     memory->destroy(sfexp_im);
+
+    memory->destroy(sf_real);
+    memory->destroy(sf_im);
     //delete [] sfacrl_all;
     //delete [] sfacim_all;
 }
