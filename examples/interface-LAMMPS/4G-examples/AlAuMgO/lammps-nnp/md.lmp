@@ -12,7 +12,8 @@ variable cfgFile         string "input.data"
 variable numSteps        equal  0
 variable dt              equal  0.0005
 # NN
-variable nnpCutoff       equal  8.01
+#variable nnpCutoff       equal  8.01
+variable nnpCutoff       equal  8.00000001
 variable nnpDir          string "nnp-data"
 # Masses
 variable mass_O          equal  15.9994
@@ -43,7 +44,7 @@ neighbor 0.0 bin
 ###############################################################################
 pair_style nnp dir ${nnpDir} showew yes showewsum 10 resetew no maxew 1000000 cflength 1.0 cfenergy 1.0 emap "1:O,2:Mg,3:Al,4:Au"
 pair_coeff * * ${nnpCutoff}
-fix 1 all nnp 1 1.0e-4 1.0e-4 1.0e-2 50 nnp 
+fix 1 all nnp 1 1.0e-7 1.0e-1 1.0e-1 100 nnp 
 
 ###############################################################################
 # INTEGRATOR

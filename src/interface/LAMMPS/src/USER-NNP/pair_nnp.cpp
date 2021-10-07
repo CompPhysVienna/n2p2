@@ -1332,6 +1332,10 @@ void PairNNP::kspace_setup() {
     std::cout << "Box vol :" << volume << '\n';
     std::cout << "Real cut :" << real_cut << '\n';
     fprintf(stderr, "Recip cut : %24.16E\n", recip_cut);
+    fprintf(stderr, "KXMAX     : %d\n", kxmax);
+    fprintf(stderr, "KYMAX     : %d\n", kymax);
+    fprintf(stderr, "KZMAX     : %d\n", kzmax);
+    fprintf(stderr, "kcount    : %d\n", kcount);
     std::cout << "KXMAX :" << kxmax << '\n';
     std::cout << "KYMAX :" << kymax << '\n';
     std::cout << "KZMAX :" << kzmax << '\n';
@@ -1389,13 +1393,14 @@ void PairNNP::kspace_coeffs()
         for (l = 1; l <= kymax; l++) {
             sqk = (unitk[0]*k) * (unitk[0]*k) + (unitk[1]*l) * (unitk[1]*l);
             if (sqk <= gsqmx) {
-                fprintf(stderr, "sqk 2 = %24.16E, k %d l %d\n", sqrt(sqk), k, l);
+                fprintf(stderr, "sqk 2 = %24.16E, k %d  l %d\n", sqrt(sqk), k, l);
                 kxvecs[kcount] = k;
                 kyvecs[kcount] = l;
                 kzvecs[kcount] = 0;
                 kcoeff[kcount] = preu*exp(-0.5*sqk*etasq)/sqk;
                 kcount++;
 
+                fprintf(stderr, "sqk 2 = %24.16E, k %d -l %d\n", sqrt(sqk), k, l);
                 kxvecs[kcount] = k;
                 kyvecs[kcount] = -l;
                 kzvecs[kcount] = 0;
@@ -1411,13 +1416,14 @@ void PairNNP::kspace_coeffs()
         for (m = 1; m <= kzmax; m++) {
             sqk = (unitk[1]*l) * (unitk[1]*l) + (unitk[2]*m) * (unitk[2]*m);
             if (sqk <= gsqmx) {
-                fprintf(stderr, "sqk 3 = %24.16E, l %d m %d\n", sqrt(sqk), l, m);
+                fprintf(stderr, "sqk 3 = %24.16E, l %d  m %d\n", sqrt(sqk), l, m);
                 kxvecs[kcount] = 0;
                 kyvecs[kcount] = l;
                 kzvecs[kcount] = m;
                 kcoeff[kcount] = preu*exp(-0.5*sqk*etasq)/sqk;
                 kcount++;
 
+                fprintf(stderr, "sqk 3 = %24.16E, l %d -m %d\n", sqrt(sqk), l, m);
                 kxvecs[kcount] = 0;
                 kyvecs[kcount] = l;
                 kzvecs[kcount] = -m;
@@ -1433,13 +1439,14 @@ void PairNNP::kspace_coeffs()
         for (m = 1; m <= kzmax; m++) {
             sqk = (unitk[0]*k) * (unitk[0]*k) + (unitk[2]*m) * (unitk[2]*m);
             if (sqk <= gsqmx) {
-                fprintf(stderr, "sqk 4 = %24.16E, k %d m %d\n", sqrt(sqk), k, m);
+                fprintf(stderr, "sqk 4 = %24.16E, k %d  m %d\n", sqrt(sqk), k, m);
                 kxvecs[kcount] = k;
                 kyvecs[kcount] = 0;
                 kzvecs[kcount] = m;
                 kcoeff[kcount] = preu*exp(-0.5*sqk*etasq)/sqk;
                 kcount++;
 
+                fprintf(stderr, "sqk 4 = %24.16E, k %d -m %d\n", sqrt(sqk), k, m);
                 kxvecs[kcount] = k;
                 kyvecs[kcount] = 0;
                 kzvecs[kcount] = -m;
@@ -1457,25 +1464,28 @@ void PairNNP::kspace_coeffs()
                 sqk = (unitk[0]*k) * (unitk[0]*k) + (unitk[1]*l) * (unitk[1]*l) +
                       (unitk[2]*m) * (unitk[2]*m);
                 if (sqk <= gsqmx) {
-                    fprintf(stderr, "sqk 5 = %24.16E, k %d l %d m %d\n", sqrt(sqk), k, l, m);
+                    fprintf(stderr, "sqk 5 = %24.16E, k %d  l %d  m %d\n", sqrt(sqk), k, l, m);
                     kxvecs[kcount] = k;
                     kyvecs[kcount] = l;
                     kzvecs[kcount] = m;
                     kcoeff[kcount] = preu*exp(-0.5*sqk*etasq)/sqk;
                     kcount++;
 
+                    fprintf(stderr, "sqk 5 = %24.16E, k %d -l %d  m %d\n", sqrt(sqk), k, l, m);
                     kxvecs[kcount] = k;
                     kyvecs[kcount] = -l;
                     kzvecs[kcount] = m;
                     kcoeff[kcount] = preu*exp(-0.5*sqk*etasq)/sqk;
                     kcount++;
 
+                    fprintf(stderr, "sqk 5 = %24.16E, k %d  l %d -m %d\n", sqrt(sqk), k, l, m);
                     kxvecs[kcount] = k;
                     kyvecs[kcount] = l;
                     kzvecs[kcount] = -m;
                     kcoeff[kcount] = preu*exp(-0.5*sqk*etasq)/sqk;
                     kcount++;
 
+                    fprintf(stderr, "sqk 5 = %24.16E, k %d -l %d -m %d\n", sqrt(sqk), k, l, m);
                     kxvecs[kcount] = k;
                     kyvecs[kcount] = -l;
                     kzvecs[kcount] = -m;

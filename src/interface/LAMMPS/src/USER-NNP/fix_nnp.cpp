@@ -484,6 +484,7 @@ double FixNNP::QEq_f(const gsl_vector *v)
 
     //MPI_Allreduce(E_qeq_loc,E_qeq,1,MPI_DOUBLE,MPI_SUM,world);
 
+    fprintf(stderr, "EQeq = %24.16E\n", E_qeq);
     return E_qeq;
 }
 
@@ -575,6 +576,7 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     for (i = 0; i < nall; i++){
         grad_i = gsl_vector_get(dEdQ,i);
         gsl_vector_set(dEdQ,i,grad_i - (grad_sum)/nall);
+        fprintf(stderr, "dEQeq[%d] = %24.16E\n", i, gsl_vector_get(dEdQ,i));
         //gsl_vector_set(dEdQ,i,grad_i);
     }
 
@@ -624,6 +626,7 @@ void FixNNP::calculate_QEqCharges()
     QEq_minimizer.fdf = &QEq_fdf_wrap;
     QEq_minimizer.params = this;
 
+    fprintf(stderr, "q[%d] = %24.16E\n", atom->tag[0], q[0]);
     //q[ 0] =  9.0172983387062006E-02;
     //q[ 1] =  1.3641844939732600E-01;
     //q[ 2] =  1.1534057032122748E-01;
@@ -689,12 +692,15 @@ void FixNNP::calculate_QEqCharges()
     //exit(1);
 
     // TODO: is bfgs2 standard ?
+    //T = gsl_multimin_fdfminimizer_conjugate_fr; // minimization algorithm
     //T = gsl_multimin_fdfminimizer_conjugate_pr; // minimization algorithm
+    //T = gsl_multimin_fdfminimizer_steepest_descent; // minimization algorithm
     T = gsl_multimin_fdfminimizer_vector_bfgs2;
     s = gsl_multimin_fdfminimizer_alloc(T, nsize);
     gsl_multimin_fdfminimizer_set(s, &QEq_minimizer, Q, nnp->step, nnp->min_tol); // tol = 0 might be expensive ???
     do
     {
+        fprintf(stderr, "eqeq-iter %zu\n", iter);
         iter++;
         qsum_it = 0.0;
         gradsum = 0.0;
