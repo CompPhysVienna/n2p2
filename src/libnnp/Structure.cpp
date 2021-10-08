@@ -530,6 +530,9 @@ double Structure::calculateElectrostaticEnergy(
         double rcutReal = grid.setup(box, precision);
         double const sqrt2eta = sqrt(2.0) * grid.eta;
 
+#ifdef _OPENMP
+        #pragma omp parallel for schedule(dynamic)
+#endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
@@ -570,6 +573,9 @@ double Structure::calculateElectrostaticEnergy(
     }
     else
     {
+#ifdef _OPENMP
+        #pragma omp parallel for schedule(dynamic)
+#endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
             Atom const& ai = atoms.at(i);
@@ -590,21 +596,23 @@ double Structure::calculateElectrostaticEnergy(
             }
         }
     }
-
     A.col(numAtoms).setOnes();
     A.row(numAtoms).setOnes();
     A(numAtoms, numAtoms) = 0.0;
     hasAMatrix = true;
     b(numAtoms) = chargeRef;
 
-    //TODO: sometimes only recalculation of A matrix is needed, because Qs are
-    //stored. 
+    //TODO: sometimes only recalculation of A matrix is needed, because 
+    //Qs are stored. 
     VectorXd const Q = A.colPivHouseholderQr().solve(b);
-
+#ifdef _OPENMP
+    #pragma omp parallel for
+#endif
     for (size_t i = 0; i < numAtoms; ++i)
     {
         atoms.at(i).charge = Q(i); 
     }
+
     hasCharges = true; 
     lambda = Q(numAtoms);
     double error = (A * Q - b).norm() / b.norm();
@@ -613,7 +621,6 @@ double Structure::calculateElectrostaticEnergy(
     energyElec = 0.5 * Q.head(numAtoms).transpose()
                * (A.topLeftCorner(numAtoms, numAtoms) - 
                 MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
-
     energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
 
     return error;
@@ -628,50 +635,85 @@ double Structure::calculateScreeningEnergy(
     double energyScreen = 0;
     double const rcutScreen = fs.getOuter();
 
-    if (isPeriodic)
+#ifdef _OPENMP
+    #pragma omp parallel
     {
-        for (size_t i = 0; i < numAtoms; ++i)
+        double localEnergyScreen = 0;
+#endif
+        if (isPeriodic)
         {
-            Atom const& ai = atoms.at(i);
-            size_t const ei = ai.element;
-            double const Qi = ai.charge;
-            energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei));
-            for (auto const& aj : ai.neighbors)
+#ifdef _OPENMP
+            #pragma omp for schedule(dynamic)
+#endif
+            for (size_t i = 0; i < numAtoms; ++i)
             {
-                size_t const j = aj.index;
-                if (j < i) continue;
-                double const rij = aj.d;
-                if ( rij >= rcutScreen ) break;
-                size_t const ej = aj.element;
-                //TODO: Maybe add charge to neighbor class?
-                double const Qj = atoms.at(j).charge;
-                energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
-                                * (fs.f(rij) - 1) / rij;
+                Atom const& ai = atoms.at(i);
+                size_t const ei = ai.element;
+                double const Qi = ai.charge;
+#ifdef _OPENMP
+                localEnergyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+#else
+                energyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+#endif
 
-           }
-        }
-        //cout << "screening energy: " << energyScreen << endl;
-    }
-    else
-    {
-        for (size_t i = 0; i < numAtoms; ++i)
-        {
-            Atom const& ai = atoms.at(i);
-            size_t const ei = ai.element;
-            double const Qi = ai.charge;
-            energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei));
-            for (size_t j = i + 1; j < numAtoms; ++j)
-            {
-                Atom const& aj = atoms.at(j);
-                double const Qj = aj.charge;
-                double const rij = (ai.r - aj.r).norm();
-                if ( rij < rcutScreen ) 
+                for (auto const& aj : ai.neighbors)
                 {
-                    energyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+                    size_t const j = aj.index;
+                    if (j < i) continue;
+                    double const rij = aj.d;
+                    if ( rij >= rcutScreen ) break;
+                    size_t const ej = aj.element;
+                    //TODO: Maybe add charge to neighbor class?
+                    double const Qj = atoms.at(j).charge;
+#ifdef _OPENMP
+                    localEnergyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                                    * (fs.f(rij) - 1) / rij;
+#else
+                    energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                                    * (fs.f(rij) - 1) / rij;
+#endif
+
+               }
+            }
+        }
+        else
+        {
+#ifdef _OPENMP
+            #pragma omp for schedule(dynamic)
+#endif
+            for (size_t i = 0; i < numAtoms; ++i)
+            {
+                Atom const& ai = atoms.at(i);
+                size_t const ei = ai.element;
+                double const Qi = ai.charge;
+#ifdef _OPENMP
+                localEnergyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+#else
+                energyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+#endif
+
+                for (size_t j = i + 1; j < numAtoms; ++j)
+                {
+                    Atom const& aj = atoms.at(j);
+                    double const Qj = aj.charge;
+                    double const rij = (ai.r - aj.r).norm();
+                    if ( rij < rcutScreen ) 
+                    {
+#ifdef _OPENMP
+                        localEnergyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+#else
+                        energyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+#endif
+                    }
                 }
             }
         }
+#ifdef _OPENMP
+        #pragma omp atomic
+        energyScreen += localEnergyScreen;
     }
+#endif
+    //cout << "energyScreen = " << energyScreen << endl;
     return energyScreen;
 }
 

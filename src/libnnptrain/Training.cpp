@@ -2034,7 +2034,7 @@ void Training::update(string const& property)
                             calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
                             chargeEquilibration(s, derivatives, true);
                         }
-                        calculateAtomicNeuralNetworks(s, derivatives, "short");
+                        calculateAtomicNeuralNetworks(s, derivatives, "short", true);
                         calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
                         currentRmseFraction.at(b) =
