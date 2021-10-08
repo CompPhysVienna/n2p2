@@ -1817,8 +1817,13 @@ void Mode::calculateForces(Structure& structure) const
         }
         VectorXd const lambdaTotal = s.A.colPivHouseholderQr().solve(-dEdQ);
         VectorXd const lambdaElec = s.A.colPivHouseholderQr().solve(-dEelecdQ);
-        for (auto& ai : s.atoms)
+
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
+        for (size_t i = 0; i < s.numAtoms; ++i)
         {
+            Atom& ai = s.atoms.at(i);
             ai.fElec = Vec3D{0,0,0};
 
             ai.f -= ai.pEelecpr;
@@ -1836,7 +1841,7 @@ void Mode::calculateForces(Structure& structure) const
                 Vec3D dChidr;
                 // need to add this case because the loop over the neighbors
                 // does not include the contribution dChi_i/dr_i.
-                if (ai.tag == j)
+                if (ai.index == j)
                 {
                     for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
                     {
@@ -1845,7 +1850,7 @@ void Mode::calculateForces(Structure& structure) const
                 }
                 for (auto const& n : aj.neighbors)
                 {
-                    if (n.tag == ai.tag)
+                    if (n.index == ai.index)
                     {
 #ifndef NNP_FULL_SFD_MEMORY
                         vector<size_t> const& table = tableFull.at(n.element);
@@ -1865,8 +1870,7 @@ void Mode::calculateForces(Structure& structure) const
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }
         }
-   }
-
+    }
     return;
 }
 

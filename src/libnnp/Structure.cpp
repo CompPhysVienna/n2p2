@@ -278,11 +278,10 @@ void Structure::calculateNeighborList(
         // Use square of cutoffRadius (faster).
         cutoffRadius *= cutoffRadius;
 
-        size_t i = 0;
 #ifdef _OPENMP
-        #pragma omp parallel for private(i)
+        #pragma omp parallel for
 #endif
-        for (i = 0; i < numAtoms; i++)
+        for (size_t i = 0; i < numAtoms; i++)
         {
             // Count atom i as unique neighbor.
             atoms[i].neighborsUnique.push_back(i);
@@ -346,11 +345,10 @@ void Structure::calculateNeighborList(
         // Use square of cutoffRadius (faster).
         cutoffRadius *= cutoffRadius;
 
-        size_t i = 0;
 #ifdef _OPENMP
-        #pragma omp parallel for private(i)
+        #pragma omp parallel for
 #endif
-        for (i = 0; i < numAtoms; i++)
+        for (size_t i = 0; i < numAtoms; i++)
         {
             // Count atom i as unique neighbor.
             atoms[i].neighborsUnique.push_back(i);
