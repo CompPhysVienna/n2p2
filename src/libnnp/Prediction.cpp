@@ -64,20 +64,20 @@ void Prediction::readStructureFromFile(string const& fileName)
 
 void Prediction::predict()
 {
-    // TODO: Maybe we can simply overwrite maxCutoffRadius? Not sure.
-    double maxCutoffRadiusOverall = maxCutoffRadius;
-    // TODO: Is this the right case distinction?
     if (nnpType == NNPType::HDNNP_4G)
     {
-        maxCutoffRadiusOverall = structure.getMaxCutoffRadiusOverall(
-                                                ewaldPrecision, 
-                                                screeningFunction.getOuter(),
-                                                maxCutoffRadius);
+        structure.calculateMaxCutoffRadiusOverall(
+                                            ewaldPrecision, 
+                                            screeningFunction.getOuter(),
+                                            maxCutoffRadius);
+        structure.calculateNeighborList(maxCutoffRadius,
+                                        cutoffs);
+
     }
     // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
     // CI tests because of small numeric changes).
-    structure.calculateNeighborList(maxCutoffRadiusOverall,
-                                    nnpType == NNPType::HDNNP_4G);
+    else structure.calculateNeighborList(maxCutoffRadius, false);
+
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else

@@ -96,6 +96,9 @@ struct Structure
     double                   chargeRef;
     /// Simulation box volume.
     double                   volume;
+    /// Maximum cut-off radius with respect to symmetry functions, screening
+    /// function and Ewald summation.
+    double                   maxCutoffRadiusOverall;
     // TODO: MPI_Pack
     /// Lagrange multiplier used for charge equilibration.
     double                   lambda;
@@ -169,7 +172,7 @@ struct Structure
      *                         interaction.
      * @param[in] maxCutoffRadius maximal cut-off of symmetry functions.
      */
-    double                   getMaxCutoffRadiusOverall(
+    void                   calculateMaxCutoffRadiusOverall(
                                                         double precision,
                                                         double rcutScreen,
                                                         double maxCutoffRadius);
@@ -184,6 +187,25 @@ struct Structure
     void                     calculateNeighborList(
                                                     double  cutoffRadius, 
                                                     bool    sortByDistance = false);
+    /** Calculate neighbor list for all atoms and setup neighbor cut-off map.
+     *
+     * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
+     *                         than the cutoff radius.
+     * @param[in] cutoffs Vector of all needed cutoffs (needed for cut-off map
+     *                         construction).
+     * @return Maximum of {maxCutoffRadius, rcutScreen, rcutReal}.
+     */
+    void                     calculateNeighborList(
+                                                   double  cutoffRadius,
+                                                   std::vector<
+                                                   std::vector<double>>& cutoffs);
+
+    /** Set up a neighbor cut-off map which gives the index (value)  of the last needed
+     *  neighbor corresponding to a specific cut-off (key).
+     * @param[in] cutoffs Vector of all needed cutoffs.
+     */
+    void                     setupNeighborCutoffMap(std::vector<
+                                                    std::vector<double>>& cutoffs);
     /** Calculate required PBC copies.
      *
      * @param[in] cutoffRadius Cutoff radius for neighbor list.

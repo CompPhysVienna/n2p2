@@ -18,10 +18,11 @@
 #define ATOM_H
 
 #include "Vec3D.h"
-#include <cstddef> // std::size_t
-#include <map>     // std::map
-#include <string>  // std::string
-#include <vector>  // std::vector
+#include <cstddef>          // std::size_t
+#include <map>              // std::map
+#include <unordered_map>    // std::unordered_map
+#include <string>           // std::string
+#include <vector>           // std::vector
 
 namespace nnp
 {
@@ -165,6 +166,8 @@ struct Atom
     std::vector<Vec3D>       dAdrQ;
     /// Neighbor array (maximum number defined in macros.h.
     std::vector<Neighbor>    neighbors;
+    /// Map stores number of neighbors needed for the corresponding cut-off.
+    std::unordered_map<double, size_t> neighborCutoffs;
 
     /** Atom constructor, initialize to zero.
      */

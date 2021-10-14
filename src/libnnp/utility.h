@@ -24,6 +24,7 @@
 #include <stdexcept> // std::range_error
 #include <string>    // std::string
 #include <vector>    // std::vector
+#include <algorithm> // std::find
 
 namespace nnp
 {
@@ -152,6 +153,19 @@ V const&                 safeFind(std::map<K, V> const&           stdMap,
         throw std::range_error(message.str());
     }
     return stdMap.find(key)->second;
+}
+
+/** Test if vector contains specified value.
+ *
+ * @param[in] stdVec Vector to search in.
+ * @param[in] value Value to search for.
+ * @return `True` if value is located in vector.
+ */
+template<typename T>
+bool                    vectorContains(std::vector<T> const& stdVec,
+                                       T value)
+{
+    return (std::find(stdVec.begin(), stdVec.end(), value) != stdVec.end());
 }
 
 /** Compare pointer targets

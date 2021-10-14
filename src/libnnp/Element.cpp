@@ -423,6 +423,15 @@ double Element::getMaxCutoffRadius() const
     return maxCutoffRadius;
 }
 
+void Element::getCutoffRadii(std::vector<double>& cutoffs) const
+{
+    for (auto const& sf : symmetryFunctions)
+    {
+        double rc = sf->getRc();
+        if (!vectorContains(cutoffs,rc)) cutoffs.push_back(rc);
+    }
+}
+
 void Element::calculateSymmetryFunctions(Atom&      atom,
                                          bool const derivatives) const
 {

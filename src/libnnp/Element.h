@@ -172,6 +172,11 @@ public:
      * @return Maximum cutoff radius.
      */
     double                   getMaxCutoffRadius() const;
+    /** Get all different cutoff radii belonging to this element.
+     *
+     * @param[in] cutoffs Vector to append the result.
+     */
+    void                    getCutoffRadii(std::vector<double>& cutoffs) const;
     /** Get number of relevant symmetry functions per element.
      *
      * @return #symmetryFunctionNumTable

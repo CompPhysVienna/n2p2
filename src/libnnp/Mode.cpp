@@ -276,6 +276,7 @@ void Mode::setupElements()
     {
         elements.push_back(Element(i, elementMap));
     }
+    cutoffs.resize(numElements);
 
     if (settings.keywordExists("atom_energy"))
     {
@@ -546,6 +547,7 @@ void Mode::setupSymmetryFunctions()
         if (normalize) it->changeLengthUnitSymmetryFunctions(convLength);
         it->sortSymmetryFunctions();
         maxCutoffRadius = max(it->getMaxCutoffRadius(), maxCutoffRadius);
+        it->getCutoffRadii(cutoffs.at(it->getIndex()));
         it->setCutoffFunction(cutoffType, cutoffAlpha);
         log << strpr("Short range atomic symmetry functions element %2s :\n",
                      it->getSymbol().c_str());

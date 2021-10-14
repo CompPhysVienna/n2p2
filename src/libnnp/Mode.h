@@ -616,6 +616,8 @@ protected:
     std::vector<std::string>   nnk;
     std::map<
     std::string, NNSetup>      nns;
+    std::vector<
+    std::vector<double>>       cutoffs;
 
     /** Read in weights for a specific type of neural network.
      *

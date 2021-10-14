@@ -51,6 +51,7 @@ Structure::Structure() :
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
+    maxCutoffRadiusOverall        (0.0       ),
     sampleType                    (ST_UNKNOWN),
     comment                       (""        ),
     hasAMatrix                    (false     )
@@ -252,25 +253,25 @@ void Structure::readFromLines(vector<string> const& lines)
     return;
 }
 
-double Structure::getMaxCutoffRadiusOverall(
+void Structure::calculateMaxCutoffRadiusOverall(
                                             double precision, 
                                             double rcutScreen,
                                             double maxCutoffRadius)
 {
-    double maxCutoffRadiusOverall = max(rcutScreen, maxCutoffRadius);
+    maxCutoffRadiusOverall = max(rcutScreen, maxCutoffRadius);
     if (isPeriodic)
     {
         double rcutReal = getRcutReal(box, precision);
         maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, rcutReal);
-
     }
-    return maxCutoffRadiusOverall;
 }
 
 void Structure::calculateNeighborList(
                                         double      cutoffRadius, 
                                         bool        sortByDistance)
 {
+    cutoffRadius = max( cutoffRadius, maxCutoffRadiusOverall );
+    
     if (isPeriodic)
     {
         calculatePbcCopies(cutoffRadius, pbc);
@@ -387,6 +388,64 @@ void Structure::calculateNeighborList(
     if (sortByDistance) NeighborListIsSorted = true;
 
     return;
+}
+
+void Structure::calculateNeighborList(double                cutoffRadius, 
+                                      std::vector<
+                                      std::vector<double>>& cutoffs)
+{
+    calculateNeighborList(cutoffRadius, true);
+    setupNeighborCutoffMap(cutoffs);
+}
+
+void Structure::setupNeighborCutoffMap(vector<
+                                       vector<double>>& cutoffs)
+{
+    if ( !NeighborListIsSorted )
+        throw runtime_error("NeighborCutoffs map needs a sorted neighbor list");
+
+    for ( auto& elementCutoffs : cutoffs )
+    {
+        if ( maxCutoffRadiusOverall > 0 &&
+             !vectorContains(elementCutoffs, maxCutoffRadiusOverall))
+        {
+            elementCutoffs.push_back(maxCutoffRadiusOverall);
+        }
+
+        if ( !is_sorted(elementCutoffs.begin(), elementCutoffs.end()) )
+        {
+            sort(elementCutoffs.begin(), elementCutoffs.end());
+        }
+    }
+
+    // Loop over all atoms in this structure and create its neighborCutoffs map
+    for( auto& a : atoms )
+    {
+        size_t const eIndex = a.element;
+        vector<double> const& elementCutoffs = cutoffs.at(eIndex);
+        size_t in = 0;
+        size_t ic = 0;
+
+        while( in < a.numNeighbors && ic < elementCutoffs.size() )
+        {
+            Atom::Neighbor const& n = a.neighbors[in];
+            // If neighbor distance is higher than current "desired cutoff"
+            // then add neighbor cutoff.
+            // Attention: a step in the neighbor list could jump over multiple
+            // cutoffs -> don't increment neighbor index
+            if( n.d > elementCutoffs[ic] )
+            {
+                a.neighborCutoffs.emplace( elementCutoffs.at(ic), in );
+                ++ic;
+            }
+            else if ( in == a.numNeighbors - 1 )
+            {
+                a.neighborCutoffs.emplace( elementCutoffs.at(ic), a.numNeighbors );
+                ++ic;
+            }
+            else ++in;
+        }
+    }
 }
 
 size_t Structure::getMaxNumNeighbors() const
