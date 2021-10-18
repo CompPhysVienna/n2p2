@@ -267,11 +267,11 @@ void Structure::calculateMaxCutoffRadiusOverall(
 }
 
 void Structure::calculateNeighborList(
-                                        double      cutoffRadius, 
+                                        double      cutoffRadius,
                                         bool        sortByDistance)
 {
     cutoffRadius = max( cutoffRadius, maxCutoffRadiusOverall );
-    
+
     if (isPeriodic)
     {
         calculatePbcCopies(cutoffRadius, pbc);
@@ -597,19 +597,20 @@ double Structure::calculateElectrostaticEnergy(
 
             // diagonal including self interaction
             A(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI));
-            
+
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
 
             // real part
-            for (auto const& aj : ai.neighbors)
+            size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutReal);
+            for (size_t k = 0; k < numNeighbors; ++k)
             {
-                size_t j = aj.index;
+                auto const& n = ai.neighbors[k];
+                size_t j = n.index;
                 if (j < i) continue;
 
-                double const rij = aj.d;
-                if (rij >= rcutReal) break;
-                size_t const ej = aj.element;
+                double const rij = n.d;
+                size_t const ej = n.element;
                 A(i, j) += (erfc(rij / sqrt2eta)
                           - erfc(rij / gammaSqrt2(ei, ej))) / rij;
             }
@@ -713,13 +714,14 @@ double Structure::calculateScreeningEnergy(
                 energyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
 #endif
 
-                for (auto const& aj : ai.neighbors)
+                size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutScreen);
+                for (size_t k = 0; k < numNeighbors; ++k)
                 {
-                    size_t const j = aj.index;
+                    auto const& n = ai.neighbors[k];
+                    size_t const j = n.index;
                     if (j < i) continue;
-                    double const rij = aj.d;
-                    if ( rij >= rcutScreen ) break;
-                    size_t const ej = aj.element;
+                    double const rij = n.d;
+                    size_t const ej = n.element;
                     //TODO: Maybe add charge to neighbor class?
                     double const Qj = atoms.at(j).charge;
 #ifdef _OPENMP
@@ -805,19 +807,20 @@ void Structure::calculateDAdrQ(
             double const Qi = ai.charge;
 
             // real part
-            for (auto const& ajN : ai.neighbors)
+            size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutReal);
+            for (size_t k = 0; k < numNeighbors; ++k)
             {
-                size_t j = ajN.index;
+                auto const& n = ai.neighbors[k];
+                size_t j = n.index;
                 if (j < i) continue;
 
-                double const rij = ajN.d;
-                if (rij >= rcutReal) break;
+                double const rij = n.d;
                 Atom& aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const Qj = aj.charge;
 
                 Vec3D dAijdri;
-                dAijdri = ajN.dr / pow(rij,2) 
+                dAijdri = n.dr / pow(rij,2) 
                             * (2 / sqrt(M_PI) * ( -exp(-pow(rij / sqrt2eta,2)) 
                             / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei,ej), 2)) 
                             / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta) 
@@ -829,7 +832,7 @@ void Structure::calculateDAdrQ(
                 ai.dAdrQ[j] += dAijdri * Qi;
                 aj.dAdrQ[i] -= dAijdri * Qj;
             }
-            
+
             // reciprocal part
             for (size_t j = i+1; j < numAtoms; ++j)
             {
@@ -882,25 +885,25 @@ void Structure::calculateDAdrQ(
 
 void Structure::calculateDQdChi(vector<Eigen::VectorXd> &dQdChi)
 {
-    dQdChi.resize(numAtoms);
+    dQdChi.clear();
+    dQdChi.reserve(numAtoms);
     for (size_t i = 0; i < numAtoms; ++i)
     {
-        dQdChi.at(i).resize(numAtoms);
         // Including Lagrange multiplier equation.
         VectorXd b(numAtoms+1);
         b.setZero();
         b(i) = -1.;
-        dQdChi.at(i) = A.colPivHouseholderQr().solve(b).head(numAtoms);
+        dQdChi.push_back(A.colPivHouseholderQr().solve(b).head(numAtoms));
     }
     return;
 }
 
 void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
 {
-    dQdJ.resize(numElements);
+    dQdJ.clear();
+    dQdJ.reserve(numElements);
     for (size_t i = 0; i < numElements; ++i)
     {
-        dQdJ.at(i).resize(numAtoms);
         // Including Lagrange multiplier equation.
         VectorXd b(numAtoms+1);
         b.setZero();
@@ -909,7 +912,7 @@ void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
             Atom const &aj = atoms.at(j);
             if (i == aj.element) b(j) = -aj.charge;
         }
-        dQdJ.at(i) = A.colPivHouseholderQr().solve(b).head(numAtoms);
+        dQdJ.push_back(A.colPivHouseholderQr().solve(b).head(numAtoms));
     }
     return;
 }

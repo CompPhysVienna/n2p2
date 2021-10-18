@@ -281,20 +281,37 @@ void Atom::clearNeighborList(size_t const numElements)
     return;
 }
 
-size_t Atom::getNumNeighbors(double cutoffRadius) const
+size_t Atom::getNumNeighbors(double const cutoffRadius) const
 {
-    size_t numNeighborsLocal = 0;
-
-    for (vector<Neighbor>::const_iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+    // neighborCutoffs map is only constructed when the neighbor list is sorted.
+    if (unorderedMapContainsKey(neighborCutoffs, cutoffRadius))
+        return neighborCutoffs.at(cutoffRadius);
+    else
     {
-        if (it->d <= cutoffRadius)
-        {
-            numNeighborsLocal++;
-        }
-    }
+        size_t numNeighborsLocal = 0;
 
-    return numNeighborsLocal;
+        for (vector<Neighbor>::const_iterator it = neighbors.begin();
+             it != neighbors.end(); ++it)
+        {
+            if (it->d <= cutoffRadius)
+            {
+                numNeighborsLocal++;
+            }
+        }
+
+        return numNeighborsLocal;
+    }
+}
+
+size_t Atom::getStoredMinNumNeighbors(double const cutoffRadius) const
+{
+     // neighborCutoffs map is only constructed when the neighbor list is sorted.
+    if (unorderedMapContainsKey(neighborCutoffs, cutoffRadius))
+        return neighborCutoffs.at(cutoffRadius);
+    else
+    {
+        return numNeighbors;
+    }
 }
 
 bool Atom::isNeighbor(size_t index) const

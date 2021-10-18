@@ -1741,26 +1741,25 @@ void Mode::calculateForces(Structure& structure) const
         cout << "WARNING: Forces are not yet implemented.\n";
         return;
     }
-    Atom* ai = NULL;
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
-    #pragma omp parallel for private(ai)
+    #pragma omp parallel for
 #endif
     for (size_t i = 0; i < structure.atoms.size(); ++i)
     {
         // Set pointer to atom.
-        ai = &(structure.atoms.at(i));
+        Atom& ai = structure.atoms.at(i);
 
         // Reset forces.
-        ai->f[0] = 0.0;
-        ai->f[1] = 0.0;
-        ai->f[2] = 0.0;
+        ai.f[0] = 0.0;
+        ai.f[1] = 0.0;
+        ai.f[2] = 0.0;
 
         // First add force contributions from atom i itself (gradient of
         // atomic energy E_i).
-        for (size_t j = 0; j < ai->numSymmetryFunctions; ++j)
+        for (size_t j = 0; j < ai.numSymmetryFunctions; ++j)
         {
-            ai->f -= ai->dEdG.at(j) * ai->dGdr.at(j);
+            ai.f -= ai.dEdG.at(j) * ai.dGdr.at(j);
         }
 
         // Now loop over all neighbor atoms j of atom i. These may hold
@@ -1771,8 +1770,8 @@ void Mode::calculateForces(Structure& structure) const
         // "unique neighbor" list (but skip the first entry, this is always
         // atom i itself).
         for (vector<size_t>::const_iterator it =
-             ai->neighborsUnique.begin() + 1;
-             it != ai->neighborsUnique.end(); ++it)
+             ai.neighborsUnique.begin() + 1;
+             it != ai.neighborsUnique.end(); ++it)
         {
             // Define shortcut for atom j (aj).
             Atom& aj = structure.atoms.at(*it);
@@ -1781,22 +1780,25 @@ void Mode::calculateForces(Structure& structure) const
                 = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
             // Loop over atom j's neighbors (n), atom i should be one of them.
-            for (vector<Atom::Neighbor>::const_iterator n =
-                 aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
+            // TODO: Could implement maxCutoffRadiusSymFunc for each element and
+            // use this instead of maxCutoffRadius.
+            size_t const numNeighbors = aj.getStoredMinNumNeighbors(maxCutoffRadius);
+            for ( size_t k = 0; k < numNeighbors; ++k)
             {
+                Atom::Neighbor const& n = aj.neighbors[k];
                 // If atom j's neighbor is atom i add force contributions.
-                if (n->index == ai->index)
+                if (n.index == ai.index)
                 {
 #ifndef NNP_FULL_SFD_MEMORY
-                    vector<size_t> const& table = tableFull.at(n->element);
-                    for (size_t j = 0; j < n->dGdr.size(); ++j)
+                    vector<size_t> const& table = tableFull.at(n.element);
+                    for (size_t j = 0; j < n.dGdr.size(); ++j)
                     {
-                        ai->f -= aj.dEdG.at(table.at(j)) * n->dGdr.at(j);
+                        ai.f -= aj.dEdG.at(table.at(j)) * n.dGdr.at(j);
                     }
 #else
                     for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
                     {
-                        ai->f -= aj.dEdG.at(j) * n->dGdr.at(j);
+                        ai.f -= aj.dEdG.at(j) * n.dGdr.at(j);
                     }
 #endif
                 }
@@ -1830,7 +1832,7 @@ void Mode::calculateForces(Structure& structure) const
 
             ai.f -= ai.pEelecpr;
             ai.fElec -= ai.pEelecpr;
-            
+
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
 
@@ -1850,8 +1852,11 @@ void Mode::calculateForces(Structure& structure) const
                         dChidr += aj.dChidG.at(k) * aj.dGdr.at(k);
                     }
                 }
-                for (auto const& n : aj.neighbors)
+
+                size_t numNeighbors = aj.getStoredMinNumNeighbors(maxCutoffRadius);
+                for (size_t m = 0; m < numNeighbors; ++m)
                 {
+                    Atom::Neighbor const& n = aj.neighbors.at(m);
                     if (n.index == ai.index)
                     {
 #ifndef NNP_FULL_SFD_MEMORY

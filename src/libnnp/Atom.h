@@ -248,7 +248,16 @@ struct Atom
      * for a large cutoff radius and now the number of neighbor atoms for a
      * smaller cutoff is requested.
      */
-    std::size_t              getNumNeighbors(double cutoffRadius) const;
+    std::size_t              getNumNeighbors(double const cutoffRadius) const;
+    /** Return needed number of neighbors for a given cutoff radius from
+     *                  neighborCutoffs map. If it isn't setup, return number
+     *                  of all neighbors in list.
+     * @param[in]   cutoffRadius Desired cutoff radius.
+     * @return Integer with the number of neighbors corresponding to the cutoff
+     *                  radius.
+     */
+    std::size_t              getStoredMinNumNeighbors(
+                                             double const cutoffRadius) const;
     /** Return whether atom is a neighbor.
      *
      * @param[in] index Index of atom in question.
