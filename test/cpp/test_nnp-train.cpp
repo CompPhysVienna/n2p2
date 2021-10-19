@@ -23,7 +23,12 @@ void nnpToolTestBody(Example_nnp_train const example)
     bool epochFound = false;
     string line;
     ifstream file;
-    file.open("learning-curve.out");
+
+    string filename{"learning-curve.out"};
+    if (example.args != "")
+        filename += ".stage-" + example.args;
+
+    file.open(filename);
     BOOST_REQUIRE(file.is_open());
     while (getline(file, line))
     {
@@ -31,14 +36,24 @@ void nnpToolTestBody(Example_nnp_train const example)
         if (columns.at(0) == to_string(example.lastEpoch))
         {
             epochFound = true;
-            BOOST_REQUIRE_SMALL(example.rmseEnergyTrain - stod(columns.at(1)),
-                                accuracy);
-            BOOST_REQUIRE_SMALL(example.rmseEnergyTest - stod(columns.at(2)),
-                                accuracy);
-            BOOST_REQUIRE_SMALL(example.rmseForcesTrain - stod(columns.at(9)),
-                                accuracy);
-            BOOST_REQUIRE_SMALL(example.rmseForcesTest - stod(columns.at(10)),
-                                accuracy);
+            if (example.args == "1")
+            {
+                BOOST_REQUIRE_SMALL(example.rmseChargesTrain - stod(columns.at(1)),
+                                    accuracy);
+                BOOST_REQUIRE_SMALL(example.rmseChargesTest - stod(columns.at(2)),
+                                    accuracy);
+            }
+            else
+            {
+                BOOST_REQUIRE_SMALL(example.rmseEnergyTrain - stod(columns.at(1)),
+                                    accuracy);
+                BOOST_REQUIRE_SMALL(example.rmseEnergyTest - stod(columns.at(2)),
+                                    accuracy);
+                BOOST_REQUIRE_SMALL(example.rmseForcesTrain - stod(columns.at(9)),
+                                    accuracy);
+                BOOST_REQUIRE_SMALL(example.rmseForcesTest - stod(columns.at(10)),
+                                    accuracy);
+            }
         }
     }
     BOOST_REQUIRE_MESSAGE(epochFound,
