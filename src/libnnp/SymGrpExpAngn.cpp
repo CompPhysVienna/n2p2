@@ -167,7 +167,8 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
     }
 
     double const rc2 = rc * rc;
-    size_t numNeighbors = atom.numNeighbors;
+    //size_t numNeighbors = atom.numNeighbors;
+    size_t numNeighbors = atom.getStoredMinNumNeighbors(rc);
     // Prevent problematic condition in loop test below (j < numNeighbors - 1).
     if (numNeighbors == 0) numNeighbors = 1;
 
