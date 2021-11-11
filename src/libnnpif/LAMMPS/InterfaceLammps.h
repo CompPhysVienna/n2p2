@@ -60,6 +60,11 @@ public:
                       double       lammpsCutoff,
                       int          lammpsNtypes,
                       int          myRank);
+    /** Specify whether n2p2 knows about global structure or only local
+     * structure.
+     * @param[in] status true if n2p2 has global structure.
+     */
+    void    setGlobalStructureStatus(bool const status);
     /** (Re)set #structure to contain only local LAMMPS atoms.
      *
      * @param[in] numAtomsLocal Number of local atoms.
@@ -74,6 +79,19 @@ public:
      * @param[in] atomPos Atom coordinate array in LAMMPS units.
      */
     void   setLocalAtomPositions(double const* const* const atomPos);
+    /** Set box vectors of structure stored in LAMMPS (nnp/develop only).
+     *
+     * @param[in] boxlo Array containing coordinates of origin xlo, ylo, zlo.
+     * @param[in] boxhi Array containing coordinates xhi, yhi, zhi.
+     * @param[in] xy Tilt factor for box vector b.
+     * @param[in] xz First tilt factor for box vector c.
+     * @param[in] yz Second tilt factor for box vector c.
+     */
+    void   setBoxVectors(double const* boxlo,
+                         double const* boxhi,
+                         double const  xy,
+                         double const  xz,
+                         double const  yz);
     /** Add one neighbor to atom.
      *
      * @param[in] i Local atom index.
@@ -93,6 +111,10 @@ public:
                        double dy,
                        double dz,
                        double d2);
+    /** Sorts neighbor list and creates cutoff map if necessary. If structure is
+     * periodic, this function needs to be called after setBoxVectors!
+     */
+    void   finalizeNeighborList();
     /** Calculate symmetry functions, atomic neural networks and sum of local
      * energy contributions.
      */
@@ -155,6 +177,8 @@ protected:
     int                        myRank;
     /// Initialization state.
     bool                       initialized;
+    /// Whether n2p2 knows about the global structure or only a local part.
+    bool                       hasGlobalStructure;
     /// Corresponds to LAMMPS `showew` keyword.
     bool                       showew;
     /// Corresponds to LAMMPS `resetew` keyword.

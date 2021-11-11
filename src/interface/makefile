@@ -20,7 +20,8 @@ COMP=gnu
 MODE=static
 
 # LAMMPS version string
-LAMMPS_VERSION=stable_29Oct2020
+#LAMMPS_VERSION=stable_29Oct2020
+LAMMPS_VERSION=stable_29Sep2021
 
 # Include global (project-wide) settings.
 include $(PROJECT_DIR)/src/makefile.$(COMP)

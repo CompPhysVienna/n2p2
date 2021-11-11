@@ -216,6 +216,9 @@ public:
                                              bool collectExtrapolationWarnings,
                                              bool writeExtrapolationWarnings,
                                              bool stopOnExtrapolationWarnings);
+    /** Setup matrix storing all symmetry function cut-offs for each element.
+     */
+    void                     setupCutoffMatrix();
     /** Set up neural networks for all elements.
      *
      * Uses keywords `global_hidden_layers_short`, `global_nodes_short`,
@@ -616,6 +619,7 @@ protected:
     std::vector<std::string>   nnk;
     std::map<
     std::string, NNSetup>      nns;
+    /// Matrix storing all symmetry function cut-offs for all elements.
     std::vector<
     std::vector<double>>       cutoffs;
 

@@ -919,7 +919,11 @@ void Training::calculateNeighborLists()
         // List only needs to be sorted for 4G
         if (nnpType == NNPType::HDNNP_4G)
         {
-            it->calculateNeighborList(maxCutoffRadius,true);
+            it->calculateMaxCutoffRadiusOverall(
+                                            ewaldPrecision,
+                                            screeningFunction.getOuter(),
+                                            maxCutoffRadius);
+            it->calculateNeighborList(maxCutoffRadius,cutoffs);
         }
         else
         {

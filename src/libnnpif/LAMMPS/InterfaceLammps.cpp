@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <stdexcept>
 #ifndef NNP_NO_MPI
 #include <mpi.h>
 #include "mpi-extra.h"
@@ -32,15 +33,16 @@
 using namespace std;
 using namespace nnp;
 
-InterfaceLammps::InterfaceLammps() : myRank      (0    ),
-                                     initialized (false),
-                                     showew      (true ),
-                                     resetew     (false),
-                                     showewsum   (0    ),
-                                     maxew       (0    ),
-                                     cflength    (1.0  ),
-                                     cfenergy    (1.0  )
-                                     
+InterfaceLammps::InterfaceLammps() : myRank             (0    ),
+                                     initialized        (false),
+                                     hasGlobalStructure (false),
+                                     showew             (true ),
+                                     resetew            (false),
+                                     showewsum          (0    ),
+                                     maxew              (0    ),
+                                     cflength           (1.0  ),
+                                     cfenergy           (1.0  )
+
 {
 }
 
@@ -248,6 +250,11 @@ void InterfaceLammps::initialize(char* const& directory,
     initialized = true;
 }
 
+void InterfaceLammps::setGlobalStructureStatus(bool const status)
+{
+    hasGlobalStructure = status;
+}
+
 void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
                                     int const* const atomTag,
                                     int const* const atomType)
@@ -307,6 +314,61 @@ void InterfaceLammps::setLocalAtomPositions(double const* const* const atomPos)
     return;
 }
 
+void InterfaceLammps::setBoxVectors(double const* boxlo,
+                                    double const* boxhi,
+                                    double const  xy,
+                                    double const  xz,
+                                    double const  yz)
+{
+    structure.isPeriodic = true;
+
+    // Box vector a
+    structure.box[0][0] = boxhi[0] - boxlo[0];
+    structure.box[0][1] = 0;
+    structure.box[0][2] = 0;
+
+    // Box vector b
+    structure.box[1][0] = xy;
+    structure.box[1][1] = boxhi[1] - boxlo[1];
+    structure.box[1][2] = 0;
+
+    // Box vector c
+    structure.box[2][0] = xz;
+    structure.box[2][1] = yz;
+    structure.box[2][2] = boxhi[2] - boxlo[2];
+
+    // LAMMPS may set triclinic = 1 even if the following condition is not
+    // satisfied.
+    if (structure.box[0][1] > numeric_limits<double>::min() ||
+        structure.box[0][2] > numeric_limits<double>::min() ||
+        structure.box[1][0] > numeric_limits<double>::min() ||
+        structure.box[1][2] > numeric_limits<double>::min() ||
+        structure.box[2][0] > numeric_limits<double>::min() ||
+        structure.box[2][1] > numeric_limits<double>::min())
+    {
+        structure.isTriclinic = true;
+    }
+    structure.calculateInverseBox();
+    structure.calculateVolume();
+
+    for(size_t i = 0; i < 3; ++i)
+    {
+        structure.box[i] *= cflength;
+        if (normalize) structure.box[i] *= convLength;
+    }
+
+    cout << "Box vectors: \n";
+    for(size_t i = 0; i < 3; ++i)
+    {
+        for(size_t j = 0; j < 3; ++j)
+        {
+            cout << structure.box[i][j] / convLength << " ";
+        }
+        cout << endl;
+    }
+
+}
+
 void InterfaceLammps::addNeighbor(int    i,
                                   int    j,
                                   int    tag,
@@ -323,7 +385,24 @@ void InterfaceLammps::addNeighbor(int    i,
     a.neighbors.push_back(Atom::Neighbor());
     a.numNeighborsPerElement.at(mapTypeToElement[type])++;
     Atom::Neighbor& n = a.neighbors.back();
-    n.index   = j;
+
+    if (!hasGlobalStructure)
+        n.index   = j;
+    else
+    {
+        auto matchingAtom = find_if(structure.atoms.begin(), structure.atoms.end(),
+                [tag](Atom const& x)
+                {
+                    return (x.tag == size_t(tag));
+                }
+            );
+        if(matchingAtom != structure.atoms.end())
+        {
+            n.index = matchingAtom->index;
+        }
+        else throw runtime_error("ERROR: Tag of neighbor doesn't match the tag "
+                                 "of any atom in the structure!");
+    }
     n.tag     = tag;
     n.element = mapTypeToElement[type];
     n.dr[0]   = dx * cflength;
@@ -339,6 +418,22 @@ void InterfaceLammps::addNeighbor(int    i,
     }
 
     return;
+}
+
+
+void InterfaceLammps::finalizeNeighborList()
+{
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+    // Ewald summation cut-off depends on box vectors.
+        structure.calculateMaxCutoffRadiusOverall(
+                                            ewaldPrecision,
+                                            screeningFunction.getOuter(),
+                                            maxCutoffRadius);
+        structure.sortNeighborList();
+        structure.setupNeighborCutoffMap(cutoffs);
+    }
+
 }
 
 void InterfaceLammps::process()

@@ -67,7 +67,7 @@ void Prediction::predict()
     if (nnpType == NNPType::HDNNP_4G)
     {
         structure.calculateMaxCutoffRadiusOverall(
-                                            ewaldPrecision, 
+                                            ewaldPrecision,
                                             screeningFunction.getOuter(),
                                             maxCutoffRadius);
         structure.calculateNeighborList(maxCutoffRadius,

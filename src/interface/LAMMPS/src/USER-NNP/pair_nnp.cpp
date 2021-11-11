@@ -315,6 +315,7 @@ void PairNNP::transferNeighborList()
       }
     }
   }
+  interface.finalizeNeighborList();
 }
 
 void PairNNP::handleExtrapolationWarnings()

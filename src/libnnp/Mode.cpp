@@ -170,10 +170,11 @@ void Mode::setupGeneric(string const& nnpDir, bool initialHardness)
     setupNormalization();
     setupElementMap();
     setupElements();
-    if (nnpType == NNPType::HDNNP_4G) 
+    if (nnpType == NNPType::HDNNP_4G)
         setupElectrostatics(initialHardness, nnpDir);
     setupCutoff();
     setupSymmetryFunctions();
+    setupCutoffMatrix();
 #ifndef NNP_FULL_SFD_MEMORY
     setupSymmetryFunctionMemory(false);
 #endif
@@ -276,7 +277,6 @@ void Mode::setupElements()
     {
         elements.push_back(Element(i, elementMap));
     }
-    cutoffs.resize(numElements);
 
     if (settings.keywordExists("atom_energy"))
     {
@@ -547,7 +547,6 @@ void Mode::setupSymmetryFunctions()
         if (normalize) it->changeLengthUnitSymmetryFunctions(convLength);
         it->sortSymmetryFunctions();
         maxCutoffRadius = max(it->getMaxCutoffRadius(), maxCutoffRadius);
-        it->getCutoffRadii(cutoffs.at(it->getIndex()));
         it->setCutoffFunction(cutoffType, cutoffAlpha);
         log << strpr("Short range atomic symmetry functions element %2s :\n",
                      it->getSymbol().c_str());
@@ -1029,6 +1028,20 @@ void Mode::setupSymmetryFunctionStatistics(bool collectStatistics,
     log << "*****************************************"
            "**************************************\n";
     return;
+}
+
+void Mode::setupCutoffMatrix()
+{
+    cutoffs.resize(numElements);
+    for(auto const& e : elements)
+    {
+        e.getCutoffRadii(cutoffs.at(e.getIndex()));
+    }
+    //for(size_t i = 0; i < numElements; ++i)
+    //{
+    //    Element const& e = elements.at(i);
+    //    e.getCutoffRadii(cutoffs.at(e.getIndex()));
+    //}
 }
 
 void Mode::setupNeuralNetwork()
@@ -1627,8 +1640,8 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 }
 
 // TODO: Make this const?
-void Mode::chargeEquilibration( Structure& structure, 
-                                bool const derivativesElec, 
+void Mode::chargeEquilibration( Structure& structure,
+                                bool const derivativesElec,
                                 bool const suppressOutput)
 {
     Structure& s = structure;
@@ -1650,8 +1663,8 @@ void Mode::chargeEquilibration( Structure& structure,
     }
 
     double const error = s.calculateElectrostaticEnergy(ewaldPrecision,
-		                                        hardness,
-		                                        gammaSqrt2,
+                                                hardness,
+                                                gammaSqrt2,
                                                 sigmaSqrtPi,
                                                 screeningFunction);
 
@@ -1676,7 +1689,7 @@ void Mode::chargeEquilibration( Structure& structure,
                      a.index, elementMap[a.element].c_str(), a.charge);
         structure.charge += a.charge;
     }
-    
+
     if (!suppressOutput)
     {
         log << strpr("Total charge: %16.8E (ref: %16.8E)\n",

@@ -8,6 +8,7 @@
 #include <string.h>
 #include "pair_nnp_develop.h"
 #include "atom.h"
+#include "domain.h"
 #include "comm.h"
 #include "neighbor.h"
 #include "neigh_list.h"
@@ -18,6 +19,8 @@
 #include "utils.h"
 
 #include <stdexcept>
+//TODO:  remove later
+#include <iostream>
 
 using namespace LAMMPS_NS;
 using namespace std;
@@ -40,7 +43,18 @@ void PairNNPDevelop::compute(int eflag, int vflag)
   // Also set absolute atom positions.
   interface.setLocalAtomPositions(atom->x);
 
-  // Transfer local neighbor list to NNP interface.
+  // Set Box vectors if system is periodic in all 3 dims.
+  if(domain->nonperiodic == 0)
+  {
+      interface.setBoxVectors(domain->boxlo,
+                              domain->boxhi,
+                              domain->xy,
+                              domain->xz,
+                              domain->yz);
+  }
+
+  // Transfer local neighbor list to NNP interface. Has to be called after
+  // setBoxVectors if structure is periodic!
   transferNeighborList();
 
   // Compute symmetry functions, atomic neural networks and add up energy.
@@ -78,5 +92,15 @@ void PairNNPDevelop::init_style()
                         "with a single MPI task.\n");
   }
 
+  if(domain->dimension != 3)
+      throw runtime_error("ERROR: Only 3d systems can be used!");
+
+  if (!(domain->xperiodic == domain->yperiodic
+     && domain->yperiodic == domain->zperiodic))
+    throw runtime_error("ERROR: System must be either aperiodic or periodic "
+                        "in all 3 dimmensions!");
+
   PairNNP::init_style();
+
+  interface.setGlobalStructureStatus(true);
 }

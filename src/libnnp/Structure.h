@@ -185,7 +185,7 @@ struct Structure
      * @return Maximum of {maxCutoffRadius, rcutScreen, rcutReal}.
      */
     void                     calculateNeighborList(
-                                                    double  cutoffRadius, 
+                                                    double  cutoffRadius,
                                                     bool    sortByDistance = false);
     /** Calculate neighbor list for all atoms and setup neighbor cut-off map.
      *
@@ -199,13 +199,17 @@ struct Structure
                                                    double  cutoffRadius,
                                                    std::vector<
                                                    std::vector<double>>& cutoffs);
-
-    /** Set up a neighbor cut-off map which gives the index (value)  of the last needed
+    /** Sort all neighbor lists of this structure with respect to the distance.
+     */
+    void                     sortNeighborList();
+    /** Set up a neighbor cut-off map which gives the index (value) of the last needed
      *  neighbor corresponding to a specific cut-off (key).
-     * @param[in] cutoffs Vector of all needed cutoffs.
+     * @param[in] cutoffs Vector of all needed symmetry function cutoffs. Note
+     *                          that a local copy gets extended with
+     *                          maxCutoffRadiusOverall.
      */
     void                     setupNeighborCutoffMap(std::vector<
-                                                    std::vector<double>>& cutoffs);
+                                                    std::vector<double>> cutoffs);
     /** Calculate required PBC copies.
      *
      * @param[in] cutoffRadius Cutoff radius for neighbor list.

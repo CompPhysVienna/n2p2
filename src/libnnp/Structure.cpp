@@ -254,7 +254,7 @@ void Structure::readFromLines(vector<string> const& lines)
 }
 
 void Structure::calculateMaxCutoffRadiusOverall(
-                                            double precision, 
+                                            double precision,
                                             double rcutScreen,
                                             double maxCutoffRadius)
 {
@@ -332,13 +332,13 @@ void Structure::calculateNeighborList(
                     }
                 }
             }
-            if (sortByDistance)
-            {
-                sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
-                //TODO: maybe sort neighborsUnique too?
-                atoms[i].NeighborListIsSorted = true;
-            }
-            atoms[i].hasNeighborList = true;
+            //if (sortByDistance)
+            //{
+            //    sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
+            //    //TODO: maybe sort neighborsUnique too?
+            //    atoms[i].NeighborListIsSorted = true;
+            //}
+            //atoms[i].hasNeighborList = true;
         }
     }
     else
@@ -374,23 +374,24 @@ void Structure::calculateNeighborList(
                     }
                 }
             }
-            if (sortByDistance)
-            {
-                sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
-                //TODO: maybe sort neighborsUnique too?
-                atoms[i].NeighborListIsSorted = true;
-            }
-            atoms[i].hasNeighborList = true;
+            //if (sortByDistance)
+            //{
+            //    sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
+            //    //TODO: maybe sort neighborsUnique too?
+            //    atoms[i].NeighborListIsSorted = true;
+            //}
+            //atoms[i].hasNeighborList = true;
         }
     }
 
     hasNeighborList = true;
-    if (sortByDistance) NeighborListIsSorted = true;
+
+    if (sortByDistance) sortNeighborList();
 
     return;
 }
 
-void Structure::calculateNeighborList(double                cutoffRadius, 
+void Structure::calculateNeighborList(double                cutoffRadius,
                                       std::vector<
                                       std::vector<double>>& cutoffs)
 {
@@ -398,8 +399,22 @@ void Structure::calculateNeighborList(double                cutoffRadius,
     setupNeighborCutoffMap(cutoffs);
 }
 
+void Structure::sortNeighborList()
+{
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
+        //TODO: maybe sort neighborsUnique too?
+        atoms[i].NeighborListIsSorted = true;
+    }
+    NeighborListIsSorted = true;
+}
+
 void Structure::setupNeighborCutoffMap(vector<
-                                       vector<double>>& cutoffs)
+                                       vector<double>> cutoffs)
 {
     if ( !NeighborListIsSorted )
         throw runtime_error("NeighborCutoffs map needs a sorted neighbor list");
@@ -661,23 +676,23 @@ double Structure::calculateElectrostaticEnergy(
     b(numAtoms) = chargeRef;
 
     //TODO: sometimes only recalculation of A matrix is needed, because 
-    //Qs are stored. 
+    //Qs are stored.
     VectorXd const Q = A.colPivHouseholderQr().solve(b);
 #ifdef _OPENMP
     #pragma omp parallel for
 #endif
     for (size_t i = 0; i < numAtoms; ++i)
     {
-        atoms.at(i).charge = Q(i); 
+        atoms.at(i).charge = Q(i);
     }
 
-    hasCharges = true; 
+    hasCharges = true;
     lambda = Q(numAtoms);
     double error = (A * Q - b).norm() / b.norm();
-    
+
     // We need matrix E not A, which only differ by the hardness terms along the diagonal
     energyElec = 0.5 * Q.head(numAtoms).transpose()
-               * (A.topLeftCorner(numAtoms, numAtoms) - 
+               * (A.topLeftCorner(numAtoms, numAtoms) -
                 MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
     energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
 
