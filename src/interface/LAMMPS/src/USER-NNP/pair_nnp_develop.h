@@ -25,8 +25,15 @@ class PairNNPDevelop : public PairNNP {
   virtual ~PairNNPDevelop() {}
   virtual void compute(int, int);
   virtual void init_style();
+  virtual double init_one(int i, int j);
 
  protected:
+  /// Keeps track of the maximum cutoff radius that was used for the neighbor
+  /// list.
+  double maxCutoffRadiusNeighborList;
+
+  /// Update neighborlist if maxCutoffRadiusNeighborList has changed.
+  void updateNeighborlistCutoff();
 
 };
 

@@ -44,7 +44,7 @@ void PairNNP::compute(int eflag, int vflag)
   interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
 
   // Transfer local neighbor list to NNP interface.
-  transferNeighborList();
+  transferNeighborList(maxCutoffRadius);
 
   // Compute symmetry functions, atomic neural networks and add up energy.
   interface.process();
@@ -210,9 +210,9 @@ void PairNNP::init_style()
   // Activate screen and logfile output only for rank 0.
   if (comm->me == 0) {
     if (lmp->screen != NULL)
-      interface.log.registerCFilePointer(&(lmp->screen));    
+      interface.log.registerCFilePointer(&(lmp->screen));
     if (lmp->logfile != NULL)
-      interface.log.registerCFilePointer(&(lmp->logfile));    
+      interface.log.registerCFilePointer(&(lmp->logfile));
   }
 
   // Initialize interface on all processors.
@@ -297,10 +297,10 @@ void PairNNP::allocate()
   memory->create(cutsq,n+1,n+1,"pair:cutsq");
 }
 
-void PairNNP::transferNeighborList()
+void PairNNP::transferNeighborList(double const cutoffRadius)
 {
   // Transfer neighbor list to NNP.
-  double rc2 = maxCutoffRadius * maxCutoffRadius;
+  double rc2 = cutoffRadius * cutoffRadius;
   for (int ii = 0; ii < list->inum; ++ii) {
     int i = list->ilist[ii];
     for (int jj = 0; jj < list->numneigh[i]; ++jj) {

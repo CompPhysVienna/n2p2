@@ -425,7 +425,7 @@ void InterfaceLammps::finalizeNeighborList()
 {
     if (nnpType == NNPType::HDNNP_4G)
     {
-    // Ewald summation cut-off depends on box vectors.
+        // Ewald summation cut-off depends on box vectors.
         structure.calculateMaxCutoffRadiusOverall(
                                             ewaldPrecision,
                                             screeningFunction.getOuter(),
@@ -465,6 +465,22 @@ double InterfaceLammps::getMaxCutoffRadius() const
 {
     if (normalize) return maxCutoffRadius / convLength / cflength;
     else return maxCutoffRadius / cflength;
+}
+
+double InterfaceLammps::getMaxCutoffRadiusOverall()
+{
+    double cutoff = 0;
+    if(nnpType == NNPType::HDNNP_4G)
+    {
+        structure.calculateMaxCutoffRadiusOverall(
+                                        ewaldPrecision,
+                                        screeningFunction.getOuter(),
+                                        maxCutoffRadius);
+        cutoff = structure.maxCutoffRadiusOverall / cflength;
+        if (normalize) cutoff /= convLength;
+    }
+    else cutoff = getMaxCutoffRadius();
+    return cutoff;
 }
 
 double InterfaceLammps::getEnergy() const

@@ -53,9 +53,11 @@ void PairNNPDevelop::compute(int eflag, int vflag)
                               domain->yz);
   }
 
+  updateNeighborlistCutoff();
+
   // Transfer local neighbor list to NNP interface. Has to be called after
   // setBoxVectors if structure is periodic!
-  transferNeighborList();
+  transferNeighborList(maxCutoffRadiusNeighborList);
 
   // Compute symmetry functions, atomic neural networks and add up energy.
   interface.process();
@@ -102,5 +104,29 @@ void PairNNPDevelop::init_style()
 
   PairNNP::init_style();
 
+  maxCutoffRadiusNeighborList = maxCutoffRadius;
+
   interface.setGlobalStructureStatus(true);
 }
+
+
+double PairNNPDevelop::init_one(int i, int j)
+{
+    return maxCutoffRadiusNeighborList;
+}
+
+
+void PairNNPDevelop::updateNeighborlistCutoff()
+{
+    double maxCutoffRadiusOverall = interface.getMaxCutoffRadiusOverall();
+    if(maxCutoffRadiusOverall > maxCutoffRadiusNeighborList)
+    {
+        //TODO: Increase slightly to compensate for rounding errors?
+        maxCutoffRadiusNeighborList = maxCutoffRadiusOverall;
+        init();
+        neighbor->init();
+        neighbor->build(0);
+    }
+}
+
+

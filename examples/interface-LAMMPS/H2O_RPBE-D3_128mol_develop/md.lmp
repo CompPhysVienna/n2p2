@@ -9,7 +9,7 @@ clear
 # Configuration files
 variable cfgFile         string "iceIh_128.data"
 # Timesteps
-variable numSteps        equal  5
+variable numSteps        equal  1
 variable dt              equal  0.0005
 # NN
 variable nnpCutoff       equal  6.36
@@ -33,7 +33,7 @@ thermo 1
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp/develop dir ${nnpDir} showew no showewsum 10 resetew no maxew 10000000 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
+pair_style nnp/develop dir ${nnpDir} showew no showewsum 10 resetew no maxew 1000 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
 pair_coeff * * ${nnpCutoff}
 
 ###############################################################################

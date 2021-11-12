@@ -143,11 +143,18 @@ public:
      * @return `True` if initialized, `False` otherwise.
      */
     bool   isInitialized() const;
-    /** Get largest cutoff.
+    /** Get largest cutoff of symmetry functions.
      *
      * @return Largest cutoff of all symmetry functions.
      */
     double getMaxCutoffRadius() const;
+    /** Get largest cutoff including structure specific cutoff and screening
+     *                  cutoff
+     *
+     * @return Largest cutoff of all symmetry functions and structure specific
+     *                  cutoff and screening cutoff.
+     */
+    double getMaxCutoffRadiusOverall();
     /** Calculate buffer size for extrapolation warning communication.
      *
      * @return Buffer size.
