@@ -1738,9 +1738,9 @@ void Mode::calculateCharge(Structure& structure) const
         structure.charge += it->charge;
     }
 
-    cout << "---------------------\n";
-    cout << strpr("Total         charge: %24.16E\n", structure.charge);
-    cout << strpr("Reference     charge: %24.16E\n", structure.chargeRef);
+    //cout << "---------------------\n";
+    //cout << strpr("Total         charge: %24.16E\n", structure.charge);
+    //cout << strpr("Reference     charge: %24.16E\n", structure.chargeRef);
 
     //throw runtime_error("ERROR: Here ends code for 4G-HDNNPs\n");
 

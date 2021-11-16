@@ -28,6 +28,7 @@
 #include <iostream>
 #include <limits>
 
+
 #define TOLCUTOFF 1.0E-2
 
 using namespace std;
@@ -357,15 +358,15 @@ void InterfaceLammps::setBoxVectors(double const* boxlo,
         if (normalize) structure.box[i] *= convLength;
     }
 
-    cout << "Box vectors: \n";
-    for(size_t i = 0; i < 3; ++i)
-    {
-        for(size_t j = 0; j < 3; ++j)
-        {
-            cout << structure.box[i][j] / convLength << " ";
-        }
-        cout << endl;
-    }
+    //cout << "Box vectors: \n";
+    //for(size_t i = 0; i < 3; ++i)
+    //{
+    //    for(size_t j = 0; j < 3; ++j)
+    //    {
+    //        cout << structure.box[i][j] / convLength << " ";
+    //    }
+    //    cout << endl;
+    //}
 
 }
 
@@ -390,6 +391,9 @@ void InterfaceLammps::addNeighbor(int    i,
         n.index   = j;
     else
     {
+        // If n2p2 has has the complete structure and handles the
+        // chargeEquilibration it needs that the neighbor index corresponds to
+        // the atom index of (exactly) one atom in the structure.
         auto matchingAtom = find_if(structure.atoms.begin(), structure.atoms.end(),
                 [tag](Atom const& x)
                 {
@@ -438,16 +442,17 @@ void InterfaceLammps::finalizeNeighborList()
 
 void InterfaceLammps::process()
 {
+    bool suppressOutput = true;
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
-    calculateAtomicNeuralNetworks(structure, true);
+    calculateAtomicNeuralNetworks(structure, true, "", suppressOutput);
     if (nnpType == NNPType::HDNNP_4G)
     {
-        chargeEquilibration(structure, true);
-        calculateAtomicNeuralNetworks(structure, true, "short");
+        chargeEquilibration(structure, true, suppressOutput);
+        calculateAtomicNeuralNetworks(structure, true, "short", suppressOutput);
     }
     calculateEnergy(structure);
     if (nnpType == NNPType::HDNNP_4G ||

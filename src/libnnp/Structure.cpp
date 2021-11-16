@@ -793,7 +793,7 @@ double Structure::calculateScreeningEnergy(
 
 
 void Structure::calculateDAdrQ(
-                            double                   precision, 
+                            double                   precision,
                             MatrixXd                 gammaSqrt2)
 {
     // TODO: This initialization loop could probably be avoid, maybe use
@@ -835,13 +835,13 @@ void Structure::calculateDAdrQ(
                 double const Qj = aj.charge;
 
                 Vec3D dAijdri;
-                dAijdri = n.dr / pow(rij,2) 
-                            * (2 / sqrt(M_PI) * ( -exp(-pow(rij / sqrt2eta,2)) 
-                            / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei,ej), 2)) 
-                            / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta) 
+                dAijdri = n.dr / pow(rij,2)
+                            * (2 / sqrt(M_PI) * ( -exp(-pow(rij / sqrt2eta,2))
+                            / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei,ej), 2))
+                            / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta)
                             - erfc(rij/gammaSqrt2(ei,ej))));
-                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i 
-                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j 
+                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
+                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
@@ -879,15 +879,15 @@ void Structure::calculateDAdrQ(
                 Atom& aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const Qj = aj.charge;
-                
+
                 double rij = (ai.r - aj.r).norm();
                 Vec3D dAijdri;
-                dAijdri = (ai.r - aj.r) / pow(rij,2) 
-                            * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej)) 
-                            * exp(-pow(rij / gammaSqrt2(ei,ej),2)) 
+                dAijdri = (ai.r - aj.r) / pow(rij,2)
+                            * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
+                            * exp(-pow(rij / gammaSqrt2(ei,ej),2))
                             - erf(rij / gammaSqrt2(ei,ej)) / rij);
-                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i 
-                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j 
+                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
+                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] = dAijdri * Qi;

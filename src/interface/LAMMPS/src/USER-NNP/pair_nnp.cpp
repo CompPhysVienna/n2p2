@@ -301,6 +301,9 @@ void PairNNP::transferNeighborList(double const cutoffRadius)
 {
   // Transfer neighbor list to NNP.
   double rc2 = cutoffRadius * cutoffRadius;
+#ifdef _OPENMP
+  #pragma omp parallel for
+#endif
   for (int ii = 0; ii < list->inum; ++ii) {
     int i = list->ilist[ii];
     for (int jj = 0; jj < list->numneigh[i]; ++jj) {
