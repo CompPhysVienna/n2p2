@@ -1758,22 +1758,16 @@ void Mode::calculateForces(Structure& structure) const
 #ifdef _OPENMP
     #pragma omp parallel for
 #endif
-    for (size_t i = 0; i < structure.atoms.size(); ++i)
-    {
+    for (size_t i = 0; i < structure.atoms.size(); ++i) {
         // Set pointer to atom.
-        Atom& ai = structure.atoms.at(i);
+        Atom &ai = structure.atoms.at(i);
 
         // Reset forces.
-        ai.f[0] = 0.0;
-        ai.f[1] = 0.0;
-        ai.f[2] = 0.0;
+        ai.f = Vec3D{};
 
         // First add force contributions from atom i itself (gradient of
         // atomic energy E_i).
-        for (size_t j = 0; j < ai.numSymmetryFunctions; ++j)
-        {
-            ai.f -= ai.dEdG.at(j) * ai.dGdr.at(j);
-        }
+        ai.f += ai.calculateSelfForceShort();
 
         // Now loop over all neighbor atoms j of atom i. These may hold
         // non-zero derivatives of their symmetry functions with respect to
@@ -1783,65 +1777,48 @@ void Mode::calculateForces(Structure& structure) const
         // "unique neighbor" list (but skip the first entry, this is always
         // atom i itself).
         for (vector<size_t>::const_iterator it =
-             ai.neighborsUnique.begin() + 1;
+                ai.neighborsUnique.begin() + 1;
              it != ai.neighborsUnique.end(); ++it)
         {
             // Define shortcut for atom j (aj).
-            Atom& aj = structure.atoms.at(*it);
+            Atom &aj = structure.atoms.at(*it);
 #ifndef NNP_FULL_SFD_MEMORY
-            vector<vector<size_t> > const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
+            vector<vector<size_t> > const &tableFull
+                    = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
             // Loop over atom j's neighbors (n), atom i should be one of them.
             // TODO: Could implement maxCutoffRadiusSymFunc for each element and
-            // use this instead of maxCutoffRadius.
+            //       use this instead of maxCutoffRadius.
             size_t const numNeighbors = aj.getStoredMinNumNeighbors(maxCutoffRadius);
-            for ( size_t k = 0; k < numNeighbors; ++k)
-            {
-                Atom::Neighbor const& n = aj.neighbors[k];
+            for (size_t k = 0; k < numNeighbors; ++k) {
+                Atom::Neighbor const &n = aj.neighbors[k];
                 // If atom j's neighbor is atom i add force contributions.
-                if (n.index == ai.index)
-                {
+                if (n.index == ai.index) {
 #ifndef NNP_FULL_SFD_MEMORY
-                    vector<size_t> const& table = tableFull.at(n.element);
-                    for (size_t j = 0; j < n.dGdr.size(); ++j)
-                    {
-                        ai.f -= aj.dEdG.at(table.at(j)) * n.dGdr.at(j);
-                    }
+                    ai.f += aj.calculatePairForceShort(n, &tableFull);
 #else
-                    for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
-                    {
-                        ai.f -= aj.dEdG.at(j) * n.dGdr.at(j);
-                    }
+                    ai.f += aj.calculatePairForceShort(n);
 #endif
                 }
             }
         }
     }
-
     if (nnpType == NNPType::HDNNP_4G)
     {
         Structure& s = structure;
-        VectorXd dEdQ(s.numAtoms+1);
-        VectorXd dEelecdQ(s.numAtoms+1);
-        dEdQ.setZero();
-        dEelecdQ.setZero();
-        for (size_t i = 0; i < s.numAtoms; ++i)
-        {
-            Atom const& ai = s.atoms.at(i);
-            dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
-            dEelecdQ(i) = ai.dEelecdQ;
-        }
-        VectorXd const lambdaTotal = s.A.colPivHouseholderQr().solve(-dEdQ);
-        VectorXd const lambdaElec = s.A.colPivHouseholderQr().solve(-dEelecdQ);
+
+        VectorXd lambdaTotal;
+        VectorXd lambdaElec;
+        s.calculateForceLambdas(lambdaTotal, lambdaElec);
 
 #ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for (size_t i = 0; i < s.numAtoms; ++i)
+        //for (size_t i = 0; i < s.numAtoms; ++i)
+        for (auto& ai : s.atoms)
         {
-            Atom& ai = s.atoms.at(i);
-            ai.fElec = Vec3D{0,0,0};
+            //Atom& ai = s.atoms.at(i);
+            ai.fElec = Vec3D{};
 
             ai.f -= ai.pEelecpr;
             ai.fElec -= ai.pEelecpr;
@@ -1854,38 +1831,14 @@ void Mode::calculateForces(Structure& structure) const
 #ifndef NNP_FULL_SFD_MEMORY
                 vector<vector<size_t> > const& tableFull
                    = elements.at(aj.element).getSymmetryFunctionTable();
-#endif
-                Vec3D dChidr;
-                // need to add this case because the loop over the neighbors
-                // does not include the contribution dChi_i/dr_i.
-                if (ai.index == j)
-                {
-                    for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
-                    {
-                        dChidr += aj.dChidG.at(k) * aj.dGdr.at(k);
-                    }
-                }
-
-                size_t numNeighbors = aj.getStoredMinNumNeighbors(maxCutoffRadius);
-                for (size_t m = 0; m < numNeighbors; ++m)
-                {
-                    Atom::Neighbor const& n = aj.neighbors.at(m);
-                    if (n.index == ai.index)
-                    {
-#ifndef NNP_FULL_SFD_MEMORY
-                        vector<size_t> const& table = tableFull.at(n.element);
-                        for (size_t k = 0; k < n.dGdr.size(); ++k)
-                        {
-                            dChidr += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
-                        }
+                Vec3D dChidr = aj.calculateDChidr(ai.index,
+                                                  maxCutoffRadius,
+                                                  &tableFull);
 #else
-                        for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
-                        {
-                            dChidr += aj.dChidG.at(k) * n.dGdr.at(k);
-                        }
+                Vec3D dChidr = aj.calculateDChidr(ai.index,
+                                                  maxCutoffRadius);
 #endif
-                    }
-                }
+
                 ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }

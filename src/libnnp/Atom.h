@@ -275,6 +275,36 @@ struct Atom
                                    std::string const&             property,
                                    std::map<std::string, double>& error,
                                    std::size_t&                   count) const;
+    /** Calculate force resulting from gradient of this atom's
+     *  (short-ranged) energy contribution with respect to this atom's
+     *  coordinate.
+     *  @return calculated force vector.
+     */
+    Vec3D                    calculateSelfForceShort() const;
+     /** Calculate force resulting from gradient of this atom's (short-ranged)
+     *  energy contribution with respect to neighbor's coordinate.
+     *
+     * @param[in] neighbor Neighbor of which the gradient is considered.
+     * @param[in] tableFull Pointer to ymmetry function table if it is used.
+     * @return calculated force vector.
+     */
+    Vec3D                    calculatePairForceShort(
+                                    Neighbor const&  neighbor,
+                                    std::vector<std::vector <std::size_t> >
+                                    const *const     tableFull = nullptr) const;
+    /** Calculate dChi/dr of this atom's Chi with respect to the coordinates
+     *  of the given atom.
+     *
+     * @param[in] atomIndexOfR Index of the atom corresponding to the coordinates r.
+     * @param[in] maxCutoffRadius Largest cut-off of the symmetry functions.
+     * @param[in] tableFull Pointer to symmetry function table if it is used.
+     * @return 3D Vector containing the derivative dChi/dr.
+     */
+    Vec3D                    calculateDChidr(
+                                    size_t const     atomIndexOfR,
+                                    double const     maxCutoffRadius,
+                                    std::vector<std::vector<size_t> >
+                                    const *const     tableFull = nullptr) const;
     /** Get reference and NN forces for this atoms.
      *
      * @return Vector of strings with #indexStructure, #index, #fRef, #f

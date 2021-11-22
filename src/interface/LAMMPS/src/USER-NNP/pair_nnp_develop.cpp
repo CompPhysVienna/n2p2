@@ -94,8 +94,11 @@ void PairNNPDevelop::init_style()
                         "with a single MPI task.\n");
   }
 
+  if (force->newton_pair == 1)
+    throw runtime_error("ERROR: Pair style nnp/develop requires newton pair off.\n");
+
   if(domain->dimension != 3)
-      throw runtime_error("ERROR: Only 3d systems can be used!");
+    throw runtime_error("ERROR: Only 3d systems can be used!");
 
   if (!(domain->xperiodic == domain->yperiodic
      && domain->yperiodic == domain->zperiodic))

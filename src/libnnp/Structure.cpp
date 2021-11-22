@@ -1001,6 +1001,8 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
     return;
 }
 
+
+
 void Structure::calculateElectrostaticEnergyDerivatives(
                                         Eigen::VectorXd          hardness,
                                         Eigen::MatrixXd          gammaSqrt2,
@@ -1091,6 +1093,24 @@ void Structure::calculateElectrostaticEnergyDerivatives(
         }
     }
    return;
+}
+
+void Structure::calculateForceLambdas(VectorXd& lambdaTotal,
+                                      VectorXd& lambdaElec) const
+{
+    VectorXd dEdQ(numAtoms+1);
+    VectorXd dEelecdQ(numAtoms+1);
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom const& ai = atoms.at(i);
+        dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
+        dEelecdQ(i) = ai.dEelecdQ;
+    }
+    dEdQ(numAtoms) = 0;
+    dEelecdQ(numAtoms) = 0;
+
+    lambdaTotal = A.colPivHouseholderQr().solve(-dEdQ);
+    lambdaElec = A.colPivHouseholderQr().solve(-dEelecdQ);
 }
 
 void Structure::remap(Atom& atom)

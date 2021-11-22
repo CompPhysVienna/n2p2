@@ -345,6 +345,78 @@ void Atom::updateError(string const&        property,
     return;
 }
 
+Vec3D Atom::calculateSelfForceShort() const
+{
+    Vec3D selfForce{};
+    for (size_t i = 0; i < numSymmetryFunctions; ++i)
+    {
+        selfForce -= dEdG.at(i) * dGdr.at(i);
+    }
+    return selfForce;
+}
+
+Vec3D Atom::calculatePairForceShort(Neighbor const&             neighbor,
+                                    vector<vector<size_t> >
+                                    const *const                tableFull) const
+{
+    Vec3D pairForce{};
+#ifndef NNP_FULL_SFD_MEMORY
+    if (!tableFull) throw runtime_error(
+                "ERROR: tableFull must not be null pointer");
+    vector<size_t> const& table = tableFull->at(neighbor.element);
+    for (size_t i = 0; i < neighbor.dGdr.size(); ++i)
+    {
+        pairForce -= dEdG.at(table.at(i)) * neighbor.dGdr.at(i);
+    }
+#else
+    for (size_t i = 0; i < numSymmetryFunctions; ++i)
+    {
+        pairForce -= dEdG.at(i) * neighbor.dGdr.at(i);
+    }
+#endif
+    return pairForce;
+}
+
+Vec3D Atom::calculateDChidr(size_t const atomIndexOfR,
+                            double const maxCutoffRadius,
+                            vector<vector<size_t> > const *const tableFull) const
+{
+    Vec3D dChidr{};
+    // need to add this case because the loop over the neighbors
+    // does not include the contribution dChi_i/dr_i.
+    if (atomIndexOfR == index)
+    {
+        for (size_t k = 0; k < numSymmetryFunctions; ++k)
+        {
+            dChidr += dChidG.at(k) * dGdr.at(k);
+        }
+    }
+
+    size_t numNeighbors = getStoredMinNumNeighbors(maxCutoffRadius);
+    for (size_t m = 0; m < numNeighbors; ++m)
+    {
+        Atom::Neighbor const& n = neighbors.at(m);
+        if (n.index == atomIndexOfR)
+        {
+#ifndef NNP_FULL_SFD_MEMORY
+            if (!tableFull) throw runtime_error(
+                                "ERROR: tableFull must not be null pointer");
+            vector<size_t> const& table = tableFull->at(n.element);
+            for (size_t k = 0; k < n.dGdr.size(); ++k)
+            {
+                dChidr += dChidG.at(table.at(k)) * n.dGdr.at(k);
+            }
+#else
+            for (size_t k = 0; k < numSymmetryFunctions; ++k)
+            {
+                dChidr += dChidG.at(k) * n.dGdr.at(k);
+            }
+#endif
+        }
+    }
+    return dChidr;
+}
+
 vector<string> Atom::getForcesLines() const
 {
     vector<string> v;
