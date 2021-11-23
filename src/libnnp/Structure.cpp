@@ -1095,22 +1095,30 @@ void Structure::calculateElectrostaticEnergyDerivatives(
    return;
 }
 
-void Structure::calculateForceLambdas(VectorXd& lambdaTotal,
-                                      VectorXd& lambdaElec) const
+VectorXd const Structure::calculateForceLambdaTotal() const
 {
     VectorXd dEdQ(numAtoms+1);
-    VectorXd dEelecdQ(numAtoms+1);
     for (size_t i = 0; i < numAtoms; ++i)
     {
         Atom const& ai = atoms.at(i);
         dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
-        dEelecdQ(i) = ai.dEelecdQ;
     }
     dEdQ(numAtoms) = 0;
-    dEelecdQ(numAtoms) = 0;
+    VectorXd const lambdaTotal = A.colPivHouseholderQr().solve(-dEdQ);
+    return lambdaTotal;
+}
 
-    lambdaTotal = A.colPivHouseholderQr().solve(-dEdQ);
-    lambdaElec = A.colPivHouseholderQr().solve(-dEelecdQ);
+VectorXd const Structure::calculateForceLambdaElec() const
+{
+    VectorXd dEelecdQ(numAtoms+1);
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom const& ai = atoms.at(i);
+        dEelecdQ(i) = ai.dEelecdQ;
+    }
+    dEelecdQ(numAtoms) = 0;
+    VectorXd const lambdaElec = A.colPivHouseholderQr().solve(-dEelecdQ);
+    return lambdaElec;
 }
 
 void Structure::remap(Atom& atom)

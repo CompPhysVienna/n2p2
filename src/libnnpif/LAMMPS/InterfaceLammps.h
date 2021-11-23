@@ -178,7 +178,12 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
-
+    /** Add a Vec3D vector to a 3D array in place.
+     *
+     * @param[in,out] arr Array which is edited in place.
+     * @param[in] v Vector which is added to arr.
+     */
+    void   add3DVecToArray(double *const & arr, Vec3D const& v) const;
 protected:
     /// Process rank.
     int                        myRank;

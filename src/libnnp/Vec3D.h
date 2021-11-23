@@ -18,6 +18,7 @@
 #define VEC3D_H
 
 #include <cstddef>   // std::size_t
+#include <utility>   // std::move
 #include <cmath>     // sqrt
 #include <stdexcept> // std::runtime_error
 
@@ -39,6 +40,9 @@ struct Vec3D
     /** Copy constructor.
      */
     Vec3D(Vec3D const& source);
+    /** Move constructor.
+     */
+    Vec3D(Vec3D&& source);
     /** Overload = operator.
      *
      * @return Vector with copied data.
@@ -180,6 +184,13 @@ inline Vec3D::Vec3D(Vec3D const& source)
     r[0] = source.r[0];
     r[1] = source.r[1];
     r[2] = source.r[2];
+}
+
+inline Vec3D::Vec3D(Vec3D&& source)
+{
+    r[0] = std::move(source.r[0]);
+    r[1] = std::move(source.r[1]);
+    r[2] = std::move(source.r[2]);
 }
 
 inline Vec3D& Vec3D::operator=(Vec3D const& rhs)

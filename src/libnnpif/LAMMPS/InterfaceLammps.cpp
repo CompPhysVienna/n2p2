@@ -23,6 +23,7 @@
 #include "Atom.h"
 #include "Element.h"
 #include "utility.h"
+#include <Eigen/Dense>
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -33,6 +34,7 @@
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
 InterfaceLammps::InterfaceLammps() : myRank             (0    ),
                                      initialized        (false),
@@ -415,9 +417,7 @@ void InterfaceLammps::addNeighbor(int    i,
     n.d       = sqrt(d2) * cflength;
     if (normalize)
     {
-        n.dr[0] *= convLength;
-        n.dr[1] *= convLength;
-        n.dr[2] *= convLength;
+        n.dr *= convLength;
         n.d     *= convLength;
     }
 
@@ -514,57 +514,67 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
     // atoms and their neighbors. These are now summed up to the force
     // contributions of local and ghost atoms.
-    Atom const* a = NULL;
+    //Atom const* a = NULL;
 
-    for (size_t i =  0; i < structure.atoms.size(); ++i)
+    for (auto const& a : structure.atoms)
     {
-        // Set pointer to atom.
-        a = &(structure.atoms.at(i));
-
 #ifndef NNP_FULL_SFD_MEMORY
         vector<vector<size_t> > const& tableFull
-            = elements.at(a->element).getSymmetryFunctionTable();
+            = elements.at(a.element).getSymmetryFunctionTable();
 #endif
         // Loop over all neighbor atoms. Some are local, some are ghost atoms.
-        for (vector<Atom::Neighbor>::const_iterator n = a->neighbors.begin();
-             n != a->neighbors.end(); ++n)
+        for (auto const& n : a.neighbors)
         {
             // Temporarily save the neighbor index. Note: this is the index for
             // the LAMMPS force array.
-            size_t const in = n->index;
-            // Now loop over all symmetry functions and add force contributions
-            // (local + ghost atoms).
+            size_t const in = n.index;
+
 #ifndef NNP_FULL_SFD_MEMORY
-            vector<size_t> const& table = tableFull.at(n->element);
-            for (size_t s = 0; s < n->dGdr.size(); ++s)
-            {
-                double const dEdG = a->dEdG[table.at(s)] * cfforce * convForce;
+            Vec3D pairForce = a.calculatePairForceShort(n, &tableFull);
 #else
-            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
-            {
-                double const dEdG = a->dEdG[s] * cfforce * convForce;
+            Vec3D pairForce = a.calculatePairForceShort(n);
 #endif
-                double const* const dGdr = n->dGdr[s].r;
-                atomF[in][0] -= dEdG * dGdr[0];
-                atomF[in][1] -= dEdG * dGdr[1];
-                atomF[in][2] -= dEdG * dGdr[2];
+            pairForce *= cfforce * convForce;
+            add3DVecToArray(atomF[in], pairForce);
+        }
+
+        size_t const ia = a.index;
+        Vec3D selfForce = a.calculateSelfForceShort();
+        selfForce *= cfforce * convForce;
+        add3DVecToArray(atomF[ia], selfForce);
+    }
+    // Comment: Will not work with multiple MPI tasks but this routine will
+    //          probably be obsolete when Emir's solution is finished.
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        Structure const& s = structure;
+        VectorXd lambdaTotal = s.calculateForceLambdaTotal();
+
+        for (size_t i = 0; i < s.numAtoms; ++i)
+        {
+            Atom const& ai = s.atoms[i];
+            add3DVecToArray(atomF[i], -ai.pEelecpr * cfforce * convForce);
+
+            for (size_t j = 0; j < s.numAtoms; ++j)
+            {
+                Atom const& aj = s.atoms[j];
+
+#ifndef NNP_FULL_SFD_MEMORY
+                vector<vector<size_t> > const& tableFull
+                        = elements.at(aj.element).getSymmetryFunctionTable();
+                Vec3D dChidr = aj.calculateDChidr(ai.index,
+                                                  maxCutoffRadius,
+                                                  &tableFull);
+#else
+                Vec3D dChidr = aj.calculateDChidr(ai.index,
+                                                  maxCutoffRadius);
+#endif
+
+                Vec3D remainingForce = lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
+                add3DVecToArray(atomF[i], remainingForce * cfforce * convForce);
             }
         }
-        // Temporarily save the atom index. Note: this is the index for
-        // the LAMMPS force array.
-        size_t const ia = a->index;
-        // Loop over all symmetry functions and add force contributions (local
-        // atoms).
-        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
-        {
-            double const dEdG = a->dEdG[s] * cfforce * convForce;
-            double const* const dGdr = a->dGdr[s].r;
-            atomF[ia][0] -= dEdG * dGdr[0];
-            atomF[ia][1] -= dEdG * dGdr[1];
-            atomF[ia][2] -= dEdG * dGdr[2];
-        }
     }
-
     return;
 }
 
@@ -706,4 +716,11 @@ void InterfaceLammps::clearExtrapolationWarnings()
     }
 
     return;
+}
+
+void InterfaceLammps::add3DVecToArray(double *const & arr, Vec3D const& v) const
+{
+    arr[0] += v[0];
+    arr[1] += v[1];
+    arr[2] += v[2];
 }

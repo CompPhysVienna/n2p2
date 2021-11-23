@@ -15,6 +15,7 @@
 #include "neigh_request.h"
 #include "memory.h"
 #include "error.h"
+#include "force.h"
 #include "update.h"
 #include "utils.h"
 
@@ -106,6 +107,7 @@ void PairNNPDevelop::init_style()
                         "in all 3 dimmensions!");
 
   PairNNP::init_style();
+
 
   maxCutoffRadiusNeighborList = maxCutoffRadius;
 

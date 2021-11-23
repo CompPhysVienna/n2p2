@@ -1807,17 +1807,14 @@ void Mode::calculateForces(Structure& structure) const
     {
         Structure& s = structure;
 
-        VectorXd lambdaTotal;
-        VectorXd lambdaElec;
-        s.calculateForceLambdas(lambdaTotal, lambdaElec);
+        VectorXd lambdaTotal = s.calculateForceLambdaTotal();
+        VectorXd lambdaElec = s.calculateForceLambdaElec();
 
 #ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        //for (size_t i = 0; i < s.numAtoms; ++i)
         for (auto& ai : s.atoms)
         {
-            //Atom& ai = s.atoms.at(i);
             ai.fElec = Vec3D{};
 
             ai.f -= ai.pEelecpr;
@@ -1825,7 +1822,6 @@ void Mode::calculateForces(Structure& structure) const
 
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
-
                 Atom const& aj = s.atoms.at(j);
 
 #ifndef NNP_FULL_SFD_MEMORY

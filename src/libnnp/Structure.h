@@ -353,14 +353,14 @@ struct Structure
                                         Eigen::MatrixXd          gammaSqrt2,
                                         Eigen::VectorXd          sigmaSqrtPi,
                                         ScreeningFunction const& fs);
-    /** Calculate lambda vectors which are needed for the force calculation in 4G NN.
-     *
-     * @param[out] lambdaTotal lambda vector used for total force.
-     * @param[out] lambdaElec  lambda vector used for electrostatic force.
+    /** Calculate lambda_total vector which is needed for the total force
+     *  calculation in 4G NN.
      */
-    void                     calculateForceLambdas(
-                                        Eigen::VectorXd& lambdaTotal,
-                                        Eigen::VectorXd& lambdaElec) const;
+    Eigen::VectorXd const calculateForceLambdaTotal() const;
+    /** Calculate lambda_elec vector which is needed for the electrostatic
+     *  force calculation in 4G NN.
+     */
+    Eigen::VectorXd const calculateForceLambdaElec() const;
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.
