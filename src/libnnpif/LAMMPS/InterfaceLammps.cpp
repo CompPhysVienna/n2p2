@@ -390,7 +390,7 @@ void InterfaceLammps::addNeighbor(int    i,
     Atom::Neighbor& n = a.neighbors.back();
 
     if (!hasGlobalStructure)
-        n.index   = j;
+        n.index = j;
     else
     {
         // If n2p2 has has the complete structure and handles the
@@ -418,7 +418,7 @@ void InterfaceLammps::addNeighbor(int    i,
     if (normalize)
     {
         n.dr *= convLength;
-        n.d     *= convLength;
+        n.d  *= convLength;
     }
 
     return;
@@ -514,8 +514,6 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
     // atoms and their neighbors. These are now summed up to the force
     // contributions of local and ghost atoms.
-    //Atom const* a = NULL;
-
     for (auto const& a : structure.atoms)
     {
 #ifndef NNP_FULL_SFD_MEMORY

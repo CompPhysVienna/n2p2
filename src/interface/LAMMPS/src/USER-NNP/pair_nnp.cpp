@@ -14,6 +14,7 @@
 #include "neigh_request.h"
 #include "memory.h"
 #include "error.h"
+#include "force.h"
 #include "update.h"
 #include "utils.h"
 
@@ -232,6 +233,9 @@ void PairNNP::init_style()
   // maximum symmetry function cutoff radius.
   if (maxCutoffRadius < interface.getMaxCutoffRadius())
     error->all(FLERR,"Inconsistent cutoff radius");
+
+  if (force->newton_pair != 1)
+    error->all(FLERR, "Pair style nnp requires newton pair on");
 }
 
 /* ----------------------------------------------------------------------
