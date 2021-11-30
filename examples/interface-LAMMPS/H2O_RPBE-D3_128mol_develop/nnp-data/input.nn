@@ -38,6 +38,7 @@ atom_energy     H    -0.458907306351869
 atom_energy     O    -74.94518524
 
 ewald_prec 1.e-6
+#ewald_prec 1.e-2
 
 ################################################################################
 ### NN structure of the short-range NN  

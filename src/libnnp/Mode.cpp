@@ -1754,6 +1754,7 @@ void Mode::calculateForces(Structure& structure) const
         cout << "WARNING: Forces are not yet implemented.\n";
         return;
     }
+
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
     #pragma omp parallel for
@@ -1803,6 +1804,7 @@ void Mode::calculateForces(Structure& structure) const
             }
         }
     }
+
     if (nnpType == NNPType::HDNNP_4G)
     {
         Structure& s = structure;
@@ -1815,10 +1817,8 @@ void Mode::calculateForces(Structure& structure) const
 #endif
         for (auto& ai : s.atoms)
         {
-            ai.fElec = Vec3D{};
-
             ai.f -= ai.pEelecpr;
-            ai.fElec -= ai.pEelecpr;
+            ai.fElec = ai.pEelecpr;
 
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
@@ -1837,6 +1837,15 @@ void Mode::calculateForces(Structure& structure) const
 
                 ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
+
+                /*
+                loopFile << "i: " << ai.index << ", j: " << j << endl
+                         << "ai.f: " << ai.f[0] << " " << ai.f[1] << " " << ai.f[2] << endl
+                         << "lambda: " << lambdaTotal(j) << endl
+                         << "dChidr: " << dChidr[0] << " " << dChidr[1] << " " << dChidr[2] << endl
+                         << "dAdrQ: " << ai.dAdrQ[j][0] << " " << ai.dAdrQ[j][1] << " " << ai.dAdrQ[j][2] << endl
+                         << endl;
+                 */
             }
         }
     }

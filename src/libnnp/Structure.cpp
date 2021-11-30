@@ -380,7 +380,7 @@ void Structure::calculateNeighborList(
             //    //TODO: maybe sort neighborsUnique too?
             //    atoms[i].NeighborListIsSorted = true;
             //}
-            //atoms[i].hasNeighborList = true;
+            atoms[i].hasNeighborList = true;
         }
     }
 
@@ -621,7 +621,7 @@ double Structure::calculateElectrostaticEnergy(
             for (size_t k = 0; k < numNeighbors; ++k)
             {
                 auto const& n = ai.neighbors[k];
-                size_t j = n.index;
+                size_t j = n.tag;
                 if (j < i) continue;
 
                 double const rij = n.d;
@@ -733,7 +733,7 @@ double Structure::calculateScreeningEnergy(
                 for (size_t k = 0; k < numNeighbors; ++k)
                 {
                     auto const& n = ai.neighbors[k];
-                    size_t const j = n.index;
+                    size_t const j = n.tag;
                     if (j < i) continue;
                     double const rij = n.d;
                     size_t const ej = n.element;
@@ -826,7 +826,7 @@ void Structure::calculateDAdrQ(
             for (size_t k = 0; k < numNeighbors; ++k)
             {
                 auto const& n = ai.neighbors[k];
-                size_t j = n.index;
+                size_t j = n.tag;
                 if (j < i) continue;
 
                 double const rij = n.d;
@@ -1036,7 +1036,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
         {
             for (auto const& ajN : ai.neighbors)
             {
-                size_t j = ajN.index;
+                size_t j = ajN.tag;
                 Atom& aj = atoms.at(j);
                 if (j < i) continue;
                 double const rij = ajN.d;

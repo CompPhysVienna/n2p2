@@ -114,6 +114,7 @@ void PairNNPDevelop::init_style()
 
 double PairNNPDevelop::init_one(int i, int j)
 {
+    //cutsq[i][j] = cutsq[j][i] = pow(maxCutoffRadiusNeighborList,2);
     return maxCutoffRadiusNeighborList;
 }
 
@@ -123,11 +124,25 @@ void PairNNPDevelop::updateNeighborlistCutoff()
     double maxCutoffRadiusOverall = interface.getMaxCutoffRadiusOverall();
     if(maxCutoffRadiusOverall > maxCutoffRadiusNeighborList)
     {
-        //TODO: Increase slightly to compensate for rounding errors?
-        maxCutoffRadiusNeighborList = maxCutoffRadiusOverall;
-        init();
-        neighbor->init();
-        neighbor->build(0);
+        // TODO: Increase slightly to compensate for rounding errors?
+        utils::logmesg(lmp, "WARNING: Cutoff too small");
+
+        //maxCutoffRadiusNeighborList = maxCutoffRadiusOverall;
+        //reinit();
+
+        //mixed_flag = 1;
+        //for (int i = 1; i <= atom->ntypes; i++)
+        //{
+        //    for (int j = i; j <= atom->ntypes; j++)
+        //    {
+        //        if ((i != j) && setflag[i][j]) mixed_flag = 0;
+        //        cutsq[i][j] = cutsq[j][i] = pow(maxCutoffRadiusNeighborList, 2);
+        //    }
+        //}
+        //cutforce = MAX(cutforce, maxCutoffRadiusNeighborList);
+
+        //neighbor->init();
+        //neighbor->build(0);
     }
 }
 

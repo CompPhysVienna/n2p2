@@ -381,6 +381,10 @@ Vec3D Atom::calculateDChidr(size_t const atomIndexOfR,
                             double const maxCutoffRadius,
                             vector<vector<size_t> > const *const tableFull) const
 {
+#ifndef NNP_FULL_SFD_MEMORY
+    if (!tableFull) throw runtime_error(
+                "ERROR: tableFull must not be null pointer");
+#endif
     Vec3D dChidr{};
     // need to add this case because the loop over the neighbors
     // does not include the contribution dChi_i/dr_i.
@@ -396,11 +400,9 @@ Vec3D Atom::calculateDChidr(size_t const atomIndexOfR,
     for (size_t m = 0; m < numNeighbors; ++m)
     {
         Atom::Neighbor const& n = neighbors.at(m);
-        if (n.index == atomIndexOfR)
+        if (n.tag == atomIndexOfR)
         {
 #ifndef NNP_FULL_SFD_MEMORY
-            if (!tableFull) throw runtime_error(
-                                "ERROR: tableFull must not be null pointer");
             vector<size_t> const& table = tableFull->at(n.element);
             for (size_t k = 0; k < n.dGdr.size(); ++k)
             {

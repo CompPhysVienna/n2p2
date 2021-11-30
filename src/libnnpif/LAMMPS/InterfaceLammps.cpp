@@ -389,8 +389,9 @@ void InterfaceLammps::addNeighbor(int    i,
     a.numNeighborsPerElement.at(mapTypeToElement[type])++;
     Atom::Neighbor& n = a.neighbors.back();
 
+    n.index = j;
     if (!hasGlobalStructure)
-        n.index = j;
+        n.tag     = tag;
     else
     {
         // If n2p2 has has the complete structure and handles the
@@ -404,12 +405,11 @@ void InterfaceLammps::addNeighbor(int    i,
             );
         if(matchingAtom != structure.atoms.end())
         {
-            n.index = matchingAtom->index;
+            n.tag = matchingAtom->index;
         }
         else throw runtime_error("ERROR: Tag of neighbor doesn't match the tag "
                                  "of any atom in the structure!");
     }
-    n.tag     = tag;
     n.element = mapTypeToElement[type];
     n.dr[0]   = dx * cflength;
     n.dr[1]   = dy * cflength;
@@ -429,6 +429,10 @@ void InterfaceLammps::finalizeNeighborList()
 {
     if (nnpType == NNPType::HDNNP_4G)
     {
+        for (auto& a : structure.atoms)
+        {
+            a.hasNeighborList = true;
+        }
         // Ewald summation cut-off depends on box vectors.
         structure.calculateMaxCutoffRadiusOverall(
                                             ewaldPrecision,
@@ -514,8 +518,16 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
     // atoms and their neighbors. These are now summed up to the force
     // contributions of local and ghost atoms.
+
     for (auto const& a : structure.atoms)
     {
+        size_t const ia = a.index;
+        Vec3D selfForce = a.calculateSelfForceShort();
+        selfForce *= cfforce * convForce;
+        // TODO: ia is not the right index when some atom types are excluded
+        //       (see use of indexmap)
+        add3DVecToArray(atomF[ia], selfForce);
+
 #ifndef NNP_FULL_SFD_MEMORY
         vector<vector<size_t> > const& tableFull
             = elements.at(a.element).getSymmetryFunctionTable();
@@ -535,12 +547,8 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             pairForce *= cfforce * convForce;
             add3DVecToArray(atomF[in], pairForce);
         }
-
-        size_t const ia = a.index;
-        Vec3D selfForce = a.calculateSelfForceShort();
-        selfForce *= cfforce * convForce;
-        add3DVecToArray(atomF[ia], selfForce);
     }
+
     // Comment: Will not work with multiple MPI tasks but this routine will
     //          probably be obsolete when Emir's solution is finished.
     if (nnpType == NNPType::HDNNP_4G)
@@ -548,14 +556,14 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         Structure const& s = structure;
         VectorXd lambdaTotal = s.calculateForceLambdaTotal();
 
-        for (size_t i = 0; i < s.numAtoms; ++i)
+        for (auto const& ai : s.atoms)
         {
-            Atom const& ai = s.atoms[i];
+            size_t const i = ai.index;
             add3DVecToArray(atomF[i], -ai.pEelecpr * cfforce * convForce);
 
-            for (size_t j = 0; j < s.numAtoms; ++j)
+            for (auto const& aj : s.atoms)
             {
-                Atom const& aj = s.atoms[j];
+                size_t const j = aj.index;
 
 #ifndef NNP_FULL_SFD_MEMORY
                 vector<vector<size_t> > const& tableFull
@@ -568,8 +576,17 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
                                                   maxCutoffRadius);
 #endif
 
-                Vec3D remainingForce = lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
+                Vec3D remainingForce = -lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 add3DVecToArray(atomF[i], remainingForce * cfforce * convForce);
+
+                /*
+                loopFile << "i: " << i << ", j: " << j << endl
+                         << "ai.f: " << atomF[i][0] << " " << atomF[i][1] << " " << atomF[i][2] << endl
+                         << "lambda: " << lambdaTotal(j) << endl
+                         << "dChidr: " << dChidr[0] << " " << dChidr[1] << " " << dChidr[2] << endl
+                         << "dAdrQ: " << ai.dAdrQ[j][0] << " " << ai.dAdrQ[j][1] << " " << ai.dAdrQ[j][2] << endl
+                         << endl;
+                 */
             }
         }
     }
