@@ -9,7 +9,7 @@ clear
 # Configuration files
 variable cfgFile         string "h2o_8640_liquid_NpT_RPBE-D3.data"
 # Timesteps
-variable numSteps        equal  5
+variable numSteps        equal  100
 variable dt              equal  0.0005
 # NN
 variable nnpCutoff       equal  6.36
@@ -30,12 +30,12 @@ mass 2 ${mass_O}
 timestep ${dt}
 thermo 1
 thermo_modify format float %14.6f
-dump 4a all custom 5 dump.myforce.* id type fx fy fz
+dump 4a all custom 1 dump.myforce.* id type fx fy fz
 
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 maxcd 0.001 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
+pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 calcd 1 wricde 1.6 maxcde 3.0 wricdf 0.04 maxcdf 0.10 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
 pair_coeff * * ${nnpCutoff}
 
 ###############################################################################

@@ -908,3 +908,15 @@ double Structure::calcDisagreement() const
         
     return sqrt(energySum / energyCom.size());
 } 
+
+void Structure::addForceLocal(  std::size_t const& alpha,
+                                std::size_t const& c,
+                                std::size_t const& atom,
+                                std::size_t const& comSize, 
+                                double const& fLoc ) const
+{
+    std::size_t index = 3*(atom-1)*comSize + 3*c + alpha;
+    forceLoc[index] -= fLoc;
+
+    return;
+}

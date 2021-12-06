@@ -94,6 +94,8 @@ struct Structure
     Vec3D                    invbox[3];
     /// Same as #energy but for all committee members
     std::vector<double>      energyCom;
+    /// Force vector for all committee members
+    mutable std::vector<double>      forceLoc;
     /// Number of atoms of each element in this structure.
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
@@ -341,7 +343,19 @@ struct Structure
      * @return Return committee disagreement for energy.
      */
     double                  calcDisagreement() const;
-
+    /** Add local force contribution to forceLoc vector.
+     * 
+     * @param[in] alpha Coordinate index.
+     * @param[in] c Committee index.
+     * @param[in] atom Atom index.
+     * @param[in] comSize Committee size.
+     * @param[in] fLoc Force contributation added to forceLoc.
+     */
+    void                    addForceLocal(  std::size_t const& alpha,
+                                            std::size_t const& c,
+                                            std::size_t const& atom,
+                                            std::size_t const& comSize,
+                                            double const& fLoc ) const;
 };
 
 }
