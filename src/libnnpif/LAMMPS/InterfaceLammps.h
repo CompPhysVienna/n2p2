@@ -157,14 +157,19 @@ public:
      * @return Sum of local energy contributions.
      */
     double getEnergy() const;
-    /** Return global committee energy disagreement.
+    /** Return global energy committee disagreement.
      *      
-     * @param[in] globalEnergyCom Reduced energy committee.
-     * @param[in] globalNumAtoms Global number of atoms.
+     * @param[in] globalEnergyCom Reduced energy committee
+     * @param[in] globalNumAtoms Global number of atoms
+     * @param[in] wricd Threshold for writing
+     * @param[in] timestep Molecular dynamics timestep
      *
      * @return Return global committee energy disagreement.
      */
-    double getCommitteeDisagreement(const std::vector<double> &globalEnergyCom, const int &globalNumAtoms);
+    double getComDisEnergy(std::vector<double> const& globalEnergyCom, 
+                           int const& globalNumAtoms,
+                           double const& wricd,
+                           std::size_t const& timestep);    
     /** Return energy contribution of one atom.
      *
      * @param[in] index Atom index.
@@ -174,11 +179,31 @@ public:
      * @attention These atomic contributions are not physical!
      */
     double getAtomicEnergy(int index) const;
+    /** Return global force committee disagreement per atom.
+     *      
+     * @param[in] globalForceCom Reduced force committee vector.
+     * @param[in] comSize Committee size
+     * @param[in] wricd Threshold for writing
+     * @param[in] timestep Molecular dynamics timestep
+     *
+     * @return Return global force committee disagreement.
+     */
+    double getComDisForce(std::vector<double> const& globalForceCom,  
+                          std::size_t const& comSize,
+                          double const& wricd,
+                          std::size_t const& timestep);
     /** Reduce local committee energy contributions to global committee energy.
      *
      * @return Return global committee energy.
      */
     std::vector<double> reduceEnergyCom();
+    /** Reduce local force contributions to global force vector.
+     *
+     * @param[in] globalNumAtoms Global number of atoms.
+     * 
+     * @return Return global force vector.
+     */
+    std::vector<double> reduceForceCom(int const& globalNumAtoms) const;
     /** Adds electrostatic energy contribution to the total structure energy
      *
      * @param[in] electrostatic energy (calculated in LAMMPS with
@@ -193,6 +218,13 @@ public:
      * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
      */
     void   getForces(double* const* const& atomF) const;
+    /** Calculate forces and add to LAMMPS atomic force arrays and local force array.
+     *
+     * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
+     * @param[in] globalNumAtoms Global number of atoms.
+     */
+    void   getForcesCom(double* const* const& atomF, 
+                        int const& globalNumAtoms) const;
     /** Calculate forces and add to LAMMPS atomic force arrays (development version for
      * "hdnnp/develop" pair style).
      *
@@ -257,8 +289,16 @@ public:
      */
     void   clearExtrapolationWarnings();
     /** Write committee energies and committee disagreement to file.
+     * @param[in] timestep Lammps molecular dynamics timestep.
      */
-    void   writeCommittee() const;
+    void   writeEnergyCommittee(std::size_t const& timestep) const;
+    /** Write atom with com. dis. higher than wricd and its neighbour atoms file in xyz format.
+     *
+     * @param[in] timestep Lammps molecular dynamics timestep.
+     * @param[in] i Local MPI index
+     * 
+     */
+    void    writeStructure(std::size_t const& timestep, int64_t const& i) const;
     /** Read atomic charges from LAMMPS into n2p2.
      *
      * Charges in units of e (normalized internally for normalized models).
