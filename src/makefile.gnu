@@ -14,7 +14,7 @@ PROJECT_EIGEN=/usr/include/eigen3/
 PROJECT_CC=g++
 PROJECT_MPICC=mpic++
 # OpenMP parallelization is disabled by default, add flag "-fopenmp" to enable.
-PROJECT_CFLAGS=-O3 -march=native -std=c++11 -fopenmp
+PROJECT_CFLAGS=-Og -march=native -std=c++11 #-fopenmp
 PROJECT_CFLAGS_MPI=-Wno-long-long
 PROJECT_DEBUG=-g -pedantic-errors -Wall -Wextra
 PROJECT_TEST=--coverage -fno-default-inline -fno-inline -fno-inline-small-functions -fno-elide-constructors

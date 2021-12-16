@@ -32,6 +32,7 @@ using namespace std;
 using namespace nnp;
 using namespace Eigen;
 
+
 Structure::Structure() :
     isPeriodic                    (false     ),
     isTriclinic                   (false     ),
@@ -254,15 +255,15 @@ void Structure::readFromLines(vector<string> const& lines)
 }
 
 void Structure::calculateMaxCutoffRadiusOverall(
-                                            double precision,
+                                            EwaldSetup& ewaldSetup,
                                             double rcutScreen,
                                             double maxCutoffRadius)
 {
     maxCutoffRadiusOverall = max(rcutScreen, maxCutoffRadius);
     if (isPeriodic)
     {
-        double rcutReal = getRcutReal(box, precision);
-        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, rcutReal);
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, ewaldSetup.rCut);
     }
 }
 
@@ -271,6 +272,7 @@ void Structure::calculateNeighborList(
                                         bool        sortByDistance)
 {
     cutoffRadius = max( cutoffRadius, maxCutoffRadiusOverall );
+    //cout << "CUTOFF: " << cutoffRadius << "\n";
 
     if (isPeriodic)
     {
@@ -579,7 +581,7 @@ void Structure::calculateVolume()
 }
 
 double Structure::calculateElectrostaticEnergy(
-                                            double                   precision,
+                                            EwaldSetup&              ewaldSetup,
                                             VectorXd                 hardness,
                                             MatrixXd                 gammaSqrt2,
                                             VectorXd                 sigmaSqrtPi,
@@ -598,9 +600,11 @@ double Structure::calculateElectrostaticEnergy(
                                 "be sorted for Ewald summation!\n");
         }
 
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        double const rcutReal = ewaldSetup.rCut;
         KspaceGrid grid;
-        double rcutReal = grid.setup(box, precision);
-        double const sqrt2eta = sqrt(2.0) * grid.eta;
+        grid.setup(box, ewaldSetup);
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
 
 #ifdef _OPENMP
         #pragma omp parallel for schedule(dynamic)
@@ -638,7 +642,9 @@ double Structure::calculateElectrostaticEnergy(
                 for (auto const& gv : grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
-                    A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
+                    Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    A(i, j) += 2 * gv.coeff * cos(gv.k * dr);
+                    //A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
                 }
                 A(j, i) = A(i, j);
             }
@@ -793,8 +799,8 @@ double Structure::calculateScreeningEnergy(
 
 
 void Structure::calculateDAdrQ(
-                            double                   precision,
-                            MatrixXd                 gammaSqrt2)
+                            EwaldSetup& ewaldSetup,
+                            MatrixXd    gammaSqrt2)
 {
     // TODO: This initialization loop could probably be avoid, maybe use
     // default constructor?
@@ -811,9 +817,11 @@ void Structure::calculateDAdrQ(
         // we cache it for reuse? Note that we can't calculate dAdrQ already in
         // the loops of calculateElectrostaticEnergy because at this point we don't
         // have the charges.
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        double rcutReal = ewaldSetup.rCut;
         KspaceGrid grid;
-        double rcutReal = grid.setup(box, precision);
-        double const sqrt2eta = sqrt(2.0) * grid.eta;
+        grid.setup(box, ewaldSetup);
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
 
         for (size_t i = 0; i < numAtoms; ++i)
         {
@@ -857,7 +865,9 @@ void Structure::calculateDAdrQ(
                 for (auto const& gv : grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
-                    dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
+                    Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    dAijdri -= 2 * gv.coeff * sin(gv.k * dr) * gv.k;
+                    //dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
                 }
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;

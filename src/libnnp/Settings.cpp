@@ -61,6 +61,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["conv_energy"                        ] = "";
     m["nnp_type"                           ] = "";
     m["fixed_gausswidth"                   ] = "";
+    m["ewald_truncation_error_method"      ] = "";
     m["ewald_prec"                         ] = "";
     m["screen_electrostatics"              ] = "";
 

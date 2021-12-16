@@ -20,6 +20,7 @@
 #include "CutoffFunction.h"
 #include "Element.h"
 #include "ElementMap.h"
+#include "Ewald.h"
 #include "Log.h"
 #include "ScreeningFunction.h"
 #include "Settings.h"
@@ -610,7 +611,7 @@ protected:
     double                     meanEnergy;
     double                     convEnergy;
     double                     convLength;
-    double                     ewaldPrecision;
+    EwaldSetup                 ewaldSetup;
     Settings                   settings;
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;

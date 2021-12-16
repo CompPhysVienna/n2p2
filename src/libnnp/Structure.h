@@ -20,6 +20,7 @@
 #include "Atom.h"
 #include "Element.h"
 #include "ElementMap.h"
+#include "Ewald.h"
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
 #include <Eigen/Core>
@@ -167,22 +168,22 @@ struct Structure
     /** Calculate maximal cut-off if cut-off of screening and real part Ewald
      * summation are also considered.
      *
-     * @param[in] precision Precision for Ewald summation.
+     * @param[in] ewaldSetup Settings of Ewald summation.
      * @param[in] rcutScreen Cut-off for Screening of the electrostatic
      *                         interaction.
      * @param[in] maxCutoffRadius maximal cut-off of symmetry functions.
      */
     void                   calculateMaxCutoffRadiusOverall(
-                                                        double precision,
-                                                        double rcutScreen,
-                                                        double maxCutoffRadius);
+                                            EwaldSetup& ewaldSetup,
+                                            double      rcutScreen,
+                                            double      maxCutoffRadius);
     /** Calculate neighbor list for all atoms.
      *
      * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
      *                         than the cutoff radius.
      * @param[in] sortByDistance Sort neighborlist from nearest to farthest neighbor.
      *
-     * @return Maximum of {maxCutoffRadius, rcutScreen, rcutReal}.
+     * @return Maximum of {maxCutoffRadius, rcutScreen, rCut}.
      */
     void                     calculateNeighborList(
                                                     double  cutoffRadius,
@@ -193,7 +194,7 @@ struct Structure
      *                         than the cutoff radius.
      * @param[in] cutoffs Vector of all needed cutoffs (needed for cut-off map
      *                         construction).
-     * @return Maximum of {maxCutoffRadius, rcutScreen, rcutReal}.
+     * @return Maximum of {maxCutoffRadius, rcutScreen, rCut}.
      */
     void                     calculateNeighborList(
                                                    double  cutoffRadius,
@@ -277,7 +278,7 @@ struct Structure
     void                     calculateVolume();
     /** Compute electrostatic energy with global charge equilibration.
      *
-     * @param[in] precision Ewald precision parameters.
+     * @param[in] ewaldSetup Settings of Ewald summation.
      * @param[in] hardness Vector containing the hardness of all elements.
      * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
      *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
@@ -287,7 +288,7 @@ struct Structure
      * @param[in] fs Screening function.
      */
     double                   calculateElectrostaticEnergy(
-                                            double                   precision,
+                                            EwaldSetup&              ewaldSetup,
                                             Eigen::VectorXd          hardness,
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
@@ -309,15 +310,15 @@ struct Structure
                                             ScreeningFunction const& fs);
      /** Calculates derivative of A-matrix with respect to the atoms positions and
      * contract it with Q. 
-     * @param[in] precision Ewald precision parameters.
+     * @param[in] ewaldSetup Settings of Ewald summation.
      * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
      *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
      * @param[in] fs Screening function.
      */
     void                     calculateDAdrQ(
-                                        double                   precision, 
-                                        Eigen::MatrixXd          gammaSqrt2);
+                                        EwaldSetup&     ewaldSetup,
+                                        Eigen::MatrixXd gammaSqrt2);
     /** Calculates derivative of the charges with respect to electronegativities.
      *  @param[in] dQdChi vector to store the result. dQdChi[i](j) represents the
      *  derivative for the i-th electronegativity and the j-th charge.

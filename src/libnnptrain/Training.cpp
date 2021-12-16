@@ -920,7 +920,7 @@ void Training::calculateNeighborLists()
         if (nnpType == NNPType::HDNNP_4G)
         {
             it->calculateMaxCutoffRadiusOverall(
-                                            ewaldPrecision,
+                                            ewaldSetup,
                                             screeningFunction.getOuter(),
                                             maxCutoffRadius);
             it->calculateNeighborList(maxCutoffRadius,cutoffs);

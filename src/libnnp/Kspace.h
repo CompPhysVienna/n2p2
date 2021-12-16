@@ -18,6 +18,7 @@
 #define KSPACE_H
 
 #include "Vec3D.h"
+#include "Ewald.h"
 #include <vector> // std::vector
 
 namespace nnp
@@ -45,9 +46,9 @@ public:
     /// Ewald summation eta parameter.
     double               eta;
     /// Cutoff in reciprocal space.
-    double               rcut;
+    double               kCut;
     /// Cutoff in real space.
-    double               rcutReal;
+    double               rCut;
     /// Volume of real box.
     double               volume;
     /// Ewald sum prefactor @f$\frac{2\pi}{V}@f$.
@@ -64,14 +65,9 @@ public:
     /** Set up reciprocal box vectors and eta.
      *
      * @param[in] box Real box vectors.
-     * @param[in] precision Desired presicion for Ewald summation.
-     * @param[in] numAtoms Number of atoms in system. Optional, if provided
-     *                     will use "regular" Ewald optimal eta, otherwise use
-     *                     "matrix" version of eta.
-     *
-     * @return Real space cutoff radius.
+     * @param[in] ewaldSetup Settings of ewald summation.
      */
-    double setup(Vec3D box[3], double precision, std::size_t numAtoms = 0);
+    void setup(Vec3D box[3], EwaldSetup& ewaldSetup);
 
 private:
     /** Compute box copies in each direction.
@@ -82,17 +78,7 @@ private:
      */
     void calculatePbcCopies(double cutoffRadius);
 };
-    /** Compute Cut-off in real space for Ewald summation.
-     *
-     * @param[in] box Real box vectors.
-     * @param[in] precision Desired presicion for Ewald summation.
-     * @param[in] numAtoms Number of atoms in system. Optional, if provided
-     *                     will use "regular" Ewald optimal eta, otherwise use
-     *                     "matrix" version of eta.
-     *
-     * @return Real space cutoff radius.
-     */
-    double getRcutReal(Vec3D box[3], double precision, size_t numAtoms = 0);
+
 }
 
 #endif

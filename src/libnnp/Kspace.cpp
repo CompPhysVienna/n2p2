@@ -22,6 +22,7 @@
 using namespace std;
 using namespace nnp;
 
+
 Kvector::Kvector() : k     (Vec3D()),
                      knorm2(0.0    ),
                      coeff (0.0    )
@@ -35,13 +36,13 @@ Kvector::Kvector(Vec3D v) : k     (v       ),
 }
 
 KspaceGrid::KspaceGrid() : eta   (0.0),
-                           rcut  (0.0),
+                           kCut  (0.0),
                            volume(0.0),
                            pre   (0.0)
 {
 }
 
-double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
+void KspaceGrid::setup(Vec3D box[3], EwaldSetup& ewaldSetup)
 {
     volume = fabs(box[0] * (box[1].cross(box[2])));
     pre = 2.0 * M_PI / volume;
@@ -50,18 +51,11 @@ double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
     kbox[1] = pre * box[2].cross(box[0]);
     kbox[2] = pre * box[0].cross(box[1]);
 
-    eta = 1.0 / sqrt(2.0 * M_PI);
-    // Regular Ewald eta.
-    if (numAtoms != 0) eta *= pow(volume * volume / numAtoms, 1.0 / 6.0);
-    // Matrix version eta.
-    else eta *= pow(volume, 1.0 / 3.0);
-    //TODO: in RuNNer they take eta = max(eta, maxval(sigma))
-
-    // Reciprocal cutoff radius.
-    rcut = sqrt(-2.0 * log(precision)) / eta;
+    eta = ewaldSetup.eta;
+    kCut = ewaldSetup.kCut;
 
     // Compute box copies required in each direction.
-    calculatePbcCopies(rcut);
+    calculatePbcCopies(kCut);
 
     // Compute k-grid (only half sphere because of symmetry)
     for (int i = 0; i <= n[0]; ++i)
@@ -77,7 +71,7 @@ double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
                 if (i == 0 && j == 0 && k == 0) continue;
                 Vec3D kv = i * kbox[0] + j * kbox[1] + k * kbox[2];
                 double knorm2 = kv.norm2();
-                if (kv.norm2() < rcut * rcut)
+                if (kv.norm2() < kCut * kCut)
                 {
                     kvectors.push_back(kv);
                     kvectors.back().knorm2 = knorm2; // TODO: Really necessary?
@@ -87,10 +81,6 @@ double KspaceGrid::setup(Vec3D box[3], double precision, size_t numAtoms)
             }
         }
     }
-
-    // Return real space cutoff radius.
-    rcutReal = sqrt(-2.0 * log(precision)) * eta;
-    return rcutReal;
 }
 
 void KspaceGrid::calculatePbcCopies(double cutoffRadius)
@@ -115,18 +105,4 @@ void KspaceGrid::calculatePbcCopies(double cutoffRadius)
     while (n[2] * projc <= cutoffRadius) n[2]++;
 
     return;
-}
-
-double nnp::getRcutReal(Vec3D box[3], double precision, size_t numAtoms)
-{
-    double volume = fabs(box[0] * (box[1].cross(box[2])));
-    double eta = 1.0 / sqrt(2.0 * M_PI);
-    // Regular Ewald eta.
-    if (numAtoms != 0) eta *= pow(volume * volume / numAtoms, 1.0 / 6.0);
-    // Matrix version eta.
-    else eta *= pow(volume, 1.0 / 3.0);
-    //TODO: in RuNNer they take eta = max(eta, maxval(sigma))
-
-    double rcutReal = sqrt(-2.0 * log(precision)) * eta;
-    return rcutReal;
 }

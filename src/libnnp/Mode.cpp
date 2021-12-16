@@ -31,7 +31,6 @@
 #include <limits>    // std::numeric_limits
 #include <stdexcept> // std::runtime_error
 #include <utility>   // std::piecewise_construct, std::forward_as_tuple
-//#include <iomanip>
 
 using namespace std;
 using namespace nnp;
@@ -46,7 +45,7 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                meanEnergy                (0.0              ),
                convEnergy                (1.0              ),
                convLength                (1.0              ),
-               ewaldPrecision            (0.0              )
+               ewaldSetup                {}
 {
 }
 
@@ -358,6 +357,7 @@ void Mode::setupElectrostatics(bool   initialHardness,
     log << "\n";
 
     // Gaussian width of charges.
+    double maxQsigma = 0.0;
     Settings::KeyRange r = settings.getValues("fixed_gausswidth");
     for (Settings::KeyMap::const_iterator it = r.first;
          it != r.second; ++it)
@@ -365,6 +365,8 @@ void Mode::setupElectrostatics(bool   initialHardness,
         vector<string> args    = split(reduce(it->second.first));
         size_t         element = elementMap[args.at(0)];
         elements.at(element).setQsigma(atof(args.at(1).c_str()));
+
+        maxQsigma = max(elements.at(element).getQsigma(), maxQsigma);
     }
     log << "Gaussian width of charge distribution per element:\n";
     for (size_t i = 0; i < elementMap.size(); ++i)
@@ -374,13 +376,45 @@ void Mode::setupElectrostatics(bool   initialHardness,
     }
     log << "\n";
 
+    // Ewald truncation error method.
+    if (settings.keywordExists("ewald_truncation_error_method"))
+    {
+        string truncation_method_string =
+                settings["ewald_truncation_error_method"];
+        if (truncation_method_string == "0")
+            ewaldSetup.truncMethod =
+                    EWALDTruncMethod::JACKSON_CATLOW;
+        else if (truncation_method_string == "1")
+            ewaldSetup.truncMethod =
+                    EWALDTruncMethod::KOLAFA_PERRAM;
+    }
+    else
+        ewaldSetup.truncMethod =
+                EWALDTruncMethod::JACKSON_CATLOW;
+
     // Ewald precision.
     if (settings.keywordExists("ewald_prec"))
     {
-        ewaldPrecision = atof(settings["ewald_prec"].c_str());        
+        vector<string> args = split(settings["ewald_prec"]);
+        ewaldSetup.readFromArgs(args, maxQsigma);
+
+        // in KOLAFA_PERRAM method precision has unit of a force.
+        if (ewaldSetup.truncMethod == EWALDTruncMethod::KOLAFA_PERRAM)
+            ewaldSetup.precision = normalized("force", ewaldSetup.precision);
     }
-    else ewaldPrecision = 1.0E-6;
-    log << strpr("Ewald precision: %16.8E\n", ewaldPrecision);
+    else if (ewaldSetup.truncMethod ==
+             EWALDTruncMethod::KOLAFA_PERRAM)
+    {
+        throw runtime_error("ERROR: ewald_truncation_error_method 1 requires "
+                            "ewald_prec.");
+    }
+    log << strpr("Ewald truncation error method: %16d\n",
+                 ewaldSetup.truncMethod);
+    log << strpr("Ewald precision: %16.8E\n", ewaldSetup.precision);
+    if (ewaldSetup.truncMethod ==
+        EWALDTruncMethod::KOLAFA_PERRAM)
+        log << strpr("Ewald expected maximum charge: %16.8E\n",
+                     ewaldSetup.maxCharge);
     log << "\n";
 
     // Screening function.
@@ -1662,7 +1696,7 @@ void Mode::chargeEquilibration( Structure& structure,
         }
     }
 
-    double const error = s.calculateElectrostaticEnergy(ewaldPrecision,
+    double const error = s.calculateElectrostaticEnergy(ewaldSetup,
                                                 hardness,
                                                 gammaSqrt2,
                                                 sigmaSqrtPi,
@@ -1671,11 +1705,11 @@ void Mode::chargeEquilibration( Structure& structure,
     if (!suppressOutput)
         log << strpr("Solve relative error: %16.8E\n", error);
 
-    // TODO: leave these 2 functions here or shift it to e.g. forces? Needs to be
+    // TODO: leave these 2 functions here or move it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
     if (derivativesElec)
     {
-        s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
+        s.calculateDAdrQ(ewaldSetup, gammaSqrt2);
         s.calculateElectrostaticEnergyDerivatives(hardness,
                                             gammaSqrt2,
                                             sigmaSqrtPi,
@@ -1697,7 +1731,6 @@ void Mode::chargeEquilibration( Structure& structure,
 
         log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
     }
-
     return;
 }
 
