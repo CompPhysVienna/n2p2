@@ -351,8 +351,6 @@ void InterfaceLammps::setBoxVectors(double const* boxlo,
     {
         structure.isTriclinic = true;
     }
-    structure.calculateInverseBox();
-    structure.calculateVolume();
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -360,6 +358,8 @@ void InterfaceLammps::setBoxVectors(double const* boxlo,
         if (normalize) structure.box[i] *= convLength;
     }
 
+    structure.calculateInverseBox();
+    structure.calculateVolume();
     //cout << "Box vectors: \n";
     //for(size_t i = 0; i < 3; ++i)
     //{
@@ -518,7 +518,6 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
     // atoms and their neighbors. These are now summed up to the force
     // contributions of local and ghost atoms.
-
     for (auto const& a : structure.atoms)
     {
         size_t const ia = a.index;
@@ -533,8 +532,15 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             = elements.at(a.element).getSymmetryFunctionTable();
 #endif
         // Loop over all neighbor atoms. Some are local, some are ghost atoms.
-        for (auto const& n : a.neighbors)
+
+        //for (auto const& n : a.neighbors)
+        size_t const numNeighbors = a.getStoredMinNumNeighbors(maxCutoffRadius);
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
+        for (size_t k = 0; k < numNeighbors; ++k)
         {
+            Atom::Neighbor const& n = a.neighbors[k];
             // Temporarily save the neighbor index. Note: this is the index for
             // the LAMMPS force array.
             size_t const in = n.index;
@@ -556,6 +562,9 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         Structure const& s = structure;
         VectorXd lambdaTotal = s.calculateForceLambdaTotal();
 
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
         for (auto const& ai : s.atoms)
         {
             size_t const i = ai.index;
