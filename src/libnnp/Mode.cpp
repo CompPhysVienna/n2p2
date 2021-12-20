@@ -1848,8 +1848,10 @@ void Mode::calculateForces(Structure& structure) const
 #ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for (auto& ai : s.atoms)
+        // OpenMP 4.0 doesn't support range based loops
+        for (size_t i = 0; i < s.numAtoms; ++i)
         {
+            auto& ai = s.atoms[i];
             ai.f -= ai.pEelecpr;
             ai.fElec = ai.pEelecpr;
 

@@ -565,9 +565,10 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
 #ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for (auto const& ai : s.atoms)
+        // OpenMP 4.0 doesn't support range based loops
+        for (size_t i = 0; i < s.numAtoms; ++i)
         {
-            size_t const i = ai.index;
+            auto const& ai = s.atoms[i];
             add3DVecToArray(atomF[i], -ai.pEelecpr * cfforce * convForce);
 
             for (auto const& aj : s.atoms)
