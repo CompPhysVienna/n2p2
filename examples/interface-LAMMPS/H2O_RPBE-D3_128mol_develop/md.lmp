@@ -22,14 +22,18 @@ variable mass_O          equal  15.9994
 # GENERAL SETUP
 ###############################################################################
 units metal
+
+# Needed for nnp/develop
+atom_modify map yes
+
 boundary p p p
 atom_style atomic
 read_data ${cfgFile}
 mass 1 ${mass_H}
 mass 2 ${mass_O}
+
 timestep ${dt}
 thermo 1
-
 ###############################################################################
 # NN
 ###############################################################################

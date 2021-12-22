@@ -305,6 +305,7 @@ void PairNNP::transferNeighborList(double const cutoffRadius)
 {
   // Transfer neighbor list to NNP.
   double rc2 = cutoffRadius * cutoffRadius;
+  interface.allocateNeighborlists(list->numneigh);
 #ifdef _OPENMP
   #pragma omp parallel for
 #endif
@@ -318,7 +319,10 @@ void PairNNP::transferNeighborList(double const cutoffRadius)
       double dz = atom->x[i][2] - atom->x[j][2];
       double d2 = dx * dx + dy * dy + dz * dz;
       if (d2 <= rc2) {
-        interface.addNeighbor(i,j,atom->tag[j],atom->type[j],dx,dy,dz,d2);
+        if (!interface.getGlobalStructureStatus())
+          interface.addNeighbor(i,j,atom->tag[j],atom->type[j],dx,dy,dz,d2);
+        else
+          interface.addNeighbor(i,j,atom->map(atom->tag[j]),atom->type[j],dx,dy,dz,d2);
       }
     }
   }

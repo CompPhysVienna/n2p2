@@ -258,6 +258,11 @@ void InterfaceLammps::setGlobalStructureStatus(bool const status)
     hasGlobalStructure = status;
 }
 
+bool InterfaceLammps::getGlobalStructureStatus()
+{
+    return hasGlobalStructure;
+}
+
 void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
                                     int const* const atomTag,
                                     int const* const atomType)
@@ -274,6 +279,7 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
     structure.energy                         = 0.0;
     structure.atoms.clear();
     indexMap.clear();
+    structure.atoms.reserve(numAtomsLocal);
     indexMap.resize(numAtomsLocal, numeric_limits<size_t>::max());
     for (int i = 0; i < numAtomsLocal; i++)
     {
@@ -372,6 +378,15 @@ void InterfaceLammps::setBoxVectors(double const* boxlo,
 
 }
 
+void InterfaceLammps::allocateNeighborlists(int const* const numneigh)
+{
+    for(size_t i = 0; i < structure.numAtoms; ++i)
+    {
+        auto& a = structure.atoms.at(i);
+        a.neighbors.reserve(numneigh[i]);
+    }
+}
+
 void InterfaceLammps::addNeighbor(int    i,
                                   int    j,
                                   int    tag,
@@ -390,26 +405,7 @@ void InterfaceLammps::addNeighbor(int    i,
     Atom::Neighbor& n = a.neighbors.back();
 
     n.index = j;
-    if (!hasGlobalStructure)
-        n.tag     = tag;
-    else
-    {
-        // If n2p2 has has the complete structure and handles the
-        // chargeEquilibration it needs that the neighbor index corresponds to
-        // the atom index of (exactly) one atom in the structure.
-        auto matchingAtom = find_if(structure.atoms.begin(), structure.atoms.end(),
-                [tag](Atom const& x)
-                {
-                    return (x.tag == size_t(tag));
-                }
-            );
-        if(matchingAtom != structure.atoms.end())
-        {
-            n.tag = matchingAtom->index;
-        }
-        else throw runtime_error("ERROR: Tag of neighbor doesn't match the tag "
-                                 "of any atom in the structure!");
-    }
+    n.tag = tag;
     n.element = mapTypeToElement[type];
     n.dr[0]   = dx * cflength;
     n.dr[1]   = dy * cflength;
@@ -523,7 +519,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         size_t const ia = a.index;
         Vec3D selfForce = a.calculateSelfForceShort();
         selfForce *= cfforce * convForce;
-        // TODO: ia is not the right index when some atom types are excluded
+        // TODO: ia is not the right index when some atom types are excluded / ignored
         //       (see use of indexmap)
         add3DVecToArray(atomF[ia], selfForce);
 

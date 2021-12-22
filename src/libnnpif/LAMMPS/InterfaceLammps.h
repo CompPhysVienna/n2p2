@@ -65,6 +65,8 @@ public:
      * @param[in] status true if n2p2 has global structure.
      */
     void    setGlobalStructureStatus(bool const status);
+    /// Check if n2p2 knows about global structure.
+    bool    getGlobalStructureStatus();
     /** (Re)set #structure to contain only local LAMMPS atoms.
      *
      * @param[in] numAtomsLocal Number of local atoms.
@@ -92,6 +94,11 @@ public:
                          double const  xy,
                          double const  xz,
                          double const  yz);
+    /** Allocate neighbor lists.
+     *
+     * @param[in] numneigh Array containing number of neighbors for each local atom.
+     */
+    void   allocateNeighborlists(int const* const numneigh);
     /** Add one neighbor to atom.
      *
      * @param[in] i Local atom index.
@@ -184,6 +191,7 @@ public:
      * @param[in] v Vector which is added to arr.
      */
     void   add3DVecToArray(double *const & arr, Vec3D const& v) const;
+
 protected:
     /// Process rank.
     int                        myRank;

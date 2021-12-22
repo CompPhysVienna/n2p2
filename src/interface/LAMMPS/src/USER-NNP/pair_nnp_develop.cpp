@@ -103,6 +103,10 @@ void PairNNPDevelop::init_style()
     throw runtime_error("ERROR: System must be either aperiodic or periodic "
                         "in all 3 dimmensions!");
 
+  // Required for charge equilibration scheme.
+  if (atom->map_style == Atom::MAP_NONE)
+      throw runtime_error("ERROR: pair style requires atom map yes");
+
   PairNNP::init_style();
 
 
