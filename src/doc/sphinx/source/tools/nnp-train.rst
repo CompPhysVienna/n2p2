@@ -8,8 +8,11 @@ nnp-train
    Documentation in progress...
 
 This tool implements the actual training procedure for a given data set. It is
-able to train both 2G and 4G neural networks (NN). In the latter case the
-training procedure consists of stage 1 and 2.
+able to train both 2G and 4G [1]_ neural networks (NN). In the latter case the
+training procedure consists of two training stages. Stage 1 needs to be done
+first. It is the training of the charge NNs. After this is finished one can go
+to stage 2 which consists of training the short-ranged NNs by fitting the data
+to energy and forces.
 
 Requirements:
 -------------
@@ -38,7 +41,15 @@ If one has specified a 4G NN the command is
 
    mpirun -np 4 nnp-train <n>
 
-where ``<n>`` is the stage (1 or 2).
+where ``<n>`` is the stage (1 or 2). After finishing stage 1 one has to choose
+the NN architecture of the preferred training epoch. Usually one picks the epoch
+with the lowest RMSE in the training set but there may be reasons to deviate
+from that rule. After deciding for epoch ``<m>`` one has to rename the files
+``hardness.???.<m>.out`` and ``weightse.???.<m>.out`` to ``hardness.???.data``
+and ``weightse.???.data``, respectively.
+When the training is finished (after stage 2 with the 4G NN or after the
+training with the 2G NN) it is again necessary to pick an epoch ``<m>`` of this
+run and rename the files ``weights.???.<m>.out`` to ``weights.???.data``.
 
 Sample screen output:
 ---------------------
@@ -214,3 +225,5 @@ In 2G or 4G stage 2 (if ``write_trainforces`` is set non-zero):
   forces and the predicted forces for the data used for testing after the epoch
   denoted by ``??????``.
 
+
+.. [1] Ko, T. W.; Finkler, J. A.; Goedecker, S.; Behler, J. A Fourth-Generation High-Dimensional Neural Network Potential with Accurate Electrostatics Including Non-Local Charge Transfer. Nature Communications 2021, 12 (1), 398. https://doi.org/10.1038/s41467-020-20427-2.

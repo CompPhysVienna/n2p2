@@ -29,7 +29,7 @@ initial_hardness        O        10.0
 fixed_gausswidth  H 0.585815056466
 fixed_gausswidth  O 1.379499971678
 
-screen_electrostatics 4.8 8.0
+screen_electrostatics 4.8 12.0
 
 random_seed 12346
 
@@ -130,69 +130,74 @@ kalman_etamax                   0.1             # Standard Kalman filter paramet
 ################################################################################
 cutoff_type 2
 
-# radial H H
-symfunction H 2 H 0.001 0.0 8.00
-symfunction H 2 H 0.01  0.0 8.00
-symfunction H 2 H 0.03  0.0 8.00
-symfunction H 2 H 0.06  0.0 8.00
-symfunction H 2 H 0.15  1.9 8.00
-symfunction H 2 H 0.30  1.9 8.00
-symfunction H 2 H 0.60  1.9 8.00
-symfunction H 2 H 1.50  1.9 8.00
+#radial H H
+symfunction_short H 2 H 0.001 0.0 12.00
+symfunction_short H 2 H 0.01  0.0 12.00
+symfunction_short H 2 H 0.03  0.0 12.00
+symfunction_short H 2 H 0.06  0.0 12.00
+symfunction_short H 2 H 0.15  1.9 12.00
+symfunction_short H 2 H 0.30  1.9 12.00
+symfunction_short H 2 H 0.60  1.9 12.00
+symfunction_short H 2 H 1.50  1.9 12.00
 
 # radial H O / O H
-symfunction H 2 O 0.001 0.0 8.00
-symfunction H 2 O 0.01  0.0 8.00
-symfunction H 2 O 0.03  0.0 8.00
-symfunction H 2 O 0.06  0.0 8.00
-symfunction H 2 O 0.15  0.9 8.00
-symfunction H 2 O 0.30  0.9 8.00
-symfunction H 2 O 0.60  0.9 8.00
-symfunction H 2 O 1.50  0.9 8.00
+symfunction_short H 2 O 0.001 0.0 12.00
+symfunction_short H 2 O 0.01  0.0 12.00
+symfunction_short H 2 O 0.03  0.0 12.00
+symfunction_short H 2 O 0.06  0.0 12.00
+symfunction_short H 2 O 0.15  0.9 12.00
+symfunction_short H 2 O 0.30  0.9 12.00
+symfunction_short H 2 O 0.60  0.9 12.00
+symfunction_short H 2 O 1.50  0.9 12.00
 
-symfunction O 2 H 0.001 0.0 8.00
-symfunction O 2 H 0.01  0.0 8.00
-symfunction O 2 H 0.03  0.0 8.00
-symfunction O 2 H 0.06  0.0 8.00
-symfunction O 2 H 0.15  0.9 8.00
-symfunction O 2 H 0.30  0.9 8.00
-symfunction O 2 H 0.60  0.9 8.00
-symfunction O 2 H 1.50  0.9 8.00
+symfunction_short O 2 H 0.001 0.0 12.00
+symfunction_short O 2 H 0.01  0.0 12.00
+symfunction_short O 2 H 0.03  0.0 12.00
+symfunction_short O 2 H 0.06  0.0 12.00
+symfunction_short O 2 H 0.15  0.9 12.00
+symfunction_short O 2 H 0.30  0.9 12.00
+symfunction_short O 2 H 0.60  0.9 12.00
+symfunction_short O 2 H 1.50  0.9 12.00
 
 # radial O O
-symfunction O 2 O 0.001 0.0 8.00
-symfunction O 2 O 0.01  0.0 8.00
-symfunction O 2 O 0.03  0.0 8.00
-symfunction O 2 O 0.06  0.0 8.00
-symfunction O 2 O 0.15  4.0 8.00
-symfunction O 2 O 0.30  4.0 8.00
-symfunction O 2 O 0.60  4.0 8.00
-symfunction O 2 O 1.50  4.0 8.00
+symfunction_short O 2 O 0.001 0.0 12.00
+symfunction_short O 2 O 0.01  0.0 12.00
+symfunction_short O 2 O 0.03  0.0 12.00
+symfunction_short O 2 O 0.06  0.0 12.00
+symfunction_short O 2 O 0.15  4.0 12.00
+symfunction_short O 2 O 0.30  4.0 12.00
+symfunction_short O 2 O 0.60  4.0 12.00
+symfunction_short O 2 O 1.50  4.0 12.00
 
 # angular
-symfunction H 3 O H 0.2  1.0 1.0  8.00000
+symfunction_short H 3 O H 0.2  1.0 1.0  12.00000
 
-symfunction O 3 H H 0.07  1.0 1.0  8.00000
-symfunction H 3 O H 0.07  1.0 1.0  8.00000
-symfunction O 3 H H 0.07 -1.0 1.0  8.00000
-symfunction H 3 O H 0.07 -1.0 1.0  8.00000
+symfunction_short O 3 H H 0.07  1.0 1.0  12.00000
+symfunction_short H 3 O H 0.07  1.0 1.0  12.00000
+symfunction_short O 3 H H 0.07 -1.0 1.0  12.00000
+symfunction_short H 3 O H 0.07 -1.0 1.0  12.00000
 
-symfunction O 3 H H 0.03  1.0 1.0  8.00000
-symfunction H 3 O H 0.03  1.0 1.0  8.00000
-symfunction O 3 H H 0.03 -1.0 1.0  8.00000
-symfunction H 3 O H 0.03 -1.0 1.0  8.00000
+symfunction_short O 3 H H 0.03  1.0 1.0  12.00000
+symfunction_short H 3 O H 0.03  1.0 1.0  12.00000
+symfunction_short O 3 H H 0.03 -1.0 1.0  12.00000
+symfunction_short H 3 O H 0.03 -1.0 1.0  12.00000
 
-symfunction O 3 H H 0.01  1.0 4.0  8.00000
-symfunction H 3 O H 0.01  1.0 4.0  8.00000
-symfunction O 3 H H 0.01 -1.0 4.0  8.00000
-symfunction H 3 O H 0.01 -1.0 4.0  8.00000
+symfunction_short O 3 H H 0.01  1.0 4.0  12.00000
+symfunction_short H 3 O H 0.01  1.0 4.0  12.00000
+symfunction_short O 3 H H 0.01 -1.0 4.0  12.00000
+symfunction_short H 3 O H 0.01 -1.0 4.0  12.00000
 
-symfunction O 3 O H 0.03  1.0 1.0   8.00000
-symfunction O 3 O H 0.03 -1.0 1.0   8.00000
-symfunction O 3 O H 0.001  1.0 4.0  8.00000
-symfunction O 3 O H 0.001 -1.0 4.0  8.00000
+symfunction_short O 3 O H 0.03  1.0 1.0   12.00000
+symfunction_short O 3 O H 0.03 -1.0 1.0   12.00000
+symfunction_short O 3 O H 0.001  1.0 4.0  12.00000
+symfunction_short O 3 O H 0.001 -1.0 4.0  12.00000
 
-symfunction H 3 O O 0.03  1.0 1.0   8.00000
-symfunction H 3 O O 0.03 -1.0 1.0   8.00000
-symfunction H 3 O O 0.001  1.0 4.0  8.00000
-symfunction H 3 O O 0.001 -1.0 4.0  8.00000
+symfunction_short H 3 O O 0.03  1.0 1.0   12.00000
+symfunction_short H 3 O O 0.03 -1.0 1.0   12.00000
+symfunction_short H 3 O O 0.001  1.0 4.0  12.00000
+symfunction_short H 3 O O 0.001 -1.0 4.0  12.00000
+
+symfunction_short O 3 O O 0.03  1.0 1.0   12.00000
+symfunction_short O 3 O O 0.03 -1.0 1.0   12.00000
+symfunction_short O 3 O O 0.001  1.0 4.0  12.00000
+symfunction_short O 3 O O 0.001 -1.0 4.0  12.00000

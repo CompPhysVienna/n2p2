@@ -307,18 +307,18 @@ public:
     void                     calculateSymmetryFunctionGroups(
                                                        Structure& structure,
                                                        bool const derivatives);
-    /** Calculate a single atomic neural network for a given atom and nn type.
-     *
-     * @param[in] nnId Neural network identifier, e.g. "short", "charge".
-     * @param[in] atom Input atom.
-     * @param[in] derivatives If `true` calculate also derivatives of neural
-     *                        networks with respect to input layer neurons
-     *                        (required for force calculation).
-     *
-     * The atomic energy and charge is stored in Atom::energy and Atom::charge,
-     * respectively. If derivatives are calculated the results are stored in
-     * Atom::dEdG or Atom::dQdG.
-     */
+    // /** Calculate a single atomic neural network for a given atom and nn type.
+    // *
+    // * @param[in] nnId Neural network identifier, e.g. "short", "charge".
+    // * @param[in] atom Input atom.
+    // * @param[in] derivatives If `true` calculate also derivatives of neural
+    // *                        networks with respect to input layer neurons
+    // *                        (required for force calculation).
+    // *
+    // * The atomic energy and charge is stored in Atom::energy and Atom::charge,
+    // * respectively. If derivatives are calculated the results are stored in
+    // * Atom::dEdG or Atom::dQdG.
+    // */
     //void                     calculateAtomicNeuralNetwork(
     //                                           std::string const& nnId,
     //                                           Atom&              atom,
