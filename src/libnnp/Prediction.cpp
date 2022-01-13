@@ -64,35 +64,7 @@ void Prediction::readStructureFromFile(string const& fileName)
 
 void Prediction::predict()
 {
-    if (nnpType == NNPType::HDNNP_4G)
-    {
-        structure.calculateMaxCutoffRadiusOverall(
-                                            ewaldSetup,
-                                            screeningFunction.getOuter(),
-                                            maxCutoffRadius);
-        structure.calculateNeighborList(maxCutoffRadius,
-                                        cutoffs);
-
-    }
-    // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
-    // CI tests because of small numeric changes).
-    else structure.calculateNeighborList(maxCutoffRadius, false);
-
-#ifdef NNP_NO_SF_GROUPS
-    calculateSymmetryFunctions(structure, true);
-#else
-    calculateSymmetryFunctionGroups(structure, true);
-#endif
-    calculateAtomicNeuralNetworks(structure, true);
-    if (nnpType == NNPType::HDNNP_4G)
-    {
-        chargeEquilibration(structure, true);
-        calculateAtomicNeuralNetworks(structure, true, "short");
-    }
-    calculateEnergy(structure);
-    if (nnpType == NNPType::HDNNP_4G ||
-        nnpType == NNPType::HDNNP_Q) calculateCharge(structure);
-    calculateForces(structure);
+    evaluateNNP(structure);
     if (normalize)
     {
         structure.toPhysicalUnits(meanEnergy, convEnergy, convLength);

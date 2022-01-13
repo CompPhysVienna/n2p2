@@ -376,6 +376,13 @@ public:
      * computation to atomic forces. Results are stored in Atom::f.
      */
     void                     calculateForces(Structure& structure) const;
+    /** Evaluate neural network potential (includes total energy, optionally
+     *  forces and in some cases charges.
+     *  @param[in] structure Input structure.
+     *  @param[in] useForces If true, calculate forces too.
+     */
+    void                     evaluateNNP(Structure& structure,
+                                         bool useForces = true);
     /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.

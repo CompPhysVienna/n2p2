@@ -206,12 +206,24 @@ int main(int argc, char* argv[])
     for (vector<Structure>::iterator it = dataset.structures.begin();
          it != dataset.structures.end(); ++it)
     {
-        it->calculateNeighborList(dataset.getMaxCutoffRadius());
+        /*
+        if (dataset.nnpType == dataset.NNPType::HDNNP_4G)
+        {
+            it->calculateMaxCutoffRadiusOverall(
+                    dataset.ewaldSetup,
+                    dataset.screeningFunction.getOuter(),
+                    dataset.maxCutoffRadius);
+            it->calculateNeighborList(dataset.maxCutoffRadius,
+                                            dataset.cutoffs);
+        }
+        else it->calculateNeighborList(dataset.getMaxCutoffRadius(), false);
+
 #ifdef NNP_NO_SF_GROUPS
         dataset.calculateSymmetryFunctions((*it), useForces);
 #else
         dataset.calculateSymmetryFunctionGroups((*it), useForces);
 #endif
+         */
         // Manually allocate dEdG vectors.
         for (vector<Atom>::iterator it2 = it->atoms.begin();
              it2 != it->atoms.end(); ++it2)
@@ -219,11 +231,21 @@ int main(int argc, char* argv[])
             size_t const& e = it2->element;
             it2->dEdG.resize(numSymmetryFunctions.at(e), 0.0);
         }
+        dataset.evaluateNNP((*it), useForces);
         // Set derivatives argument to true in any case to fill dEdG vectors
         // in atom storage.
+        /*
         dataset.calculateAtomicNeuralNetworks((*it), true);
+        if (dataset.nnpType == dataset.NNPType::HDNNP_4G)
+        {
+            dataset.chargeEquilibration((*it), true);
+            dataset.calculateAtomicNeuralNetworks((*it), true, "short");
+        }
         dataset.calculateEnergy((*it));
+        if (dataset.nnpType == dataset.NNPType::HDNNP_4G ||
+            nnpType == NNPType::HDNNP_Q) calculateCharge((*it));
         if (useForces) dataset.calculateForces((*it));
+         */
         // Loop over atoms, collect sensitivity data and clear memory.
         for (vector<Atom>::iterator it2 = it->atoms.begin();
              it2 != it->atoms.end(); ++it2)

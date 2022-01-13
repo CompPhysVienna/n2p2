@@ -1887,6 +1887,39 @@ void Mode::calculateForces(Structure& structure) const
     return;
 }
 
+
+void Mode::evaluateNNP(Structure& structure, bool useForces)
+{
+    if (nnpType == NNPType::HDNNP_4G) {
+        structure.calculateMaxCutoffRadiusOverall(
+                ewaldSetup,
+                screeningFunction.getOuter(),
+                maxCutoffRadius);
+        structure.calculateNeighborList(maxCutoffRadius,
+                                        cutoffs);
+
+    }
+    // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
+    // CI tests because of small numeric changes).
+    else structure.calculateNeighborList(maxCutoffRadius, false);
+
+#ifdef NNP_NO_SF_GROUPS
+    calculateSymmetryFunctions(structure, true);
+#else
+    calculateSymmetryFunctionGroups(structure, useForces);
+#endif
+    calculateAtomicNeuralNetworks(structure, useForces);
+    if (nnpType == NNPType::HDNNP_4G) {
+        chargeEquilibration(structure, useForces);
+        calculateAtomicNeuralNetworks(structure, useForces, "short");
+    }
+    calculateEnergy(structure);
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q)
+        calculateCharge(structure);
+    if (useForces) calculateForces(structure);
+}
+
 void Mode::addEnergyOffset(Structure& structure, bool ref)
 {
     for (size_t i = 0; i < numElements; ++i)
@@ -1894,7 +1927,7 @@ void Mode::addEnergyOffset(Structure& structure, bool ref)
         if (ref)
         {
             structure.energyRef += structure.numAtomsPerElement.at(i)
-                                 * elements.at(i).getAtomicEnergyOffset();
+                                   * elements.at(i).getAtomicEnergyOffset();
         }
         else
         {
