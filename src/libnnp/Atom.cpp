@@ -164,6 +164,7 @@ void Atom::allocate(bool all)
     G.clear();
     dEdG.clear();
     dQdG.clear();
+    dChidG.clear();
 #ifdef NNP_FULL_SFD_MEMORY
     dGdxia.clear();
 #endif
@@ -242,6 +243,8 @@ void Atom::free(bool all)
     vector<double>(dEdG).swap(dEdG);
     dQdG.clear();
     vector<double>(dQdG).swap(dQdG);
+    dChidG.clear();
+    vector<double>(dChidG).swap(dChidG);
 #ifdef NNP_FULL_SFD_MEMORY
     dGdxia.clear();
     vector<double>(dGdxia).swap(dGdxia);

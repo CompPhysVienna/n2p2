@@ -143,7 +143,8 @@ struct Atom
 #endif
     /// Symmetry function values
     std::vector<double>      G;
-    /// Derivative of atomic energy with respect to symmetry functions.
+    /// Derivative of atomic energy with respect to symmetry functions. Also
+    /// contains dEdQ in the last element if HDNNP-4G is used.
     std::vector<double>      dEdG;
     /// Derivative of atomic charge with respect to symmetry functions.
     std::vector<double>      dQdG;

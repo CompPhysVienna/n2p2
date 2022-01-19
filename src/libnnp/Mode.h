@@ -380,9 +380,11 @@ public:
      *  forces and in some cases charges.
      *  @param[in] structure Input structure.
      *  @param[in] useForces If true, calculate forces too.
+     *  @param[in] useDEdG If true, calculate dE/dG too.
      */
     void                     evaluateNNP(Structure& structure,
-                                         bool useForces = true);
+                                         bool useForces = true,
+                                         bool useDEdG = true);
     /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.

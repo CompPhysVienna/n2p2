@@ -1888,8 +1888,9 @@ void Mode::calculateForces(Structure& structure) const
 }
 
 
-void Mode::evaluateNNP(Structure& structure, bool useForces)
+void Mode::evaluateNNP(Structure& structure, bool useForces, bool useDEdG)
 {
+    useDEdG = (useForces || useDEdG);
     if (nnpType == NNPType::HDNNP_4G) {
         structure.calculateMaxCutoffRadiusOverall(
                 ewaldSetup,
@@ -1908,10 +1909,28 @@ void Mode::evaluateNNP(Structure& structure, bool useForces)
 #else
     calculateSymmetryFunctionGroups(structure, useForces);
 #endif
-    calculateAtomicNeuralNetworks(structure, useForces);
-    if (nnpType == NNPType::HDNNP_4G) {
+
+    // Needed if useForces == false but sensitivity data is requested.
+    if (useDEdG && !useForces)
+    {
+        // Manually allocate dEdG vectors.
+        for (auto& a : structure.atoms)
+        {
+            if (nnpType == NNPType::HDNNP_4G)
+            {
+                a.dEdG.resize(a.numSymmetryFunctions + 1, 0.0);
+                a.dChidG.resize(a.numSymmetryFunctions, 0.0);
+            }
+            else
+                a.dEdG.resize(a.numSymmetryFunctions, 0.0);
+        }
+    }
+
+    calculateAtomicNeuralNetworks(structure, useDEdG);
+    if (nnpType == NNPType::HDNNP_4G)
+    {
         chargeEquilibration(structure, useForces);
-        calculateAtomicNeuralNetworks(structure, useForces, "short");
+        calculateAtomicNeuralNetworks(structure, useDEdG, "short");
     }
     calculateEnergy(structure);
     if (nnpType == NNPType::HDNNP_4G ||
