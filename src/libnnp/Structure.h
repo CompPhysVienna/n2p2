@@ -393,8 +393,10 @@ struct Structure
     /** Free symmetry function memory for all atoms, see free() in Atom class.
      *
      * @param[in] all See description in Atom.
+     * @param[in] maxCutoffRadius Maximum cutoff radius of symmetry functions.
      */
-    void                     freeAtoms(bool all);
+    void                     freeAtoms(bool         all,
+                                       double const maxCutoffRadius = 0.0);
     /** Reset everything but #elementMap.
      */
     void                     reset();

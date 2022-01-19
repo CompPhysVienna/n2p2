@@ -1439,8 +1439,8 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
 
 #ifndef NNP_NO_NEIGH_CHECK
         // Check if atom has low number of neighbors.
-        size_t numNeighbors = a->getNumNeighbors(
-                                            minCutoffRadius.at(e->getIndex()));
+        size_t numNeighbors = a->calculateNumNeighbors(
+                minCutoffRadius.at(e->getIndex()));
         if (numNeighbors < minNeighbors.at(e->getIndex()))
         {
             log << strpr("WARNING: Structure %6zu Atom %6zu : %zu "
@@ -1452,7 +1452,7 @@ void Mode::calculateSymmetryFunctions(Structure& structure,
 #endif
 
         // Allocate symmetry function data vectors in atom.
-        a->allocate(derivatives);
+        a->allocate(derivatives, maxCutoffRadius);
 
         // Calculate symmetry functions (and derivatives).
         e->calculateSymmetryFunctions(*a, derivatives);
@@ -1520,8 +1520,8 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 
 #ifndef NNP_NO_NEIGH_CHECK
         // Check if atom has low number of neighbors.
-        size_t numNeighbors = a->getNumNeighbors(
-                                            minCutoffRadius.at(e->getIndex()));
+        size_t numNeighbors = a->calculateNumNeighbors(
+                minCutoffRadius.at(e->getIndex()));
         if (numNeighbors < minNeighbors.at(e->getIndex()))
         {
             log << strpr("WARNING: Structure %6zu Atom %6zu : %zu "
@@ -1533,7 +1533,7 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 #endif
 
         // Allocate symmetry function data vectors in atom.
-        a->allocate(derivatives);
+        a->allocate(derivatives, maxCutoffRadius);
 
         // Calculate symmetry functions (and derivatives).
         e->calculateSymmetryFunctionGroups(*a, derivatives);

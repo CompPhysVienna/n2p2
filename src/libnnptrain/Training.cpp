@@ -1123,7 +1123,7 @@ void Training::calculateError(
                 }
             }
         }
-        if (freeMemory) it->freeAtoms(true);
+        if (freeMemory) it->freeAtoms(true, maxCutoffRadius);
         it->clearElectrostatics();
     }
 
@@ -2094,7 +2094,7 @@ void Training::update(string const& property)
                 // TODO: free electrostatics?
                 if (freeMemory)
                 {
-                    s.freeAtoms(true);
+                    s.freeAtoms(true, maxCutoffRadius);
                 }
                 if (!useSubCandidates) s.clearElectrostatics();
 
@@ -2451,7 +2451,7 @@ void Training::update(string const& property)
 
         // Now symmetry function memory is not required any more for this
         // update.
-        if (freeMemory) s.freeAtoms(true);
+        if (freeMemory) s.freeAtoms(true, maxCutoffRadius);
         if (nnpType == NNPType::HDNNP_4G && !useSubCandidates)
             s.clearElectrostatics();
 

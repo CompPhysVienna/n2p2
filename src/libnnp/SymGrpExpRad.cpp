@@ -163,7 +163,7 @@ void SymGrpExpRad::calculate(Atom& atom, bool const derivatives) const
         result[k] = 0.0;
     }
 
-    for (size_t j = 0; j < atom.numNeighbors; ++j)
+    for (size_t j = 0; j < atom.getStoredMinNumNeighbors(rc); ++j)
     {
         Atom::Neighbor& n = atom.neighbors[j];
         if (e1 == n.element && n.d < rc)

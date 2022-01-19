@@ -152,7 +152,7 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
     return;
 }
 
-void Atom::allocate(bool all)
+void Atom::allocate(bool all, double const maxCutoffRadius)
 {
     if (numSymmetryFunctions == 0)
     {
@@ -169,13 +169,17 @@ void Atom::allocate(bool all)
     dGdxia.clear();
 #endif
     dGdr.clear();
-    for (vector<Neighbor>::iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+
+    // Don't need any allocation of neighbors outside the symmetry function
+    // cutoff.
+    size_t const numSymFuncNeighbors = getStoredMinNumNeighbors(maxCutoffRadius);
+    for (size_t i = 0; i < numSymFuncNeighbors; ++i)
     {
+        Neighbor& n = neighbors.at(i);
 #ifndef NNP_NO_SF_CACHE
-        it->cache.clear();
+        n.cache.clear();
 #endif
-        it->dGdr.clear();
+        n.dGdr.clear();
     }
 
     // Reset status of symmetry functions and derivatives.
@@ -202,17 +206,17 @@ void Atom::allocate(bool all)
 #endif
         dGdr.resize(numSymmetryFunctions);
     }
-    for (vector<Neighbor>::iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+    for (size_t i = 0; i < numSymFuncNeighbors; ++i)
     {
+        Neighbor& n = neighbors.at(i);
 #ifndef NNP_NO_SF_CACHE
-        it->cache.resize(cacheSizePerElement.at(it->element),
+        n.cache.resize(cacheSizePerElement.at(n.element),
                          -numeric_limits<double>::max());
 #endif
         if (all)
         {
 #ifndef NNP_FULL_SFD_MEMORY
-            it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
+            n.dGdr.resize(numSymmetryFunctionDerivatives.at(n.element));
 #else
             it->dGdr.resize(numSymmetryFunctions);
 #endif
@@ -222,19 +226,22 @@ void Atom::allocate(bool all)
     return;
 }
 
-void Atom::free(bool all)
+void Atom::free(bool all, double const maxCutoffRadius)
 {
+
+    size_t const numSymFuncNeighbors = getStoredMinNumNeighbors(maxCutoffRadius);
     if (all)
     {
         G.clear();
         vector<double>(G).swap(G);
         hasSymmetryFunctions = false;
+
 #ifndef NNP_NO_SF_CACHE
-        for (vector<Neighbor>::iterator it = neighbors.begin();
-             it != neighbors.end(); ++it)
+        for (size_t i = 0; i < numSymFuncNeighbors; ++i)
         {
-            it->cache.clear();
-            vector<double>(it->cache).swap(it->cache);
+            Neighbor& n = neighbors.at(i);
+            n.cache.clear();
+            vector<double>(n.cache).swap(n.cache);
         }
 #endif
     }
@@ -251,11 +258,12 @@ void Atom::free(bool all)
 #endif
     dGdr.clear();
     vector<Vec3D>(dGdr).swap(dGdr);
-    for (vector<Neighbor>::iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+
+    for (size_t i = 0; i < numSymFuncNeighbors; ++i)
     {
-        it->dGdr.clear();
-        vector<Vec3D>(it->dGdr).swap(it->dGdr);
+        Neighbor& n = neighbors.at(i);
+        n.dGdr.clear();
+        vector<Vec3D>(n.dGdr).swap(n.dGdr);
     }
     hasSymmetryFunctionDerivatives = false;
 
@@ -284,7 +292,7 @@ void Atom::clearNeighborList(size_t const numElements)
     return;
 }
 
-size_t Atom::getNumNeighbors(double const cutoffRadius) const
+size_t Atom::calculateNumNeighbors(double const cutoffRadius) const
 {
     // neighborCutoffs map is only constructed when the neighbor list is sorted.
     if (unorderedMapContainsKey(neighborCutoffs, cutoffRadius))

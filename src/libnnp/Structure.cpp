@@ -1209,11 +1209,11 @@ void Structure::toPhysicalUnits(double meanEnergy,
     return;
 }
 
-void Structure::freeAtoms(bool all)
+void Structure::freeAtoms(bool all, double const maxCutoffRadius)
 {
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->free(all);
+        it->free(all, maxCutoffRadius);
     }
     if (all) hasSymmetryFunctions = false;
     hasSymmetryFunctionDerivatives = false;
@@ -1280,12 +1280,10 @@ void Structure::clearElectrostatics(bool clearDQdr)
     hasAMatrix = false;
     for (auto& a : atoms)
     {
-        a.dAdrQ.clear();
-        a.dAdrQ.shrink_to_fit();
+        vector<Vec3D>().swap(a.dAdrQ);
         if (clearDQdr)
         {
-            a.dQdr.clear();
-            a.dQdr.shrink_to_fit();
+            vector<Vec3D>().swap(a.dQdr);
         }
     }
 }

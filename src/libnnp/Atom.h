@@ -214,18 +214,21 @@ struct Atom
      *                derivatives of symmetry functions (#dEdG, #dGdr, #dGdxia
      *                and Neighbor::dGdr, neighbors must be present). If
      *                `false` allocate only #G.
+     * @param[in] maxCutoffRadius Maximum cutoff radius of symmetry functions.
      *
      * Warning: #numSymmetryFunctions and #numSymmetryFunctionDerivatives need
      * to be set first (the latter only in case of argument all == true.
      */
-    void                     allocate(bool all);
+    void                     allocate(bool         all,
+                                      double const maxCutoffRadius = 0.0);
     /** Free vectors related to symmetry functions, opposite of #allocate().
      *
      * @param[in] all If `true` free all vectors (#G, #dEdG, #dGdr, #dGdxia
      *                and Neighbor::dGdr) otherwise free only #dEdG, #dGdr,
      *                #dGdxia and Neighbor::dGdr.
+     * @param[in] maxCutoffRadius Maximum cutoff radius of symmetry functions.
      */
-    void                     free(bool all);
+    void                     free(bool all, double const maxCutoffRadius = 0.0);
     /** Clear neighbor list.
      *
      * @note Also clears symmetry function data.
@@ -249,7 +252,7 @@ struct Atom
      * for a large cutoff radius and now the number of neighbor atoms for a
      * smaller cutoff is requested.
      */
-    std::size_t              getNumNeighbors(double const cutoffRadius) const;
+    std::size_t              calculateNumNeighbors(double const cutoffRadius) const;
     /** Return needed number of neighbors for a given cutoff radius from
      *                  neighborCutoffs map. If it isn't setup, return number
      *                  of all neighbors in list.
