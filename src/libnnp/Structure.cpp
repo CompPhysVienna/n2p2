@@ -585,7 +585,8 @@ double Structure::calculateElectrostaticEnergy(
                                             VectorXd                 hardness,
                                             MatrixXd                 gammaSqrt2,
                                             VectorXd                 sigmaSqrtPi,
-                                            ScreeningFunction const& fs)
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps)
 {
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
@@ -615,7 +616,9 @@ double Structure::calculateElectrostaticEnergy(
             size_t const ei = ai.element;
 
             // diagonal including self interaction
-            A(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI));
+            A(i, i) += hardness(ei)
+                    + (1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI)))
+                    / fourPiEps;
 
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
@@ -631,7 +634,7 @@ double Structure::calculateElectrostaticEnergy(
                 double const rij = n.d;
                 size_t const ej = n.element;
                 A(i, j) += (erfc(rij / sqrt2eta)
-                          - erfc(rij / gammaSqrt2(ei, ej))) / rij;
+                      - erfc(rij / gammaSqrt2(ei, ej))) / (rij * fourPiEps);
             }
 
             // reciprocal part
@@ -643,7 +646,7 @@ double Structure::calculateElectrostaticEnergy(
                 {
                     // Multiply by 2 because our grid is only a half-sphere
                     Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
-                    A(i, j) += 2 * gv.coeff * cos(gv.k * dr);
+                    A(i, j) += 2 * gv.coeff * cos(gv.k * dr) / fourPiEps;
                     //A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
                 }
                 A(j, i) = A(i, j);
@@ -660,7 +663,8 @@ double Structure::calculateElectrostaticEnergy(
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
 
-            A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
+            A(i, i) = hardness(ei)
+                    + 1.0 / (sigmaSqrtPi(ei) * fourPiEps);
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
@@ -669,7 +673,7 @@ double Structure::calculateElectrostaticEnergy(
                 size_t const ej = aj.element;
                 double const rij = (ai.r - aj.r).norm();
 
-                A(i, j) = erf(rij / gammaSqrt2(ei, ej)) / rij;
+                A(i, j) = erf(rij / gammaSqrt2(ei, ej)) / (rij * fourPiEps);
                 A(j, i) = A(i, j);
 
             }
@@ -682,7 +686,7 @@ double Structure::calculateElectrostaticEnergy(
     b(numAtoms) = chargeRef;
 
     //TODO: sometimes only recalculation of A matrix is needed, because 
-    //Qs are stored.
+    //      Qs are stored.
     VectorXd const Q = A.colPivHouseholderQr().solve(b);
 #ifdef _OPENMP
     #pragma omp parallel for
@@ -700,7 +704,7 @@ double Structure::calculateElectrostaticEnergy(
     energyElec = 0.5 * Q.head(numAtoms).transpose()
                * (A.topLeftCorner(numAtoms, numAtoms) -
                 MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
-    energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
+    energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs, fourPiEps);
 
     return error;
 }
@@ -708,7 +712,8 @@ double Structure::calculateElectrostaticEnergy(
 double Structure::calculateScreeningEnergy(
                                         Eigen::MatrixXd          gammaSqrt2,
                                         VectorXd                 sigmaSqrtPi,
-                                        ScreeningFunction const& fs)
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps)
 
 {
     double energyScreen = 0;
@@ -730,9 +735,11 @@ double Structure::calculateScreeningEnergy(
                 size_t const ei = ai.element;
                 double const Qi = ai.charge;
 #ifdef _OPENMP
-                localEnergyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+                localEnergyScreen +=  -Qi * Qi
+                                   / (2 * sigmaSqrtPi(ei) * fourPiEps);
 #else
-                energyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+                energyScreen +=  -Qi * Qi
+                              / (2 * sigmaSqrtPi(ei) * fourPiEps);
 #endif
 
                 size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutScreen);
@@ -747,10 +754,10 @@ double Structure::calculateScreeningEnergy(
                     double const Qj = atoms.at(j).charge;
 #ifdef _OPENMP
                     localEnergyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
-                                    * (fs.f(rij) - 1) / rij;
+                                    * (fs.f(rij) - 1) / (rij * fourPiEps);
 #else
                     energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
-                                    * (fs.f(rij) - 1) / rij;
+                                    * (fs.f(rij) - 1) / (rij * fourPiEps);
 #endif
 
                }
@@ -767,9 +774,11 @@ double Structure::calculateScreeningEnergy(
                 size_t const ei = ai.element;
                 double const Qi = ai.charge;
 #ifdef _OPENMP
-                localEnergyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+                localEnergyScreen +=  -Qi * Qi
+                                   / (2 * sigmaSqrtPi(ei) * fourPiEps);
 #else
-                energyScreen +=  -Qi * Qi / (2 * sigmaSqrtPi(ei));
+                energyScreen +=  -Qi * Qi
+                              / (2 * sigmaSqrtPi(ei) * fourPiEps);
 #endif
 
                 for (size_t j = i + 1; j < numAtoms; ++j)
@@ -799,8 +808,9 @@ double Structure::calculateScreeningEnergy(
 
 
 void Structure::calculateDAdrQ(
-                            EwaldSetup& ewaldSetup,
-                            MatrixXd    gammaSqrt2)
+                            EwaldSetup&  ewaldSetup,
+                            MatrixXd     gammaSqrt2,
+                            double const fourPiEps)
 {
     // TODO: This initialization loop could probably be avoid, maybe use
     // default constructor?
@@ -848,6 +858,7 @@ void Structure::calculateDAdrQ(
                             / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei,ej), 2))
                             / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta)
                             - erfc(rij/gammaSqrt2(ei,ej))));
+                dAijdri /= fourPiEps;
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
                 // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
                 ai.dAdrQ[i] += dAijdri * Qj;
@@ -869,6 +880,7 @@ void Structure::calculateDAdrQ(
                     dAijdri -= 2 * gv.coeff * sin(gv.k * dr) * gv.k;
                     //dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
                 }
+                dAijdri /= fourPiEps;
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
@@ -896,12 +908,13 @@ void Structure::calculateDAdrQ(
                             * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
                             * exp(-pow(rij / gammaSqrt2(ei,ej),2))
                             - erf(rij / gammaSqrt2(ei,ej)) / rij);
+                dAijdri /= fourPiEps;
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
                 // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
-                ai.dAdrQ[i] += dAijdri * Qj;
-                aj.dAdrQ[j] -= dAijdri * Qi;
-                ai.dAdrQ[j] = dAijdri * Qi;
-                aj.dAdrQ[i] = -dAijdri * Qj;
+                ai.dAdrQ[i] +=  dAijdri * Qj;
+                aj.dAdrQ[j] -=  dAijdri * Qi;
+                ai.dAdrQ[j]  =  dAijdri * Qi;
+                aj.dAdrQ[i]  = -dAijdri * Qj;
             }
         }
     }
@@ -1017,7 +1030,8 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                         Eigen::VectorXd          hardness,
                                         Eigen::MatrixXd          gammaSqrt2,
                                         VectorXd                 sigmaSqrtPi,
-                                        ScreeningFunction const& fs)
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps)
 {
     double rcutScreen = fs.getOuter();
     for (size_t i = 0; i < numAtoms; ++i)
@@ -1038,7 +1052,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
             else if (isPeriodic)
             {
                 ai.dEelecdQ += Qi * (A(i,i) - hardness(ei)
-                                - 1 / sigmaSqrtPi(ei));
+                                - 1 / (sigmaSqrtPi(ei) * fourPiEps));
             }
         }
 
@@ -1064,11 +1078,12 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
                                 * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
                                 * (fsRij - 1) / rij);
-                
+                Tij /= fourPiEps;
                 ai.pEelecpr += Tij;
                 aj.pEelecpr -= Tij;
 
                 double Sij = erfRij * (fsRij - 1) / rij;
+                Sij /= fourPiEps;
                 ai.dEelecdQ += Qj * Sij;
                 aj.dEelecdQ += Qi * Sij;
             }
@@ -1079,6 +1094,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
             {
                 Atom& aj = atoms.at(j);
                 double const rij = (ai.r - aj.r).norm();
+                if (rij >= rcutScreen) continue;
 
                 size_t const ej = aj.element;
                 double const Qj = atoms.at(j).charge;
@@ -1092,11 +1108,12 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
                                 * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
                                 * (fsRij - 1) / rij);
-                
+                Tij /= fourPiEps;
                 ai.pEelecpr += Tij;
                 aj.pEelecpr -= Tij;
 
                 double Sij = erfRij * (fsRij - 1) / rij;
+                Sij /= fourPiEps;
                 ai.dEelecdQ += Qj * Sij;
                 aj.dEelecdQ += Qi * Sij;
             }
@@ -1159,7 +1176,8 @@ void Structure::remap(Atom& atom)
 
 void Structure::toNormalizedUnits(double meanEnergy,
                                   double convEnergy,
-                                  double convLength)
+                                  double convLength,
+                                  double convCharge)
 {
     if (isPeriodic)
     {
@@ -1173,11 +1191,13 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
     energyRef = (energyRef - numAtoms * meanEnergy) * convEnergy;
     energy = (energy - numAtoms * meanEnergy) * convEnergy;
+    chargeRef *= convCharge;
+    charge *= convCharge;
     volume *= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toNormalizedUnits(convEnergy, convLength);
+        it->toNormalizedUnits(convEnergy, convLength, convCharge);
     }
 
     return;
@@ -1185,7 +1205,8 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
 void Structure::toPhysicalUnits(double meanEnergy,
                                 double convEnergy,
-                                double convLength)
+                                double convLength,
+                                double convCharge)
 {
     if (isPeriodic)
     {
@@ -1199,11 +1220,13 @@ void Structure::toPhysicalUnits(double meanEnergy,
 
     energyRef = energyRef / convEnergy + numAtoms * meanEnergy;
     energy = energy / convEnergy + numAtoms * meanEnergy;
+    chargeRef /= convCharge;
+    charge /= convCharge;
     volume /= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toPhysicalUnits(convEnergy, convLength);
+        it->toPhysicalUnits(convEnergy, convLength, convCharge);
     }
 
     return;

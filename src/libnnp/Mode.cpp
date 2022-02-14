@@ -45,6 +45,7 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                meanEnergy                (0.0              ),
                convEnergy                (1.0              ),
                convLength                (1.0              ),
+               convCharge                (1.0              ),
                ewaldSetup                {}
 {
 }
@@ -203,10 +204,17 @@ void Mode::setupNormalization()
         meanEnergy = atof(settings["mean_energy"].c_str());
         convEnergy = atof(settings["conv_energy"].c_str());
         convLength = atof(settings["conv_length"].c_str());
+
         log << "Data set normalization is used.\n";
         log << strpr("Mean energy per atom     : %24.16E\n", meanEnergy);
         log << strpr("Conversion factor energy : %24.16E\n", convEnergy);
         log << strpr("Conversion factor length : %24.16E\n", convLength);
+        if (settings.keywordExists("conv_charge"))
+        {
+            convCharge = atof(settings["conv_charge"].c_str());
+            log << strpr("Conversion factor charge : %24.16E\n",
+                         convCharge);
+        }
         if (settings.keywordExists("atom_energy"))
         {
             log << "\n";
@@ -218,7 +226,8 @@ void Mode::setupNormalization()
     }
     else if ((!settings.keywordExists("mean_energy")) &&
              (!settings.keywordExists("conv_energy")) &&
-             (!settings.keywordExists("conv_length")))
+             (!settings.keywordExists("conv_length")) &&
+             (!settings.keywordExists("conv_charge")))
     {
         normalize = false;
         log << "Data set normalization is not used.\n";
@@ -227,8 +236,9 @@ void Mode::setupNormalization()
     {
         throw runtime_error("ERROR: Incorrect usage of normalization"
                             " keywords.\n"
-                            "       Use all or none of \"mean_energy\", "
-                            "\"conv_energy\" and \"conv_length\".\n");
+                            "       Use all of \"mean_energy\", \"conv_energy\""
+                            " and \"conv_length\" or no normalization at all."
+                            "\n");
     }
 
     log << "*****************************************"
@@ -322,13 +332,17 @@ void Mode::setupElectrostatics(bool   initialHardness,
         {
             vector<string> args    = split(reduce(it->second.first));
             size_t         element = elementMap[args.at(0)];
-            elements.at(element).setHardness(atof(args.at(1).c_str()));
+            double hardness = atof(args.at(1).c_str());
+            if (normalize) hardness = normalized("hardness", hardness);
+            elements.at(element).setHardness(hardness);
         }
         for (size_t i = 0; i < numElements; ++i)
         {
+            double hardness = elements.at(i).getHardness();
+            if (normalize) hardness = physical("hardness", hardness);
             log << strpr("Initial atomic hardness for element %2s: %16.8E\n",
                          elements.at(i).getSymbol().c_str(),
-                         elements.at(i).getHardness());
+                         hardness);
         }
     }
     else
@@ -350,8 +364,11 @@ void Mode::setupElectrostatics(bool   initialHardness,
                 throw runtime_error("ERROR: Atomic hardness data is "
                                     "inconsistent.\n");
             }
-            elements.at(i).setHardness(data.at(0));
-            log << strpr("%16.8E\n", elements.at(i).getHardness());
+            double hardness = data.at(0);
+            if (normalize) hardness = normalized("hardness", hardness);
+            elements.at(i).setHardness(hardness);
+            if (normalize) hardness = physical("hardness", hardness);
+            log << strpr("%16.8E\n", hardness);
         }
     }
     log << "\n";
@@ -364,15 +381,19 @@ void Mode::setupElectrostatics(bool   initialHardness,
     {
         vector<string> args    = split(reduce(it->second.first));
         size_t         element = elementMap[args.at(0)];
-        elements.at(element).setQsigma(atof(args.at(1).c_str()));
+        double qsigma = atof(args.at(1).c_str());
+        if (normalize) qsigma *= convLength;
+        elements.at(element).setQsigma(qsigma);
 
-        maxQsigma = max(elements.at(element).getQsigma(), maxQsigma);
+        maxQsigma = max(qsigma, maxQsigma);
     }
     log << "Gaussian width of charge distribution per element:\n";
     for (size_t i = 0; i < elementMap.size(); ++i)
     {
+        double qsigma = elements.at(i).getQsigma();
+        if (normalize) qsigma /= convLength;
         log << strpr("Element %2zu: %16.8E\n",
-                     i, elements.at(i).getQsigma());
+                     i, qsigma);
     }
     log << "\n";
 
@@ -396,11 +417,10 @@ void Mode::setupElectrostatics(bool   initialHardness,
     if (settings.keywordExists("ewald_prec"))
     {
         vector<string> args = split(settings["ewald_prec"]);
-        ewaldSetup.readFromArgs(args, maxQsigma);
-
-        // in KOLAFA_PERRAM method precision has unit of a force.
-        if (ewaldSetup.truncMethod == EWALDTruncMethod::KOLAFA_PERRAM)
-            ewaldSetup.precision = normalized("force", ewaldSetup.precision);
+        ewaldSetup.readFromArgs(args, 1 / convCharge);
+        ewaldSetup.setMaxQSigma(maxQsigma);
+        if (normalize)
+            ewaldSetup.toNormalizedUnits(convEnergy, convLength, convCharge);
     }
     else if (ewaldSetup.truncMethod ==
              EWALDTruncMethod::KOLAFA_PERRAM)
@@ -428,6 +448,7 @@ void Mode::setupElectrostatics(bool   initialHardness,
         screeningFunction.setInnerOuter(inner, outer);
         screeningFunction.setCoreFunction(type);
         for (auto s : screeningFunction.info()) log << s;
+        if (normalize) screeningFunction.changeLengthUnits(convLength);
     }
     else
     {
@@ -440,11 +461,6 @@ void Mode::setupElectrostatics(bool   initialHardness,
     log << "*****************************************"
            "**************************************\n";
 
-    return;
-}
-
-void Mode::setupCutoff()
-{
     log << "\n";
     log << "*** SETUP: CUTOFF FUNCTIONS *************"
            "**************************************\n";
@@ -462,6 +478,11 @@ void Mode::setupCutoff()
         }
     }
     log << strpr("Parameter alpha for inner cutoff: %f\n", cutoffAlpha);
+    return;
+}
+
+void Mode::setupCutoff()
+{
     log << "Inner cutoff = Symmetry function cutoff * alpha\n";
 
     log << "Equal cutoff function type for all symmetry functions:\n";
@@ -1066,10 +1087,16 @@ void Mode::setupSymmetryFunctionStatistics(bool collectStatistics,
 
 void Mode::setupCutoffMatrix()
 {
+    double rCutScreen = screeningFunction.getOuter();
     cutoffs.resize(numElements);
     for(auto const& e : elements)
     {
         e.getCutoffRadii(cutoffs.at(e.getIndex()));
+        if ( rCutScreen > 0 &&
+             !vectorContains(cutoffs.at(e.getIndex()), rCutScreen) )
+        {
+            cutoffs.at(e.getIndex()).push_back(rCutScreen);
+        }
     }
     //for(size_t i = 0; i < numElements; ++i)
     //{
@@ -1599,11 +1626,18 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 {
                     // Calculation of dEdG is identical to dChidG
                     nn.calculateDEdG(&((a.dChidG).front()));
+                    if (normalize)
+                    {
+                        for (auto& dChidGi : a.dChidG)
+                            dChidGi = normalized("negativity", dChidGi);
+                    }
                 }
                 nn.getOutput(&(a.chi));
+                double chi = a.chi;
+                if (normalize) a.chi = normalized("negativity", a.chi);
                 if (!suppressOutput)
                 log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
-                             a.index, elementMap[a.element].c_str(), a.chi);
+                             a.index, elementMap[a.element].c_str(), chi);
             }
         }
         else if (id == "short")
@@ -1684,6 +1718,13 @@ void Mode::chargeEquilibration( Structure& structure,
     VectorXd hardness(numElements);
     MatrixXd gammaSqrt2(numElements, numElements);
     VectorXd sigmaSqrtPi(numElements);
+    // In case of natural units and no normalization
+    double fourPiEps = 1;
+    // In case of natural units but with normalization. Other units currently
+    // not supported.
+    if (normalize)
+        fourPiEps = pow(convCharge, 2) / (convLength * convEnergy);
+
     for (size_t i = 0; i < numElements; ++i)
     {
         hardness(i) = elements.at(i).getHardness();
@@ -1700,7 +1741,8 @@ void Mode::chargeEquilibration( Structure& structure,
                                                 hardness,
                                                 gammaSqrt2,
                                                 sigmaSqrtPi,
-                                                screeningFunction);
+                                                screeningFunction,
+                                                fourPiEps);
 
     if (!suppressOutput)
         log << strpr("Solve relative error: %16.8E\n", error);
@@ -1709,11 +1751,12 @@ void Mode::chargeEquilibration( Structure& structure,
     // executed after calculateElectrostaticEnergy.
     if (derivativesElec)
     {
-        s.calculateDAdrQ(ewaldSetup, gammaSqrt2);
+        s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps);
         s.calculateElectrostaticEnergyDerivatives(hardness,
                                             gammaSqrt2,
                                             sigmaSqrtPi,
-                                            screeningFunction);
+                                            screeningFunction,
+                                            fourPiEps);
     }
 
     for (auto const& a : structure.atoms)
@@ -1853,7 +1896,7 @@ void Mode::calculateForces(Structure& structure) const
         {
             auto& ai = s.atoms[i];
             ai.f -= ai.pEelecpr;
-            ai.fElec = ai.pEelecpr;
+            ai.fElec = -ai.pEelecpr;
 
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
@@ -2009,6 +2052,10 @@ double Mode::normalized(string const& property, double value) const
 {
     if      (property == "energy") return value * convEnergy;
     else if (property == "force") return value * convEnergy / convLength;
+    else if (property == "charge") return value * convCharge;
+    else if (property == "hardness")
+        return value * convEnergy / pow(convCharge, 2);
+    else if (property == "negativity") return value * convEnergy / convCharge;
     else throw runtime_error("ERROR: Unknown property to convert to "
                              "normalized units.\n");
 }
@@ -2031,6 +2078,10 @@ double Mode::physical(string const& property, double value) const
 {
     if      (property == "energy") return value / convEnergy;
     else if (property == "force") return value * convLength / convEnergy;
+    else if (property == "charge") return value / convCharge;
+    else if (property == "hardness")
+        return value / (convEnergy / pow(convCharge, 2));
+    else if (property == "negativity") return value * convCharge / convEnergy;
     else throw runtime_error("ERROR: Unknown property to convert to physical "
                              "units.\n");
 }
@@ -2050,14 +2101,14 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
 
 void Mode::convertToNormalizedUnits(Structure& structure) const
 {
-    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength);
+    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
 
     return;
 }
 
 void Mode::convertToPhysicalUnits(Structure& structure) const
 {
-    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength);
+    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
 
     return;
 }

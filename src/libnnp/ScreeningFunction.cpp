@@ -43,6 +43,12 @@ void ScreeningFunction::setInnerOuter(double inner, double outer)
     return;
 }
 
+void ScreeningFunction::changeLengthUnits(double const conv)
+{
+    inner *= conv;
+    outer *= conv;
+    scale /= conv;
+}
 vector<string> ScreeningFunction::info() const
 {
     vector<string> v;

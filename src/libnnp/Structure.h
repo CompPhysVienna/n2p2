@@ -286,39 +286,47 @@ struct Structure
      * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
      *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
      * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+     *                  Value depends on unit system (e.g. normalization).
      */
     double                   calculateElectrostaticEnergy(
                                             EwaldSetup&              ewaldSetup,
                                             Eigen::VectorXd          hardness,
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
-                                            ScreeningFunction const& fs);
-     /** Calculate screening energy which needs to be added (!) to the
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps);
+    /** Calculate screening energy which needs to be added (!) to the
      * electrostatic energy in order to remove contributions in the short range
      * domain.
      * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
-     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij}
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
      * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
      *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
      *
      * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+                            Value depends on unit system (e.g. normalization).
      */
     double                   calculateScreeningEnergy(  
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
-                                            ScreeningFunction const& fs);
-     /** Calculates derivative of A-matrix with respect to the atoms positions and
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps);
+    /** Calculates derivative of A-matrix with respect to the atoms positions and
      * contract it with Q. 
      * @param[in] ewaldSetup Settings of Ewald summation.
      * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
      *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
-     * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+                            Value depends on unit system (e.g. normalization).
      */
     void                     calculateDAdrQ(
                                         EwaldSetup&     ewaldSetup,
-                                        Eigen::MatrixXd gammaSqrt2);
+                                        Eigen::MatrixXd gammaSqrt2,
+                                        double const    fourPiEps);
     /** Calculates derivative of the charges with respect to electronegativities.
      *  @param[in] dQdChi vector to store the result. dQdChi[i](j) represents the
      *  derivative for the i-th electronegativity and the j-th charge.
@@ -348,12 +356,15 @@ struct Structure
      * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
      *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
      * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+                            Value depends on unit system (e.g. normalization).
      */
     void                     calculateElectrostaticEnergyDerivatives(
                                         Eigen::VectorXd          hardness,
                                         Eigen::MatrixXd          gammaSqrt2,
                                         Eigen::VectorXd          sigmaSqrtPi,
-                                        ScreeningFunction const& fs);
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps);
     /** Calculate lambda_total vector which is needed for the total force
      *  calculation in 4G NN.
      */
@@ -367,24 +378,30 @@ struct Structure
      * @param[in,out] atom Atom to be remapped.
      */
     void                     remap(Atom& atom);
-    /** Normalize structure, shift energy and change energy and length unit.
+    /** Normalize structure, shift energy and change energy, length and charge
+     *  unit.
      *
      * @param[in] meanEnergy Mean energy per atom (in old units).
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toNormalizedUnits(double meanEnergy,
                                                double convEnergy,
-                                               double convLength);
-    /** Switch to physical units, shift energy and change energy and length unit.
+                                               double convLength,
+                                               double convCharge);
+    /** Switch to physical units, shift energy and change energy, length and
+     *  charge unit.
      *
      * @param[in] meanEnergy Mean energy per atom (in old units).
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toPhysicalUnits(double meanEnergy,
                                              double convEnergy,
-                                             double convLength);
+                                             double convLength,
+                                             double convCharge);
     /** Find maximum number of neighbors.
      *
      * @return Maximum numbor of neighbors of all atoms in this structure.

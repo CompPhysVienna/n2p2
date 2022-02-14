@@ -423,7 +423,8 @@ public:
                                             bool             ref = true) const;
     /** Apply normalization to given property.
      *
-     * @param[in] property One of "energy", "force".
+     * @param[in] property One of "energy", "force", "charge", "hardness"
+     *                     "negativity".
      * @param[in] value Input property value in physical units.
      *
      * @return Property in normalized units.
@@ -442,7 +443,8 @@ public:
                                             bool             ref = true) const;
     /** Undo normalization for a given property.
      *
-     * @param[in] property One of "energy", "force".
+     * @param[in] property One of "energy", "force", "charge", "hardness",
+     *                     "negativity".
      * @param[in] value Input property value in normalized units.
      *
      * @return Property in physical units.
@@ -494,6 +496,11 @@ public:
      * @return Length unit conversion factor.
      */
     double                   getConvLength() const;
+    /** Getter for Mode::convCharge.
+     *
+     * @return Charge unit conversion factor.
+     */
+    double                   getConvCharge() const;
     /** Getter for Mode::maxCutoffRadius.
      *
      * @return Maximum cutoff radius of all symmetry functions.
@@ -620,6 +627,7 @@ protected:
     double                     meanEnergy;
     double                     convEnergy;
     double                     convLength;
+    double                     convCharge;
     EwaldSetup                 ewaldSetup;
     Settings                   settings;
     SymFnc::ScalingType        scalingType;
@@ -659,6 +667,11 @@ inline double Mode::getConvEnergy() const
 inline double Mode::getConvLength() const
 {
     return convLength;
+}
+
+inline double Mode::getConvCharge() const
+{
+    return convCharge;
 }
 
 inline double Mode::getMaxCutoffRadius() const

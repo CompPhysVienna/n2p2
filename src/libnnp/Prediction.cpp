@@ -55,7 +55,7 @@ void Prediction::readStructureFromFile(string const& fileName)
     removeEnergyOffset(structure);
     if (normalize)
     {
-        structure.toNormalizedUnits(meanEnergy, convEnergy, convLength);
+        structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
     file.close();
 
@@ -67,7 +67,7 @@ void Prediction::predict()
     evaluateNNP(structure);
     if (normalize)
     {
-        structure.toPhysicalUnits(meanEnergy, convEnergy, convLength);
+        structure.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
     addEnergyOffset(structure, false);
     addEnergyOffset(structure, true);

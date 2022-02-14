@@ -170,6 +170,9 @@ void KalmanFilter::update(size_t const sizeObservation)
     // P = P + Q
     P.diagonal() += VectorXd::Constant(sizeState, q);
 
+    //double numAcc = (P - P.transpose()).cwiseAbs().maxCoeff();
+    //cout << "Max. deviation of symmetric form of P: " << numAcc << endl;
+
     // Update state vector.
     // w =  w + K . xi
     (*w) += K * (*xi);

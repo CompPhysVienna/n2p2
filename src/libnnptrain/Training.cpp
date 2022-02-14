@@ -1266,7 +1266,7 @@ void Training::printEpoch()
         log << strpr("%-6s", caps.c_str());
         log << strpr("  %5zu", epoch);
         log << strpr("  %7zu", p[k].countUpdates);
-        if (normalize && (k != "charge"))
+        if (normalize) // && (k != "charge"))
         {
             log << strpr("   %11.5E   %11.5E",
                          physical(k, p[k].errorTrain.at(p[k].displayMetric)),
@@ -1347,7 +1347,9 @@ void Training::writeHardness(string const& fileNameFormat) const
         string fileName = strpr(fileNameFormat.c_str(),
                                 elements.at(i).getAtomicNumber());
         file.open(fileName.c_str());
-        file << elements.at(i).getHardness() << endl;
+        double hardness = elements.at(i).getHardness();
+        if (normalize) hardness = physical("hardness", hardness);
+        file << hardness << endl;
         file.close();
     }
 
@@ -1425,8 +1427,8 @@ void Training::writeLearningCurve(bool append, string const fileName) const
         {
             for (auto k : pk)
             {
-                // Internal units only for energies and forces.
-                if (!(k == "energy" || k == "force")) continue;
+                // Internal units only for energies, forces and charges.
+                if (!(k == "energy" || k == "force" || k == "charge")) continue;
                 for (auto m : p[k].errorMetrics)
                 {
                     colSize.push_back(16);
@@ -1453,7 +1455,7 @@ void Training::writeLearningCurve(bool append, string const fileName) const
     {
         for (auto k : pk)
         {
-            if (!(k == "energy" || k == "force")) continue;
+            if (!(k == "energy" || k == "force" || k == "charge")) continue;
             for (auto m : p[k].errorMetrics)
             {
                 file << strpr(" %16.8E %16.8E",
@@ -2278,7 +2280,6 @@ void Training::update(string const& property)
                     // For force update save derivative of symmetry function
                     // with respect to coordinate.
 #ifndef NNP_FULL_SFD_MEMORY
-                    // TODO: SubCandidate?
                     collectDGdxia((*it), sC->a, sC->c);
                     if (nnpType == NNPType::HDNNP_4G)
                     {
@@ -2358,6 +2359,15 @@ void Training::update(string const& property)
                     // Compute derivative of output node with respect to all
                     // neural network connections (weights + biases).
                     nn.calculateDEdc(&(dChidc.at(k).front()));
+                    if (normalize)
+                    {
+                        ak.chi = normalized("negativity", ak.chi);
+                        for (auto& dChidGi : ak.dChidG)
+                            dChidGi = normalized("negativity", dChidGi);
+                        for (auto& dChidci : dChidc.at(k))
+                            dChidci = normalized("negativity", dChidci);
+                    }
+
                 }
                 chargeEquilibration(s, false, true);
 
@@ -2382,7 +2392,7 @@ void Training::update(string const& property)
                             {
                                 // 1 / QErrorNorm * (Q-Qref) * dQ/dChi * dChi/dc 
                                 pu.jacobian.at(0).at(offset.at(l) + j) +=
-                                    1 / QErrorNorm * QError(i) 
+                                    1.0 / QErrorNorm * QError(i)
                                     * dQdChi.at(k)(i) * dChidc.at(k).at(j);
                             }
                         }
@@ -2392,7 +2402,7 @@ void Training::update(string const& property)
                             size_t n = elements.at(k).neuralNetworks.at(nnId)
                                        .getNumConnections();
                             pu.jacobian.at(0).at(offset.at(k) + n) += 
-                                        1 / QErrorNorm 
+                                        1.0 / QErrorNorm
                                         * QError(i) * dQdJ.at(k)(i) * 2
                                         * sqrt(elements.at(k).getHardness());
                         }
@@ -2925,7 +2935,7 @@ void Training::getWeights()
             // Leave slot for sqrt of hardness
             if (nnpType == NNPType::HDNNP_4G && stage == 1) 
             {
-                // TODO: check that hardnes is positive?
+                // TODO: check that hardness is positive?
                 weights.at(0).at(pos) = sqrt(elements.at(i).getHardness());
                 pos ++;
             }

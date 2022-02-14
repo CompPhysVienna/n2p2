@@ -61,6 +61,11 @@ public:
      * @return Outer radius where transition region ends.
      */
     double                   getOuter() const;
+    /** Change length units of screening function.
+     *
+     * @param conv Multiplicative conversion factor.
+     */
+    void                     changeLengthUnits(double const conv);
     /** Screening function @f$f_\text{screen}@f$.
      *
      * @param[in] r Radius argument.

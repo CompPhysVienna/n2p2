@@ -59,6 +59,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["mean_energy"                        ] = "";
     m["conv_length"                        ] = "";
     m["conv_energy"                        ] = "";
+    m["conv_charge"                        ] = "";
     m["nnp_type"                           ] = "";
     m["fixed_gausswidth"                   ] = "";
     m["ewald_truncation_error_method"      ] = "";

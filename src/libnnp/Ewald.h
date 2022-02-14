@@ -37,6 +37,10 @@ struct EwaldSetup {
     /// Precision of the Ewald summation (interpretation is dependent on
     /// truncMethod).
     double precision;
+    /// Multiplicative constant
+    ///         @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+    ///         Value depends on unit system (e.g. normalization).
+    double fourPiEps;
     /// Maximum expected charge, needed for error estimate in method
     /// KOLAFA_PERRAM.
     double maxCharge;
@@ -59,10 +63,25 @@ struct EwaldSetup {
     /** Setup parameters from argument vector.
      *
      * @param[in] args Vector containing arguments of input file.
-     * @param[in] maxWidth maximum width of the gaussian charges.
+     * @param[in] maxQ maximum of absolute value of charges in training
+     *                      set, used as default.
      */
     void readFromArgs(std::vector<std::string> const& args,
-                      double const                    maxWidth);
+                      double const maxQ);
+    /** Setter for maximum width of charges.
+     *
+     * @param maxWidth Maximum width of gaussian charges.
+     */
+    void setMaxQSigma(double const maxWidth);
+    /** Convert cutoff parameters to normalized units.
+     *
+     * @param convEnergy Conversion factor for energy.
+     * @param convLength Conversion factor for length.
+     * @param convCharge Conversion factor for charge.
+     */
+    void toNormalizedUnits(double const convEnergy,
+                           double const convLength,
+                           double const convCharge);
     /** Compute eta, rCut and kCut.
     *
     * @param[in] newVolume Volume of the real space cell.
@@ -86,5 +105,11 @@ struct EwaldSetup {
     /// Compute intermediate value s.
     double calculateS(size_t const numAtoms);
 };
+
+inline void EwaldSetup::setMaxQSigma(double const maxWidth)
+{
+    maxQsigma = maxWidth;
+}
+
 }
 #endif //EWALD_H

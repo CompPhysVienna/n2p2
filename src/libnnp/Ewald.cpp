@@ -26,7 +26,8 @@ constexpr double TrOverTk = 3.676;
 
 EwaldSetup::EwaldSetup() : truncMethod(EWALDTruncMethod::JACKSON_CATLOW),
                            precision  (1.0E-6                          ),
-                           maxCharge  (0.0                             ),
+                           fourPiEps  (1.0                             ),
+                           maxCharge  (1.0                             ),
                            maxQsigma  (0.0                             ),
                            volume     (0.0                             ),
                            eta        (0.0                             ),
@@ -36,14 +37,15 @@ EwaldSetup::EwaldSetup() : truncMethod(EWALDTruncMethod::JACKSON_CATLOW),
 {
 }
 
-void EwaldSetup::readFromArgs(vector<string> const& args, double const maxWidth)
+void EwaldSetup::readFromArgs(vector<string> const& args,
+                              double const          maxQ)
 {
     bool argConsistent = false;
     if (truncMethod ==
         EWALDTruncMethod::JACKSON_CATLOW)
         argConsistent = (args.size() == 1);
     else
-        argConsistent = (args.size() == 2);
+        argConsistent = (args.size() == 1 || args.size() == 2);
 
     if (!argConsistent)
         throw runtime_error("ERROR: Number of arguments for ewald_prec is "
@@ -51,15 +53,31 @@ void EwaldSetup::readFromArgs(vector<string> const& args, double const maxWidth)
                             "ewald_truncation_error_method.");
     precision = atof(args.at(0).c_str());
     if (truncMethod == EWALDTruncMethod::KOLAFA_PERRAM)
-        maxCharge = atof(args.at(1).c_str());
-    maxQsigma = maxWidth;
+    {
+        if (args.size() == 2)
+            maxCharge = atof(args.at(1).c_str());
+        else
+            maxCharge = maxQ;
+    }
+}
+
+void EwaldSetup::toNormalizedUnits(double const convEnergy,
+                                   double const convLength,
+                                   double const convCharge)
+{
+    if (truncMethod == EWALDTruncMethod::KOLAFA_PERRAM)
+    {
+        // in KOLAFA_PERRAM method precision has unit of a force.
+        precision *= convEnergy / convLength;
+        maxCharge *= convCharge;
+        fourPiEps = pow(convCharge, 2) / (convLength * convEnergy);
+        // Other variables are already normalized.
+    }
 }
 
 void EwaldSetup::calculateParameters(double const newVolume, size_t const numAtoms)
 {
     calculateEta(newVolume, numAtoms);
-    if (truncMethod == EWALDTruncMethod::KOLAFA_PERRAM)
-        calculateS(numAtoms);
     calculateRCut();
     calculateKCut();
 }
@@ -83,8 +101,20 @@ double EwaldSetup::calculateEta(double const newVolume, size_t const numAtoms)
         if (newVolume == volume) return eta;
         else volume = newVolume;
 
-        eta = pow(1 / TrOverTk * pow(volume, 2) / pow(2 * M_PI, 3),
+        // Initial approximation
+        double eta0 = pow(1 / TrOverTk * pow(volume, 2) / pow(2 * M_PI, 3),
                   1.0 / 6.0);
+
+        // Selfconsistent calculation of eta
+        eta = eta0;
+        double relError = 1.0;
+        while (relError > 0.01)
+        {
+            calculateS(numAtoms);
+            double newEta = eta0 * pow((1 + 1 / (2 * pow(s, 2))), 1.0 / 6.0);
+            relError = abs(newEta - eta) / eta;
+            eta = newEta;
+        }
 
         eta = max(eta, maxQsigma);
     }
@@ -117,16 +147,25 @@ double EwaldSetup::calculateKCut()
 
 double EwaldSetup::calculateS(size_t const numAtoms)
 {
-    double y = precision * sqrt(eta / sqrt(2));
+    double y = precision * sqrt(eta / sqrt(2)) * fourPiEps;
     y /= 2 * sqrt(numAtoms * 1.0 / volume) * pow(maxCharge, 2);
 
-    s = 1.0;
-    double step = 1.0;
-    while (step > 0.001)
+    double relYError = 1.0;
+    if (s <= 0.0)
+        s = 0.5;
+    double step = s;
+    while (abs(step) / s > 0.01 || relYError > 0.01)
     {
         step = 2 * s / (4 * pow(s,2) + 1);
         step *= 1 -  sqrt(s) * y / exp(-pow(s,2));
-        s += step;
+        if (s <= -step)
+        {
+            s /= 2;
+            step = 1.0;
+        }
+        else
+            s += step;
+        relYError = (exp(-pow(s,2)) / sqrt(s) - y) / y;
     }
     //cout << "intermediate value s: " << s << endl;
     return s;

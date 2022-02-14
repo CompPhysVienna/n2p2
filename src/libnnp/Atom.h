@@ -194,20 +194,24 @@ struct Atom
     void                     collectDGdxia(std::size_t indexAtom,
                                            std::size_t indexComponent);
 #endif
-    /** Switch to normalized length and energy units.
+    /** Switch to normalized length, energy and charge units.
      *
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toNormalizedUnits(double convEnergy,
-                                               double convLength);
-    /** Switch to physical length and energy units.
+                                               double convLength,
+                                               double convCharge);
+    /** Switch to physical length, energy and charge units.
      *
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toPhysicalUnits(double convEnergy,
-                                             double convLength);
+                                             double convLength,
+                                             double convCharge);
     /** Allocate vectors related to symmetry functions (#G, #dEdG).
      *
      * @param[in] all If `true` allocate also vectors corresponding to
