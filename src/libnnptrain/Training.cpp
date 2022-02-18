@@ -2874,7 +2874,30 @@ void Training::setupUpdatePlan(string const& property)
     // Actual property modified here.
     Property& pa = p[property];
     string keyword = property + "_fraction";
-    pa.epochFraction = atof(settings[keyword].c_str());
+
+    // Override force fraction if keyword "energy_force_ratio" is provided.
+    if (property == "force" &&
+        p.exists("energy") &&
+        settings.keywordExists("force_energy_ratio"))
+    {
+        double const ratio = atof(settings["force_energy_ratio"].c_str());
+        if (settings.keywordExists(keyword))
+        {
+            log << "WARNING: Given force fraction is ignored because "
+                   "force/energy ratio is provided.\n";
+        }
+        log << strpr("Desired force/energy update ratio              : %.6f\n",
+                     ratio);
+        log << "----------------------------------------------\n";
+        pa.epochFraction = (p["energy"].numTrainPatterns * ratio)
+                         / p["force"].numTrainPatterns;
+    }
+    // Default action = read "<property>_fraction" keyword.
+    else
+    {
+        pa.epochFraction = atof(settings[keyword].c_str());
+    }
+
     keyword = "task_batch_size_" + property;
     pa.taskBatchSize = (size_t)atoi(settings[keyword].c_str());
     if (pa.taskBatchSize == 0)
@@ -2933,8 +2956,12 @@ void Training::setupUpdatePlan(string const& property)
     log << "Update plan for property \"" + property + "\":\n";
     log << strpr("- Per-task batch size                          : %zu\n",
                  pa.taskBatchSize);
-    log << strpr("- Fraction of patterns used per epoch          : %.4f\n",
+    log << strpr("- Fraction of patterns used per epoch          : %.6f\n",
                  pa.epochFraction);
+    if (pa.numUpdates == 0)
+    {
+        log << "WARNING: No updates are planned for this property.";
+    }
     log << strpr("- Updates per epoch                            : %zu\n",
                  pa.numUpdates);
     log << strpr("- Patterns used per update (rank %3d / global) : "
