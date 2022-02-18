@@ -1,0 +1,5 @@
+<map id="nnp::Structure::readFromFile" name="nnp::Structure::readFromFile">
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors. " alt="" coords="277,5,452,47"/>
+<area shape="rect" id="node3" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="337,71,392,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title="nnp::Prediction::readStructure\lFromFile" alt="" coords="257,123,472,164"/>
+</map>

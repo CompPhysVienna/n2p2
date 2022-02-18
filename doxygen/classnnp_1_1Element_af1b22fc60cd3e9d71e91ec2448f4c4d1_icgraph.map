@@ -1,0 +1,8 @@
+<map id="nnp::Element::numSymmetryFunctions" name="nnp::Element::numSymmetryFunctions">
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure. " alt="" coords="270,5,494,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure. " alt="" coords="270,71,494,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Element.html#aafffebdc953f794bd0a66945317201bc" title="Default constructor. " alt="" coords="297,137,467,163"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a3488a7fb2b0ccf17a9b2af514590f57c" title="Set up neural networks for all elements. " alt="" coords="267,187,497,214"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache. " alt="" coords="281,239,483,280"/>
+<area shape="rect" id="node7" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file. " alt="" coords="269,304,495,345"/>
+</map>

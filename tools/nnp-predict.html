@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nnp-predict &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="nnp-prune" href="nnp-prune.html" />
+    <link rel="prev" title="nnp-norm" href="nnp-norm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">nnp-predict</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-screen-output">Sample screen output:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-output">File output:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>nnp-predict</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tools/nnp-predict.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nnp-predict">
+<span id="id1"></span><h1>nnp-predict<a class="headerlink" href="#nnp-predict" title="Permalink to this headline"></a></h1>
+<p>This is a simple tool to predict energies and forces of a single configuration,
+given an existing HDNNP parameterization.</p>
+<section id="requirements">
+<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<p>The HDNNP setup, symmetry function scaling data and weight parameters are
+required in the usual files:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">input.data</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input.nn</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaling.data</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weights.???.data</span></code></p></li>
+</ul>
+</section>
+<section id="usage">
+<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-predict &lt;info&gt;
+            &lt;info&gt; ... Write structure information for debugging to &quot;structure.out&quot; (0/1)
+</pre></div>
+</div>
+<p>The tool will output the resulting potential energy and atomic forces on the
+screen and in files (see sections below). Enabling the additional debugging
+output to is usually not necessary. The file “structure.out” contains basically
+the entire content of the <code class="docutils literal notranslate"><span class="pre">Structure</span></code> and <code class="docutils literal notranslate"><span class="pre">Atom</span></code> instances, i.e. the full
+neighbor lists and symmetry function derivatives of all atoms.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Depending on the configuration the “structure.out” debugging file can be
+huge.</p>
+</div>
+</section>
+<section id="sample-screen-output">
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this headline"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** PREDICTION ****************************************************************
+
+Reading structure file...
+Structure contains 144 atoms (2 elements).
+Calculating NNP prediction...
+
+-------------------------------------------------------------------------------
+NNP energy:  -5.73656032E+02
+
+NNP forces:
+         1  S  -1.40007861E-01   2.74032613E-02  -5.96150479E-03
+         2  S   1.39972905E-01   2.73894285E-02   5.93808974E-03
+         3  S   1.39988541E-01  -2.73969011E-02   6.02337848E-03
+         4  S  -1.39985315E-01  -2.73976741E-02  -6.01454763E-03
+         5  S  -1.34194641E-01  -3.09539812E-02   3.93006430E-02
+         .
+         .
+         .
+       140 Cu   4.22986438E-02  -1.77295621E-02   3.63706424E-02
+       141 Cu  -3.57169850E-02   7.57362417E-02   1.68472680E-03
+       142 Cu   3.57606444E-02   7.57328191E-02  -1.65808098E-03
+       143 Cu   3.57294618E-02  -7.57352222E-02  -1.67173728E-03
+       144 Cu  -3.57158597E-02  -7.57244307E-02   1.68265914E-03
+-------------------------------------------------------------------------------
+Writing output files...
+ - energy.out
+ - nnatoms.out
+ - nnforces.out
+Writing structure with NNP prediction to &quot;output.data&quot;.
+Finished.
+*******************************************************************************
+</pre></div>
+</div>
+</section>
+<section id="file-output">
+<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">energy.out</span></code>: Contains the potential energy predicted by the NNP.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nnforces.out</span></code>: Contains the atomic forces predicted by the NNP.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nnatoms.out</span></code>: Contains the atomic energy contributions to the total
+potential energy.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output.data</span></code>: Contains the configuration just like in the <code class="docutils literal notranslate"><span class="pre">input.data</span></code>
+file but with NNP energy and force predictions inserted.</p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples:<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>Write out additional structure information file:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-predict 1
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nnp-norm.html" class="btn btn-neutral float-left" title="nnp-norm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nnp-prune.html" class="btn btn-neutral float-right" title="nnp-prune" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index. " alt="" coords="113,5,353,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a2dbf87eaa9cc33fa740e03608acdf156" title="Getter for Mode::numElements. " alt="" coords="128,56,339,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#aa4fc3399c130a3778a20a625fa2ee34c" title="Get number of symmetry functions per element. " alt="" coords="125,107,342,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information. " alt="" coords="157,173,310,200"/>
+<area shape="rect" id="node6" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="407,249,491,276"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory. " alt="" coords="133,275,333,301"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#a5b8ceb8be242844ec8b72987e0bf0c3e" title="Prune symmetry functions according to their range and write settings file. " alt="" coords="132,326,335,367"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#ae922768942eef6c6e9000700595bc00d" title="Prune symmetry functions with sensitivity analysis data. " alt="" coords="132,391,335,433"/>
+<area shape="rect" id="node10" href="$namespacennp.html#a90ee48c5fb70d20abeebe648dc07dba7" title="Replace multiple whitespaces with fill. " alt="" coords="184,457,283,484"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer. " alt="" coords="142,509,325,550"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#adffbed0cbae8bc9c4f4c4556ff113b5f" title="Combine multiple setup routines and provide a basic NNP setup. " alt="" coords="142,575,325,601"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file. " alt="" coords="133,626,334,667"/>
+<area shape="rect" id="node14" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter. " alt="" coords="192,692,275,719"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a6ac0b02c0a91917b17cd6e2fb96afb18" title="Copy settings file but comment out lines provided. " alt="" coords="108,743,359,769"/>
+</map>

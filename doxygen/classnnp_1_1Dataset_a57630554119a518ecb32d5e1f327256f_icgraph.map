@@ -1,0 +1,4 @@
+<map id="nnp::Dataset::recvStructure" name="nnp::Dataset::recvStructure">
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors. " alt="" coords="275,5,450,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4" title="Prepare numeric force check for a single structure. " alt="" coords="253,71,472,112"/>
+</map>

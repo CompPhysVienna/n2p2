@@ -1,0 +1,7 @@
+<map id="nnp::Mode::calculateAtomicNeuralNetworks" name="nnp::Mode::calculateAtomicNeuralNetworks">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c" title="Calculate error metrics for all structures. " alt="" coords="256,5,428,47"/>
+<area shape="rect" id="node3" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="315,71,369,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title="nnp::Prediction::predict" alt="" coords="256,122,428,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions. " alt="" coords="258,173,426,215"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="263,239,421,266"/>
+</map>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Descriptor analysis/Coarse-graining &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Neural network" href="../api/neural_network.html" />
+    <link rel="prev" title="CabanaMD GPU build example" href="cabanamd_build_example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Descriptor analysis/Coarse-graining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-0-optional-coarse-grained-data-set">Step 0 (optional): Coarse-grained data set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-create-symmetry-function-set">Step 1: Create symmetry function set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-generate-atomic-environment-data">Step 2: Generate atomic environment data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-analyze-descriptors">Step 3: Analyze descriptors</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Descriptor analysis/Coarse-graining</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/misc/cg_descriptor_analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="descriptor-analysis-coarse-graining">
+<span id="cg-descriptor-analysis"></span><h1>Descriptor analysis/Coarse-graining<a class="headerlink" href="#descriptor-analysis-coarse-graining" title="Permalink to this headline"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The following procedures and analyses should be considered experimental. They
+are not well-tested and there is no related peer-reviewed publication.</p>
+</div>
+<p>This short tutorial shows how to prepare and run a descriptor analysis which can
+be useful when creating a coarse-grained (CG) model based on neural network
+potentials. The steps outlined here correspond to the subfolders of the
+<code class="docutils literal notranslate"><span class="pre">examples/coarse-graining</span></code> directory in the repository. The descriptor
+analysis itself is described in detail inside the Jupyter notebook
+<code class="docutils literal notranslate"><span class="pre">step-3_cluster-analysis/analyze-descriptors.ipynb</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The tools <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code> and <code class="docutils literal notranslate"><span class="pre">nnp-scaling</span></code> need to be compiled to follow
+the steps presented in this tutorial.</p>
+</div>
+<section id="step-0-optional-coarse-grained-data-set">
+<h2>Step 0 (optional): Coarse-grained data set<a class="headerlink" href="#step-0-optional-coarse-grained-data-set" title="Permalink to this headline"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This step is optional, the descriptor analysis may also yield insights if
+applied directly to the full, atomistic description of the system.</p>
+</div>
+<p>First, we need to create a data set which contains the coarse-grained
+description of the original structures. In the example (directory
+<code class="docutils literal notranslate"><span class="pre">step-0_cg-data-set</span></code>) we start with a data set of bulk water (<code class="docutils literal notranslate"><span class="pre">input.data</span></code>)
+where we apply the following coarse-graining strategy: for each oxygen atom we
+identify the two closest hydrogen neighbors and compute then the center of mass
+coordinates of all molecules via</p>
+<div class="math notranslate nohighlight">
+\[\vec{R} = \vec{r}_O - \frac{2 m_H \left(\Delta \vec{r}_{OH_1} + \Delta \vec{r}_{OH_2} \right)}{m_O + 2 m_H},\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Delta \vec{r}_{jk} = \vec{r}_j - \vec{r}_k\)</span>. The force acting on
+the center of mass is then just the sum of all forces in each molecule.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/water-full-cg.jpeg"><img alt="Water molecule with center of mass position." src="../_images/water-full-cg.jpeg" style="width: 250px;" /></a>
+<figcaption>
+<p><span class="caption-text">A water molecule and its coarse-grained (center of mass) representation (turquoise sphere).</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>An example C++ code is provided to perform this conversion in <code class="docutils literal notranslate"><span class="pre">nnp-cgdata.cpp</span></code>
+making use of the <code class="docutils literal notranslate"><span class="pre">libnnp</span></code> library. To build the executable just run <code class="docutils literal notranslate"><span class="pre">make</span></code>
+(<code class="docutils literal notranslate"><span class="pre">libnnp</span></code> needs to be compiled beforehand in the main <code class="docutils literal notranslate"><span class="pre">src</span></code> directory). Then
+run the executable with an appropriate cutoff radius for the neighbor list as
+the only argument:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./nnp-cgdata 2.3
+</pre></div>
+</div>
+<p>Here, we use a cutoff of 2.3 bohr which ensures that the two closest hydrogen
+neighbors are found for each oxygen atom. This will create the file
+<code class="docutils literal notranslate"><span class="pre">output.data</span></code> which contains the desired coarse-grained center of mass
+particles representing the water molecules.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The “element symbol” of the CG particles in this example is <code class="docutils literal notranslate"><span class="pre">Cm</span></code>. Normally,
+this would correspond to the element Curium but here we use it to abbreviate
+“center of mass”.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">nnp-cgdata.cpp</span></code> code demonstrates the usage of the C++ API to manipulate
+datasets of configurations. Of course such a task can also be performed with
+external software.</p>
+</section>
+<section id="step-1-create-symmetry-function-set">
+<h2>Step 1: Create symmetry function set<a class="headerlink" href="#step-1-create-symmetry-function-set" title="Permalink to this headline"></a></h2>
+<p>This step is common to regular NNP training with <em>n2p2</em>: for a given data set we
+need to prepare an appropriate symmetry function set and compute the scaling
+data. Please see also <a class="reference internal" href="../topics/training.html#symfunc-setup"><span class="std std-ref">this section</span></a> for further
+information. For this example, an <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> file is already prepared in
+<code class="docutils literal notranslate"><span class="pre">step-1_scaling-data</span></code> which contains symmetry function definitions for our
+coarse-grained description of water:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>...
+symfunction_short Cm 2 Cm 0.30  4.0 12.00
+symfunction_short Cm 2 Cm 0.60  4.0 12.00
+symfunction_short Cm 2 Cm 1.50  4.0 12.00
+symfunction_short Cm 3 Cm Cm 0.03  1.0 1.0   12.00000
+symfunction_short Cm 3 Cm Cm 0.03 -1.0 1.0   12.00000
+...
+</pre></div>
+</div>
+<p>Together with the data set file <code class="docutils literal notranslate"><span class="pre">input.data</span></code> (file is provided, it is the
+<code class="docutils literal notranslate"><span class="pre">output.data</span></code> of step 0 above) we can proceed to compute the symmetry
+functions statistics:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np <span class="m">4</span> ../../../bin/nnp-scaling <span class="m">500</span>
+</pre></div>
+</div>
+<p>We can safely ignore (or delete) the output files <code class="docutils literal notranslate"><span class="pre">sf.???.????.histo</span></code>, we only
+require the <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> file for the next steps.</p>
+</section>
+<section id="step-2-generate-atomic-environment-data">
+<h2>Step 2: Generate atomic environment data<a class="headerlink" href="#step-2-generate-atomic-environment-data" title="Permalink to this headline"></a></h2>
+<p>Next, in order to feed the descriptor analysis Jupyter notebook in the final
+step, we need to prepare atomic environment data for our system. Please read the
+<a class="reference internal" href="../tools/nnp-atomenv.html#nnp-atomenv"><span class="std std-ref">description</span></a> of the tool <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code> for a detailed
+explanation how this data is constructed. The required files from the previous
+steps are prepared in the <code class="docutils literal notranslate"><span class="pre">step-2_atomic-env</span></code> directory. For the
+coarse-graining example we use the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../../../bin/nnp-atomenv <span class="m">500</span> <span class="m">4</span>
+</pre></div>
+</div>
+<p>where the second argument determines the maximum number of neighbor particles
+considered for the atomic environment data. Again, we can ignore all output
+files except <code class="docutils literal notranslate"><span class="pre">atomic-env.dGdx</span></code> which we use in the final step.</p>
+</section>
+<section id="step-3-analyze-descriptors">
+<h2>Step 3: Analyze descriptors<a class="headerlink" href="#step-3-analyze-descriptors" title="Permalink to this headline"></a></h2>
+<p>Finally, everything is ready to start the Jupyter notebook
+<code class="docutils literal notranslate"><span class="pre">analyze-descriptors.ipynb</span></code> which carries out the actual descriptor analysis. The
+notebook and necessary files are provided in <code class="docutils literal notranslate"><span class="pre">step-3_cluster-analysis</span></code>. After
+starting Jupyter with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter notebook analyze-descriptors.ipynb
+</pre></div>
+</div>
+<p>we can run all cells which may take a while. All further steps of the descriptor
+analysis are described in the notebook’s comment cells.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/jupyter-notebook.jpeg"><img alt="Preview of the Jupyter notebook." src="../_images/jupyter-notebook.jpeg" style="width: 600px;" /></a>
+</figure>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cabanamd_build_example.html" class="btn btn-neutral float-left" title="CabanaMD GPU build example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/neural_network.html" class="btn btn-neutral float-right" title="Neural network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

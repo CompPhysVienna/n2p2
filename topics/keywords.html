@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Configuration file format" href="cfg_file.html" />
+    <link rel="prev" title="Atomic environment descriptors" href="descriptors.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">NNP configuration: keywords</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-nnp-keywords">General NNP keywords</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#number-of-elements"><code class="docutils literal notranslate"><span class="pre">number_of_elements</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#elements"><code class="docutils literal notranslate"><span class="pre">elements</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#atom-energy"><code class="docutils literal notranslate"><span class="pre">atom_energy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-hidden-layers-short"><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-nodes-short"><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-activation-short"><code class="docutils literal notranslate"><span class="pre">global_activation_short</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normalize-nodes"><code class="docutils literal notranslate"><span class="pre">normalize_nodes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cutoff-type"><code class="docutils literal notranslate"><span class="pre">cutoff_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#center-symmetry-functions"><code class="docutils literal notranslate"><span class="pre">center_symmetry_functions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scale-symmetry-functions"><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scale-symmetry-functions-sigma"><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions_sigma</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scale-min-short"><code class="docutils literal notranslate"><span class="pre">scale_min_short</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scale-max-short"><code class="docutils literal notranslate"><span class="pre">scale_max_short</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#symfunction-short"><code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#training-specific-keywords">Training-specific keywords</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#selection-mode"><code class="docutils literal notranslate"><span class="pre">selection_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-error-metric"><code class="docutils literal notranslate"><span class="pre">main_error_metric</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>NNP configuration: keywords</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/topics/keywords.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nnp-configuration-keywords">
+<span id="keywords"></span><h1>NNP configuration: keywords<a class="headerlink" href="#nnp-configuration-keywords" title="Permalink to this headline"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Documentation under construction…</p>
+</div>
+<p>The NNP settings file (usually named <code class="docutils literal notranslate"><span class="pre">input.nn</span></code>) contains the setup of neural
+networks and symmetry functions. Each line may contain a single keyword with no,
+one or multiple arguments. Keywords and arguments are separated by at least one
+whitespace. Lines or part of lines can be commented out with the symbol “#”,
+everything right of “#” will be ignored. The order of keywords is not
+important, most keywords may only appear once (exceptions: <code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code>
+and <code class="docutils literal notranslate"><span class="pre">atom_energy</span></code>). Here is the list of available keywords (if no usage
+information is provided, then the keyword does not support any arguments).</p>
+<section id="general-nnp-keywords">
+<h2>General NNP keywords<a class="headerlink" href="#general-nnp-keywords" title="Permalink to this headline"></a></h2>
+<p>These keywords provide the basic setup for a neural network potential.
+Therefore, they are mandatory for most NNP applications and a minimal example
+setup file would contain at least:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>number_of_elements 1
+elements H
+global_hidden_layers_short 2
+global_nodes_short 10 10
+global_activation_short t t l
+cutoff_type 1
+symfunction_short ...
+...
+</pre></div>
+</div>
+<p>These commands will set up a neural network potential for hydrogen atoms (2
+hidden layers with 10 neurons each, hyperbolic tangent activation function) and
+the cosine cutoff function for all symmetry functions. Of course, further
+symmetry functions need to be specified by adding multiple lines starting with
+the <code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code> keyword.</p>
+<hr class="docutils" />
+<section id="number-of-elements">
+<h3><code class="docutils literal notranslate"><span class="pre">number_of_elements</span></code><a class="headerlink" href="#number-of-elements" title="Permalink to this headline"></a></h3>
+<p>Defines the number of elements the neural network potential is designed for.</p>
+<dl class="simple">
+<dt><strong>Usage:</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">number_of_elements</span> <span class="pre">&lt;integer&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">number_of_elements</span> <span class="pre">3</span></code></p>
+</dd>
+</dl>
+</section>
+<hr class="docutils" />
+<section id="elements">
+<h3><code class="docutils literal notranslate"><span class="pre">elements</span></code><a class="headerlink" href="#elements" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">elements</span> <span class="pre">&lt;string(s)&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">elements</span> <span class="pre">O</span> <span class="pre">H</span> <span class="pre">Zn</span></code></p>
+</dd>
+</dl>
+<p>This keyword defines all elements via a list of element symbols. The number of
+items provided has to be consistent with the argument of the
+<code class="docutils literal notranslate"><span class="pre">number_of_elements</span></code> keyword. The order of the items is not important,
+elements are automatically sorted according to their atomic number. The list
+<a class="reference external" href="../doxygen/classnnp_1_1ElementMap.html#ad0295785b2db8268cfc175b835046a1e">nnp::ElementMap::knownElements</a>
+contains a list of recognized element symbols.</p>
+</section>
+<hr class="docutils" />
+<section id="atom-energy">
+<h3><code class="docutils literal notranslate"><span class="pre">atom_energy</span></code><a class="headerlink" href="#atom-energy" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">atom_energy</span> <span class="pre">&lt;string&gt;</span> <span class="pre">&lt;float&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">atom_energy</span> <span class="pre">O</span> <span class="pre">-74.94518524</span></code></p>
+</dd>
+</dl>
+<p>Definition of atomic reference energy. Shifts the total potential energy by
+the given value for each atom of the specified type. The first argument is the
+element symbol, the second parameter is the shift energy.</p>
+</section>
+<hr class="docutils" />
+<section id="global-hidden-layers-short">
+<h3><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span></code><a class="headerlink" href="#global-hidden-layers-short" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span> <span class="pre">&lt;integer&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span> <span class="pre">3</span></code></p>
+</dd>
+</dl>
+<p>Sets the number of hidden layers for neural networks of all elements.</p>
+</section>
+<hr class="docutils" />
+<section id="global-nodes-short">
+<h3><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span></code><a class="headerlink" href="#global-nodes-short" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span> <span class="pre">&lt;integer(s)&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span> <span class="pre">15</span> <span class="pre">10</span> <span class="pre">5</span></code></p>
+</dd>
+</dl>
+<p>Sets the number of neurons in the hidden layers of neural networks of all
+elements. The number of integer arguments has to be consistent with the
+argument of the <code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span></code> keyword. Note: The number of
+input layer neurons is determined by the number of symmetry functions and there
+is always only a single output neuron.</p>
+</section>
+<hr class="docutils" />
+<section id="global-activation-short">
+<h3><code class="docutils literal notranslate"><span class="pre">global_activation_short</span></code><a class="headerlink" href="#global-activation-short" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_activation_short</span> <span class="pre">&lt;chars&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_activation_short</span> <span class="pre">t</span> <span class="pre">t</span> <span class="pre">t</span> <span class="pre">l</span></code></p>
+</dd>
+</dl>
+<p>Sets the activation function per layer for hidden layers and output layers
+of neural networks of all elements. The number of integer arguments has to
+be consistent with the argument of the <code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span></code> keyword
+(i.e. number of hidden layers + 1). Activation functions are chosen via
+single characters from the following table (see also
+<a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunctionE" title="nnp::NeuralNetwork::ActivationFunction"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::ActivationFunction</span></code></a>).</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Character</p></th>
+<th class="head"><p>Activation function type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>l</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE" title="nnp::NeuralNetwork::AF_IDENTITY"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_IDENTITY</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>t</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE" title="nnp::NeuralNetwork::AF_TANH"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_TANH</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>s</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE" title="nnp::NeuralNetwork::AF_LOGISTIC"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_LOGISTIC</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>p</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE" title="nnp::NeuralNetwork::AF_SOFTPLUS"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_SOFTPLUS</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>r</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE" title="nnp::NeuralNetwork::AF_RELU"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_RELU</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>g</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE" title="nnp::NeuralNetwork::AF_GAUSSIAN"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_GAUSSIAN</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>c</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_COSE" title="nnp::NeuralNetwork::AF_COS"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_COS</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>S</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE" title="nnp::NeuralNetwork::AF_REVLOGISTIC"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_REVLOGISTIC</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>e</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE" title="nnp::NeuralNetwork::AF_EXP"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_EXP</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>h</p></td>
+<td><p><a class="reference internal" href="../api/neural_network.html#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE" title="nnp::NeuralNetwork::AF_HARMONIC"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::NeuralNetwork::AF_HARMONIC</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="normalize-nodes">
+<h3><code class="docutils literal notranslate"><span class="pre">normalize_nodes</span></code><a class="headerlink" href="#normalize-nodes" title="Permalink to this headline"></a></h3>
+<p>Activates normalized neural network propagation, i.e. the weighted sum of
+connected neuron values is divided by the number of incoming connections
+before the activation function is applied. Thus, the default formula to calculate the neuron</p>
+<div class="math notranslate nohighlight">
+\[y^{k}_{i} = f_a \left( b^{k}_{i} + \sum_{j=1}^{n_l} a^{lk}_{ji} \, y^{l}_{j} \right),\]</div>
+<p>is modified according to:</p>
+<div class="math notranslate nohighlight">
+\[y^{k}_{i} = f_a \left( \frac{b^{k}_{i} + \sum_{j=1}^{n_l} a^{lk}_{ji} \, y^{l}_{j}}{n_l} \right).\]</div>
+</section>
+<hr class="docutils" />
+<section id="cutoff-type">
+<h3><code class="docutils literal notranslate"><span class="pre">cutoff_type</span></code><a class="headerlink" href="#cutoff-type" title="Permalink to this headline"></a></h3>
+<dl>
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">cutoff_type</span> <span class="pre">&lt;integer&gt;</span> <span class="pre">&lt;&lt;float&gt;&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">cutoff_type</span> <span class="pre">2</span> <span class="pre">0.5</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">cutoff_type</span> <span class="pre">7</span></code></p>
+</dd>
+</dl>
+<p>Defines the cutoff function type used for all symmetry functions. The first
+argument determines the functional form, see
+<a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffTypeE" title="nnp::CutoffFunction::CutoffType"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CutoffType</span></code></a> for all available options. Use one
+of the following integer numbers to select the cutoff type. The second argument
+is optional and sets the parameter <span class="math notranslate nohighlight">\(\alpha\)</span>. If not provided, the default
+value is <span class="math notranslate nohighlight">\(\alpha = 0.0\)</span>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Cutoff #</p></th>
+<th class="head"><p>Cutoff type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_HARDE" title="nnp::CutoffFunction::CT_HARD"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_HARD</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_COSE" title="nnp::CutoffFunction::CT_COS"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_COS</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_TANHUE" title="nnp::CutoffFunction::CT_TANHU"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_TANHU</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE" title="nnp::CutoffFunction::CT_TANH"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_TANH</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_EXPE" title="nnp::CutoffFunction::CT_EXP"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_EXP</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY1E" title="nnp::CutoffFunction::CT_POLY1"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_POLY1</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY2E" title="nnp::CutoffFunction::CT_POLY2"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_POLY2</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY3E" title="nnp::CutoffFunction::CT_POLY3"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_POLY3</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p><a class="reference internal" href="../api/cutoff_functions.html#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY4E" title="nnp::CutoffFunction::CT_POLY4"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::CutoffFunction::CT_POLY4</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="center-symmetry-functions">
+<h3><code class="docutils literal notranslate"><span class="pre">center_symmetry_functions</span></code><a class="headerlink" href="#center-symmetry-functions" title="Permalink to this headline"></a></h3>
+</section>
+<section id="scale-symmetry-functions">
+<h3><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions</span></code><a class="headerlink" href="#scale-symmetry-functions" title="Permalink to this headline"></a></h3>
+</section>
+<section id="scale-symmetry-functions-sigma">
+<h3><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions_sigma</span></code><a class="headerlink" href="#scale-symmetry-functions-sigma" title="Permalink to this headline"></a></h3>
+<p>Combining these keywords determines how the symmetry functions are scaled
+before they are used as input for the neural network. See
+<a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingTypeE" title="nnp::SymFnc::ScalingType"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">nnp::SymFnc::ScalingType</span></code></a> and the following table for allowed
+combinations:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Keywords present</p></th>
+<th class="head"><p>Scaling type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingType7ST_NONEE" title="nnp::SymFnc::ST_NONE"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::SymFnc::ST_NONE</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions</span></code></p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingType8ST_SCALEE" title="nnp::SymFnc::ST_SCALE"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::SymFnc::ST_SCALE</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">center_symmetry_functions</span></code></p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingType9ST_CENTERE" title="nnp::SymFnc::ST_CENTER"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::SymFnc::ST_CENTER</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions</span></code> + <code class="docutils literal notranslate"><span class="pre">center_symmetry_functions</span></code></p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingType14ST_SCALECENTERE" title="nnp::SymFnc::ST_SCALECENTER"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::SymFnc::ST_SCALECENTER</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions_sigma</span></code></p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingType13ST_SCALESIGMAE" title="nnp::SymFnc::ST_SCALESIGMA"><code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::SymFnc::ST_SCALESIGMA</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="scale-min-short">
+<h3><code class="docutils literal notranslate"><span class="pre">scale_min_short</span></code><a class="headerlink" href="#scale-min-short" title="Permalink to this headline"></a></h3>
+</section>
+<section id="scale-max-short">
+<h3><code class="docutils literal notranslate"><span class="pre">scale_max_short</span></code><a class="headerlink" href="#scale-max-short" title="Permalink to this headline"></a></h3>
+<dl>
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">scale_min_short</span> <span class="pre">&lt;float&gt;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">scale_max_short</span> <span class="pre">&lt;float&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">scale_min_short</span> <span class="pre">0.0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">scale_max_short</span> <span class="pre">1.0</span></code></p>
+</dd>
+</dl>
+<p>Set minimum <span class="math notranslate nohighlight">\(S_{\min}\)</span> and maximum <span class="math notranslate nohighlight">\(S_{\max}\)</span> for symmetry function
+scaling. See <code class="xref cpp cpp-enumerator docutils literal notranslate"><span class="pre">nnp::SymmetryFunction::ScalingType</span></code>.</p>
+<hr class="docutils" />
+</section>
+<section id="symfunction-short">
+<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code><a class="headerlink" href="#symfunction-short" title="Permalink to this headline"></a></h3>
+<dl>
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">&lt;string&gt;</span> <span class="pre">&lt;integer&gt;</span> <span class="pre">...</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">H</span> <span class="pre">2</span> <span class="pre">H</span> <span class="pre">0.01</span> <span class="pre">0.0</span> <span class="pre">12.0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">H</span> <span class="pre">3</span> <span class="pre">O</span> <span class="pre">H</span> <span class="pre">0.2</span> <span class="pre">-1.0</span> <span class="pre">4.0</span> <span class="pre">12.0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">O</span> <span class="pre">9</span> <span class="pre">H</span> <span class="pre">H</span> <span class="pre">0.1</span>&#160; <span class="pre">1.0</span> <span class="pre">8.0</span> <span class="pre">16.0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">H</span> <span class="pre">12</span> <span class="pre">0.01</span> <span class="pre">0.0</span> <span class="pre">12.0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">O</span> <span class="pre">13</span> <span class="pre">0.1</span> <span class="pre">0.2</span> <span class="pre">1.0</span> <span class="pre">8.0</span> <span class="pre">16.0</span></code></p>
+</dd>
+</dl>
+<p>Defines a symmetry function for a specific element. The first argument is the
+element symbol, the second sets the the type. The remaining parameters depend on
+the symmetry function type, follow the links in the right column of the table
+and look for the detailed description of the class.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type integer</p></th>
+<th class="head"><p>Symmetry function type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp12SymFncExpRadE" title="nnp::SymFncExpRad"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpRad</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp13SymFncExpAngnE" title="nnp::SymFncExpAngn"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpAngn</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp13SymFncExpAngwE" title="nnp::SymFncExpAngw"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpAngw</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp20SymFncExpRadWeightedE" title="nnp::SymFncExpRadWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpRadWeighted</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp21SymFncExpAngnWeightedE" title="nnp::SymFncExpAngnWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpAngnWeighted</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp13SymFncCompRadE" title="nnp::SymFncCompRad"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompRad</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>21</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp14SymFncCompAngnE" title="nnp::SymFncCompAngn"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngn</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>22</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp14SymFncCompAngwE" title="nnp::SymFncCompAngw"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngw</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>23</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp21SymFncCompRadWeightedE" title="nnp::SymFncCompRadWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompRadWeighted</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp22SymFncCompAngnWeightedE" title="nnp::SymFncCompAngnWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngnWeighted</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>25</p></td>
+<td><p><a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp22SymFncCompAngwWeightedE" title="nnp::SymFncCompAngwWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngwWeighted</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="training-specific-keywords">
+<h2>Training-specific keywords<a class="headerlink" href="#training-specific-keywords" title="Permalink to this headline"></a></h2>
+<p>The following keywords are solely used for training with <a class="reference internal" href="../tools/nnp-train.html#nnp-train"><span class="std std-ref">nnp-train</span></a>. All
+other tools and interfaces will ignore these keywords.</p>
+<hr class="docutils" />
+<section id="selection-mode">
+<h3><code class="docutils literal notranslate"><span class="pre">selection_mode</span></code><a class="headerlink" href="#selection-mode" title="Permalink to this headline"></a></h3>
+<dl>
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">selection_mode</span> <span class="pre">&lt;integer&gt;</span> <span class="pre">&lt;&lt;pairs</span> <span class="pre">of</span> <span class="pre">integers&gt;&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">selection_mode</span> <span class="pre">0</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">selection_mode</span> <span class="pre">2</span> <span class="pre">15</span> <span class="pre">1</span> <span class="pre">20</span> <span class="pre">2</span></code></p>
+</dd>
+</dl>
+<p>Sets the scheme to select energy and force candidates during training (first
+integer argument, mandatory). If only one argument is given the chosen mode is
+used for the entire training. The optional pairs of integers allow to switch the
+selection mode during training. The first integer of each pair determines the
+epoch when to switch while the second denotes the selection mode to switch to.
+Hence, the above example means: Start the training with selection mode <code class="docutils literal notranslate"><span class="pre">2</span></code>,
+then after 15 epochs switch to mode <code class="docutils literal notranslate"><span class="pre">1</span></code> and finally at epoch 20 switch back to
+mode <code class="docutils literal notranslate"><span class="pre">2</span></code> until training is completed. There are three selection modes
+implemented:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>: <strong>Random selection</strong></p>
+<p>Select training candidates randomly.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>: <strong>Sort by RMSE</strong></p>
+<p>At the beginning of each epoch all training candidates are sorted according
+to their current RMSE. Throughout the epoch this list is then processed
+sequentially in order of descending RMSE, i.e. from highest to lowest
+error. This selection scheme can be helpful to decrease the error of
+outlier forces when used in conjunction with the optional selection mode
+switching (see above).</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2</span></code>: <strong>Random selection with threshold</strong></p>
+<p>Select training candidates randomly but use the choice only for training if
+the current error is above a threshold. Otherwise, select another candidate.
+The threshold can be set for energies and forces separately with the keywords
+<code class="docutils literal notranslate"><span class="pre">short_energy_error_threshold</span></code> and <code class="docutils literal notranslate"><span class="pre">short_force_error_threshold</span></code> and is
+expressed in terms of the last epochs RMSE, e.g.
+<code class="docutils literal notranslate"><span class="pre">short_energy_error_threshold</span> <span class="pre">1.5</span></code> means a threshold of <span class="math notranslate nohighlight">\(1.5 \times
+RMSE\)</span>. Training candidates are selected randomly until the threshold condition
+is fulfilled or a the number of trial choices (keyword
+<code class="docutils literal notranslate"><span class="pre">rmse_threshold_trials</span></code>) is exceeded. If even in the latter case no
+candidate above the threshold is found, the candidate with the highest error
+so far is used. This selection scheme is a variation of the adaptive process
+described by Blank and Brown <a class="footnote-reference brackets" href="#id4" id="id2">1</a> and is described here <a class="footnote-reference brackets" href="#id5" id="id3">2</a>.</p>
+</li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="main-error-metric">
+<h3><code class="docutils literal notranslate"><span class="pre">main_error_metric</span></code><a class="headerlink" href="#main-error-metric" title="Permalink to this headline"></a></h3>
+<dl>
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">main_error_metric</span> <span class="pre">&lt;string&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">main_error_metric</span> <span class="pre">RMSEpa</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">main_error_metric</span> <span class="pre">MAE</span></code></p>
+</dd>
+</dl>
+<p>Selects the error metric to display on the screen during training. Four variants
+are available:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RMSEpa</span></code>: RMSE of energies per atom, RMSE of forces.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RMSE</span></code>: RMSE of energies, RMSE of forces.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAEpa</span></code>: MAE of energies per atom, MAE of forces.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAE</span></code>: MAE of energies, MAE of forces.</p></li>
+</ul>
+<p>If this keyword is omitted the default value is <code class="docutils literal notranslate"><span class="pre">RMSEpa</span></code>. The keyword does not
+influence the output in the <code class="docutils literal notranslate"><span class="pre">learning-curve.out</span></code> file. There, all error metrics
+are written.</p>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
+<dd><p>Blank, T. B.; Brown, S. D. Adaptive, Global, Extended Kalman Filters for
+Training Feedforward Neural Networks. J. Chemom. 1994, 8 (6), 391–407.
+<a class="reference external" href="https://doi.org/10.1002/cem.1180080605">https://doi.org/10.1002/cem.1180080605</a></p>
+</dd>
+<dt class="label" id="id5"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
+<dd><p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b01092">https://doi.org/10.1021/acs.jctc.8b01092</a></p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="descriptors.html" class="btn btn-neutral float-left" title="Atomic environment descriptors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cfg_file.html" class="btn btn-neutral float-right" title="Configuration file format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

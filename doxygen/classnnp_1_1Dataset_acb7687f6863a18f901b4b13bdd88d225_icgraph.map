@@ -1,0 +1,7 @@
+<map id="nnp::Dataset::combineFiles" name="nnp::Dataset::combineFiles">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c" title="Calculate error metrics for all structures. " alt="" coords="269,5,441,47"/>
+<area shape="rect" id="node3" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="327,71,382,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df" title="Write atomic environment file. " alt="" coords="259,123,451,164"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file. " alt="" coords="252,188,457,229"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Training.html#af4cbb8263eeb79634e06fc62dc4b359d" title="Write training and test set to separate files (train.data and test.data, same format as input..." alt="" coords="267,253,442,295"/>
+</map>

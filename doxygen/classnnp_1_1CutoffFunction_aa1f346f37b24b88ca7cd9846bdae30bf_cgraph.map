@@ -1,0 +1,18 @@
+<map id="nnp::CutoffFunction::setCutoffType" name="nnp::CutoffFunction::setCutoffType">
+<area shape="rect" id="node2" href="$classnnp_1_1CutoffFunction.html#a8e8c2ddb1b8a07c6b74d6ae69de6c353" title="nnp::CutoffFunction\l::dfCORE" alt="" coords="200,5,347,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1CutoffFunction.html#a74174c1695b9eac6109268755c5b3b64" title="nnp::CutoffFunction\l::dfCOS" alt="" coords="200,71,347,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1CutoffFunction.html#ad55f96ed2a7519f501793d783ab5e6de" title="nnp::CutoffFunction\l::dfHARD" alt="" coords="200,136,347,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1CutoffFunction.html#a869aa192f06a8ad30d34c234c74be09d" title="nnp::CutoffFunction\l::dfTANH" alt="" coords="200,201,347,243"/>
+<area shape="rect" id="node6" href="$classnnp_1_1CutoffFunction.html#a9b8e50892ac89fcb6ebcf7eef846025a" title="nnp::CutoffFunction\l::dfTANHU" alt="" coords="200,267,347,308"/>
+<area shape="rect" id="node7" href="$classnnp_1_1CutoffFunction.html#a1270e183d8722eb7a261700c3992c7fc" title="nnp::CutoffFunction\l::fCORE" alt="" coords="200,332,347,373"/>
+<area shape="rect" id="node8" href="$classnnp_1_1CutoffFunction.html#a780b7b2b9e74d48f7b2b3049e8c76376" title="nnp::CutoffFunction\l::fCOS" alt="" coords="200,397,347,439"/>
+<area shape="rect" id="node9" href="$classnnp_1_1CutoffFunction.html#a586002af996dd6af86cdb27a25eba26f" title="nnp::CutoffFunction\l::fdfCORE" alt="" coords="200,463,347,504"/>
+<area shape="rect" id="node10" href="$classnnp_1_1CutoffFunction.html#a16669e0f04bd62f4229572eae57551f3" title="nnp::CutoffFunction\l::fdfCOS" alt="" coords="200,528,347,569"/>
+<area shape="rect" id="node11" href="$classnnp_1_1CutoffFunction.html#a1e2f4f3a7dfc2f9a2b9a4b653cca31b1" title="nnp::CutoffFunction\l::fdfHARD" alt="" coords="200,593,347,635"/>
+<area shape="rect" id="node12" href="$classnnp_1_1CutoffFunction.html#a210a02a008b6880621502b3af7cbd21a" title="nnp::CutoffFunction\l::fdfTANH" alt="" coords="200,659,347,700"/>
+<area shape="rect" id="node13" href="$classnnp_1_1CutoffFunction.html#a472c9e5059f2da5b23a673e8daeed723" title="nnp::CutoffFunction\l::fdfTANHU" alt="" coords="200,724,347,765"/>
+<area shape="rect" id="node14" href="$classnnp_1_1CutoffFunction.html#a0373e0e1dbb7209d4b8a73ad351662e4" title="nnp::CutoffFunction\l::fHARD" alt="" coords="200,789,347,831"/>
+<area shape="rect" id="node15" href="$classnnp_1_1CutoffFunction.html#a62a54a42d19231a8b82e3a8b90910b83" title="nnp::CutoffFunction\l::fTANH" alt="" coords="200,855,347,896"/>
+<area shape="rect" id="node16" href="$classnnp_1_1CutoffFunction.html#a42586e892fce855dce102400c82a75c2" title="nnp::CutoffFunction\l::fTANHU" alt="" coords="200,920,347,961"/>
+<area shape="rect" id="node17" href="$classnnp_1_1CoreFunction.html#a928f5a2b5727f9dd2ed33ade7f72dade" title="Set function type. " alt="" coords="200,985,347,1027"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="nnp::Mode::calculateSymmetryFunctions" name="nnp::Mode::calculateSymmetryFunctions">
+<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a2de21db9dfe00cf608d5b77e6b0f6299" title="Allocate vectors related to symmetry functions (G, dEdG). " alt="" coords="324,5,473,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Element.html#a0196402cabb3d6effd4ab154d53f91bf" title="Calculate symmetry functions. " alt="" coords="277,57,520,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Element.html#a228e38e7fc52ee0464e060022d21a8a5" title="Get cache sizes for each neighbor atom element. " alt="" coords="293,123,504,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Element.html#a5fbd74ba2c16338eacd4bb519cf0b975" title="Get index. " alt="" coords="312,173,485,200"/>
+<area shape="rect" id="node6" href="$structnnp_1_1Atom.html#af1688532887675a8f0dd944768589fff" title="Calculate number of neighbors for a given cutoff radius. " alt="" coords="291,224,506,251"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Element.html#af610c8dced27214120a57c24098ba0ac" title="Get number of relevant symmetry functions per element. " alt="" coords="296,275,501,317"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Element.html#af1b22fc60cd3e9d71e91ec2448f4c4d1" title="Get number of symmetry functions. " alt="" coords="292,341,505,382"/>
+<area shape="rect" id="node9" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="568,436,652,463"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Element.html#a6dc921df037ff55fa8e20a834b1bf486" title="Update symmetry function statistics. " alt="" coords="284,458,513,499"/>
+</map>

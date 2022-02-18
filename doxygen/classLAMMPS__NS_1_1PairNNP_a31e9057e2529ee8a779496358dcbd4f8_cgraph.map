@@ -1,0 +1,8 @@
+<map id="LAMMPS_NS::PairNNP::handleExtrapolationWarnings" name="LAMMPS_NS::PairNNP::handleExtrapolationWarnings">
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#ad88b019d3d4f89dd1a8c118dcaf4f887" title="Clear extrapolation warnings storage. " alt="" coords="288,5,497,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a0ef9d95aeeb71882068bda355ebbd8cf" title="Extract given buffer to symmetry function statistics class. " alt="" coords="309,71,477,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#a655e577553b61b9bbe3bbe2bb9d9f785" title="Fill provided buffer with extrapolation warning entries. " alt="" coords="309,136,477,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1InterfaceLammps.html#a05076e9e514d0d0f002e27b235f2f01f" title="Calculate buffer size for extrapolation warning communication. " alt="" coords="309,201,477,243"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#aa73bc18bc5e85e53303fea2132c4e78c" title="Count total number of extrapolation warnings encountered for all elements and symmetry functions..." alt="" coords="275,267,511,308"/>
+<area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395" title="Write extrapolation warnings to log. " alt="" coords="287,332,498,373"/>
+</map>

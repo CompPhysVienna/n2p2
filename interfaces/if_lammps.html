@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LAMMPS NNP interface &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LAMMPS NNP pair style" href="pair_nnp.html" />
+    <link rel="prev" title="Units" href="../topics/units.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LAMMPS NNP interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-instructions">Build instructions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-build">Automatic build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-build">Manual build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>LAMMPS NNP interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/interfaces/if_lammps.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lammps-nnp-interface">
+<span id="if-lammps"></span><h1>LAMMPS NNP interface<a class="headerlink" href="#lammps-nnp-interface" title="Permalink to this headline"></a></h1>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline"></a></h2>
+<p>The LAMMPS interface adds the neural network potential method in LAMMPS. Hence,
+one can use a previously fitted NNP to predict energies and forces and use
+LAMMPS to propagate an MD simulation. LAMMPS parallelization via MPI is
+fully supported.</p>
+</section>
+<section id="build-instructions">
+<h2>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this headline"></a></h2>
+<section id="automatic-build">
+<h3>Automatic build<a class="headerlink" href="#automatic-build" title="Permalink to this headline"></a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The automatic compilation will only work on Unix-like systems as it relies on
+tools such as <code class="docutils literal notranslate"><span class="pre">sed</span></code> and <code class="docutils literal notranslate"><span class="pre">tar</span></code>.</p>
+</div>
+<p>For convenience the main makefile provides the compilation target <code class="docutils literal notranslate"><span class="pre">lammps-nnp</span></code>
+which will automatically download LAMMPS (version <code class="docutils literal notranslate"><span class="pre">stable_3Mar2020</span></code> from the
+<a class="reference external" href="https://github.com/lammps/lammps/releases">GitHub releases page</a>) into the
+<code class="docutils literal notranslate"><span class="pre">interface</span></code> directory, unpack it to <code class="docutils literal notranslate"><span class="pre">lammps-nnp</span></code>, add the necessary n2p2
+files to it and compile the LAMMPS <code class="docutils literal notranslate"><span class="pre">mpi</span></code> target. Finally, the binary
+<code class="docutils literal notranslate"><span class="pre">lmp_mpi</span></code> will be copied to the n2p2 <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory. Hence, compiling
+LAMMPS with NNP support is as easy as typing</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make lammps-nnp
+</pre></div>
+</div>
+<p>in the n2p2 <code class="docutils literal notranslate"><span class="pre">src</span></code> directory. Uninstall with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean-lammps-nnp</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before compiling the LAMMPS makefile (<code class="docutils literal notranslate"><span class="pre">src/MAKE/Makefile.mpi</span></code>) will be altered to
+use the compiler and flags from the n2p2 target makefile (default:
+<code class="docutils literal notranslate"><span class="pre">makefile.gnu</span></code>).</p>
+</div>
+<p>If this procedure fails or you prefer to add NNP support to an existing LAMMPS
+installation somewhere else in your system please follow the manual build
+instructions below.</p>
+</section>
+<section id="manual-build">
+<h3>Manual build<a class="headerlink" href="#manual-build" title="Permalink to this headline"></a></h3>
+<p>To build LAMMPS with support for neural network potentials follow these steps:
+First, build the required libraries:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd src
+make libnnpif
+</pre></div>
+</div>
+<p>For dynamic linking add the argument <code class="docutils literal notranslate"><span class="pre">MODE=shared</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If dynamic linking (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">libnnpif</span> <span class="pre">MODE=shared</span></code>) is used, you need to make the NNP
+libraries visibile in your system, e.g. add this line in your <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>:</p>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LD_LIBRARY_PATH=&lt;path-to-n2p2&gt;/lib:${LD_LIBRARY_PATH}
+</pre></div>
+</div>
+<p>Then change to the LAMMPS root directory and link the repository root folder to
+the <code class="docutils literal notranslate"><span class="pre">lib</span></code> subdirectory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;path-to-LAMMPS&gt;/
+ln -s &lt;path-to-n2p2&gt; lib/nnp
+</pre></div>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>The link should be named <code class="docutils literal notranslate"><span class="pre">nnp</span></code>, NOT <code class="docutils literal notranslate"><span class="pre">n2p2</span></code>!</p>
+</div>
+<p>Next, copy the USER-NNP package to the LAMMPS source directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r src/interface/LAMMPS/src/USER-NNP &lt;path-to-LAMMPS&gt;/src
+</pre></div>
+</div>
+<p>Finally activate the NNP package in LAMMPS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;path-to-LAMMPS&gt;/src
+make yes-user-nnp
+</pre></div>
+</div>
+<p>Now, you can compile LAMMPS for your target as usual:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make &lt;target&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to compile a serial version of LAMMPS with neural network potential
+support, the use of MPI needs to be deactivated for <code class="docutils literal notranslate"><span class="pre">libnnpif</span></code>. Just enable the
+<code class="docutils literal notranslate"><span class="pre">-DNOMPI</span></code> option in the settings makefile of your choice, e.g. <code class="docutils literal notranslate"><span class="pre">makefile.gnu</span></code>.</p>
+</div>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>The neural network potential method is introduced in the context of a pair style
+named <code class="docutils literal notranslate"><span class="pre">nnp</span></code>. LAMMPS comes with a large collection of these pair styles, e.g. for
+a LJ or Tersoff potential, look
+<a class="reference external" href="http://lammps.sandia.gov/doc/pair_style.html">here</a> for more information. The
+setup of a <code class="docutils literal notranslate"><span class="pre">nnp</span></code> pair style is done by issuing two commands: <code class="docutils literal notranslate"><span class="pre">pair_style</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pair_coeff</span></code>. See <a class="reference internal" href="pair_nnp.html#pair-nnp"><span class="std std-ref">this page</span></a> for a detailed
+description.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../topics/units.html" class="btn btn-neutral float-left" title="Units" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pair_nnp.html" class="btn btn-neutral float-right" title="LAMMPS NNP pair style" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

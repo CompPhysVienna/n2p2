@@ -1,0 +1,4 @@
+<map id="nnp::NeuralNetwork::calculateDEdc" name="nnp::NeuralNetwork::calculateDEdc">
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae22bf5b246022c4f52f45bcc98d7c4be" title="Calculate derivatives of energy with respect to weights. " alt="" coords="205,5,377,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="212,71,371,98"/>
+</map>

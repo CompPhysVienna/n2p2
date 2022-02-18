@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nnp-atomenv &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="nnp-checkf" href="nnp-checkf.html" />
+    <link rel="prev" title="The libnnp core library" href="libnnp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">nnp-atomenv</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-screen-output">Sample screen output:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-output">File output:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>nnp-atomenv</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tools/nnp-atomenv.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nnp-atomenv">
+<span id="id1"></span><h1>nnp-atomenv<a class="headerlink" href="#nnp-atomenv" title="Permalink to this headline"></a></h1>
+<p>This tool creates files which contain atomic environment data in the form of
+symmetry functions and their derivatives for further processing. In the context
+of high-dimensional neural network potentials symmetry functions act as a local
+environment descriptors and determine the energy contribution of each atom.
+However, a more detailed description of each atom’s surroundings can be provided
+if we include also symmetry functions of close-by neighbors. In particular,
+considering the HDNNP expression for forces,</p>
+<div class="math notranslate nohighlight">
+\[F_{i,\alpha} = - \sum_{j=0}^{N_\text{atoms}} \sum_{k=0}^{N_\text{sym.func.}}
+\frac{\partial E_j}{\partial G_{j,k}} \frac{\partial G_{j,k}}{\partial x_{i,
+\alpha}},\]</div>
+<p>it becomes clear that not only the symmetry function derivatives of the central
+atom <span class="math notranslate nohighlight">\(i\)</span> but also those of neighboring atoms are relevant. Hence, if we
+construct a per-atom vector describing the local environment we can add the
+neighbor’s symmetry function (derivatives) to the each atom’s own list. Note
+however, that in order to make these environment vectors comparable the total
+number of entries must be identical for all atoms of the same species.  Also, it
+is crucial that the data order is consistent. To make such an environment vector
+unambiguous we therefore fix the number of neighbors and arrange their
+contributions according to their distance to the central atom. In practice, the
+tool <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code> writes the symmetry functions to <code class="docutils literal notranslate"><span class="pre">atomic-env.G</span></code> in the
+following way (one atom per row):</p>
+<div class="math notranslate nohighlight">
+\[S(i) \quad \vec{G}_{i} \quad \vec{G}_{n^{S_1}(i, 1)} \quad \ldots \quad
+\vec{G}_{n^{S_1}(i, c_{S(i)S_1})} \quad \vec{G}_{n^{S_2}(i, 1)}
+\quad \ldots \quad \vec{G}_{n^{S_2}(i, c_{S(i)S_2})} \quad \ldots,\]</div>
+<p>where</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(S(i)\)</span> … Element string of atom <span class="math notranslate nohighlight">\(i\)</span>, e.g. <code class="docutils literal notranslate"><span class="pre">H</span></code>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(\vec{G}_{i}\)</span> … Symmetry functions of atom <span class="math notranslate nohighlight">\(i\)</span> as a row vector,</p></li>
+<li><p><span class="math notranslate nohighlight">\(S_j\)</span> … Element string of the <span class="math notranslate nohighlight">\(j\)</span> th element (sorted according
+to atomic number), e.g. <span class="math notranslate nohighlight">\(S_2 =\)</span> <code class="docutils literal notranslate"><span class="pre">O</span></code> in water,</p></li>
+<li><p><span class="math notranslate nohighlight">\(n^{S_j}(i, k)\)</span> … a function returning the index of the <span class="math notranslate nohighlight">\(k\)</span> th
+nearest neighbor (sorted according to distance) of atom <span class="math notranslate nohighlight">\(i\)</span> and of element
+<span class="math notranslate nohighlight">\(S_j\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_{AB}\)</span> … the maximum amount of neighbors of element <cite>B</cite> given
+central atom <cite>A</cite> considered (neighbor cutoff).</p></li>
+</ul>
+</div></blockquote>
+<p>Similarly, the symmetry function derivatives in <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> direction are
+written to <code class="docutils literal notranslate"><span class="pre">atomic-env.dGdx</span></code>, <code class="docutils literal notranslate"><span class="pre">atomic-env.dGdy</span></code> and <code class="docutils literal notranslate"><span class="pre">atomic-env.dGdz</span></code>,
+respectively:</p>
+<div class="math notranslate nohighlight">
+\[S(i) \quad \frac{\partial \vec{G}_{i}}{\partial x_{i, \alpha}} \quad
+\frac{\partial \vec{G}_{n^{S_1}(i, 1)}}{\partial x_{i, \alpha}} \quad \ldots
+\quad \frac{\partial \vec{G}_{n^{S_1}(i, c_{S(i)S_1})}}{\partial
+x_{i, \alpha}} \quad \frac{\partial \vec{G}_{n^{S_2}(i, 1)}}{\partial x_{i,
+\alpha}} \quad \ldots \quad \frac{\partial \vec{G}_{n^{S_2}(i,
+c_{S(i)S_2})}}{\partial x_{i, \alpha}} \quad \ldots,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha = \{0, 1, 2\}\)</span> and <span class="math notranslate nohighlight">\(x_{i, 0} = x_i, x_{i, 1} = y_i, x_{i, 2} = z_i\)</span>.</p>
+<section id="requirements">
+<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<p>A data set with multiple configurations, a settings file and the symmetry
+function scaling data is required:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">input.data</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input.nn</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaling.data</span></code></p></li>
+</ul>
+</section>
+<section id="usage">
+<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np &lt;np&gt; nnp-atomenv &lt;nbins&gt; &lt;ncutij&gt;
+</pre></div>
+</div>
+<p>where</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;np&gt; ....... Number of MPI processes to use.
+&lt;nbins&gt; .... Number of symmetry function histogram bins.
+&lt;ncutij&gt; ... Maximum number of neighbor symmetry functions written (for each element combination).
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;nbins&gt;</span></code> parameter determines how many bins will be used for writing out
+symmetry function histograms (output files <code class="docutils literal notranslate"><span class="pre">sf-scaled.XXX.YYYY.histo</span></code>). Unlike
+the tool <a class="reference internal" href="nnp-scaling.html#nnp-scaling"><span class="std std-ref">nnp-scaling</span></a> the histograms contain data from the scaled symmetry
+functions. This output is unrelated to the atomic environment vector files.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;ncutij&gt;</span></code> command line parameters determine for each element combination
+how many of the closest neighbors are included in the environment vector output.
+Here, <code class="docutils literal notranslate"><span class="pre">i</span></code> is the central atom’s element and <code class="docutils literal notranslate"><span class="pre">j</span></code> is the neighbor’s element,
+sorted according to increasing atomic number. Hence, the <code class="docutils literal notranslate"><span class="pre">&lt;ncutij&gt;</span></code> parameter
+determine the length of the atomic environment descriptor vector. If set to zero
+for all elements the output files will just contain the symmetry functions (and
+their derivatives) for each atom (one atom per line, columns correspond to
+different symmetry functions).</p>
+<p>Consider for example a water data set where you want to extract the symmetry
+function information from the first (and second) neighbor shell. First, extract
+the number of nearest neighbors from the radial distribution function and use
+them when calling <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np 4 nnp-atomenv 500 6 2 4 4
+</pre></div>
+</div>
+<p>Since elements are always sorted according to their atomic number the neighbor
+cutoffs here are read in this order:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np 4 nnp-atomenv 500 HH HO OH OO
+</pre></div>
+</div>
+<p>or in words:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>central atom H: print out information from 6 closest H and 2 closest O neighbors</p></li>
+<li><p>central atom O: print out information from 4 closest H and 4 closest O neighbors</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not run the <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code> tool on large data sets as it will create HUGE
+files!</p>
+</div>
+</section>
+<section id="sample-screen-output">
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this headline"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** SYMMETRY FUNCTION HISTOGRAMS **********************************************
+
+Writing histograms with 500 bins.
+*******************************************************************************
+
+*** NEIGHBOR HISTOGRAMS *******************************************************
+
+Minimum number of neighbors: 80
+Mean    number of neighbors: 103.1
+Maximum number of neighbors: 120
+Neighbor histogram file: neighbors.histo.
+*******************************************************************************
+
+*** NEIGHBOR LIST *************************************************************
+
+Sorting neighbor lists according to element and distance.
+*******************************************************************************
+
+*** NEIGHBOR LIST *************************************************************
+
+Writing neighbor lists to file: neighbor-list.data.
+*******************************************************************************
+
+*** ATOMIC ENVIRONMENT ********************************************************
+
+Preparing symmetry functions for atomic environment file(s).
+Maximum number of  H neighbors for central  H atoms: 6
+Maximum number of  O neighbors for central  H atoms: 2
+Maximum number of  H neighbors for central  O atoms: 4
+Maximum number of  O neighbors for central  O atoms: 4
+Combining atomic environment file: atomic-env.G.
+Combining atomic environment file: atomic-env.dGdx.
+Combining atomic environment file: atomic-env.dGdy.
+Combining atomic environment file: atomic-env.dGdz.
+*******************************************************************************
+</pre></div>
+</div>
+</section>
+<section id="file-output">
+<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">atomic-env.G</span></code>: Symmetry function values of each atom and its closest
+neighbors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">atomic-env.dGd[xyz]</span></code>: Symmetry function derivatives of atoms and neighbors
+<cite>x</cite>, <cite>y</cite>, and <cite>z</cite> - direction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">neighbor-list.data</span></code>: File containing the neighbor list of all atoms. First
+line is the number of atoms. Each following line contains the neighbor list of
+one atom. The first column is the atomic number, then follows the number of
+neighbors of each element. Then starts the list of neighbor indices.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">neighbors.histo</span></code>: A histogram of the neighbor count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sf-scaled.XXX.YYYY.histo</span></code>: Histograms of all symmetry functions, similar
+to the output of <a class="reference internal" href="nnp-scaling.html#nnp-scaling"><span class="std std-ref">nnp-scaling</span></a> but for the scaled symmetry functions.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="libnnp.html" class="btn btn-neutral float-left" title="The libnnp core library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nnp-checkf.html" class="btn btn-neutral float-right" title="nnp-checkf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

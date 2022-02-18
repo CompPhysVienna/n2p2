@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atomic environment descriptors &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="NNP configuration: keywords" href="keywords.html" />
+    <link rel="prev" title="Build instructions" href="build.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Atomic environment descriptors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#original-atom-centered-symmetry-functions">Original atom-centered symmetry functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#atom-centered-symmetry-functions-continued">Atom-centered symmetry functions (continued)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#weighted-atom-centered-symmetry-functions">Weighted atom-centered symmetry functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#low-cost-polynomial-symmetry-functions-with-compact-support">Low-cost polynomial symmetry functions with compact support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Atomic environment descriptors</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/topics/descriptors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="atomic-environment-descriptors">
+<span id="descriptors"></span><h1>Atomic environment descriptors<a class="headerlink" href="#atomic-environment-descriptors" title="Permalink to this headline"></a></h1>
+<p>Multiple atomic environment descriptors (symmetry functions) are already
+implemented. Use them via the <code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code> keyword (see
+<a class="reference internal" href="keywords.html#keywords"><span class="std std-ref">this</span></a> page).</p>
+<section id="original-atom-centered-symmetry-functions">
+<h2>Original atom-centered symmetry functions<a class="headerlink" href="#original-atom-centered-symmetry-functions" title="Permalink to this headline"></a></h2>
+<p>Taken from the original 2007 paper</p>
+<p><a class="reference external" href="https://doi.org/10.1103/PhysRevLett.98.146401">J. Behler and M. Parrinello, Phys. Rev. Lett. 98, 146401 (2007)</a></p>
+<p>these are the basic radial and angular symmetry functions:</p>
+<ul>
+<li><p>Radial symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp12SymFncExpRadE" title="nnp::SymFncExpRad"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpRad</span></code></a>):</p>
+<div class="math notranslate nohighlight">
+\[G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_s)^2} f_c(r_{ij})\]</div>
+</li>
+<li><p>Angular symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp13SymFncExpAngnE" title="nnp::SymFncExpAngn"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpAngn</span></code></a>):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+        \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+        \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 + r_{jk}^2 ) }
+        f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk})\end{split}\]</div>
+</li>
+</ul>
+</section>
+<section id="atom-centered-symmetry-functions-continued">
+<h2>Atom-centered symmetry functions (continued)<a class="headerlink" href="#atom-centered-symmetry-functions-continued" title="Permalink to this headline"></a></h2>
+<p>In 2011 more symmetry functions were presented here:</p>
+<p><a class="reference external" href="http://dx.doi.org/10.1063/1.3553717">J. Behler, J. Chem. Phys. 134, 074106 (2011)</a></p>
+<p>Amongst others a variant of the above angular symmetry function was introduced:</p>
+<ul>
+<li><p>Modified angular symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp13SymFncExpAngwE" title="nnp::SymFncExpAngw"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpAngw</span></code></a>, for
+historic reasons the type number here is 9):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+        \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+        \mathrm{e}^{-\eta( r_{ij}^2 + r_{ik}^2 ) } f_c(r_{ij}) f_c(r_{ik})\end{split}\]</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The implementation of both angular symmetry functions described above also
+supports an additional shift parameter <span class="math notranslate nohighlight">\(r_s\)</span> in the exponential function
+(analogous to the radial symmetry function or the weighted symmetry functions
+below). Specifying the shift parameter is optional, omitting it will reproduce
+the formulae given above.</p>
+</div>
+</section>
+<section id="weighted-atom-centered-symmetry-functions">
+<h2>Weighted atom-centered symmetry functions<a class="headerlink" href="#weighted-atom-centered-symmetry-functions" title="Permalink to this headline"></a></h2>
+<p>In 2018 an approach to overcome limitiations for systems with many different
+atom species was put forward here:</p>
+<p><a class="reference external" href="https://doi.org/10.1063/1.5019667">M. Gastegger, L. Schwiedrzik, M. Bittermann, F. Berzsenyi and P. Marquetand,
+J. Chem. Phys. 148, 241709 (2018)</a></p>
+<p>Here two variants of the original symmetry functions were presented:</p>
+<ul>
+<li><p>Weighted radial symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp20SymFncExpRadWeightedE" title="nnp::SymFncExpRadWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpRadWeighted</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[G^{12}_i = \sum_{j \neq i} Z_j \,
+           \mathrm{e}^{-\eta(r_{ij} - r_s)^2}
+           f_c(r_{ij})\]</div>
+</li>
+<li><p>Weighted angular symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp21SymFncExpAngnWeightedE" title="nnp::SymFncExpAngnWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncExpAngnWeighted</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           Z_j Z_k \,
+           \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+           \mathrm{e}^{-\eta \left[
+           (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
+           f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk})\end{split}\]</div>
+</li>
+</ul>
+</section>
+<section id="low-cost-polynomial-symmetry-functions-with-compact-support">
+<span id="polynomial-sf"></span><h2>Low-cost polynomial symmetry functions with compact support<a class="headerlink" href="#low-cost-polynomial-symmetry-functions-with-compact-support" title="Permalink to this headline"></a></h2>
+<p>In 2020 a new set of computationally efficient symmetry functions was proposed
+here:</p>
+<p><a class="reference external" href="http://arxiv.org/abs/2010.14414">Bircher, M. P.; Singraber, A.; Dellago, C., arXiv:2010.14414 [cond-mat,
+physics:physics] (2020).</a></p>
+<p>In contrast to the above definitions these <strong>polynomial</strong> symmetry functions do
+not require the computation of expensive exponential terms because they are
+based solely on polynomial window functions in the radial and angular domain. As
+shown in the publication a significant increase in performance ensues without
+sacrificing descriptive power. Furthermore, they are well suited to describe
+complex atomic environments because their angular sensitivity can be easily
+controlled via the free hyperparameters. The following variants of polynomial
+symmetry functions are implemented (here <span class="math notranslate nohighlight">\(C(x, x_\text{low},
+x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low},
+x_\text{high}\right]\)</span>):</p>
+<ul>
+<li><p>Radial symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp13SymFncCompRadE" title="nnp::SymFncCompRad"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompRad</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[G^{20}_i = \sum_{\substack{j \neq i}} C(r_{ij}, r_l, r_c)\]</div>
+</li>
+<li><p>Angular symmetry function, narrow variant (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp14SymFncCompAngnE" title="nnp::SymFncCompAngn"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngn</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} C(r_{ij}, r_l, r_c)
+           C(r_{ik}, r_l, r_c) C(r_{jk}, r_l, r_c)
+           C(\theta_{ijk}, \theta_l, \theta_r)\end{split}\]</div>
+</li>
+<li><p>Angular symmetry function, wide variant (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp14SymFncCompAngwE" title="nnp::SymFncCompAngw"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngw</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} C(r_{ij}, r_l, r_c)
+           C(r_{ik}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r)\end{split}\]</div>
+</li>
+<li><p>Weighted radial symmetry function (<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp21SymFncCompRadWeightedE" title="nnp::SymFncCompRadWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompRadWeighted</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[G^{23}_i = \sum_{\substack{j \neq i}} Z_j C(r_{ij}, r_l, r_c)\]</div>
+</li>
+<li><p>Weighted angular symmetry function, narrow variant
+(<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp22SymFncCompAngnWeightedE" title="nnp::SymFncCompAngnWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngnWeighted</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} Z_j Z_k
+           C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c)
+           C(r_{jk}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r),\end{split}\]</div>
+</li>
+<li><p>Weighted angular symmetry function, wide variant
+(<a class="reference internal" href="../api/symmetry_function_types.html#_CPPv4N3nnp22SymFncCompAngwWeightedE" title="nnp::SymFncCompAngwWeighted"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">nnp::SymFncCompAngwWeighted</span></code></a>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} Z_j Z_k
+           C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c)
+           C(\theta_{ijk}, \theta_l, \theta_r),\end{split}\]</div>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="build.html" class="btn btn-neutral float-left" title="Build instructions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="keywords.html" class="btn btn-neutral float-right" title="NNP configuration: keywords" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

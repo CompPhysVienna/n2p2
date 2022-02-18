@@ -1,0 +1,35 @@
+<map id="nnp::split" name="nnp::split">
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248" title="Add one cache index for given neighbor element and check identifier. " alt="" coords="161,5,374,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ElementCabana.html#adc061299e1561e6f5613880344d57839" title="Add one symmetry function. " alt="" coords="179,57,355,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Element.html#a5ac5a68040c23e4548f5819e8466cfa9" title="Add one symmetry function. " alt="" coords="163,122,371,163"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#aed1852f4390b8b97e62f697ee4b16676" title="Get number of structures in data file. " alt="" coords="152,188,383,215"/>
+<area shape="rect" id="node6" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="521,213,576,240"/>
+<area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface. " alt="" coords="183,290,351,331"/>
+<area shape="rect" id="node8" href="$namespacennp.html#ab146710d740bd3cb5d78dc880668ef57" title="nnp::readColumnsFromFile" alt="" coords="170,356,365,383"/>
+<area shape="rect" id="node9" href="$structnnp_1_1Structure.html#a9d8474b4633b73815022742af96b0a77" title="Read configuration from file. " alt="" coords="447,436,651,463"/>
+<area shape="rect" id="node10" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines. " alt="" coords="176,458,359,499"/>
+<area shape="rect" id="node11" href="$classnnp_1_1ElementMap.html#a17d6d160054a064199a8757eb62b3350" title="Extract all elements and store in element map. " alt="" coords="171,523,364,565"/>
+<area shape="rect" id="node12" href="$classnnp_1_1SymFncBaseExpAng.html#a962e63f489487c8f5e6ebf6d91603029" title="Set symmetry function parameters. " alt="" coords="174,589,361,630"/>
+<area shape="rect" id="node13" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters. " alt="" coords="167,654,367,695"/>
+<area shape="rect" id="node14" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters. " alt="" coords="137,719,398,761"/>
+<area shape="rect" id="node15" href="$classnnp_1_1SymFncExpRad.html#a35cc959ad4f47f40a204451e98d5eda6" title="Set symmetry function parameters. " alt="" coords="186,785,349,826"/>
+<area shape="rect" id="node16" href="$classnnp_1_1SymFncExpRadWeighted.html#a0eaa9b022892434808356c3102d06ff8" title="Set symmetry function parameters. " alt="" coords="160,850,375,891"/>
+<area shape="rect" id="node17" href="$classnnp_1_1SymFncExpAngnWeighted.html#acfa61a6c875475e2bb209234507a5fdd" title="Set symmetry function parameters. " alt="" coords="156,915,379,957"/>
+<area shape="rect" id="node18" href="$classnnp_1_1SymFncCompRad.html#aa2edce749c1570de8fa59ac27c7759b6" title="Set symmetry function parameters. " alt="" coords="183,981,351,1022"/>
+<area shape="rect" id="node19" href="$classnnp_1_1SymFncCompRadWeighted.html#a656990f2b9a29149d08ace3ec52a520a" title="Set symmetry function parameters. " alt="" coords="153,1046,382,1087"/>
+<area shape="rect" id="node20" href="$classnnp_1_1SymFnc.html#a9c17e10bd1ac249580e6569b9a88e650" title="Set symmetry function scaling type. " alt="" coords="162,1112,373,1139"/>
+<area shape="rect" id="node21" href="$classnnp_1_1ElementCabana.html#a1ceeea1f71b868074da1f6ce5af5169e" title="Symmetry function statistics. " alt="" coords="189,1163,346,1205"/>
+<area shape="rect" id="node22" href="$classnnp_1_1Mode.html#ae72c03926dc7ea9b8f43770fb5861ccf" title="Set up cutoff function for all symmetry functions. " alt="" coords="181,1229,353,1256"/>
+<area shape="rect" id="node23" href="$classnnp_1_1ModeCabana.html#a32f9febc2b2f06a2cb46c18ed3c7fcc2" title="Set up the element map. " alt="" coords="136,1280,399,1307"/>
+<area shape="rect" id="node24" href="$classnnp_1_1ModeCabana.html#af23c650356733cd048ed8be06150d185" title="Set up all Element instances. " alt="" coords="146,1331,389,1357"/>
+<area shape="rect" id="node25" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances. " alt="" coords="170,1381,365,1408"/>
+<area shape="rect" id="node26" href="$classnnp_1_1Training.html#a8a99d257e8c71aaf4dba65a1b9a1b5f1" title="Set file output intervals for properties and other quantities. " alt="" coords="182,1433,353,1474"/>
+<area shape="rect" id="node27" href="$classnnp_1_1ModeCabana.html#afb5802f2d4bc6f955b91eb76cec9eef6" title="Set up neural networks for all elements. " alt="" coords="155,1498,380,1539"/>
+<area shape="rect" id="node28" href="$classnnp_1_1Mode.html#a3488a7fb2b0ccf17a9b2af514590f57c" title="Set up neural networks for all elements. " alt="" coords="152,1564,383,1591"/>
+<area shape="rect" id="node29" href="$classnnp_1_1ModeCabana.html#a2bf84c32b1bdf36846213291ff6a31b8" title="Set up neural network weights from files. " alt="" coords="155,1615,380,1657"/>
+<area shape="rect" id="node30" href="$classnnp_1_1Training.html#a5362ed9fa8992ca8ec88ab5c6daab978" title="Set selection mode for specific training property. " alt="" coords="145,1681,389,1708"/>
+<area shape="rect" id="node31" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache. " alt="" coords="167,1733,368,1774"/>
+<area shape="rect" id="node32" href="$classnnp_1_1ModeCabana.html#a1467b3106ede7e57f57cda2fd56961f3" title="Set up all symmetry functions. " alt="" coords="142,1798,393,1839"/>
+<area shape="rect" id="node33" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions. " alt="" coords="167,1863,368,1905"/>
+<area shape="rect" id="node34" href="$structnnp_1_1Structure.html#a5e1f59c24c85703e6e78c7f85d47a2d8" title="Write configuration to POSCAR file. " alt="" coords="172,1929,363,1970"/>
+</map>

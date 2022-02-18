@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CabanaMD interface &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The libnnp core library" href="../tools/libnnp.html" />
+    <link rel="prev" title="LAMMPS NNP pair style" href="pair_nnp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CabanaMD interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-instructions">Build instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>CabanaMD interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/interfaces/if_cabanamd.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cabanamd-interface">
+<span id="if-cabanamd"></span><h1>CabanaMD interface<a class="headerlink" href="#cabanamd-interface" title="Permalink to this headline"></a></h1>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline"></a></h2>
+<p>The CabanaMD interface adds the neural network potential method in a proxy
+application which uses the Cabana particle library. <a class="reference external" href="https://github.com/ECP-copa/Cabana">Cabana</a> uses the <a class="reference external" href="https://github.com/kokkos/kokkos">Kokkos</a> programming model to run on multi-core CPUs
+and GPUs; <a class="reference external" href="https://github.com/ECP-copa/CabanaMD">CabanaMD</a> provides a simple
+MD code to explore performance with Cabana and Kokkos. The Cabana version of
+n2p2 reimplements a small part of the neural network potential to enable
+simulations on the GPU <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
+</section>
+<section id="build-instructions">
+<h2>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this headline"></a></h2>
+<p>Go to the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory and compile with the CabanaMD interface enabled:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd src
+make libnnpif INTERFACES=CabanaMD
+</pre></div>
+</div>
+<p>Alternatively, set the <code class="docutils literal notranslate"><span class="pre">INTERFACES</span></code> variable in the master makefile
+(<code class="docutils literal notranslate"><span class="pre">src/makefile</span></code>) to <code class="docutils literal notranslate"><span class="pre">CabanaMD</span></code> and just run in the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make libnnpif
+</pre></div>
+</div>
+<p>For dynamic linking add the argument <code class="docutils literal notranslate"><span class="pre">MODE=shared</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If dynamic linking (<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">libnnpif</span> <span class="pre">MODE=shared</span></code>) is used, you need to make the NNP
+libraries visibile in your system, e.g. add this line in your <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>export LD_LIBRARY_PATH=&lt;path-to-n2p2&gt;/lib:${LD_LIBRARY_PATH}
+</pre></div>
+</div>
+</div>
+<p>This completes the necessary steps on the n2p2 side, further instructions on how
+to build CabandaMD together with this interface are provided <a class="reference external" href="https://github.com/ECP-copa/CabanaMD/wiki">here</a>.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>See <a class="reference external" href="https://github.com/ECP-copa/CabanaMD/wiki">here</a> for building and running
+CabanaMD after building n2p2 (with the CabanaMD interface).</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Desai, S.; Reeve, S. T.; Belak, J. F. Implementing a Neural Network
+Interatomic Model with Performance Portability for Emerging Exascale
+Architectures. <a class="reference external" href="https://arxiv.org/abs/2002.00054">arXiv:2002.00054</a>
+[cond-mat, physics:physics] 2020</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pair_nnp.html" class="btn btn-neutral float-left" title="LAMMPS NNP pair style" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tools/libnnp.html" class="btn btn-neutral float-right" title="The libnnp core library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674" title="Add atomic energy offsets to reference energy. " alt="" coords="123,5,329,32"/>
+<area shape="rect" id="node3" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream. " alt="" coords="140,56,312,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type. " alt="" coords="125,107,327,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure. " alt="" coords="125,173,327,200"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure. " alt="" coords="127,224,325,251"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure. " alt="" coords="114,675,338,717"/>
+<area shape="rect" id="node8" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="461,533,545,560"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure. " alt="" coords="114,741,338,782"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one. " alt="" coords="127,275,325,301"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#abbe07bd6a67b5df0b6dd5f5ce00fb1f6" title="Convert one structure to physical units. " alt="" coords="119,974,333,1015"/>
+<area shape="rect" id="node12" href="$namespacennp.html#a9d1bbacf408dac7e040ce679791bc570" title="nnp::createFileHeader" alt="" coords="144,1040,308,1067"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors. " alt="" coords="139,806,313,847"/>
+<area shape="rect" id="node14" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure. " alt="" coords="392,843,615,869"/>
+<area shape="rect" id="node15" href="$structnnp_1_1Structure.html#aaa794cf49a53d8e5db578ac303b700fd" title="Read configuration from file. " alt="" coords="401,908,605,935"/>
+<area shape="rect" id="node16" href="$classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9" title="Getter for Mode::maxCutoffRadius. " alt="" coords="112,1091,340,1117"/>
+<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#aa73bc18bc5e85e53303fea2132c4e78c" title="Count total number of extrapolation warnings encountered for all elements and symmetry functions..." alt="" coords="108,1142,344,1183"/>
+<area shape="rect" id="node18" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information. " alt="" coords="149,325,303,352"/>
+<area shape="rect" id="node19" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory. " alt="" coords="126,376,326,403"/>
+<area shape="rect" id="node20" href="$classnnp_1_1ElementMap.html#a17d6d160054a064199a8757eb62b3350" title="Extract all elements and store in element map. " alt="" coords="129,1259,323,1301"/>
+<area shape="rect" id="node21" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter. " alt="" coords="462,1237,545,1264"/>
+<area shape="rect" id="node22" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer. " alt="" coords="135,1325,317,1366"/>
+<area shape="rect" id="node23" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap. " alt="" coords="149,1391,303,1417"/>
+<area shape="rect" id="node24" href="$classnnp_1_1Mode.html#ab71571b8b4742c474c645fa50ffa667e" title="Erase all extrapolation warnings and reset counters. " alt="" coords="117,1442,335,1483"/>
+<area shape="rect" id="node25" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file. " alt="" coords="123,1507,329,1549"/>
+<area shape="rect" id="node26" href="$classnnp_1_1Mode.html#adffbed0cbae8bc9c4f4c4556ff113b5f" title="Combine multiple setup routines and provide a basic NNP setup. " alt="" coords="135,1573,317,1600"/>
+<area shape="rect" id="node27" href="$classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455" title="Initialize MPI with MPI_COMM_WORLD. " alt="" coords="140,1624,312,1651"/>
+<area shape="rect" id="node28" href="$classnnp_1_1Mode.html#a7d40ea3edb704b1bc685d67c5e9b7eac" title="Set up neural network weights from files. " alt="" coords="111,427,341,469"/>
+<area shape="rect" id="node29" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file. " alt="" coords="125,493,327,534"/>
+<area shape="rect" id="node30" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection. " alt="" coords="125,558,327,599"/>
+<area shape="rect" id="node31" href="$classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a" title="Switch all structures to normalized units. " alt="" coords="125,1675,327,1717"/>
+<area shape="rect" id="node32" href="$classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451" title="Check if normalization is enabled. " alt="" coords="120,1741,332,1768"/>
+<area shape="rect" id="node33" href="$structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af" title="Write configuration to file. " alt="" coords="131,1792,321,1819"/>
+</map>

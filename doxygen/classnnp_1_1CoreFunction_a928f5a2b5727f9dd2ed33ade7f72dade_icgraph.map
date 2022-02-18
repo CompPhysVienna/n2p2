@@ -1,0 +1,5 @@
+<map id="nnp::CoreFunction::setType" name="nnp::CoreFunction::setType">
+<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a536489fb399dcb5d1ede0b2933f0ff04" title="Constructor, initializes to #CoreFunction::Type::POLY2. " alt="" coords="200,5,367,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1CompactFunction.html#a2cd584131611f1feecf0886d3bbd3413" title="Set type. " alt="" coords="200,71,367,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1CutoffFunction.html#aa1f346f37b24b88ca7cd9846bdae30bf" title="Set cutoff type. " alt="" coords="210,136,357,177"/>
+</map>

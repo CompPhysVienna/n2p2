@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CabanaMD GPU build example &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Descriptor analysis/Coarse-graining" href="cg_descriptor_analysis.html" />
+    <link rel="prev" title="nnp-train" href="../tools/nnp-train.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CabanaMD GPU build example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-specifications">System specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-steps">Build steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-an-example-on-the-gpu">Running an example on the GPU</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>CabanaMD GPU build example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/misc/cabanamd_build_example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cabanamd-gpu-build-example">
+<span id="cabanamd-build-example"></span><h1>CabanaMD GPU build example<a class="headerlink" href="#cabanamd-gpu-build-example" title="Permalink to this headline"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is not a fully tested installation guide but rather a collection of
+build instructions that worked for a specific system at a certain point in
+time. They are kept here only as a reference, for your own build please refer
+to the current build instructions of the individual software packages.</p>
+</div>
+<section id="system-specifications">
+<h2>System specifications<a class="headerlink" href="#system-specifications" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>CPU: <code class="docutils literal notranslate"><span class="pre">Intel(R)</span> <span class="pre">Core(TM)</span> <span class="pre">i7-7800X</span> <span class="pre">(6/12</span> <span class="pre">cores/threads)</span></code></p></li>
+<li><p>RAM: <code class="docutils literal notranslate"><span class="pre">32GB</span></code></p></li>
+<li><p>OS: <code class="docutils literal notranslate"><span class="pre">Linux</span> <span class="pre">Mint</span> <span class="pre">19.3</span></code></p></li>
+<li><p>GPU: <code class="docutils literal notranslate"><span class="pre">GeForce</span> <span class="pre">GTX</span> <span class="pre">1060</span> <span class="pre">6GB</span> <span class="pre">(GP106,</span> <span class="pre">Pascal</span> <span class="pre">architecture)</span></code></p></li>
+<li><p>CUDA version: <code class="docutils literal notranslate"><span class="pre">11.0</span></code></p></li>
+<li><p>CUDA capability: <code class="docutils literal notranslate"><span class="pre">6.1</span></code></p></li>
+<li><p>GPU driver: <code class="docutils literal notranslate"><span class="pre">450.51.06</span></code></p></li>
+</ul>
+</section>
+<section id="build-steps">
+<h2>Build steps<a class="headerlink" href="#build-steps" title="Permalink to this headline"></a></h2>
+<p>In order to have all packages in one place please first create a working directory for
+these instructions (e.g. <code class="docutils literal notranslate"><span class="pre">CabanaMD-Setup</span></code>) and <code class="docutils literal notranslate"><span class="pre">cd</span></code> there.</p>
+<p>On this particular system it was required to build a CUDA-aware MPI. Create a
+file <code class="docutils literal notranslate"><span class="pre">build_openmpi.sh</span></code>, copy these commands and execute it (or go through the
+commands one by one):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.0.tar.gz
+tar -xvzf openmpi-4.1.0.tar.gz
+mv openmpi-4.1.0 openmpi
+
+<span class="nb">cd</span> openmpi
+mkdir build
+./configure --prefix<span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/build --with-cuda<span class="o">=</span>/usr/local/cuda-11.0 <span class="o">&amp;&amp;</span> <span class="se">\</span>
+make all -j <span class="o">&amp;&amp;</span> <span class="se">\</span>
+make install
+<span class="nb">cd</span> ..
+</pre></div>
+</div>
+<p>After successful compilation you should see binaries in <code class="docutils literal notranslate"><span class="pre">openmpi/build/bin/</span></code>.
+Be sure to set the path to your CUDA installation correctly in the
+<code class="docutils literal notranslate"><span class="pre">./configure</span></code> line.</p>
+<p>Next, we download <a class="reference external" href="https://github.com/kokkos/kokkos">Kokkos</a> and compile it.
+Create and execute a file <code class="docutils literal notranslate"><span class="pre">build_kokkos.sh</span></code> with this content:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+git clone git@github.com:kokkos/kokkos.git
+<span class="nb">export</span> <span class="nv">COMPILER</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/kokkos/bin/nvcc_wrapper
+<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>sm_61
+<span class="c1"># CAUTION: Also set the flag (-D Kokkos_ARCH_PASCAL61=On)</span>
+<span class="nb">cd</span> kokkos
+git checkout <span class="m">3</span>.2.00
+mkdir build
+<span class="nb">cd</span> build
+cmake ../ <span class="se">\</span>
+ -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">COMPILER</span><span class="si">}</span> <span class="se">\</span>
+ -D <span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span> <span class="se">\</span>
+ -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>./install <span class="se">\</span>
+ -D <span class="nv">Kokkos_CUDA_DIR</span><span class="o">=</span>/usr/local/cuda-11.0/ <span class="se">\</span>
+ -D <span class="nv">Kokkos_ENABLE_SERIAL</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Kokkos_ENABLE_OPENMP</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Kokkos_ENABLE_CUDA</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Kokkos_ENABLE_CUDA_LAMBDA</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Kokkos_ENABLE_CUDA_UVM</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Kokkos_ARCH_PASCAL61</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Kokkos_ENABLE_HWLOC</span><span class="o">=</span>On <span class="o">&amp;&amp;</span>
+make install -j
+<span class="nb">cd</span> ../..
+</pre></div>
+</div>
+<p>Make sure to set the <code class="docutils literal notranslate"><span class="pre">ARCH</span></code> and <code class="docutils literal notranslate"><span class="pre">Kokkos_ARCH_???</span></code> correctly for your GPU
+(see <a class="reference external" href="https://github.com/kokkos/kokkos/blob/master/BUILD.md">docs</a>). This
+should create a directory <code class="docutils literal notranslate"><span class="pre">kokkos/build/install</span></code> where you can find libraries
+and headers in the <code class="docutils literal notranslate"><span class="pre">lib</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code> subfolder, respectively.</p>
+<p>Now we install <a class="reference external" href="https://github.com/ECP-copa/Cabana">Cabana</a>, create
+<code class="docutils literal notranslate"><span class="pre">build_Cabana.sh</span></code>, fill in below commands and execute it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+git clone git@github.com:ECP-copa/Cabana.git
+<span class="nb">cd</span> Cabana
+<span class="c1"># No specific version is specified in the docs, only &quot;master&quot;. If that does not</span>
+<span class="c1"># work at a later point in time use this line to get a commit that worked:</span>
+git checkout 5c2503aa72c3e3cb4db34ea52e41a2ac446e5719
+<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>sm_61
+<span class="nb">export</span> <span class="nv">OPENMPI_BUILD_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../openmpi/build
+<span class="nb">export</span> <span class="nv">KOKKOS_SRC_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../kokkos
+<span class="nb">export</span> <span class="nv">KOKKOS_INSTALL_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/build/install
+mkdir build
+<span class="nb">cd</span> build
+cmake ../ <span class="se">\</span>
+ -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="s2">&quot;Release&quot;</span> <span class="se">\</span>
+ -D <span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span><span class="s2">;</span><span class="si">${</span><span class="nv">KOKKOS_INSTALL_DIR</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+ -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/install <span class="se">\</span>
+ -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/bin/nvcc_wrapper <span class="se">\</span>
+ -D <span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span> <span class="se">\</span>
+ -D <span class="nv">MPI_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span>/bin/mpic++ <span class="se">\</span>
+ -D <span class="nv">Cabana_REQUIRE_CUDA</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Cabana_ENABLE_MPI</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">Cabana_ENABLE_TESTING</span><span class="o">=</span>OFF <span class="se">\</span>
+ -D <span class="nv">Cabana_ENABLE_EXAMPLES</span><span class="o">=</span>OFF <span class="o">&amp;&amp;</span> <span class="se">\</span>
+make install -j
+<span class="nb">cd</span> ../..
+</pre></div>
+</div>
+<p>Again, check that the <code class="docutils literal notranslate"><span class="pre">ARCH</span></code> variable is set correctly. Since we have excluded
+the tests and examples (<code class="docutils literal notranslate"><span class="pre">Cabana_ENABLE_TESTING=OFF</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Cabana_ENABLE_EXAMPLES=OFF</span></code>) this will not compile anything but create some
+headers in <code class="docutils literal notranslate"><span class="pre">build/install/include</span></code>.</p>
+<p>The last step before we get to CabanaMD is to set up n2p2, create
+<code class="docutils literal notranslate"><span class="pre">build_n2p2.sh</span></code> with the follwing lines and execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+git clone https://github.com/CompPhysVienna/n2p2
+<span class="nb">cd</span> n2p2
+git checkout v2.0.1
+<span class="nb">cd</span> src
+make libnnpif -j
+<span class="nb">cd</span> ../..
+</pre></div>
+</div>
+<p>Now there should be headers in <code class="docutils literal notranslate"><span class="pre">n2p2/include</span></code>.</p>
+<p>Finally, compile <a class="reference external" href="https://github.com/ECP-copa/CabanaMD">CabanaMD</a>, create a
+file <code class="docutils literal notranslate"><span class="pre">build_CabanaMD.sh</span></code>, fill it with this content and execute (check again
+the <code class="docutils literal notranslate"><span class="pre">ARCH</span></code> variable):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+git clone git@github.com:ECP-copa/CabanaMD.git
+<span class="nb">cd</span> CabanaMD
+<span class="c1"># No specific version is specified in the docs, only &quot;master&quot;. If that does not</span>
+<span class="c1"># work at a later point in time use this line to get a commit that worked:</span>
+git checkout 15fa51c03a388c6c7f59dbbd4e21ecc3e5c7459b
+<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>sm_61
+<span class="nb">export</span> <span class="nv">OPENMPI_BUILD_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../openmpi/build
+<span class="nb">export</span> <span class="nv">KOKKOS_SRC_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../kokkos
+<span class="nb">export</span> <span class="nv">CABANA_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../Cabana/build/install
+<span class="nb">export</span> <span class="nv">N2P2_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../n2p2
+mkdir build
+<span class="nb">cd</span> build
+cmake ../ <span class="se">\</span>
+ -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="s2">&quot;Release&quot;</span> <span class="se">\</span>
+ -D <span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span><span class="s2">;</span><span class="si">${</span><span class="nv">CABANA_DIR</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+ -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/install <span class="se">\</span>
+ -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/bin/nvcc_wrapper <span class="se">\</span>
+ -D <span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span> <span class="se">\</span>
+ -D <span class="nv">MPI_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span>/bin/mpic++ <span class="se">\</span>
+ -D <span class="nv">Cabana_ENABLE_MPI</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">N2P2_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">N2P2_DIR</span><span class="si">}</span> <span class="se">\</span>
+ -D <span class="nv">CabanaMD_VECTORLENGTH</span><span class="o">=</span><span class="m">32</span> <span class="se">\</span>
+ -D <span class="nv">CabanaMD_ENABLE_NNP</span><span class="o">=</span>On <span class="se">\</span>
+ -D <span class="nv">CabanaMD_MAXSYMMFUNC_NNP</span><span class="o">=</span><span class="m">30</span> <span class="se">\</span>
+ -D <span class="nv">CabanaMD_VECTORLENGTH_NNP</span><span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+ -D <span class="nv">CabanaMD_ENABLE_TESTING</span><span class="o">=</span>OFF <span class="o">&amp;&amp;</span> <span class="se">\</span>
+make -j
+<span class="nb">cd</span> ../..
+</pre></div>
+</div>
+<p>If successful you will now find the CabanaMD executable <code class="docutils literal notranslate"><span class="pre">cbnMD</span></code> in
+<code class="docutils literal notranslate"><span class="pre">CabanaMD/build/bin/</span></code>.</p>
+</section>
+<section id="running-an-example-on-the-gpu">
+<h2>Running an example on the GPU<a class="headerlink" href="#running-an-example-on-the-gpu" title="Permalink to this headline"></a></h2>
+<p>Finally, we can test it on the GPU with the provided NNP example. Create
+<code class="docutils literal notranslate"><span class="pre">test_CabanaMD_GPU_NNP.sh</span></code> with below content and execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nb">cd</span> CabanaMD
+build/bin/cbnMD -il input/in.nnp --device-type CUDA
+mv cabanaMD.out ..
+mv cabanaMD.err ..
+<span class="nb">cd</span> ..
+</pre></div>
+</div>
+<p>You should see the (slightly modified) n2p2 library output and in the output
+file <code class="docutils literal notranslate"><span class="pre">cabanaMD.out</span></code> you will find some information about your GPU and the
+performed timesteps as in:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Read input file.
+macro  KOKKOS_ENABLE_CUDA      : defined
+macro  CUDA_VERSION          = 11000 = version 11.0
+Kokkos::Cuda[ 0 ] GeForce GTX 1060 6GB capability 6.1, Total Global Memory: 5.927 G, Shared Memory per Block: 48 K : Selected
+Using: SystemVectorLength: 32 System:1AoSoA
+Using: SystemNNPVectorLength: 1 NNPSystem:1AoSoA
+Using: Force:NNPCabana Neighbor:CabanaVerletFull Comm:CabanaMPI Binning:CabanaLinkedCell Integrator:NVE
+Atoms: 108 108
+Created atoms.
+
+#Timestep Temperature PotE ETot Time Atomsteps/s
+0 600.000000 -5.780009 -5.703171 0.00 0.00e+00
+10 577.114210 -5.777077 -5.703170 0.50 2.14e+03
+20 512.839729 -5.768845 -5.703169 0.97 2.32e+03
+30 418.982352 -5.756824 -5.703168 1.43 2.35e+03
+40 312.732989 -5.743216 -5.703167 1.90 2.31e+03
+50 213.508287 -5.730508 -5.703165 2.36 2.33e+03
+60 138.634903 -5.720919 -5.703165 2.83 2.30e+03
+70 99.064735 -5.715851 -5.703164 3.29 2.34e+03
+80 96.861148 -5.715569 -5.703165 3.76 2.28e+03
+90 125.599583 -5.719251 -5.703166 4.23 2.32e+03
+100 173.352777 -5.725367 -5.703167 4.70 2.29e+03
+
+#Procs Atoms | Time T_Force T_Neigh T_Comm T_Int T_Other |
+1 108 | 4.70 4.31 0.00 0.38 0.00 0.00 | PERFORMANCE
+1 108 | 1.00 0.92 0.00 0.08 0.00 0.00 | FRACTION
+
+#Steps/s Atomsteps/s Atomsteps/(proc*s)
+2.13e+01 2.30e+03 2.30e+03
+</pre></div>
+</div>
+<p>You can check your GPU utilization with the <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code> tool, run <code class="docutils literal notranslate"><span class="pre">watch</span>
+<span class="pre">nvidia-smi</span></code> in another shell. The executable <code class="docutils literal notranslate"><span class="pre">cbnMD</span></code> should be
+listed under <code class="docutils literal notranslate"><span class="pre">Processes</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>+-----------------------------------------------------------------------------+
+| NVIDIA-SMI 450.51.06    Driver Version: 450.51.06    CUDA Version: 11.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 106...  On   | 00000000:65:00.0 Off |                  N/A |
+|  0%   49C    P2    33W / 200W |    476MiB /  6069MiB |     96%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      1385      G   /usr/lib/xorg/Xorg                224MiB |
+|    0   N/A  N/A      2402      G   cinnamon                           48MiB |
+|    0   N/A  N/A     10163      C   build/bin/cbnMD                    71MiB |
++-----------------------------------------------------------------------------+
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tools/nnp-train.html" class="btn btn-neutral float-left" title="nnp-train" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cg_descriptor_analysis.html" class="btn btn-neutral float-right" title="Descriptor analysis/Coarse-graining" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+<map id="nnp::Training::setWeights" name="nnp::Training::setWeights">
+<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#a0a5977b23676166a39fefbb0d232f050" title="Return total number of connections. " alt="" coords="239,5,401,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1NeuralNetwork.html#a3479cb0b5dc64c4260837adbfa11f868" title="Set neural network weights and biases. " alt="" coords="244,71,396,112"/>
+</map>

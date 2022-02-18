@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nnp-prune &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="nnp-select" href="nnp-select.html" />
+    <link rel="prev" title="nnp-predict" href="nnp-predict.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../topics/build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topics/units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">nnp-prune</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prune-before-training">Prune before training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prune-after-training">Prune after training</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>nnp-prune</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tools/nnp-prune.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nnp-prune">
+<span id="id1"></span><h1>nnp-prune<a class="headerlink" href="#nnp-prune" title="Permalink to this headline"></a></h1>
+<p>The tool <code class="docutils literal notranslate"><span class="pre">nnp-prune</span></code> is used to identify and remove symmetry functions that have
+little effect on the training performance. There are two modes of operation:</p>
+<section id="prune-before-training">
+<h2>Prune before training<a class="headerlink" href="#prune-before-training" title="Permalink to this headline"></a></h2>
+<p>Here, symmetry functions are discarded if their range (i.e. maximum - minimum
+value over the entire data set) is below a provided threshold. The first step
+is to calculate all symmetry functions with <a class="reference internal" href="nnp-scaling.html#nnp-scaling"><span class="std std-ref">nnp-scaling</span></a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np <span class="m">4</span> nnp-scaling <span class="m">500</span>
+</pre></div>
+</div>
+<p>This will produce the file <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> where minimum, maximum, mean and sigma
+values are stored. Then, in the same directory call for example</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnp-prune range <span class="m">1</span>.0E-4
+</pre></div>
+</div>
+<p>to eliminate all symmetry functions with range below <span class="math notranslate nohighlight">\(10^{-4}\)</span>. The resulting
+settings file is called <code class="docutils literal notranslate"><span class="pre">output-prune-range.nn</span></code>. It is an exact copy of
+<code class="docutils literal notranslate"><span class="pre">input.nn</span></code> but all lines with pruned symmetry functions are commented out. If
+the result is reasonable, rename the file to <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> and start over with the
+training process (note: do not forget to calculate <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> again with
+<a class="reference internal" href="nnp-scaling.html#nnp-scaling"><span class="std std-ref">nnp-scaling</span></a>).</p>
+</section>
+<section id="prune-after-training">
+<h2>Prune after training<a class="headerlink" href="#prune-after-training" title="Permalink to this headline"></a></h2>
+<p>After a neural network potential has been fitted with <code class="docutils literal notranslate"><span class="pre">nnp-train</span></code> it is possible
+to identify unnecessary symmetry functions with a so-called sensitivity
+analysis. Here, the derivatives of the output neuron with respect to the input
+layer neurons, i.e. the symmetry functions, are averaged over the whole data.
+This analysis is automatically performed by <code class="docutils literal notranslate"><span class="pre">nnp-dataset</span></code> and the results are
+stored in files like <code class="docutils literal notranslate"><span class="pre">sensitivity.008.out</span></code> (for the oxygen neural network):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np <span class="m">4</span> nnp-dataset <span class="m">1</span>
+</pre></div>
+</div>
+<p>With the sensitivity data ready, use the pruning tool to automatically remove
+symmetry functions with a sensitivity below the threshold:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnp-prune sensitivity <span class="m">0</span>.5 max
+</pre></div>
+</div>
+<p>Here, the threshold is set to 0.5% where 100% is equal to the total sum of all
+sensitivities. The resulting settings file is called
+<code class="docutils literal notranslate"><span class="pre">output-prune-sensitivity.nn</span></code> and is again an exact copy of <code class="docutils literal notranslate"><span class="pre">input.nn</span></code>,
+only with commented pruned symmetry function lines.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nnp-predict.html" class="btn btn-neutral float-left" title="nnp-predict" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nnp-select.html" class="btn btn-neutral float-right" title="nnp-select" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

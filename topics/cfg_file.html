@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration file format &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="NNP training procedure" href="training.html" />
+    <link rel="prev" title="NNP configuration: keywords" href="keywords.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">NNP training procedure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Configuration file format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/topics/cfg_file.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuration-file-format">
+<span id="cfg-file"></span><h1>Configuration file format<a class="headerlink" href="#configuration-file-format" title="Permalink to this headline"></a></h1>
+<p>Atomic configurations are stored on disk by NNP applications in a simple ASCII
+file. Data sets with training structures need to be provided in the same format.
+The file name for input configurations is usually <code class="docutils literal notranslate"><span class="pre">input.data</span></code>. A configuration
+file may contain multiple structures, each enclosed by the <code class="docutils literal notranslate"><span class="pre">begin</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>
+keywords. The lines in between must begin with one of the following keywords:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">atom</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lattice</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comment</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">energy</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">charge</span></code></p></li>
+</ul>
+<p>Here is a sample layout:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>begin
+comment &lt;comment&gt;
+lattice &lt;ax&gt; &lt;ay&gt; &lt;az&gt;
+lattice &lt;bx&gt; &lt;by&gt; &lt;bz&gt;
+lattice &lt;cx&gt; &lt;cy&gt; &lt;cz&gt;
+atom &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;e1&gt; &lt;c1&gt; &lt;n1&gt; &lt;fx1&gt; &lt;fy1&gt; &lt;fz1&gt;
+atom &lt;x2&gt; &lt;y2&gt; &lt;z2&gt; &lt;e2&gt; &lt;c2&gt; &lt;n2&gt; &lt;fx2&gt; &lt;fy2&gt; &lt;fz2&gt;
+...
+atom &lt;xn&gt; &lt;yn&gt; &lt;zn&gt; &lt;en&gt; &lt;cn&gt; &lt;nn&gt; &lt;fxn&gt; &lt;fyn&gt; &lt;fzn&gt;
+energy &lt;energy&gt;
+charge &lt;charge&gt;
+end
+begin
+...
+end
+...
+begin
+...
+end
+</pre></div>
+</div>
+<p>where the arguments of the keywords are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;comment&gt;</span></code> : comment line</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;ax&gt;</span></code>… <code class="docutils literal notranslate"><span class="pre">&lt;cz&gt;</span></code> : box vectors <span class="math notranslate nohighlight">\(\vec{\mathbf{a}}, \vec{\mathbf{b}}, \vec{\mathbf{c}}\)</span> (see <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">nnp::Structure::calculateInverseBox()</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;x1&gt;</span></code>… <code class="docutils literal notranslate"><span class="pre">&lt;zn&gt;</span></code> : atom coordinates of <code class="docutils literal notranslate"><span class="pre">n</span></code> atoms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;e1&gt;</span></code>… <code class="docutils literal notranslate"><span class="pre">&lt;en&gt;</span></code> : atom element string (e.g. Cd, S)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;c1&gt;</span></code>… <code class="docutils literal notranslate"><span class="pre">&lt;cn&gt;</span></code> : not (yet) used, reserved for atom charge in case of long range neural network (to be implemented)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;n1&gt;</span></code>… <code class="docutils literal notranslate"><span class="pre">&lt;nn&gt;</span></code> : not used</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;fx1&gt;</span></code>… <code class="docutils literal notranslate"><span class="pre">&lt;fzn&gt;</span></code> : force components of <code class="docutils literal notranslate"><span class="pre">n</span></code> atoms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;energy&gt;</span></code> : total potential energy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;charge&gt;</span></code> : total charge (for long range neural network only)</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">lattice</span></code> section must be omitted for non-periodic structures. It is
+possible to mix periodic and non-periodic structures. Also, configurations may
+contain different numbers of atoms. If atoms in a periodic structure are
+initially outside of the simulation box they will be automatically mapped back
+into the box (see <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">nnp::Structure::remap()</span></code>). Here is an example
+configuration file with 3 structures, 2 periodic and 1 non-periodic:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>begin
+comment This periodic structure contains 2 Cd and 2 S atoms.
+lattice 1.0 0.0 0.0
+lattice 0.0 1.0 0.0
+lattice 0.0 0.0 1.0
+atom 0.1 0.2 0.3 Cd -0.1 0.0 -0.1 -0.3  0.1
+atom 0.2 0.4 0.8 Cd -0.1 0.0 -0.2  0.6 -0.6
+atom 0.7 0.2 0.7 S   0.1 0.0 -0.8 -0.1  0.1
+atom 0.1 0.1 0.4 S   0.1 0.0  1.1 -0.2  0.4
+energy 123.456
+charge 0.0
+end
+begin
+comment This non-periodic structure contains 1 Cd and 2 S atoms.
+atom 0.9 0.1 0.8 Cd -0.1 0.0 -0.3 -0.3  0.1
+atom 0.7 0.2 0.2 S   0.1 0.0 -0.8  0.1  0.3
+atom 0.6 0.9 0.4 S   0.1 0.0  1.1  0.2 -0.4
+energy 1337.00
+charge 0.0
+end
+begin
+comment This periodic structure contains 3 Cd and 3 S atoms.
+lattice 2.0 0.0 0.0
+lattice 1.0 2.0 0.0
+lattice 1.0 1.0 2.0
+atom 1.9 0.2 1.7 S   0.1 0.0  0.4 -0.1 -0.2
+atom 1.1 0.2 0.5 Cd -0.1 0.0 -0.1 -0.3  0.2
+atom 0.2 1.4 0.8 Cd -0.1 0.0 -0.2  0.8  0.5
+atom 0.9 0.2 1.7 S   0.1 0.0 -0.7 -0.3 -0.6
+atom 0.8 1.2 0.1 Cd -0.1 0.0 -0.2  0.1  0.5
+atom 0.1 0.1 0.4 S   0.1 0.0  0.8 -0.2 -0.4
+energy 543.210
+charge 0.0
+end
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="keywords.html" class="btn btn-neutral float-left" title="NNP configuration: keywords" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="training.html" class="btn btn-neutral float-right" title="NNP training procedure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

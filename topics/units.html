@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Units &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LAMMPS NNP interface" href="../interfaces/if_lammps.html" />
+    <link rel="prev" title="NNP training procedure" href="training.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+          </a>
+              <div class="version">
+                "v2.1.4-13-g4ce8c70"
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Topics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Build instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="descriptors.html">Atomic environment descriptors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keywords.html">NNP configuration: keywords</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cfg_file.html">Configuration file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">NNP training procedure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Units</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#normalizing-the-data-set-internal-units">Normalizing the data set: “internal” units</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/libnnp.html">The libnnp core library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-atomenv.html">nnp-atomenv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-checkf.html">nnp-checkf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-convert.html">nnp-convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-norm.html">nnp-norm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-predict.html">nnp-predict</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-prune.html">nnp-prune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-select.html">nnp-select</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-scaling.html">nnp-scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/nnp-train.html">nnp-train</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Miscellaneous</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cabanamd_build_example.html">CabanaMD GPU build example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cg_descriptor_analysis.html">Descriptor analysis/Coarse-graining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/neural_network.html">Neural network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/cutoff_functions.html">Cutoff functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_types.html">Symmetry function types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/symmetry_function_scaling.html">Symmetry function scaling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/memory_layout.html">Memory layout</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/how_to_cite.html">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">n2p2 - A neural network potential package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Units</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/topics/units.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="units">
+<span id="id1"></span><h1>Units<a class="headerlink" href="#units" title="Permalink to this headline"></a></h1>
+<p>In principle the library and all applications are agnostic to a specific system
+of physical units. This means that numeric values in input files are processed
+unaltered. Hence, it is the user’s responsibility to provide data in a
+consistent way. For instance, the same length units must be used in training
+configurations (see <a class="reference internal" href="cfg_file.html#cfg-file"><span class="std std-ref">configuration file format</span></a>) and in the
+<a class="reference internal" href="descriptors.html#descriptors"><span class="std std-ref">definition of symmetry functions</span></a> (mind that some parameters,
+e.g. <span class="math notranslate nohighlight">\(\eta, r_c\)</span>, need to be given in length units).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that unit conversion may be required if an existing neural network
+potential is used to drive an MD simulation in LAMMPS. If the LAMMPS units
+(see command <a class="reference external" href="https://lammps.sandia.gov/doc/units.html">units</a>) are not
+matching with those used during NNP training, appropriate conversion factors
+need to be provided. See the <a class="reference internal" href="../interfaces/pair_nnp.html#pair-nnp"><span class="std std-ref">pair_style nnp reference</span></a> for
+further details.</p>
+</div>
+<section id="normalizing-the-data-set-internal-units">
+<h2>Normalizing the data set: “internal” units<a class="headerlink" href="#normalizing-the-data-set-internal-units" title="Permalink to this headline"></a></h2>
+<p>Processing data sets unaltered potentially introduces a dependence of training
+results on the chosen unit system, i.e. if the same data set would be set up
+with different physical unit systems, it is unclear whether the training would
+converge to comparable errors. To avoid this problem an additional
+pre-processing of the training data can be performed with the tool
+<a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">nnp-norm</span></a>. This tool will determine conversion factors for a reduced
+“internal” unit system and add them to the settings file. Other tools will
+recognize the corresponding <a class="reference internal" href="keywords.html#keywords"><span class="std std-ref">keywords</span></a> and automatically
+perform the conversion to “internal” units. No additional intervention of the
+user is necessary and quantities are usually converted back to physical units
+for screen or file output.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sometimes quantities are provided also in internal units (for debugging
+purposes). If this is the case it will be explicitly mentioned in the screen
+output or in the file header. The default output of all tools is given in the
+original physical unit system.</p>
+</div>
+<p>For further details see the <a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">tool description</span></a> and a recent
+publication <a class="footnote-reference brackets" href="#id3" id="id2">1</a>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The described data set normalization step is <strong>optional</strong>, you are not
+required to perform it. It is also not guaranteed that the quality of
+training will increase in all cases.</p>
+</div>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
+<dd><p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
+Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b01092">https://doi.org/10.1021/acs.jctc.8b01092</a></p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="training.html" class="btn btn-neutral float-left" title="NNP training procedure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../interfaces/if_lammps.html" class="btn btn-neutral float-right" title="LAMMPS NNP interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Andreas Singraber.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

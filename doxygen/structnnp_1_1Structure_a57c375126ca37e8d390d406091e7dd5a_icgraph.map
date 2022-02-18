@@ -1,0 +1,7 @@
+<map id="nnp::Structure::setElementMap" name="nnp::Structure::setElementMap">
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors. " alt="" coords="298,5,473,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface. " alt="" coords="301,71,469,112"/>
+<area shape="rect" id="node4" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="543,166,597,193"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4" title="Prepare numeric force check for a single structure. " alt="" coords="276,188,495,229"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title="nnp::Prediction::readStructure\lFromFile" alt="" coords="278,253,493,295"/>
+</map>

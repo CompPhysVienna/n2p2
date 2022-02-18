@@ -1,0 +1,5 @@
+<map id="nnp::Vec3D::norm" name="nnp::Vec3D::norm">
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c" title="Calculate neighbor list for all atoms. " alt="" coords="191,5,371,47"/>
+<area shape="rect" id="node3" href="$nnp-dist_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="419,42,473,69"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Vec3D.html#a6a59afd117951d8bc98391da9d894741" title="Normalize vector, norm equals 1.0 afterwards. " alt="" coords="197,122,365,149"/>
+</map>

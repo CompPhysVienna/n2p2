@@ -1,0 +1,11 @@
+<map id="nnp::GradientDescent::~GradientDescent" name="nnp::GradientDescent::~GradientDescent">
+<area shape="rect" id="node2" href="$classnnp_1_1GradientDescent.html#ad0007b9c014734401b60a3ecb7786c78" title="Information about gradient descent settings. " alt="" coords="216,5,379,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1GradientDescent.html#af5917de548655a18e4de94ab5508d0dd" title="Set pointer to current error vector. " alt="" coords="216,71,379,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1GradientDescent.html#aaf1491f345a3fa89a2448a66eaa32267" title="Set pointer to current Jacobi matrix. " alt="" coords="216,136,379,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1GradientDescent.html#a26d7bd9f4c4d88d27a1046364b0f779a" title="Set parameters for Adam algorithm. " alt="" coords="216,201,379,243"/>
+<area shape="rect" id="node6" href="$classnnp_1_1GradientDescent.html#a0fc36f84c5f9d35f75be83b1e8d54b9d" title="Set parameters for fixed step gradient descent algorithm. " alt="" coords="216,267,379,308"/>
+<area shape="rect" id="node7" href="$classnnp_1_1GradientDescent.html#ab62491101a113800d9d07c1746bdeb6d" title="Set pointer to current state. " alt="" coords="216,332,379,373"/>
+<area shape="rect" id="node8" href="$classnnp_1_1GradientDescent.html#a30aacd590244a6d09d16ec6012774c04" title="Status report. " alt="" coords="216,397,379,439"/>
+<area shape="rect" id="node9" href="$classnnp_1_1GradientDescent.html#a632f65b7ea63d685e4a2b8782be26c77" title="Header for status report file. " alt="" coords="216,463,379,504"/>
+<area shape="rect" id="node10" href="$classnnp_1_1GradientDescent.html#af70ae5d1478a4d09c3c0fcf714a942e0" title="Perform connection update. " alt="" coords="216,528,379,569"/>
+</map>
