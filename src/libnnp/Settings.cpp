@@ -68,6 +68,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["rmse_threshold_trials_charge"  ] = "";
     m["energy_fraction"               ] = "";
     m["force_fraction"                ] = "";
+    m["energy_force_ratio"            ] = "";
     m["charge_fraction"               ] = "";
     m["use_old_weights_short"         ] = "";
     m["use_old_weights_charge"        ] = "";
