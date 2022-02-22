@@ -218,6 +218,7 @@ int main(int argc, char* argv[])
             for (size_t j = i; j < numElements; ++j)
             {
                 size_t const nnj = structure.numAtomsPerElement.at(j);
+                if (nni == 0 || nnj == 0) continue;
                 pair<size_t, size_t> e(i, j);
                 for (size_t n = 0; n < numBins; ++n)
                 {

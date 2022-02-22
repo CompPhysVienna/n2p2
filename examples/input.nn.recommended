@@ -42,7 +42,8 @@ memorize_symfunc_results                       # Keep symmetry function results 
 test_fraction                   0.1            # Fraction of structures kept for testing.
 force_weight                    10.0           # Weight of force updates relative to energy updates.
 short_energy_fraction           1.000          # Fraction of energy updates per epoch.
-short_force_fraction            0.02315        # Fraction of force updates per epoch.
+#short_force_fraction            0.02315        # Fraction of force updates per epoch (not necessary if force_energy_ratio given).
+force_energy_ratio              10.0           # Specifies ratio between force and energy updates (ratio = updates_force / updates_energy).
 short_energy_error_threshold    0.00           # RMSE threshold for energy update candidates.
 short_force_error_threshold     1.00           # RMSE threshold for force update candidates.
 rmse_threshold_trials           3              # Maximum number of RMSE threshold trials.

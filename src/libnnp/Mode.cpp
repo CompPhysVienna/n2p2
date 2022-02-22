@@ -1000,15 +1000,14 @@ void Mode::setupNeuralNetwork()
                 t.numNeuronsPerLayer[i] = 0;
                 a = NeuralNetwork::AF_IDENTITY;
             }
-            else if (i == t.numLayers - 1)
-            {
-                t.numNeuronsPerLayer[i] = 1;
-                a = NeuralNetwork::AF_IDENTITY;
-            }
             else
             {
-                t.numNeuronsPerLayer[i] =
-                    atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
+                if (i == t.numLayers - 1) t.numNeuronsPerLayer[i] = 1;
+                else
+                {
+                    t.numNeuronsPerLayer[i] =
+                        atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
+                }
                 if (globalActivationFunctions.at(i-1) == "l")
                 {
                     a = NeuralNetwork::AF_IDENTITY;
