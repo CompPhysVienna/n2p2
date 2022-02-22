@@ -30,7 +30,7 @@ random_seed                     1234567        # Random number generator seed.
 ###############################################################################
 # These keywords are solely used for training with nnp-train.
 epochs                          10             # Number of training epochs.
-normalize_data_set              force          # Normalize data set prior to training (no = No norm., ref = via ref. data, force = via force prediction).
+normalize_data_set              force          # Normalize data set prior to training (ref = via ref. data, force = via force prediction, stats-only = use existing).
 updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
 parallel_mode                   0              # Training parallelization used (0 = Parallel (rank 0 update), 1 = Parallel (all update)).
 jacobian_mode                   1              # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).
@@ -40,10 +40,10 @@ task_batch_size_energy          1              # Number of energy update candida
 task_batch_size_force           1              # Number of force update candidates prepared per task for each update (0 = Entire training set).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
 test_fraction                   0.1            # Fraction of structures kept for testing.
-force_weight                    10.0           # Weight of force updates relative to energy updates.
+force_weight                    1.0            # Weight of force updates relative to energy updates.
 short_energy_fraction           1.000          # Fraction of energy updates per epoch.
 #short_force_fraction            0.02315        # Fraction of force updates per epoch (not necessary if force_energy_ratio given).
-force_energy_ratio              10.0           # Specifies ratio between force and energy updates (ratio = updates_force / updates_energy).
+force_energy_ratio              3.0            # Specifies ratio between force and energy updates (ratio = updates_force / updates_energy).
 short_energy_error_threshold    0.00           # RMSE threshold for energy update candidates.
 short_force_error_threshold     1.00           # RMSE threshold for force update candidates.
 rmse_threshold_trials           3              # Maximum number of RMSE threshold trials.

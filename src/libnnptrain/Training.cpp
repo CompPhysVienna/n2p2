@@ -1613,13 +1613,13 @@ void Training::writeLearningCurve(bool append, string const fileName) const
                     colSize.push_back(16);
                     colName.push_back(m + "_" + p[k].tiny + "train_iu");
                     colInfo.push_back(strpr(
-                                       (text[m] + " (internal units)").c_str(),
+                                       (text[m] + " (training units)").c_str(),
                                        "training",
                                        p[k].plural.c_str()));
                     colSize.push_back(16);
                     colName.push_back(m + "_" + p[k].tiny + "test_iu");
                     colInfo.push_back(strpr(
-                                       (text[m] + " (internal units)").c_str(),
+                                       (text[m] + " (training units)").c_str(),
                                        "test",
                                        p[k].plural.c_str()));
                 }
