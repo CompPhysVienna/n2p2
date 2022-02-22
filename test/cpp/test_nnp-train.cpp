@@ -12,7 +12,7 @@
 using namespace std;
 using namespace nnp;
 
-double const accuracy = 10.0 * numeric_limits<double>::epsilon();
+double const accuracy = 1.0E-10;
 
 BoostDataContainer<Example_nnp_train> container;
 
