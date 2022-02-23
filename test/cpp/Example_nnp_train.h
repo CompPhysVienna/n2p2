@@ -4,6 +4,8 @@
 #include "Example_nnp.h"
 #include "BoostDataContainer.h"
 
+#include <limits>  // std::numeric_limits
+
 struct Example_nnp_train : public Example_nnp
 {
     std::size_t lastEpoch;
@@ -28,7 +30,7 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseEnergyTest  = 1.22642208E-03;
     e->rmseForcesTrain = 3.77302629E-02;
     e->rmseForcesTest  = 2.25135617E-01;
-    e->accuracy        = 10.0 * numeric_limits<double>::epsilon();
+    e->accuracy        = 10.0 * std::numeric_limits<double>::epsilon();
 
     examples.push_back(Example_nnp_train("H2O_RPBE-D3"));
     e = &(examples.back());
@@ -46,7 +48,7 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseEnergyTest  = 1.01753064E-04;
     e->rmseForcesTrain = 6.08971134E-03;
     e->rmseForcesTest  = 4.60947053E-03;
-    e->accuracy        = 100.0 * numeric_limits<double>::epsilon();
+    e->accuracy        = 100.0 * std::numeric_limits<double>::epsilon();
 
     return;
 }

@@ -5,7 +5,6 @@
 #include "utility.h"
 
 #include <fstream> // std::ifstream
-#include <limits>  // std::numeric_limits
 #include <string>  // std::string
 #include <vector>  // std::vector
 
