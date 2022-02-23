@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
         bool useForces = dataset.settingsKeywordExists("use_short_forces");
         dataset.setupSymmetryFunctionScaling(dirNNP + "/scaling.data");
         dataset.setupSymmetryFunctionStatistics(false, true, false, false);
-        dataset.setupNeuralNetworkWeights(dirNNP + "/weights.%03d.data");
+        dataset.setupNeuralNetworkWeights(dirNNP,"/weights.%03d.data");
         dataset.distributeStructures(false);
         if (normalize) dataset.toNormalizedUnits();
 

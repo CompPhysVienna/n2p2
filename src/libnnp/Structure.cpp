@@ -500,6 +500,11 @@ void Structure::toPhysicalUnits(double meanEnergy,
 
     energyRef = energyRef / convEnergy + numAtoms * meanEnergy;
     energy = energy / convEnergy + numAtoms * meanEnergy;
+    for (auto& en : energyCom)
+    {
+        en = en / convEnergy + numAtoms * meanEnergy;
+    }
+    committeeDisagreement = committeeDisagreement / convEnergy;
     volume /= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
@@ -883,4 +888,35 @@ vector<string> Structure::info() const
     v.push_back(strpr("********************************\n"));
 
     return v;
+}
+
+double Structure::averageEnergy() const
+{    
+    double energySum = 0.0;
+    for (auto const& en : energyCom) energySum += en;
+
+    return energySum / energyCom.size();
+}
+
+double Structure::calcDisagreement() const
+{    
+    double energySum = 0.0;
+    for (auto const& en : energyCom)
+    {
+        energySum += (energy - en) * (energy - en);
+    }
+        
+    return sqrt(energySum / energyCom.size());
+} 
+
+void Structure::addForceLocal(  std::size_t const& alpha,
+                                std::size_t const& c,
+                                std::size_t const& atom,
+                                std::size_t const& comSize, 
+                                double const& fLoc ) const
+{
+    std::size_t index = 3*(atom-1)*comSize + 3*c + alpha;
+    forceLoc[index] -= fLoc;
+
+    return;
 }

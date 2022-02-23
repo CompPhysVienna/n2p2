@@ -90,6 +90,17 @@ public:
         SHORT_CHARGE_NN
     };
 
+    /// Describes how multiple NNs in a committee should be used.
+    enum class CommitteeMode
+    {
+        /// No committee functionality used, only single NN prediction.
+        DISABLED,
+        /// Only a single NN predicts, all toghether are used for validation.
+        VALIDATION,
+        /// All committee NNs are averaged for predicition.
+        PREDICTION
+    };
+
     Mode();
     /** Write welcome message with version information.
      */
@@ -100,6 +111,10 @@ public:
      */
     void                     loadSettingsFile(std::string const& fileName
                                                                  = "input.nn");
+    /** Check if committeeSize is 1. If not, throw error.
+     * Committee training is not implemented.
+     */
+    void                    committeeException();
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * Sets up elements, symmetry functions, symmetry function groups, neural
@@ -222,6 +237,8 @@ public:
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     virtual void             setupNeuralNetworkWeights(
+                                std::string const& fileDir
+                                                      = "",
                                 std::string const& fileNameFormatShort
                                                       = "weights.%03zu.data",
                                 std::string const& fileNameFormatCharge
@@ -502,11 +519,15 @@ public:
 
 protected:
     NNPType                    nnpType;
+    CommitteeMode              committeeMode;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
     bool                       useChargeNN;
     std::size_t                numElements;
+    std::size_t                committeeSize;
+    std::string                committeePrefix;
     std::vector<std::size_t>   minNeighbors;
+    std::vector<std::string>   committeeIds;
     std::vector<double>        minCutoffRadius;
     double                     maxCutoffRadius;
     double                     cutoffAlpha;
@@ -524,6 +545,7 @@ protected:
      * @param[in] fileNameFormat Weights file name format.
      */
     void readNeuralNetworkWeights(std::string const& type,
+                                  std::string const& fileDir,
                                   std::string const& fileName);
 };
 

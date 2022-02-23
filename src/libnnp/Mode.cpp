@@ -21,7 +21,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-#include <algorithm> // std::min, std::max, std::remove_if
+#include <algorithm> // std::min, std::max, std::remove_if, std::transform
 #include <cstdlib>   // atoi, atof
 #include <fstream>   // std::ifstream
 #ifndef N2P2_NO_SF_CACHE
@@ -34,16 +34,18 @@
 using namespace std;
 using namespace nnp;
 
-Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
-               normalize                 (false              ),
-               checkExtrapolationWarnings(false              ),
-               useChargeNN               (false              ),
-               numElements               (0                  ),
-               maxCutoffRadius           (0.0                ),
-               cutoffAlpha               (0.0                ),
-               meanEnergy                (0.0                ),
-               convEnergy                (1.0                ),
-               convLength                (1.0                )
+Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY    ),
+               committeeMode             (CommitteeMode::DISABLED),
+               normalize                 (false                  ),
+               checkExtrapolationWarnings(false                  ),
+               useChargeNN               (false                  ),
+               numElements               (0                      ),
+               committeeSize             (1                      ),
+               maxCutoffRadius           (0.0                    ),
+               cutoffAlpha               (0.0                    ),
+               meanEnergy                (0.0                    ),
+               convEnergy                (1.0                    ),
+               convLength                (1.0                    )
 {
 }
 
@@ -188,10 +190,58 @@ void Mode::loadSettingsFile(string const& fileName)
         throw runtime_error("ERROR: Unknown NNP type.\n");
     }
 
+    if (settings.keywordExists("committee_mode"))
+    {
+        string committeeModeString = settings["committee_mode"];
+        transform(committeeModeString.begin(),
+                  committeeModeString.end(),
+                  committeeModeString.begin(),
+                  ::tolower);
+        if (committeeModeString == "disabled")
+        {
+            committeeMode = CommitteeMode::DISABLED;
+        }
+        else if (committeeModeString == "validation")
+        {
+            committeeMode = CommitteeMode::VALIDATION;
+            log << "Committee mode is set to \"validation\":\n";
+            log << "A single NN predicts, all NNs are used for validation.\n";
+        }
+        else if (committeeModeString == "prediction")
+        {
+            committeeMode = CommitteeMode::PREDICTION;
+            log << "Committee mode is set to \"prediction\":\n";
+            log << "The average of all NNs is used for prediction.\n";
+        }
+        else
+        {
+            throw runtime_error("ERROR: Unknown committee mode.\n");
+        }
+        if ((committeeMode == CommitteeMode::VALIDATION ||
+             committeeMode == CommitteeMode::PREDICTION))
+        {
+            vector<string> committeeArgs = split(settings["committee_data"]);
+            committeePrefix = committeeArgs.at(0);
+            committeeSize = atoi(committeeArgs.at(1).c_str());
+            log << strpr("Committee-NNP dir prefix: %s\n",
+                         committeePrefix.c_str());
+            log << strpr("Committee-NNP size      : %zu\n", committeeSize);
+        }
+    }    
+
     log << "*****************************************"
            "**************************************\n";
 
     return;
+}
+
+void Mode::committeeException()
+{
+    if (committeeSize != 1)
+    {
+        throw runtime_error("ERROR: Committee training is not implemented. "
+                            "Set committee size to 1.\n");
+    }
 }
 
 void Mode::setupGeneric()
@@ -1070,6 +1120,29 @@ void Mode::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
+    if ((committeeMode == CommitteeMode::VALIDATION ||
+         committeeMode == CommitteeMode::PREDICTION))
+    {
+        vector<string> committeeArgs = split(settings["committee_data"]);
+        committeePrefix = committeeArgs.at(0);
+        committeeSize = atoi(committeeArgs.at(1).c_str());
+        log << strpr("Committee-NNP dir prefix: %s\n",
+                     committeePrefix.c_str());
+        log << strpr("Committee-NNP size      : %zu\n", committeeSize);
+    }
+    for (size_t i = 0; i < committeeSize; ++i)
+    {
+        // First committee member is NN without suffix.
+        if (i == 0) committeeIds.push_back("");
+        // All others have committee suffix appended.
+        else committeeIds.push_back(strpr("-committee-%zu", i));
+    }
+    // Set committee Ids also in each element.
+    for (auto& e : elements) e.setCommitteeIds(committeeIds);
+    log << "-----------------------------------------"
+           "--------------------------------------\n";
+    
+
     for (size_t i = 0; i < numElements; ++i)
     {
         Element& e = elements.at(i);
@@ -1078,13 +1151,19 @@ void Mode::setupNeuralNetwork()
         t.numNeuronsPerLayer[0] = e.numSymmetryFunctions();
         // Need one extra neuron for atomic charge.
         if (nnpType == NNPType::SHORT_CHARGE_NN) t.numNeuronsPerLayer[0]++;
-        e.neuralNetworks.emplace(piecewise_construct,
-                                 forward_as_tuple("short"),
-                                 forward_as_tuple(
-                                     t.numLayers,
-                                     t.numNeuronsPerLayer.data(),
-                                     t.activationFunctionsPerLayer.data()));
-        e.neuralNetworks.at("short").setNormalizeNeurons(normalizeNeurons);
+        // This loop will execute at least for j = 0 (non-committee case).
+        for (size_t j = 0; j < committeeSize; ++j)
+        {
+            string id = "short" + committeeIds.at(j);
+            e.neuralNetworks.emplace(
+                                    piecewise_construct,
+                                    forward_as_tuple(id),
+                                    forward_as_tuple(
+                                        t.numLayers,
+                                        t.numNeuronsPerLayer.data(),
+                                        t.activationFunctionsPerLayer.data()));
+            e.neuralNetworks.at(id).setNormalizeNeurons(normalizeNeurons);
+        }
         log << strpr("Atomic short range NN for "
                      "element %2s :\n", e.getSymbol().c_str());
         log << e.neuralNetworks.at("short").info();
@@ -1092,15 +1171,20 @@ void Mode::setupNeuralNetwork()
                "--------------------------------------\n";
         if (useChargeNN)
         {
-            e.neuralNetworks.emplace(
+            // This loop will execute at least for j = 0 (non-committee case).
+            for (size_t j = 0; j < committeeSize; ++j)
+            {
+                string id = "charge" + committeeIds.at(j);
+                e.neuralNetworks.emplace(
                                     piecewise_construct,
-                                    forward_as_tuple("charge"),
+                                    forward_as_tuple(id),
                                     forward_as_tuple(
                                         t.numLayers,
                                         t.numNeuronsPerLayer.data(),
                                         t.activationFunctionsPerLayer.data()));
-            e.neuralNetworks.at("charge")
-                .setNormalizeNeurons(normalizeNeurons);
+                e.neuralNetworks.at(id)
+                    .setNormalizeNeurons(normalizeNeurons);
+            }
             log << strpr("Atomic charge NN for "
                          "element %2s :\n", e.getSymbol().c_str());
             log << e.neuralNetworks.at("charge").info();
@@ -1115,7 +1199,8 @@ void Mode::setupNeuralNetwork()
     return;
 }
 
-void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
+void Mode::setupNeuralNetworkWeights(string const& fileDir,
+                                     string const& fileNameFormatShort,
                                      string const& fileNameFormatCharge)
 {
     log << "\n";
@@ -1125,12 +1210,12 @@ void Mode::setupNeuralNetworkWeights(string const& fileNameFormatShort,
 
     log << strpr("Short  NN weight file name format: %s\n",
                  fileNameFormatShort.c_str());
-    readNeuralNetworkWeights("short", fileNameFormatShort);
+    readNeuralNetworkWeights("short", fileDir, fileNameFormatShort);
     if (useChargeNN)
     {
         log << strpr("Charge NN weight file name format: %s\n",
                      fileNameFormatCharge.c_str());
-        readNeuralNetworkWeights("charge", fileNameFormatCharge);
+        readNeuralNetworkWeights("charge", fileDir, fileNameFormatCharge);
     }
 
     log << "*****************************************"
@@ -1307,15 +1392,27 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
-            NeuralNetwork& nn = elements.at(it->element)
-                                .neuralNetworks.at("short");
-            nn.setInput(&((it->G).front()));
-            nn.propagate();
-            if (derivatives)
+            it->dEdGCom.resize(committeeSize);
+            it->energyCom.resize(committeeSize);
+            for (size_t c = 0; c < committeeSize; ++c)
             {
-                nn.calculateDEdG(&((it->dEdG).front()));
+                string id = "short" + committeeIds.at(c);
+                NeuralNetwork& nn = elements.at(it->element)
+                                    .neuralNetworks.at(id);
+                nn.setInput(&((it->G).front()));
+                nn.propagate();
+
+                if (derivatives)
+                {
+                    it->dEdGCom.at(c).resize(it->dEdG.size());
+                    nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
+                    if (c == 0) copy(it->dEdGCom.at(c).begin(),
+                                     it->dEdGCom.at(c).end(),
+                                     it->dEdG.begin());
+                }
+                nn.getOutput(&(it->energyCom.at(c)));
+                if (c == 0) it->energy = it->energyCom.at(c);
             }
-            nn.getOutput(&(it->energy));
         }
     }
     else if (nnpType == NNPType::SHORT_CHARGE_NN)
@@ -1358,13 +1455,32 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 void Mode::calculateEnergy(Structure& structure) const
 {
     // Loop over all atoms and add atomic contributions to total energy.
-    structure.energy = 0.0;
-    for (vector<Atom>::iterator it = structure.atoms.begin();
-         it != structure.atoms.end(); ++it)
+    structure.energyCom.resize(committeeSize);
+    for (size_t c = 0; c < committeeSize; ++c)
     {
-        structure.energy += it->energy;
+        double energySum = 0.0;
+        for (vector<Atom>::iterator it = structure.atoms.begin();
+            it != structure.atoms.end(); ++it)
+        {
+            energySum += it->energyCom.at(c);
+        }
+        structure.energyCom.at(c) = energySum;
     }
 
+    if (committeeMode != CommitteeMode::PREDICTION)
+    {
+        structure.energy = structure.energyCom.at(0);
+    }
+    else
+    {
+        structure.energy = structure.averageEnergy();
+    }
+
+    if (committeeMode != CommitteeMode::DISABLED)
+    {
+        structure.committeeDisagreement = structure.calcDisagreement();
+    }
+    
     return;
 }
 
@@ -1392,58 +1508,71 @@ void Mode::calculateForces(Structure& structure) const
     {
         // Set pointer to atom.
         ai = &(structure.atoms.at(i));
-
-        // Reset forces.
-        ai->f[0] = 0.0;
-        ai->f[1] = 0.0;
-        ai->f[2] = 0.0;
-
-        // First add force contributions from atom i itself (gradient of
-        // atomic energy E_i).
-        for (size_t j = 0; j < ai->numSymmetryFunctions; ++j)
+        ai->fCom.resize(committeeSize);
+        for (size_t c = 0; c < committeeSize; ++c)
         {
-            ai->f -= ai->dEdG.at(j) * ai->dGdr.at(j);
-        }
+            // Reset forces.
+            ai->fCom.at(c)[0] = 0.0;
+            ai->fCom.at(c)[1] = 0.0;
+            ai->fCom.at(c)[2] = 0.0;
 
-        // Now loop over all neighbor atoms j of atom i. These may hold
-        // non-zero derivatives of their symmetry functions with respect to
-        // atom i's coordinates. Some atoms may appear multiple times in the
-        // neighbor list because of periodic boundary conditions. To avoid
-        // that the same contributions are added multiple times use the
-        // "unique neighbor" list. This list contains also the central atom
-        // index as first entry and hence also adds contributions of periodic
-        // images of the central atom (happens when cutoff radii larger than
-        // cell vector lengths are used).
-        for (vector<size_t>::const_iterator it = ai->neighborsUnique.begin();
-             it != ai->neighborsUnique.end(); ++it)
-        {
-            // Define shortcut for atom j (aj).
-            Atom& aj = structure.atoms.at(*it);
-#ifndef N2P2_FULL_SFD_MEMORY
-            vector<vector<size_t> > const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
-#endif
-            // Loop over atom j's neighbors (n), atom i should be one of them.
-            for (vector<Atom::Neighbor>::const_iterator n =
-                 aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
+            // First add force contributions from atom i itself (gradient of
+            // atomic energy E_i).
+            for (size_t j = 0; j < ai->numSymmetryFunctions; ++j)
             {
-                // If atom j's neighbor is atom i add force contributions.
-                if (n->index == ai->index)
-                {
+                ai->fCom.at(c) -= ai->dEdGCom.at(c).at(j) * ai->dGdr.at(j);
+            }
+
+            // Now loop over all neighbor atoms j of atom i. These may hold
+            // non-zero derivatives of their symmetry functions with respect to
+            // atom i's coordinates. Some atoms may appear multiple times in
+            // the neighbor list because of periodic boundary conditions. To
+            // avoid that the same contributions are added multiple times use
+            // the "unique neighbor" list. This list contains also the central
+            // atom index as first entry and hence also adds contributions of
+            // periodic images of the central atom (happens when cutoff radii
+            // larger than cell vector lengths are used).
+            for (vector<size_t>::const_iterator it =
+                 ai->neighborsUnique.begin();
+                 it != ai->neighborsUnique.end(); ++it)
+            {
+                // Define shortcut for atom j (aj).
+                Atom& aj = structure.atoms.at(*it);
 #ifndef N2P2_FULL_SFD_MEMORY
-                    vector<size_t> const& table = tableFull.at(n->element);
-                    for (size_t j = 0; j < n->dGdr.size(); ++j)
-                    {
-                        ai->f -= aj.dEdG.at(table.at(j)) * n->dGdr.at(j);
-                    }
-#else
-                    for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
-                    {
-                        ai->f -= aj.dEdG.at(j) * n->dGdr.at(j);
-                    }
+                vector<vector<size_t> > const& tableFull
+                    = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
+                // Loop over atom j's neighbors (n), atom i should be one of
+                // them.
+                for (vector<Atom::Neighbor>::const_iterator n =
+                     aj.neighbors.begin(); n != aj.neighbors.end(); ++n)
+                {
+                    // If atom j's neighbor is atom i add force contributions.
+                    if (n->index == ai->index)
+                    {
+#ifndef N2P2_FULL_SFD_MEMORY
+                        vector<size_t> const& table = tableFull.at(n->element);
+                        for (size_t j = 0; j < n->dGdr.size(); ++j)
+                        {
+                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(table.at(j))
+                                            * n->dGdr.at(j);
+                        }
+#else
+                        for (size_t j = 0; j < aj.numSymmetryFunctions; ++j)
+                        {
+                            ai->fCom.at(c) -= aj.dEdGCom.at(c).at(j)
+                                            * n->dGdr.at(j);
+                        }
+#endif
+                    }
                 }
             }
+        }
+        if (committeeMode != CommitteeMode::PREDICTION) ai->f = ai->fCom.at(0);
+        else ai->f = ai->averageForce();
+        if (committeeMode != CommitteeMode::DISABLED)
+        {
+            ai->committeeDisagreement = ai->calcDisagreement();
         }
     }
 
@@ -1463,6 +1592,11 @@ void Mode::addEnergyOffset(Structure& structure, bool ref)
         {
             structure.energy += structure.numAtomsPerElement.at(i)
                               * elements.at(i).getAtomicEnergyOffset();
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                structure.energyCom.at(c) += structure.numAtomsPerElement.at(i)
+                    * elements.at(i).getAtomicEnergyOffset();
+            }
         }
     }
 
@@ -1689,6 +1823,7 @@ vector<size_t> Mode::pruneSymmetryFunctionsSensitivity(
 }
 
 void Mode::readNeuralNetworkWeights(string const& type,
+                                    string const& fileDir,
                                     string const& fileNameFormat)
 {
     string s = "";
@@ -1698,21 +1833,27 @@ void Mode::readNeuralNetworkWeights(string const& type,
     {
         throw runtime_error("ERROR: Unknown neural network type.\n");
     }
-
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
-        string fileName = strpr(fileNameFormat.c_str(),
-                                it->getAtomicNumber());
-        log << strpr("Setting %s weights for element %2s from file: %s\n",
-                     s.c_str(),
-                     it->getSymbol().c_str(),
-                     fileName.c_str());
-        vector<double> weights = readColumnsFromFile(fileName,
-                                                     vector<size_t>(1, 0)
-                                                    ).at(0);
-        NeuralNetwork& nn = it->neuralNetworks.at(type);
-        nn.setConnections(&(weights.front()));
+        for (size_t c = 0; c < committeeSize; ++c)
+        {
+            string fileName = strpr(fileNameFormat.c_str(),
+                                    it->getAtomicNumber());
+            string committeeDir = committeePrefix + strpr("-%zu/", c);
+            if (c > 0) fileName = fileDir + committeeDir + fileName;
+            else fileName = fileDir + fileName;
+            log << strpr("Setting %s weights for element %2s from file: %s\n",
+                         s.c_str(),
+                         it->getSymbol().c_str(),
+                         fileName.c_str());
+            vector<double> weights = readColumnsFromFile(fileName,
+                                                         vector<size_t>(1, 0)
+                                                        ).at(0);
+            NeuralNetwork& nn = it->neuralNetworks.at(type
+                                                      + committeeIds.at(c));
+            nn.setConnections(&(weights.front()));
+        }
     }
 
     return;

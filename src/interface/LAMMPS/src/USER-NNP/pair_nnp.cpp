@@ -58,12 +58,32 @@ void PairNNP::compute(int eflag, int vflag)
     handleExtrapolationWarnings();
   }
 
-  // Calculate forces of local and ghost atoms.
-  interface.getForces(atom->f);
+  // Get committee size from setting file
+  comSize = interface.getComSize();
 
+  // Calculate forces of local and ghost atoms and committee disagreement.
+  if (comSize > 1 && calcd > 0 && update->ntimestep % calcd == 0 && maxcdf > 0.000001)
+  {
+    globalNumAtoms = interface.reduceNumAtoms();
+    interface.getForcesCom(atom->f, globalNumAtoms);
+    std::vector<double> globalForceCom = interface.reduceForceCom(globalNumAtoms);
+    maxForceCom = interface.getComDisForce(globalForceCom, comSize, wricdf, update->ntimestep);
+  }
+  else {
+    interface.getForces(atom->f);
+  }
   // Add energy contribution to total energy.
   if (eflag_global)
-     ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),0.0,0.0,0.0,0.0,0.0);
+  {
+    ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),0.0,0.0,0.0,0.0,0.0);
+    if (maxcde > 0.000001 && comSize > 1 && calcd > 0 && update->ntimestep % calcd == 0)
+    { 
+      std::vector<double> globalEnergyCom = interface.reduceEnergyCom();
+      globalNumAtoms = interface.reduceNumAtoms();
+      if(comm->me == 0){
+        maxEnergyCom = interface.getComDisEnergy(globalEnergyCom, globalNumAtoms, wricde, update->ntimestep);}
+    }
+  }
 
   // Add atomic energy if requested (CAUTION: no physical meaning!).
   if (eflag_atom)
@@ -91,6 +111,15 @@ void PairNNP::settings(int narg, char **arg)
   showew = true;
   showewsum = 0;
   maxew = 0;
+  globalNumAtoms = 1;
+  comSize = 1;
+  calcd = 1;
+  wricdf = 1.0;
+  wricde = 1.0;
+  maxcdf = 0.0;
+  maxcde = 0.0;
+  maxForceCom = 0.0;
+  maxEnergyCom = 0.0;
   resetew = false;
   cflength = 1.0;
   cfenergy = 1.0;
@@ -164,6 +193,36 @@ void PairNNP::settings(int narg, char **arg)
       if (iarg+2 > narg)
         error->all(FLERR,"Illegal pair_style command");
       cfenergy = utils::numeric(FLERR,arg[iarg+1],false,lmp);
+      iarg += 2;
+    // calculate committee disagreement for each calcd step
+    } else if (strcmp(arg[iarg],"calcd") == 0) {
+      if (iarg+2 > narg)
+        error->all(FLERR,"Illegal pair_style command");
+      calcd = utils::inumeric(FLERR,arg[iarg+1],false,lmp);
+      iarg += 2;
+    // write to file force committee disagreement if wricd is exceeded
+    } else if (strcmp(arg[iarg],"wricdf") == 0) {
+      if (iarg+2 > narg)
+        error->all(FLERR,"Illegal pair_style command");
+      wricdf = utils::numeric(FLERR,arg[iarg+1],false,lmp);
+      iarg += 2;
+    // write to file energy committee disagreement if wricd is exceeded
+      } else if (strcmp(arg[iarg],"wricde") == 0) {
+      if (iarg+2 > narg)
+        error->all(FLERR,"Illegal pair_style command");
+      wricde = utils::numeric(FLERR,arg[iarg+1],false,lmp);
+      iarg += 2;
+    // force committee disagreement threshold for stopping calculation
+    } else if (strcmp(arg[iarg],"maxcdf") == 0) {
+      if (iarg+2 > narg)
+        error->all(FLERR,"Illegal pair_style command");
+      maxcdf = utils::numeric(FLERR,arg[iarg+1],false,lmp);
+      iarg += 2;
+    // energy committee disagreement threshold for stopping calculation
+    } else if (strcmp(arg[iarg],"maxcde") == 0) {
+      if (iarg+2 > narg)
+        error->all(FLERR,"Illegal pair_style command");
+      maxcde = utils::numeric(FLERR,arg[iarg+1],false,lmp);
       iarg += 2;
     } else error->all(FLERR,"Illegal pair_style command");
   }
@@ -407,6 +466,22 @@ void PairNNP::handleExtrapolationWarnings()
   // Stop if maximum number of extrapolation warnings is exceeded.
   if (numExtrapolationWarningsTotal > maxew) {
     error->one(FLERR,"Too many extrapolation warnings");
+  }
+
+ // Stop if force committee disagreement is exceeded.
+  if (comSize > 1 && calcd > 0 && update->ntimestep % calcd == 0 && maxcdf > 0.000001) {
+    if (maxForceCom > maxcdf) {
+      error->one(FLERR,"Force committee disagreement exceeded set threshold (check maxcdf)");
+    }
+  }
+
+ // Stop if energy committee disagreement is exceeded.
+  if(comm->me == 0){
+    if (maxcde > 0.000001 && comSize > 1 && calcd > 0 && update->ntimestep % calcd == 0) {
+      if (maxEnergyCom > maxcde) {
+        error->one(FLERR,"Energy committee disagreement exceeded set threshold (check maxcde)");
+      }
+    }
   }
 
   // Reset internal extrapolation warnings counters.

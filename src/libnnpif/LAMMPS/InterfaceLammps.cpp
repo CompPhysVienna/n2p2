@@ -84,7 +84,7 @@ void InterfaceLammps::initialize(char const* const& directory,
                                     collectExtrapolationWarnings,
                                     writeExtrapolationWarnings,
                                     stopOnExtrapolationWarnings);
-    setupNeuralNetworkWeights(dir + "weights.%03d.data");
+    setupNeuralNetworkWeights(dir,"weights.%03d.data");
 
     log << "\n";
     log << "*** SETUP: LAMMPS INTERFACE *************"
@@ -361,6 +361,19 @@ void InterfaceLammps::process()
     return;
 }
 
+int InterfaceLammps::getComSize() const
+{
+    return committeeSize;
+}
+
+int InterfaceLammps::reduceNumAtoms() const
+{
+    int globalNumAtoms{0};
+    MPI_Allreduce(&structure.numAtoms, &globalNumAtoms, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+    return globalNumAtoms;
+}
+
 double InterfaceLammps::getMaxCutoffRadius() const
 {
     if (normalize) return maxCutoffRadius / convLength / cflength;
@@ -370,6 +383,65 @@ double InterfaceLammps::getMaxCutoffRadius() const
 double InterfaceLammps::getEnergy() const
 {
     return structure.energy / cfenergy;
+}
+
+double InterfaceLammps::getComDisEnergy(std::vector<double> const& globalEnergyCom, 
+                                        int const& globalNumAtoms,
+                                        double const& wricd,
+                                        std::size_t const& timestep)
+{
+    structure.energyCom = globalEnergyCom;
+    structure.numAtoms = globalNumAtoms;
+    structure.energy = structure.averageEnergy();
+    structure.committeeDisagreement = structure.calcDisagreement();
+    if (normalize)
+    {
+        structure.committeeDisagreement = structure.committeeDisagreement / convEnergy;
+        structure.energy = physicalEnergy(structure, false);
+    }
+    addEnergyOffset(structure, false);
+    structure.energy = getEnergy();
+    structure.committeeDisagreement = structure.committeeDisagreement / cfenergy;
+
+    if (structure.committeeDisagreement > wricd){
+        writeEnergyCommittee(timestep);
+    }
+
+    return structure.committeeDisagreement;
+}
+
+double InterfaceLammps::getComDisForce(std::vector<double> const& globalForceCom,  
+                                       std::size_t const& comSize,
+                                       double const& wricd,
+                                       std::size_t const& timestep)
+{
+    double maxCommittee = 0.0;
+    Atom* ai = NULL;
+    for (size_t i =  0; i < structure.atoms.size(); ++i)
+    {
+        ai = &(structure.atoms.at(i));
+        int64_t atom = ai->tag;
+        ai->fCom.resize(comSize);
+        for (std::size_t c = 0; c < comSize; ++c)
+        {
+            for (std::size_t alpha = 0; alpha < 3; ++alpha){
+                ai->fCom.at(c)[alpha] = globalForceCom[3*(atom-1)*comSize + 3*c + alpha];
+            }
+        }
+        ai->f = ai->averageForce();
+        ai->committeeDisagreement = ai->calcDisagreement();
+        for (size_t j = 0; j < 3; ++j)
+        {
+            if (ai->committeeDisagreement[j] > wricd){
+                writeStructure(timestep, i);
+            }
+            if (ai->committeeDisagreement[j] > maxCommittee){
+                maxCommittee = ai->committeeDisagreement[j];
+            }
+        }
+    }
+    
+    return maxCommittee;
 }
 
 double InterfaceLammps::getAtomicEnergy(int index) const
@@ -387,6 +459,29 @@ double InterfaceLammps::getAtomicEnergy(int index) const
     {
         return (a.energy + e.getAtomicEnergyOffset()) / cfenergy;
     }
+}
+
+std::vector<double> InterfaceLammps::reduceEnergyCom()
+{
+    std::vector<double> globalEnergyCom(committeeSize,0);
+    double* pLocalEnergyCom = &structure.energyCom[0];
+    double* pGlobalEnergyCom = &globalEnergyCom[0];
+    //MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Reduce(pLocalEnergyCom, pGlobalEnergyCom, committeeSize, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    return globalEnergyCom;
+}
+
+std::vector<double> InterfaceLammps::reduceForceCom(int const& globalNumAtoms) const
+{
+    int size = 3*committeeSize*globalNumAtoms;
+    std::vector<double> globalForceCom(size,0);
+    double* pLocalForceCom = &structure.forceLoc[0];
+    double* pGlobalForceCom = &globalForceCom[0];
+    //MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Allreduce(pLocalForceCom, pGlobalForceCom, size, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+    return globalForceCom;
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const
@@ -450,6 +545,92 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             atomF[ia][0] -= dEdG * dGdr[0];
             atomF[ia][1] -= dEdG * dGdr[1];
             atomF[ia][2] -= dEdG * dGdr[2];
+        }
+    }
+
+    return;
+}
+
+void InterfaceLammps::getForcesCom(double* const* const& atomF, int const& globalNumAtoms) const
+{
+    double const cfforce = cflength / cfenergy;
+    double convForce = 1.0;
+    int size = 3*committeeSize*globalNumAtoms;
+    structure.forceLoc.assign(size,0.0);
+    if (normalize)
+    {
+        convForce = convLength / convEnergy;
+    }
+
+    // Loop over all local atoms. Neural network and Symmetry function
+    // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
+    // atoms and their neighbors. These are now summed up to the force
+    // contributions of local and ghost atoms.
+    Atom const* a = NULL;
+
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
+        // Set pointer to atom.
+        a = &(structure.atoms.at(i));
+
+#ifndef N2P2_FULL_SFD_MEMORY
+        vector<vector<size_t> > const& tableFull
+            = elements.at(a->element).getSymmetryFunctionTable();
+#endif
+        // Loop over all neighbor atoms. Some are local, some are ghost atoms.
+        for (vector<Atom::Neighbor>::const_iterator n = a->neighbors.begin();
+             n != a->neighbors.end(); ++n)
+        {
+            // Temporarily save the neighbor index. Note: this is the index for
+            // the LAMMPS force array.
+            size_t const in = n->index;
+            size_t const tagIn = n->tag;
+            // Now loop over all symmetry functions and add force contributions
+            // (local + ghost atoms).
+#ifndef N2P2_FULL_SFD_MEMORY
+            vector<size_t> const& table = tableFull.at(n->element);
+            for (size_t s = 0; s < n->dGdr.size(); ++s)
+            {
+                double const* const dGdr = n->dGdr[s].r;
+                for (size_t c = 0; c < committeeSize; ++c)
+                {
+                    double const dEdG = a->dEdGCom.at(c)[table.at(s)] * cfforce * convForce;
+#else
+            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
+            {
+                double const* const dGdr = n->dGdr[s].r;
+                for (size_t c = 0; c < committeeSize; ++c)
+                {
+                    double const dEdG = a->dEdGCom.at(c)[s] * cfforce * convForce;
+#endif
+                    atomF[in][0] -= dEdG * dGdr[0] / committeeSize;
+                    atomF[in][1] -= dEdG * dGdr[1] / committeeSize;
+                    atomF[in][2] -= dEdG * dGdr[2] / committeeSize;
+                    structure.addForceLocal(0,c,tagIn,committeeSize,dEdG * dGdr[0]);
+                    structure.addForceLocal(1,c,tagIn,committeeSize,dEdG * dGdr[1]);
+                    structure.addForceLocal(2,c,tagIn,committeeSize,dEdG * dGdr[2]);
+                }
+            }
+        }
+        // Temporarily save the atom index. Note: this is the index for
+        // the LAMMPS force array.
+        size_t const ia = a->index;
+        size_t const tagIa = a->tag;
+        // Loop over all symmetry functions and add force contributions (local
+        // atoms).
+        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
+        {
+            double const* const dGdr = a->dGdr[s].r;
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                double const dEdG = a->dEdGCom.at(c)[s] * cfforce * convForce;
+                atomF[ia][0] -= dEdG * dGdr[0] / committeeSize;
+                atomF[ia][1] -= dEdG * dGdr[1] / committeeSize;
+                atomF[ia][2] -= dEdG * dGdr[2] / committeeSize;
+                structure.addForceLocal(0,c,tagIa,committeeSize,dEdG * dGdr[0]);
+                structure.addForceLocal(1,c,tagIa,committeeSize,dEdG * dGdr[1]);
+                structure.addForceLocal(2,c,tagIa,committeeSize,dEdG * dGdr[2]);
+            }    
         }
     }
 
@@ -594,4 +775,48 @@ void InterfaceLammps::clearExtrapolationWarnings()
     }
 
     return;
+}
+
+void InterfaceLammps::writeEnergyCommittee(std::size_t const& timestep) const
+{
+    ofstream outfile;
+    outfile.open("committee-energy.txt", std::ios_base::app);
+    outfile << strpr("%i %16.12E\t%16.6E\t%16.6E\n",
+                timestep, 
+                structure.energy, 
+                structure.committeeDisagreement, 
+                structure.committeeDisagreement/structure.numAtoms);
+    outfile.close();
+
+    return; 
+}
+
+void InterfaceLammps::writeStructure(std::size_t const& timestep, int64_t const& i) const
+{
+    Atom const* ai = &(structure.atoms.at(i));
+    int tag = ai->tag;
+    ofstream input;
+    std::string file_name = "input" + std::to_string(timestep) + "-" + std::to_string(tag) + ".xyz";
+    input.open(file_name.c_str());
+    input << strpr("%i    # index %i, comm. dis. %4.5f %4.5f %4.5f\n", 
+                    ai->numNeighbors+1, 
+                    tag, 
+                    ai->committeeDisagreement[0], 
+                    ai->committeeDisagreement[1], 
+                    ai->committeeDisagreement[2]);
+    input << strpr("%2s %16.8f %16.8f %16.8f \n",
+                    elementMap[ai->element].c_str(),
+                    0.0,
+                    0.0,
+                    0.0);
+    for (vector<Atom::Neighbor>::const_iterator n = ai->neighbors.begin();
+             n != ai->neighbors.end(); ++n)
+    {
+        input << strpr("%2s %16.8f %16.8f %16.8f \n",
+                        elementMap[n->element].c_str(),
+                        n->dr[0]/cflength/convLength,
+                        n->dr[1]/cflength/convLength,
+                        n->dr[2]/cflength/convLength);
+    }
+    input.close();  
 }

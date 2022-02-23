@@ -29,6 +29,8 @@ mass 1 ${mass_H}
 mass 2 ${mass_O}
 timestep ${dt}
 thermo 1
+thermo_modify format float %14.6f
+dump 4a all custom 5 dump.myforce.* id type fx fy fz
 
 ###############################################################################
 # NN

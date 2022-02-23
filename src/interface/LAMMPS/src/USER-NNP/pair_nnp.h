@@ -44,13 +44,23 @@ class PairNNP : public Pair {
   bool resetew;
   int showewsum;
   int maxew;
+  int globalNumAtoms;
+  int comSize;
+  int calcd;
   long numExtrapolationWarningsTotal;
   long numExtrapolationWarningsSummary;
   double cflength;
   double cfenergy;
   double maxCutoffRadius;
+  double wricdf;
+  double wricde;
+  double maxcdf;
+  double maxcde;
+  double maxForceCom;
+  double maxEnergyCom;
   char* directory;
   char* emap;
+
   nnp::InterfaceLammps interface;
 };
 
