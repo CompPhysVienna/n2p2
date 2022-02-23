@@ -12,8 +12,6 @@
 using namespace std;
 using namespace nnp;
 
-double const accuracy = 1.0E-10;
-
 BoostDataContainer<Example_nnp_train> container;
 
 NNP_TOOL_TEST_CASE()
@@ -46,13 +44,13 @@ void nnpToolTestBody(Example_nnp_train const example)
         {
             epochFound = true;
             BOOST_REQUIRE_SMALL(example.rmseEnergyTrain - stod(columns.at(1)),
-                                accuracy);
+                                example.accuracy);
             BOOST_REQUIRE_SMALL(example.rmseEnergyTest - stod(columns.at(2)),
-                                accuracy);
+                                example.accuracy);
             BOOST_REQUIRE_SMALL(example.rmseForcesTrain - stod(columns.at(9)),
-                                accuracy);
+                                example.accuracy);
             BOOST_REQUIRE_SMALL(example.rmseForcesTest - stod(columns.at(10)),
-                                accuracy);
+                                example.accuracy);
         }
     }
     file.close();
