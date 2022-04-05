@@ -82,6 +82,8 @@ void PairNNPDevelop::compute(int eflag, int vflag)
 
   // If virial needed calculate via F dot r.
   if (vflag_fdotr) virial_fdotr_compute();
+
+  interface.writeToFile("md_run.data", true);
 }
 
 /* ----------------------------------------------------------------------

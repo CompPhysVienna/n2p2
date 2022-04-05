@@ -109,7 +109,14 @@ void Training::selectSets()
             size_t const& na = s.numAtoms;
             k = "energy"; if (p.exists(k)) p[k].numTestPatterns++;
             k = "force";  if (p.exists(k)) p[k].numTestPatterns += 3 * na;
-            k = "charge"; if (p.exists(k)) p[k].numTestPatterns += na;
+            if (nnpType == NNPType::HDNNP_4G)
+            {
+                k = "charge"; if (p.exists(k)) p[k].numTestPatterns++;
+            }
+            else
+            {
+                k = "charge"; if (p.exists(k)) p[k].numTestPatterns += na;
+            }
         }
         else
         {
@@ -130,7 +137,7 @@ void Training::selectSets()
             if (p.exists(k))
             {
                 p[k].numTrainPatterns += 3 * s.numAtoms;
-                
+
                 if (nnpType == NNPType::HDNNP_4G)
                 {
                     p[k].updateCandidates.push_back(UpdateCandidate());
@@ -184,11 +191,11 @@ void Training::selectSets()
                         p[k].updateCandidates.back().s = i;
                         p[k].updateCandidates.back().subCandidates
                             .push_back(SubCandidate());
-                        p[k].updateCandidates.back().subCandidates.back().a 
+                        p[k].updateCandidates.back().subCandidates.back().a
                             = it->index;
                     }
                 }
-                
+
             }
         }
     }
@@ -911,8 +918,10 @@ void Training::calculateNeighborLists()
     if (normalize) maxCutoffRadiusPhys = maxCutoffRadius / convLength;
     // TODO: may not actually be cutoff (ewald real space cutoff is often
     // larger)
-    log << strpr("Cutoff radius for neighbor lists: %f\n",
+    if (nnpType != NNPType::HDNNP_4G)
+        log << strpr("Cutoff radius for neighbor lists: %f\n",
                  maxCutoffRadiusPhys);
+    double maxCutoffRadiusAllStructures = 0.0;
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
@@ -924,12 +933,19 @@ void Training::calculateNeighborLists()
                                             screeningFunction.getOuter(),
                                             maxCutoffRadius);
             it->calculateNeighborList(maxCutoffRadius,cutoffs);
+
+            if (it->maxCutoffRadiusOverall > maxCutoffRadiusAllStructures)
+                maxCutoffRadiusAllStructures = it->maxCutoffRadiusOverall;
         }
         else
         {
             it->calculateNeighborList(maxCutoffRadius);
         }
     }
+    if (normalize) maxCutoffRadiusAllStructures /= convLength;
+    if (nnpType == NNPType::HDNNP_4G)
+        log << strpr("Largest cutoff radius for neighbor lists: %f\n",
+                     maxCutoffRadiusAllStructures);
 #ifdef _OPENMP
     omp_set_num_threads(num_threads);
     log << strpr("Restoring OpenMP parallelization: max. %d threads.\n",
@@ -1073,9 +1089,9 @@ void Training::calculateError(
             }
             else
             {
-                if ( !it->hasCharges || (!it->hasAMatrix && useForces) ) 
+                if ( !it->hasCharges || (!it->hasAMatrix && useForces) )
                 {
-                    calculateAtomicNeuralNetworks((*it), useForces, 
+                    calculateAtomicNeuralNetworks((*it), useForces,
                                                     "elec", true);
                     chargeEquilibration((*it), useForces, true);
                 }
@@ -1800,7 +1816,7 @@ void Training::loop()
     // Write initial weights to files.
     if (myRank == 0) writeWeightsEpoch();
 
-    // Write initial hardness to files (checks for corresponding type and 
+    // Write initial hardness to files (checks for corresponding type and
     // stage)
     if (myRank == 0) writeHardnessEpoch();
 
@@ -1921,8 +1937,8 @@ void Training::update(string const& property)
     vector<double> currentRmseFraction(batchSize, 0.0);
 
     bool useSubCandidates = (k == "force" && nnpType == NNPType::HDNNP_4G);
-        
-    // Either consider only UpdateCandidates or SubCandidates 
+
+    // Either consider only UpdateCandidates or SubCandidates
     vector<size_t> currentUpdateCandidates(batchSize, 0);
 
     for (size_t i = 0; i < numUpdaters; ++i)
@@ -1934,7 +1950,6 @@ void Training::update(string const& property)
     // Loop over (mini-)batch size.
     for (size_t b = 0; b < batchSize; ++b)
     {
-        // TODO: SubCandidate? Maybe need reference for possible subcandidate
         UpdateCandidate* c = NULL; // Actual current update candidate.
         SubCandidate* sC = NULL; // Actual current sub candidate.
         size_t* posCandidates = NULL; // position of sub or update candidate.
@@ -1949,7 +1964,6 @@ void Training::update(string const& property)
         for (il = 0; il < trials; ++il)
         {
             // Restart position index if necessary.
-            // TODO: SubCandidate?
             if (pu.posUpdateCandidates >= pu.updateCandidates.size())
             {
                 pu.posUpdateCandidates = 0;
@@ -1958,10 +1972,9 @@ void Training::update(string const& property)
             // Set current update candidate.
             c = &(pu.updateCandidates.at(pu.posUpdateCandidates));
 
-            // TODO: SubCandidate?
             if (c->posSubCandidates >= c->subCandidates.size())
                 c->posSubCandidates = 0;
-            // Shortcut for position counter of interest. 
+            // Shortcut for position counter of interest.
             if (useSubCandidates)
             {
                 posCandidates = &(c->posSubCandidates);
@@ -2028,7 +2041,7 @@ void Training::update(string const& property)
                         calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
                         currentRmseFraction.at(b) =
-                            fabs(a.fRef[sC->c] 
+                            fabs(a.fRef[sC->c]
                                     - a.f[sC->c])
                             / pu.errorTrain.at("RMSE");
                     }
@@ -2044,7 +2057,7 @@ void Training::update(string const& property)
                         calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
                         currentRmseFraction.at(b) =
-                            fabs(a.fRef[sC->c] 
+                            fabs(a.fRef[sC->c]
                                     - a.f[sC->c])
                             / pu.errorTrain.at("RMSE");
                     }
@@ -2065,7 +2078,7 @@ void Training::update(string const& property)
                         Eigen::VectorXd QError;
                         double QErrorNorm;
                         calculateChargeErrorVec(s, QError, QErrorNorm);
-                        currentRmseFraction.at(b) = 
+                        currentRmseFraction.at(b) =
                             QErrorNorm / sqrt(s.numAtoms)
                             / pu.errorTrain.at("RMSE");
                     }
@@ -2087,7 +2100,6 @@ void Training::update(string const& property)
                 if (currentRmseFraction.at(b) > pu.rmseThreshold)
                 {
                     // Increment position in update candidate list.
-                    // TODO: SubCandidate?
                     (*posCandidates)++;
                     break;
                 }
@@ -2103,11 +2115,9 @@ void Training::update(string const& property)
                 if (currentRmseFraction.at(b) > rmseFractionBest)
                 {
                     rmseFractionBest = currentRmseFraction.at(b);
-                    // TODO: SubCandidate?
                     indexBest = *posCandidates;
                 }
                 // Increment position in update candidate list.
-                // TODO: SubCandidate?
                 //pu.posUpdateCandidates++;
                 (*posCandidates)++;
             }
@@ -2116,8 +2126,6 @@ void Training::update(string const& property)
                      pu.selectionMode == SM_SORT)
             {
                 // Increment position in update candidate list.
-                // TODO: SubCandidate?
-                //pu.posUpdateCandidates++;
                 (*posCandidates)++;
                 break;
             }
@@ -2129,7 +2137,6 @@ void Training::update(string const& property)
         if (pu.selectionMode == SM_THRESHOLD && il == trials)
         {
             // Set best candidate.
-            // TODO: SubCandidate?
             //currentUpdateCandidates.at(b) =
             //    &(pu.updateCandidates.at(indexBest));
             currentUpdateCandidates.at(b) = indexBest;
@@ -2144,7 +2151,7 @@ void Training::update(string const& property)
 #endif
         }
 
-        // If new update candidate, determine number of subcandidates needed 
+        // If new update candidate, determine number of subcandidates needed
         // before going to next candidate.
         if (useSubCandidates)
         {
@@ -2152,7 +2159,7 @@ void Training::update(string const& property)
             {
                 pu.numGroupedSubCand = static_cast<size_t>(
                                 c->subCandidates.size() * pu.epochFraction);
-                MPI_Allreduce(  MPI_IN_PLACE, &(pu.numGroupedSubCand), 1, 
+                MPI_Allreduce(  MPI_IN_PLACE, &(pu.numGroupedSubCand), 1,
                                 MPI_INT, MPI_MIN, comm);
                 //if (myRank == 0)
                 //    cout << "group size: " << pu.numGroupedSubCand << endl;
@@ -2164,7 +2171,6 @@ void Training::update(string const& property)
         // PART 2: Compute error vector and Jacobian
         ///////////////////////////////////////////////////////////////////////
 
-        // TODO: SubCandidate?
         Structure& s = structures.at(c->s);
         // Temporary storage for derivative contributions of atoms (dXdc stores
         // dEdc, dFdc or dQdc for energy, force or charge update, respectively.
@@ -2197,7 +2203,7 @@ void Training::update(string const& property)
             if (jacobianMode == JM_FULL)
             {
                 // Offset from batch training (multiple contributions from
-                // single stream/task 
+                // single stream/task
                 offset.at(i) += b * numWeightsPerUpdater.at(iu);
                 //log << strpr("%zu os 2: %zu ", i, offset.at(i));
             }
@@ -2215,7 +2221,7 @@ void Training::update(string const& property)
         {
             if (nnpType == NNPType::HDNNP_2G || nnpType == NNPType::HDNNP_4G)
             {
-                if (nnpType == NNPType::HDNNP_4G && !s.hasCharges) 
+                if (nnpType == NNPType::HDNNP_4G && !s.hasCharges)
                 {
                    calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
                    chargeEquilibration(s, derivatives, true);
@@ -2234,7 +2240,6 @@ void Training::update(string const& property)
                     }
                     if (nnpType == NNPType::HDNNP_4G)
                         nn.setInput(it->G.size(), it->charge);
-                    //cout << "charge of nr. " << it->index << ": " << it->charge << endl;
                     nn.propagate();
                     nn.getOutput(&(it->energy));
                     // Compute derivative of output node with respect to all
@@ -2263,14 +2268,16 @@ void Training::update(string const& property)
             {
                 if (nnpType == NNPType::HDNNP_4G)
                 {
-                    if (!s.hasAMatrix) 
+                    if (!s.hasAMatrix)
                     {
-                       calculateAtomicNeuralNetworks(s, derivatives, "elec", 
+                       calculateAtomicNeuralNetworks(s, derivatives, "elec",
                                                         true);
                        chargeEquilibration(s, derivatives, true);
                     }
-                    vector<size_t> atomsAndComponents = { 3 * sC->a + sC->c };
-                    s.calculateDQdr(atomsAndComponents, elements);
+                    s.calculateDQdr(vector<size_t>{sC->a},
+                                    vector<size_t>{sC->c},
+                                    maxCutoffRadius,
+                                    elements);
                 }
 
                 // Loop over atoms and calculate atomic energy contributions.
@@ -2281,19 +2288,20 @@ void Training::update(string const& property)
                     // with respect to coordinate.
 #ifndef NNP_FULL_SFD_MEMORY
                     collectDGdxia((*it), sC->a, sC->c);
+
                     if (nnpType == NNPType::HDNNP_4G)
                     {
                         double dQdxia = s.atoms.at(sC->a).dQdr.at(it->index)[sC->c];
-                        dGdxia.push_back(dQdxia);
+                        dGdxia.back() = dQdxia;
                     }
 #else
-                    it->collectDGdxia(sC->a, sC->c);
+                    it->collectDGdxia(sC->a, sC->c, maxCutoffRadius);
                     if (nnpType == NNPType::HDNNP_4G)
                     {
                         double dQdxia = s.atoms.at(sC->a).dQdr.at(it->index)[sC->c];
-                        it->dGdxia.push_back(dQdxia);
+                        it->dGdxia.resize(it->G.size() + 1);
+                        it->dGdxia.back() = dQdxia;
                     }
-
 #endif
                     size_t i = it->element;
                     NeuralNetwork& nn = elements.at(i).neuralNetworks.at(nnId);
@@ -2340,7 +2348,7 @@ void Training::update(string const& property)
             // Assume stage 1.
             if (nnpType == NNPType::HDNNP_4G)
             {
-                
+
                 // Vector for storing all atoms dChi/dc
                 vector<vector<double>> dChidc;
                 dChidc.resize(s.numAtoms);
@@ -2351,7 +2359,7 @@ void Training::update(string const& property)
                                .getNumConnections();
                     dChidc.at(k).resize(n, 0.0);
 
-                    NeuralNetwork& nn = 
+                    NeuralNetwork& nn =
                         elements.at(ak.element).neuralNetworks.at(nnId);
                     nn.setInput(&(ak.G.front()));
                     nn.propagate();
@@ -2375,10 +2383,9 @@ void Training::update(string const& property)
                 s.calculateDQdChi(dQdChi);
                 vector<Eigen::VectorXd> dQdJ;
                 s.calculateDQdJ(dQdJ);
-                
+
                 calculateChargeErrorVec(s, QError, QErrorNorm);
-                
-                //if (myRank == 0) cout << QErrorNorm / sqrt(s.numAtoms) << endl;
+
                 if (QErrorNorm != 0)
                 {
                     // Finally sum up Jacobian.
@@ -2390,7 +2397,7 @@ void Training::update(string const& property)
                             size_t l = s.atoms.at(k).element;
                             for (size_t j = 0; j < dChidc.at(k).size(); ++j)
                             {
-                                // 1 / QErrorNorm * (Q-Qref) * dQ/dChi * dChi/dc 
+                                // 1 / QErrorNorm * (Q-Qref) * dQ/dChi * dChi/dc
                                 pu.jacobian.at(0).at(offset.at(l) + j) +=
                                     1.0 / QErrorNorm * QError(i)
                                     * dQdChi.at(k)(i) * dChidc.at(k).at(j);
@@ -2401,7 +2408,7 @@ void Training::update(string const& property)
                         {
                             size_t n = elements.at(k).neuralNetworks.at(nnId)
                                        .getNumConnections();
-                            pu.jacobian.at(0).at(offset.at(k) + n) += 
+                            pu.jacobian.at(0).at(offset.at(k) + n) +=
                                         1.0 / QErrorNorm
                                         * QError(i) * dQdJ.at(k)(i) * 2
                                         * sqrt(elements.at(k).getHardness());
@@ -2444,19 +2451,23 @@ void Training::update(string const& property)
         else if (k == "force")
         {
             calculateForces(s);
-            // TODO: SubCandidate?
             Atom const& a = s.atoms.at(sC->a);
             currentRmseFraction.at(b) = fabs(a.fRef[sC->c] - a.f[sC->c])
                                       / pu.errorTrain.at("RMSE");
         }
         else if (k == "charge")
         {
-            //Atom const& a = s.atoms.at(c->a);
-            //currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
-            //                          / pu.errorTrain.at("RMSE");
-            currentRmseFraction.at(b) = QErrorNorm / sqrt(s.numAtoms)
-                                        / pu.errorTrain.at("RMSE");
-
+            if (nnpType == NNPType::HDNNP_4G)
+            {
+                currentRmseFraction.at(b) = QErrorNorm / sqrt(s.numAtoms)
+                                            / pu.errorTrain.at("RMSE");
+            }
+            else
+            {
+                Atom const& a = s.atoms.at(sC->a);
+                currentRmseFraction.at(b) = fabs(a.chargeRef - a.charge)
+                                          / pu.errorTrain.at("RMSE");
+            }
         }
 
         // Now symmetry function memory is not required any more for this
@@ -2489,13 +2500,18 @@ void Training::update(string const& property)
             }
             else if (k == "force")
             {
-                // TODO: SubCandidate?
                 Atom const& a = s.atoms.at(sC->a);
                 pu.error.at(0).at(offset2) +=  a.fRef[sC->c] - a.f[sC->c];
             }
             else if (k == "charge")
             {
-                pu.error.at(0).at(offset2) =  -QErrorNorm;
+                if (nnpType == NNPType::HDNNP_4G)
+                    pu.error.at(0).at(offset2) = -QErrorNorm;
+                else
+                {
+                    Atom const& a = s.atoms.at(sC->a);
+                    pu.error.at(0).at(offset2) += a.chargeRef - a.charge;
+                }
             }
         }
         else if (updateStrategy == US_ELEMENT)
@@ -2510,7 +2526,6 @@ void Training::update(string const& property)
                 }
                 else if (k == "force")
                 {
-                    // TODO: SubCandidate? --> US_ELEMENT only for 2G
                     Atom const& a = s.atoms.at(sC->a);
                     pu.error.at(i).at(offset2) += (a.fRef[sC->c] - a.f[sC->c])
                                                * a.numNeighborsPerElement.at(i)
@@ -2533,7 +2548,6 @@ void Training::update(string const& property)
     // Apply force update weight to error and Jacobian.
     if (k == "force")
     {
-        // TODO: SubCandidate? --> probably ok?
         for (size_t i = 0; i < numUpdaters; ++i)
         {
             for (size_t j = 0; j < pu.error.at(i).size(); ++j)
@@ -2662,14 +2676,12 @@ void Training::update(string const& property)
     sw[k + "_log"].start(newLoop);
     if (writeTrainingLog)
     {
-        // TODO: SubCandidate?
         vector<int>    procUpdateCandidate;
         vector<size_t> indexStructure;
         vector<size_t> indexStructureGlobal;
         vector<size_t> indexAtom;
         vector<size_t> indexCoordinate;
 
-        // TODO: SubCandidate?
         vector<int> currentUpdateCandidatesPerTask;
         vector<int> currentUpdateCandidatesOffset;
         int myCurrentUpdateCandidates = currentUpdateCandidates.size();
@@ -2864,6 +2876,7 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
                                                       std::size_t atom,
                                                       std::size_t component)
 {
+    // TODO: Add HDNNP-4G
     Structure& s = *structure;
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(s, true);
@@ -2888,7 +2901,7 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
 #ifndef NNP_FULL_SFD_MEMORY
         collectDGdxia((*it), atom, component);
 #else
-        it->collectDGdxia(atom, component);
+        it->collectDGdxia(atom, component, maxCutoffRadius);
 #endif
         size_t i = it->element;
         NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
@@ -2933,7 +2946,7 @@ void Training::getWeights()
             nn.getConnections(&(weights.at(0).at(pos)));
             pos += nn.getNumConnections();
             // Leave slot for sqrt of hardness
-            if (nnpType == NNPType::HDNNP_4G && stage == 1) 
+            if (nnpType == NNPType::HDNNP_4G && stage == 1)
             {
                 // TODO: check that hardness is positive?
                 weights.at(0).at(pos) = sqrt(elements.at(i).getHardness());
@@ -3038,7 +3051,10 @@ void Training::collectDGdxia(Atom const& atom,
     // Reset dGdxia array.
     dGdxia.clear();
     vector<double>(dGdxia).swap(dGdxia);
-    dGdxia.resize(nsf, 0.0);
+    if (nnpType == NNPType::HDNNP_4G)
+        dGdxia.resize(nsf+1, 0.0);
+    else
+        dGdxia.resize(nsf, 0.0);
 
     vector<vector<size_t> > const& tableFull
         = elements.at(atom.element).getSymmetryFunctionTable();

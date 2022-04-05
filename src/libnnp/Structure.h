@@ -339,13 +339,18 @@ struct Structure
     void                     calculateDQdJ(std::vector<Eigen::VectorXd> &dQdJ);
     /** Calculates derivative of the charges with respect to the atom's
      * position.
-     * @param[in] atomsAndComponents Vector telling for which atoms and for
-     *                  which component the derivatives should be calculated.
-     *                  int(value/3) gives the atom's index, (value % 3) gives
-     *                  the component.
+     * @param[in] atomIndices Vector containing indices of atoms for which the
+     *                      derivative should be calculated.
+     * @param[in] compIndices Vector containing indices of vector components
+     *                        for which the derivative should be calculated.
+     * @param[in] maxCutoffRadius Max. cutoff radius of symmetry functions.
+     * @param[in] elements Vector containing all elements (needed for symmetry
+     *                     function table).
      */
     void                    calculateDQdr(
-                                std::vector<size_t> const&  atomsAndComponents,
+                                std::vector<size_t> const&  atomsIndices,
+                                std::vector<size_t> const&  compIndices,
+                                double const                maxCutoffRadius,
                                 std::vector<Element> const& elements);
      /** Calculates partial derivatives of electrostatic Energy with respect
      * to atom's coordinates and charges.

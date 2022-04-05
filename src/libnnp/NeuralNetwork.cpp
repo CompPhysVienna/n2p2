@@ -37,7 +37,7 @@ NeuralNetwork(int                              numLayers,
     if (numLayers < 3)
     {
         fprintf(stderr,
-                "ERROR: Neural network must have at least three layers");
+                "ERROR: Neural network must have at least three layers\n");
         exit(EXIT_FAILURE);
     }
     numHiddenLayers = numLayers - 2;

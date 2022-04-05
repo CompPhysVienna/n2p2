@@ -44,13 +44,15 @@ Atom::Atom() : hasNeighborList               (false),
 }
 
 #ifdef NNP_FULL_SFD_MEMORY
-void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
+void Atom::collectDGdxia(size_t indexAtom,
+                         size_t indexComponent,
+                         double maxCutoffRadius)
 {
     for (size_t i = 0; i < dGdxia.size(); i++)
     {
         dGdxia[i] = 0.0;
     }
-    for (size_t i = 0; i < numNeighbors; i++)
+    for (size_t i = 0; i < getStoredMinNumNeighbors(maxCutoffRadius); i++)
     {
         if (neighbors[i].index == indexAtom)
         {
@@ -228,7 +230,7 @@ void Atom::allocate(bool all, double const maxCutoffRadius)
 #ifndef NNP_FULL_SFD_MEMORY
             n.dGdr.resize(numSymmetryFunctionDerivatives.at(n.element));
 #else
-            it->dGdr.resize(numSymmetryFunctions);
+            n.dGdr.resize(numSymmetryFunctions);
 #endif
         }
     }

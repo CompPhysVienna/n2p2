@@ -499,7 +499,7 @@ private:
     ///                        stage 2: 0 = energy update, 1 = force update (optional)).
     std::vector<int>         epochSchedule;
     /// Number of weights per updater. If nnpType 4G also h = sqrt(J) is 
-    /// counted.
+    /// counted during stage 1 training.
     std::vector<std::size_t> numWeightsPerUpdater;
     /// Offset of each element's weights in combined array. If nnpType 4G also 
     /// h = sqrt(J) is counted.
@@ -585,7 +585,7 @@ private:
                              std::size_t is,
                              std::size_t ia);
 #ifndef NNP_FULL_SFD_MEMORY
-    /** Collect derivative of symmetry functions with repect to one atom's
+    /** Collect derivative of symmetry functions with respect to one atom's
      * coordinate.
      *
      * @param[in] atom The atom which owns the symmetry functions.

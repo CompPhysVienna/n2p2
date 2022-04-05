@@ -180,6 +180,7 @@ struct Atom
      * @param[in] indexAtom The index @f$i@f$ of the atom requested.
      * @param[in] indexComponent The component @f$\alpha@f$ of the atom
      *                           requested.
+     * @param[in] maxCutoffRadius Maximum symmetry function cutoff.
      *
      * This calculates an array of derivatives
      * @f[
@@ -192,7 +193,8 @@ struct Atom
      * position of atom @f$i@f$. The result is stored in #dGdxia.
      */
     void                     collectDGdxia(std::size_t indexAtom,
-                                           std::size_t indexComponent);
+                                           std::size_t indexComponent,
+                                           double maxCutoffRadius);
 #endif
     /** Switch to normalized length, energy and charge units.
      *

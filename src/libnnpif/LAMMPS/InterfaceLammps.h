@@ -185,6 +185,13 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
+    /** Write current structure to file in units used in training data.
+     *
+     * @param fileName File name of the output structure file.
+     * @param append true if structure should be appended to existing file.
+     */
+    void   writeToFile(std::string const fileName,
+                       bool const        append);
     /** Add a Vec3D vector to a 3D array in place.
      *
      * @param[in,out] arr Array which is edited in place.

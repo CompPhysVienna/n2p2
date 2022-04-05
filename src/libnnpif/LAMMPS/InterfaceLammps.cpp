@@ -739,6 +739,14 @@ void InterfaceLammps::clearExtrapolationWarnings()
     return;
 }
 
+void InterfaceLammps::writeToFile(string const fileName,
+                                  bool const   append)
+{
+    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
+    structure.writeToFile(fileName, false, append);
+    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
+}
+
 void InterfaceLammps::add3DVecToArray(double *const & arr, Vec3D const& v) const
 {
     arr[0] += v[0];

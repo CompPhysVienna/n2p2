@@ -340,7 +340,7 @@ void Structure::calculateNeighborList(
             //    //TODO: maybe sort neighborsUnique too?
             //    atoms[i].NeighborListIsSorted = true;
             //}
-            //atoms[i].hasNeighborList = true;
+            atoms[i].hasNeighborList = true;
         }
     }
     else
@@ -955,15 +955,17 @@ void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
     return;
 }
 
-void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
+void Structure::calculateDQdr(  vector<size_t> const&   atomIndices,
+                                vector<size_t> const&   compIndices,
+                                double const            maxCutoffRadius,
                                 vector<Element> const&  elements)
 {
-    for (size_t const& i : atomsAndComponents)
+    if (atomIndices.size() != compIndices.size())
+        throw runtime_error("ERROR: In calculation of dQ/dr both atom index and"
+                            " component index must be specified.");
+    for (size_t i = 0; i < atomIndices.size(); ++i)
     {
-        const size_t index = i / 3;
-        const size_t comp = i % 3;
-
-        Atom& a = atoms.at(index);
+        Atom& a = atoms.at(atomIndices[i]);
         if ( a.dAdrQ.size() == 0 ) 
             throw runtime_error("ERROR: dAdrQ needs to be calculated before "
                                 "calculating dQdr");
@@ -976,50 +978,22 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomsAndComponents,
         {
             Atom const& aj = atoms.at(j);
 
-            // need to add this case because the loop over the neighbors
-            // does not include the contribution dChi_i/dr_i.
-            if (j == i)
-            {
-                for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
-                {
-                    b(j) -= aj.dChidG.at(k) * aj.dGdr.at(k)[comp];
-                }
-            }
-
 #ifndef NNP_FULL_SFD_MEMORY
-            vector<vector<size_t> > const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
-#endif
-
-            // TODO: break loop after sym-func cutoff
-            for (auto const& n : aj.neighbors)
-            {
-                if (n.index == i)
-                {
-#ifndef NNP_FULL_SFD_MEMORY
-
-                    vector<size_t> const& table = tableFull.at(n.element);
-                    for (size_t k = 0; k < n.dGdr.size(); ++k)
-                    {
-                        b(j) -= aj.dChidG.at(table.at(k)) 
-                                        * n.dGdr.at(k)[comp];
-                    }
+            vector<vector<size_t> > const *const tableFull
+                    = &(elements.at(aj.element).getSymmetryFunctionTable());
 #else
-                    for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
-                    {
-                        b(j) -= aj.dChidG.at(k) * n.dGdr.at(k)[comp];
-                    }
+            vector<vector<size_t> > const *const tableFull = nullptr;
 #endif
-                }
-            }
-            b(j) -= a.dAdrQ.at(j)[comp];
+            b(j) -= aj.calculateDChidr(atomIndices[i],
+                                       maxCutoffRadius,
+                                       tableFull)[compIndices[i]];
+            b(j) -= a.dAdrQ.at(j)[compIndices[i]];
         }
         VectorXd dQdr = A.colPivHouseholderQr().solve(b).head(numAtoms);
         for (size_t j = 0; j < numAtoms; ++j)
         {
-            a.dQdr.at(j)[comp] = dQdr(j);
+            a.dQdr.at(j)[compIndices[i]] = dQdr(j);
         }
-        //a.hasdQdr[comp] = true;
     }
     return;
 }
@@ -1039,6 +1013,9 @@ void Structure::calculateElectrostaticEnergyDerivatives(
         Atom& ai = atoms.at(i);
         size_t const ei = ai.element;
         double const Qi = ai.charge;
+
+        ai.pEelecpr = Vec3D{};
+        ai.dEelecdQ = 0.0;
 
         for (size_t j = 0; j < numAtoms; ++j)
         {

@@ -461,6 +461,11 @@ void Mode::setupElectrostatics(bool   initialHardness,
     log << "*****************************************"
            "**************************************\n";
 
+    return;
+}
+
+void Mode::setupCutoff()
+{
     log << "\n";
     log << "*** SETUP: CUTOFF FUNCTIONS *************"
            "**************************************\n";
@@ -478,11 +483,6 @@ void Mode::setupElectrostatics(bool   initialHardness,
         }
     }
     log << strpr("Parameter alpha for inner cutoff: %f\n", cutoffAlpha);
-    return;
-}
-
-void Mode::setupCutoff()
-{
     log << "Inner cutoff = Symmetry function cutoff * alpha\n";
 
     log << "Equal cutoff function type for all symmetry functions:\n";
@@ -1912,7 +1912,6 @@ void Mode::calculateForces(Structure& structure) const
                 Vec3D dChidr = aj.calculateDChidr(ai.index,
                                                   maxCutoffRadius);
 #endif
-
                 ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
 

@@ -39,8 +39,8 @@ atom_energy     O    -74.94518524
 
 ewald_truncation_error_method 1                 # 0 RuNNer method (default),
                                                 # 1 method optimized for n2p2 (recommended)
-#ewald_prec 1.e-6
-ewald_prec 1.e-6 1.0                            # method 0 requires one
+#ewald_prec 1.e-2
+ewald_prec 1.e-5 0.36                            # method 0 requires one
                                                 # dimensionless parameter which controls
                                                 # the electrostatic energy
                                                 # error,
