@@ -71,6 +71,9 @@ void PairNNPDevelop::compute(int eflag, int vflag)
   // Calculate forces of local and ghost atoms.
   interface.getForces(atom->f);
 
+  // Transfer charges LAMMPS. Does nothing if nnpType != 4G.
+  interface.getCharges(atom->q);
+
   // Add energy contribution to total energy.
   if (eflag_global)
      ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),0.0,0.0,0.0,0.0,0.0);
@@ -83,7 +86,7 @@ void PairNNPDevelop::compute(int eflag, int vflag)
   // If virial needed calculate via F dot r.
   if (vflag_fdotr) virial_fdotr_compute();
 
-  interface.writeToFile("md_run.data", true);
+    //interface.writeToFile("md_run.data", true);
 }
 
 /* ----------------------------------------------------------------------

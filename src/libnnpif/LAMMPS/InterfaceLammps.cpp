@@ -599,6 +599,21 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     return;
 }
 
+void InterfaceLammps::getCharges(double* const& atomQ) const
+{
+    if (nnpType != NNPType::HDNNP_4G) return;
+    if (!atomQ) return;
+
+    Structure const& s = structure;
+#ifdef _OPENMP
+    #pragma omp parallel for
+#endif
+    for (size_t i = 0; i < s.numAtoms; ++i)
+    {
+        atomQ[i] = s.atoms[i].charge;
+    }
+}
+
 long InterfaceLammps::getEWBufferSize() const
 {
     long bs = 0;

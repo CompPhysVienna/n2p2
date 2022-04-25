@@ -145,6 +145,12 @@ public:
      * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
      */
     void   getForces(double* const* const& atomF) const;
+    /** Transfer charges (in units of e) to LAMMPS atomic charge vector. Call
+     *  after getAtomicEnergy().
+     *
+     * @param[in,out] atomQ LAMMPS charge vector.
+     */
+    void   getCharges(double* const& atomQ) const;
     /** Check if this interface is correctly initialized.
      *
      * @return `True` if initialized, `False` otherwise.
