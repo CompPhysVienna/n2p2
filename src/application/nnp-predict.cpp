@@ -65,8 +65,24 @@ int main(int argc, char* argv[])
     prediction.log << "\n";
     prediction.log << "-----------------------------------------"
                       "--------------------------------------\n";
-    prediction.log << strpr("NNP energy: %16.8E\n",
+    prediction.log << strpr("NNP         total energy: %16.8E\n",
                             prediction.structure.energy);
+    if (prediction.getNnpType() == Mode::NNPType::HDNNP_4G)
+    {
+        prediction.log << strpr("NNP electrostatic energy: %16.8E\n",
+                                prediction.structure.energyElec);
+        prediction.log << "\n";
+        prediction.log << "NNP charges:\n";
+        for (auto const& a : s.atoms)
+        {
+            prediction.log << strpr("%10zu %2s %16.8E\n",
+                                    a.index + 1,
+                                    prediction.elementMap[a.element].c_str(),
+                                    a.charge);
+        }
+        prediction.log << strpr("NNP total charge: %16.8E (ref: %16.8E)\n",
+                          s.charge, s.chargeRef);
+    }
     prediction.log << "\n";
     prediction.log << "NNP forces:\n";
     for (vector<Atom>::const_iterator it = s.atoms.begin();

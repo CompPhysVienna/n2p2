@@ -1633,11 +1633,11 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     }
                 }
                 nn.getOutput(&(a.chi));
-                double chi = a.chi;
+                //double chi = a.chi;
                 if (normalize) a.chi = normalized("negativity", a.chi);
-                if (!suppressOutput)
-                log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
-                             a.index, elementMap[a.element].c_str(), chi);
+                //if (!suppressOutput)
+                //log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
+                //             a.index, elementMap[a.element].c_str(), chi);
             }
         }
         else if (id == "short")
@@ -1664,7 +1664,9 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 nn.getOutput(&(a.energy));
                 if (!suppressOutput)
                 log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
-                             a.index, elementMap[a.element].c_str(), a.energy);
+                             a.index + 1, elementMap[a.element].c_str(),
+                             a.energy
+                             + elements.at(a.element).getAtomicEnergyOffset());
             }
         }
     }
@@ -1744,8 +1746,8 @@ void Mode::chargeEquilibration( Structure& structure,
                                                 screeningFunction,
                                                 fourPiEps);
 
-    if (!suppressOutput)
-        log << strpr("Solve relative error: %16.8E\n", error);
+    //if (!suppressOutput)
+    //    log << strpr("Solve relative error: %16.8E\n", error);
 
     // TODO: leave these 2 functions here or move it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
@@ -1759,21 +1761,21 @@ void Mode::chargeEquilibration( Structure& structure,
                                             fourPiEps);
     }
 
-    for (auto const& a : structure.atoms)
-    {
-        if (!suppressOutput)
-            log << strpr("Atom %5zu (%2s) q: %16.8E\n",
-                     a.index, elementMap[a.element].c_str(), a.charge);
-        structure.charge += a.charge;
-    }
+    //for (auto const& a : structure.atoms)
+    //{
+    //    if (!suppressOutput)
+    //        log << strpr("Atom %5zu (%2s) q: %16.8E\n",
+    //                 a.index, elementMap[a.element].c_str(), a.charge);
+    //    //structure.charge += a.charge;
+    //}
+    //
+    //if (!suppressOutput)
+    //{
+    //    log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
+    //                 structure.charge, structure.chargeRef);
 
-    if (!suppressOutput)
-    {
-        log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
-                     structure.charge, structure.chargeRef);
-
-        log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
-    }
+    //    log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
+    //}
     return;
 }
 
