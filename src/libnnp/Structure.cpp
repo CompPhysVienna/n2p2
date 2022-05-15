@@ -1007,15 +1007,19 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                         ScreeningFunction const& fs,
                                         double const             fourPiEps)
 {
+    // Reset in case structure is used again (e.g. during training)
+    for (Atom &ai : atoms)
+    {
+        ai.pEelecpr = Vec3D{};
+        ai.dEelecdQ = 0.0;
+    }
+
     double rcutScreen = fs.getOuter();
     for (size_t i = 0; i < numAtoms; ++i)
     {
         Atom& ai = atoms.at(i);
         size_t const ei = ai.element;
         double const Qi = ai.charge;
-
-        ai.pEelecpr = Vec3D{};
-        ai.dEelecdQ = 0.0;
 
         for (size_t j = 0; j < numAtoms; ++j)
         {
