@@ -194,9 +194,9 @@ void Mode::loadSettingsFile(string const& fileName)
     return;
 }
 
-void Mode::setupGeneric()
+void Mode::setupGeneric(bool skipNormalize)
 {
-    setupNormalization();
+    if (!skipNormalize) setupNormalization();
     setupElementMap();
     setupElements();
     setupCutoff();
@@ -215,12 +215,15 @@ void Mode::setupGeneric()
     return;
 }
 
-void Mode::setupNormalization()
+void Mode::setupNormalization(bool standalone)
 {
-    log << "\n";
-    log << "*** SETUP: NORMALIZATION ****************"
-           "**************************************\n";
-    log << "\n";
+    if (standalone)
+    {
+        log << "\n";
+        log << "*** SETUP: NORMALIZATION ****************"
+               "**************************************\n";
+        log << "\n";
+    }
 
     if (settings.keywordExists("mean_energy") &&
         settings.keywordExists("conv_energy") &&
@@ -258,8 +261,11 @@ void Mode::setupNormalization()
                             "\"conv_energy\" and \"conv_length\".\n");
     }
 
-    log << "*****************************************"
-           "**************************************\n";
+    if (standalone)
+    {
+        log << "*****************************************"
+               "**************************************\n";
+    }
 
     return;
 }
@@ -482,7 +488,9 @@ void Mode::setupSymmetryFunctions()
         log << "--------------------------------------------------"
                "-----------------------------------------------\n";
     }
+    minNeighbors.clear();
     minNeighbors.resize(numElements, 0);
+    minCutoffRadius.clear();
     minCutoffRadius.resize(numElements, maxCutoffRadius);
     for (size_t i = 0; i < numElements; ++i)
     {
@@ -713,10 +721,10 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
     for (auto& e : elements)
     {
         e.setupSymmetryFunctionMemory();
-        vector<
-        size_t> symmetryFunctionNumTable = e.getSymmetryFunctionNumTable();
-        vector<
-        vector<size_t>> symmetryFunctionTable = e.getSymmetryFunctionTable();
+        vector<size_t> symmetryFunctionNumTable
+            = e.getSymmetryFunctionNumTable();
+        vector<vector<size_t>> symmetryFunctionTable
+            = e.getSymmetryFunctionTable();
         log << strpr("Symmetry function derivatives memory table "
                      "for element %2s :\n", e.getSymbol().c_str());
         log << "-----------------------------------------"

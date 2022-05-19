@@ -57,6 +57,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["random_seed"                   ] = "";
     m["test_fraction"                 ] = "";
     m["epochs"                        ] = "";
+    m["normalize_data_set"            ] = "";
     m["use_short_forces"              ] = "";
     m["rmse_threshold"                ] = "";
     m["rmse_threshold_energy"         ] = "";
@@ -270,17 +271,23 @@ void Settings::readFile()
     return;
 }
 
-void Settings::writeSettingsFile(ofstream* const& file) const
+void Settings::writeSettingsFile(ofstream* const&           file,
+                                 map<size_t, string> const& replacements) const
 {
     if (!file->is_open())
     {
         runtime_error("ERROR: Could not write to file.\n");
     }
 
-    for (vector<string>::const_iterator it = lines.begin();
-         it != lines.end(); ++it)
+    size_t i = 0;
+    for (auto const& l : lines)
     {
-        (*file) << (*it) << '\n';
+        if (replacements.find(i) != replacements.end())
+        {
+            (*file) << replacements.at(i);
+        }
+        else (*file) << l << '\n';
+        i++;
     }
 
     return;

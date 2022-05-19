@@ -421,6 +421,87 @@ If this keyword is omitted the default value is ``RMSEpa``. The keyword does not
 influence the output in the ``learning-curve.out`` file. There, all error metrics
 are written.
 
+----
+
+.. _normalize_data_set:
+
+``normalize_data_set``
+^^^^^^^^^^^^^^^^^^^^^^
+
+**Usage**:
+   ``normalize_data_set <string>``
+
+**Examples**:
+   ``normalize_data_set ref``
+
+   ``normalize_data_set force``
+
+Enables automatic data set normalization (see also :ref:`units`) as a
+pre-processing step during training with :ref:`nnp-train`. If this keyword is
+present, an additional calculation will be performed after the initialization of
+weights. The file and screen output will contain a corresponding section ``DATA
+SET NORMALIZATION`` summarizing the results of the data set normalization step.
+Three different modes of normalization can be selected:
+
+*  ``stats-only`` : **No or manually provided normalization, compute only statistics**
+
+   This option will trigger a calculation of statistics: mean and standard
+   deviation of reference energies and forces will be computed. Also, a first
+   prediction with the (randomly) initialized NN weights will be executed.
+   Finally, statistics for these energy and force predictions will be collected
+   and printed to screen. If present, already given normalization data (keywords
+   ``mean_energy``, ``conv_energy`` and ``conv_length``) in the ``input.nn``
+   file will be read and applied.
+
+*  ``ref`` : **Normalization based on reference energies and forces**
+
+   Energy and force statistics are computed as in mode ``stats-only``. The mean
+   and standard deviation of reference energies and forces are used to compute
+   three numbers for normalization: (1) the mean energy per atom, (2) a
+   conversion factor for energies , and (3) a conversion factor for lengths .
+   These are computed in such way that the normalized (indicated by :math:`^*`)
+   data satisfies:
+
+   .. math::
+
+      \left<e^*_\text{ref}\right> = 0 \quad \text{and} \quad
+      \sigma_{e^*_\text{ref}} = \sigma_{F^*_\text{ref}} = 1,
+
+   i.e., the mean reference energy per atom vanishes and there is unity standard
+   deviation of reference energies per atom and forces. As the training run
+   continues all necessary quantities are automatically converted to this
+   normalized unit system.
+
+   .. important::
+
+      The three numbers (1), (2) and (3) are automatically written to the first
+      lines of ``input.nn`` as arguments of the keywords ``mean_energy``,
+      ``conv_energy`` and ``conv_length``, respectively. They are read in and
+      normalization is applied by other tools if necessary. No additional user
+      interaction is required. In particular, it is **not** required to convert
+      settings in ``input.nn`` (e.g. cutoff radii, some symmetry function
+      parameters), nor the configuration data in ``input.data``. All unit
+      conversion will be handled internally.
+
+*  ``force`` : **Normalization based on reference and predicted forces (recommended)**
+
+   Same procedure as in mode ``ref`` but the normalization with respect to
+   standard deviation of energies per atom is omitted. Instead, the standard
+   deviation of **predicted** forces is set to unity:
+
+   .. math::
+
+      \left<e^*_\text{ref}\right> = 0 \quad \text{and} \quad
+      \sigma_{F^*_\text{NNP}} = \sigma_{F^*_\text{ref}} = 1,
+
+   The prediction is carried out with the previously (randomly) initialized
+   neural network weights. Usually this normalization procedure results in a
+   very uniform distribution of data points in the initial
+   reference-vs-prediction plot of the forces (see the files
+   ``train/testforces.000000.out``). This seems to be a good starting point for
+   the HDNNP training often resulting in lower force errors than the ``ref``
+   mode.
+
 .. [1] Blank, T. B.; Brown, S. D. Adaptive, Global, Extended Kalman Filters for
    Training Feedforward Neural Networks. J. Chemom. 1994, 8 (6), 391–407.
    https://doi.org/10.1002/cem.1180080605

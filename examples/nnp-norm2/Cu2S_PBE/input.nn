@@ -30,7 +30,6 @@ random_seed                     1234567        # Random number generator seed.
 ###############################################################################
 # These keywords are solely used for training with nnp-train.
 epochs                          10             # Number of training epochs.
-normalize_data_set              force          # Normalize data set prior to training (ref = via ref. data, force = via force prediction, stats-only = use existing).
 updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
 parallel_mode                   0              # Training parallelization used (0 = Parallel (rank 0 update), 1 = Parallel (all update)).
 jacobian_mode                   1              # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).
@@ -40,10 +39,9 @@ task_batch_size_energy          1              # Number of energy update candida
 task_batch_size_force           1              # Number of force update candidates prepared per task for each update (0 = Entire training set).
 memorize_symfunc_results                       # Keep symmetry function results in memory.
 test_fraction                   0.1            # Fraction of structures kept for testing.
-force_weight                    1.0            # Weight of force updates relative to energy updates.
+force_weight                    10.0           # Weight of force updates relative to energy updates.
 short_energy_fraction           1.000          # Fraction of energy updates per epoch.
-#short_force_fraction            0.02315        # Fraction of force updates per epoch (not necessary if force_energy_ratio given).
-force_energy_ratio              3.0            # Specifies ratio between force and energy updates (ratio = updates_force / updates_energy).
+short_force_fraction            0.02315        # Fraction of force updates per epoch.
 short_energy_error_threshold    0.00           # RMSE threshold for energy update candidates.
 short_force_error_threshold     1.00           # RMSE threshold for force update candidates.
 rmse_threshold_trials           3              # Maximum number of RMSE threshold trials.
@@ -107,34 +105,6 @@ kalman_etamax                   1.0            # Standard Kalman filter paramete
 # Wide Angular symmetry function (type 9):
 # NOTE: <<rshift>> is optional!
 #symfunction_short <element-central> 9 <element-neighbor1> <element-neighbor2> <eta> <lambda> <zeta> <rcutoff> <<rshift>
-
-# Weighted radial symmetry function (type 12):
-#symfunction_short <element-central> 12 <eta> <rshift> <rcutoff>
-
-# Weighted narrow Angular symmetry function (type 13):
-#symfunction_short <element-central> 13 <eta> <rshift> <lambda> <zeta> <rcutoff>
-
-# Radial symmetry function with compact support (type 20):
-#symfunction_short <element-central> 20 <element-neighbor> <rlow> <rcutoff> <subtype>
-
-# Narrow angular symmetry function with compact support (type 21):
-#symfunction_short <element-central> 21 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
-
-# Wide angular symmetry function with compact support (type 22):
-#symfunction_short <element-central> 22 <element-neighbor1> <element-neighbor2> <rlow> <rcutoff> <left> <right> <subtype>
-
-# Weighted radial symmetry function with compact support (type 23):
-#symfunction_short <element-central> 23 <rlow> <rcutoff> <subtype>
-
-# Weighted narrow angular symmetry function with compact support (type 24):
-#symfunction_short <element-central> 24 <rlow> <rcutoff> <left> <right> <subtype>
-
-# Weighted wide angular symmetry function with compact support (type 24):
-#symfunction_short <element-central> 25 <rlow> <rcutoff> <left> <right> <subtype>
-
-##############################
-# EXAMPLE SYMMETRY FUNCTIONS #
-##############################
 
 # Generating radial symmetry function set:
 # mode  = shift    

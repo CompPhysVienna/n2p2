@@ -138,6 +138,9 @@ public:
      * @param[in] stage Training stage to set.
      */
     void                  setStage(std::size_t stage);
+    /** Apply normalization based on initial weights prediction.
+     */
+    void                  dataSetNormalization();
     /** General training settings and setup of weight update routine.
      */
     void                  setupTraining();
