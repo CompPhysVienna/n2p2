@@ -12,74 +12,72 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Install required system packages
-        ########
-        # DOCS #
-        ########
-        # API docs with doxygen, generating graphs with doxygen requires dot.
-        run: sudo apt install doxygen graphviz
-        #########
-        # BUILD #
-        #########
-        # MPI
-        run: sudo apt install openmpi-bin libopenmpi-dev
-        # BLAS
-        run: sudo apt install libblas3 libblas-dev
-        # Eigen library
-        run: sudo apt install libeigen3-dev
-        # GSL library
-        run: sudo apt install libgsl-dev
-        #########
-        # TESTS #
-        #########
-        # Boost Test for C++ testing
-        run: sudo apt install libboost-test-dev libboost-filesystem-dev
-        # Coverage for C++
-        run: sudo apt install lcov
+        run: |
+          # Docs
+          # API docs with doxygen, generating graphs with doxygen requires dot.
+          sudo apt install doxygen graphviz
+
+          # Build 
+          # MPI
+          sudo apt install openmpi-bin libopenmpi-dev
+          # BLAS
+          sudo apt install libblas3 libblas-dev
+          # Eigen library
+          sudo apt install libeigen3-dev
+          # GSL library
+          sudo apt install libgsl-dev
+
+          # Tests
+          # Boost Test for C++ testing
+          sudo apt install libboost-test-dev libboost-filesystem-dev
+          # Coverage for C++
+          sudo apt install lcov
       
       - name: Install required Python packages
-        ########
-        # DOCS #
-        ########
-        run: pip install sphinx
-        run: pip install sphinx_rtd_theme
-        run: pip install breathe
-        #########
-        # pynnp #
-        #########
-        run: pip install cython
-        ###################
-        # TESTS for pynnp #
-        ###################
-        run: pip install pytest
-        run: pip install pytest-cov
-        run: pip install coverage==4.5.4
+        run: |
+          # Docs
+          pip install sphinx
+          pip install sphinx_rtd_theme
+          pip install breathe
+
+          # pynnp
+          pip install cython
+
+          # python tests
+          pip install pytest
+          pip install pytest-cov
+          pip install coverage==4.5.4
        
       - name: Build n2p2 libraries and applications
-        run: cd src
         run: make MODE=test -j
+        working-directory: ./src
       
       - name: Build documentation
-        run: make doc
-        # Prevent GitHub Jekyll to interfere with Sphinx theme.
-        run: touch ../doc/sphinx/html/.nojekyll
+        run: |
+          make doc
+          # Prevent GitHub Jekyll to interfere with Sphinx theme.
+          touch ../doc/sphinx/html/.nojekyll
+        working-directory: ./src
       
       - name: Build LAMMPS with n2p2 support
         run: make MODE=test lammps-nnp
+        working-directory: ./src
       
       - name: Run C++ tests and coverage
-        run: cd ../test/
-        run: make cpp
-        run: cd cpp
-        run: make coverage
+        run: |
+          make cpp
+          cd cpp
+          make coverage
+          rm *.gcda *.gcno
+        working-directory: ./test
       
-      - name: Build pynnp and run tests
-        run: cd ../../src/
+      - name: Build pynnp
         run: make pynnp MODE=test
-        run: cd ../test/
+        working-directory: ./src
+      
+      - name: Run python tests
         run: make python
-        run: cd cpp/
-        run: rm *.gcda *.gcno
-        run: cd ../../
+        working-directory: ./test
       
       - name: Upload C++ coverage to Codecov
         uses: codecov/codecov-action@v2
