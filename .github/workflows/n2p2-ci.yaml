@@ -93,9 +93,9 @@ jobs:
           flags: python
           verbose: true
 
-#      - name: Deploy Github pages
-#        if: ${{ github.ref == 'refs/heads/master' }}
-#        uses: JamesIves/github-pages-deploy-action@v4.3.3
-#        with:
-#          branch: gh-pages
-#          folder: doc/sphinx/html
+      - name: Deploy Github pages
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages
+          folder: doc/sphinx/html
