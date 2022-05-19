@@ -1,3 +1,4 @@
 <map id="nnp::GradientDescent" name="nnp::GradientDescent">
-<area shape="rect" id="node2" href="$classnnp_1_1Updater.html" title="Base class for different weight update methods. " alt="" coords="33,5,140,32"/>
+<area shape="rect" id="node1" title="Weight updates based on simple gradient descent methods." alt="" coords="5,80,168,107"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Updater.html" title="Base class for different weight update methods." alt="" coords="33,5,140,32"/>
 </map>

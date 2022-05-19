@@ -1,3 +1,4 @@
 <map id="nnp::InterfaceLammps::clearExtrapolationWarnings" name="nnp::InterfaceLammps::clearExtrapolationWarnings">
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairNNP.html#a31e9057e2529ee8a779496358dcbd4f8" title="LAMMPS_NS::PairNNP\l::handleExtrapolationWarnings" alt="" coords="263,5,484,47"/>
+<area shape="rect" id="node1" title="Clear extrapolation warnings storage." alt="" coords="275,5,484,47"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairNNP.html#a31e9057e2529ee8a779496358dcbd4f8" title=" " alt="" coords="5,5,227,47"/>
 </map>

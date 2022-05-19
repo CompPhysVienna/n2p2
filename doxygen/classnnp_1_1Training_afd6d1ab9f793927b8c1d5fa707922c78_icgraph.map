@@ -1,3 +1,4 @@
 <map id="nnp::Training::setupUpdatePlan" name="nnp::Training::setupUpdatePlan">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine. " alt="" coords="277,5,477,32"/>
+<area shape="rect" id="node1" title="Set up how often properties are updated." alt="" coords="253,5,477,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="5,5,205,32"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="nnp::SymFncCompAngw::calculate" name="nnp::SymFncCompAngw::calculate">
-<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a2163ca699346deb3d17d49a62e8e5701" title="Calculate compact function and derivative at once. " alt="" coords="232,5,424,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering. " alt="" coords="255,56,401,83"/>
+<area shape="rect" id="node1" title="Calculate symmetry function for one atom." alt="" coords="5,23,185,65"/>
+<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a2163ca699346deb3d17d49a62e8e5701" title="Calculate compact function and derivative at once." alt="" coords="233,5,427,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="256,56,404,83"/>
 </map>

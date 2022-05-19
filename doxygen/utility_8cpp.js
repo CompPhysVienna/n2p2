@@ -2,8 +2,8 @@ var utility_8cpp =
 [
     [ "STRPR_MAXBUF", "utility_8cpp.html#a6a9b23aa79b884aa301ad87a43bfbd96", null ],
     [ "split", "utility_8cpp.html#a6ecc8126eac4f4c52283f9f776986aa0", null ],
-    [ "trim", "utility_8cpp.html#ac2845a6e936082eef7ac028f3b77051a", null ],
-    [ "reduce", "utility_8cpp.html#a90ee48c5fb70d20abeebe648dc07dba7", null ],
+    [ "trim", "utility_8cpp.html#a5e8f9d785a11615222f8ca579dae9ba9", null ],
+    [ "reduce", "utility_8cpp.html#aaa30280456ea59152f9e6c240f41ea93", null ],
     [ "pad", "utility_8cpp.html#a1589c883b03419579131181b3337f531", null ],
     [ "strpr", "utility_8cpp.html#a398f0bcafb57e99ba1581c4b8f8a7f76", null ],
     [ "createFileHeader", "utility_8cpp.html#a9d1bbacf408dac7e040ce679791bc570", null ],

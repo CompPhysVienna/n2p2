@@ -1,7 +1,8 @@
 <map id="nnp::SymFncBaseCutoff" name="nnp::SymFncBaseCutoff">
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseExpAng.html" title="Intermediate class for angular SFs based on cutoffs and exponentials. " alt="" coords="401,5,587,32"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpAngnWeighted.html" title="Weighted angular symmetry function (type 13) " alt="" coords="383,56,605,83"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymFncExpRad.html" title="Radial symmetry function (type 2) " alt="" coords="417,107,571,133"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymFncExpRadWeighted.html" title="Weighted radial symmetry function (type 12) " alt="" coords="387,157,601,184"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html" title="Symmetry function base class. " alt="" coords="5,81,111,108"/>
+<area shape="rect" id="node1" title="Intermediate class for SFs based on cutoff functions." alt="" coords="160,81,337,108"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseExpAng.html" title="Intermediate class for angular SFs based on cutoffs and exponentials." alt="" coords="404,5,591,32"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpAngnWeighted.html" title="Weighted angular symmetry function (type 13)" alt="" coords="385,56,609,83"/>
+<area shape="rect" id="node5" href="$classnnp_1_1SymFncExpRad.html" title="Radial symmetry function (type 2)" alt="" coords="420,107,575,133"/>
+<area shape="rect" id="node6" href="$classnnp_1_1SymFncExpRadWeighted.html" title="Weighted radial symmetry function (type 12)" alt="" coords="389,157,605,184"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html" title="Symmetry function base class." alt="" coords="5,81,112,108"/>
 </map>

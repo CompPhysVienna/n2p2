@@ -1,3 +1,6 @@
 <map id="nnp::Element::updateSymmetryFunctionStatistics" name="nnp::Element::updateSymmetryFunctionStatistics">
-<area shape="rect" id="node2" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="283,13,367,39"/>
+<area shape="rect" id="node1" title="Update symmetry function statistics." alt="" coords="5,71,235,112"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncStatistics.html#aa16b51e94e8944ee5e07b584c6215bf9" title="Add extrapolation warning entry." alt="" coords="283,5,477,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncStatistics.html#a5f707973201fd066ba6bc6f07584f696" title="Update symmetry function statistics with one value." alt="" coords="297,71,463,112"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="338,137,422,163"/>
 </map>

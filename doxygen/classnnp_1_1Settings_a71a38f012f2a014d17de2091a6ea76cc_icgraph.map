@@ -1,15 +1,17 @@
 <map id="nnp::Settings::keywordExists" name="nnp::Settings::keywordExists">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043" title="Initialize weights for all elements. " alt="" coords="571,49,741,90"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory. " alt="" coords="286,52,486,79"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights. " alt="" coords="295,104,477,145"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a" title="Set training stage (if multiple stages are needed for NNP type). " alt="" coords="301,170,471,196"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file. " alt="" coords="283,221,489,262"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances. " alt="" coords="289,287,483,314"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Training.html#a8a99d257e8c71aaf4dba65a1b9a1b5f1" title="Set file output intervals for properties and other quantities. " alt="" coords="301,338,471,380"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine. " alt="" coords="556,480,756,507"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#a3488a7fb2b0ccf17a9b2af514590f57c" title="Set up neural networks for all elements. " alt="" coords="271,455,501,482"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#aa837413e8d998f165f0b8527de636cb5" title="Set up normalization. " alt="" coords="273,506,499,532"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Training.html#a5362ed9fa8992ca8ec88ab5c6daab978" title="Set selection mode for specific training property. " alt="" coords="264,556,508,583"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file. " alt="" coords="285,608,487,649"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78" title="Set up how often properties are updated. " alt="" coords="274,674,498,700"/>
+<area shape="rect" id="node1" title="Check if keyword is present in settings file." alt="" coords="601,372,811,399"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,675,260,702"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043" title="Initialize weights for all elements." alt="" coords="48,33,217,74"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="329,128,532,155"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights." alt="" coords="339,62,522,104"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a" title="Set training stage (if multiple stages are needed for NNP type)." alt="" coords="345,230,516,256"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file." alt="" coords="327,281,534,322"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances." alt="" coords="333,347,528,374"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Training.html#a8a99d257e8c71aaf4dba65a1b9a1b5f1" title="Set file output intervals for properties and other quantities." alt="" coords="345,449,517,490"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="33,427,233,454"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#a3488a7fb2b0ccf17a9b2af514590f57c" title="Set up neural networks for all elements." alt="" coords="315,515,547,542"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a0d84a9ab4ad3b589c5f5bb89f2b2fa5b" title="Set up normalization." alt="" coords="317,734,544,760"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Training.html#a5362ed9fa8992ca8ec88ab5c6daab978" title="Set selection mode for specific training property." alt="" coords="308,179,553,206"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="329,668,532,709"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78" title="Set up how often properties are updated." alt="" coords="319,398,543,424"/>
 </map>

@@ -4,6 +4,7 @@ var classnnp_1_1Element =
     [ "Element", "classnnp_1_1Element.html#aafffebdc953f794bd0a66945317201bc", null ],
     [ "Element", "classnnp_1_1Element.html#a60d791ff133121dc955a490c2c77e5d7", null ],
     [ "~Element", "classnnp_1_1Element.html#a13d54ba9c08b6bec651402f1c2bb002c", null ],
+    [ "clearSymmetryFunctions", "classnnp_1_1Element.html#ad07867af7ea1dbca87122e26b52b5a3b", null ],
     [ "setAtomicEnergyOffset", "classnnp_1_1Element.html#a19b7488040e0c75def95370d391a8b50", null ],
     [ "getIndex", "classnnp_1_1Element.html#a5fbd74ba2c16338eacd4bb519cf0b975", null ],
     [ "getAtomicNumber", "classnnp_1_1Element.html#afdec9b5a7421215af87eca9a1bdf8ee8", null ],

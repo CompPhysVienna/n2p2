@@ -1,0 +1,4 @@
+<map id="nnp::Training::dataSetNormalization" name="nnp::Training::dataSetNormalization">
+<area shape="rect" id="node1" title="Apply normalization based on initial weights prediction." alt="" coords="108,5,363,32"/>
+<area shape="rect" id="node2" href="$nnp-train_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,60,32"/>
+</map>

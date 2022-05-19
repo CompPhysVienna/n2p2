@@ -48,8 +48,8 @@ var classnnp_1_1SymFnc =
     [ "getCacheIdentifiers", "classnnp_1_1SymFnc.html#a685bb946fd7eac127f04643d9dcab376", null ],
     [ "addCacheIndex", "classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248", null ],
     [ "getCacheIndices", "classnnp_1_1SymFnc.html#ab49c13cb70df1afc2db994b407a767eb", null ],
-    [ "initializePrintFormat", "classnnp_1_1SymFnc.html#ae624bc13e0ae54ed7adc808572a7d0c2", null ],
-    [ "initializePrintOrder", "classnnp_1_1SymFnc.html#aff3c1cd12253daa9ac70c7ef1d62f4f0", null ],
+    [ "initializePrintFormat", "classnnp_1_1SymFnc.html#ab0d3aa33472af77c8f928207b26a19bc", null ],
+    [ "initializePrintOrder", "classnnp_1_1SymFnc.html#a1d66290a9dc0e9dcabf4b83e8eccd0d5", null ],
     [ "getPrintFormat", "classnnp_1_1SymFnc.html#af737dbf730d7fe7f6956b6ae8df34386", null ],
     [ "type", "classnnp_1_1SymFnc.html#a53753dda8bc4226c3b02678cf040dff7", null ],
     [ "elementMap", "classnnp_1_1SymFnc.html#abee7a0c84f42ca9124f77b116b591f29", null ],
@@ -70,7 +70,7 @@ var classnnp_1_1SymFnc =
     [ "parameters", "classnnp_1_1SymFnc.html#a74876e41f1b9beffa755ef2c6e13d88f", null ],
     [ "indexPerElement", "classnnp_1_1SymFnc.html#ade1b577acba43d97505114173e9e955b", null ],
     [ "cacheIndices", "classnnp_1_1SymFnc.html#aa5e45130bdb52ad136ab2b59b16e5fc6", null ],
-    [ "sfinfoWidth", "classnnp_1_1SymFnc.html#ae2b3e40cb9b2bfc07e01084a05f737e8", null ],
-    [ "printFormat", "classnnp_1_1SymFnc.html#a2ab7b5c3ad63a36e4ac38dbb3c88b855", null ],
-    [ "printOrder", "classnnp_1_1SymFnc.html#a7dd1fc72b8d2c7f853439800059baa41", null ]
+    [ "sfinfoWidth", "classnnp_1_1SymFnc.html#a84eeb4654192d76d4b889606333f545d", null ],
+    [ "printFormat", "classnnp_1_1SymFnc.html#a34302071bfe68861a8e2ae8ccc7ce8c2", null ],
+    [ "printOrder", "classnnp_1_1SymFnc.html#a567067a5ddce4dd9032c682b5898892e", null ]
 ];

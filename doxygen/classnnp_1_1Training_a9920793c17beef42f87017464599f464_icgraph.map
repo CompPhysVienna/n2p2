@@ -1,3 +1,4 @@
 <map id="nnp::Training::writeTimingData" name="nnp::Training::writeTimingData">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167" title="Execute main training loop. " alt="" coords="276,5,417,32"/>
+<area shape="rect" id="node1" title="Write timing data for all clocks." alt="" coords="195,5,417,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167" title="Execute main training loop." alt="" coords="5,5,147,32"/>
 </map>

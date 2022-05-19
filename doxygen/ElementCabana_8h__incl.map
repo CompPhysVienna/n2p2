@@ -1,7 +1,11 @@
-<map id="/home/travis/build/CompPhysVienna/n2p2/src/libnnpif/CabanaMD/ElementCabana.h" name="/home/travis/build/CompPhysVienna/n2p2/src/libnnpif/CabanaMD/ElementCabana.h">
-<area shape="rect" id="node2" href="$typesCabana_8h.html" title="typesCabana.h" alt="" coords="5,124,124,151"/>
-<area shape="rect" id="node3" href="$CutoffFunction_8h.html" title="CutoffFunction.h" alt="" coords="27,199,153,225"/>
-<area shape="rect" id="node4" href="$Element_8h.html" title="Element.h" alt="" coords="250,124,338,151"/>
-<area shape="rect" id="node8" href="$utility_8h.html" title="utility.h" alt="" coords="431,199,501,225"/>
-<area shape="rect" id="node9" href="$ElementCabana__impl_8h.html" title="ElementCabana_impl.h" alt="" coords="463,124,637,151"/>
+<map id="/home/runner/work/n2p2/n2p2/src/libnnpif/CabanaMD/ElementCabana.h" name="/home/runner/work/n2p2/n2p2/src/libnnpif/CabanaMD/ElementCabana.h">
+<area shape="rect" id="node1" title=" " alt="" coords="229,5,439,61"/>
+<area shape="rect" id="node2" href="$typesCabana_8h.html" title=" " alt="" coords="5,109,124,136"/>
+<area shape="rect" id="node3" href="$CutoffFunction_8h.html" title=" " alt="" coords="25,184,153,211"/>
+<area shape="rect" id="node4" href="$Element_8h.html" title=" " alt="" coords="250,109,338,136"/>
+<area shape="rect" id="node5" title=" " alt="" coords="177,184,248,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="354,259,413,285"/>
+<area shape="rect" id="node7" title=" " alt="" coords="437,259,500,285"/>
+<area shape="rect" id="node8" href="$utility_8h.html" title=" " alt="" coords="431,184,501,211"/>
+<area shape="rect" id="node9" href="$ElementCabana__impl_8h.html" title=" " alt="" coords="463,109,637,136"/>
 </map>

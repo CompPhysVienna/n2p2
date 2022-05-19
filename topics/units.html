@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Units &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+  <title>Units &mdash; n2p2 - A neural network potential package &#34;487316e&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "v2.1.4-13-g4ce8c70"
+                "487316e"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -144,13 +144,14 @@ further details.</p>
 results on the chosen unit system, i.e. if the same data set would be set up
 with different physical unit systems, it is unclear whether the training would
 converge to comparable errors. To avoid this problem an additional
-pre-processing of the training data can be performed with the tool
-<a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">nnp-norm</span></a>. This tool will determine conversion factors for a reduced
-“internal” unit system and add them to the settings file. Other tools will
-recognize the corresponding <a class="reference internal" href="keywords.html#keywords"><span class="std std-ref">keywords</span></a> and automatically
-perform the conversion to “internal” units. No additional intervention of the
-user is necessary and quantities are usually converted back to physical units
-for screen or file output.</p>
+pre-processing of the training data can be performed with the keyword
+<a class="reference internal" href="keywords.html#normalize-data-set"><span class="std std-ref">normalize_data_set</span></a> (recommended) or the tool <a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">nnp-norm</span></a>. Both will
+determine conversion factors for a reduced “internal” unit system and add them
+to the settings file. Other tools will recognize the corresponding
+<a class="reference internal" href="keywords.html#keywords"><span class="std std-ref">keywords</span></a> and automatically perform the conversion to
+“internal” units. No additional intervention of the user is necessary and
+quantities are usually converted back to physical units for screen or file
+output.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Sometimes quantities are provided also in internal units (for debugging
@@ -158,8 +159,8 @@ purposes). If this is the case it will be explicitly mentioned in the screen
 output or in the file header. The default output of all tools is given in the
 original physical unit system.</p>
 </div>
-<p>For further details see the <a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">tool description</span></a> and a recent
-publication <a class="footnote-reference brackets" href="#id3" id="id2">1</a>.</p>
+<p>For further details see the <a class="reference internal" href="keywords.html#normalize-data-set"><span class="std std-ref">keyword description</span></a>, the
+<a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">tool description</span></a> and a recent publication <a class="footnote-reference brackets" href="#id3" id="id2">1</a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The described data set normalization step is <strong>optional</strong>, you are not

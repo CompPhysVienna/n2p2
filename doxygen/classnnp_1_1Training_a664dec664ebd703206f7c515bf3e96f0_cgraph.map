@@ -1,0 +1,26 @@
+<map id="nnp::Training::dataSetNormalization" name="nnp::Training::dataSetNormalization">
+<area shape="rect" id="node1" title="Apply normalization based on initial weights prediction." alt="" coords="5,647,260,673"/>
+<area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="335,5,508,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="320,57,523,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="320,123,523,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="322,173,521,200"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="309,574,534,615"/>
+<area shape="rect" id="node7" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="653,552,737,579"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="309,639,534,681"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one." alt="" coords="322,224,521,251"/>
+<area shape="rect" id="node10" href="$namespacennp.html#a9d1bbacf408dac7e040ce679791bc570" title=" " alt="" coords="339,1055,504,1081"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01" title="Add atomic energy offsets and return energy." alt="" coords="324,1106,519,1147"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Settings.html#abe55e2b7294788622da5e888799732ff" title="Get complete settings file." alt="" coords="327,1171,516,1213"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file." alt="" coords="590,771,799,797"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Mode.html#a0d84a9ab4ad3b589c5f5bb89f2b2fa5b" title="Set up normalization." alt="" coords="308,771,535,797"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="320,822,523,863"/>
+<area shape="rect" id="node16" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="653,895,736,921"/>
+<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#a6f0184f87845a572cf4c3db0958a97d9" title="Set up symmetry function groups." alt="" coords="320,275,523,317"/>
+<area shape="rect" id="node18" href="$classnnp_1_1Mode.html#af1d1548ef2d6a9bbfdc519b76b904700" title="Extract required memory dimensions for symmetry function derivatives." alt="" coords="320,341,523,382"/>
+<area shape="rect" id="node19" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions." alt="" coords="320,887,523,929"/>
+<area shape="rect" id="node20" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="320,705,523,746"/>
+<area shape="rect" id="node21" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="320,406,523,447"/>
+<area shape="rect" id="node22" href="$classnnp_1_1Settings.html#a6aaa131c802c7cdd0645a41ee12807b5" title="Write complete settings file." alt="" coords="583,1263,807,1289"/>
+<area shape="rect" id="node23" href="$classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a" title="Write complete settings file." alt="" coords="318,1237,525,1264"/>
+<area shape="rect" id="node24" href="$classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7" title="Write weights to files (one file for each element)." alt="" coords="322,472,521,499"/>
+</map>

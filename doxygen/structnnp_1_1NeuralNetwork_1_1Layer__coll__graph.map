@@ -1,3 +1,6 @@
 <map id="nnp::NeuralNetwork::Layer" name="nnp::NeuralNetwork::Layer">
-<area shape="rect" id="node4" href="$structnnp_1_1NeuralNetwork_1_1Neuron.html" title="A single neuron. " alt="" coords="305,5,457,47"/>
+<area shape="rect" id="node1" title="One neural network layer." alt="" coords="133,124,285,165"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,13,44,39"/>
+<area shape="rect" id="node3" title=" " alt="" coords="137,13,280,39"/>
+<area shape="rect" id="node4" href="$structnnp_1_1NeuralNetwork_1_1Neuron.html" title="A single neuron." alt="" coords="305,5,457,47"/>
 </map>

@@ -1,3 +1,4 @@
 <map id="nnp::Training::writeSetsToFiles" name="nnp::Training::writeSetsToFiles">
-<area shape="rect" id="node2" href="$nnp-train_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="228,13,283,39"/>
+<area shape="rect" id="node1" title="Write training and test set to separate files (train.data and test.data, same format as input...." alt="" coords="108,5,283,47"/>
+<area shape="rect" id="node2" href="$nnp-train_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,60,39"/>
 </map>

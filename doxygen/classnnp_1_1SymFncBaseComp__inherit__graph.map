@@ -1,7 +1,8 @@
 <map id="nnp::SymFncBaseComp" name="nnp::SymFncBaseComp">
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAng.html" title="Intermediate symmetry function class for angular SFs with compact support. " alt="" coords="412,5,612,32"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html" title="Intermediate symmetry function class for weighted angular compact SFs. " alt="" coords="381,56,643,83"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymFncCompRad.html" title="Radial symmetry function with compact support (type 20) " alt="" coords="428,107,596,133"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymFncCompRadWeighted.html" title="Weighted radial symmetry function with compact support (type 23) " alt="" coords="397,157,627,184"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html" title="Symmetry function base class. " alt="" coords="5,81,111,108"/>
+<area shape="rect" id="node1" title="Symmetry function base class for SFs with compact support." alt="" coords="160,81,336,108"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAng.html" title="Intermediate symmetry function class for angular SFs with compact support." alt="" coords="415,5,616,32"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html" title="Intermediate symmetry function class for weighted angular compact SFs." alt="" coords="384,56,647,83"/>
+<area shape="rect" id="node5" href="$classnnp_1_1SymFncCompRad.html" title="Radial symmetry function with compact support (type 20)" alt="" coords="431,107,600,133"/>
+<area shape="rect" id="node6" href="$classnnp_1_1SymFncCompRadWeighted.html" title="Weighted radial symmetry function with compact support (type 23)" alt="" coords="400,157,631,184"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html" title="Symmetry function base class." alt="" coords="5,81,112,108"/>
 </map>

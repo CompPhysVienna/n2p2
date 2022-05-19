@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;487316e&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "v2.1.4-13-g4ce8c70"
+                "487316e"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -69,6 +69,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#training-specific-keywords">Training-specific keywords</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#selection-mode"><code class="docutils literal notranslate"><span class="pre">selection_mode</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#main-error-metric"><code class="docutils literal notranslate"><span class="pre">main_error_metric</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normalize-data-set"><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -540,7 +541,7 @@ is fulfilled or a the number of trial choices (keyword
 <code class="docutils literal notranslate"><span class="pre">rmse_threshold_trials</span></code>) is exceeded. If even in the latter case no
 candidate above the threshold is found, the candidate with the highest error
 so far is used. This selection scheme is a variation of the adaptive process
-described by Blank and Brown <a class="footnote-reference brackets" href="#id4" id="id2">1</a> and is described here <a class="footnote-reference brackets" href="#id5" id="id3">2</a>.</p>
+described by Blank and Brown <a class="footnote-reference brackets" href="#id5" id="id2">1</a> and is described here <a class="footnote-reference brackets" href="#id6" id="id3">2</a>.</p>
 </li>
 </ul>
 </section>
@@ -565,13 +566,82 @@ are available:</p>
 <p>If this keyword is omitted the default value is <code class="docutils literal notranslate"><span class="pre">RMSEpa</span></code>. The keyword does not
 influence the output in the <code class="docutils literal notranslate"><span class="pre">learning-curve.out</span></code> file. There, all error metrics
 are written.</p>
+<hr class="docutils" />
+</section>
+<section id="normalize-data-set">
+<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span></code><a class="headerlink" href="#normalize-data-set" title="Permalink to this headline"></a></h3>
+<dl>
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span> <span class="pre">&lt;string&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span> <span class="pre">ref</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span> <span class="pre">force</span></code></p>
+</dd>
+</dl>
+<p>Enables automatic data set normalization (see also <a class="reference internal" href="units.html#units"><span class="std std-ref">Units</span></a>) as a
+pre-processing step during training with <a class="reference internal" href="../tools/nnp-train.html#nnp-train"><span class="std std-ref">nnp-train</span></a>. If this keyword is
+present, an additional calculation will be performed after the initialization of
+weights. The file and screen output will contain a corresponding section <code class="docutils literal notranslate"><span class="pre">DATA</span>
+<span class="pre">SET</span> <span class="pre">NORMALIZATION</span></code> summarizing the results of the data set normalization step.
+Three different modes of normalization can be selected:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">stats-only</span></code> : <strong>No or manually provided normalization, compute only statistics</strong></p>
+<p>This option will trigger a calculation of statistics: mean and standard
+deviation of reference energies and forces will be computed. Also, a first
+prediction with the (randomly) initialized NN weights will be executed.
+Finally, statistics for these energy and force predictions will be collected
+and printed to screen. If present, already given normalization data (keywords
+<code class="docutils literal notranslate"><span class="pre">mean_energy</span></code>, <code class="docutils literal notranslate"><span class="pre">conv_energy</span></code> and <code class="docutils literal notranslate"><span class="pre">conv_length</span></code>) in the <code class="docutils literal notranslate"><span class="pre">input.nn</span></code>
+file will be read and applied.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> : <strong>Normalization based on reference energies and forces</strong></p>
+<p>Energy and force statistics are computed as in mode <code class="docutils literal notranslate"><span class="pre">stats-only</span></code>. The mean
+and standard deviation of reference energies and forces are used to compute
+three numbers for normalization: (1) the mean energy per atom, (2) a
+conversion factor for energies , and (3) a conversion factor for lengths .
+These are computed in such way that the normalized (indicated by <span class="math notranslate nohighlight">\(^*\)</span>)
+data satisfies:</p>
+<div class="math notranslate nohighlight">
+\[\left&lt;e^*_\text{ref}\right&gt; = 0 \quad \text{and} \quad
+\sigma_{e^*_\text{ref}} = \sigma_{F^*_\text{ref}} = 1,\]</div>
+<p>i.e., the mean reference energy per atom vanishes and there is unity standard
+deviation of reference energies per atom and forces. As the training run
+continues all necessary quantities are automatically converted to this
+normalized unit system.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The three numbers (1), (2) and (3) are automatically written to the first
+lines of <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> as arguments of the keywords <code class="docutils literal notranslate"><span class="pre">mean_energy</span></code>,
+<code class="docutils literal notranslate"><span class="pre">conv_energy</span></code> and <code class="docutils literal notranslate"><span class="pre">conv_length</span></code>, respectively. They are read in and
+normalization is applied by other tools if necessary. No additional user
+interaction is required. In particular, it is <strong>not</strong> required to convert
+settings in <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> (e.g. cutoff radii, some symmetry function
+parameters), nor the configuration data in <code class="docutils literal notranslate"><span class="pre">input.data</span></code>. All unit
+conversion will be handled internally.</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">force</span></code> : <strong>Normalization based on reference and predicted forces (recommended)</strong></p>
+<p>Same procedure as in mode <code class="docutils literal notranslate"><span class="pre">ref</span></code> but the normalization with respect to
+standard deviation of energies per atom is omitted. Instead, the standard
+deviation of <strong>predicted</strong> forces is set to unity:</p>
+<div class="math notranslate nohighlight">
+\[\left&lt;e^*_\text{ref}\right&gt; = 0 \quad \text{and} \quad
+\sigma_{F^*_\text{NNP}} = \sigma_{F^*_\text{ref}} = 1,\]</div>
+<p>The prediction is carried out with the previously (randomly) initialized
+neural network weights. Usually this normalization procedure results in a
+very uniform distribution of data points in the initial
+reference-vs-prediction plot of the forces (see the files
+<code class="docutils literal notranslate"><span class="pre">train/testforces.000000.out</span></code>). This seems to be a good starting point for
+the HDNNP training often resulting in lower force errors than the <code class="docutils literal notranslate"><span class="pre">ref</span></code>
+mode.</p>
+</li>
+</ul>
 <dl class="footnote brackets">
-<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
+<dt class="label" id="id5"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
 <dd><p>Blank, T. B.; Brown, S. D. Adaptive, Global, Extended Kalman Filters for
 Training Feedforward Neural Networks. J. Chemom. 1994, 8 (6), 391–407.
 <a class="reference external" href="https://doi.org/10.1002/cem.1180080605">https://doi.org/10.1002/cem.1180080605</a></p>
 </dd>
-<dt class="label" id="id5"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
 <dd><p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
 Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
 Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b01092">https://doi.org/10.1021/acs.jctc.8b01092</a></p>

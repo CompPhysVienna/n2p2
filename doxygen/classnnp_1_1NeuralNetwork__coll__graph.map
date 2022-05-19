@@ -1,3 +1,6 @@
 <map id="nnp::NeuralNetwork" name="nnp::NeuralNetwork">
-<area shape="rect" id="node2" href="$structnnp_1_1NeuralNetwork_1_1Layer.html" title="One neural network layer. " alt="" coords="160,147,312,189"/>
+<area shape="rect" id="node1" title="This class implements a feed&#45;forward neural network." alt="" coords="160,319,312,345"/>
+<area shape="rect" id="node2" href="$structnnp_1_1NeuralNetwork_1_1Layer.html" title="One neural network layer." alt="" coords="160,147,312,189"/>
+<area shape="rect" id="node3" title=" " alt="" coords="15,5,54,32"/>
+<area shape="rect" id="node4" title=" " alt="" coords="336,155,387,181"/>
 </map>

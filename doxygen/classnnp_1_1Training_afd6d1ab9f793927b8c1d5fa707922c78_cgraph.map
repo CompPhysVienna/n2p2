@@ -1,5 +1,6 @@
 <map id="nnp::Training::setupUpdatePlan" name="nnp::Training::setupUpdatePlan">
-<area shape="rect" id="node2" href="$structnnp_1_1Training_1_1PropertyMap.html#ab7019078f140f578655ebb1f8599e6d4" title="Check if property is present. " alt="" coords="285,5,480,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file. " alt="" coords="277,71,488,98"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="341,122,425,149"/>
+<area shape="rect" id="node1" title="Set up how often properties are updated." alt="" coords="5,71,229,98"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Training_1_1PropertyMap.html#ab7019078f140f578655ebb1f8599e6d4" title="Check if property is present." alt="" coords="284,5,480,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file." alt="" coords="277,71,487,98"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="340,122,424,149"/>
 </map>

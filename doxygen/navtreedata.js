@@ -1,9 +1,31 @@
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this file.
+
+Copyright (C) 1997-2019 by Dimitri van Heesch
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+@licend  The above is the entire license notice
+for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "n2p2 - A neural network potential package", "index.html", [
     [ "n2p2 - API documentation", "index.html", null ],
-    [ "Namespaces", null, [
-      [ "Namespace List", "namespaces.html", "namespaces" ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ]
@@ -22,8 +44,8 @@ var NAVTREE =
         [ "Enumerator", "functions_eval.html", null ]
       ] ]
     ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ],
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
@@ -40,12 +62,12 @@ var NAVTREEINDEX =
 [
 "Atom_8cpp.html",
 "classLAMMPS__NS_1_1PairNNP.html#a57bf9d234105b62807f8946fde1806a6",
-"classnnp_1_1GradientDescent.html#a47e2ea51dd23803d4ac845ac33603b21",
-"classnnp_1_1ModeCabana.html#af9b6042c6754095c87e4162add38f46d",
-"classnnp_1_1SymFncBaseCutoff.html#afd23bc9fde42df0a501efc384b3148d9",
-"classnnp_1_1SymGrpBaseExpAng.html#a7e80939968fcf62548176bf7ef0b60c7",
-"dir_1413636bf64d8867d7c2444d3fee743d.html",
-"structnnp_1_1Settings_1_1Key.html#acaf736be917dea8f7775e5999aef6c90"
+"classnnp_1_1GradientDescent.html",
+"classnnp_1_1ModeCabana.html#acaf7de3d7a75f960af6a66c3e9ab6acb",
+"classnnp_1_1SymFncBaseCompAngWeighted.html#ac4b47154f303510e7abfb00883e02d50",
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#af463977ae7c8508cd5888bfdc672fd65",
+"classnnp_1_1Updater.html",
+"structnnp_1_1NeuralNetwork_1_1Layer.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

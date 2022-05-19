@@ -33,6 +33,7 @@ var classnnp_1_1Training =
     [ "initializeWeights", "classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043", null ],
     [ "initializeWeightsMemory", "classnnp_1_1Training.html#ab802ff670986203dab60c22f04b07f59", null ],
     [ "setStage", "classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a", null ],
+    [ "dataSetNormalization", "classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0", null ],
     [ "setupTraining", "classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451", null ],
     [ "calculateNeighborLists", "classnnp_1_1Training.html#ac0de14f9b249aa70a7648c7c3c1cc783", null ],
     [ "calculateError", "classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c", null ],

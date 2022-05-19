@@ -1,4 +1,7 @@
 <map id="nnp::SymFncBaseCompAng" name="nnp::SymFncBaseCompAng">
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseComp.html" title="Symmetry function base class for SFs with compact support. " alt="" coords="49,287,223,313"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CompactFunction.html" title="A general function with compact support. " alt="" coords="181,153,347,180"/>
+<area shape="rect" id="node1" title="Intermediate symmetry function class for angular SFs with compact support." alt="" coords="137,391,338,417"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseComp.html" title="Symmetry function base class for SFs with compact support." alt="" coords="48,287,224,313"/>
+<area shape="rect" id="node3" title=" " alt="" coords="109,5,176,32"/>
+<area shape="rect" id="node4" href="$classnnp_1_1CompactFunction.html" title="A general function with compact support." alt="" coords="181,153,347,180"/>
+<area shape="rect" id="node5" title=" " alt="" coords="317,287,377,313"/>
 </map>

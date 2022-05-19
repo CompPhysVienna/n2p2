@@ -1,0 +1,4 @@
+<map id="nnp::reduce" name="nnp::reduce">
+<area shape="rect" id="node1" title="Replace multiple whitespaces with fill." alt="" coords="5,5,104,32"/>
+<area shape="rect" id="node2" href="$namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9" title="Remove leading and trailing whitespaces from string." alt="" coords="152,5,233,32"/>
+</map>

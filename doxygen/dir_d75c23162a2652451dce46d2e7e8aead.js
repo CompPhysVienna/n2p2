@@ -8,6 +8,7 @@ var dir_d75c23162a2652451dce46d2e7e8aead =
     [ "nnp-dataset.cpp", "nnp-dataset_8cpp.html", "nnp-dataset_8cpp" ],
     [ "nnp-dist.cpp", "nnp-dist_8cpp.html", "nnp-dist_8cpp" ],
     [ "nnp-norm.cpp", "nnp-norm_8cpp.html", "nnp-norm_8cpp" ],
+    [ "nnp-norm2.cpp", "nnp-norm2_8cpp.html", "nnp-norm2_8cpp" ],
     [ "nnp-predict.cpp", "nnp-predict_8cpp.html", "nnp-predict_8cpp" ],
     [ "nnp-prune.cpp", "nnp-prune_8cpp.html", "nnp-prune_8cpp" ],
     [ "nnp-scaling.cpp", "nnp-scaling_8cpp.html", "nnp-scaling_8cpp" ],

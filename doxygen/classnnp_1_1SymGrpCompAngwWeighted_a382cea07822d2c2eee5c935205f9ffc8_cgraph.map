@@ -1,5 +1,6 @@
 <map id="nnp::SymGrpCompAngwWeighted::calculate" name="nnp::SymGrpCompAngwWeighted::calculate">
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index. " alt="" coords="305,5,545,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#aa1792a44100ce9180efaa1933a8f8dab" title="nnp::SymFncBaseCompAngWeighted\l::getCompactAngle" alt="" coords="295,57,556,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#a5dfbc0c03a52a24abd7e22d355ba0da1" title="nnp::SymFncBaseCompAngWeighted\l::getCompactRadial" alt="" coords="295,122,556,163"/>
+<area shape="rect" id="node1" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,57,247,98"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="305,5,547,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#aa1792a44100ce9180efaa1933a8f8dab" title=" " alt="" coords="295,57,557,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#a5dfbc0c03a52a24abd7e22d355ba0da1" title=" " alt="" coords="295,122,557,163"/>
 </map>

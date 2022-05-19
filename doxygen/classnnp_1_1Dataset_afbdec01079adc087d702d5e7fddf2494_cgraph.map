@@ -1,5 +1,6 @@
 <map id="nnp::Dataset::writeNeighborHistogram" name="nnp::Dataset::writeNeighborHistogram">
-<area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream. " alt="" coords="259,5,431,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a9d1bbacf408dac7e040ce679791bc570" title="nnp::createFileHeader" alt="" coords="263,56,427,83"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="303,107,387,133"/>
+<area shape="rect" id="node1" title="Calculate and write neighbor histogram." alt="" coords="5,49,211,90"/>
+<area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="259,5,432,32"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a9d1bbacf408dac7e040ce679791bc570" title=" " alt="" coords="263,56,428,83"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="303,107,387,133"/>
 </map>

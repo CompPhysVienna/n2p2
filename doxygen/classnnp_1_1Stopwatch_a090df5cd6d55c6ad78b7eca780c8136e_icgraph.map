@@ -1,3 +1,4 @@
 <map id="nnp::Stopwatch::getTotal" name="nnp::Stopwatch::getTotal">
-<area shape="rect" id="node2" href="$classnnp_1_1Stopwatch.html#a64d053a5edbe3a659f09d0840d617c32" title="Stop and return total time. " alt="" coords="236,5,395,32"/>
+<area shape="rect" id="node1" title="Return total time elapsed (of a stopped watch)." alt="" coords="212,5,395,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Stopwatch.html#a64d053a5edbe3a659f09d0840d617c32" title="Stop and return total time." alt="" coords="5,5,164,32"/>
 </map>

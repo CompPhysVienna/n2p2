@@ -1,4 +1,5 @@
 <map id="nnp::SymFncExpAngnWeighted::parameterLine" name="nnp::SymFncExpAngnWeighted::parameterLine">
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#af737dbf730d7fe7f6956b6ae8df34386" title="Generate format string for symmetry function parameter printing. " alt="" coords="276,5,487,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="339,56,423,83"/>
+<area shape="rect" id="node1" title="Give symmetry function parameters in one line." alt="" coords="5,23,229,65"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#af737dbf730d7fe7f6956b6ae8df34386" title="Generate format string for symmetry function parameter printing." alt="" coords="277,5,488,32"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="341,56,425,83"/>
 </map>

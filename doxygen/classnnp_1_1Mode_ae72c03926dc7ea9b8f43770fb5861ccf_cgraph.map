@@ -1,4 +1,5 @@
 <map id="nnp::Mode::setupCutoff" name="nnp::Mode::setupCutoff">
-<area shape="rect" id="node2" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter. " alt="" coords="226,5,309,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function. " alt="" coords="225,56,309,83"/>
+<area shape="rect" id="node1" title="Set up cutoff function for all symmetry functions." alt="" coords="5,31,179,57"/>
+<area shape="rect" id="node2" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="227,5,310,32"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="227,56,311,83"/>
 </map>

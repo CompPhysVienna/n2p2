@@ -22,5 +22,9 @@ var classnnp_1_1ElementCabana =
     [ "infoSymmetryFunctionParameters", "classnnp_1_1ElementCabana.html#ae71cd281063ae9825bd35ccdafe67978", null ],
     [ "infoSymmetryFunctionScaling", "classnnp_1_1ElementCabana.html#a81f8ba498f326ce76cb770daa345f326", null ],
     [ "infoSymmetryFunctionGroups", "classnnp_1_1ElementCabana.html#a189da97be2a25f2943d8d17a7d70d32d", null ],
-    [ "getMinNeighbors", "classnnp_1_1ElementCabana.html#ad2f7251d9f54de80f0bd1c4ef411a403", null ]
+    [ "getMinNeighbors", "classnnp_1_1ElementCabana.html#ad2f7251d9f54de80f0bd1c4ef411a403", null ],
+    [ "index", "classnnp_1_1ElementCabana.html#a6f684beb1330c02ddb8a6eb08941f79e", null ],
+    [ "atomicNumber", "classnnp_1_1ElementCabana.html#af955c4df15055bcae35a6098ed887bdc", null ],
+    [ "atomicEnergyOffset", "classnnp_1_1ElementCabana.html#aace49a3d51d446395af24643bb9c6ef7", null ],
+    [ "symbol", "classnnp_1_1ElementCabana.html#a8cd14607581bcf49e00dac9e594e974f", null ]
 ];

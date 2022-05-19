@@ -1,3 +1,4 @@
 <map id="nnp::Training::initializeWeights" name="nnp::Training::initializeWeights">
-<area shape="rect" id="node2" href="$nnp-train_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="223,13,277,39"/>
+<area shape="rect" id="node1" title="Initialize weights for all elements." alt="" coords="108,5,277,47"/>
+<area shape="rect" id="node2" href="$nnp-norm2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,60,39"/>
 </map>

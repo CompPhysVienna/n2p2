@@ -1,3 +1,4 @@
 <map id="nnp::Element::setCacheIndices" name="nnp::Element::setCacheIndices">
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248" title="Add one cache index for given neighbor element and check identifier. " alt="" coords="276,5,489,32"/>
+<area shape="rect" id="node1" title="Set cache indices for all symmetry functions of this element." alt="" coords="5,5,228,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248" title="Add one cache index for given neighbor element and check identifier." alt="" coords="276,5,491,32"/>
 </map>

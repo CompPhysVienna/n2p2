@@ -1,4 +1,5 @@
 <map id="nnp::Mode::pruneSymmetryFunctionsRange" name="nnp::Mode::pruneSymmetryFunctionsRange">
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a607b5d75fc6bb5a99a88bdde3e9d9bd2" title="Get private Gmax member variable. " alt="" coords="256,5,429,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFnc.html#a0a002bf0beb4225e6b0330b1f5532079" title="Get private Gmin member variable. " alt="" coords="258,56,427,83"/>
+<area shape="rect" id="node1" title="Prune symmetry functions according to their range and write settings file." alt="" coords="5,23,208,65"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a607b5d75fc6bb5a99a88bdde3e9d9bd2" title="Get private Gmax member variable." alt="" coords="256,5,431,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFnc.html#a0a002bf0beb4225e6b0330b1f5532079" title="Get private Gmin member variable." alt="" coords="258,56,429,83"/>
 </map>

@@ -1,6 +1,22 @@
 <map id="nnp::Training" name="nnp::Training">
-<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html" title="Collect and process large data sets. " alt="" coords="552,396,657,423"/>
-<area shape="rect" id="node3" title="STL class. " alt="" coords="225,536,311,563"/>
-<area shape="rect" id="node12" href="$structnnp_1_1Training_1_1PropertyMap.html" title="Map of all training properties. " alt="" coords="507,805,702,832"/>
-<area shape="rect" id="node17" title="STL class. " alt="" coords="550,1091,659,1117"/>
+<area shape="rect" id="node1" title="Training methods." alt="" coords="921,716,1027,743"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html" title="Collect and process large data sets." alt="" coords="554,387,659,413"/>
+<area shape="rect" id="node3" title="STL class." alt="" coords="225,480,311,507"/>
+<area shape="rect" id="node9" title=" " alt="" coords="525,617,688,658"/>
+<area shape="rect" id="node16" title=" " alt="" coords="513,336,700,363"/>
+<area shape="rect" id="node4" title=" " alt="" coords="238,285,298,312"/>
+<area shape="rect" id="node5" title=" " alt="" coords="513,285,700,312"/>
+<area shape="rect" id="node6" title=" " alt="" coords="550,437,663,464"/>
+<area shape="rect" id="node7" title=" " alt="" coords="5,708,72,735"/>
+<area shape="rect" id="node11" title=" " alt="" coords="185,735,351,761"/>
+<area shape="rect" id="node8" title=" " alt="" coords="499,565,715,592"/>
+<area shape="rect" id="node10" title=" " alt="" coords="519,1015,694,1057"/>
+<area shape="rect" id="node12" href="$structnnp_1_1Training_1_1PropertyMap.html" title="Map of all training properties." alt="" coords="509,796,705,823"/>
+<area shape="rect" id="node13" title=" " alt="" coords="581,863,632,889"/>
+<area shape="rect" id="node14" title=" " alt="" coords="537,913,676,940"/>
+<area shape="rect" id="node15" title=" " alt="" coords="555,964,658,991"/>
+<area shape="rect" id="node17" title="STL class." alt="" coords="552,1081,661,1108"/>
+<area shape="rect" id="node18" title=" " alt="" coords="545,1132,669,1159"/>
+<area shape="rect" id="node19" title=" " alt="" coords="553,1183,660,1209"/>
+<area shape="rect" id="node20" title=" " alt="" coords="555,1233,659,1260"/>
 </map>

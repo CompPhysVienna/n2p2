@@ -1,3 +1,4 @@
 <map id="nnp::Mode::settingsKeywordExists" name="nnp::Mode::settingsKeywordExists">
-<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file. " alt="" coords="259,13,469,39"/>
+<area shape="rect" id="node1" title="Check if keyword was found in settings file." alt="" coords="5,5,212,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file." alt="" coords="260,13,469,39"/>
 </map>

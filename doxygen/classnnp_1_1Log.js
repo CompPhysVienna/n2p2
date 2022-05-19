@@ -8,8 +8,8 @@ var classnnp_1_1Log =
     [ "registerCFilePointer", "classnnp_1_1Log.html#adba92381da05fda9736b776268ebccfc", null ],
     [ "registerStreamPointer", "classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b", null ],
     [ "getLog", "classnnp_1_1Log.html#a270f8d215b42e4c05e7a8d5ca0ba4aff", null ],
-    [ "addIntro", "classnnp_1_1Log.html#af533298d7a86367b10f67c0b49c4dce0", null ],
     [ "writeToStdout", "classnnp_1_1Log.html#ae0645e02c1bfbda124a3d1a7b13f4df7", null ],
+    [ "silent", "classnnp_1_1Log.html#a91771eb48c9896ab3abce172a8627bc1", null ],
     [ "memory", "classnnp_1_1Log.html#ad024377f9aae6eb4e046edce56787c35", null ],
     [ "cFilePointers", "classnnp_1_1Log.html#adebe9c688a1127b64ad89232b9c3177c", null ],
     [ "streamPointers", "classnnp_1_1Log.html#afb0430defb95242aa9c972575f440e3e", null ]

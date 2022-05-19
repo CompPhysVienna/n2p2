@@ -1,9 +1,13 @@
-<map id="/home/travis/build/CompPhysVienna/n2p2/src/libnnp/Mode.h" name="/home/travis/build/CompPhysVienna/n2p2/src/libnnp/Mode.h">
-<area shape="rect" id="node2" href="$CutoffFunction_8h.html" title="CutoffFunction.h" alt="" coords="28,184,155,211"/>
-<area shape="rect" id="node3" href="$Element_8h.html" title="Element.h" alt="" coords="219,109,307,136"/>
-<area shape="rect" id="node4" href="$ElementMap_8h.html" title="ElementMap.h" alt="" coords="282,259,397,285"/>
-<area shape="rect" id="node8" href="$SymFnc_8h.html" title="SymFnc.h" alt="" coords="382,184,467,211"/>
-<area shape="rect" id="node9" href="$Log_8h.html" title="Log.h" alt="" coords="787,259,844,285"/>
-<area shape="rect" id="node10" href="$Settings_8h.html" title="Settings.h" alt="" coords="624,259,711,285"/>
-<area shape="rect" id="node11" href="$Structure_8h.html" title="Structure.h" alt="" coords="491,184,585,211"/>
+<map id="/home/runner/work/n2p2/n2p2/src/libnnp/Mode.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Mode.h">
+<area shape="rect" id="node1" title=" " alt="" coords="407,5,588,47"/>
+<area shape="rect" id="node2" href="$CutoffFunction_8h.html" title=" " alt="" coords="27,169,155,196"/>
+<area shape="rect" id="node3" href="$Element_8h.html" title=" " alt="" coords="219,95,307,121"/>
+<area shape="rect" id="node4" href="$ElementMap_8h.html" title=" " alt="" coords="282,244,398,271"/>
+<area shape="rect" id="node5" title=" " alt="" coords="232,319,302,345"/>
+<area shape="rect" id="node6" title=" " alt="" coords="508,319,567,345"/>
+<area shape="rect" id="node7" title=" " alt="" coords="786,319,849,345"/>
+<area shape="rect" id="node8" href="$SymFnc_8h.html" title=" " alt="" coords="382,169,469,196"/>
+<area shape="rect" id="node9" href="$Log_8h.html" title=" " alt="" coords="789,244,846,271"/>
+<area shape="rect" id="node10" href="$Settings_8h.html" title=" " alt="" coords="626,244,713,271"/>
+<area shape="rect" id="node11" href="$Structure_8h.html" title=" " alt="" coords="494,169,587,196"/>
 </map>

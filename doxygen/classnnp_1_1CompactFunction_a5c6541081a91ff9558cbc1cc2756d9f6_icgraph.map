@@ -1,4 +1,5 @@
 <map id="nnp::CompactFunction::getCoreFunctionType" name="nnp::CompactFunction::getCoreFunctionType">
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters. " alt="" coords="251,5,451,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters. " alt="" coords="220,71,481,112"/>
+<area shape="rect" id="node1" title="Getter for #type." alt="" coords="316,39,483,80"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters." alt="" coords="36,5,237,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters." alt="" coords="5,71,268,112"/>
 </map>

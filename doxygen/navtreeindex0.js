@@ -67,7 +67,7 @@ var NAVTREEINDEX0 =
 "Prediction_8h.html":[3,0,2,20],
 "Prediction_8h_source.html":[3,0,2,20],
 "Settings_8cpp.html":[3,0,2,21],
-"Settings_8cpp.html#ad505121eeb844220b30a74c93548d6b0":[3,0,2,21,0],
+"Settings_8cpp.html#aed9da9c70cd759c0335f4ff853c28277":[3,0,2,21,0],
 "Settings_8cpp_source.html":[3,0,2,21],
 "Settings_8h.html":[3,0,2,22],
 "Settings_8h_source.html":[3,0,2,22],

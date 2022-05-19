@@ -1,3 +1,4 @@
 <map id="nnp::Training::addTrainingLogEntry" name="nnp::Training::addTrainingLogEntry">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="241,13,400,39"/>
+<area shape="rect" id="node1" title="Write energy update data to training log file." alt="" coords="212,5,400,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,13,164,39"/>
 </map>

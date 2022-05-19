@@ -1,6 +1,7 @@
-<map id="/home/travis/build/CompPhysVienna/n2p2/src/libnnp/SymFncCompAngn.h" name="/home/travis/build/CompPhysVienna/n2p2/src/libnnp/SymFncCompAngn.h">
-<area shape="rect" id="node2" href="$Element_8cpp.html" title="/home/travis/build\l/CompPhysVienna/n2p2\l/src/libnnp/Element.cpp" alt="" coords="5,213,181,269"/>
-<area shape="rect" id="node3" href="$SymGrpCompAngn_8h.html" title="/home/travis/build\l/CompPhysVienna/n2p2\l/src/libnnp/SymGrpCompAngn.h" alt="" coords="97,109,325,165"/>
-<area shape="rect" id="node4" href="$SymGrpCompAngn_8cpp.html" title="/home/travis/build\l/CompPhysVienna/n2p2\l/src/libnnp/SymGrpCompAngn.cpp" alt="" coords="223,213,465,269"/>
-<area shape="rect" id="node5" href="$SymFncCompAngn_8cpp.html" title="/home/travis/build\l/CompPhysVienna/n2p2\l/src/libnnp/SymFncCompAngn.cpp" alt="" coords="400,109,643,165"/>
+<map id="/home/runner/work/n2p2/n2p2/src/libnnp/SymFncCompAngn.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/SymFncCompAngn.h">
+<area shape="rect" id="node1" title=" " alt="" coords="197,5,461,47"/>
+<area shape="rect" id="node2" href="$Element_8cpp.html" title=" " alt="" coords="5,184,216,225"/>
+<area shape="rect" id="node3" href="$SymGrpCompAngn_8h.html" title=" " alt="" coords="113,95,377,136"/>
+<area shape="rect" id="node4" href="$SymGrpCompAngn_8cpp.html" title=" " alt="" coords="258,184,537,225"/>
+<area shape="rect" id="node5" href="$SymFncCompAngn_8cpp.html" title=" " alt="" coords="453,95,731,136"/>
 </map>

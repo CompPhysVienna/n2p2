@@ -1,3 +1,4 @@
 <map id="nnp::Training::calculateError" name="nnp::Training::calculateError">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae5d67463993440b215a9b165854c8cf9" title="Calculate error metrics per epoch for all structures with file names used in training loop..." alt="" coords="225,5,397,47"/>
+<area shape="rect" id="node1" title="Calculate error metrics for all structures." alt="" coords="225,5,397,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae5d67463993440b215a9b165854c8cf9" title="Calculate error metrics per epoch for all structures with file names used in training loop." alt="" coords="5,5,177,47"/>
 </map>

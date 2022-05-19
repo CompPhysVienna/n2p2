@@ -1,5 +1,11 @@
-<map id="/home/travis/build/CompPhysVienna/n2p2/src/libnnp/Structure.h" name="/home/travis/build/CompPhysVienna/n2p2/src/libnnp/Structure.h">
-<area shape="rect" id="node2" href="$Atom_8h.html" title="Atom.h" alt="" coords="92,109,161,136"/>
-<area shape="rect" id="node3" href="$Vec3D_8h.html" title="Vec3D.h" alt="" coords="21,184,96,211"/>
-<area shape="rect" id="node8" href="$ElementMap_8h.html" title="ElementMap.h" alt="" coords="286,109,401,136"/>
+<map id="/home/runner/work/n2p2/n2p2/src/libnnp/Structure.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Structure.h">
+<area shape="rect" id="node1" title=" " alt="" coords="124,5,324,47"/>
+<area shape="rect" id="node2" href="$Atom_8h.html" title=" " alt="" coords="92,95,161,121"/>
+<area shape="rect" id="node3" href="$Vec3D_8h.html" title=" " alt="" coords="21,169,96,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="60,244,131,271"/>
+<area shape="rect" id="node5" title=" " alt="" coords="170,169,221,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="245,169,304,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="379,169,442,196"/>
+<area shape="rect" id="node8" href="$ElementMap_8h.html" title=" " alt="" coords="287,95,403,121"/>
+<area shape="rect" id="node9" title=" " alt="" coords="479,95,552,121"/>
 </map>

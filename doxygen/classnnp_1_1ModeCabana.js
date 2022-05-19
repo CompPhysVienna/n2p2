@@ -32,6 +32,7 @@ var classnnp_1_1ModeCabana =
     [ "calculateForces", "classnnp_1_1ModeCabana.html#a4939f53b24346111c23389b418abf55f", null ],
     [ "calculateAtomicNeuralNetworks", "classnnp_1_1ModeCabana.html#abddb930776fa000dca68b403baaae33d", null ],
     [ "calculateSymmetryFunctionGroups", "classnnp_1_1ModeCabana.html#a0b10fcc7559a3b0812acb2cb1b23af24", null ],
+    [ "Mode", "classnnp_1_1ModeCabana.html#a098246baedeee64fa0ed3b53547cf55f", null ],
     [ "knownElements", "classnnp_1_1ModeCabana.html#a10684dbb7f8fe9a644d5a493933d9c9e", null ],
     [ "d_SF", "classnnp_1_1ModeCabana.html#a5e1c90659e02a3776bf43ab3a335e5fd", null ],
     [ "SF", "classnnp_1_1ModeCabana.html#af62ae167abc61329fe8b0fac28e40ece", null ],
@@ -59,5 +60,15 @@ var classnnp_1_1ModeCabana =
     [ "meanEnergy", "classnnp_1_1ModeCabana.html#a6548fa8f739f3bb0221abb6c1ea4c2ed", null ],
     [ "scalingType", "classnnp_1_1ModeCabana.html#a9339da0754f42878f347e2cdf53b2e66", null ],
     [ "elements", "classnnp_1_1ModeCabana.html#aec0627677be56ed7f287500f7c373980", null ],
-    [ "elementStrings", "classnnp_1_1ModeCabana.html#a10839affdcfbe190403ccd5484fb7b74", null ]
+    [ "elementStrings", "classnnp_1_1ModeCabana.html#a10839affdcfbe190403ccd5484fb7b74", null ],
+    [ "log", "classnnp_1_1ModeCabana.html#aae5d8b1186dde3ffbf2545fca1d08923", null ],
+    [ "numElements", "classnnp_1_1ModeCabana.html#a76d3694d566d2052c298325a18ee865c", null ],
+    [ "minNeighbors", "classnnp_1_1ModeCabana.html#abbb183f90ace9311391b9847580009ba", null ],
+    [ "minCutoffRadius", "classnnp_1_1ModeCabana.html#a16cf1320e7b8e3ff52802dff5b114fae", null ],
+    [ "maxCutoffRadius", "classnnp_1_1ModeCabana.html#a38f8bc8db576ad1762dd306b4d225383", null ],
+    [ "cutoffAlpha", "classnnp_1_1ModeCabana.html#aded25017ec58efa0cc8d55bb9fb7dd25", null ],
+    [ "convEnergy", "classnnp_1_1ModeCabana.html#a09461989d84484833b10c96e6871f87e", null ],
+    [ "convLength", "classnnp_1_1ModeCabana.html#a1d6eccfa0f21d64823f74cc75c89473f", null ],
+    [ "settings", "classnnp_1_1ModeCabana.html#acaf7de3d7a75f960af6a66c3e9ab6acb", null ],
+    [ "cutoffType", "classnnp_1_1ModeCabana.html#af7e76062a64f8acdcf384bc487f8a4fb", null ]
 ];

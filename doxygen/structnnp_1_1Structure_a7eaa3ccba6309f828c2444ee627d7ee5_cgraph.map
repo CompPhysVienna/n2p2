@@ -1,3 +1,4 @@
 <map id="nnp::Structure::writeToFilePoscar" name="nnp::Structure::writeToFilePoscar">
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#ab3c6fd52cc1fa5f0c1a1c8bc50c4542a" title="Get sorted list of elements in one string (space separated). " alt="" coords="244,5,469,47"/>
+<area shape="rect" id="node1" title="Write configuration to POSCAR file." alt="" coords="5,5,196,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#ab3c6fd52cc1fa5f0c1a1c8bc50c4542a" title="Get sorted list of elements in one string (space separated)." alt="" coords="244,5,471,47"/>
 </map>

@@ -1,3 +1,8 @@
 <map id="nnp::SymFncBaseExpAng" name="nnp::SymFncBaseExpAng">
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions. " alt="" coords="91,111,267,137"/>
+<area shape="rect" id="node1" title="Intermediate class for angular SFs based on cutoffs and exponentials." alt="" coords="213,231,400,257"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="91,111,269,137"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,5,72,32"/>
+<area shape="rect" id="node4" title=" " alt="" coords="293,111,331,137"/>
+<area shape="rect" id="node5" title=" " alt="" coords="361,111,412,137"/>
+<area shape="rect" id="node6" title=" " alt="" coords="489,111,549,137"/>
 </map>

@@ -1,0 +1,6 @@
+<map id="nnp::Mode::setupGeneric" name="nnp::Mode::setupGeneric">
+<area shape="rect" id="node1" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="221,71,405,98"/>
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="5,5,173,47"/>
+<area shape="rect" id="node3" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="62,71,117,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="8,122,171,149"/>
+</map>

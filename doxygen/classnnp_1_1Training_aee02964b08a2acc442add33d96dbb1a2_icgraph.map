@@ -1,3 +1,4 @@
 <map id="nnp::Training::setEpochSchedule" name="nnp::Training::setEpochSchedule">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167" title="Execute main training loop. " alt="" coords="284,5,425,32"/>
+<area shape="rect" id="node1" title="Select energies/forces schedule for one epoch." alt="" coords="195,5,425,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167" title="Execute main training loop." alt="" coords="5,5,147,32"/>
 </map>

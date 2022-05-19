@@ -1,3 +1,4 @@
 <map id="nnp::Training::setupSelectionMode" name="nnp::Training::setupSelectionMode">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine. " alt="" coords="297,5,497,32"/>
+<area shape="rect" id="node1" title="Set selection mode for specific training property." alt="" coords="253,5,499,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="5,5,205,32"/>
 </map>

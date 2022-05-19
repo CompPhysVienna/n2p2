@@ -1,3 +1,4 @@
 <map id="nnp::KalmanFilter::setParametersFadingMemory" name="nnp::KalmanFilter::setParametersFadingMemory">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine. " alt="" coords="264,13,464,39"/>
+<area shape="rect" id="node1" title="Set parameters for fading memory Kalman filter." alt="" coords="253,5,465,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="5,13,205,39"/>
 </map>

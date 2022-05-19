@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NNP training procedure &mdash; n2p2 - A neural network potential package &#34;v2.1.4-13-g4ce8c70&#34; documentation</title>
+  <title>NNP training procedure &mdash; n2p2 - A neural network potential package &#34;487316e&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "v2.1.4-13-g4ce8c70"
+                "487316e"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -162,6 +162,12 @@ your system.</p>
 </section>
 <section id="step-3-optional-data-set-normalization">
 <h2>Step 3 (<strong>optional</strong>): Data set normalization<a class="headerlink" href="#step-3-optional-data-set-normalization" title="Permalink to this headline"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This step is usually not necessary any more because data set normalization is
+handled on-the-fly during training with the keyword
+<a class="reference internal" href="keywords.html#normalize-data-set"><span class="std std-ref">normalize_data_set</span></a>.</p>
+</div>
 <p>As explained <a class="reference internal" href="units.html#units"><span class="std std-ref">here</span></a> it may be useful to ensure that training is
 independent of the chosen unit system. With <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> and <code class="docutils literal notranslate"><span class="pre">input.data</span></code>
 present run the tool <a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">nnp-norm</span></a> which implements a normalization procedure

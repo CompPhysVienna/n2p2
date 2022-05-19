@@ -1,3 +1,12 @@
 <map id="nnp::Atom" name="nnp::Atom">
-<area shape="rect" id="node9" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space. " alt="" coords="185,329,280,356"/>
+<area shape="rect" id="node1" title="Storage for a single atom." alt="" coords="964,368,1053,395"/>
+<area shape="rect" id="node2" title=" " alt="" coords="497,169,684,196"/>
+<area shape="rect" id="node3" title=" " alt="" coords="203,124,263,151"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,331,72,357"/>
+<area shape="rect" id="node9" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="185,331,280,357"/>
+<area shape="rect" id="node10" title=" " alt="" coords="304,431,469,457"/>
+<area shape="rect" id="node5" title=" " alt="" coords="557,511,624,537"/>
+<area shape="rect" id="node6" title=" " alt="" coords="504,562,677,603"/>
+<area shape="rect" id="node7" title=" " alt="" coords="565,652,616,679"/>
+<area shape="rect" id="node8" title=" " alt="" coords="493,368,688,395"/>
 </map>

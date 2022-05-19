@@ -1,3 +1,4 @@
 <map id="nnp::Training::writeUpdaterStatus" name="nnp::Training::writeUpdaterStatus">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167" title="Execute main training loop. " alt="" coords="252,13,393,39"/>
+<area shape="rect" id="node1" title="Write updater information to file." alt="" coords="195,5,393,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167" title="Execute main training loop." alt="" coords="5,13,147,39"/>
 </map>

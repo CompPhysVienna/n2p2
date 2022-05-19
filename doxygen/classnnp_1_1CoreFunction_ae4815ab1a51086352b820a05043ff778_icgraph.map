@@ -1,3 +1,4 @@
 <map id="nnp::CoreFunction::getAsymmetric" name="nnp::CoreFunction::getAsymmetric">
-<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a5fc01e028e196932abaa49debd72fb55" title="Check if asymmetry is enabled in core function. " alt="" coords="200,5,367,47"/>
+<area shape="rect" id="node1" title="Getter for asymmetric." alt="" coords="220,5,367,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a5fc01e028e196932abaa49debd72fb55" title="Check if asymmetry is enabled in core function." alt="" coords="5,5,172,47"/>
 </map>

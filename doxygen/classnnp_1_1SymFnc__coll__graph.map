@@ -1,5 +1,12 @@
 <map id="nnp::SymFnc" name="nnp::SymFnc">
-<area shape="rect" id="node4" title="STL class. " alt="" coords="525,300,660,327"/>
-<area shape="rect" id="node10" href="$classnnp_1_1ElementMap.html" title="Contains element map. " alt="" coords="525,644,660,671"/>
-<area shape="rect" id="node11" title="STL class. " alt="" coords="528,695,657,721"/>
+<area shape="rect" id="node1" title="Symmetry function base class." alt="" coords="817,349,924,376"/>
+<area shape="rect" id="node2" title=" " alt="" coords="179,171,365,197"/>
+<area shape="rect" id="node6" title=" " alt="" coords="505,233,680,274"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,119,65,145"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="525,299,660,325"/>
+<area shape="rect" id="node5" title=" " alt="" coords="559,425,626,452"/>
+<area shape="rect" id="node7" title=" " alt="" coords="510,476,675,503"/>
+<area shape="rect" id="node8" title=" " alt="" coords="543,527,642,553"/>
+<area shape="rect" id="node9" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="525,577,661,604"/>
+<area shape="rect" id="node10" title="STL class." alt="" coords="528,628,657,655"/>
 </map>

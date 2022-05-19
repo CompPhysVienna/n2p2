@@ -1,3 +1,5 @@
 <map id="nnp::Mode::writeSettingsFile" name="nnp::Mode::writeSettingsFile">
-<area shape="rect" id="node2" href="$nnp-norm_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="259,5,313,32"/>
+<area shape="rect" id="node1" title="Write complete settings file." alt="" coords="308,31,515,57"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,5,260,32"/>
+<area shape="rect" id="node3" href="$nnp-norm_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,56,160,83"/>
 </map>

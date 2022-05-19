@@ -1,3 +1,4 @@
 <map id="nnp::Structure::freeAtoms" name="nnp::Structure::freeAtoms">
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update. " alt="" coords="243,5,401,32"/>
+<area shape="rect" id="node1" title="Free symmetry function memory for all atoms, see free() in Atom class." alt="" coords="212,5,401,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,5,164,32"/>
 </map>
