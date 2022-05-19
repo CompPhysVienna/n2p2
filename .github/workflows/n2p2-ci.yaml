@@ -15,7 +15,7 @@ jobs:
         run: |
           # Docs
           # API docs with doxygen, generating graphs with doxygen requires dot.
-          sudo apt install doxygen graphviz
+          sudo apt install doxygen graphviz libjs-mathjax
 
           # Build 
           # MPI
