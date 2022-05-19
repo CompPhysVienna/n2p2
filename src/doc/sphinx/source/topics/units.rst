@@ -27,13 +27,14 @@ Processing data sets unaltered potentially introduces a dependence of training
 results on the chosen unit system, i.e. if the same data set would be set up
 with different physical unit systems, it is unclear whether the training would
 converge to comparable errors. To avoid this problem an additional
-pre-processing of the training data can be performed with the tool
-:ref:`nnp-norm`. This tool will determine conversion factors for a reduced
-"internal" unit system and add them to the settings file. Other tools will
-recognize the corresponding :ref:`keywords <keywords>` and automatically
-perform the conversion to "internal" units. No additional intervention of the
-user is necessary and quantities are usually converted back to physical units
-for screen or file output.
+pre-processing of the training data can be performed with the keyword
+:ref:`normalize_data_set` (recommended) or the tool :ref:`nnp-norm`. Both will
+determine conversion factors for a reduced "internal" unit system and add them
+to the settings file. Other tools will recognize the corresponding
+:ref:`keywords <keywords>` and automatically perform the conversion to
+"internal" units. No additional intervention of the user is necessary and
+quantities are usually converted back to physical units for screen or file
+output.
 
 .. note::
 
@@ -42,8 +43,8 @@ for screen or file output.
    output or in the file header. The default output of all tools is given in the
    original physical unit system.
 
-For further details see the :ref:`tool description <nnp-norm>` and a recent
-publication [1]_.
+For further details see the :ref:`keyword description <normalize_data_set>`, the
+:ref:`tool description <nnp-norm>` and a recent publication [1]_.
 
 .. important::
 

@@ -3,6 +3,12 @@
 nnp-norm
 ========
 
+.. warning::
+
+   The use of this tool is not recommended any more because the data set
+   normalization can now be performed on-the-fly during training with the
+   keyword :ref:`normalize_data_set`.
+
 This is a helper tool for the :ref:`training procedure <training>` which enables
 an optional data set normalization. Please have a look at this :ref:`explanation
 <units>` why normalization may help to achieve consistent training results.

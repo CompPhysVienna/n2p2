@@ -563,7 +563,7 @@ void Training::dataSetNormalization()
         log << "Normalization based on standard deviation of reference data "
                "selected:\n";
         log << "\n";
-        log << "  sigma(E_ref) = sigma(F_ref) = 1\n";
+        log << "  mean(e_ref) = 0, sigma(e_ref) = sigma(F_ref) = 1\n";
         log << "\n";
         meanEnergy = meanEnergyPerAtomRef;
         convEnergy = 1.0 / sigmaEnergyPerAtomRef;
@@ -582,7 +582,7 @@ void Training::dataSetNormalization()
                "and their\n";
         log << "initial prediction selected:\n";
         log << "\n";
-        log << "  sigma(F_ref) = sigma(F_nnp) = 1\n";
+        log << "  mean(e_ref) = 0, sigma(F_NNP) = sigma(F_ref) = 1\n";
         log << "\n";
         meanEnergy = meanEnergyPerAtomRef;
         convEnergy = sigmaForceNnp / sigmaForceRef;
