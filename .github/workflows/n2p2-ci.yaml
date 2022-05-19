@@ -1,0 +1,104 @@
+name: n2p2-ci
+on:
+    push:
+    pull_request:
+        branches:
+            - master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+                
+    steps:
+        - uses: actions/checkout@v3
+
+        - name: Install required system packages
+          ########
+          # DOCS #
+          ########
+          # API docs with doxygen, generating graphs with doxygen requires dot.
+          run: sudo apt install doxygen graphviz
+          #########
+          # BUILD #
+          #########
+          # MPI
+          run: sudo apt install openmpi-bin libopenmpi-dev
+          # BLAS
+          run: sudo apt install libblas3 libblas-dev
+          # Eigen library
+          run: sudo apt install libeigen3-dev
+          # GSL library
+          run: sudo apt install libgsl-dev
+          #########
+          # TESTS #
+          #########
+          # Boost Test for C++ testing
+          run: sudo apt install libboost-test-dev libboost-filesystem-dev
+          # Coverage for C++
+          run: sudo apt install lcov
+
+        - name: Install required Python packages
+          ########
+          # DOCS #
+          ########
+          run: pip install sphinx
+          run: pip install sphinx_rtd_theme
+          run: pip install breathe
+          #########
+          # pynnp #
+          #########
+          run: pip install cython
+          ###################
+          # TESTS for pynnp #
+          ###################
+          run: pip install pytest
+          run: pip install pytest-cov
+          run: pip install coverage==4.5.4
+         
+        - name: Build n2p2 libraries and applications
+          run: cd src
+          run: make MODE=test -j
+
+        - name: Build documentation
+          run: make doc
+          # Prevent GitHub Jekyll to interfere with Sphinx theme.
+          run: touch ../doc/sphinx/html/.nojekyll
+
+        - name: Build LAMMPS with n2p2 support
+          run: make MODE=test lammps-nnp
+
+        - name: Run C++ tests and coverage
+          run: cd ../test/
+          run: make cpp
+          run: cd cpp
+          run: make coverage
+
+        - name: Build pynnp and run tests
+          run: cd ../../src/
+          run: make pynnp MODE=test
+          run: cd ../test/
+          run: make python
+          run: cd cpp/
+          run: rm *.gcda *.gcno
+          run: cd ../../
+
+        - name: Upload C++ coverage to Codecov
+          uses: codecov/codecov-action@v2
+          with:
+            files: test/cpp/tests.info
+            flags: cpp
+            verbose: true
+
+        - name: Upload Python coverage to Codecov
+          uses: codecov/codecov-action@v2
+          with:
+            directory: test/python
+            flags: python
+            verbose: true
+
+        - name: Deploy Github pages
+          if: ${{ github.ref == 'refs/heads/master' }}
+          uses: JamesIves/github-pages-deploy-action@v4.3.3
+          with:
+            branch: gh-pages
+            folder: doc/sphinx/html
