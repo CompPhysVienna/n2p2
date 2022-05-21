@@ -17,7 +17,7 @@ doxygen:
 	mkdir build && \
 	cd build && \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug .. && \
-	$(MAKE) -j && \
+	$(MAKE) VERBOSE=1 && \
 	cp bin/doxygen ../..
 
 clean-doxygen:
