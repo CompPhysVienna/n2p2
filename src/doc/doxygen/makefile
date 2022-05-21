@@ -16,7 +16,7 @@ doxygen:
 	git checkout ${DOXYGEN_VERSION} && \
 	mkdir build && \
 	cd build && \
-	cmake -G "Unix Makefiles" .. && \
+	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. && \
 	$(MAKE) -j && \
 	cp bin/doxygen ../..
 

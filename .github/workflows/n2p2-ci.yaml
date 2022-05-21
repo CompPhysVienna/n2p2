@@ -55,7 +55,7 @@ jobs:
       
       - name: Build documentation
         run: |
-          OMP_NUM_THREADS=1 make doc
+          make doc
           # Prevent GitHub Jekyll to interfere with Sphinx theme.
           touch ../doc/sphinx/html/.nojekyll
         working-directory: ./src
