@@ -15,7 +15,11 @@ jobs:
         run: |
           # Docs
           # API docs with doxygen, generating graphs with doxygen requires dot.
-          sudo apt install doxygen graphviz libjs-mathjax
+          sudo apt install doxygen graphviz
+          # libjs-mathjax
+          # Generating formulae with doxygen requires latex and gs.
+          # Mathjax does not seem to work on Github pages.
+          #sudo apt install texlive-latex-base ghostscript
 
           # Build 
           # MPI
