@@ -14,12 +14,9 @@ jobs:
       - name: Install required system packages
         run: |
           # Docs
-          # API docs with doxygen, generating graphs with doxygen requires dot.
-          sudo apt install doxygen graphviz
-          # libjs-mathjax
-          # Generating formulae with doxygen requires latex and gs.
-          # Mathjax does not seem to work on Github pages.
-          #sudo apt install texlive-latex-base ghostscript
+          # API docs with doxygen (built via makefile, needs cmake),
+          # generating graphs with doxygen requires dot.
+          sudo apt install cmake graphviz
 
           # Build 
           # MPI
