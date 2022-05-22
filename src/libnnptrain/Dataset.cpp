@@ -800,7 +800,7 @@ int Dataset::distributeStructures(bool          randomize,
         vector<size_t> countStructuresPerProc;
 
         countStructuresPerProc.resize(numProcs, 0);
-        
+
         if (randomize)
         {
             while (countStructures < numStructures)
@@ -954,7 +954,7 @@ void Dataset::toNormalizedUnits()
     {
         it->toNormalizedUnits(meanEnergy, convEnergy, convLength);
     }
-    
+
     return;
 }
 
@@ -965,7 +965,7 @@ void Dataset::toPhysicalUnits()
     {
         it->toPhysicalUnits(meanEnergy, convEnergy, convLength);
     }
-    
+
     return;
 }
 
@@ -1285,46 +1285,89 @@ void Dataset::writeSymmetryFunctionFile(string fileName)
     return;
 }
 
-size_t Dataset::writeNeighborHistogram(string const& fileName)
+size_t Dataset::writeNeighborHistogram(string const& fileNameHisto,
+                                       string const& fileNameStructure)
 {
     log << "\n";
-    log << "*** NEIGHBOR HISTOGRAMS *****************"
+    log << "*** NEIGHBOR STATISTICS/HISTOGRAM *******"
            "**************************************\n";
     log << "\n";
 
-    // Determine maximum number of neighbors.
-    size_t numAtoms = 0;
-    size_t minNeighbors = numeric_limits<size_t>::max();
-    size_t maxNeighbors = 0;
-    double meanNeighbors = 0.0;
-    for (vector<Structure>::const_iterator it = structures.begin();
-         it != structures.end(); ++it)
+    ofstream statFile;
+    string fileNameLocal = strpr("%s.%04d", fileNameStructure.c_str(), myRank);
+    statFile.open(fileNameLocal.c_str());
+    if (myRank == 0)
     {
-        numAtoms += it->numAtoms;
-        for (vector<Atom>::const_iterator it2 = it->atoms.begin();
-             it2 != it->atoms.end(); ++it2)
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Neighbor statistics for each structure.");
+        colSize.push_back(10);
+        colName.push_back("struct");
+        colInfo.push_back("Index of structure (starting with 1).");
+        colSize.push_back(10);
+        colName.push_back("natoms");
+        colInfo.push_back("Number of atoms in structure.");
+        colSize.push_back(10);
+        colName.push_back("min");
+        colInfo.push_back("Minimum number of neighbors over all atoms.");
+        colSize.push_back(10);
+        colName.push_back("max");
+        colInfo.push_back("Maximum number of neighbors over all atoms.");
+        colSize.push_back(16);
+        colName.push_back("mean");
+        colInfo.push_back("Mean number of neighbors over all atoms.");
+        appendLinesToFile(statFile,
+                          createFileHeader(title, colSize, colName, colInfo));
+    }
+
+    // Compute per-structure statistics and prepare histogram boundaries.
+    size_t numAtomsGlobal = 0;
+    size_t minNeighborsGlobal = numeric_limits<size_t>::max();
+    size_t maxNeighborsGlobal = 0;
+    double meanNeighborsGlobal = 0.0;
+    for (auto const& s : structures)
+    {
+        size_t minNeighbors = numeric_limits<size_t>::max();
+        size_t maxNeighbors = 0;
+        double meanNeighbors = 0.0;
+        for (auto const& a : s.atoms)
         {
-            size_t const n = it2->numNeighbors;
+            size_t const n = a.numNeighbors;
             minNeighbors = min(minNeighbors, n);
             maxNeighbors = max(maxNeighbors, n);
             meanNeighbors += n;
         }
+        numAtomsGlobal += s.numAtoms;
+        minNeighborsGlobal = min(minNeighborsGlobal, minNeighbors);
+        maxNeighborsGlobal = max(maxNeighborsGlobal, maxNeighbors);
+        meanNeighborsGlobal += meanNeighbors;
+        statFile << strpr("%10zu %10zu %10zu %10zu %16.8E\n",
+                          s.index + 1,
+                          s.numAtoms,
+                          minNeighbors,
+                          maxNeighbors,
+                          meanNeighbors / s.numAtoms);
     }
-    MPI_Allreduce(MPI_IN_PLACE, &numAtoms     , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &minNeighbors , 1, MPI_SIZE_T, MPI_MIN, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &maxNeighbors , 1, MPI_SIZE_T, MPI_MAX, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &meanNeighbors, 1, MPI_DOUBLE, MPI_SUM, comm);
-    log << strpr("Minimum number of neighbors: %d\n", minNeighbors);
+    statFile.flush();
+    statFile.close();
+    MPI_Allreduce(MPI_IN_PLACE, &numAtomsGlobal     , 1, MPI_SIZE_T, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &minNeighborsGlobal , 1, MPI_SIZE_T, MPI_MIN, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &maxNeighborsGlobal , 1, MPI_SIZE_T, MPI_MAX, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &meanNeighborsGlobal, 1, MPI_DOUBLE, MPI_SUM, comm);
+    log << strpr("Minimum number of neighbors: %d\n", minNeighborsGlobal);
     log << strpr("Mean    number of neighbors: %.1f\n",
-                 meanNeighbors / numAtoms);
-    log << strpr("Maximum number of neighbors: %d\n", maxNeighbors);
+                 meanNeighborsGlobal / numAtomsGlobal);
+    log << strpr("Maximum number of neighbors: %d\n", maxNeighborsGlobal);
 
     // Calculate neighbor histogram.
     gsl_histogram* histNeighbors = NULL;
-    histNeighbors = gsl_histogram_alloc(maxNeighbors + 1);
+    histNeighbors = gsl_histogram_alloc(maxNeighborsGlobal + 1);
     gsl_histogram_set_ranges_uniform(histNeighbors,
                                      -0.5,
-                                     maxNeighbors + 0.5);
+                                     maxNeighborsGlobal + 0.5);
     for (vector<Structure>::const_iterator it = structures.begin();
          it != structures.end(); ++it)
     {
@@ -1334,18 +1377,18 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
             gsl_histogram_increment(histNeighbors, it2->numNeighbors);
         }
     }
-    MPI_Allreduce(MPI_IN_PLACE, histNeighbors->bin, maxNeighbors + 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, histNeighbors->bin, maxNeighborsGlobal + 1, MPI_DOUBLE, MPI_SUM, comm);
 
     // Write histogram to file.
     if (myRank == 0)
     {
-        log << strpr("Neighbor histogram file: %s.\n", fileName.c_str());
+        log << strpr("Neighbor histogram file: %s.\n", fileNameHisto.c_str());
         FILE* fp = 0;
-        fp = fopen(fileName.c_str(), "w");
+        fp = fopen(fileNameHisto.c_str(), "w");
         if (fp == 0)
         {
             throw runtime_error(strpr("ERROR: Could not open file: %s.\n",
-                                      fileName.c_str()));
+                                      fileNameHisto.c_str()));
         }
 
         // File header.
@@ -1372,12 +1415,20 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
         fp = 0;
     }
 
+    MPI_Barrier(comm);
+    if (myRank == 0)
+    {
+        log << strpr("Combining per-structure neighbor statistics file: %s.\n",
+                     fileNameStructure.c_str());
+        combineFiles(fileNameStructure);
+    }
+
     gsl_histogram_free(histNeighbors);
 
     log << "*****************************************"
            "**************************************\n";
 
-    return maxNeighbors;
+    return maxNeighborsGlobal;
 }
 
 void Dataset::sortNeighborLists()
