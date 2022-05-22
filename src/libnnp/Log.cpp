@@ -20,7 +20,8 @@
 using namespace std;
 using namespace nnp;
 
-Log::Log() : writeToStdout(true)
+Log::Log() : writeToStdout(true ),
+             silent       (false)
 {
 }
 
@@ -38,6 +39,7 @@ Log& Log::operator<<(vector<string> const& entries)
 
 void Log::addLogEntry(string const& entry)
 {
+    if (silent) return;
     memory.push_back(entry);
 
     if (writeToStdout)

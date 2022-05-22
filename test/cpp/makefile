@@ -78,3 +78,10 @@ clean-coverage:
 	$(RM) $(PROJECT_DIR)/src/application/*.gcda
 	$(RM) *.gcda *.base *.run *.info
 	$(RM) -r htmlcov
+
+# Grep for "CI-CHECK" for code changes if you want to review output files from non-interactive CI run.
+#test_nnp-train: test_nnp-train.cpp
+#	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
+#	-./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+#	cat nnp-train.log.0000.*
+#	cat learning-curve.out.*

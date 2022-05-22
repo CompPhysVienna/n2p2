@@ -133,9 +133,13 @@ public:
     /** Write complete settings file.
      *
      * @param[in,out] file Settings file.
+     * @param[in] replacements Map of line numbers with alternative content.
      */
     void                     writeSettingsFile(
-                                             std::ofstream* const& file) const;
+                                 std::ofstream* const&        file,
+                                 std::map<std::size_t,
+                                          std::string> const& replacements
+                                                                  = {}) const;
 
 private:
     /// Vector of all lines in settings file.

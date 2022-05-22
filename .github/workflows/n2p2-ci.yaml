@@ -1,0 +1,102 @@
+name: n2p2-ci
+on:
+  push:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install required system packages
+        run: |
+          # Docs
+          # API docs with doxygen (built via makefile, needs cmake),
+          # generating graphs with doxygen requires dot.
+          sudo apt install cmake graphviz
+
+          # Build 
+          # MPI
+          sudo apt install openmpi-bin libopenmpi-dev
+          # BLAS
+          sudo apt install libblas3 libblas-dev
+          # Eigen library
+          sudo apt install libeigen3-dev
+          # GSL library
+          sudo apt install libgsl-dev
+
+          # Tests
+          # Boost Test for C++ testing
+          sudo apt install libboost-test-dev libboost-filesystem-dev
+          # Coverage for C++
+          sudo apt install lcov
+      
+      - name: Install required Python packages
+        run: |
+          # Docs
+          pip install sphinx
+          pip install sphinx_rtd_theme
+          pip install breathe
+
+          # pynnp
+          pip install cython
+
+          # python tests
+          pip install pytest
+          pip install pytest-cov
+          pip install coverage==4.5.4
+       
+      - name: Build n2p2 libraries and applications
+        run: make MODE=test -j4
+        working-directory: ./src
+      
+      - name: Build documentation
+        run: |
+          make doc
+          # Prevent GitHub Jekyll to interfere with Sphinx theme.
+          touch ../doc/sphinx/html/.nojekyll
+        working-directory: ./src
+      
+      - name: Build LAMMPS with n2p2 support
+        run: make MODE=test lammps-nnp
+        working-directory: ./src
+      
+      - name: Run C++ tests and coverage
+        run: |
+          make cpp
+          cd cpp
+          make coverage
+          rm *.gcda *.gcno
+        working-directory: ./test
+      
+      - name: Build pynnp
+        run: make pynnp MODE=test
+        working-directory: ./src
+      
+      - name: Run python tests
+        run: make python
+        working-directory: ./test
+      
+      - name: Upload C++ coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: test/cpp/tests.info
+          flags: cpp
+          verbose: true
+      
+      - name: Upload Python coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          directory: test/python
+          flags: python
+          verbose: true
+
+      - name: Deploy Github pages
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages
+          folder: doc/sphinx/html

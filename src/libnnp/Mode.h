@@ -102,17 +102,21 @@ public:
                                                                  = "input.nn");
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
+     * @param[in] skipNormalize Whether to skip normalization setup.
+     *
      * Sets up elements, symmetry functions, symmetry function groups, neural
      * networks. No symmetry function scaling data is read, no weights are set.
      */
-    void                     setupGeneric();
+    void                     setupGeneric(bool skipNormalize = false);
     /** Set up normalization.
+     *
+     * @param[in] standalone Whether to write section header and footer.
      *
      * If the keywords `mean_energy`, `conv_length` and
      * `conv_length` are present, the provided conversion factors are used to
      * internally use a different unit system.
      */
-    void                     setupNormalization();
+    void                     setupNormalization(bool standalone = true);
     /** Set up the element map.
      *
      * Uses keyword `elements`. This function should follow immediately after
@@ -402,6 +406,11 @@ public:
     /** Erase all extrapolation warnings and reset counters.
      */
     void                     resetExtrapolationWarnings();
+    /** Getter for Mode::nnpType.
+     *
+     * @return Type of NNP that was set up.
+     */
+    NNPType                  getNnpType() const;
     /** Getter for Mode::meanEnergy.
      *
      * @return Mean energy per atom.
@@ -530,6 +539,11 @@ protected:
 //////////////////////////////////
 // Inlined function definitions //
 //////////////////////////////////
+
+inline Mode::NNPType Mode::getNnpType() const
+{
+    return nnpType;
+}
 
 inline double Mode::getMeanEnergy() const
 {

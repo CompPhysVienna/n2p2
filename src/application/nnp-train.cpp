@@ -53,7 +53,11 @@ int main(int argc, char* argv[])
     training.initialize();
     training.loadSettingsFile();
     training.setStage(stage);
-    training.setupGeneric();
+    // If initial-weights-based normalization is enabled skip normalization
+    // setup here.
+    training.setupGeneric(
+        training.settingsKeywordExists("normalize_data_set")
+    );
     training.setupSymmetryFunctionScaling();
     training.setupSymmetryFunctionStatistics(false, false, false, false);
     training.setupRandomNumberGenerator();
@@ -66,11 +70,17 @@ int main(int argc, char* argv[])
     training.selectSets();
     training.writeSetsToFiles();
 
-    // Switch to normalized units, convert all structures.
-    if (training.useNormalization()) training.toNormalizedUnits();
-
     // Initialize weights and biases for neural networks.
     training.initializeWeights();
+
+    // Run data set normalization if keyword present.
+    if (training.settingsKeywordExists("normalize_data_set"))
+    {
+        training.dataSetNormalization();
+    }
+
+    // Switch to normalized units, convert all structures.
+    if (training.useNormalization()) training.toNormalizedUnits();
 
     // General training settings and weight update routine.
     training.setupTraining();

@@ -63,6 +63,9 @@ public:
      * Necessary because of #symmetryFunctions vector of pointers.
      */
     virtual ~Element();
+    /** Clear all symmetry functions and groups.
+     */
+    void                     clearSymmetryFunctions();
     /** Set #atomicEnergyOffset.
      */
     void                     setAtomicEnergyOffset(double atomicEnergyOffset);
