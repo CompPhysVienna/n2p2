@@ -56,8 +56,6 @@ jobs:
       
       - name: Build documentation
         run: |
-          export CMAKE_C_COMPILER=gcc-10
-          export CMAKE_CXX_COMPILER=g++-10
           make doc
           # Prevent GitHub Jekyll to interfere with Sphinx theme.
           touch ../doc/sphinx/html/.nojekyll
