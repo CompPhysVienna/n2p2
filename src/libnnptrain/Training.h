@@ -61,7 +61,7 @@ public:
          * computes errors and gradients, and updates weights.
          */
         //PM_DATASET,
-        /** Parallel gradient computation, update on rank 0.
+        /* Parallel gradient computation, update on rank 0.
          *
          * Data set is distributed via MPI, each tasks selects energy/force
          * update candidates, and computes errors and gradients, which are
@@ -138,6 +138,9 @@ public:
      * @param[in] stage Training stage to set.
      */
     void                  setStage(std::size_t stage);
+    /** Apply normalization based on initial weights prediction.
+     */
+    void                  dataSetNormalization();
     /** General training settings and setup of weight update routine.
      */
     void                  setupTraining();

@@ -15,10 +15,11 @@ PROJECT_LIB=$(PROJECT_DIR)/lib
 .PHONY: all clean
 
 all:
-	export PYTHONPATH=$(PYTHONPATH):$(PROJECT_DIR)/src/pynnp/ && pytest --cov=pynnp --cov-report html --cov-report term -v
+	export PYTHONPATH=$(PYTHONPATH):$(PROJECT_DIR)/src/pynnp/ && pytest --cov=pynnp --cov-report html --cov-report term --cov-report=xml -v
 
 clean:
 	$(RM) -r ./htmlcov
 	$(RM) .coverage
 	$(RM) -r .pytest_cache
 	$(RM) -r __pycache__
+	$(RM) coverage.xml

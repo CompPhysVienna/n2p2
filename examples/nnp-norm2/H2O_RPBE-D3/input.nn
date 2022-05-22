@@ -1,13 +1,4 @@
 ###############################################################################
-# DATA SET NORMALIZATION
-###############################################################################
-# This section was automatically added by nnp-norm.
-mean_energy  -2.3353824022135491E-01
-conv_energy   8.5167544626563699E+02
-conv_length   2.2798325235535355E+01
-###############################################################################
-
-###############################################################################
 # GENERAL NNP SETTINGS
 ###############################################################################
 # These keywords are (almost) always required.
@@ -38,7 +29,7 @@ random_seed                     1234567        # Random number generator seed.
 # ADDITIONAL SETTINGS FOR TRAINING
 ###############################################################################
 # These keywords are solely used for training with nnp-train.
-epochs                          2              # Number of training epochs.
+epochs                          10             # Number of training epochs.
 updater_type                    1              # Weight update method (0 = Gradient Descent, 1 = Kalman filter).
 parallel_mode                   0              # Training parallelization used (0 = Parallel (rank 0 update), 1 = Parallel (all update)).
 jacobian_mode                   1              # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).

@@ -32,7 +32,7 @@ where
 .. code-block:: none
 
    <np> ........ Number of MPI processes to use.
-   <<nbins>> ... (optional) Displacement for central difference (default: 1.0e-4).
+   <<delta>> ... (optional) Displacement for central difference (default: 1.0e-4).
 
 The ``<<delta>>`` parameter determines the position displacement of atoms used
 for the central difference approximation of the forces. If no value is provided

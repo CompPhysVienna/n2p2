@@ -49,9 +49,6 @@ Mode::Mode() : nnpType                   (NNPType::SHORT_ONLY),
 
 void Mode::initialize()
 {
-    string version("" N2P2_GIT_VERSION);
-    if (version == "") version = "" N2P2_VERSION;
-
     log << "\n";
     log << "*****************************************"
            "**************************************\n";
@@ -61,11 +58,12 @@ void Mode::initialize()
     log << "-------------------------------------------------------"
            "-----------\n";
     log << "\n";
-    log << "n²p² version      : " + version + "\n";
+    log << "n²p² version  (from git): " N2P2_GIT_VERSION "\n";
+    log << "             (version.h): " N2P2_VERSION "\n";
     log << "------------------------------------------------------------\n";
-    log << "Git branch        : " N2P2_GIT_BRANCH "\n";
-    log << "Git revision      : " N2P2_GIT_REV "\n";
-    log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
+    log << "Git branch              : " N2P2_GIT_BRANCH "\n";
+    log << "Git revision            : " N2P2_GIT_REV "\n";
+    log << "Compile date/time       : " __DATE__ " " __TIME__ "\n";
     log << "------------------------------------------------------------\n";
     log << "\n";
     log << "Features/Flags:\n";
@@ -196,9 +194,9 @@ void Mode::loadSettingsFile(string const& fileName)
     return;
 }
 
-void Mode::setupGeneric()
+void Mode::setupGeneric(bool skipNormalize)
 {
-    setupNormalization();
+    if (!skipNormalize) setupNormalization();
     setupElementMap();
     setupElements();
     setupCutoff();
@@ -217,12 +215,15 @@ void Mode::setupGeneric()
     return;
 }
 
-void Mode::setupNormalization()
+void Mode::setupNormalization(bool standalone)
 {
-    log << "\n";
-    log << "*** SETUP: NORMALIZATION ****************"
-           "**************************************\n";
-    log << "\n";
+    if (standalone)
+    {
+        log << "\n";
+        log << "*** SETUP: NORMALIZATION ****************"
+               "**************************************\n";
+        log << "\n";
+    }
 
     if (settings.keywordExists("mean_energy") &&
         settings.keywordExists("conv_energy") &&
@@ -260,8 +261,11 @@ void Mode::setupNormalization()
                             "\"conv_energy\" and \"conv_length\".\n");
     }
 
-    log << "*****************************************"
-           "**************************************\n";
+    if (standalone)
+    {
+        log << "*****************************************"
+               "**************************************\n";
+    }
 
     return;
 }
@@ -484,7 +488,9 @@ void Mode::setupSymmetryFunctions()
         log << "--------------------------------------------------"
                "-----------------------------------------------\n";
     }
+    minNeighbors.clear();
     minNeighbors.resize(numElements, 0);
+    minCutoffRadius.clear();
     minCutoffRadius.resize(numElements, maxCutoffRadius);
     for (size_t i = 0; i < numElements; ++i)
     {
@@ -715,10 +721,10 @@ void Mode::setupSymmetryFunctionMemory(bool verbose)
     for (auto& e : elements)
     {
         e.setupSymmetryFunctionMemory();
-        vector<
-        size_t> symmetryFunctionNumTable = e.getSymmetryFunctionNumTable();
-        vector<
-        vector<size_t>> symmetryFunctionTable = e.getSymmetryFunctionTable();
+        vector<size_t> symmetryFunctionNumTable
+            = e.getSymmetryFunctionNumTable();
+        vector<vector<size_t>> symmetryFunctionTable
+            = e.getSymmetryFunctionTable();
         log << strpr("Symmetry function derivatives memory table "
                      "for element %2s :\n", e.getSymbol().c_str());
         log << "-----------------------------------------"
@@ -994,15 +1000,14 @@ void Mode::setupNeuralNetwork()
                 t.numNeuronsPerLayer[i] = 0;
                 a = NeuralNetwork::AF_IDENTITY;
             }
-            else if (i == t.numLayers - 1)
-            {
-                t.numNeuronsPerLayer[i] = 1;
-                a = NeuralNetwork::AF_IDENTITY;
-            }
             else
             {
-                t.numNeuronsPerLayer[i] =
-                    atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
+                if (i == t.numLayers - 1) t.numNeuronsPerLayer[i] = 1;
+                else
+                {
+                    t.numNeuronsPerLayer[i] =
+                        atoi(globalNumNeuronsPerHiddenLayer.at(i-1).c_str());
+                }
                 if (globalActivationFunctions.at(i-1) == "l")
                 {
                     a = NeuralNetwork::AF_IDENTITY;

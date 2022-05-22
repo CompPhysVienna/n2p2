@@ -60,6 +60,7 @@ APP_DATASET=nnp-atomenv \
 
 # Applications which require libnnp and libnnptrain:
 APP_TRAINING=nnp-checkdw \
+	     nnp-norm2 \
 	     nnp-train
 
 # All applications together.

@@ -37,6 +37,10 @@ information).
 +---------------------------------+------------------------------+------------------------------------------------------+
 | :ref:`nnp-atomenv`              | libnnptrain                  | Write atomic environment data to files.              |
 +---------------------------------+------------------------------+------------------------------------------------------+
+| nnp-checkdw                     | libnnptrain                  | Check analytic vs. numeric weight derivatives.       |
++---------------------------------+------------------------------+------------------------------------------------------+
+| :ref:`nnp-checkf`               | libnnptrain                  | Check analytic vs. numeric forces.                   |
++---------------------------------+------------------------------+------------------------------------------------------+
 | nnp-comp2                       | libnnptrain                  | Compare prediction of 2 NNPs for data set.           |
 +---------------------------------+------------------------------+------------------------------------------------------+
 | nnp-dataset                     | libnnptrain                  | Calculate energies and forces for a whole data set.  |
