@@ -17,6 +17,7 @@ jobs:
           # API docs with doxygen (built via makefile, needs cmake),
           # generating graphs with doxygen requires dot.
           sudo apt install cmake graphviz
+          sudo apt install gcc-10 g++-10
 
           # Build 
           # MPI
@@ -55,6 +56,8 @@ jobs:
       
       - name: Build documentation
         run: |
+          export CMAKE_C_COMPILER=gcc-10
+          export CMAKE_CXX_COMPILER=g++-10
           make doc
           # Prevent GitHub Jekyll to interfere with Sphinx theme.
           touch ../doc/sphinx/html/.nojekyll
