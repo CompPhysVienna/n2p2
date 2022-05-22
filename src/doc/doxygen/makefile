@@ -17,7 +17,7 @@ doxygen:
 	mkdir build && \
 	cd build && \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. && \
-	$(MAKE) -j4 && \
+	$(MAKE) -j $(CORES) && \
 	cp bin/doxygen ../..
 
 clean-doxygen:
