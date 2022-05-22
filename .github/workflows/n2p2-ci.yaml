@@ -50,7 +50,7 @@ jobs:
           pip install coverage==4.5.4
        
       - name: Build n2p2 libraries and applications
-        run: make MODE=test -j
+        run: make MODE=test -j4
         working-directory: ./src
       
       - name: Build documentation
