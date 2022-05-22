@@ -17,7 +17,6 @@ jobs:
           # API docs with doxygen (built via makefile, needs cmake),
           # generating graphs with doxygen requires dot.
           sudo apt install cmake graphviz
-          sudo apt install gcc-10 g++-10
 
           # Build 
           # MPI
