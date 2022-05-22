@@ -1,6 +1,6 @@
 <map id="nnp::SymFncExpRad" name="nnp::SymFncExpRad">
-<area shape="rect" id="node1" title="Radial symmetry function (type 2)" alt="" coords="75,187,229,213"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="63,96,241,123"/>
+<area shape="rect" id="node1" title="Radial symmetry function (type 2)" alt="" coords="79,187,233,213"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="67,96,245,123"/>
 <area shape="rect" id="node3" title=" " alt="" coords="5,5,72,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="265,96,325,123"/>
+<area shape="rect" id="node4" title=" " alt="" coords="269,96,329,123"/>
 </map>

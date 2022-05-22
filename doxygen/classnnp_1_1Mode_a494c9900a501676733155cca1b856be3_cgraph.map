@@ -1,6 +1,6 @@
 <map id="nnp::Mode::readNeuralNetworkWeights" name="nnp::Mode::readNeuralNetworkWeights">
 <area shape="rect" id="node1" title="Read in weights for a specific type of neural network." alt="" coords="5,57,231,98"/>
-<area shape="rect" id="node2" href="$namespacennp.html#ab146710d740bd3cb5d78dc880668ef57" title=" " alt="" coords="279,5,475,32"/>
+<area shape="rect" id="node2" href="$namespacennp.html#a99b7e4b30ac62f9e261444a7408e49a7" title=" " alt="" coords="279,5,475,32"/>
 <area shape="rect" id="node3" href="$classnnp_1_1NeuralNetwork.html#a3479cb0b5dc64c4260837adbfa11f868" title="Set neural network weights and biases." alt="" coords="301,57,453,98"/>
 <area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="335,123,419,149"/>
 </map>

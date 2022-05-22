@@ -1,5 +1,5 @@
 <map id="nnp::Dataset::collectError" name="nnp::Dataset::collectError">
 <area shape="rect" id="node1" title="Collect error metrics of a property over all MPI procs." alt="" coords="225,42,412,69"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c" title="Calculate error metrics for all structures." alt="" coords="5,5,177,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="5,5,177,47"/>
 <area shape="rect" id="node3" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="64,71,119,98"/>
 </map>

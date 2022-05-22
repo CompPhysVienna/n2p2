@@ -15,5 +15,5 @@ var classnnp_1_1ElementMap =
     [ "compareAtomicNumber", "classnnp_1_1ElementMap.html#abbaa1f40d96f9b6da0a8ac9563b7cb95", null ],
     [ "forwardMap", "classnnp_1_1ElementMap.html#a27769fc84211bf630bbfa249ab0be36c", null ],
     [ "reverseMap", "classnnp_1_1ElementMap.html#a3ca5228c68df8f79b47532adf5c1f6f3", null ],
-    [ "knownElements", "classnnp_1_1ElementMap.html#a4cca8109b48dfa2361c6fb205c02568d", null ]
+    [ "knownElements", "classnnp_1_1ElementMap.html#ad0295785b2db8268cfc175b835046a1e", null ]
 ];

@@ -1,13 +1,13 @@
 <map id="nnp::InterfaceLammps" name="nnp::InterfaceLammps">
-<area shape="rect" id="node1" title=" " alt="" coords="708,527,876,554"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="401,235,492,262"/>
-<area shape="rect" id="node3" title=" " alt="" coords="15,94,82,121"/>
-<area shape="rect" id="node7" href="$structnnp_1_1Structure.html" title="Storage for one atomic configuration." alt="" coords="390,501,503,527"/>
-<area shape="rect" id="node4" title=" " alt="" coords="23,334,74,361"/>
-<area shape="rect" id="node5" title=" " alt="" coords="365,397,528,423"/>
-<area shape="rect" id="node6" title=" " alt="" coords="29,591,68,618"/>
-<area shape="rect" id="node9" title=" " alt="" coords="377,711,516,752"/>
-<area shape="rect" id="node11" title=" " alt="" coords="373,552,521,593"/>
-<area shape="rect" id="node8" title="STL class." alt="" coords="5,735,92,762"/>
-<area shape="rect" id="node10" title=" " alt="" coords="367,777,526,803"/>
+<area shape="rect" id="node1" title=" " alt="" coords="704,513,872,540"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="397,220,488,247"/>
+<area shape="rect" id="node3" title=" " alt="" coords="23,93,74,120"/>
+<area shape="rect" id="node8" title=" " alt="" coords="361,347,524,373"/>
+<area shape="rect" id="node11" href="$structnnp_1_1Structure.html" title="Storage for one atomic configuration." alt="" coords="386,488,499,515"/>
+<area shape="rect" id="node4" title=" " alt="" coords="15,413,82,440"/>
+<area shape="rect" id="node5" title=" " alt="" coords="29,597,68,624"/>
+<area shape="rect" id="node9" title=" " alt="" coords="373,749,512,790"/>
+<area shape="rect" id="node10" title=" " alt="" coords="369,590,517,631"/>
+<area shape="rect" id="node6" title=" " alt="" coords="5,732,92,759"/>
+<area shape="rect" id="node7" title=" " alt="" coords="363,539,522,565"/>
 </map>

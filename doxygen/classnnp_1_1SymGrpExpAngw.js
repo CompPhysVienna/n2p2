@@ -6,6 +6,6 @@ var classnnp_1_1SymGrpExpAngw =
     [ "addMember", "classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc", null ],
     [ "sortMembers", "classnnp_1_1SymGrpExpAngw.html#a8f14fc72bac5087e327959ee0c507fd4", null ],
     [ "calculate", "classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380", null ],
-    [ "getMembers", "classnnp_1_1SymGrpExpAngw.html#a6eb5461dc267771100e593789254ad35", null ],
+    [ "getMembers", "classnnp_1_1SymGrpExpAngw.html#a407c926208755f1cc0a41841bbd40100", null ],
     [ "members", "classnnp_1_1SymGrpExpAngw.html#a03b6c229613819ccc36ebc21c87a806c", null ]
 ];

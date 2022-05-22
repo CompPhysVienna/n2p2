@@ -1,36 +1,36 @@
 <map id="nnp::SymFnc::getEc" name="nnp::SymFnc::getEc">
 <area shape="rect" id="node1" title="Get private ec member variable." alt="" coords="295,1058,445,1085"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpExpRadWeighted.html#a5923a736320ca5a7476521e86b6225bf" title="Potentially add a member to group." alt="" coords="18,5,234,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymGrpExpRad.html#a36be577c2784b23fc4c91704d432d55b" title="Potentially add a member to group." alt="" coords="45,71,207,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymGrpCompRad.html#ac44307bc48f0064786fc782acd77f0af" title="Potentially add a member to group." alt="" coords="41,136,211,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymGrpCompRadWeighted.html#adbe3188765278a864b35f047ff4b6dc2" title="Potentially add a member to group." alt="" coords="11,201,241,243"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a24a52f66d32ba815893333bb1865e5ef" title="Potentially add a member to group." alt="" coords="14,267,238,308"/>
-<area shape="rect" id="node7" href="$classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc" title="Potentially add a member to group." alt="" coords="43,332,209,373"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymGrpCompAngn.html#a8ba9c475f50370a47fe5d7f80fb288ac" title="Potentially add a member to group." alt="" coords="37,5,215,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymGrpCompAngnWeighted.html#a1f2e51b0c0225c6f22f5979934f9c7dc" title="Potentially add a member to group." alt="" coords="7,71,245,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymGrpCompAngw.html#aa00a4cedd5afe04583c1dd3be486f8a0" title="Potentially add a member to group." alt="" coords="36,136,216,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1SymGrpCompAngwWeighted.html#a1447839e861104a3247b5c2d1d6ac073" title="Potentially add a member to group." alt="" coords="5,201,247,243"/>
+<area shape="rect" id="node6" href="$classnnp_1_1SymGrpCompRad.html#ac44307bc48f0064786fc782acd77f0af" title="Potentially add a member to group." alt="" coords="41,267,211,308"/>
+<area shape="rect" id="node7" href="$classnnp_1_1SymGrpCompRadWeighted.html#adbe3188765278a864b35f047ff4b6dc2" title="Potentially add a member to group." alt="" coords="11,332,241,373"/>
 <area shape="rect" id="node8" href="$classnnp_1_1SymGrpExpAngn.html#ae5ebd4ecdc09dca9d888ab2b89c4668c" title="Potentially add a member to group." alt="" coords="45,397,207,439"/>
-<area shape="rect" id="node9" href="$classnnp_1_1SymGrpCompAngw.html#aa00a4cedd5afe04583c1dd3be486f8a0" title="Potentially add a member to group." alt="" coords="36,463,216,504"/>
-<area shape="rect" id="node10" href="$classnnp_1_1SymGrpCompAngwWeighted.html#a1447839e861104a3247b5c2d1d6ac073" title="Potentially add a member to group." alt="" coords="5,528,247,569"/>
-<area shape="rect" id="node11" href="$classnnp_1_1SymGrpCompAngn.html#a8ba9c475f50370a47fe5d7f80fb288ac" title="Potentially add a member to group." alt="" coords="37,593,215,635"/>
-<area shape="rect" id="node12" href="$classnnp_1_1SymGrpCompAngnWeighted.html#a1f2e51b0c0225c6f22f5979934f9c7dc" title="Potentially add a member to group." alt="" coords="7,659,245,700"/>
-<area shape="rect" id="node13" href="$classnnp_1_1SymFncExpRad.html#a606ffd9eb27e5602ef94d70efb0c8607" title="Overload &lt; operator." alt="" coords="45,724,207,765"/>
-<area shape="rect" id="node14" href="$classnnp_1_1SymFncExpRadWeighted.html#a5ad9a781588ea262a3d1f3a34ab2e5c3" title="Overload &lt; operator." alt="" coords="18,789,234,831"/>
-<area shape="rect" id="node15" href="$classnnp_1_1SymFncExpAngw.html#abcdc6f2591f27217b8bce330215b6d36" title="Overload &lt; operator." alt="" coords="43,855,209,896"/>
-<area shape="rect" id="node16" href="$classnnp_1_1SymFncExpAngnWeighted.html#aae725aeed077e97be8596b953d8cf822" title="Overload &lt; operator." alt="" coords="14,920,238,961"/>
-<area shape="rect" id="node17" href="$classnnp_1_1SymFncExpAngn.html#a957d4ce66022698ae23b96ed485bc620" title="Overload &lt; operator." alt="" coords="45,985,207,1027"/>
-<area shape="rect" id="node18" href="$classnnp_1_1SymFncCompRad.html#a74911060c771644420f04a250b936b46" title="Overload &lt; operator." alt="" coords="41,1051,211,1092"/>
-<area shape="rect" id="node19" href="$classnnp_1_1SymFncCompRadWeighted.html#ab961b3eea76bed27f9456a3b6903bf8d" title="Overload &lt; operator." alt="" coords="11,1116,241,1157"/>
-<area shape="rect" id="node20" href="$classnnp_1_1SymFncCompAngw.html#a5027a3faac873ccb08fd9f6f5ba8711d" title="Overload &lt; operator." alt="" coords="36,1181,216,1223"/>
-<area shape="rect" id="node21" href="$classnnp_1_1SymFncCompAngwWeighted.html#a2fb20b7f1dc11da3543f84fbad9cd476" title="Overload &lt; operator." alt="" coords="5,1247,247,1288"/>
-<area shape="rect" id="node22" href="$classnnp_1_1SymFncCompAngnWeighted.html#ae133dbc9c4033a73167380d0329855e4" title="Overload &lt; operator." alt="" coords="7,1312,245,1353"/>
-<area shape="rect" id="node23" href="$classnnp_1_1SymFncCompAngn.html#ac0e40d5924eb60ee1dbbf252f0e4594d" title="Overload &lt; operator." alt="" coords="37,1377,215,1419"/>
-<area shape="rect" id="node24" href="$classnnp_1_1SymFncExpRad.html#aa6fe62d538135d5b679aab15c75638d4" title="Overload == operator." alt="" coords="45,1443,207,1484"/>
-<area shape="rect" id="node25" href="$classnnp_1_1SymFncExpRadWeighted.html#a805d5d80552fb100be6f7eb66b111876" title="Overload == operator." alt="" coords="18,1508,234,1549"/>
-<area shape="rect" id="node26" href="$classnnp_1_1SymFncExpAngnWeighted.html#a887f6c8f59d34e55da02003ac7f2268e" title="Overload == operator." alt="" coords="14,1573,238,1615"/>
-<area shape="rect" id="node27" href="$classnnp_1_1SymFncExpAngw.html#a9dc30416c344ff8b45285cb3f69fb3ba" title="Overload == operator." alt="" coords="43,1639,209,1680"/>
-<area shape="rect" id="node28" href="$classnnp_1_1SymFncExpAngn.html#a3e6070e0713c693eaaddc6a4a94b1cfd" title="Overload == operator." alt="" coords="45,1704,207,1745"/>
-<area shape="rect" id="node29" href="$classnnp_1_1SymFncCompRad.html#ac0bad5a796a0ee996e995ec735af96f9" title="Overload == operator." alt="" coords="41,1769,211,1811"/>
-<area shape="rect" id="node30" href="$classnnp_1_1SymFncCompRadWeighted.html#aaba04e9512473deb60cff4b6b5cfa45e" title="Overload == operator." alt="" coords="11,1835,241,1876"/>
-<area shape="rect" id="node31" href="$classnnp_1_1SymFncCompAngw.html#a8c31566e44efd91bea5168b8a7990623" title="Overload == operator." alt="" coords="36,1900,216,1941"/>
-<area shape="rect" id="node32" href="$classnnp_1_1SymFncCompAngwWeighted.html#ac225a0ed3f75e5dbcf442545f80e8e68" title="Overload == operator." alt="" coords="5,1965,247,2007"/>
-<area shape="rect" id="node33" href="$classnnp_1_1SymFncCompAngn.html#ae9baba5ef1233e372e12939fa23dc6d9" title="Overload == operator." alt="" coords="37,2031,215,2072"/>
-<area shape="rect" id="node34" href="$classnnp_1_1SymFncCompAngnWeighted.html#ab252b932496c165133bb7e6d11b85bbc" title="Overload == operator." alt="" coords="7,2096,245,2137"/>
+<area shape="rect" id="node9" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a24a52f66d32ba815893333bb1865e5ef" title="Potentially add a member to group." alt="" coords="14,463,238,504"/>
+<area shape="rect" id="node10" href="$classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc" title="Potentially add a member to group." alt="" coords="43,528,209,569"/>
+<area shape="rect" id="node11" href="$classnnp_1_1SymGrpExpRad.html#a36be577c2784b23fc4c91704d432d55b" title="Potentially add a member to group." alt="" coords="45,593,207,635"/>
+<area shape="rect" id="node12" href="$classnnp_1_1SymGrpExpRadWeighted.html#a5923a736320ca5a7476521e86b6225bf" title="Potentially add a member to group." alt="" coords="18,659,234,700"/>
+<area shape="rect" id="node13" href="$classnnp_1_1SymFncCompAngn.html#ac0e40d5924eb60ee1dbbf252f0e4594d" title="Overload &lt; operator." alt="" coords="37,724,215,765"/>
+<area shape="rect" id="node14" href="$classnnp_1_1SymFncCompAngnWeighted.html#ae133dbc9c4033a73167380d0329855e4" title="Overload &lt; operator." alt="" coords="7,789,245,831"/>
+<area shape="rect" id="node15" href="$classnnp_1_1SymFncCompAngw.html#a5027a3faac873ccb08fd9f6f5ba8711d" title="Overload &lt; operator." alt="" coords="36,855,216,896"/>
+<area shape="rect" id="node16" href="$classnnp_1_1SymFncCompAngwWeighted.html#a2fb20b7f1dc11da3543f84fbad9cd476" title="Overload &lt; operator." alt="" coords="5,920,247,961"/>
+<area shape="rect" id="node17" href="$classnnp_1_1SymFncCompRad.html#a74911060c771644420f04a250b936b46" title="Overload &lt; operator." alt="" coords="41,985,211,1027"/>
+<area shape="rect" id="node18" href="$classnnp_1_1SymFncCompRadWeighted.html#ab961b3eea76bed27f9456a3b6903bf8d" title="Overload &lt; operator." alt="" coords="11,1051,241,1092"/>
+<area shape="rect" id="node19" href="$classnnp_1_1SymFncExpAngn.html#a957d4ce66022698ae23b96ed485bc620" title="Overload &lt; operator." alt="" coords="45,1116,207,1157"/>
+<area shape="rect" id="node20" href="$classnnp_1_1SymFncExpAngnWeighted.html#aae725aeed077e97be8596b953d8cf822" title="Overload &lt; operator." alt="" coords="14,1181,238,1223"/>
+<area shape="rect" id="node21" href="$classnnp_1_1SymFncExpAngw.html#abcdc6f2591f27217b8bce330215b6d36" title="Overload &lt; operator." alt="" coords="43,1247,209,1288"/>
+<area shape="rect" id="node22" href="$classnnp_1_1SymFncExpRad.html#a606ffd9eb27e5602ef94d70efb0c8607" title="Overload &lt; operator." alt="" coords="45,1312,207,1353"/>
+<area shape="rect" id="node23" href="$classnnp_1_1SymFncExpRadWeighted.html#a5ad9a781588ea262a3d1f3a34ab2e5c3" title="Overload &lt; operator." alt="" coords="18,1377,234,1419"/>
+<area shape="rect" id="node24" href="$classnnp_1_1SymFncCompAngn.html#ae9baba5ef1233e372e12939fa23dc6d9" title="Overload == operator." alt="" coords="37,1443,215,1484"/>
+<area shape="rect" id="node25" href="$classnnp_1_1SymFncCompAngnWeighted.html#ab252b932496c165133bb7e6d11b85bbc" title="Overload == operator." alt="" coords="7,1508,245,1549"/>
+<area shape="rect" id="node26" href="$classnnp_1_1SymFncCompAngw.html#a8c31566e44efd91bea5168b8a7990623" title="Overload == operator." alt="" coords="36,1573,216,1615"/>
+<area shape="rect" id="node27" href="$classnnp_1_1SymFncCompAngwWeighted.html#ac225a0ed3f75e5dbcf442545f80e8e68" title="Overload == operator." alt="" coords="5,1639,247,1680"/>
+<area shape="rect" id="node28" href="$classnnp_1_1SymFncCompRad.html#ac0bad5a796a0ee996e995ec735af96f9" title="Overload == operator." alt="" coords="41,1704,211,1745"/>
+<area shape="rect" id="node29" href="$classnnp_1_1SymFncCompRadWeighted.html#aaba04e9512473deb60cff4b6b5cfa45e" title="Overload == operator." alt="" coords="11,1769,241,1811"/>
+<area shape="rect" id="node30" href="$classnnp_1_1SymFncExpAngn.html#a3e6070e0713c693eaaddc6a4a94b1cfd" title="Overload == operator." alt="" coords="45,1835,207,1876"/>
+<area shape="rect" id="node31" href="$classnnp_1_1SymFncExpAngnWeighted.html#a887f6c8f59d34e55da02003ac7f2268e" title="Overload == operator." alt="" coords="14,1900,238,1941"/>
+<area shape="rect" id="node32" href="$classnnp_1_1SymFncExpAngw.html#a9dc30416c344ff8b45285cb3f69fb3ba" title="Overload == operator." alt="" coords="43,1965,209,2007"/>
+<area shape="rect" id="node33" href="$classnnp_1_1SymFncExpRad.html#aa6fe62d538135d5b679aab15c75638d4" title="Overload == operator." alt="" coords="45,2031,207,2072"/>
+<area shape="rect" id="node34" href="$classnnp_1_1SymFncExpRadWeighted.html#a805d5d80552fb100be6f7eb66b111876" title="Overload == operator." alt="" coords="18,2096,234,2137"/>
 </map>

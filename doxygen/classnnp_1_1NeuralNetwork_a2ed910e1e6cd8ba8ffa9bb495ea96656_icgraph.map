@@ -1,0 +1,4 @@
+<map id="nnp::NeuralNetwork::calculateDEdb" name="nnp::NeuralNetwork::calculateDEdb">
+<area shape="rect" id="node1" title="Calculate derivative of output neuron with respect to biases." alt="" coords="205,5,357,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#a4526b9a7e947a38b861098d0826a6161" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="5,5,157,47"/>
+</map>

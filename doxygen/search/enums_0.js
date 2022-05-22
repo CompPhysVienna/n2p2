@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['activationfunction_2126',['ActivationFunction',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbed',1,'nnp::NeuralNetwork']]]
+  ['activationfunction_0',['ActivationFunction',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbed',1,'nnp::NeuralNetwork']]]
 ];

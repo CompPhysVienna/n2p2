@@ -1,6 +1,7 @@
 <map id="nnp::NeuralNetwork::setConnections" name="nnp::NeuralNetwork::setConnections">
-<area shape="rect" id="node1" title="Set neural network weights and biases." alt="" coords="279,71,431,112"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights." alt="" coords="27,5,209,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a494c9900a501676733155cca1b856be3" title="Read in weights for a specific type of neural network." alt="" coords="5,71,231,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="25,137,211,163"/>
+<area shape="rect" id="node1" title="Set neural network weights and biases." alt="" coords="279,119,431,161"/>
+<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#a5f3200be3d54c5960bc979a1ba27e9d7" title="Initialize connections with random numbers." alt="" coords="8,5,228,61"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights." alt="" coords="27,86,209,127"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a494c9900a501676733155cca1b856be3" title="Read in weights for a specific type of neural network." alt="" coords="5,151,231,193"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="25,217,211,244"/>
 </map>

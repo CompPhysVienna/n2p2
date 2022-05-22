@@ -1,5 +1,5 @@
 var namespaces_dup =
 [
-    [ "LAMMPS_NS", "namespaceLAMMPS__NS.html", null ],
-    [ "nnp", "namespacennp.html", null ]
+    [ "LAMMPS_NS", "namespaceLAMMPS__NS.html", "namespaceLAMMPS__NS" ],
+    [ "nnp", "namespacennp.html", "namespacennp" ]
 ];

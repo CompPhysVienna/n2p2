@@ -1,9 +1,9 @@
 <map id="nnp::pow_int" name="nnp::pow_int">
 <area shape="rect" id="node1" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="277,177,383,203"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncExpAngw.html#a3572da00a28d21f1758134f6c25c19f6" title="Calculate symmetry function for one atom." alt="" coords="34,5,201,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="36,71,199,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380" title="Calculate all symmetry functions of this group for one atom." alt="" coords="34,136,201,177"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="36,5,199,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56" title="Calculate symmetry function for one atom." alt="" coords="5,71,229,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpAngw.html#a3572da00a28d21f1758134f6c25c19f6" title="Calculate symmetry function for one atom." alt="" coords="34,136,201,177"/>
 <area shape="rect" id="node5" href="$classnnp_1_1SymGrpExpAngn.html#ae6982bf8d7ca656a9d5c935a2a4fc615" title="Calculate all symmetry functions of this group for one atom." alt="" coords="36,201,199,243"/>
 <area shape="rect" id="node6" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a8e4d5f8a3188e05d17d15e6cc5b73561" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,267,229,308"/>
-<area shape="rect" id="node7" href="$classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56" title="Calculate symmetry function for one atom." alt="" coords="5,332,229,373"/>
+<area shape="rect" id="node7" href="$classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380" title="Calculate all symmetry functions of this group for one atom." alt="" coords="34,332,201,373"/>
 </map>

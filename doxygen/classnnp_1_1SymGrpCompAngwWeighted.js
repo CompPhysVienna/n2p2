@@ -6,6 +6,6 @@ var classnnp_1_1SymGrpCompAngwWeighted =
     [ "addMember", "classnnp_1_1SymGrpCompAngwWeighted.html#a1447839e861104a3247b5c2d1d6ac073", null ],
     [ "sortMembers", "classnnp_1_1SymGrpCompAngwWeighted.html#ac58e590d8b8ee19876b802bcc09cdd45", null ],
     [ "calculate", "classnnp_1_1SymGrpCompAngwWeighted.html#a382cea07822d2c2eee5c935205f9ffc8", null ],
-    [ "getMembers", "classnnp_1_1SymGrpCompAngwWeighted.html#a1860edc2b51cb89bc986668bf03d453d", null ],
+    [ "getMembers", "classnnp_1_1SymGrpCompAngwWeighted.html#a02b4b59726a3ba3fd22edd4ba8b63df3", null ],
     [ "members", "classnnp_1_1SymGrpCompAngwWeighted.html#a944e987353b0f48c1dd313c676d3f8c8", null ]
 ];

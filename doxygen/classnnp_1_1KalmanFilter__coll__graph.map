@@ -1,11 +1,11 @@
 <map id="nnp::KalmanFilter" name="nnp::KalmanFilter">
-<area shape="rect" id="node1" title="Implementation of the Kalman filter method." alt="" coords="471,349,608,376"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Updater.html" title="Base class for different weight update methods." alt="" coords="222,83,329,109"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,52,65,79"/>
-<area shape="rect" id="node4" title=" " alt="" coords="191,134,359,175"/>
-<area shape="rect" id="node5" title=" " alt="" coords="242,324,309,351"/>
-<area shape="rect" id="node6" title=" " alt="" coords="179,375,372,401"/>
-<area shape="rect" id="node7" title=" " alt="" coords="235,440,316,467"/>
-<area shape="rect" id="node8" title=" " alt="" coords="192,491,359,533"/>
-<area shape="rect" id="node9" title=" " alt="" coords="224,557,327,584"/>
+<area shape="rect" id="node1" title="Implementation of the Kalman filter method." alt="" coords="472,347,609,373"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Updater.html" title="Base class for different weight update methods." alt="" coords="222,85,329,112"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,55,65,81"/>
+<area shape="rect" id="node4" title=" " alt="" coords="224,136,327,163"/>
+<area shape="rect" id="node5" title=" " alt="" coords="242,319,309,345"/>
+<area shape="rect" id="node6" title=" " alt="" coords="179,369,372,396"/>
+<area shape="rect" id="node7" title=" " alt="" coords="192,421,359,462"/>
+<area shape="rect" id="node8" title=" " alt="" coords="191,486,359,527"/>
+<area shape="rect" id="node9" title=" " alt="" coords="235,560,316,587"/>
 </map>

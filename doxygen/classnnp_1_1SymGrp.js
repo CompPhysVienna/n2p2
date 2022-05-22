@@ -14,13 +14,13 @@ var classnnp_1_1SymGrp =
     [ "sortMembers", "classnnp_1_1SymGrp.html#a676cf20f9bc89a2ae4872841bc7582fb", null ],
     [ "setScalingFactors", "classnnp_1_1SymGrp.html#aefd08e9c63d5b72918c068f9138f046c", null ],
     [ "calculate", "classnnp_1_1SymGrp.html#af75cf0b45f1a150251af6963149d684f", null ],
-    [ "parameterLines", "classnnp_1_1SymGrp.html#a43e521a106b00c0bf0e12f9cfd8ad68f", null ],
+    [ "parameterLines", "classnnp_1_1SymGrp.html#a6aa13a556860a7520300c9ffd4ab832a", null ],
     [ "setIndex", "classnnp_1_1SymGrp.html#ad31d25a0e6b0be366829b7b6d79a7997", null ],
     [ "getIndex", "classnnp_1_1SymGrp.html#ac741d482732aee3c578f9c89382111b0", null ],
     [ "getType", "classnnp_1_1SymGrp.html#a0ad1d70aafcacfba3a112b05aaff5baa", null ],
     [ "getEc", "classnnp_1_1SymGrp.html#a7bc61eebd197e8520202e26f7870cde9", null ],
-    [ "initializePrintFormat", "classnnp_1_1SymGrp.html#ab1d78c0ea74156351c575a9275a23336", null ],
-    [ "initializePrintOrder", "classnnp_1_1SymGrp.html#aa764f14be345d01ef7027596ae80bc33", null ],
+    [ "initializePrintFormat", "classnnp_1_1SymGrp.html#a564d3730641371be39891ee675eea3d5", null ],
+    [ "initializePrintOrder", "classnnp_1_1SymGrp.html#af181806744fcbd58e47bc350a48fec36", null ],
     [ "getPrintFormatCommon", "classnnp_1_1SymGrp.html#a64e14cfdd83136f001c0382fbdca5fe3", null ],
     [ "getPrintFormatMember", "classnnp_1_1SymGrp.html#acbb43cf01bf5f9478e23e642bac896f6", null ],
     [ "type", "classnnp_1_1SymGrp.html#a046ec5da264f282ee1bea2468a584efa", null ],
@@ -33,6 +33,6 @@ var classnnp_1_1SymGrp =
     [ "parametersCommon", "classnnp_1_1SymGrp.html#aab0565c3367fa6540c745f55a2d6f7a4", null ],
     [ "parametersMember", "classnnp_1_1SymGrp.html#ae0b009cff603e4fe0a735b27e5b82e75", null ],
     [ "memberIndexPerElement", "classnnp_1_1SymGrp.html#a78105e732d9d70591f83e5d13975c74a", null ],
-    [ "printFormat", "classnnp_1_1SymGrp.html#a1c62c4165c4e1264aa9d703ff9391823", null ],
-    [ "printOrder", "classnnp_1_1SymGrp.html#a27c80417299f01ba2538bf0b5042275a", null ]
+    [ "printFormat", "classnnp_1_1SymGrp.html#a27b2729958d5de93dd0d2868f58b27b8", null ],
+    [ "printOrder", "classnnp_1_1SymGrp.html#ae725654ba5fb84e1578cc84d4e357721", null ]
 ];

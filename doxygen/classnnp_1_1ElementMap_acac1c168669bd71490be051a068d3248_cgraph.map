@@ -1,0 +1,4 @@
+<map id="nnp::ElementMap::atomicNumber" name="nnp::ElementMap::atomicNumber">
+<area shape="rect" id="node1" title="Get atomic number from element string." alt="" coords="5,5,247,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="295,5,487,32"/>
+</map>

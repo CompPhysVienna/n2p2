@@ -1,14 +1,14 @@
 <map id="nnp::Training::Property" name="nnp::Training::Property">
-<area shape="rect" id="node1" title="Specific training quantity (e.g. energies, forces, charges)." alt="" coords="653,440,821,467"/>
-<area shape="rect" id="node2" title=" " alt="" coords="265,119,439,161"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,84,144,111"/>
-<area shape="rect" id="node4" title=" " alt="" coords="257,185,447,226"/>
-<area shape="rect" id="node5" title=" " alt="" coords="41,284,108,311"/>
-<area shape="rect" id="node10" title=" " alt="" coords="271,329,433,370"/>
-<area shape="rect" id="node6" title=" " alt="" coords="275,615,429,657"/>
-<area shape="rect" id="node7" title=" " alt="" coords="15,580,134,607"/>
-<area shape="rect" id="node8" title=" " alt="" coords="45,725,105,752"/>
-<area shape="rect" id="node9" title=" " alt="" coords="265,891,439,933"/>
-<area shape="rect" id="node11" title="STL class." alt="" coords="31,440,118,467"/>
-<area shape="rect" id="node12" title=" " alt="" coords="259,501,445,528"/>
+<area shape="rect" id="node1" title="Specific training quantity (e.g. energies, forces, charges)." alt="" coords="653,397,821,424"/>
+<area shape="rect" id="node2" title=" " alt="" coords="31,131,118,157"/>
+<area shape="rect" id="node7" title=" " alt="" coords="259,132,445,159"/>
+<area shape="rect" id="node8" title=" " alt="" coords="271,183,433,225"/>
+<area shape="rect" id="node3" title=" " alt="" coords="15,345,134,372"/>
+<area shape="rect" id="node12" title=" " alt="" coords="275,390,429,431"/>
+<area shape="rect" id="node4" title=" " alt="" coords="45,544,105,571"/>
+<area shape="rect" id="node5" title=" " alt="" coords="41,244,108,271"/>
+<area shape="rect" id="node6" title=" " alt="" coords="5,707,144,733"/>
+<area shape="rect" id="node10" title=" " alt="" coords="265,743,439,785"/>
+<area shape="rect" id="node9" title=" " alt="" coords="257,809,447,850"/>
+<area shape="rect" id="node11" title=" " alt="" coords="265,874,439,915"/>
 </map>

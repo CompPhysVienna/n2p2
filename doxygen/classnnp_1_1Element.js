@@ -32,7 +32,7 @@ var classnnp_1_1Element =
     [ "calculateSymmetryFunctionGroups", "classnnp_1_1Element.html#a2224824f8ec31f118ea82508a0875067", null ],
     [ "updateSymmetryFunctionStatistics", "classnnp_1_1Element.html#a6dc921df037ff55fa8e20a834b1bf486", null ],
     [ "getSymmetryFunction", "classnnp_1_1Element.html#a830dc20682d15839b74cef2e558d755d", null ],
-    [ "setCacheIndices", "classnnp_1_1Element.html#a16a9987eb0ba76226df3a52f0631fb16", null ],
+    [ "setCacheIndices", "classnnp_1_1Element.html#a6cd9499859a023c11fd4dc07cc7eb856", null ],
     [ "getCacheSizes", "classnnp_1_1Element.html#a228e38e7fc52ee0464e060022d21a8a5", null ],
     [ "neuralNetworks", "classnnp_1_1Element.html#adbaa9a3c91550ffda698797c2572ea6e", null ],
     [ "statistics", "classnnp_1_1Element.html#a30a8dcf2e48226be22d397b6c45b1539", null ],

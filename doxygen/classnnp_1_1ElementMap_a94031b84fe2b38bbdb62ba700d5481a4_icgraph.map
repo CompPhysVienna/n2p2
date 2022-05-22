@@ -1,16 +1,18 @@
 <map id="nnp::ElementMap::size" name="nnp::ElementMap::size">
-<area shape="rect" id="node1" title="Get element map size." alt="" coords="532,369,703,396"/>
+<area shape="rect" id="node1" title="Get element map size." alt="" coords="532,435,703,461"/>
 <area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a7b676463d894c0988c645fed1ddf36b1" title="Add a single atom to structure." alt="" coords="263,5,443,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ace3db14dfe93ef09b1f086d473f34dec" title="Get unique cache identifiers." alt="" coords="221,57,484,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpRadWeighted.html#a269e5da4d1489cc95534b09361067d9d" title="Get unique cache identifiers." alt="" coords="245,122,461,163"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymFncCompRadWeighted.html#a5b5c208ef42884bbfeb0f8da648baf22" title="Get unique cache identifiers." alt="" coords="237,187,468,229"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymFncExpAngnWeighted.html#aefe6a02065aee9916deddc329b045f4f" title="Get unique cache identifiers." alt="" coords="241,253,465,294"/>
-<area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="5,362,173,403"/>
-<area shape="rect" id="node8" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="275,369,430,396"/>
-<area shape="rect" id="node9" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="241,420,464,447"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="245,471,461,497"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances." alt="" coords="255,521,450,548"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Element.html#a4d601bb1d6da372ba0ee63eea3392a08" title="Extract relevant symmetry function combinations for derivative memory." alt="" coords="243,573,463,614"/>
-<area shape="rect" id="node13" href="$classnnp_1_1SymFnc.html#aaecdf579cf71939724dec9cc807d6b31" title="Constructor, initializes type." alt="" coords="269,639,436,665"/>
-<area shape="rect" id="node14" href="$structnnp_1_1Structure.html#a5e1f59c24c85703e6e78c7f85d47a2d8" title="Write configuration to POSCAR file." alt="" coords="257,690,448,731"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248" title="Add one cache index for given neighbor element and check identifier." alt="" coords="245,56,460,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ace3db14dfe93ef09b1f086d473f34dec" title="Get unique cache identifiers." alt="" coords="221,107,484,149"/>
+<area shape="rect" id="node5" href="$classnnp_1_1SymFncCompRadWeighted.html#a5b5c208ef42884bbfeb0f8da648baf22" title="Get unique cache identifiers." alt="" coords="237,173,468,214"/>
+<area shape="rect" id="node6" href="$classnnp_1_1SymFncExpAngnWeighted.html#aefe6a02065aee9916deddc329b045f4f" title="Get unique cache identifiers." alt="" coords="241,238,465,279"/>
+<area shape="rect" id="node7" href="$classnnp_1_1SymFncExpRadWeighted.html#a269e5da4d1489cc95534b09361067d9d" title="Get unique cache identifiers." alt="" coords="245,303,461,345"/>
+<area shape="rect" id="node8" href="$classnnp_1_1ElementMap.html#ab3c6fd52cc1fa5f0c1a1c8bc50c4542a" title="Get sorted list of elements in one string (space separated)." alt="" coords="239,369,466,410"/>
+<area shape="rect" id="node9" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="5,478,173,519"/>
+<area shape="rect" id="node10" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="275,485,430,512"/>
+<area shape="rect" id="node11" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="241,536,464,563"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="245,587,461,613"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances." alt="" coords="255,637,450,664"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Element.html#a4d601bb1d6da372ba0ee63eea3392a08" title="Extract relevant symmetry function combinations for derivative memory." alt="" coords="243,689,463,730"/>
+<area shape="rect" id="node15" href="$classnnp_1_1SymFnc.html#aaecdf579cf71939724dec9cc807d6b31" title="Constructor, initializes type." alt="" coords="269,755,436,781"/>
+<area shape="rect" id="node16" href="$structnnp_1_1Structure.html#a5e1f59c24c85703e6e78c7f85d47a2d8" title="Write configuration to POSCAR file." alt="" coords="257,806,448,847"/>
 </map>

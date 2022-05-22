@@ -1,12 +1,12 @@
 <map id="nnp::SymGrp" name="nnp::SymGrp">
-<area shape="rect" id="node1" title=" " alt="" coords="569,249,676,276"/>
-<area shape="rect" id="node2" title="STL class." alt="" coords="201,17,335,44"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,87,72,113"/>
-<area shape="rect" id="node10" title=" " alt="" coords="185,131,351,157"/>
-<area shape="rect" id="node4" title=" " alt="" coords="195,182,341,223"/>
-<area shape="rect" id="node5" title=" " alt="" coords="185,248,351,275"/>
-<area shape="rect" id="node6" title=" " alt="" coords="189,391,347,417"/>
-<area shape="rect" id="node7" title=" " alt="" coords="9,347,69,373"/>
-<area shape="rect" id="node8" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="200,441,336,468"/>
-<area shape="rect" id="node9" title="STL class." alt="" coords="203,492,333,519"/>
+<area shape="rect" id="node1" title=" " alt="" coords="579,280,685,307"/>
+<area shape="rect" id="node2" title=" " alt="" coords="9,81,69,108"/>
+<area shape="rect" id="node5" title=" " alt="" coords="193,125,352,152"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="205,176,341,203"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,245,72,272"/>
+<area shape="rect" id="node6" title=" " alt="" coords="190,289,355,316"/>
+<area shape="rect" id="node7" title=" " alt="" coords="190,340,355,367"/>
+<area shape="rect" id="node8" title=" " alt="" coords="185,391,360,433"/>
+<area shape="rect" id="node9" title=" " alt="" coords="205,457,340,484"/>
+<area shape="rect" id="node10" title=" " alt="" coords="208,508,337,535"/>
 </map>

@@ -1,5 +1,6 @@
 <map id="nnp::ElementMap::registerElements" name="nnp::ElementMap::registerElements">
-<area shape="rect" id="node1" title="Extract all elements and store in element map." alt="" coords="5,23,200,65"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="248,5,347,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="256,56,339,83"/>
+<area shape="rect" id="node1" title="Extract all elements and store in element map." alt="" coords="5,64,200,105"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#abbaa1f40d96f9b6da0a8ac9563b7cb95" title="Check if arguments are sorted according to atomic number." alt="" coords="248,5,449,47"/>
+<area shape="rect" id="node3" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="299,71,398,98"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="307,122,390,149"/>
 </map>

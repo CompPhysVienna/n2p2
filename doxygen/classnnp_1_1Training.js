@@ -36,7 +36,7 @@ var classnnp_1_1Training =
     [ "dataSetNormalization", "classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0", null ],
     [ "setupTraining", "classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451", null ],
     [ "calculateNeighborLists", "classnnp_1_1Training.html#ac0de14f9b249aa70a7648c7c3c1cc783", null ],
-    [ "calculateError", "classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c", null ],
+    [ "calculateError", "classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061", null ],
     [ "calculateErrorEpoch", "classnnp_1_1Training.html#ae5d67463993440b215a9b165854c8cf9", null ],
     [ "printHeader", "classnnp_1_1Training.html#a5ba30ce58e186c7f2e518355aa707863", null ],
     [ "printEpoch", "classnnp_1_1Training.html#a86b54c7bf103e141f9870ee2bbb30c4f", null ],

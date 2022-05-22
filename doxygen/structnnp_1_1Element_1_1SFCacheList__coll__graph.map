@@ -1,6 +1,6 @@
 <map id="nnp::Element::SFCacheList" name="nnp::Element::SFCacheList">
 <area shape="rect" id="node1" title="List of symmetry functions corresponding to one cache identifier." alt="" coords="93,184,287,211"/>
-<area shape="rect" id="node2" title=" " alt="" coords="97,95,283,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,5,65,32"/>
-<area shape="rect" id="node4" title="STL class." alt="" coords="308,95,395,121"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,65,32"/>
+<area shape="rect" id="node4" title=" " alt="" coords="97,95,283,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="308,95,395,121"/>
 </map>

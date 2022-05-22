@@ -1,10 +1,10 @@
 <map id="LAMMPS_NS::PairNNP" name="LAMMPS_NS::PairNNP">
-<area shape="rect" id="node1" title=" " alt="" coords="372,275,536,301"/>
+<area shape="rect" id="node1" title=" " alt="" coords="189,275,353,301"/>
 <area shape="rect" id="node2" href="$classPair.html" title=" " alt="" coords="5,133,52,159"/>
-<area shape="rect" id="node3" title=" " alt="" coords="102,5,169,32"/>
-<area shape="rect" id="node6" href="$classnnp_1_1InterfaceLammps.html" title=" " alt="" coords="238,133,406,159"/>
-<area shape="rect" id="node4" title=" " alt="" coords="489,5,528,32"/>
-<area shape="rect" id="node5" title=" " alt="" coords="343,5,394,32"/>
-<area shape="rect" id="node7" title=" " alt="" coords="669,133,719,159"/>
-<area shape="rect" id="node8" title=" " alt="" coords="830,133,891,159"/>
+<area shape="rect" id="node3" title=" " alt="" coords="153,5,203,32"/>
+<area shape="rect" id="node8" href="$classnnp_1_1InterfaceLammps.html" title=" " alt="" coords="182,133,350,159"/>
+<area shape="rect" id="node4" title=" " alt="" coords="624,5,663,32"/>
+<area shape="rect" id="node5" title=" " alt="" coords="374,133,425,159"/>
+<area shape="rect" id="node6" title=" " alt="" coords="363,5,430,32"/>
+<area shape="rect" id="node7" title=" " alt="" coords="610,133,671,159"/>
 </map>

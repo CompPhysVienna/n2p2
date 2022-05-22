@@ -1,8 +1,8 @@
 <map id="nnp::Prediction::readStructureFromFile" name="nnp::Prediction::readStructureFromFile">
-<area shape="rect" id="node1" title=" " alt="" coords="5,99,220,141"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#aaa794cf49a53d8e5db578ac303b700fd" title="Read configuration from file." alt="" coords="281,5,487,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#aa8ddf0701dbcd60868955ca556892bc5" title="Remove atomic energy offsets from reference energy." alt="" coords="268,56,500,83"/>
-<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="307,107,461,133"/>
-<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="273,157,495,184"/>
-<area shape="rect" id="node6" href="$structnnp_1_1Structure.html#acd39fe39b2b0e86e676c7bd52dc2b835" title="Normalize structure, shift energy and change energy and length unit." alt="" coords="279,209,489,250"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,123,220,165"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#aaa794cf49a53d8e5db578ac303b700fd" title="Read configuration from file." alt="" coords="281,29,487,56"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#aa8ddf0701dbcd60868955ca556892bc5" title="Remove atomic energy offsets from reference energy." alt="" coords="268,80,500,107"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="307,131,461,157"/>
+<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="273,181,495,208"/>
+<area shape="rect" id="node6" href="$structnnp_1_1Structure.html#acd39fe39b2b0e86e676c7bd52dc2b835" title="Normalize structure, shift energy and change energy and length unit." alt="" coords="279,233,489,274"/>
 </map>

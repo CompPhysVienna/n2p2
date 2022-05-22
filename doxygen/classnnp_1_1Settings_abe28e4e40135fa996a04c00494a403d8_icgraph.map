@@ -1,4 +1,5 @@
 <map id="nnp::Settings::getValue" name="nnp::Settings::getValue">
-<area shape="rect" id="node1" title="Get value for given keyword." alt="" coords="263,5,435,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a9b7eeb5daa541cc8e3ab36a9bcf69ab8" title="Get value for given keyword in Settings instance." alt="" coords="5,5,215,32"/>
+<area shape="rect" id="node1" title="Get value for given keyword." alt="" coords="263,31,435,57"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#afb10a15962eb486d0dd5096d0861bd22" title="Overload [] operator." alt="" coords="20,5,200,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a9b7eeb5daa541cc8e3ab36a9bcf69ab8" title="Get value for given keyword in Settings instance." alt="" coords="5,56,215,83"/>
 </map>

@@ -1,4 +1,6 @@
 <map id="nnp::ElementMap::getElementsString" name="nnp::ElementMap::getElementsString">
-<area shape="rect" id="node1" title="Get sorted list of elements in one string (space separated)." alt="" coords="5,5,232,47"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="280,13,364,39"/>
+<area shape="rect" id="node1" title="Get sorted list of elements in one string (space separated)." alt="" coords="5,49,232,90"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#a94031b84fe2b38bbdb62ba700d5481a4" title="Get element map size." alt="" coords="291,5,461,32"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="334,56,418,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="280,107,472,133"/>
 </map>

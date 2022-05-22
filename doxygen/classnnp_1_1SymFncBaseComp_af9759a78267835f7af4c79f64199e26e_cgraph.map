@@ -1,4 +1,6 @@
 <map id="nnp::SymFncBaseComp::setCompactFunction" name="nnp::SymFncBaseComp::setCompactFunction">
-<area shape="rect" id="node1" title="Set radial compact function." alt="" coords="5,5,181,47"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="229,13,313,39"/>
+<area shape="rect" id="node1" title="Set radial compact function." alt="" coords="5,71,181,112"/>
+<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#add5f075bdc2b146563b4ade6012c4803" title="Set asymmetric property in core function." alt="" coords="229,5,396,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1CompactFunction.html#a2cd584131611f1feecf0886d3bbd3413" title="Set type." alt="" coords="229,71,396,112"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="271,137,355,163"/>
 </map>

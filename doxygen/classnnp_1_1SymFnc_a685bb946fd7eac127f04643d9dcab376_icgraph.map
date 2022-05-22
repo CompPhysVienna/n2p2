@@ -1,4 +1,5 @@
 <map id="nnp::SymFnc::getCacheIdentifiers" name="nnp::SymFnc::getCacheIdentifiers">
-<area shape="rect" id="node1" title="Get unique cache identifiers." alt="" coords="256,13,496,39"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="5,5,208,47"/>
+<area shape="rect" id="node1" title="Get unique cache identifiers." alt="" coords="268,35,508,61"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248" title="Add one cache index for given neighbor element and check identifier." alt="" coords="5,5,220,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="11,57,214,98"/>
 </map>

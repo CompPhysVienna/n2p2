@@ -1,8 +1,8 @@
 <map id="nnp::SymFncStatistics::Container" name="nnp::SymFncStatistics::Container">
 <area shape="rect" id="node1" title="Struct containing statistics gathered during symmetry function calculation." alt="" coords="240,260,407,301"/>
-<area shape="rect" id="node2" title=" " alt="" coords="89,125,275,152"/>
-<area shape="rect" id="node3" title=" " alt="" coords="21,5,81,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="337,5,403,32"/>
-<area shape="rect" id="node6" title=" " alt="" coords="387,125,553,152"/>
-<area shape="rect" id="node5" title="STL class." alt="" coords="577,125,664,152"/>
+<area shape="rect" id="node2" title=" " alt="" coords="21,5,81,32"/>
+<area shape="rect" id="node5" title=" " alt="" coords="89,125,275,152"/>
+<area shape="rect" id="node3" title=" " alt="" coords="338,5,405,32"/>
+<area shape="rect" id="node6" title=" " alt="" coords="391,125,557,152"/>
+<area shape="rect" id="node4" title=" " alt="" coords="581,125,668,152"/>
 </map>

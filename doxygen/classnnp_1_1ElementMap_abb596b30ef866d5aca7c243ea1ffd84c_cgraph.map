@@ -1,5 +1,5 @@
 <map id="nnp::ElementMap::operator[]" name="nnp::ElementMap::operator[]">
 <area shape="rect" id="node1" title="Overload [] operator for symbol search." alt="" coords="5,31,215,57"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#a179aafd2be2abe3c8be36fe97b2be2d8" title="Get index of given element." alt="" coords="269,5,449,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="263,56,455,83"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#a179aafd2be2abe3c8be36fe97b2be2d8" title="Get index of given element." alt="" coords="263,5,443,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="491,5,683,32"/>
 </map>

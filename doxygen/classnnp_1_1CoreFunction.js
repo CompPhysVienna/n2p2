@@ -30,7 +30,7 @@ var classnnp_1_1CoreFunction =
     [ "fEXP", "classnnp_1_1CoreFunction.html#a5a363cd3f71f3b2bf94566ed20073274", null ],
     [ "dfEXP", "classnnp_1_1CoreFunction.html#a3a14d9474a275935541f3eff0ef4cb41", null ],
     [ "fdfEXP", "classnnp_1_1CoreFunction.html#a0c86af46d639243246f41a1f1891c094", null ],
-    [ "E", "classnnp_1_1CoreFunction.html#abdbb85a849c3be0abf868b1dec369705", null ],
+    [ "E", "classnnp_1_1CoreFunction.html#ad4f7226d932ed3fa59a24007d2d40ed6", null ],
     [ "type", "classnnp_1_1CoreFunction.html#a10c6f38ed9164f0c338c517c35ed1cdb", null ],
     [ "asymmetric", "classnnp_1_1CoreFunction.html#a815732a3c1244a8db8dd5b4e036ff372", null ],
     [ "fPtr", "classnnp_1_1CoreFunction.html#af4be78dc009be91183553268846740e7", null ],

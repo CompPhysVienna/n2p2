@@ -1,8 +1,8 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/NeuralNetwork.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/NeuralNetwork.h">
-<area shape="rect" id="node1" title=" " alt="" coords="251,5,490,47"/>
-<area shape="rect" id="node2" href="$Element_8h.html" title=" " alt="" coords="5,102,200,143"/>
-<area shape="rect" id="node3" href="$Element_8cpp.html" title=" " alt="" coords="64,199,275,240"/>
-<area shape="rect" id="node4" href="$Mode_8cpp.html" title=" " alt="" coords="275,102,467,143"/>
-<area shape="rect" id="node5" href="$NeuralNetwork_8cpp.html" title=" " alt="" coords="491,102,746,143"/>
-<area shape="rect" id="node6" href="$Training_8cpp.html" title=" " alt="" coords="771,95,952,151"/>
+<area shape="rect" id="node1" title=" " alt="" coords="277,5,515,47"/>
+<area shape="rect" id="node2" href="$Element_8cpp.html" title=" " alt="" coords="5,199,216,240"/>
+<area shape="rect" id="node3" href="$Element_8h.html" title=" " alt="" coords="81,102,276,143"/>
+<area shape="rect" id="node4" href="$Mode_8cpp.html" title=" " alt="" coords="300,102,492,143"/>
+<area shape="rect" id="node5" href="$NeuralNetwork_8cpp.html" title=" " alt="" coords="517,102,771,143"/>
+<area shape="rect" id="node6" href="$Training_8cpp.html" title=" " alt="" coords="796,95,977,151"/>
 </map>

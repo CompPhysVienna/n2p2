@@ -1,7 +1,7 @@
 <map id="nnp::Updater" name="nnp::Updater">
-<area shape="rect" id="node1" title="Base class for different weight update methods." alt="" coords="198,213,305,240"/>
-<area shape="rect" id="node2" title=" " alt="" coords="93,95,255,136"/>
-<area shape="rect" id="node3" title="STL class." alt="" coords="5,5,92,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="279,102,330,129"/>
-<area shape="rect" id="node5" title=" " alt="" coords="372,102,432,129"/>
+<area shape="rect" id="node1" title="Base class for different weight update methods." alt="" coords="131,213,237,240"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,102,56,129"/>
+<area shape="rect" id="node3" title=" " alt="" coords="111,102,171,129"/>
+<area shape="rect" id="node4" title=" " alt="" coords="205,5,291,32"/>
+<area shape="rect" id="node5" title=" " alt="" coords="292,95,455,136"/>
 </map>

@@ -1,7 +1,7 @@
 <map id="nnp::Training::writeLearningCurve" name="nnp::Training::writeLearningCurve">
 <area shape="rect" id="node1" title="Write current RMSEs and epoch information to file." alt="" coords="5,74,208,115"/>
 <area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="256,5,429,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a9d1bbacf408dac7e040ce679791bc570" title=" " alt="" coords="260,56,425,83"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="260,56,425,83"/>
 <area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a6a74c4b42491ec361d8d9192cd43c82b" title="Undo normalization for a given property." alt="" coords="267,107,419,133"/>
 <area shape="rect" id="node5" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="301,157,385,184"/>
 </map>

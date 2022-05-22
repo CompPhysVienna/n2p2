@@ -1,6 +1,6 @@
 <map id="nnp::Mode::calculateSymmetryFunctions" name="nnp::Mode::calculateSymmetryFunctions">
 <area shape="rect" id="node1" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="308,180,533,221"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#adc45ef017066bdbfaef2846a39eb733c" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Training.html#ae22bf5b246022c4f52f45bcc98d7c4be" title="Calculate derivatives of energy with respect to weights." alt="" coords="47,71,219,112"/>
 <area shape="rect" id="node4" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,137,260,163"/>
 <area shape="rect" id="node5" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,187,160,214"/>

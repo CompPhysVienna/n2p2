@@ -1,5 +1,6 @@
 <map id="nnp::CompactFunction::setCoreFunction" name="nnp::CompactFunction::setCoreFunction">
-<area shape="rect" id="node1" title="Set type." alt="" coords="316,39,483,80"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters." alt="" coords="36,5,237,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters." alt="" coords="5,71,268,112"/>
+<area shape="rect" id="node1" title="Set type." alt="" coords="540,51,707,92"/>
+<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseComp.html#af9759a78267835f7af4c79f64199e26e" title="Set radial compact function." alt="" coords="316,51,492,92"/>
+<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters." alt="" coords="36,5,237,47"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters." alt="" coords="5,84,268,125"/>
 </map>

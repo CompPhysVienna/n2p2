@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cutoff functions &mdash; n2p2 - A neural network potential package &#34;0154620&#34; documentation</title>
+  <title>Cutoff functions &mdash; n2p2 - A neural network potential package &#34;dbedbdf&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "0154620"
+                "dbedbdf"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -124,7 +124,13 @@
 <span id="_CPPv3N3nnp14CutoffFunction10CutoffTypeE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffTypeE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutoffFunction</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">CutoffType</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffTypeE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>List of available cutoff function types. </p>
 <p>Most cutoff types allow the definition of an inner cutoff <span class="math notranslate nohighlight">\( r_{ci} := \alpha \, r_c\)</span>. Then the cutoff is equal to <span class="math notranslate nohighlight">\(1\)</span> up to the inner cutoff:</p>
-<p><span class="math notranslate nohighlight">\( f_c(r) = \begin{cases} 1, &amp; \text{for } 0 \le r &lt; r_{ci} \\ f(x), &amp; \text{for } r_{ci} \le r &lt; r_c \text{ where } x := \frac{r - r_{ci}}{r_c - r_{ci}} \\ 0 &amp; \text{for } r \geq r_c \end{cases} \)</span> </p>
+<p><span class="math notranslate nohighlight">\( f_c(r) =
+\begin{cases}
+1, &amp; \text{for } 0 \le r &lt; r_{ci} \\
+f(x), &amp; \text{for } r_{ci} \le r &lt; r_c \text{ where }
+x := \frac{r - r_{ci}}{r_c - r_{ci}} \\
+0 &amp; \text{for } r \geq r_c
+\end{cases} \)</span> </p>
 <p><em>Values:</em></p>
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType7CT_HARDE">
@@ -147,7 +153,8 @@
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE">
 <span id="_CPPv3N3nnp14CutoffFunction10CutoffType7CT_TANHE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType7CT_TANHE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8a0ec474efe78ea6ee51f6a92b109c1688"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_TANH</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_c(r) = c \tanh^3 \left(1 - \frac{r}{r_c} \right),\, f(0) = 1 \)</span> </p>
+<dd><p><span class="math notranslate nohighlight">\(f_c(r) = c \tanh^3 \left(1 - \frac{r}{r_c} \right),\,
+        f(0) = 1 \)</span> </p>
 </dd></dl>
 
 <dl class="cpp enumerator">

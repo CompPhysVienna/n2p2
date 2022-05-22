@@ -1,6 +1,6 @@
 <map id="nnp::SymFncCompRadWeighted::calculate" name="nnp::SymFncCompRadWeighted::calculate">
-<area shape="rect" id="node1" title="Calculate symmetry function for one atom." alt="" coords="5,49,236,90"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="284,5,525,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1CompactFunction.html#a2163ca699346deb3d17d49a62e8e5701" title="Calculate compact function and derivative at once." alt="" coords="308,56,501,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="331,107,479,133"/>
+<area shape="rect" id="node1" title="Calculate symmetry function for one atom." alt="" coords="5,73,236,114"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="284,29,525,56"/>
+<area shape="rect" id="node3" href="$classnnp_1_1CompactFunction.html#a2163ca699346deb3d17d49a62e8e5701" title="Calculate compact function and derivative at once." alt="" coords="308,80,501,107"/>
+<area shape="rect" id="node4" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="331,131,479,157"/>
 </map>

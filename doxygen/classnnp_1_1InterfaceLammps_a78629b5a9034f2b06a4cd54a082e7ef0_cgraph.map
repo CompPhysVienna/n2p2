@@ -1,18 +1,18 @@
 <map id="nnp::InterfaceLammps::initialize" name="nnp::InterfaceLammps::initialize">
-<area shape="rect" id="node1" title="Initialize the LAMMPS interface." alt="" coords="5,414,173,455"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="221,5,463,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ae6baf0f4691b0eb4a57feaaa6f3f10bb" title="Get largest cutoff." alt="" coords="258,57,426,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="265,421,419,448"/>
-<area shape="rect" id="node5" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="554,392,638,419"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="241,573,443,600"/>
-<area shape="rect" id="node7" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="293,173,391,200"/>
-<area shape="rect" id="node8" href="$namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9" title="Remove leading and trailing whitespaces from string." alt="" coords="555,148,637,175"/>
-<area shape="rect" id="node9" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="231,624,453,651"/>
-<area shape="rect" id="node10" href="$classnnp_1_1ElementMap.html#a94031b84fe2b38bbdb62ba700d5481a4" title="Get element map size." alt="" coords="511,649,681,676"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="250,523,434,549"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a7d40ea3edb704b1bc685d67c5e9b7eac" title="Set up neural network weights from files." alt="" coords="226,225,458,266"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="241,290,443,331"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="241,355,443,397"/>
-<area shape="rect" id="node15" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="301,725,383,752"/>
-<area shape="rect" id="node16" href="$classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395" title="Write extrapolation warnings to log." alt="" coords="237,777,447,818"/>
+<area shape="rect" id="node1" title="Initialize the LAMMPS interface." alt="" coords="5,393,173,434"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="221,29,463,56"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ae6baf0f4691b0eb4a57feaaa6f3f10bb" title="Get largest cutoff." alt="" coords="258,81,426,122"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="265,147,419,173"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="241,400,443,427"/>
+<area shape="rect" id="node6" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="554,560,638,587"/>
+<area shape="rect" id="node7" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="293,197,391,224"/>
+<area shape="rect" id="node8" href="$namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9" title="Remove leading and trailing whitespaces from string." alt="" coords="555,223,637,249"/>
+<area shape="rect" id="node9" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="231,299,453,325"/>
+<area shape="rect" id="node10" href="$classnnp_1_1ElementMap.html#a94031b84fe2b38bbdb62ba700d5481a4" title="Get element map size." alt="" coords="511,324,681,351"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="250,501,434,528"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a7d40ea3edb704b1bc685d67c5e9b7eac" title="Set up neural network weights from files." alt="" coords="226,553,458,594"/>
+<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="241,618,443,659"/>
+<area shape="rect" id="node14" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="241,683,443,725"/>
+<area shape="rect" id="node15" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="301,749,383,776"/>
+<area shape="rect" id="node16" href="$classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395" title="Write extrapolation warnings to log." alt="" coords="237,801,447,842"/>
 </map>

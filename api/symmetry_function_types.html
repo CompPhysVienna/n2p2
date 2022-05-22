@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Symmetry function types &mdash; n2p2 - A neural network potential package &#34;0154620&#34; documentation</title>
+  <title>Symmetry function types &mdash; n2p2 - A neural network potential package &#34;dbedbdf&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "0154620"
+                "dbedbdf"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -132,12 +132,14 @@
 <span id="_CPPv3N3nnp12SymFncExpRadE"></span><span id="_CPPv2N3nnp12SymFncExpRadE"></span><span id="nnp::SymFncExpRad"></span><span class="target" id="classnnp_1_1SymFncExpRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp12SymFncExpRadE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Radial symmetry function (type 2) </p>
 <p><div class="math notranslate nohighlight">
-\[ G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2} f_c(r_{ij}) \]</div>
+\[
+G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
+        f_c(r_{ij}) 
+\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">2</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;eta&gt;</span> <span class="pre">................</span></code> <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
@@ -152,12 +154,17 @@
 <span id="_CPPv3N3nnp13SymFncExpAngnE"></span><span id="_CPPv2N3nnp13SymFncExpAngnE"></span><span id="nnp::SymFncExpAngn"></span><span class="target" id="classnnp_1_1SymFncExpAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngnE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Angular symmetry function (type 3) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}} \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 + (r_{jk}-r_s)^2 ) } f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) \end{split}\]</div>
+\[\begin{split}
+G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+        \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+        \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2
+        + (r_{jk}-r_s)^2 ) }
+        f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
+\end{split}\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">3</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor1&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 1</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor2&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 2</p></li>
@@ -178,12 +185,16 @@
 <span id="_CPPv3N3nnp13SymFncExpAngwE"></span><span id="_CPPv2N3nnp13SymFncExpAngwE"></span><span id="nnp::SymFncExpAngw"></span><span class="target" id="classnnp_1_1SymFncExpAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngwE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Angular symmetry function (type 9) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}} \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) } f_c(r_{ij}) f_c(r_{ik}) \end{split}\]</div>
+\[\begin{split}
+G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+        \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+        \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
+        f_c(r_{ij}) f_c(r_{ik}) 
+\end{split}\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">9</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor1&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 1</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor2&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 2</p></li>
@@ -204,12 +215,15 @@
 <span id="_CPPv3N3nnp20SymFncExpRadWeightedE"></span><span id="_CPPv2N3nnp20SymFncExpRadWeightedE"></span><span id="nnp::SymFncExpRadWeighted"></span><span class="target" id="classnnp_1_1SymFncExpRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp20SymFncExpRadWeightedE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Weighted radial symmetry function (type 12) </p>
 <p><div class="math notranslate nohighlight">
-\[ G^{12}_i = \sum_{j \neq i} Z_j \, \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2} f_c(r_{ij}) \]</div>
+\[
+G^{12}_i = \sum_{j \neq i} Z_j \,
+           \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
+           f_c(r_{ij}) 
+\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">12</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;eta&gt;</span> <span class="pre">................</span></code> <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rshift&gt;</span> <span class="pre">.............</span></code> <span class="math notranslate nohighlight">\(r_\mathrm{s}\)</span></p></li>
@@ -223,12 +237,18 @@
 <span id="_CPPv3N3nnp21SymFncExpAngnWeightedE"></span><span id="_CPPv2N3nnp21SymFncExpAngnWeightedE"></span><span id="nnp::SymFncExpAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncExpAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Weighted angular symmetry function (type 13) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}} Z_j Z_k \, \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta \mathrm{e}^{-\eta \left[ (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] } f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) \end{split}\]</div>
+\[\begin{split}
+G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           Z_j Z_k \,
+           \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+           \mathrm{e}^{-\eta \left[
+           (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
+           f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
+\end{split}\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">13</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;eta&gt;</span> <span class="pre">.................</span></code> <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rshift&gt;</span> <span class="pre">..............</span></code> <span class="math notranslate nohighlight">\(r_s\)</span></p></li>
@@ -247,13 +267,15 @@
 <span id="_CPPv3N3nnp13SymFncCompRadE"></span><span id="_CPPv2N3nnp13SymFncCompRadE"></span><span id="nnp::SymFncCompRad"></span><span class="target" id="classnnp_1_1SymFncCompRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncCompRadE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Radial symmetry function with compact support (type 20) </p>
 <p><div class="math notranslate nohighlight">
-\[ G^{20}_i = \sum_{\substack{j \neq i}} C(r_{ij}, r_l, r_c), \]</div>
+\[
+G^{20}_i = \sum_{\substack{j \neq i}}
+           C(r_{ij}, r_l, r_c),
+\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">20</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rlow&gt;</span> <span class="pre">...............</span></code> low radius boundary <span class="math notranslate nohighlight">\(r_{l}\)</span></p></li>
@@ -269,13 +291,18 @@
 <span id="_CPPv3N3nnp14SymFncCompAngnE"></span><span id="_CPPv2N3nnp14SymFncCompAngnE"></span><span id="nnp::SymFncCompAngn"></span><span class="target" id="classnnp_1_1SymFncCompAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngnE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Narrow angular symmetry function with compact support (type 21) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c) C(r_{jk}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r), \end{split}\]</div>
+\[\begin{split}
+G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           C(r_{ij}, r_l, r_c)
+           C(r_{ik}, r_l, r_c)
+           C(r_{jk}, r_l, r_c)
+           C(\theta_{ijk}, \theta_l, \theta_r),
+\end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">21</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor1&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 1</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor2&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 2</p></li>
@@ -298,13 +325,17 @@
 <span id="_CPPv3N3nnp14SymFncCompAngwE"></span><span id="_CPPv2N3nnp14SymFncCompAngwE"></span><span id="nnp::SymFncCompAngw"></span><span class="target" id="classnnp_1_1SymFncCompAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngwE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Wide angular symmetry function with compact support (type 22) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r), \end{split}\]</div>
+\[\begin{split}
+G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           C(r_{ij}, r_l, r_c)
+           C(r_{ik}, r_l, r_c)
+           C(\theta_{ijk}, \theta_l, \theta_r),
+\end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">22</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor1&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 1</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor2&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom 2</p></li>
@@ -327,13 +358,16 @@
 <span id="_CPPv3N3nnp21SymFncCompRadWeightedE"></span><span id="_CPPv2N3nnp21SymFncCompRadWeightedE"></span><span id="nnp::SymFncCompRadWeighted"></span><span class="target" id="classnnp_1_1SymFncCompRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncCompRadWeightedE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Weighted radial symmetry function with compact support (type 23) </p>
 <p><div class="math notranslate nohighlight">
-\[ G^{23}_i = \sum_{\substack{j \neq i}} Z_j C(r_{ij}, r_l, r_c), \]</div>
+\[
+G^{23}_i = \sum_{\substack{j \neq i}}
+           Z_j
+           C(r_{ij}, r_l, r_c),
+\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">23</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rlow&gt;</span> <span class="pre">................</span></code> low radius boundary <span class="math notranslate nohighlight">\(r_{l}\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">.............</span></code> high radius boundary <span class="math notranslate nohighlight">\(r_{c}\)</span></p></li>
@@ -348,13 +382,19 @@
 <span id="_CPPv3N3nnp22SymFncCompAngnWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngnWeightedE"></span><span id="nnp::SymFncCompAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Weighted narrow angular symmetry function with compact support (type 24) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} Z_j Z_k C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c) C(r_{jk}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r), \end{split}\]</div>
+\[\begin{split}
+G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           Z_j Z_k
+           C(r_{ij}, r_l, r_c)
+           C(r_{ik}, r_l, r_c)
+           C(r_{jk}, r_l, r_c)
+           C(\theta_{ijk}, \theta_l, \theta_r),
+\end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">24</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rlow&gt;</span> <span class="pre">................</span></code> low radius boundary <span class="math notranslate nohighlight">\(r_{l}\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">.............</span></code> high radius boundary <span class="math notranslate nohighlight">\(r_{c}\)</span></p></li>
@@ -375,13 +415,18 @@
 <span id="_CPPv3N3nnp22SymFncCompAngwWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngwWeightedE"></span><span id="nnp::SymFncCompAngwWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngwWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngwWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Weighted wide angular symmetry function with compact support (type 25) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split} G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}} Z_j Z_k C(r_{ij}, r_l, r_c) C(r_{ik}, r_l, r_c) C(\theta_{ijk}, \theta_l, \theta_r), \end{split}\]</div>
+\[\begin{split}
+G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           Z_j Z_k
+           C(r_{ij}, r_l, r_c)
+           C(r_{ik}, r_l, r_c)
+           C(\theta_{ijk}, \theta_l, \theta_r),
+\end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">25</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</p>
-<p>where<ul class="simple">
+ where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">.....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rlow&gt;</span> <span class="pre">................</span></code> low radius boundary <span class="math notranslate nohighlight">\(r_{l}\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">.............</span></code> high radius boundary <span class="math notranslate nohighlight">\(r_{c}\)</span></p></li>

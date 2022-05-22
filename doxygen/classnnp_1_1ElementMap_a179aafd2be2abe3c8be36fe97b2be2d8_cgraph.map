@@ -1,4 +1,5 @@
 <map id="nnp::ElementMap::index" name="nnp::ElementMap::index">
-<area shape="rect" id="node1" title="Get index of given element." alt="" coords="5,5,185,32"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a355b6ae0b4e3495fa9461cb59e22fa76" title="Safely access map entry." alt="" coords="233,5,343,32"/>
+<area shape="rect" id="node1" title="Get index of given element." alt="" coords="5,31,185,57"/>
+<area shape="rect" id="node2" href="$namespacennp.html#afc0d5668585a522b32ab02c84f2a4229" title="Safely access map entry." alt="" coords="473,5,583,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="233,31,425,57"/>
 </map>

@@ -1,9 +1,9 @@
 <map id="nnp::SymFncBaseCompAngWeighted::setParameters" name="nnp::SymFncBaseCompAngWeighted::setParameters">
-<area shape="rect" id="node1" title="Set symmetry function parameters." alt="" coords="5,156,268,197"/>
+<area shape="rect" id="node1" title="Set symmetry function parameters." alt="" coords="5,152,268,193"/>
 <area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a5c6541081a91ff9558cbc1cc2756d9f6" title="Getter for #type." alt="" coords="321,5,487,47"/>
 <area shape="rect" id="node3" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="355,71,453,98"/>
 <area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseComp.html#af9759a78267835f7af4c79f64199e26e" title="Set radial compact function." alt="" coords="316,123,492,164"/>
-<area shape="rect" id="node5" href="$classnnp_1_1CompactFunction.html#a2cd584131611f1feecf0886d3bbd3413" title="Set type." alt="" coords="321,188,487,229"/>
-<area shape="rect" id="node6" href="$classnnp_1_1CompactFunction.html#a65c304f6f85aec522949063e4068f54b" title="Set left and right boundary." alt="" coords="321,253,487,295"/>
-<area shape="rect" id="node7" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="363,319,445,346"/>
+<area shape="rect" id="node5" href="$classnnp_1_1CompactFunction.html#a2cd584131611f1feecf0886d3bbd3413" title="Set type." alt="" coords="540,152,707,193"/>
+<area shape="rect" id="node6" href="$classnnp_1_1CompactFunction.html#a65c304f6f85aec522949063e4068f54b" title="Set left and right boundary." alt="" coords="321,240,487,281"/>
+<area shape="rect" id="node7" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="363,306,445,333"/>
 </map>

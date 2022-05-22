@@ -3,7 +3,7 @@ var classnnp_1_1SymGrpBaseExpAng =
     [ "SymGrpBaseExpAng", "classnnp_1_1SymGrpBaseExpAng.html#ac838b5e735735b3378aeee21e8b77704", null ],
     [ "setScalingFactors", "classnnp_1_1SymGrpBaseExpAng.html#ac0818c9cbcb845c4a675a3563cbc59ff", null ],
     [ "parameterLines", "classnnp_1_1SymGrpBaseExpAng.html#a8a3f7a70184919c26079d969a893d82d", null ],
-    [ "getMembers", "classnnp_1_1SymGrpBaseExpAng.html#aa42f6ba81bb8326f83fdcbf846bfbce1", null ],
+    [ "getMembers", "classnnp_1_1SymGrpBaseExpAng.html#a90af7a37ba350620c3ed86e2c0fd3164", null ],
     [ "e1", "classnnp_1_1SymGrpBaseExpAng.html#ae2d7490b7c229e37655d967ddc8d1554", null ],
     [ "e2", "classnnp_1_1SymGrpBaseExpAng.html#a6b7debc384e956c78b68d130e6904c53", null ],
     [ "calculateExp", "classnnp_1_1SymGrpBaseExpAng.html#a7e80939968fcf62548176bf7ef0b60c7", null ],

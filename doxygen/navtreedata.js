@@ -1,29 +1,30 @@
 /*
-@licstart  The following is the entire license notice for the
-JavaScript code in this file.
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
 
-Copyright (C) 1997-2019 by Dimitri van Heesch
+ The MIT License (MIT)
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of version 2 of the GNU General Public License as published by
-the Free Software Foundation
+ Copyright (C) 1997-2020 by Dimitri van Heesch
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
 
-@licend  The above is the entire license notice
-for the JavaScript code in this file
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var NAVTREE =
 [
   [ "n2p2 - A neural network potential package", "index.html", [
-    [ "n2p2 - API documentation", "index.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -61,13 +62,19 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Atom_8cpp.html",
-"classLAMMPS__NS_1_1PairNNP.html#a57bf9d234105b62807f8946fde1806a6",
-"classnnp_1_1GradientDescent.html",
-"classnnp_1_1ModeCabana.html#acaf7de3d7a75f960af6a66c3e9ab6acb",
-"classnnp_1_1SymFncBaseCompAngWeighted.html#ac4b47154f303510e7abfb00883e02d50",
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#af463977ae7c8508cd5888bfdc672fd65",
-"classnnp_1_1Updater.html",
-"structnnp_1_1NeuralNetwork_1_1Layer.html"
+"classLAMMPS__NS_1_1PairNNP.html#a2b0d4ed687bdd7016655bf2036ea2351",
+"classnnp_1_1CutoffFunction.html#ac446e2e99aa95f5f5ebd14987b17a842",
+"classnnp_1_1ElementMap.html#acac1c168669bd71490be051a068d3248",
+"classnnp_1_1Log.html#adebe9c688a1127b64ad89232b9c3177c",
+"classnnp_1_1ModeCabana.html#abbb183f90ace9311391b9847580009ba",
+"classnnp_1_1Stopwatch.html#a8057a32d46c43d6442fd31bdb3bce378",
+"classnnp_1_1SymFncBaseCompAngWeighted.html#aa0da4b976ac57912cba69156e50193cc",
+"classnnp_1_1SymFncExpAngnWeighted.html#ac3eab8a314a09461d0c790eb854a9356",
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#a826febb60c27c4726ff3f5b2bc8ccc39",
+"classnnp_1_1SymGrpExpAngw.html#a44022196cf8f8fa67b692d968445fe08",
+"classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7",
+"structnnp_1_1Atom.html#a1f3ed8b68d3c546d068024b0c949eac1",
+"structnnp_1_1Structure.html#af289c389f76b4981aef3c92300aa668d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

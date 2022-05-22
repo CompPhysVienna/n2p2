@@ -1,9 +1,9 @@
 <map id="nnp::Atom::Neighbor" name="nnp::Atom::Neighbor">
-<area shape="rect" id="node1" title="Struct to store information on neighbor atoms." alt="" coords="214,300,370,327"/>
-<area shape="rect" id="node2" title=" " alt="" coords="46,5,112,32"/>
-<area shape="rect" id="node5" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="32,95,126,121"/>
-<area shape="rect" id="node7" title=" " alt="" coords="226,145,391,172"/>
-<area shape="rect" id="node3" title=" " alt="" coords="396,196,463,223"/>
-<area shape="rect" id="node4" title=" " alt="" coords="87,196,282,223"/>
-<area shape="rect" id="node6" title=" " alt="" coords="488,196,548,223"/>
+<area shape="rect" id="node1" title="Struct to store information on neighbor atoms." alt="" coords="147,300,303,327"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,196,65,223"/>
+<area shape="rect" id="node3" title=" " alt="" coords="90,196,157,223"/>
+<area shape="rect" id="node4" title=" " alt="" coords="277,5,343,32"/>
+<area shape="rect" id="node5" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="263,95,357,121"/>
+<area shape="rect" id="node6" title=" " alt="" coords="435,145,601,172"/>
+<area shape="rect" id="node7" title=" " alt="" coords="297,196,491,223"/>
 </map>
