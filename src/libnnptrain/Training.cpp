@@ -1085,7 +1085,7 @@ void Training::calculateError(
             if ( stage == 1 )
             {
                 calculateAtomicNeuralNetworks((*it), useForces, nnId, true);
-                chargeEquilibration((*it), useForces, true);
+                chargeEquilibration((*it), false, true);
             }
             else
             {
@@ -2074,7 +2074,7 @@ void Training::update(string const& property)
                     if (nnpType == NNPType::HDNNP_4G)
                     {
                         calculateAtomicNeuralNetworks(s, derivatives,"",true);
-                        chargeEquilibration(s, derivatives, true);
+                        chargeEquilibration(s, false, true);
                         Eigen::VectorXd QError;
                         double QErrorNorm;
                         calculateChargeErrorVec(s, QError, QErrorNorm);

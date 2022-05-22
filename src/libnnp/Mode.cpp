@@ -1835,9 +1835,12 @@ void Mode::calculateForces(Structure& structure) const
 
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
-    #pragma omp parallel for
+    #pragma omp parallel
+    {
+    #pragma omp for
 #endif
-    for (size_t i = 0; i < structure.atoms.size(); ++i) {
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
         // Set pointer to atom.
         Atom &ai = structure.atoms.at(i);
 
@@ -1868,7 +1871,8 @@ void Mode::calculateForces(Structure& structure) const
             // Loop over atom j's neighbors (n), atom i should be one of them.
             // TODO: Could implement maxCutoffRadiusSymFunc for each element and
             //       use this instead of maxCutoffRadius.
-            size_t const numNeighbors = aj.getStoredMinNumNeighbors(maxCutoffRadius);
+            size_t const numNeighbors =
+                    aj.getStoredMinNumNeighbors(maxCutoffRadius);
             for (size_t k = 0; k < numNeighbors; ++k) {
                 Atom::Neighbor const &n = aj.neighbors[k];
                 // If atom j's neighbor is atom i add force contributions.
@@ -1885,28 +1889,28 @@ void Mode::calculateForces(Structure& structure) const
 
     if (nnpType == NNPType::HDNNP_4G)
     {
-        Structure& s = structure;
+        Structure &s = structure;
 
         VectorXd lambdaTotal = s.calculateForceLambdaTotal();
         VectorXd lambdaElec = s.calculateForceLambdaElec();
 
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp for
 #endif
         // OpenMP 4.0 doesn't support range based loops
         for (size_t i = 0; i < s.numAtoms; ++i)
         {
-            auto& ai = s.atoms[i];
+            auto &ai = s.atoms[i];
             ai.f -= ai.pEelecpr;
             ai.fElec = -ai.pEelecpr;
 
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
-                Atom const& aj = s.atoms.at(j);
+                Atom const &aj = s.atoms.at(j);
 
 #ifndef NNP_FULL_SFD_MEMORY
-                vector<vector<size_t> > const& tableFull
-                   = elements.at(aj.element).getSymmetryFunctionTable();
+                vector<vector<size_t> > const &tableFull
+                        = elements.at(aj.element).getSymmetryFunctionTable();
                 Vec3D dChidr = aj.calculateDChidr(ai.index,
                                                   maxCutoffRadius,
                                                   &tableFull);
@@ -1928,6 +1932,9 @@ void Mode::calculateForces(Structure& structure) const
             }
         }
     }
+#ifdef _OPENMP
+    }
+#endif
     return;
 }
 

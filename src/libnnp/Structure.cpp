@@ -592,9 +592,18 @@ double Structure::calculateElectrostaticEnergy(
     A.setZero();
     VectorXd b(numAtoms + 1);
     VectorXd hardnessJ(numAtoms);
+    VectorXd Q;
 
+#ifdef _OPENMP
+#pragma omp parallel
+    {
+#endif
     if (isPeriodic)
     {
+#ifdef _OPENMP
+#pragma omp single
+        {
+#endif
         if (!NeighborListIsSorted)
         {
             throw runtime_error("ERROR: Neighbor list needs to "
@@ -602,23 +611,26 @@ double Structure::calculateElectrostaticEnergy(
         }
 
         ewaldSetup.calculateParameters(volume, numAtoms);
-        double const rcutReal = ewaldSetup.rCut;
+#ifdef _OPENMP
+        }
+#endif
         KspaceGrid grid;
         grid.setup(box, ewaldSetup);
+        double const rcutReal = ewaldSetup.rCut;
         double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
 
 #ifdef _OPENMP
-        #pragma omp parallel for schedule(dynamic)
+        #pragma omp for schedule(dynamic)
 #endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
-            Atom const& ai = atoms.at(i);
+            Atom const &ai = atoms.at(i);
             size_t const ei = ai.element;
 
             // diagonal including self interaction
             A(i, i) += hardness(ei)
-                    + (1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI)))
-                    / fourPiEps;
+                       + (1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI)))
+                         / fourPiEps;
 
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
@@ -627,22 +639,23 @@ double Structure::calculateElectrostaticEnergy(
             size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutReal);
             for (size_t k = 0; k < numNeighbors; ++k)
             {
-                auto const& n = ai.neighbors[k];
+                auto const &n = ai.neighbors[k];
                 size_t j = n.tag;
                 if (j < i) continue;
 
                 double const rij = n.d;
                 size_t const ej = n.element;
                 A(i, j) += (erfc(rij / sqrt2eta)
-                      - erfc(rij / gammaSqrt2(ei, ej))) / (rij * fourPiEps);
+                            - erfc(rij / gammaSqrt2(ei, ej))) /
+                           (rij * fourPiEps);
             }
 
             // reciprocal part
             //for (size_t j = i + 1; j < numAtoms; ++j)
             for (size_t j = i; j < numAtoms; ++j)
             {
-                Atom const& aj = atoms.at(j);
-                for (auto const& gv : grid.kvectors)
+                Atom const &aj = atoms.at(j);
+                for (auto const &gv: grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
                     Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
@@ -656,20 +669,20 @@ double Structure::calculateElectrostaticEnergy(
     else
     {
 #ifdef _OPENMP
-        #pragma omp parallel for schedule(dynamic)
+#pragma omp for schedule(dynamic)
 #endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
-            Atom const& ai = atoms.at(i);
+            Atom const &ai = atoms.at(i);
             size_t const ei = ai.element;
 
             A(i, i) = hardness(ei)
-                    + 1.0 / (sigmaSqrtPi(ei) * fourPiEps);
+                      + 1.0 / (sigmaSqrtPi(ei) * fourPiEps);
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
-                Atom const& aj = atoms.at(j);
+                Atom const &aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const rij = (ai.r - aj.r).norm();
 
@@ -679,25 +692,33 @@ double Structure::calculateElectrostaticEnergy(
             }
         }
     }
+#ifdef _OPENMP
+#pragma omp single
+    {
+#endif
     A.col(numAtoms).setOnes();
     A.row(numAtoms).setOnes();
     A(numAtoms, numAtoms) = 0.0;
     hasAMatrix = true;
     b(numAtoms) = chargeRef;
 
-    //TODO: sometimes only recalculation of A matrix is needed, because 
+    //TODO: sometimes only recalculation of A matrix is needed, because
     //      Qs are stored.
-    VectorXd const Q = A.colPivHouseholderQr().solve(b);
+    Q = A.colPivHouseholderQr().solve(b);
 #ifdef _OPENMP
-    #pragma omp parallel for
+    }
+    #pragma omp for nowait
 #endif
     for (size_t i = 0; i < numAtoms; ++i)
     {
         atoms.at(i).charge = Q(i);
     }
+#ifdef _OPENMP
+    } // end of parallel region
+#endif
 
-    hasCharges = true;
     lambda = Q(numAtoms);
+    hasCharges = true;
     double error = (A * Q - b).norm() / b.norm();
 
     // We need matrix E not A, which only differ by the hardness terms along the diagonal
@@ -753,10 +774,10 @@ double Structure::calculateScreeningEnergy(
                     //TODO: Maybe add charge to neighbor class?
                     double const Qj = atoms.at(j).charge;
 #ifdef _OPENMP
-                    localEnergyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                    localEnergyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej))
                                     * (fs.f(rij) - 1) / (rij * fourPiEps);
 #else
-                    energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej)) 
+                    energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej))
                                     * (fs.f(rij) - 1) / (rij * fourPiEps);
 #endif
 
@@ -786,7 +807,7 @@ double Structure::calculateScreeningEnergy(
                     Atom const& aj = atoms.at(j);
                     double const Qj = aj.charge;
                     double const rij = (ai.r - aj.r).norm();
-                    if ( rij < rcutScreen ) 
+                    if ( rij < rcutScreen )
                     {
 #ifdef _OPENMP
                         localEnergyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
@@ -812,13 +833,24 @@ void Structure::calculateDAdrQ(
                             MatrixXd     gammaSqrt2,
                             double const fourPiEps)
 {
+
+#ifdef _OPENMP
+    vector<Vec3D> dAdrQDiag(numAtoms);
+    #pragma omp parallel
+    {
+
+    #pragma omp declare reduction(vec_Vec3D_plus : std::vector<Vec3D> : \
+                  std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<Vec3D>())) \
+                  initializer(omp_priv = decltype(omp_orig)(omp_orig.size()))
+    #pragma omp for
+#endif
     // TODO: This initialization loop could probably be avoid, maybe use
     // default constructor?
     for (size_t i = 0; i < numAtoms; ++i)
     {
-        Atom& ai = atoms.at(i);
-        //dAdrQ(numAtoms+1,:) entries are zero
-        ai.dAdrQ.resize(numAtoms+1);
+        Atom &ai = atoms.at(i);
+        // dAdrQ(numAtoms+1,:) entries are zero
+        ai.dAdrQ.resize(numAtoms + 1);
     }
 
     if (isPeriodic)
@@ -827,15 +859,24 @@ void Structure::calculateDAdrQ(
         // we cache it for reuse? Note that we can't calculate dAdrQ already in
         // the loops of calculateElectrostaticEnergy because at this point we don't
         // have the charges.
+#ifdef _OPENMP
+        #pragma omp single
+#endif
         ewaldSetup.calculateParameters(volume, numAtoms);
-        double rcutReal = ewaldSetup.rCut;
+
         KspaceGrid grid;
         grid.setup(box, ewaldSetup);
+        double rcutReal = ewaldSetup.rCut;
         double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
 
+#ifdef _OPENMP
+        // This way of parallelization slightly changes the result because of
+        // numerical errors.
+        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag)
+#endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
-            Atom& ai = atoms.at(i);
+            Atom &ai = atoms.at(i);
             size_t const ei = ai.element;
             double const Qi = ai.charge;
 
@@ -843,37 +884,43 @@ void Structure::calculateDAdrQ(
             size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutReal);
             for (size_t k = 0; k < numNeighbors; ++k)
             {
-                auto const& n = ai.neighbors[k];
+                auto const &n = ai.neighbors[k];
                 size_t j = n.tag;
-                if (j < i) continue;
+                //if (j < i) continue;
+                if (j <= i) continue;
 
                 double const rij = n.d;
-                Atom& aj = atoms.at(j);
+                Atom &aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const Qj = aj.charge;
 
                 Vec3D dAijdri;
-                dAijdri = n.dr / pow(rij,2)
-                            * (2 / sqrt(M_PI) * ( -exp(-pow(rij / sqrt2eta,2))
-                            / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei,ej), 2))
-                            / gammaSqrt2(ei,ej)) - 1 / rij * (erfc(rij/sqrt2eta)
-                            - erfc(rij/gammaSqrt2(ei,ej))));
+                dAijdri = n.dr / pow(rij, 2)
+                          * (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
+                          / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei, ej), 2))
+                          / gammaSqrt2(ei, ej)) - 1 / rij
+                          * (erfc(rij / sqrt2eta)
+                          - erfc(rij / gammaSqrt2(ei, ej))));
                 dAijdri /= fourPiEps;
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
                 // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
                 ai.dAdrQ[i] += dAijdri * Qj;
-                aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
                 aj.dAdrQ[i] -= dAijdri * Qj;
+#ifdef _OPENMP
+                dAdrQDiag[j] -= dAijdri * Qi;
+#else
+                aj.dAdrQ[j] -= dAijdri * Qi;
+#endif
             }
 
             // reciprocal part
-            for (size_t j = i+1; j < numAtoms; ++j)
+            for (size_t j = i + 1; j < numAtoms; ++j)
             {
-                Atom& aj = atoms.at(j);
+                Atom &aj = atoms.at(j);
                 double const Qj = aj.charge;
                 Vec3D dAijdri;
-                for (auto const& gv : grid.kvectors)
+                for (auto const &gv: grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
                     Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
@@ -881,43 +928,64 @@ void Structure::calculateDAdrQ(
                     //dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
                 }
                 dAijdri /= fourPiEps;
+
                 ai.dAdrQ[i] += dAijdri * Qj;
-                aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
                 aj.dAdrQ[i] -= dAijdri * Qj;
+#ifdef _OPENMP
+                dAdrQDiag[j] -= dAijdri * Qi;
+#else
+                aj.dAdrQ[j] -= dAijdri * Qi;
+#endif
             }
         }
-    }
-    else
+
+    } else
     {
+#ifdef _OPENMP
+        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag)
+#endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
-            Atom& ai = atoms.at(i);
+            Atom &ai = atoms.at(i);
             size_t const ei = ai.element;
             double const Qi = ai.charge;
 
             for (size_t j = i + 1; j < numAtoms; ++j)
             {
-                Atom& aj = atoms.at(j);
+                Atom &aj = atoms.at(j);
                 size_t const ej = aj.element;
                 double const Qj = aj.charge;
 
                 double rij = (ai.r - aj.r).norm();
                 Vec3D dAijdri;
-                dAijdri = (ai.r - aj.r) / pow(rij,2)
-                            * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
-                            * exp(-pow(rij / gammaSqrt2(ei,ej),2))
-                            - erf(rij / gammaSqrt2(ei,ej)) / rij);
+                dAijdri = (ai.r - aj.r) / pow(rij, 2)
+                          * (2 / (sqrt(M_PI) * gammaSqrt2(ei, ej))
+                             * exp(-pow(rij / gammaSqrt2(ei, ej), 2))
+                             - erf(rij / gammaSqrt2(ei, ej)) / rij);
                 dAijdri /= fourPiEps;
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
                 // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
-                ai.dAdrQ[i] +=  dAijdri * Qj;
-                aj.dAdrQ[j] -=  dAijdri * Qi;
-                ai.dAdrQ[j]  =  dAijdri * Qi;
-                aj.dAdrQ[i]  = -dAijdri * Qj;
+                ai.dAdrQ[i] += dAijdri * Qj;
+                ai.dAdrQ[j] = dAijdri * Qi;
+                aj.dAdrQ[i] = -dAijdri * Qj;
+#ifdef _OPENMP
+                dAdrQDiag[j] -= dAijdri * Qi;
+#else
+                aj.dAdrQ[j] -= dAijdri * Qi;
+#endif
             }
         }
     }
+#ifdef _OPENMP
+    #pragma omp for
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom& ai = atoms[i];
+        ai.dAdrQ[i] += dAdrQDiag[i];
+    }
+    }
+#endif
     return;
 }
 
@@ -966,7 +1034,7 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomIndices,
     for (size_t i = 0; i < atomIndices.size(); ++i)
     {
         Atom& a = atoms.at(atomIndices[i]);
-        if ( a.dAdrQ.size() == 0 ) 
+        if ( a.dAdrQ.size() == 0 )
             throw runtime_error("ERROR: dAdrQ needs to be calculated before "
                                 "calculating dQdr");
         a.dQdr.resize(numAtoms);
@@ -1025,7 +1093,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
         {
             Atom& aj = atoms.at(j);
             double const Qj = aj.charge;
-            
+
             ai.pEelecpr += 0.5 * Qj * ai.dAdrQ[j];
 
             // Diagonal terms contain self-interaction --> screened
@@ -1054,10 +1122,10 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                 double fsRij = fs.f(rij);
 
                 // corrections due to screening
-                Vec3D Tij = Qi * Qj * ajN.dr / pow(rij,2) 
+                Vec3D Tij = Qi * Qj * ajN.dr / pow(rij,2)
                                 * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
-                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
+                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij
                                 * (fsRij - 1) / rij);
                 Tij /= fourPiEps;
                 ai.pEelecpr += Tij;
@@ -1084,10 +1152,10 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                 double fsRij = fs.f(rij);
 
                 // corrections due to screening
-                Vec3D Tij = Qi * Qj * (ai.r - aj.r) / pow(rij,2) 
+                Vec3D Tij = Qi * Qj * (ai.r - aj.r) / pow(rij,2)
                                 * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
-                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
+                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij
                                 * (fsRij - 1) / rij);
                 Tij /= fourPiEps;
                 ai.pEelecpr += Tij;
