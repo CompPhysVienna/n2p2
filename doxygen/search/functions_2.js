@@ -14,5 +14,7 @@ var searchData=
   ['dfpoly4_11',['dfPOLY4',['../classnnp_1_1CoreFunction.html#a207c37a70f6488118cbd62742ac594d1',1,'nnp::CoreFunction']]],
   ['dftanh_12',['dfTANH',['../classnnp_1_1CutoffFunction.html#a869aa192f06a8ad30d34c234c74be09d',1,'nnp::CutoffFunction']]],
   ['dftanhu_13',['dfTANHU',['../classnnp_1_1CutoffFunction.html#a9b8e50892ac89fcb6ebcf7eef846025a',1,'nnp::CutoffFunction']]],
-  ['distributestructures_14',['distributeStructures',['../classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd',1,'nnp::Dataset']]]
+  ['distributestructures_14',['distributeStructures',['../classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd',1,'nnp::Dataset']]],
+  ['dpdc_15',['dPdc',['../classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697',1,'nnp::Training']]],
+  ['dpdcn_16',['dPdcN',['../classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d',1,'nnp::Training']]]
 ];

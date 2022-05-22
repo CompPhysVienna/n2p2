@@ -2,7 +2,7 @@
 <area shape="rect" id="node1" title="Append multiple lines of strings to open file stream." alt="" coords="308,362,481,389"/>
 <area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
-<area shape="rect" id="node4" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,122,160,149"/>
+<area shape="rect" id="node4" href="$nnp-checkdw_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,122,160,149"/>
 <area shape="rect" id="node5" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="33,173,233,199"/>
 <area shape="rect" id="node6" href="$classnnp_1_1NeuralNetwork.html#a38e5d3edf8eb6c1a28cfddeb674207e2" title="Write connections to file." alt="" coords="57,224,209,265"/>
 <area shape="rect" id="node7" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file." alt="" coords="31,289,234,331"/>

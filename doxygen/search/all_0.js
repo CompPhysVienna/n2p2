@@ -1,8 +1,8 @@
 var searchData=
 [
   ['a_0',['a',['../structnnp_1_1Training_1_1UpdateCandidate.html#a38352286993a1ab398323449c40f0a10',1,'nnp::Training::UpdateCandidate']]],
-  ['activationfunction_1',['activationFunction',['../structnnp_1_1NeuralNetwork_1_1Layer.html#abff1a6be61f7989d7231e382b265f175',1,'nnp::NeuralNetwork::Layer']]],
-  ['activationfunction_2',['ActivationFunction',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbed',1,'nnp::NeuralNetwork']]],
+  ['activationfunction_1',['ActivationFunction',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbed',1,'nnp::NeuralNetwork']]],
+  ['activationfunction_2',['activationFunction',['../structnnp_1_1NeuralNetwork_1_1Layer.html#abff1a6be61f7989d7231e382b265f175',1,'nnp::NeuralNetwork::Layer']]],
   ['addatom_3',['addAtom',['../structnnp_1_1Structure.html#a7b676463d894c0988c645fed1ddf36b1',1,'nnp::Structure']]],
   ['addcacheindex_4',['addCacheIndex',['../classnnp_1_1SymFnc.html#a3929fe47fcf9b5ffa1a0134a8a2ac248',1,'nnp::SymFnc']]],
   ['addenergyoffset_5',['addEnergyOffset',['../classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674',1,'nnp::Mode']]],

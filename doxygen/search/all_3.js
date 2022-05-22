@@ -41,9 +41,11 @@ var searchData=
   ['directory_38',['directory',['../classLAMMPS__NS_1_1PairNNP.html#a2b0d4ed687bdd7016655bf2036ea2351',1,'LAMMPS_NS::PairNNP']]],
   ['displaymetric_39',['displayMetric',['../structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85',1,'nnp::Training::Property']]],
   ['distributestructures_40',['distributeStructures',['../classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd',1,'nnp::Dataset']]],
-  ['dqdg_41',['dQdG',['../structnnp_1_1Atom.html#a20f75208c3f07e1cf93f375e327c8548',1,'nnp::Atom']]],
-  ['dr_42',['dr',['../structnnp_1_1Atom_1_1Neighbor.html#a5f338e8ace13b36746031fa76f1e170f',1,'nnp::Atom::Neighbor']]],
-  ['dt_5fadam_43',['DT_ADAM',['../classnnp_1_1GradientDescent.html#a54d38d540466c376ccd73014954de27ea64d014e31fc1b88e2f4fcec133340c6e',1,'nnp::GradientDescent']]],
-  ['dt_5ffixed_44',['DT_FIXED',['../classnnp_1_1GradientDescent.html#a54d38d540466c376ccd73014954de27eaf3f7383ef188f4eb5c5e0bda3c048b25',1,'nnp::GradientDescent']]],
-  ['dxdg_45',['dxdG',['../structnnp_1_1NeuralNetwork_1_1Neuron.html#a72a2be6d45403d23a24b87f422e6f43e',1,'nnp::NeuralNetwork::Neuron']]]
+  ['dpdc_41',['dPdc',['../classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697',1,'nnp::Training']]],
+  ['dpdcn_42',['dPdcN',['../classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d',1,'nnp::Training']]],
+  ['dqdg_43',['dQdG',['../structnnp_1_1Atom.html#a20f75208c3f07e1cf93f375e327c8548',1,'nnp::Atom']]],
+  ['dr_44',['dr',['../structnnp_1_1Atom_1_1Neighbor.html#a5f338e8ace13b36746031fa76f1e170f',1,'nnp::Atom::Neighbor']]],
+  ['dt_5fadam_45',['DT_ADAM',['../classnnp_1_1GradientDescent.html#a54d38d540466c376ccd73014954de27ea64d014e31fc1b88e2f4fcec133340c6e',1,'nnp::GradientDescent']]],
+  ['dt_5ffixed_46',['DT_FIXED',['../classnnp_1_1GradientDescent.html#a54d38d540466c376ccd73014954de27eaf3f7383ef188f4eb5c5e0bda3c048b25',1,'nnp::GradientDescent']]],
+  ['dxdg_47',['dxdG',['../structnnp_1_1NeuralNetwork_1_1Neuron.html#a72a2be6d45403d23a24b87f422e6f43e',1,'nnp::NeuralNetwork::Neuron']]]
 ];

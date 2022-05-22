@@ -1,0 +1,4 @@
+<map id="nnp::Training::getNumConnections" name="nnp::Training::getNumConnections">
+<area shape="rect" id="node1" title="Get total number of NN connections." alt="" coords="197,29,443,56"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="5,29,149,56"/>
+</map>

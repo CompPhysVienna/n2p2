@@ -1,5 +1,6 @@
 <map id="nnp::Training::collectDGdxia" name="nnp::Training::collectDGdxia">
-<area shape="rect" id="node1" title="Collect derivative of symmetry functions with repect to one atom&#39;s coordinate." alt="" coords="225,42,429,69"/>
+<area shape="rect" id="node1" title="Collect derivative of symmetry functions with repect to one atom&#39;s coordinate." alt="" coords="225,95,429,122"/>
 <area shape="rect" id="node2" href="$classnnp_1_1Training.html#abf466a175faf1511b305ed728042edb9" title="Calculate derivatives of force with respect to weights." alt="" coords="5,5,177,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="12,71,171,98"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="19,95,163,122"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="12,146,171,173"/>
 </map>

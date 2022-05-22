@@ -1,5 +1,6 @@
 <map id="nnp::Training::getWeights" name="nnp::Training::getWeights">
-<area shape="rect" id="node1" title="Get weights from neural network class." alt="" coords="253,42,440,69"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ab2d9c91a092bdb9e8eac8441ccb09ef8" title="Get a single weight value." alt="" coords="18,5,193,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="5,71,205,98"/>
+<area shape="rect" id="node1" title="Get weights from neural network class." alt="" coords="257,78,444,105"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ab2d9c91a092bdb9e8eac8441ccb09ef8" title="Get a single weight value." alt="" coords="20,5,195,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#aa9276d0625000a8dea949e7242d3d90b" title="Set up numeric weight derivatives check." alt="" coords="5,71,209,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="7,137,207,163"/>
 </map>

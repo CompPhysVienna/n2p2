@@ -1,0 +1,5 @@
+<map id="nnp::Training::getConnectionOffsets" name="nnp::Training::getConnectionOffsets">
+<area shape="rect" id="node1" title="Get offsets of NN connections for each element." alt="" coords="400,47,607,89"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="208,29,352,56"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="5,55,160,81"/>
+</map>

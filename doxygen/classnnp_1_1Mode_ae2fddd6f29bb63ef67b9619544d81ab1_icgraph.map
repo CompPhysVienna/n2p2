@@ -1,8 +1,9 @@
 <map id="nnp::Mode::calculateForces" name="nnp::Mode::calculateForces">
-<area shape="rect" id="node1" title="Calculate forces for all atoms in given structure." alt="" coords="308,122,507,149"/>
+<area shape="rect" id="node1" title="Calculate forces for all atoms in given structure." alt="" coords="308,147,507,174"/>
 <area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
-<area shape="rect" id="node4" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,122,160,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="47,173,219,199"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,223,212,250"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="55,122,210,149"/>
+<area shape="rect" id="node5" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,173,160,199"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="47,223,219,250"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,274,212,301"/>
 </map>

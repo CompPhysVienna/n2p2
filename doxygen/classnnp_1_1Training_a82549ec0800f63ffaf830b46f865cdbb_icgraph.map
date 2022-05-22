@@ -1,5 +1,6 @@
 <map id="nnp::Training::setWeights" name="nnp::Training::setWeights">
-<area shape="rect" id="node1" title="Set weights in neural network class." alt="" coords="227,42,412,69"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#aaa4815462bd1b49907a9bce52eb2da43" title="Set a single weight value." alt="" coords="5,5,179,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="13,71,171,98"/>
+<area shape="rect" id="node1" title="Set weights in neural network class." alt="" coords="227,64,412,91"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="15,5,169,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#aaa4815462bd1b49907a9bce52eb2da43" title="Set a single weight value." alt="" coords="5,57,179,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="13,123,171,149"/>
 </map>
