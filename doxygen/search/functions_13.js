@@ -6,7 +6,7 @@ var searchData=
   ['writeconnections_3',['writeConnections',['../classnnp_1_1NeuralNetwork.html#a38e5d3edf8eb6c1a28cfddeb674207e2',1,'nnp::NeuralNetwork']]],
   ['writeextrapolationwarnings_4',['writeExtrapolationWarnings',['../classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395',1,'nnp::InterfaceLammps']]],
   ['writelearningcurve_5',['writeLearningCurve',['../classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d',1,'nnp::Training']]],
-  ['writeneighborhistogram_6',['writeNeighborHistogram',['../classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494',1,'nnp::Dataset']]],
+  ['writeneighborhistogram_6',['writeNeighborHistogram',['../classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848',1,'nnp::Dataset']]],
   ['writeneighborlists_7',['writeNeighborLists',['../classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd',1,'nnp::Dataset']]],
   ['writeneuronstatistics_8',['writeNeuronStatistics',['../classnnp_1_1Training.html#ac2e1f74df67860c5776bf811e5b6a518',1,'nnp::Training']]],
   ['writeneuronstatisticsepoch_9',['writeNeuronStatisticsEpoch',['../classnnp_1_1Training.html#a79793fcf50af45c9b128ea972b14b6a8',1,'nnp::Training']]],

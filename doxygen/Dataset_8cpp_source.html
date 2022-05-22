@@ -895,7 +895,7 @@ $(document).ready(function(){initNavTree('Dataset_8cpp_source.html',''); initRes
 <div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>        vector&lt;size_t&gt; countStructuresPerProc;</div>
 <div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span> </div>
 <div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>        countStructuresPerProc.resize(<a class="code hl_variable" href="classnnp_1_1Dataset.html#a96f37380d0a1d86920e3da271df3b089">numProcs</a>, 0);</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>        </div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span> </div>
 <div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>        <span class="keywordflow">if</span> (randomize)</div>
 <div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>        {</div>
 <div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>            <span class="keywordflow">while</span> (countStructures &lt; <a class="code hl_variable" href="classnnp_1_1Dataset.html#a0d03b673a86dbf7484f2da9e41872c2f">numStructures</a>)</div>
@@ -1049,7 +1049,7 @@ $(document).ready(function(){initNavTree('Dataset_8cpp_source.html',''); initRes
 <div class="line"><a id="l00954" name="l00954"></a><span class="lineno">  954</span>    {</div>
 <div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span>        it-&gt;toNormalizedUnits(<a class="code hl_variable" href="classnnp_1_1Mode.html#a5c6554727f0af7501fe82dfe136b3865">meanEnergy</a>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a09461989d84484833b10c96e6871f87e">convEnergy</a>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a1d6eccfa0f21d64823f74cc75c89473f">convLength</a>);</div>
 <div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span>    }</div>
-<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span>    </div>
+<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span> </div>
 <div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span>    <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span>}</div>
 <div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span> </div>
@@ -1060,7 +1060,7 @@ $(document).ready(function(){initNavTree('Dataset_8cpp_source.html',''); initRes
 <div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span>    {</div>
 <div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>        it-&gt;toPhysicalUnits(<a class="code hl_variable" href="classnnp_1_1Mode.html#a5c6554727f0af7501fe82dfe136b3865">meanEnergy</a>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a09461989d84484833b10c96e6871f87e">convEnergy</a>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a1d6eccfa0f21d64823f74cc75c89473f">convLength</a>);</div>
 <div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    }</div>
-<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>    </div>
+<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span> </div>
 <div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>    <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>}</div>
 <div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span> </div>
@@ -1380,440 +1380,491 @@ $(document).ready(function(){initNavTree('Dataset_8cpp_source.html',''); initRes
 <div class="line"><a id="l01285" name="l01285"></a><span class="lineno"> 1285</span>    <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l01286" name="l01286"></a><span class="lineno"> 1286</span>}</div>
 <div class="line"><a id="l01287" name="l01287"></a><span class="lineno"> 1287</span> </div>
-<div class="line"><a id="l01288" name="l01288"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494"> 1288</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494">Dataset::writeNeighborHistogram</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp; fileName)</div>
-<div class="line"><a id="l01289" name="l01289"></a><span class="lineno"> 1289</span>{</div>
-<div class="line"><a id="l01290" name="l01290"></a><span class="lineno"> 1290</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01291" name="l01291"></a><span class="lineno"> 1291</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** NEIGHBOR HISTOGRAMS *****************&quot;</span></div>
-<div class="line"><a id="l01292" name="l01292"></a><span class="lineno"> 1292</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01293" name="l01293"></a><span class="lineno"> 1293</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01294" name="l01294"></a><span class="lineno"> 1294</span> </div>
-<div class="line"><a id="l01295" name="l01295"></a><span class="lineno"> 1295</span>    <span class="comment">// Determine maximum number of neighbors.</span></div>
-<div class="line"><a id="l01296" name="l01296"></a><span class="lineno"> 1296</span>    <span class="keywordtype">size_t</span> numAtoms = 0;</div>
-<div class="line"><a id="l01297" name="l01297"></a><span class="lineno"> 1297</span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a> = numeric_limits&lt;size_t&gt;::max();</div>
-<div class="line"><a id="l01298" name="l01298"></a><span class="lineno"> 1298</span>    <span class="keywordtype">size_t</span> maxNeighbors = 0;</div>
-<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span>    <span class="keywordtype">double</span> meanNeighbors = 0.0;</div>
-<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
-<div class="line"><a id="l01301" name="l01301"></a><span class="lineno"> 1301</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
-<div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span>    {</div>
-<div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span>        numAtoms += it-&gt;numAtoms;</div>
-<div class="line"><a id="l01304" name="l01304"></a><span class="lineno"> 1304</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it2 = it-&gt;atoms.begin();</div>
-<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
-<div class="line"><a id="l01306" name="l01306"></a><span class="lineno"> 1306</span>        {</div>
-<div class="line"><a id="l01307" name="l01307"></a><span class="lineno"> 1307</span>            <span class="keywordtype">size_t</span> <span class="keyword">const</span> n = it2-&gt;numNeighbors;</div>
-<div class="line"><a id="l01308" name="l01308"></a><span class="lineno"> 1308</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a> = min(<a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a>, n);</div>
-<div class="line"><a id="l01309" name="l01309"></a><span class="lineno"> 1309</span>            maxNeighbors = max(maxNeighbors, n);</div>
-<div class="line"><a id="l01310" name="l01310"></a><span class="lineno"> 1310</span>            meanNeighbors += n;</div>
-<div class="line"><a id="l01311" name="l01311"></a><span class="lineno"> 1311</span>        }</div>
-<div class="line"><a id="l01312" name="l01312"></a><span class="lineno"> 1312</span>    }</div>
-<div class="line"><a id="l01313" name="l01313"></a><span class="lineno"> 1313</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;numAtoms     , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01314" name="l01314"></a><span class="lineno"> 1314</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;<a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a> , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_MIN, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01315" name="l01315"></a><span class="lineno"> 1315</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;maxNeighbors , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_MAX, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01316" name="l01316"></a><span class="lineno"> 1316</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanNeighbors, 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01317" name="l01317"></a><span class="lineno"> 1317</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Minimum number of neighbors: %d\n&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a>);</div>
-<div class="line"><a id="l01318" name="l01318"></a><span class="lineno"> 1318</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean    number of neighbors: %.1f\n&quot;</span>,</div>
-<div class="line"><a id="l01319" name="l01319"></a><span class="lineno"> 1319</span>                 meanNeighbors / numAtoms);</div>
-<div class="line"><a id="l01320" name="l01320"></a><span class="lineno"> 1320</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Maximum number of neighbors: %d\n&quot;</span>, maxNeighbors);</div>
-<div class="line"><a id="l01321" name="l01321"></a><span class="lineno"> 1321</span> </div>
-<div class="line"><a id="l01322" name="l01322"></a><span class="lineno"> 1322</span>    <span class="comment">// Calculate neighbor histogram.</span></div>
-<div class="line"><a id="l01323" name="l01323"></a><span class="lineno"> 1323</span>    gsl_histogram* histNeighbors = NULL;</div>
-<div class="line"><a id="l01324" name="l01324"></a><span class="lineno"> 1324</span>    histNeighbors = gsl_histogram_alloc(maxNeighbors + 1);</div>
-<div class="line"><a id="l01325" name="l01325"></a><span class="lineno"> 1325</span>    gsl_histogram_set_ranges_uniform(histNeighbors,</div>
-<div class="line"><a id="l01326" name="l01326"></a><span class="lineno"> 1326</span>                                     -0.5,</div>
-<div class="line"><a id="l01327" name="l01327"></a><span class="lineno"> 1327</span>                                     maxNeighbors + 0.5);</div>
-<div class="line"><a id="l01328" name="l01328"></a><span class="lineno"> 1328</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
-<div class="line"><a id="l01329" name="l01329"></a><span class="lineno"> 1329</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
-<div class="line"><a id="l01330" name="l01330"></a><span class="lineno"> 1330</span>    {</div>
-<div class="line"><a id="l01331" name="l01331"></a><span class="lineno"> 1331</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it2 = it-&gt;atoms.begin();</div>
-<div class="line"><a id="l01332" name="l01332"></a><span class="lineno"> 1332</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
-<div class="line"><a id="l01333" name="l01333"></a><span class="lineno"> 1333</span>        {</div>
-<div class="line"><a id="l01334" name="l01334"></a><span class="lineno"> 1334</span>            gsl_histogram_increment(histNeighbors, it2-&gt;numNeighbors);</div>
-<div class="line"><a id="l01335" name="l01335"></a><span class="lineno"> 1335</span>        }</div>
-<div class="line"><a id="l01336" name="l01336"></a><span class="lineno"> 1336</span>    }</div>
-<div class="line"><a id="l01337" name="l01337"></a><span class="lineno"> 1337</span>    MPI_Allreduce(MPI_IN_PLACE, histNeighbors-&gt;bin, maxNeighbors + 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01338" name="l01338"></a><span class="lineno"> 1338</span> </div>
-<div class="line"><a id="l01339" name="l01339"></a><span class="lineno"> 1339</span>    <span class="comment">// Write histogram to file.</span></div>
-<div class="line"><a id="l01340" name="l01340"></a><span class="lineno"> 1340</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0)</div>
-<div class="line"><a id="l01341" name="l01341"></a><span class="lineno"> 1341</span>    {</div>
-<div class="line"><a id="l01342" name="l01342"></a><span class="lineno"> 1342</span>        <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Neighbor histogram file: %s.\n&quot;</span>, fileName.c_str());</div>
-<div class="line"><a id="l01343" name="l01343"></a><span class="lineno"> 1343</span>        FILE* fp = 0;</div>
-<div class="line"><a id="l01344" name="l01344"></a><span class="lineno"> 1344</span>        fp = fopen(fileName.c_str(), <span class="stringliteral">&quot;w&quot;</span>);</div>
-<div class="line"><a id="l01345" name="l01345"></a><span class="lineno"> 1345</span>        <span class="keywordflow">if</span> (fp == 0)</div>
-<div class="line"><a id="l01346" name="l01346"></a><span class="lineno"> 1346</span>        {</div>
-<div class="line"><a id="l01347" name="l01347"></a><span class="lineno"> 1347</span>            <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;ERROR: Could not open file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01348" name="l01348"></a><span class="lineno"> 1348</span>                                      fileName.c_str()));</div>
-<div class="line"><a id="l01349" name="l01349"></a><span class="lineno"> 1349</span>        }</div>
-<div class="line"><a id="l01350" name="l01350"></a><span class="lineno"> 1350</span> </div>
-<div class="line"><a id="l01351" name="l01351"></a><span class="lineno"> 1351</span>        <span class="comment">// File header.</span></div>
-<div class="line"><a id="l01352" name="l01352"></a><span class="lineno"> 1352</span>        vector&lt;string&gt; title;</div>
-<div class="line"><a id="l01353" name="l01353"></a><span class="lineno"> 1353</span>        vector&lt;string&gt; colName;</div>
-<div class="line"><a id="l01354" name="l01354"></a><span class="lineno"> 1354</span>        vector&lt;string&gt; colInfo;</div>
-<div class="line"><a id="l01355" name="l01355"></a><span class="lineno"> 1355</span>        vector&lt;size_t&gt; colSize;</div>
-<div class="line"><a id="l01356" name="l01356"></a><span class="lineno"> 1356</span>        title.push_back(<span class="stringliteral">&quot;Neighbor count histogram.&quot;</span>);</div>
-<div class="line"><a id="l01357" name="l01357"></a><span class="lineno"> 1357</span>        colSize.push_back(9);</div>
-<div class="line"><a id="l01358" name="l01358"></a><span class="lineno"> 1358</span>        colName.push_back(<span class="stringliteral">&quot;neigh_l&quot;</span>);</div>
-<div class="line"><a id="l01359" name="l01359"></a><span class="lineno"> 1359</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of neighbors, left bin limit.&quot;</span>);</div>
-<div class="line"><a id="l01360" name="l01360"></a><span class="lineno"> 1360</span>        colSize.push_back(9);</div>
-<div class="line"><a id="l01361" name="l01361"></a><span class="lineno"> 1361</span>        colName.push_back(<span class="stringliteral">&quot;neigh_r&quot;</span>);</div>
-<div class="line"><a id="l01362" name="l01362"></a><span class="lineno"> 1362</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of neighbors, right bin limit.&quot;</span>);</div>
-<div class="line"><a id="l01363" name="l01363"></a><span class="lineno"> 1363</span>        colSize.push_back(16);</div>
-<div class="line"><a id="l01364" name="l01364"></a><span class="lineno"> 1364</span>        colName.push_back(<span class="stringliteral">&quot;hist&quot;</span>);</div>
-<div class="line"><a id="l01365" name="l01365"></a><span class="lineno"> 1365</span>        colInfo.push_back(<span class="stringliteral">&quot;Histogram count.&quot;</span>);</div>
-<div class="line"><a id="l01366" name="l01366"></a><span class="lineno"> 1366</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(fp,</div>
-<div class="line"><a id="l01367" name="l01367"></a><span class="lineno"> 1367</span>                          <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
-<div class="line"><a id="l01368" name="l01368"></a><span class="lineno"> 1368</span> </div>
-<div class="line"><a id="l01369" name="l01369"></a><span class="lineno"> 1369</span>        gsl_histogram_fprintf(fp, histNeighbors, <span class="stringliteral">&quot;%9.1f&quot;</span>, <span class="stringliteral">&quot;%16.8E&quot;</span>);</div>
-<div class="line"><a id="l01370" name="l01370"></a><span class="lineno"> 1370</span>        fflush(fp);</div>
-<div class="line"><a id="l01371" name="l01371"></a><span class="lineno"> 1371</span>        fclose(fp);</div>
-<div class="line"><a id="l01372" name="l01372"></a><span class="lineno"> 1372</span>        fp = 0;</div>
-<div class="line"><a id="l01373" name="l01373"></a><span class="lineno"> 1373</span>    }</div>
-<div class="line"><a id="l01374" name="l01374"></a><span class="lineno"> 1374</span> </div>
-<div class="line"><a id="l01375" name="l01375"></a><span class="lineno"> 1375</span>    gsl_histogram_free(histNeighbors);</div>
-<div class="line"><a id="l01376" name="l01376"></a><span class="lineno"> 1376</span> </div>
-<div class="line"><a id="l01377" name="l01377"></a><span class="lineno"> 1377</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
-<div class="line"><a id="l01378" name="l01378"></a><span class="lineno"> 1378</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01379" name="l01379"></a><span class="lineno"> 1379</span> </div>
-<div class="line"><a id="l01380" name="l01380"></a><span class="lineno"> 1380</span>    <span class="keywordflow">return</span> maxNeighbors;</div>
-<div class="line"><a id="l01381" name="l01381"></a><span class="lineno"> 1381</span>}</div>
-<div class="line"><a id="l01382" name="l01382"></a><span class="lineno"> 1382</span> </div>
-<div class="line"><a id="l01383" name="l01383"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f"> 1383</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f">Dataset::sortNeighborLists</a>()</div>
-<div class="line"><a id="l01384" name="l01384"></a><span class="lineno"> 1384</span>{</div>
-<div class="line"><a id="l01385" name="l01385"></a><span class="lineno"> 1385</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01386" name="l01386"></a><span class="lineno"> 1386</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** NEIGHBOR LIST ***********************&quot;</span></div>
-<div class="line"><a id="l01387" name="l01387"></a><span class="lineno"> 1387</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01388" name="l01388"></a><span class="lineno"> 1388</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01389" name="l01389"></a><span class="lineno"> 1389</span> </div>
-<div class="line"><a id="l01390" name="l01390"></a><span class="lineno"> 1390</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Sorting neighbor lists according to element and distance.\n&quot;</span>;</div>
-<div class="line"><a id="l01391" name="l01391"></a><span class="lineno"> 1391</span> </div>
-<div class="line"><a id="l01392" name="l01392"></a><span class="lineno"> 1392</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
-<div class="line"><a id="l01393" name="l01393"></a><span class="lineno"> 1393</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
-<div class="line"><a id="l01394" name="l01394"></a><span class="lineno"> 1394</span>    {</div>
-<div class="line"><a id="l01395" name="l01395"></a><span class="lineno"> 1395</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::iterator it2 = it-&gt;atoms.begin();</div>
-<div class="line"><a id="l01396" name="l01396"></a><span class="lineno"> 1396</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
-<div class="line"><a id="l01397" name="l01397"></a><span class="lineno"> 1397</span>        {</div>
-<div class="line"><a id="l01398" name="l01398"></a><span class="lineno"> 1398</span>            sort(it2-&gt;neighbors.begin(), it2-&gt;neighbors.end());</div>
-<div class="line"><a id="l01399" name="l01399"></a><span class="lineno"> 1399</span>        }</div>
-<div class="line"><a id="l01400" name="l01400"></a><span class="lineno"> 1400</span>    }</div>
-<div class="line"><a id="l01401" name="l01401"></a><span class="lineno"> 1401</span> </div>
-<div class="line"><a id="l01402" name="l01402"></a><span class="lineno"> 1402</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
-<div class="line"><a id="l01403" name="l01403"></a><span class="lineno"> 1403</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01404" name="l01404"></a><span class="lineno"> 1404</span> </div>
-<div class="line"><a id="l01405" name="l01405"></a><span class="lineno"> 1405</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01406" name="l01406"></a><span class="lineno"> 1406</span>}</div>
-<div class="line"><a id="l01407" name="l01407"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd"> 1407</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd">Dataset::writeNeighborLists</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp; fileName)</div>
-<div class="line"><a id="l01408" name="l01408"></a><span class="lineno"> 1408</span>{</div>
-<div class="line"><a id="l01409" name="l01409"></a><span class="lineno"> 1409</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01410" name="l01410"></a><span class="lineno"> 1410</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** NEIGHBOR LIST ***********************&quot;</span></div>
-<div class="line"><a id="l01411" name="l01411"></a><span class="lineno"> 1411</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01412" name="l01412"></a><span class="lineno"> 1412</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01413" name="l01413"></a><span class="lineno"> 1413</span> </div>
-<div class="line"><a id="l01414" name="l01414"></a><span class="lineno"> 1414</span>    <span class="keywordtype">string</span> fileNameLocal = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>, fileName.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
-<div class="line"><a id="l01415" name="l01415"></a><span class="lineno"> 1415</span>    ofstream fileLocal;</div>
-<div class="line"><a id="l01416" name="l01416"></a><span class="lineno"> 1416</span>    fileLocal.open(fileNameLocal.c_str());</div>
+<div class="line"><a id="l01288" name="l01288"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848"> 1288</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848">Dataset::writeNeighborHistogram</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp; fileNameHisto,</div>
+<div class="line"><a id="l01289" name="l01289"></a><span class="lineno"> 1289</span>                                       <span class="keywordtype">string</span> <span class="keyword">const</span>&amp; fileNameStructure)</div>
+<div class="line"><a id="l01290" name="l01290"></a><span class="lineno"> 1290</span>{</div>
+<div class="line"><a id="l01291" name="l01291"></a><span class="lineno"> 1291</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01292" name="l01292"></a><span class="lineno"> 1292</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** NEIGHBOR STATISTICS/HISTOGRAM *******&quot;</span></div>
+<div class="line"><a id="l01293" name="l01293"></a><span class="lineno"> 1293</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01294" name="l01294"></a><span class="lineno"> 1294</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01295" name="l01295"></a><span class="lineno"> 1295</span> </div>
+<div class="line"><a id="l01296" name="l01296"></a><span class="lineno"> 1296</span>    ofstream statFile;</div>
+<div class="line"><a id="l01297" name="l01297"></a><span class="lineno"> 1297</span>    <span class="keywordtype">string</span> fileNameLocal = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>, fileNameStructure.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
+<div class="line"><a id="l01298" name="l01298"></a><span class="lineno"> 1298</span>    statFile.open(fileNameLocal.c_str());</div>
+<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0)</div>
+<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span>    {</div>
+<div class="line"><a id="l01301" name="l01301"></a><span class="lineno"> 1301</span>        <span class="comment">// File header.</span></div>
+<div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span>        vector&lt;string&gt; title;</div>
+<div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span>        vector&lt;string&gt; colName;</div>
+<div class="line"><a id="l01304" name="l01304"></a><span class="lineno"> 1304</span>        vector&lt;string&gt; colInfo;</div>
+<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span>        vector&lt;size_t&gt; colSize;</div>
+<div class="line"><a id="l01306" name="l01306"></a><span class="lineno"> 1306</span>        title.push_back(<span class="stringliteral">&quot;Neighbor statistics for each structure.&quot;</span>);</div>
+<div class="line"><a id="l01307" name="l01307"></a><span class="lineno"> 1307</span>        colSize.push_back(10);</div>
+<div class="line"><a id="l01308" name="l01308"></a><span class="lineno"> 1308</span>        colName.push_back(<span class="stringliteral">&quot;struct&quot;</span>);</div>
+<div class="line"><a id="l01309" name="l01309"></a><span class="lineno"> 1309</span>        colInfo.push_back(<span class="stringliteral">&quot;Index of structure (starting with 1).&quot;</span>);</div>
+<div class="line"><a id="l01310" name="l01310"></a><span class="lineno"> 1310</span>        colSize.push_back(10);</div>
+<div class="line"><a id="l01311" name="l01311"></a><span class="lineno"> 1311</span>        colName.push_back(<span class="stringliteral">&quot;natoms&quot;</span>);</div>
+<div class="line"><a id="l01312" name="l01312"></a><span class="lineno"> 1312</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of atoms in structure.&quot;</span>);</div>
+<div class="line"><a id="l01313" name="l01313"></a><span class="lineno"> 1313</span>        colSize.push_back(10);</div>
+<div class="line"><a id="l01314" name="l01314"></a><span class="lineno"> 1314</span>        colName.push_back(<span class="stringliteral">&quot;min&quot;</span>);</div>
+<div class="line"><a id="l01315" name="l01315"></a><span class="lineno"> 1315</span>        colInfo.push_back(<span class="stringliteral">&quot;Minimum number of neighbors over all atoms.&quot;</span>);</div>
+<div class="line"><a id="l01316" name="l01316"></a><span class="lineno"> 1316</span>        colSize.push_back(10);</div>
+<div class="line"><a id="l01317" name="l01317"></a><span class="lineno"> 1317</span>        colName.push_back(<span class="stringliteral">&quot;max&quot;</span>);</div>
+<div class="line"><a id="l01318" name="l01318"></a><span class="lineno"> 1318</span>        colInfo.push_back(<span class="stringliteral">&quot;Maximum number of neighbors over all atoms.&quot;</span>);</div>
+<div class="line"><a id="l01319" name="l01319"></a><span class="lineno"> 1319</span>        colSize.push_back(16);</div>
+<div class="line"><a id="l01320" name="l01320"></a><span class="lineno"> 1320</span>        colName.push_back(<span class="stringliteral">&quot;mean&quot;</span>);</div>
+<div class="line"><a id="l01321" name="l01321"></a><span class="lineno"> 1321</span>        colInfo.push_back(<span class="stringliteral">&quot;Mean number of neighbors over all atoms.&quot;</span>);</div>
+<div class="line"><a id="l01322" name="l01322"></a><span class="lineno"> 1322</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(statFile,</div>
+<div class="line"><a id="l01323" name="l01323"></a><span class="lineno"> 1323</span>                          <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
+<div class="line"><a id="l01324" name="l01324"></a><span class="lineno"> 1324</span>    }</div>
+<div class="line"><a id="l01325" name="l01325"></a><span class="lineno"> 1325</span> </div>
+<div class="line"><a id="l01326" name="l01326"></a><span class="lineno"> 1326</span>    <span class="comment">// Compute per-structure statistics and prepare histogram boundaries.</span></div>
+<div class="line"><a id="l01327" name="l01327"></a><span class="lineno"> 1327</span>    <span class="keywordtype">size_t</span> numAtomsGlobal = 0;</div>
+<div class="line"><a id="l01328" name="l01328"></a><span class="lineno"> 1328</span>    <span class="keywordtype">size_t</span> minNeighborsGlobal = numeric_limits&lt;size_t&gt;::max();</div>
+<div class="line"><a id="l01329" name="l01329"></a><span class="lineno"> 1329</span>    <span class="keywordtype">size_t</span> maxNeighborsGlobal = 0;</div>
+<div class="line"><a id="l01330" name="l01330"></a><span class="lineno"> 1330</span>    <span class="keywordtype">double</span> meanNeighborsGlobal = 0.0;</div>
+<div class="line"><a id="l01331" name="l01331"></a><span class="lineno"> 1331</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; s : <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>)</div>
+<div class="line"><a id="l01332" name="l01332"></a><span class="lineno"> 1332</span>    {</div>
+<div class="line"><a id="l01333" name="l01333"></a><span class="lineno"> 1333</span>        <span class="keywordtype">size_t</span> <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a> = numeric_limits&lt;size_t&gt;::max();</div>
+<div class="line"><a id="l01334" name="l01334"></a><span class="lineno"> 1334</span>        <span class="keywordtype">size_t</span> maxNeighbors = 0;</div>
+<div class="line"><a id="l01335" name="l01335"></a><span class="lineno"> 1335</span>        <span class="keywordtype">double</span> meanNeighbors = 0.0;</div>
+<div class="line"><a id="l01336" name="l01336"></a><span class="lineno"> 1336</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; a : s.atoms)</div>
+<div class="line"><a id="l01337" name="l01337"></a><span class="lineno"> 1337</span>        {</div>
+<div class="line"><a id="l01338" name="l01338"></a><span class="lineno"> 1338</span>            <span class="keywordtype">size_t</span> <span class="keyword">const</span> n = a.numNeighbors;</div>
+<div class="line"><a id="l01339" name="l01339"></a><span class="lineno"> 1339</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a> = min(<a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a>, n);</div>
+<div class="line"><a id="l01340" name="l01340"></a><span class="lineno"> 1340</span>            maxNeighbors = max(maxNeighbors, n);</div>
+<div class="line"><a id="l01341" name="l01341"></a><span class="lineno"> 1341</span>            meanNeighbors += n;</div>
+<div class="line"><a id="l01342" name="l01342"></a><span class="lineno"> 1342</span>        }</div>
+<div class="line"><a id="l01343" name="l01343"></a><span class="lineno"> 1343</span>        numAtomsGlobal += s.numAtoms;</div>
+<div class="line"><a id="l01344" name="l01344"></a><span class="lineno"> 1344</span>        minNeighborsGlobal = min(minNeighborsGlobal, <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a>);</div>
+<div class="line"><a id="l01345" name="l01345"></a><span class="lineno"> 1345</span>        maxNeighborsGlobal = max(maxNeighborsGlobal, maxNeighbors);</div>
+<div class="line"><a id="l01346" name="l01346"></a><span class="lineno"> 1346</span>        meanNeighborsGlobal += meanNeighbors;</div>
+<div class="line"><a id="l01347" name="l01347"></a><span class="lineno"> 1347</span>        statFile &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %10zu %10zu %10zu %16.8E\n&quot;</span>,</div>
+<div class="line"><a id="l01348" name="l01348"></a><span class="lineno"> 1348</span>                          s.index + 1,</div>
+<div class="line"><a id="l01349" name="l01349"></a><span class="lineno"> 1349</span>                          s.numAtoms,</div>
+<div class="line"><a id="l01350" name="l01350"></a><span class="lineno"> 1350</span>                          <a class="code hl_variable" href="classnnp_1_1Mode.html#abbb183f90ace9311391b9847580009ba">minNeighbors</a>,</div>
+<div class="line"><a id="l01351" name="l01351"></a><span class="lineno"> 1351</span>                          maxNeighbors,</div>
+<div class="line"><a id="l01352" name="l01352"></a><span class="lineno"> 1352</span>                          meanNeighbors / s.numAtoms);</div>
+<div class="line"><a id="l01353" name="l01353"></a><span class="lineno"> 1353</span>    }</div>
+<div class="line"><a id="l01354" name="l01354"></a><span class="lineno"> 1354</span>    statFile.flush();</div>
+<div class="line"><a id="l01355" name="l01355"></a><span class="lineno"> 1355</span>    statFile.close();</div>
+<div class="line"><a id="l01356" name="l01356"></a><span class="lineno"> 1356</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;numAtomsGlobal     , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01357" name="l01357"></a><span class="lineno"> 1357</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;minNeighborsGlobal , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_MIN, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01358" name="l01358"></a><span class="lineno"> 1358</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;maxNeighborsGlobal , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_MAX, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01359" name="l01359"></a><span class="lineno"> 1359</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanNeighborsGlobal, 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01360" name="l01360"></a><span class="lineno"> 1360</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Minimum number of neighbors: %d\n&quot;</span>, minNeighborsGlobal);</div>
+<div class="line"><a id="l01361" name="l01361"></a><span class="lineno"> 1361</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean    number of neighbors: %.1f\n&quot;</span>,</div>
+<div class="line"><a id="l01362" name="l01362"></a><span class="lineno"> 1362</span>                 meanNeighborsGlobal / numAtomsGlobal);</div>
+<div class="line"><a id="l01363" name="l01363"></a><span class="lineno"> 1363</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Maximum number of neighbors: %d\n&quot;</span>, maxNeighborsGlobal);</div>
+<div class="line"><a id="l01364" name="l01364"></a><span class="lineno"> 1364</span> </div>
+<div class="line"><a id="l01365" name="l01365"></a><span class="lineno"> 1365</span>    <span class="comment">// Calculate neighbor histogram.</span></div>
+<div class="line"><a id="l01366" name="l01366"></a><span class="lineno"> 1366</span>    gsl_histogram* histNeighbors = NULL;</div>
+<div class="line"><a id="l01367" name="l01367"></a><span class="lineno"> 1367</span>    histNeighbors = gsl_histogram_alloc(maxNeighborsGlobal + 1);</div>
+<div class="line"><a id="l01368" name="l01368"></a><span class="lineno"> 1368</span>    gsl_histogram_set_ranges_uniform(histNeighbors,</div>
+<div class="line"><a id="l01369" name="l01369"></a><span class="lineno"> 1369</span>                                     -0.5,</div>
+<div class="line"><a id="l01370" name="l01370"></a><span class="lineno"> 1370</span>                                     maxNeighborsGlobal + 0.5);</div>
+<div class="line"><a id="l01371" name="l01371"></a><span class="lineno"> 1371</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
+<div class="line"><a id="l01372" name="l01372"></a><span class="lineno"> 1372</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
+<div class="line"><a id="l01373" name="l01373"></a><span class="lineno"> 1373</span>    {</div>
+<div class="line"><a id="l01374" name="l01374"></a><span class="lineno"> 1374</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it2 = it-&gt;atoms.begin();</div>
+<div class="line"><a id="l01375" name="l01375"></a><span class="lineno"> 1375</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
+<div class="line"><a id="l01376" name="l01376"></a><span class="lineno"> 1376</span>        {</div>
+<div class="line"><a id="l01377" name="l01377"></a><span class="lineno"> 1377</span>            gsl_histogram_increment(histNeighbors, it2-&gt;numNeighbors);</div>
+<div class="line"><a id="l01378" name="l01378"></a><span class="lineno"> 1378</span>        }</div>
+<div class="line"><a id="l01379" name="l01379"></a><span class="lineno"> 1379</span>    }</div>
+<div class="line"><a id="l01380" name="l01380"></a><span class="lineno"> 1380</span>    MPI_Allreduce(MPI_IN_PLACE, histNeighbors-&gt;bin, maxNeighborsGlobal + 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01381" name="l01381"></a><span class="lineno"> 1381</span> </div>
+<div class="line"><a id="l01382" name="l01382"></a><span class="lineno"> 1382</span>    <span class="comment">// Write histogram to file.</span></div>
+<div class="line"><a id="l01383" name="l01383"></a><span class="lineno"> 1383</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0)</div>
+<div class="line"><a id="l01384" name="l01384"></a><span class="lineno"> 1384</span>    {</div>
+<div class="line"><a id="l01385" name="l01385"></a><span class="lineno"> 1385</span>        <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Neighbor histogram file: %s.\n&quot;</span>, fileNameHisto.c_str());</div>
+<div class="line"><a id="l01386" name="l01386"></a><span class="lineno"> 1386</span>        FILE* fp = 0;</div>
+<div class="line"><a id="l01387" name="l01387"></a><span class="lineno"> 1387</span>        fp = fopen(fileNameHisto.c_str(), <span class="stringliteral">&quot;w&quot;</span>);</div>
+<div class="line"><a id="l01388" name="l01388"></a><span class="lineno"> 1388</span>        <span class="keywordflow">if</span> (fp == 0)</div>
+<div class="line"><a id="l01389" name="l01389"></a><span class="lineno"> 1389</span>        {</div>
+<div class="line"><a id="l01390" name="l01390"></a><span class="lineno"> 1390</span>            <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;ERROR: Could not open file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01391" name="l01391"></a><span class="lineno"> 1391</span>                                      fileNameHisto.c_str()));</div>
+<div class="line"><a id="l01392" name="l01392"></a><span class="lineno"> 1392</span>        }</div>
+<div class="line"><a id="l01393" name="l01393"></a><span class="lineno"> 1393</span> </div>
+<div class="line"><a id="l01394" name="l01394"></a><span class="lineno"> 1394</span>        <span class="comment">// File header.</span></div>
+<div class="line"><a id="l01395" name="l01395"></a><span class="lineno"> 1395</span>        vector&lt;string&gt; title;</div>
+<div class="line"><a id="l01396" name="l01396"></a><span class="lineno"> 1396</span>        vector&lt;string&gt; colName;</div>
+<div class="line"><a id="l01397" name="l01397"></a><span class="lineno"> 1397</span>        vector&lt;string&gt; colInfo;</div>
+<div class="line"><a id="l01398" name="l01398"></a><span class="lineno"> 1398</span>        vector&lt;size_t&gt; colSize;</div>
+<div class="line"><a id="l01399" name="l01399"></a><span class="lineno"> 1399</span>        title.push_back(<span class="stringliteral">&quot;Neighbor count histogram.&quot;</span>);</div>
+<div class="line"><a id="l01400" name="l01400"></a><span class="lineno"> 1400</span>        colSize.push_back(9);</div>
+<div class="line"><a id="l01401" name="l01401"></a><span class="lineno"> 1401</span>        colName.push_back(<span class="stringliteral">&quot;neigh_l&quot;</span>);</div>
+<div class="line"><a id="l01402" name="l01402"></a><span class="lineno"> 1402</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of neighbors, left bin limit.&quot;</span>);</div>
+<div class="line"><a id="l01403" name="l01403"></a><span class="lineno"> 1403</span>        colSize.push_back(9);</div>
+<div class="line"><a id="l01404" name="l01404"></a><span class="lineno"> 1404</span>        colName.push_back(<span class="stringliteral">&quot;neigh_r&quot;</span>);</div>
+<div class="line"><a id="l01405" name="l01405"></a><span class="lineno"> 1405</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of neighbors, right bin limit.&quot;</span>);</div>
+<div class="line"><a id="l01406" name="l01406"></a><span class="lineno"> 1406</span>        colSize.push_back(16);</div>
+<div class="line"><a id="l01407" name="l01407"></a><span class="lineno"> 1407</span>        colName.push_back(<span class="stringliteral">&quot;hist&quot;</span>);</div>
+<div class="line"><a id="l01408" name="l01408"></a><span class="lineno"> 1408</span>        colInfo.push_back(<span class="stringliteral">&quot;Histogram count.&quot;</span>);</div>
+<div class="line"><a id="l01409" name="l01409"></a><span class="lineno"> 1409</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(fp,</div>
+<div class="line"><a id="l01410" name="l01410"></a><span class="lineno"> 1410</span>                          <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
+<div class="line"><a id="l01411" name="l01411"></a><span class="lineno"> 1411</span> </div>
+<div class="line"><a id="l01412" name="l01412"></a><span class="lineno"> 1412</span>        gsl_histogram_fprintf(fp, histNeighbors, <span class="stringliteral">&quot;%9.1f&quot;</span>, <span class="stringliteral">&quot;%16.8E&quot;</span>);</div>
+<div class="line"><a id="l01413" name="l01413"></a><span class="lineno"> 1413</span>        fflush(fp);</div>
+<div class="line"><a id="l01414" name="l01414"></a><span class="lineno"> 1414</span>        fclose(fp);</div>
+<div class="line"><a id="l01415" name="l01415"></a><span class="lineno"> 1415</span>        fp = 0;</div>
+<div class="line"><a id="l01416" name="l01416"></a><span class="lineno"> 1416</span>    }</div>
 <div class="line"><a id="l01417" name="l01417"></a><span class="lineno"> 1417</span> </div>
-<div class="line"><a id="l01418" name="l01418"></a><span class="lineno"> 1418</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
-<div class="line"><a id="l01419" name="l01419"></a><span class="lineno"> 1419</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
+<div class="line"><a id="l01418" name="l01418"></a><span class="lineno"> 1418</span>    MPI_Barrier(<a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01419" name="l01419"></a><span class="lineno"> 1419</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0)</div>
 <div class="line"><a id="l01420" name="l01420"></a><span class="lineno"> 1420</span>    {</div>
-<div class="line"><a id="l01421" name="l01421"></a><span class="lineno"> 1421</span>        fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%zu\n&quot;</span>, it-&gt;numAtoms);</div>
-<div class="line"><a id="l01422" name="l01422"></a><span class="lineno"> 1422</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it2 = it-&gt;atoms.begin();</div>
-<div class="line"><a id="l01423" name="l01423"></a><span class="lineno"> 1423</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
-<div class="line"><a id="l01424" name="l01424"></a><span class="lineno"> 1424</span>        {</div>
-<div class="line"><a id="l01425" name="l01425"></a><span class="lineno"> 1425</span>            fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%zu&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>.<a class="code hl_function" href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1">atomicNumber</a>(it2-&gt;element));</div>
-<div class="line"><a id="l01426" name="l01426"></a><span class="lineno"> 1426</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++i)</div>
-<div class="line"><a id="l01427" name="l01427"></a><span class="lineno"> 1427</span>            {</div>
-<div class="line"><a id="l01428" name="l01428"></a><span class="lineno"> 1428</span>                fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %zu&quot;</span>, it2-&gt;numNeighborsPerElement.at(i));</div>
-<div class="line"><a id="l01429" name="l01429"></a><span class="lineno"> 1429</span>            }</div>
-<div class="line"><a id="l01430" name="l01430"></a><span class="lineno"> 1430</span>            <span class="keywordflow">for</span> (vector&lt;Atom::Neighbor&gt;::const_iterator it3</div>
-<div class="line"><a id="l01431" name="l01431"></a><span class="lineno"> 1431</span>                 = it2-&gt;neighbors.begin(); it3 != it2-&gt;neighbors.end(); ++it3)</div>
-<div class="line"><a id="l01432" name="l01432"></a><span class="lineno"> 1432</span>            {</div>
-<div class="line"><a id="l01433" name="l01433"></a><span class="lineno"> 1433</span>                fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %zu&quot;</span>, it3-&gt;index);</div>
-<div class="line"><a id="l01434" name="l01434"></a><span class="lineno"> 1434</span>            }</div>
-<div class="line"><a id="l01435" name="l01435"></a><span class="lineno"> 1435</span>            fileLocal &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a id="l01436" name="l01436"></a><span class="lineno"> 1436</span>        }</div>
-<div class="line"><a id="l01437" name="l01437"></a><span class="lineno"> 1437</span>    }</div>
-<div class="line"><a id="l01438" name="l01438"></a><span class="lineno"> 1438</span> </div>
-<div class="line"><a id="l01439" name="l01439"></a><span class="lineno"> 1439</span>    fileLocal.flush();</div>
-<div class="line"><a id="l01440" name="l01440"></a><span class="lineno"> 1440</span>    fileLocal.close();</div>
-<div class="line"><a id="l01441" name="l01441"></a><span class="lineno"> 1441</span>    MPI_Barrier(<a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01421" name="l01421"></a><span class="lineno"> 1421</span>        <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining per-structure neighbor statistics file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01422" name="l01422"></a><span class="lineno"> 1422</span>                     fileNameStructure.c_str());</div>
+<div class="line"><a id="l01423" name="l01423"></a><span class="lineno"> 1423</span>        <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNameStructure);</div>
+<div class="line"><a id="l01424" name="l01424"></a><span class="lineno"> 1424</span>    }</div>
+<div class="line"><a id="l01425" name="l01425"></a><span class="lineno"> 1425</span> </div>
+<div class="line"><a id="l01426" name="l01426"></a><span class="lineno"> 1426</span>    gsl_histogram_free(histNeighbors);</div>
+<div class="line"><a id="l01427" name="l01427"></a><span class="lineno"> 1427</span> </div>
+<div class="line"><a id="l01428" name="l01428"></a><span class="lineno"> 1428</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
+<div class="line"><a id="l01429" name="l01429"></a><span class="lineno"> 1429</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01430" name="l01430"></a><span class="lineno"> 1430</span> </div>
+<div class="line"><a id="l01431" name="l01431"></a><span class="lineno"> 1431</span>    <span class="keywordflow">return</span> maxNeighborsGlobal;</div>
+<div class="line"><a id="l01432" name="l01432"></a><span class="lineno"> 1432</span>}</div>
+<div class="line"><a id="l01433" name="l01433"></a><span class="lineno"> 1433</span> </div>
+<div class="line"><a id="l01434" name="l01434"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f"> 1434</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f">Dataset::sortNeighborLists</a>()</div>
+<div class="line"><a id="l01435" name="l01435"></a><span class="lineno"> 1435</span>{</div>
+<div class="line"><a id="l01436" name="l01436"></a><span class="lineno"> 1436</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01437" name="l01437"></a><span class="lineno"> 1437</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** NEIGHBOR LIST ***********************&quot;</span></div>
+<div class="line"><a id="l01438" name="l01438"></a><span class="lineno"> 1438</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01439" name="l01439"></a><span class="lineno"> 1439</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01440" name="l01440"></a><span class="lineno"> 1440</span> </div>
+<div class="line"><a id="l01441" name="l01441"></a><span class="lineno"> 1441</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Sorting neighbor lists according to element and distance.\n&quot;</span>;</div>
 <div class="line"><a id="l01442" name="l01442"></a><span class="lineno"> 1442</span> </div>
-<div class="line"><a id="l01443" name="l01443"></a><span class="lineno"> 1443</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Writing neighbor lists to file: %s.\n&quot;</span>, fileName.c_str());</div>
-<div class="line"><a id="l01444" name="l01444"></a><span class="lineno"> 1444</span> </div>
-<div class="line"><a id="l01445" name="l01445"></a><span class="lineno"> 1445</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0) <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileName);</div>
-<div class="line"><a id="l01446" name="l01446"></a><span class="lineno"> 1446</span> </div>
-<div class="line"><a id="l01447" name="l01447"></a><span class="lineno"> 1447</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
-<div class="line"><a id="l01448" name="l01448"></a><span class="lineno"> 1448</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01449" name="l01449"></a><span class="lineno"> 1449</span> </div>
-<div class="line"><a id="l01450" name="l01450"></a><span class="lineno"> 1450</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01451" name="l01451"></a><span class="lineno"> 1451</span>}</div>
+<div class="line"><a id="l01443" name="l01443"></a><span class="lineno"> 1443</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
+<div class="line"><a id="l01444" name="l01444"></a><span class="lineno"> 1444</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
+<div class="line"><a id="l01445" name="l01445"></a><span class="lineno"> 1445</span>    {</div>
+<div class="line"><a id="l01446" name="l01446"></a><span class="lineno"> 1446</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::iterator it2 = it-&gt;atoms.begin();</div>
+<div class="line"><a id="l01447" name="l01447"></a><span class="lineno"> 1447</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
+<div class="line"><a id="l01448" name="l01448"></a><span class="lineno"> 1448</span>        {</div>
+<div class="line"><a id="l01449" name="l01449"></a><span class="lineno"> 1449</span>            sort(it2-&gt;neighbors.begin(), it2-&gt;neighbors.end());</div>
+<div class="line"><a id="l01450" name="l01450"></a><span class="lineno"> 1450</span>        }</div>
+<div class="line"><a id="l01451" name="l01451"></a><span class="lineno"> 1451</span>    }</div>
 <div class="line"><a id="l01452" name="l01452"></a><span class="lineno"> 1452</span> </div>
-<div class="line"><a id="l01453" name="l01453"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df"> 1453</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df">Dataset::writeAtomicEnvironmentFile</a>(</div>
-<div class="line"><a id="l01454" name="l01454"></a><span class="lineno"> 1454</span>                                        vector&lt;vector&lt;size_t&gt; &gt; neighCutoff,</div>
-<div class="line"><a id="l01455" name="l01455"></a><span class="lineno"> 1455</span>                                        <span class="keywordtype">bool</span>                    derivatives,</div>
-<div class="line"><a id="l01456" name="l01456"></a><span class="lineno"> 1456</span>                                        <span class="keywordtype">string</span> <span class="keyword">const</span>&amp;           fileNamePrefix)</div>
-<div class="line"><a id="l01457" name="l01457"></a><span class="lineno"> 1457</span>{</div>
-<div class="line"><a id="l01458" name="l01458"></a><span class="lineno"> 1458</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01459" name="l01459"></a><span class="lineno"> 1459</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** ATOMIC ENVIRONMENT ******************&quot;</span></div>
-<div class="line"><a id="l01460" name="l01460"></a><span class="lineno"> 1460</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01461" name="l01461"></a><span class="lineno"> 1461</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a id="l01462" name="l01462"></a><span class="lineno"> 1462</span> </div>
-<div class="line"><a id="l01463" name="l01463"></a><span class="lineno"> 1463</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixG    = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.G&quot;</span>   , fileNamePrefix.c_str());</div>
-<div class="line"><a id="l01464" name="l01464"></a><span class="lineno"> 1464</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixdGdx = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.dGdx&quot;</span>, fileNamePrefix.c_str());</div>
-<div class="line"><a id="l01465" name="l01465"></a><span class="lineno"> 1465</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixdGdy = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.dGdy&quot;</span>, fileNamePrefix.c_str());</div>
-<div class="line"><a id="l01466" name="l01466"></a><span class="lineno"> 1466</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixdGdz = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.dGdz&quot;</span>, fileNamePrefix.c_str());</div>
-<div class="line"><a id="l01467" name="l01467"></a><span class="lineno"> 1467</span> </div>
-<div class="line"><a id="l01468" name="l01468"></a><span class="lineno"> 1468</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocalG    = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
-<div class="line"><a id="l01469" name="l01469"></a><span class="lineno"> 1469</span>                                           fileNamePrefixG.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
-<div class="line"><a id="l01470" name="l01470"></a><span class="lineno"> 1470</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocaldGdx = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
-<div class="line"><a id="l01471" name="l01471"></a><span class="lineno"> 1471</span>                                           fileNamePrefixdGdx.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
-<div class="line"><a id="l01472" name="l01472"></a><span class="lineno"> 1472</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocaldGdy = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
-<div class="line"><a id="l01473" name="l01473"></a><span class="lineno"> 1473</span>                                           fileNamePrefixdGdy.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
-<div class="line"><a id="l01474" name="l01474"></a><span class="lineno"> 1474</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocaldGdz = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
-<div class="line"><a id="l01475" name="l01475"></a><span class="lineno"> 1475</span>                                           fileNamePrefixdGdz.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
-<div class="line"><a id="l01476" name="l01476"></a><span class="lineno"> 1476</span> </div>
-<div class="line"><a id="l01477" name="l01477"></a><span class="lineno"> 1477</span>    ofstream fileLocalG;</div>
-<div class="line"><a id="l01478" name="l01478"></a><span class="lineno"> 1478</span>    ofstream fileLocaldGdx;</div>
-<div class="line"><a id="l01479" name="l01479"></a><span class="lineno"> 1479</span>    ofstream fileLocaldGdy;</div>
-<div class="line"><a id="l01480" name="l01480"></a><span class="lineno"> 1480</span>    ofstream fileLocaldGdz;</div>
-<div class="line"><a id="l01481" name="l01481"></a><span class="lineno"> 1481</span> </div>
-<div class="line"><a id="l01482" name="l01482"></a><span class="lineno"> 1482</span>    fileLocalG.open(fileNameLocalG.c_str());</div>
-<div class="line"><a id="l01483" name="l01483"></a><span class="lineno"> 1483</span>    <span class="keywordflow">if</span> (derivatives)</div>
-<div class="line"><a id="l01484" name="l01484"></a><span class="lineno"> 1484</span>    {</div>
-<div class="line"><a id="l01485" name="l01485"></a><span class="lineno"> 1485</span>        fileLocaldGdx.open(fileNameLocaldGdx.c_str());</div>
-<div class="line"><a id="l01486" name="l01486"></a><span class="lineno"> 1486</span>        fileLocaldGdy.open(fileNameLocaldGdy.c_str());</div>
-<div class="line"><a id="l01487" name="l01487"></a><span class="lineno"> 1487</span>        fileLocaldGdz.open(fileNameLocaldGdz.c_str());</div>
+<div class="line"><a id="l01453" name="l01453"></a><span class="lineno"> 1453</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
+<div class="line"><a id="l01454" name="l01454"></a><span class="lineno"> 1454</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01455" name="l01455"></a><span class="lineno"> 1455</span> </div>
+<div class="line"><a id="l01456" name="l01456"></a><span class="lineno"> 1456</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01457" name="l01457"></a><span class="lineno"> 1457</span>}</div>
+<div class="line"><a id="l01458" name="l01458"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd"> 1458</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd">Dataset::writeNeighborLists</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp; fileName)</div>
+<div class="line"><a id="l01459" name="l01459"></a><span class="lineno"> 1459</span>{</div>
+<div class="line"><a id="l01460" name="l01460"></a><span class="lineno"> 1460</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01461" name="l01461"></a><span class="lineno"> 1461</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** NEIGHBOR LIST ***********************&quot;</span></div>
+<div class="line"><a id="l01462" name="l01462"></a><span class="lineno"> 1462</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01463" name="l01463"></a><span class="lineno"> 1463</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01464" name="l01464"></a><span class="lineno"> 1464</span> </div>
+<div class="line"><a id="l01465" name="l01465"></a><span class="lineno"> 1465</span>    <span class="keywordtype">string</span> fileNameLocal = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>, fileName.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
+<div class="line"><a id="l01466" name="l01466"></a><span class="lineno"> 1466</span>    ofstream fileLocal;</div>
+<div class="line"><a id="l01467" name="l01467"></a><span class="lineno"> 1467</span>    fileLocal.open(fileNameLocal.c_str());</div>
+<div class="line"><a id="l01468" name="l01468"></a><span class="lineno"> 1468</span> </div>
+<div class="line"><a id="l01469" name="l01469"></a><span class="lineno"> 1469</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator it = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
+<div class="line"><a id="l01470" name="l01470"></a><span class="lineno"> 1470</span>         it != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++it)</div>
+<div class="line"><a id="l01471" name="l01471"></a><span class="lineno"> 1471</span>    {</div>
+<div class="line"><a id="l01472" name="l01472"></a><span class="lineno"> 1472</span>        fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%zu\n&quot;</span>, it-&gt;numAtoms);</div>
+<div class="line"><a id="l01473" name="l01473"></a><span class="lineno"> 1473</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it2 = it-&gt;atoms.begin();</div>
+<div class="line"><a id="l01474" name="l01474"></a><span class="lineno"> 1474</span>             it2 != it-&gt;atoms.end(); ++it2)</div>
+<div class="line"><a id="l01475" name="l01475"></a><span class="lineno"> 1475</span>        {</div>
+<div class="line"><a id="l01476" name="l01476"></a><span class="lineno"> 1476</span>            fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%zu&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>.<a class="code hl_function" href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1">atomicNumber</a>(it2-&gt;element));</div>
+<div class="line"><a id="l01477" name="l01477"></a><span class="lineno"> 1477</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++i)</div>
+<div class="line"><a id="l01478" name="l01478"></a><span class="lineno"> 1478</span>            {</div>
+<div class="line"><a id="l01479" name="l01479"></a><span class="lineno"> 1479</span>                fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %zu&quot;</span>, it2-&gt;numNeighborsPerElement.at(i));</div>
+<div class="line"><a id="l01480" name="l01480"></a><span class="lineno"> 1480</span>            }</div>
+<div class="line"><a id="l01481" name="l01481"></a><span class="lineno"> 1481</span>            <span class="keywordflow">for</span> (vector&lt;Atom::Neighbor&gt;::const_iterator it3</div>
+<div class="line"><a id="l01482" name="l01482"></a><span class="lineno"> 1482</span>                 = it2-&gt;neighbors.begin(); it3 != it2-&gt;neighbors.end(); ++it3)</div>
+<div class="line"><a id="l01483" name="l01483"></a><span class="lineno"> 1483</span>            {</div>
+<div class="line"><a id="l01484" name="l01484"></a><span class="lineno"> 1484</span>                fileLocal &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %zu&quot;</span>, it3-&gt;index);</div>
+<div class="line"><a id="l01485" name="l01485"></a><span class="lineno"> 1485</span>            }</div>
+<div class="line"><a id="l01486" name="l01486"></a><span class="lineno"> 1486</span>            fileLocal &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a id="l01487" name="l01487"></a><span class="lineno"> 1487</span>        }</div>
 <div class="line"><a id="l01488" name="l01488"></a><span class="lineno"> 1488</span>    }</div>
 <div class="line"><a id="l01489" name="l01489"></a><span class="lineno"> 1489</span> </div>
-<div class="line"><a id="l01490" name="l01490"></a><span class="lineno"> 1490</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Preparing symmetry functions for atomic environment file(s).\n&quot;</span>;</div>
-<div class="line"><a id="l01491" name="l01491"></a><span class="lineno"> 1491</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++i)</div>
-<div class="line"><a id="l01492" name="l01492"></a><span class="lineno"> 1492</span>    {</div>
-<div class="line"><a id="l01493" name="l01493"></a><span class="lineno"> 1493</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++j)</div>
-<div class="line"><a id="l01494" name="l01494"></a><span class="lineno"> 1494</span>        {</div>
-<div class="line"><a id="l01495" name="l01495"></a><span class="lineno"> 1495</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Maximum number of %2s neighbors for central %2s &quot;</span></div>
-<div class="line"><a id="l01496" name="l01496"></a><span class="lineno"> 1496</span>                         <span class="stringliteral">&quot;atoms: %zu\n&quot;</span>,</div>
-<div class="line"><a id="l01497" name="l01497"></a><span class="lineno"> 1497</span>                         <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[j].c_str(),</div>
-<div class="line"><a id="l01498" name="l01498"></a><span class="lineno"> 1498</span>                         <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[i].c_str(),</div>
-<div class="line"><a id="l01499" name="l01499"></a><span class="lineno"> 1499</span>                         neighCutoff.at(i).at(j));</div>
-<div class="line"><a id="l01500" name="l01500"></a><span class="lineno"> 1500</span>        }</div>
-<div class="line"><a id="l01501" name="l01501"></a><span class="lineno"> 1501</span>    }</div>
-<div class="line"><a id="l01502" name="l01502"></a><span class="lineno"> 1502</span> </div>
-<div class="line"><a id="l01503" name="l01503"></a><span class="lineno"> 1503</span>    vector&lt;size_t&gt; neighCount(<a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>, 0);</div>
-<div class="line"><a id="l01504" name="l01504"></a><span class="lineno"> 1504</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator its = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
-<div class="line"><a id="l01505" name="l01505"></a><span class="lineno"> 1505</span>         its != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++its)</div>
-<div class="line"><a id="l01506" name="l01506"></a><span class="lineno"> 1506</span>    {</div>
-<div class="line"><a id="l01507" name="l01507"></a><span class="lineno"> 1507</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator ita = its-&gt;atoms.begin();</div>
-<div class="line"><a id="l01508" name="l01508"></a><span class="lineno"> 1508</span>             ita != its-&gt;atoms.end(); ++ita)</div>
-<div class="line"><a id="l01509" name="l01509"></a><span class="lineno"> 1509</span>        {</div>
-<div class="line"><a id="l01510" name="l01510"></a><span class="lineno"> 1510</span>            <span class="keywordtype">size_t</span> <span class="keyword">const</span> ea = ita-&gt;element;</div>
-<div class="line"><a id="l01511" name="l01511"></a><span class="lineno"> 1511</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++i)</div>
-<div class="line"><a id="l01512" name="l01512"></a><span class="lineno"> 1512</span>            {</div>
-<div class="line"><a id="l01513" name="l01513"></a><span class="lineno"> 1513</span>                <span class="keywordflow">if</span> (ita-&gt;numNeighborsPerElement.at(i)</div>
-<div class="line"><a id="l01514" name="l01514"></a><span class="lineno"> 1514</span>                    &lt; neighCutoff.at(ea).at(i))</div>
-<div class="line"><a id="l01515" name="l01515"></a><span class="lineno"> 1515</span>                {</div>
-<div class="line"><a id="l01516" name="l01516"></a><span class="lineno"> 1516</span>                    <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(</div>
-<div class="line"><a id="l01517" name="l01517"></a><span class="lineno"> 1517</span>                        <span class="stringliteral">&quot;ERROR: Not enough neighbor atoms, cannot create &quot;</span></div>
-<div class="line"><a id="l01518" name="l01518"></a><span class="lineno"> 1518</span>                        <span class="stringliteral">&quot;atomic environment file. Reduce neighbor cutoff for &quot;</span></div>
-<div class="line"><a id="l01519" name="l01519"></a><span class="lineno"> 1519</span>                        <span class="stringliteral">&quot;element %2s.\n&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[i].c_str()).c_str());</div>
-<div class="line"><a id="l01520" name="l01520"></a><span class="lineno"> 1520</span>                }</div>
-<div class="line"><a id="l01521" name="l01521"></a><span class="lineno"> 1521</span>            }</div>
-<div class="line"><a id="l01522" name="l01522"></a><span class="lineno"> 1522</span>            fileLocalG &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
-<div class="line"><a id="l01523" name="l01523"></a><span class="lineno"> 1523</span>            fileLocaldGdx &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
-<div class="line"><a id="l01524" name="l01524"></a><span class="lineno"> 1524</span>            fileLocaldGdy &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
-<div class="line"><a id="l01525" name="l01525"></a><span class="lineno"> 1525</span>            fileLocaldGdz &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
-<div class="line"><a id="l01526" name="l01526"></a><span class="lineno"> 1526</span>            <span class="comment">// Write atom&#39;s own symmetry functions (and derivatives).</span></div>
-<div class="line"><a id="l01527" name="l01527"></a><span class="lineno"> 1527</span>            <span class="keywordflow">for</span> (vector&lt;double&gt;::const_iterator it = ita-&gt;G.begin();</div>
-<div class="line"><a id="l01528" name="l01528"></a><span class="lineno"> 1528</span>                 it != ita-&gt;G.end(); ++it)</div>
-<div class="line"><a id="l01529" name="l01529"></a><span class="lineno"> 1529</span>            {</div>
-<div class="line"><a id="l01530" name="l01530"></a><span class="lineno"> 1530</span>                fileLocalG &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it));</div>
-<div class="line"><a id="l01531" name="l01531"></a><span class="lineno"> 1531</span>            }</div>
-<div class="line"><a id="l01532" name="l01532"></a><span class="lineno"> 1532</span>            <span class="keywordflow">if</span> (derivatives)</div>
-<div class="line"><a id="l01533" name="l01533"></a><span class="lineno"> 1533</span>            {</div>
-<div class="line"><a id="l01534" name="l01534"></a><span class="lineno"> 1534</span>                <span class="keywordflow">for</span> (vector&lt;Vec3D&gt;::const_iterator it = ita-&gt;dGdr.begin();</div>
-<div class="line"><a id="l01535" name="l01535"></a><span class="lineno"> 1535</span>                     it != ita-&gt;dGdr.end(); ++it)</div>
-<div class="line"><a id="l01536" name="l01536"></a><span class="lineno"> 1536</span>                {</div>
-<div class="line"><a id="l01537" name="l01537"></a><span class="lineno"> 1537</span>                    fileLocaldGdx &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[0]);</div>
-<div class="line"><a id="l01538" name="l01538"></a><span class="lineno"> 1538</span>                    fileLocaldGdy &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[1]);</div>
-<div class="line"><a id="l01539" name="l01539"></a><span class="lineno"> 1539</span>                    fileLocaldGdz &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[2]);</div>
-<div class="line"><a id="l01540" name="l01540"></a><span class="lineno"> 1540</span>                }</div>
-<div class="line"><a id="l01541" name="l01541"></a><span class="lineno"> 1541</span>            }</div>
-<div class="line"><a id="l01542" name="l01542"></a><span class="lineno"> 1542</span>            <span class="comment">// Write symmetry functions of neighbors</span></div>
-<div class="line"><a id="l01543" name="l01543"></a><span class="lineno"> 1543</span>            <span class="keywordflow">for</span> (vector&lt;Atom::Neighbor&gt;::const_iterator itn</div>
-<div class="line"><a id="l01544" name="l01544"></a><span class="lineno"> 1544</span>                 = ita-&gt;neighbors.begin(); itn != ita-&gt;neighbors.end(); ++itn)</div>
-<div class="line"><a id="l01545" name="l01545"></a><span class="lineno"> 1545</span>            {</div>
-<div class="line"><a id="l01546" name="l01546"></a><span class="lineno"> 1546</span>                <span class="keywordtype">size_t</span> <span class="keyword">const</span> i = itn-&gt;index;</div>
-<div class="line"><a id="l01547" name="l01547"></a><span class="lineno"> 1547</span>                <span class="keywordtype">size_t</span> <span class="keyword">const</span> en = itn-&gt;element;</div>
-<div class="line"><a id="l01548" name="l01548"></a><span class="lineno"> 1548</span>                <span class="keywordflow">if</span> (neighCount.at(en) &lt; neighCutoff.at(ea).at(en))</div>
-<div class="line"><a id="l01549" name="l01549"></a><span class="lineno"> 1549</span>                {</div>
-<div class="line"><a id="l01550" name="l01550"></a><span class="lineno"> 1550</span>                    <span class="comment">// Look up symmetry function at Atom instance of neighbor.</span></div>
-<div class="line"><a id="l01551" name="l01551"></a><span class="lineno"> 1551</span>                    <a class="code hl_struct" href="structnnp_1_1Atom.html">Atom</a> <span class="keyword">const</span>&amp; a = its-&gt;atoms.at(i);</div>
-<div class="line"><a id="l01552" name="l01552"></a><span class="lineno"> 1552</span>                    <span class="keywordflow">for</span> (vector&lt;double&gt;::const_iterator it = a.<a class="code hl_variable" href="structnnp_1_1Atom.html#abc64f09e49aabb8112004f5af6983102">G</a>.begin();</div>
-<div class="line"><a id="l01553" name="l01553"></a><span class="lineno"> 1553</span>                         it != a.<a class="code hl_variable" href="structnnp_1_1Atom.html#abc64f09e49aabb8112004f5af6983102">G</a>.end(); ++it)</div>
-<div class="line"><a id="l01554" name="l01554"></a><span class="lineno"> 1554</span>                    {</div>
-<div class="line"><a id="l01555" name="l01555"></a><span class="lineno"> 1555</span>                        fileLocalG &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it));</div>
-<div class="line"><a id="l01556" name="l01556"></a><span class="lineno"> 1556</span>                    }</div>
-<div class="line"><a id="l01557" name="l01557"></a><span class="lineno"> 1557</span>                    <span class="comment">// Log derivatives directly from Neighbor instance.</span></div>
-<div class="line"><a id="l01558" name="l01558"></a><span class="lineno"> 1558</span>                    <span class="keywordflow">if</span> (derivatives)</div>
-<div class="line"><a id="l01559" name="l01559"></a><span class="lineno"> 1559</span>                    {</div>
-<div class="line"><a id="l01560" name="l01560"></a><span class="lineno"> 1560</span>                        <span class="comment">// Find atom in neighbor list of neighbor atom.</span></div>
-<div class="line"><a id="l01561" name="l01561"></a><span class="lineno"> 1561</span>                        vector&lt;Atom::Neighbor&gt;::const_iterator itan = find_if(</div>
-<div class="line"><a id="l01562" name="l01562"></a><span class="lineno"> 1562</span>                            a.<a class="code hl_variable" href="structnnp_1_1Atom.html#a0361a8e48f3b762f76db75abcf6fc305">neighbors</a>.begin(), a.<a class="code hl_variable" href="structnnp_1_1Atom.html#a0361a8e48f3b762f76db75abcf6fc305">neighbors</a>.end(),</div>
-<div class="line"><a id="l01563" name="l01563"></a><span class="lineno"> 1563</span>                            [&amp;ita](<a class="code hl_struct" href="structnnp_1_1Atom_1_1Neighbor.html">Atom::Neighbor</a> <span class="keyword">const</span>&amp; n)</div>
-<div class="line"><a id="l01564" name="l01564"></a><span class="lineno"> 1564</span>                            {</div>
-<div class="line"><a id="l01565" name="l01565"></a><span class="lineno"> 1565</span>                                return n.index == ita-&gt;index;</div>
-<div class="line"><a id="l01566" name="l01566"></a><span class="lineno"> 1566</span>                            });</div>
-<div class="line"><a id="l01567" name="l01567"></a><span class="lineno"> 1567</span>                        <span class="keywordflow">for</span> (vector&lt;Vec3D&gt;::const_iterator it</div>
-<div class="line"><a id="l01568" name="l01568"></a><span class="lineno"> 1568</span>                             = itan-&gt;dGdr.begin();</div>
-<div class="line"><a id="l01569" name="l01569"></a><span class="lineno"> 1569</span>                             it != itan-&gt;dGdr.end(); ++it)</div>
-<div class="line"><a id="l01570" name="l01570"></a><span class="lineno"> 1570</span>                        {</div>
-<div class="line"><a id="l01571" name="l01571"></a><span class="lineno"> 1571</span>                            fileLocaldGdx &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[0]);</div>
-<div class="line"><a id="l01572" name="l01572"></a><span class="lineno"> 1572</span>                            fileLocaldGdy &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[1]);</div>
-<div class="line"><a id="l01573" name="l01573"></a><span class="lineno"> 1573</span>                            fileLocaldGdz &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[2]);</div>
-<div class="line"><a id="l01574" name="l01574"></a><span class="lineno"> 1574</span>                        }</div>
-<div class="line"><a id="l01575" name="l01575"></a><span class="lineno"> 1575</span>                    }</div>
-<div class="line"><a id="l01576" name="l01576"></a><span class="lineno"> 1576</span>                    neighCount.at(en)++;</div>
-<div class="line"><a id="l01577" name="l01577"></a><span class="lineno"> 1577</span>                }</div>
-<div class="line"><a id="l01578" name="l01578"></a><span class="lineno"> 1578</span>            }</div>
-<div class="line"><a id="l01579" name="l01579"></a><span class="lineno"> 1579</span>            fileLocalG &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a id="l01580" name="l01580"></a><span class="lineno"> 1580</span>            <span class="keywordflow">if</span> (derivatives)</div>
-<div class="line"><a id="l01581" name="l01581"></a><span class="lineno"> 1581</span>            {</div>
-<div class="line"><a id="l01582" name="l01582"></a><span class="lineno"> 1582</span>                fileLocaldGdx &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span>                fileLocaldGdy &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a id="l01584" name="l01584"></a><span class="lineno"> 1584</span>                fileLocaldGdz &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span>            }</div>
-<div class="line"><a id="l01586" name="l01586"></a><span class="lineno"> 1586</span>            <span class="comment">// Reset neighbor counter.</span></div>
-<div class="line"><a id="l01587" name="l01587"></a><span class="lineno"> 1587</span>            fill(neighCount.begin(), neighCount.end(), 0);</div>
-<div class="line"><a id="l01588" name="l01588"></a><span class="lineno"> 1588</span>        }</div>
-<div class="line"><a id="l01589" name="l01589"></a><span class="lineno"> 1589</span>    }</div>
-<div class="line"><a id="l01590" name="l01590"></a><span class="lineno"> 1590</span> </div>
-<div class="line"><a id="l01591" name="l01591"></a><span class="lineno"> 1591</span>    fileLocalG.flush();</div>
-<div class="line"><a id="l01592" name="l01592"></a><span class="lineno"> 1592</span>    fileLocalG.close();</div>
-<div class="line"><a id="l01593" name="l01593"></a><span class="lineno"> 1593</span>    <span class="keywordflow">if</span> (derivatives)</div>
-<div class="line"><a id="l01594" name="l01594"></a><span class="lineno"> 1594</span>    {</div>
-<div class="line"><a id="l01595" name="l01595"></a><span class="lineno"> 1595</span>        fileLocaldGdx.flush();</div>
-<div class="line"><a id="l01596" name="l01596"></a><span class="lineno"> 1596</span>        fileLocaldGdx.close();</div>
-<div class="line"><a id="l01597" name="l01597"></a><span class="lineno"> 1597</span>        fileLocaldGdy.flush();</div>
-<div class="line"><a id="l01598" name="l01598"></a><span class="lineno"> 1598</span>        fileLocaldGdy.close();</div>
-<div class="line"><a id="l01599" name="l01599"></a><span class="lineno"> 1599</span>        fileLocaldGdz.flush();</div>
-<div class="line"><a id="l01600" name="l01600"></a><span class="lineno"> 1600</span>        fileLocaldGdz.close();</div>
-<div class="line"><a id="l01601" name="l01601"></a><span class="lineno"> 1601</span>    }</div>
-<div class="line"><a id="l01602" name="l01602"></a><span class="lineno"> 1602</span>    MPI_Barrier(<a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01603" name="l01603"></a><span class="lineno"> 1603</span> </div>
-<div class="line"><a id="l01604" name="l01604"></a><span class="lineno"> 1604</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0)</div>
-<div class="line"><a id="l01605" name="l01605"></a><span class="lineno"> 1605</span>    {</div>
-<div class="line"><a id="l01606" name="l01606"></a><span class="lineno"> 1606</span>        <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01607" name="l01607"></a><span class="lineno"> 1607</span>                     fileNamePrefixG.c_str());</div>
-<div class="line"><a id="l01608" name="l01608"></a><span class="lineno"> 1608</span>        <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixG);</div>
-<div class="line"><a id="l01609" name="l01609"></a><span class="lineno"> 1609</span>        <span class="keywordflow">if</span> (derivatives)</div>
-<div class="line"><a id="l01610" name="l01610"></a><span class="lineno"> 1610</span>        {</div>
-<div class="line"><a id="l01611" name="l01611"></a><span class="lineno"> 1611</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01612" name="l01612"></a><span class="lineno"> 1612</span>                         fileNamePrefixdGdx.c_str());</div>
-<div class="line"><a id="l01613" name="l01613"></a><span class="lineno"> 1613</span>            <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixdGdx);</div>
-<div class="line"><a id="l01614" name="l01614"></a><span class="lineno"> 1614</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01615" name="l01615"></a><span class="lineno"> 1615</span>                         fileNamePrefixdGdy.c_str());</div>
-<div class="line"><a id="l01616" name="l01616"></a><span class="lineno"> 1616</span>            <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixdGdy);</div>
-<div class="line"><a id="l01617" name="l01617"></a><span class="lineno"> 1617</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01618" name="l01618"></a><span class="lineno"> 1618</span>                         fileNamePrefixdGdz.c_str());</div>
-<div class="line"><a id="l01619" name="l01619"></a><span class="lineno"> 1619</span>            <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixdGdz);</div>
-<div class="line"><a id="l01620" name="l01620"></a><span class="lineno"> 1620</span>        }</div>
-<div class="line"><a id="l01621" name="l01621"></a><span class="lineno"> 1621</span>    }</div>
-<div class="line"><a id="l01622" name="l01622"></a><span class="lineno"> 1622</span> </div>
-<div class="line"><a id="l01623" name="l01623"></a><span class="lineno"> 1623</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
-<div class="line"><a id="l01624" name="l01624"></a><span class="lineno"> 1624</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><a id="l01625" name="l01625"></a><span class="lineno"> 1625</span> </div>
-<div class="line"><a id="l01626" name="l01626"></a><span class="lineno"> 1626</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01627" name="l01627"></a><span class="lineno"> 1627</span>}</div>
-<div class="line"><a id="l01628" name="l01628"></a><span class="lineno"> 1628</span> </div>
-<div class="line"><a id="l01629" name="l01629"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#af767ead6aee5477b94c95fc5db7be2b2"> 1629</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#af767ead6aee5477b94c95fc5db7be2b2">Dataset::collectError</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp;        property,</div>
-<div class="line"><a id="l01630" name="l01630"></a><span class="lineno"> 1630</span>                           map&lt;string, double&gt;&amp; error,</div>
-<div class="line"><a id="l01631" name="l01631"></a><span class="lineno"> 1631</span>                           <span class="keywordtype">size_t</span>&amp;              count)<span class="keyword"> const</span></div>
-<div class="line"><a id="l01632" name="l01632"></a><span class="lineno"> 1632</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l01633" name="l01633"></a><span class="lineno"> 1633</span>    <span class="keywordflow">if</span> (property == <span class="stringliteral">&quot;energy&quot;</span>)</div>
-<div class="line"><a id="l01634" name="l01634"></a><span class="lineno"> 1634</span>    {</div>
-<div class="line"><a id="l01635" name="l01635"></a><span class="lineno"> 1635</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;count               , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01636" name="l01636"></a><span class="lineno"> 1636</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;RMSEpa&quot;</span>)), 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01637" name="l01637"></a><span class="lineno"> 1637</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>))  , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01638" name="l01638"></a><span class="lineno"> 1638</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;MAEpa&quot;</span>)) , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01639" name="l01639"></a><span class="lineno"> 1639</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;MAE&quot;</span>))   , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01640" name="l01640"></a><span class="lineno"> 1640</span>        error.at(<span class="stringliteral">&quot;RMSEpa&quot;</span>) = sqrt(error.at(<span class="stringliteral">&quot;RMSEpa&quot;</span>) / count);</div>
-<div class="line"><a id="l01641" name="l01641"></a><span class="lineno"> 1641</span>        error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) = sqrt(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) / count);</div>
-<div class="line"><a id="l01642" name="l01642"></a><span class="lineno"> 1642</span>        error.at(<span class="stringliteral">&quot;MAEpa&quot;</span>) = error.at(<span class="stringliteral">&quot;MAEpa&quot;</span>) / count;</div>
-<div class="line"><a id="l01643" name="l01643"></a><span class="lineno"> 1643</span>        error.at(<span class="stringliteral">&quot;MAE&quot;</span>) = error.at(<span class="stringliteral">&quot;MAE&quot;</span>) / count;</div>
-<div class="line"><a id="l01644" name="l01644"></a><span class="lineno"> 1644</span>    }</div>
-<div class="line"><a id="l01645" name="l01645"></a><span class="lineno"> 1645</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (property == <span class="stringliteral">&quot;force&quot;</span> || property == <span class="stringliteral">&quot;charge&quot;</span>)</div>
-<div class="line"><a id="l01646" name="l01646"></a><span class="lineno"> 1646</span>    {</div>
-<div class="line"><a id="l01647" name="l01647"></a><span class="lineno"> 1647</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;count             , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01648" name="l01648"></a><span class="lineno"> 1648</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>)), 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01649" name="l01649"></a><span class="lineno"> 1649</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;MAE&quot;</span>)) , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
-<div class="line"><a id="l01650" name="l01650"></a><span class="lineno"> 1650</span>        error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) = sqrt(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) / count);</div>
-<div class="line"><a id="l01651" name="l01651"></a><span class="lineno"> 1651</span>        error.at(<span class="stringliteral">&quot;MAE&quot;</span>) = error.at(<span class="stringliteral">&quot;MAE&quot;</span>) / count;</div>
+<div class="line"><a id="l01490" name="l01490"></a><span class="lineno"> 1490</span>    fileLocal.flush();</div>
+<div class="line"><a id="l01491" name="l01491"></a><span class="lineno"> 1491</span>    fileLocal.close();</div>
+<div class="line"><a id="l01492" name="l01492"></a><span class="lineno"> 1492</span>    MPI_Barrier(<a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01493" name="l01493"></a><span class="lineno"> 1493</span> </div>
+<div class="line"><a id="l01494" name="l01494"></a><span class="lineno"> 1494</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Writing neighbor lists to file: %s.\n&quot;</span>, fileName.c_str());</div>
+<div class="line"><a id="l01495" name="l01495"></a><span class="lineno"> 1495</span> </div>
+<div class="line"><a id="l01496" name="l01496"></a><span class="lineno"> 1496</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0) <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileName);</div>
+<div class="line"><a id="l01497" name="l01497"></a><span class="lineno"> 1497</span> </div>
+<div class="line"><a id="l01498" name="l01498"></a><span class="lineno"> 1498</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
+<div class="line"><a id="l01499" name="l01499"></a><span class="lineno"> 1499</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01500" name="l01500"></a><span class="lineno"> 1500</span> </div>
+<div class="line"><a id="l01501" name="l01501"></a><span class="lineno"> 1501</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01502" name="l01502"></a><span class="lineno"> 1502</span>}</div>
+<div class="line"><a id="l01503" name="l01503"></a><span class="lineno"> 1503</span> </div>
+<div class="line"><a id="l01504" name="l01504"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df"> 1504</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df">Dataset::writeAtomicEnvironmentFile</a>(</div>
+<div class="line"><a id="l01505" name="l01505"></a><span class="lineno"> 1505</span>                                        vector&lt;vector&lt;size_t&gt; &gt; neighCutoff,</div>
+<div class="line"><a id="l01506" name="l01506"></a><span class="lineno"> 1506</span>                                        <span class="keywordtype">bool</span>                    derivatives,</div>
+<div class="line"><a id="l01507" name="l01507"></a><span class="lineno"> 1507</span>                                        <span class="keywordtype">string</span> <span class="keyword">const</span>&amp;           fileNamePrefix)</div>
+<div class="line"><a id="l01508" name="l01508"></a><span class="lineno"> 1508</span>{</div>
+<div class="line"><a id="l01509" name="l01509"></a><span class="lineno"> 1509</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01510" name="l01510"></a><span class="lineno"> 1510</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** ATOMIC ENVIRONMENT ******************&quot;</span></div>
+<div class="line"><a id="l01511" name="l01511"></a><span class="lineno"> 1511</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01512" name="l01512"></a><span class="lineno"> 1512</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l01513" name="l01513"></a><span class="lineno"> 1513</span> </div>
+<div class="line"><a id="l01514" name="l01514"></a><span class="lineno"> 1514</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixG    = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.G&quot;</span>   , fileNamePrefix.c_str());</div>
+<div class="line"><a id="l01515" name="l01515"></a><span class="lineno"> 1515</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixdGdx = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.dGdx&quot;</span>, fileNamePrefix.c_str());</div>
+<div class="line"><a id="l01516" name="l01516"></a><span class="lineno"> 1516</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixdGdy = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.dGdy&quot;</span>, fileNamePrefix.c_str());</div>
+<div class="line"><a id="l01517" name="l01517"></a><span class="lineno"> 1517</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNamePrefixdGdz = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.dGdz&quot;</span>, fileNamePrefix.c_str());</div>
+<div class="line"><a id="l01518" name="l01518"></a><span class="lineno"> 1518</span> </div>
+<div class="line"><a id="l01519" name="l01519"></a><span class="lineno"> 1519</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocalG    = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
+<div class="line"><a id="l01520" name="l01520"></a><span class="lineno"> 1520</span>                                           fileNamePrefixG.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
+<div class="line"><a id="l01521" name="l01521"></a><span class="lineno"> 1521</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocaldGdx = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
+<div class="line"><a id="l01522" name="l01522"></a><span class="lineno"> 1522</span>                                           fileNamePrefixdGdx.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
+<div class="line"><a id="l01523" name="l01523"></a><span class="lineno"> 1523</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocaldGdy = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
+<div class="line"><a id="l01524" name="l01524"></a><span class="lineno"> 1524</span>                                           fileNamePrefixdGdy.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
+<div class="line"><a id="l01525" name="l01525"></a><span class="lineno"> 1525</span>    <span class="keywordtype">string</span> <span class="keyword">const</span> fileNameLocaldGdz = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>,</div>
+<div class="line"><a id="l01526" name="l01526"></a><span class="lineno"> 1526</span>                                           fileNamePrefixdGdz.c_str(), <a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a>);</div>
+<div class="line"><a id="l01527" name="l01527"></a><span class="lineno"> 1527</span> </div>
+<div class="line"><a id="l01528" name="l01528"></a><span class="lineno"> 1528</span>    ofstream fileLocalG;</div>
+<div class="line"><a id="l01529" name="l01529"></a><span class="lineno"> 1529</span>    ofstream fileLocaldGdx;</div>
+<div class="line"><a id="l01530" name="l01530"></a><span class="lineno"> 1530</span>    ofstream fileLocaldGdy;</div>
+<div class="line"><a id="l01531" name="l01531"></a><span class="lineno"> 1531</span>    ofstream fileLocaldGdz;</div>
+<div class="line"><a id="l01532" name="l01532"></a><span class="lineno"> 1532</span> </div>
+<div class="line"><a id="l01533" name="l01533"></a><span class="lineno"> 1533</span>    fileLocalG.open(fileNameLocalG.c_str());</div>
+<div class="line"><a id="l01534" name="l01534"></a><span class="lineno"> 1534</span>    <span class="keywordflow">if</span> (derivatives)</div>
+<div class="line"><a id="l01535" name="l01535"></a><span class="lineno"> 1535</span>    {</div>
+<div class="line"><a id="l01536" name="l01536"></a><span class="lineno"> 1536</span>        fileLocaldGdx.open(fileNameLocaldGdx.c_str());</div>
+<div class="line"><a id="l01537" name="l01537"></a><span class="lineno"> 1537</span>        fileLocaldGdy.open(fileNameLocaldGdy.c_str());</div>
+<div class="line"><a id="l01538" name="l01538"></a><span class="lineno"> 1538</span>        fileLocaldGdz.open(fileNameLocaldGdz.c_str());</div>
+<div class="line"><a id="l01539" name="l01539"></a><span class="lineno"> 1539</span>    }</div>
+<div class="line"><a id="l01540" name="l01540"></a><span class="lineno"> 1540</span> </div>
+<div class="line"><a id="l01541" name="l01541"></a><span class="lineno"> 1541</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Preparing symmetry functions for atomic environment file(s).\n&quot;</span>;</div>
+<div class="line"><a id="l01542" name="l01542"></a><span class="lineno"> 1542</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++i)</div>
+<div class="line"><a id="l01543" name="l01543"></a><span class="lineno"> 1543</span>    {</div>
+<div class="line"><a id="l01544" name="l01544"></a><span class="lineno"> 1544</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++j)</div>
+<div class="line"><a id="l01545" name="l01545"></a><span class="lineno"> 1545</span>        {</div>
+<div class="line"><a id="l01546" name="l01546"></a><span class="lineno"> 1546</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Maximum number of %2s neighbors for central %2s &quot;</span></div>
+<div class="line"><a id="l01547" name="l01547"></a><span class="lineno"> 1547</span>                         <span class="stringliteral">&quot;atoms: %zu\n&quot;</span>,</div>
+<div class="line"><a id="l01548" name="l01548"></a><span class="lineno"> 1548</span>                         <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[j].c_str(),</div>
+<div class="line"><a id="l01549" name="l01549"></a><span class="lineno"> 1549</span>                         <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[i].c_str(),</div>
+<div class="line"><a id="l01550" name="l01550"></a><span class="lineno"> 1550</span>                         neighCutoff.at(i).at(j));</div>
+<div class="line"><a id="l01551" name="l01551"></a><span class="lineno"> 1551</span>        }</div>
+<div class="line"><a id="l01552" name="l01552"></a><span class="lineno"> 1552</span>    }</div>
+<div class="line"><a id="l01553" name="l01553"></a><span class="lineno"> 1553</span> </div>
+<div class="line"><a id="l01554" name="l01554"></a><span class="lineno"> 1554</span>    vector&lt;size_t&gt; neighCount(<a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>, 0);</div>
+<div class="line"><a id="l01555" name="l01555"></a><span class="lineno"> 1555</span>    <span class="keywordflow">for</span> (vector&lt;Structure&gt;::const_iterator its = <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.begin();</div>
+<div class="line"><a id="l01556" name="l01556"></a><span class="lineno"> 1556</span>         its != <a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>.end(); ++its)</div>
+<div class="line"><a id="l01557" name="l01557"></a><span class="lineno"> 1557</span>    {</div>
+<div class="line"><a id="l01558" name="l01558"></a><span class="lineno"> 1558</span>        <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator ita = its-&gt;atoms.begin();</div>
+<div class="line"><a id="l01559" name="l01559"></a><span class="lineno"> 1559</span>             ita != its-&gt;atoms.end(); ++ita)</div>
+<div class="line"><a id="l01560" name="l01560"></a><span class="lineno"> 1560</span>        {</div>
+<div class="line"><a id="l01561" name="l01561"></a><span class="lineno"> 1561</span>            <span class="keywordtype">size_t</span> <span class="keyword">const</span> ea = ita-&gt;element;</div>
+<div class="line"><a id="l01562" name="l01562"></a><span class="lineno"> 1562</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Mode.html#a76d3694d566d2052c298325a18ee865c">numElements</a>; ++i)</div>
+<div class="line"><a id="l01563" name="l01563"></a><span class="lineno"> 1563</span>            {</div>
+<div class="line"><a id="l01564" name="l01564"></a><span class="lineno"> 1564</span>                <span class="keywordflow">if</span> (ita-&gt;numNeighborsPerElement.at(i)</div>
+<div class="line"><a id="l01565" name="l01565"></a><span class="lineno"> 1565</span>                    &lt; neighCutoff.at(ea).at(i))</div>
+<div class="line"><a id="l01566" name="l01566"></a><span class="lineno"> 1566</span>                {</div>
+<div class="line"><a id="l01567" name="l01567"></a><span class="lineno"> 1567</span>                    <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(</div>
+<div class="line"><a id="l01568" name="l01568"></a><span class="lineno"> 1568</span>                        <span class="stringliteral">&quot;ERROR: Not enough neighbor atoms, cannot create &quot;</span></div>
+<div class="line"><a id="l01569" name="l01569"></a><span class="lineno"> 1569</span>                        <span class="stringliteral">&quot;atomic environment file. Reduce neighbor cutoff for &quot;</span></div>
+<div class="line"><a id="l01570" name="l01570"></a><span class="lineno"> 1570</span>                        <span class="stringliteral">&quot;element %2s.\n&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[i].c_str()).c_str());</div>
+<div class="line"><a id="l01571" name="l01571"></a><span class="lineno"> 1571</span>                }</div>
+<div class="line"><a id="l01572" name="l01572"></a><span class="lineno"> 1572</span>            }</div>
+<div class="line"><a id="l01573" name="l01573"></a><span class="lineno"> 1573</span>            fileLocalG &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
+<div class="line"><a id="l01574" name="l01574"></a><span class="lineno"> 1574</span>            fileLocaldGdx &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
+<div class="line"><a id="l01575" name="l01575"></a><span class="lineno"> 1575</span>            fileLocaldGdy &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
+<div class="line"><a id="l01576" name="l01576"></a><span class="lineno"> 1576</span>            fileLocaldGdz &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%2s&quot;</span>, <a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[ita-&gt;element].c_str());</div>
+<div class="line"><a id="l01577" name="l01577"></a><span class="lineno"> 1577</span>            <span class="comment">// Write atom&#39;s own symmetry functions (and derivatives).</span></div>
+<div class="line"><a id="l01578" name="l01578"></a><span class="lineno"> 1578</span>            <span class="keywordflow">for</span> (vector&lt;double&gt;::const_iterator it = ita-&gt;G.begin();</div>
+<div class="line"><a id="l01579" name="l01579"></a><span class="lineno"> 1579</span>                 it != ita-&gt;G.end(); ++it)</div>
+<div class="line"><a id="l01580" name="l01580"></a><span class="lineno"> 1580</span>            {</div>
+<div class="line"><a id="l01581" name="l01581"></a><span class="lineno"> 1581</span>                fileLocalG &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it));</div>
+<div class="line"><a id="l01582" name="l01582"></a><span class="lineno"> 1582</span>            }</div>
+<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span>            <span class="keywordflow">if</span> (derivatives)</div>
+<div class="line"><a id="l01584" name="l01584"></a><span class="lineno"> 1584</span>            {</div>
+<div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span>                <span class="keywordflow">for</span> (vector&lt;Vec3D&gt;::const_iterator it = ita-&gt;dGdr.begin();</div>
+<div class="line"><a id="l01586" name="l01586"></a><span class="lineno"> 1586</span>                     it != ita-&gt;dGdr.end(); ++it)</div>
+<div class="line"><a id="l01587" name="l01587"></a><span class="lineno"> 1587</span>                {</div>
+<div class="line"><a id="l01588" name="l01588"></a><span class="lineno"> 1588</span>                    fileLocaldGdx &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[0]);</div>
+<div class="line"><a id="l01589" name="l01589"></a><span class="lineno"> 1589</span>                    fileLocaldGdy &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[1]);</div>
+<div class="line"><a id="l01590" name="l01590"></a><span class="lineno"> 1590</span>                    fileLocaldGdz &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[2]);</div>
+<div class="line"><a id="l01591" name="l01591"></a><span class="lineno"> 1591</span>                }</div>
+<div class="line"><a id="l01592" name="l01592"></a><span class="lineno"> 1592</span>            }</div>
+<div class="line"><a id="l01593" name="l01593"></a><span class="lineno"> 1593</span>            <span class="comment">// Write symmetry functions of neighbors</span></div>
+<div class="line"><a id="l01594" name="l01594"></a><span class="lineno"> 1594</span>            <span class="keywordflow">for</span> (vector&lt;Atom::Neighbor&gt;::const_iterator itn</div>
+<div class="line"><a id="l01595" name="l01595"></a><span class="lineno"> 1595</span>                 = ita-&gt;neighbors.begin(); itn != ita-&gt;neighbors.end(); ++itn)</div>
+<div class="line"><a id="l01596" name="l01596"></a><span class="lineno"> 1596</span>            {</div>
+<div class="line"><a id="l01597" name="l01597"></a><span class="lineno"> 1597</span>                <span class="keywordtype">size_t</span> <span class="keyword">const</span> i = itn-&gt;index;</div>
+<div class="line"><a id="l01598" name="l01598"></a><span class="lineno"> 1598</span>                <span class="keywordtype">size_t</span> <span class="keyword">const</span> en = itn-&gt;element;</div>
+<div class="line"><a id="l01599" name="l01599"></a><span class="lineno"> 1599</span>                <span class="keywordflow">if</span> (neighCount.at(en) &lt; neighCutoff.at(ea).at(en))</div>
+<div class="line"><a id="l01600" name="l01600"></a><span class="lineno"> 1600</span>                {</div>
+<div class="line"><a id="l01601" name="l01601"></a><span class="lineno"> 1601</span>                    <span class="comment">// Look up symmetry function at Atom instance of neighbor.</span></div>
+<div class="line"><a id="l01602" name="l01602"></a><span class="lineno"> 1602</span>                    <a class="code hl_struct" href="structnnp_1_1Atom.html">Atom</a> <span class="keyword">const</span>&amp; a = its-&gt;atoms.at(i);</div>
+<div class="line"><a id="l01603" name="l01603"></a><span class="lineno"> 1603</span>                    <span class="keywordflow">for</span> (vector&lt;double&gt;::const_iterator it = a.<a class="code hl_variable" href="structnnp_1_1Atom.html#abc64f09e49aabb8112004f5af6983102">G</a>.begin();</div>
+<div class="line"><a id="l01604" name="l01604"></a><span class="lineno"> 1604</span>                         it != a.<a class="code hl_variable" href="structnnp_1_1Atom.html#abc64f09e49aabb8112004f5af6983102">G</a>.end(); ++it)</div>
+<div class="line"><a id="l01605" name="l01605"></a><span class="lineno"> 1605</span>                    {</div>
+<div class="line"><a id="l01606" name="l01606"></a><span class="lineno"> 1606</span>                        fileLocalG &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it));</div>
+<div class="line"><a id="l01607" name="l01607"></a><span class="lineno"> 1607</span>                    }</div>
+<div class="line"><a id="l01608" name="l01608"></a><span class="lineno"> 1608</span>                    <span class="comment">// Log derivatives directly from Neighbor instance.</span></div>
+<div class="line"><a id="l01609" name="l01609"></a><span class="lineno"> 1609</span>                    <span class="keywordflow">if</span> (derivatives)</div>
+<div class="line"><a id="l01610" name="l01610"></a><span class="lineno"> 1610</span>                    {</div>
+<div class="line"><a id="l01611" name="l01611"></a><span class="lineno"> 1611</span>                        <span class="comment">// Find atom in neighbor list of neighbor atom.</span></div>
+<div class="line"><a id="l01612" name="l01612"></a><span class="lineno"> 1612</span>                        vector&lt;Atom::Neighbor&gt;::const_iterator itan = find_if(</div>
+<div class="line"><a id="l01613" name="l01613"></a><span class="lineno"> 1613</span>                            a.<a class="code hl_variable" href="structnnp_1_1Atom.html#a0361a8e48f3b762f76db75abcf6fc305">neighbors</a>.begin(), a.<a class="code hl_variable" href="structnnp_1_1Atom.html#a0361a8e48f3b762f76db75abcf6fc305">neighbors</a>.end(),</div>
+<div class="line"><a id="l01614" name="l01614"></a><span class="lineno"> 1614</span>                            [&amp;ita](<a class="code hl_struct" href="structnnp_1_1Atom_1_1Neighbor.html">Atom::Neighbor</a> <span class="keyword">const</span>&amp; n)</div>
+<div class="line"><a id="l01615" name="l01615"></a><span class="lineno"> 1615</span>                            {</div>
+<div class="line"><a id="l01616" name="l01616"></a><span class="lineno"> 1616</span>                                return n.index == ita-&gt;index;</div>
+<div class="line"><a id="l01617" name="l01617"></a><span class="lineno"> 1617</span>                            });</div>
+<div class="line"><a id="l01618" name="l01618"></a><span class="lineno"> 1618</span>                        <span class="keywordflow">for</span> (vector&lt;Vec3D&gt;::const_iterator it</div>
+<div class="line"><a id="l01619" name="l01619"></a><span class="lineno"> 1619</span>                             = itan-&gt;dGdr.begin();</div>
+<div class="line"><a id="l01620" name="l01620"></a><span class="lineno"> 1620</span>                             it != itan-&gt;dGdr.end(); ++it)</div>
+<div class="line"><a id="l01621" name="l01621"></a><span class="lineno"> 1621</span>                        {</div>
+<div class="line"><a id="l01622" name="l01622"></a><span class="lineno"> 1622</span>                            fileLocaldGdx &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[0]);</div>
+<div class="line"><a id="l01623" name="l01623"></a><span class="lineno"> 1623</span>                            fileLocaldGdy &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[1]);</div>
+<div class="line"><a id="l01624" name="l01624"></a><span class="lineno"> 1624</span>                            fileLocaldGdz &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot; %16.8E&quot;</span>, (*it)[2]);</div>
+<div class="line"><a id="l01625" name="l01625"></a><span class="lineno"> 1625</span>                        }</div>
+<div class="line"><a id="l01626" name="l01626"></a><span class="lineno"> 1626</span>                    }</div>
+<div class="line"><a id="l01627" name="l01627"></a><span class="lineno"> 1627</span>                    neighCount.at(en)++;</div>
+<div class="line"><a id="l01628" name="l01628"></a><span class="lineno"> 1628</span>                }</div>
+<div class="line"><a id="l01629" name="l01629"></a><span class="lineno"> 1629</span>            }</div>
+<div class="line"><a id="l01630" name="l01630"></a><span class="lineno"> 1630</span>            fileLocalG &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a id="l01631" name="l01631"></a><span class="lineno"> 1631</span>            <span class="keywordflow">if</span> (derivatives)</div>
+<div class="line"><a id="l01632" name="l01632"></a><span class="lineno"> 1632</span>            {</div>
+<div class="line"><a id="l01633" name="l01633"></a><span class="lineno"> 1633</span>                fileLocaldGdx &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a id="l01634" name="l01634"></a><span class="lineno"> 1634</span>                fileLocaldGdy &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a id="l01635" name="l01635"></a><span class="lineno"> 1635</span>                fileLocaldGdz &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a id="l01636" name="l01636"></a><span class="lineno"> 1636</span>            }</div>
+<div class="line"><a id="l01637" name="l01637"></a><span class="lineno"> 1637</span>            <span class="comment">// Reset neighbor counter.</span></div>
+<div class="line"><a id="l01638" name="l01638"></a><span class="lineno"> 1638</span>            fill(neighCount.begin(), neighCount.end(), 0);</div>
+<div class="line"><a id="l01639" name="l01639"></a><span class="lineno"> 1639</span>        }</div>
+<div class="line"><a id="l01640" name="l01640"></a><span class="lineno"> 1640</span>    }</div>
+<div class="line"><a id="l01641" name="l01641"></a><span class="lineno"> 1641</span> </div>
+<div class="line"><a id="l01642" name="l01642"></a><span class="lineno"> 1642</span>    fileLocalG.flush();</div>
+<div class="line"><a id="l01643" name="l01643"></a><span class="lineno"> 1643</span>    fileLocalG.close();</div>
+<div class="line"><a id="l01644" name="l01644"></a><span class="lineno"> 1644</span>    <span class="keywordflow">if</span> (derivatives)</div>
+<div class="line"><a id="l01645" name="l01645"></a><span class="lineno"> 1645</span>    {</div>
+<div class="line"><a id="l01646" name="l01646"></a><span class="lineno"> 1646</span>        fileLocaldGdx.flush();</div>
+<div class="line"><a id="l01647" name="l01647"></a><span class="lineno"> 1647</span>        fileLocaldGdx.close();</div>
+<div class="line"><a id="l01648" name="l01648"></a><span class="lineno"> 1648</span>        fileLocaldGdy.flush();</div>
+<div class="line"><a id="l01649" name="l01649"></a><span class="lineno"> 1649</span>        fileLocaldGdy.close();</div>
+<div class="line"><a id="l01650" name="l01650"></a><span class="lineno"> 1650</span>        fileLocaldGdz.flush();</div>
+<div class="line"><a id="l01651" name="l01651"></a><span class="lineno"> 1651</span>        fileLocaldGdz.close();</div>
 <div class="line"><a id="l01652" name="l01652"></a><span class="lineno"> 1652</span>    }</div>
-<div class="line"><a id="l01653" name="l01653"></a><span class="lineno"> 1653</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l01654" name="l01654"></a><span class="lineno"> 1654</span>    {</div>
-<div class="line"><a id="l01655" name="l01655"></a><span class="lineno"> 1655</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Unknown property for error collection.\n&quot;</span>);</div>
-<div class="line"><a id="l01656" name="l01656"></a><span class="lineno"> 1656</span>    }</div>
-<div class="line"><a id="l01657" name="l01657"></a><span class="lineno"> 1657</span> </div>
-<div class="line"><a id="l01658" name="l01658"></a><span class="lineno"> 1658</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01659" name="l01659"></a><span class="lineno"> 1659</span>}</div>
-<div class="line"><a id="l01660" name="l01660"></a><span class="lineno"> 1660</span> </div>
-<div class="line"><a id="l01661" name="l01661"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225"> 1661</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">Dataset::combineFiles</a>(<span class="keywordtype">string</span> filePrefix)<span class="keyword"> const</span></div>
-<div class="line"><a id="l01662" name="l01662"></a><span class="lineno"> 1662</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l01663" name="l01663"></a><span class="lineno"> 1663</span>    ofstream combinedFile(filePrefix.c_str(), ios::binary);</div>
-<div class="line"><a id="l01664" name="l01664"></a><span class="lineno"> 1664</span>    <span class="keywordflow">if</span> (!combinedFile.is_open())</div>
-<div class="line"><a id="l01665" name="l01665"></a><span class="lineno"> 1665</span>    {</div>
-<div class="line"><a id="l01666" name="l01666"></a><span class="lineno"> 1666</span>        <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;ERROR: Could not open file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01667" name="l01667"></a><span class="lineno"> 1667</span>                                  filePrefix.c_str()));</div>
-<div class="line"><a id="l01668" name="l01668"></a><span class="lineno"> 1668</span>    }</div>
-<div class="line"><a id="l01669" name="l01669"></a><span class="lineno"> 1669</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Dataset.html#a96f37380d0a1d86920e3da271df3b089">numProcs</a>; ++i)</div>
-<div class="line"><a id="l01670" name="l01670"></a><span class="lineno"> 1670</span>    {</div>
-<div class="line"><a id="l01671" name="l01671"></a><span class="lineno"> 1671</span>        <span class="keywordtype">string</span> procFileName = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>, filePrefix.c_str(), i);</div>
-<div class="line"><a id="l01672" name="l01672"></a><span class="lineno"> 1672</span>        ifstream procFile(procFileName.c_str(), ios::binary);</div>
-<div class="line"><a id="l01673" name="l01673"></a><span class="lineno"> 1673</span>        <span class="keywordflow">if</span> (!procFile.is_open())</div>
-<div class="line"><a id="l01674" name="l01674"></a><span class="lineno"> 1674</span>        {</div>
-<div class="line"><a id="l01675" name="l01675"></a><span class="lineno"> 1675</span>            <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;ERROR: Could not open file: %s.\n&quot;</span>,</div>
-<div class="line"><a id="l01676" name="l01676"></a><span class="lineno"> 1676</span>                                      procFileName.c_str()));</div>
-<div class="line"><a id="l01677" name="l01677"></a><span class="lineno"> 1677</span>        }</div>
-<div class="line"><a id="l01678" name="l01678"></a><span class="lineno"> 1678</span>        <span class="comment">// If file is empty, do not get rdbuf, otherwise combined file will be</span></div>
-<div class="line"><a id="l01679" name="l01679"></a><span class="lineno"> 1679</span>        <span class="comment">// closed!</span></div>
-<div class="line"><a id="l01680" name="l01680"></a><span class="lineno"> 1680</span>        <span class="keywordflow">if</span> (procFile.peek() != ifstream::traits_type::eof())</div>
-<div class="line"><a id="l01681" name="l01681"></a><span class="lineno"> 1681</span>        {</div>
-<div class="line"><a id="l01682" name="l01682"></a><span class="lineno"> 1682</span>            combinedFile &lt;&lt; procFile.rdbuf();</div>
-<div class="line"><a id="l01683" name="l01683"></a><span class="lineno"> 1683</span>        }</div>
-<div class="line"><a id="l01684" name="l01684"></a><span class="lineno"> 1684</span>        procFile.close();</div>
-<div class="line"><a id="l01685" name="l01685"></a><span class="lineno"> 1685</span>        remove(procFileName.c_str());</div>
-<div class="line"><a id="l01686" name="l01686"></a><span class="lineno"> 1686</span>    }</div>
-<div class="line"><a id="l01687" name="l01687"></a><span class="lineno"> 1687</span>    combinedFile.close();</div>
-<div class="line"><a id="l01688" name="l01688"></a><span class="lineno"> 1688</span> </div>
-<div class="line"><a id="l01689" name="l01689"></a><span class="lineno"> 1689</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01690" name="l01690"></a><span class="lineno"> 1690</span>}</div>
-<div class="line"><a id="l01691" name="l01691"></a><span class="lineno"> 1691</span> </div>
+<div class="line"><a id="l01653" name="l01653"></a><span class="lineno"> 1653</span>    MPI_Barrier(<a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01654" name="l01654"></a><span class="lineno"> 1654</span> </div>
+<div class="line"><a id="l01655" name="l01655"></a><span class="lineno"> 1655</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">myRank</a> == 0)</div>
+<div class="line"><a id="l01656" name="l01656"></a><span class="lineno"> 1656</span>    {</div>
+<div class="line"><a id="l01657" name="l01657"></a><span class="lineno"> 1657</span>        <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01658" name="l01658"></a><span class="lineno"> 1658</span>                     fileNamePrefixG.c_str());</div>
+<div class="line"><a id="l01659" name="l01659"></a><span class="lineno"> 1659</span>        <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixG);</div>
+<div class="line"><a id="l01660" name="l01660"></a><span class="lineno"> 1660</span>        <span class="keywordflow">if</span> (derivatives)</div>
+<div class="line"><a id="l01661" name="l01661"></a><span class="lineno"> 1661</span>        {</div>
+<div class="line"><a id="l01662" name="l01662"></a><span class="lineno"> 1662</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01663" name="l01663"></a><span class="lineno"> 1663</span>                         fileNamePrefixdGdx.c_str());</div>
+<div class="line"><a id="l01664" name="l01664"></a><span class="lineno"> 1664</span>            <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixdGdx);</div>
+<div class="line"><a id="l01665" name="l01665"></a><span class="lineno"> 1665</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01666" name="l01666"></a><span class="lineno"> 1666</span>                         fileNamePrefixdGdy.c_str());</div>
+<div class="line"><a id="l01667" name="l01667"></a><span class="lineno"> 1667</span>            <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixdGdy);</div>
+<div class="line"><a id="l01668" name="l01668"></a><span class="lineno"> 1668</span>            <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Combining atomic environment file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01669" name="l01669"></a><span class="lineno"> 1669</span>                         fileNamePrefixdGdz.c_str());</div>
+<div class="line"><a id="l01670" name="l01670"></a><span class="lineno"> 1670</span>            <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(fileNamePrefixdGdz);</div>
+<div class="line"><a id="l01671" name="l01671"></a><span class="lineno"> 1671</span>        }</div>
+<div class="line"><a id="l01672" name="l01672"></a><span class="lineno"> 1672</span>    }</div>
+<div class="line"><a id="l01673" name="l01673"></a><span class="lineno"> 1673</span> </div>
+<div class="line"><a id="l01674" name="l01674"></a><span class="lineno"> 1674</span>    <a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
+<div class="line"><a id="l01675" name="l01675"></a><span class="lineno"> 1675</span>           <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><a id="l01676" name="l01676"></a><span class="lineno"> 1676</span> </div>
+<div class="line"><a id="l01677" name="l01677"></a><span class="lineno"> 1677</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01678" name="l01678"></a><span class="lineno"> 1678</span>}</div>
+<div class="line"><a id="l01679" name="l01679"></a><span class="lineno"> 1679</span> </div>
+<div class="line"><a id="l01680" name="l01680"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#af767ead6aee5477b94c95fc5db7be2b2"> 1680</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#af767ead6aee5477b94c95fc5db7be2b2">Dataset::collectError</a>(<span class="keywordtype">string</span> <span class="keyword">const</span>&amp;        property,</div>
+<div class="line"><a id="l01681" name="l01681"></a><span class="lineno"> 1681</span>                           map&lt;string, double&gt;&amp; error,</div>
+<div class="line"><a id="l01682" name="l01682"></a><span class="lineno"> 1682</span>                           <span class="keywordtype">size_t</span>&amp;              count)<span class="keyword"> const</span></div>
+<div class="line"><a id="l01683" name="l01683"></a><span class="lineno"> 1683</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l01684" name="l01684"></a><span class="lineno"> 1684</span>    <span class="keywordflow">if</span> (property == <span class="stringliteral">&quot;energy&quot;</span>)</div>
+<div class="line"><a id="l01685" name="l01685"></a><span class="lineno"> 1685</span>    {</div>
+<div class="line"><a id="l01686" name="l01686"></a><span class="lineno"> 1686</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;count               , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01687" name="l01687"></a><span class="lineno"> 1687</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;RMSEpa&quot;</span>)), 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01688" name="l01688"></a><span class="lineno"> 1688</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>))  , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01689" name="l01689"></a><span class="lineno"> 1689</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;MAEpa&quot;</span>)) , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01690" name="l01690"></a><span class="lineno"> 1690</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;MAE&quot;</span>))   , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01691" name="l01691"></a><span class="lineno"> 1691</span>        error.at(<span class="stringliteral">&quot;RMSEpa&quot;</span>) = sqrt(error.at(<span class="stringliteral">&quot;RMSEpa&quot;</span>) / count);</div>
+<div class="line"><a id="l01692" name="l01692"></a><span class="lineno"> 1692</span>        error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) = sqrt(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) / count);</div>
+<div class="line"><a id="l01693" name="l01693"></a><span class="lineno"> 1693</span>        error.at(<span class="stringliteral">&quot;MAEpa&quot;</span>) = error.at(<span class="stringliteral">&quot;MAEpa&quot;</span>) / count;</div>
+<div class="line"><a id="l01694" name="l01694"></a><span class="lineno"> 1694</span>        error.at(<span class="stringliteral">&quot;MAE&quot;</span>) = error.at(<span class="stringliteral">&quot;MAE&quot;</span>) / count;</div>
+<div class="line"><a id="l01695" name="l01695"></a><span class="lineno"> 1695</span>    }</div>
+<div class="line"><a id="l01696" name="l01696"></a><span class="lineno"> 1696</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (property == <span class="stringliteral">&quot;force&quot;</span> || property == <span class="stringliteral">&quot;charge&quot;</span>)</div>
+<div class="line"><a id="l01697" name="l01697"></a><span class="lineno"> 1697</span>    {</div>
+<div class="line"><a id="l01698" name="l01698"></a><span class="lineno"> 1698</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;count             , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01699" name="l01699"></a><span class="lineno"> 1699</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>)), 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01700" name="l01700"></a><span class="lineno"> 1700</span>        MPI_Allreduce(MPI_IN_PLACE, &amp;(error.at(<span class="stringliteral">&quot;MAE&quot;</span>)) , 1, MPI_DOUBLE, MPI_SUM, <a class="code hl_variable" href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">comm</a>);</div>
+<div class="line"><a id="l01701" name="l01701"></a><span class="lineno"> 1701</span>        error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) = sqrt(error.at(<span class="stringliteral">&quot;RMSE&quot;</span>) / count);</div>
+<div class="line"><a id="l01702" name="l01702"></a><span class="lineno"> 1702</span>        error.at(<span class="stringliteral">&quot;MAE&quot;</span>) = error.at(<span class="stringliteral">&quot;MAE&quot;</span>) / count;</div>
+<div class="line"><a id="l01703" name="l01703"></a><span class="lineno"> 1703</span>    }</div>
+<div class="line"><a id="l01704" name="l01704"></a><span class="lineno"> 1704</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l01705" name="l01705"></a><span class="lineno"> 1705</span>    {</div>
+<div class="line"><a id="l01706" name="l01706"></a><span class="lineno"> 1706</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Unknown property for error collection.\n&quot;</span>);</div>
+<div class="line"><a id="l01707" name="l01707"></a><span class="lineno"> 1707</span>    }</div>
+<div class="line"><a id="l01708" name="l01708"></a><span class="lineno"> 1708</span> </div>
+<div class="line"><a id="l01709" name="l01709"></a><span class="lineno"> 1709</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01710" name="l01710"></a><span class="lineno"> 1710</span>}</div>
+<div class="line"><a id="l01711" name="l01711"></a><span class="lineno"> 1711</span> </div>
+<div class="line"><a id="l01712" name="l01712"></a><span class="lineno"><a class="line" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225"> 1712</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">Dataset::combineFiles</a>(<span class="keywordtype">string</span> filePrefix)<span class="keyword"> const</span></div>
+<div class="line"><a id="l01713" name="l01713"></a><span class="lineno"> 1713</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l01714" name="l01714"></a><span class="lineno"> 1714</span>    ofstream combinedFile(filePrefix.c_str(), ios::binary);</div>
+<div class="line"><a id="l01715" name="l01715"></a><span class="lineno"> 1715</span>    <span class="keywordflow">if</span> (!combinedFile.is_open())</div>
+<div class="line"><a id="l01716" name="l01716"></a><span class="lineno"> 1716</span>    {</div>
+<div class="line"><a id="l01717" name="l01717"></a><span class="lineno"> 1717</span>        <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;ERROR: Could not open file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01718" name="l01718"></a><span class="lineno"> 1718</span>                                  filePrefix.c_str()));</div>
+<div class="line"><a id="l01719" name="l01719"></a><span class="lineno"> 1719</span>    }</div>
+<div class="line"><a id="l01720" name="l01720"></a><span class="lineno"> 1720</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; <a class="code hl_variable" href="classnnp_1_1Dataset.html#a96f37380d0a1d86920e3da271df3b089">numProcs</a>; ++i)</div>
+<div class="line"><a id="l01721" name="l01721"></a><span class="lineno"> 1721</span>    {</div>
+<div class="line"><a id="l01722" name="l01722"></a><span class="lineno"> 1722</span>        <span class="keywordtype">string</span> procFileName = <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%s.%04d&quot;</span>, filePrefix.c_str(), i);</div>
+<div class="line"><a id="l01723" name="l01723"></a><span class="lineno"> 1723</span>        ifstream procFile(procFileName.c_str(), ios::binary);</div>
+<div class="line"><a id="l01724" name="l01724"></a><span class="lineno"> 1724</span>        <span class="keywordflow">if</span> (!procFile.is_open())</div>
+<div class="line"><a id="l01725" name="l01725"></a><span class="lineno"> 1725</span>        {</div>
+<div class="line"><a id="l01726" name="l01726"></a><span class="lineno"> 1726</span>            <span class="keywordflow">throw</span> runtime_error(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;ERROR: Could not open file: %s.\n&quot;</span>,</div>
+<div class="line"><a id="l01727" name="l01727"></a><span class="lineno"> 1727</span>                                      procFileName.c_str()));</div>
+<div class="line"><a id="l01728" name="l01728"></a><span class="lineno"> 1728</span>        }</div>
+<div class="line"><a id="l01729" name="l01729"></a><span class="lineno"> 1729</span>        <span class="comment">// If file is empty, do not get rdbuf, otherwise combined file will be</span></div>
+<div class="line"><a id="l01730" name="l01730"></a><span class="lineno"> 1730</span>        <span class="comment">// closed!</span></div>
+<div class="line"><a id="l01731" name="l01731"></a><span class="lineno"> 1731</span>        <span class="keywordflow">if</span> (procFile.peek() != ifstream::traits_type::eof())</div>
+<div class="line"><a id="l01732" name="l01732"></a><span class="lineno"> 1732</span>        {</div>
+<div class="line"><a id="l01733" name="l01733"></a><span class="lineno"> 1733</span>            combinedFile &lt;&lt; procFile.rdbuf();</div>
+<div class="line"><a id="l01734" name="l01734"></a><span class="lineno"> 1734</span>        }</div>
+<div class="line"><a id="l01735" name="l01735"></a><span class="lineno"> 1735</span>        procFile.close();</div>
+<div class="line"><a id="l01736" name="l01736"></a><span class="lineno"> 1736</span>        remove(procFileName.c_str());</div>
+<div class="line"><a id="l01737" name="l01737"></a><span class="lineno"> 1737</span>    }</div>
+<div class="line"><a id="l01738" name="l01738"></a><span class="lineno"> 1738</span>    combinedFile.close();</div>
+<div class="line"><a id="l01739" name="l01739"></a><span class="lineno"> 1739</span> </div>
+<div class="line"><a id="l01740" name="l01740"></a><span class="lineno"> 1740</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01741" name="l01741"></a><span class="lineno"> 1741</span>}</div>
+<div class="line"><a id="l01742" name="l01742"></a><span class="lineno"> 1742</span> </div>
 <div class="ttc" id="aDataset_8h_html"><div class="ttname"><a href="Dataset_8h.html">Dataset.h</a></div></div>
 <div class="ttc" id="aSymFnc_8h_html"><div class="ttname"><a href="SymFnc_8h.html">SymFnc.h</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a0d03b673a86dbf7484f2da9e41872c2f"><div class="ttname"><a href="classnnp_1_1Dataset.html#a0d03b673a86dbf7484f2da9e41872c2f">nnp::Dataset::numStructures</a></div><div class="ttdeci">std::size_t numStructures</div><div class="ttdoc">Total number of structures in dataset.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00200">Dataset.h:200</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a0d03b673a86dbf7484f2da9e41872c2f"><div class="ttname"><a href="classnnp_1_1Dataset.html#a0d03b673a86dbf7484f2da9e41872c2f">nnp::Dataset::numStructures</a></div><div class="ttdeci">std::size_t numStructures</div><div class="ttdoc">Total number of structures in dataset.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00203">Dataset.h:203</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a1623c2ddd9e673d12586e067ae536cc8"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8">nnp::Dataset::writeSymmetryFunctionScaling</a></div><div class="ttdeci">void writeSymmetryFunctionScaling(std::string const &amp;fileName=&quot;scaling.data&quot;)</div><div class="ttdoc">Write symmetry function scaling values to file.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01002">Dataset.cpp:1002</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a1a204e7dc1bdf91a515b18a0ef06704c"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1a204e7dc1bdf91a515b18a0ef06704c">nnp::Dataset::collectSymmetryFunctionStatistics</a></div><div class="ttdeci">void collectSymmetryFunctionStatistics()</div><div class="ttdoc">Collect symmetry function statistics from all processors.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00972">Dataset.cpp:972</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a1e39dc46c8015f4dbe34010b0d7a5648"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1e39dc46c8015f4dbe34010b0d7a5648">nnp::Dataset::rng</a></div><div class="ttdeci">gsl_rng * rng</div><div class="ttdoc">GSL random number generator (different seed for each MPI process).</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00206">Dataset.h:206</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a1e39dc46c8015f4dbe34010b0d7a5648"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1e39dc46c8015f4dbe34010b0d7a5648">nnp::Dataset::rng</a></div><div class="ttdeci">gsl_rng * rng</div><div class="ttdoc">GSL random number generator (different seed for each MPI process).</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00209">Dataset.h:209</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a1ecb649e652e2c6acb83102340f48afd"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">nnp::Dataset::distributeStructures</a></div><div class="ttdeci">int distributeStructures(bool randomize, bool excludeRank0=false, std::string const &amp;fileName=&quot;input.data&quot;)</div><div class="ttdoc">Read data file and distribute structures among processors.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00722">Dataset.cpp:722</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a57630554119a518ecb32d5e1f327256f"><div class="ttname"><a href="classnnp_1_1Dataset.html#a57630554119a518ecb32d5e1f327256f">nnp::Dataset::recvStructure</a></div><div class="ttdeci">int recvStructure(Structure *structure, int src)</div><div class="ttdoc">Receive one structure from source process.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00462">Dataset.cpp:462</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a72dd2973c5732479df5d76389fd5466f"><div class="ttname"><a href="classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f">nnp::Dataset::sortNeighborLists</a></div><div class="ttdeci">void sortNeighborLists()</div><div class="ttdoc">Sort all neighbor lists according to element and distance.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01383">Dataset.cpp:1383</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a72dd2973c5732479df5d76389fd5466f"><div class="ttname"><a href="classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f">nnp::Dataset::sortNeighborLists</a></div><div class="ttdeci">void sortNeighborLists()</div><div class="ttdoc">Sort all neighbor lists according to element and distance.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01434">Dataset.cpp:1434</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a7f38b79ccbf9ada90d68d3a50250b193"><div class="ttname"><a href="classnnp_1_1Dataset.html#a7f38b79ccbf9ada90d68d3a50250b193">nnp::Dataset::~Dataset</a></div><div class="ttdeci">~Dataset()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00046">Dataset.cpp:46</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a7f59129925f9a0fa7fe2db87dd60e1df"><div class="ttname"><a href="classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df">nnp::Dataset::writeAtomicEnvironmentFile</a></div><div class="ttdeci">void writeAtomicEnvironmentFile(std::vector&lt; std::vector&lt; std::size_t &gt; &gt; neighCutoff, bool derivatives, std::string const &amp;fileNamePrefix=&quot;atomic-env&quot;)</div><div class="ttdoc">Write atomic environment file.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01453">Dataset.cpp:1453</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a7fdf6f361d7e65d31fe1002d6a9aacfd"><div class="ttname"><a href="classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd">nnp::Dataset::writeNeighborLists</a></div><div class="ttdeci">void writeNeighborLists(std::string const &amp;fileName=&quot;neighbor-list.data&quot;)</div><div class="ttdoc">Write neighbor list file.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01407">Dataset.cpp:1407</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a7f59129925f9a0fa7fe2db87dd60e1df"><div class="ttname"><a href="classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df">nnp::Dataset::writeAtomicEnvironmentFile</a></div><div class="ttdeci">void writeAtomicEnvironmentFile(std::vector&lt; std::vector&lt; std::size_t &gt; &gt; neighCutoff, bool derivatives, std::string const &amp;fileNamePrefix=&quot;atomic-env&quot;)</div><div class="ttdoc">Write atomic environment file.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01504">Dataset.cpp:1504</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a7fdf6f361d7e65d31fe1002d6a9aacfd"><div class="ttname"><a href="classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd">nnp::Dataset::writeNeighborLists</a></div><div class="ttdeci">void writeNeighborLists(std::string const &amp;fileName=&quot;neighbor-list.data&quot;)</div><div class="ttdoc">Write neighbor list file.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01458">Dataset.cpp:1458</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a80b6ba9363df082cf9f7aaaad56ad7c0"><div class="ttname"><a href="classnnp_1_1Dataset.html#a80b6ba9363df082cf9f7aaaad56ad7c0">nnp::Dataset::calculateBufferSize</a></div><div class="ttdeci">int calculateBufferSize(Structure const &amp;structure) const</div><div class="ttdoc">Calculate buffer size required to communicate structure via MPI.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00165">Dataset.cpp:165</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a8818ce2d15fcad4037b0db8057ad7f59"><div class="ttname"><a href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">nnp::Dataset::comm</a></div><div class="ttdeci">MPI_Comm comm</div><div class="ttdoc">Global MPI communicator.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00204">Dataset.h:204</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a8818ce2d15fcad4037b0db8057ad7f59"><div class="ttname"><a href="classnnp_1_1Dataset.html#a8818ce2d15fcad4037b0db8057ad7f59">nnp::Dataset::comm</a></div><div class="ttdeci">MPI_Comm comm</div><div class="ttdoc">Global MPI communicator.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00207">Dataset.h:207</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a93a93358a8303c618562487729450455"><div class="ttname"><a href="classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455">nnp::Dataset::setupMPI</a></div><div class="ttdeci">void setupMPI()</div><div class="ttdoc">Initialize MPI with MPI_COMM_WORLD.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00052">Dataset.cpp:52</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a96f37380d0a1d86920e3da271df3b089"><div class="ttname"><a href="classnnp_1_1Dataset.html#a96f37380d0a1d86920e3da271df3b089">nnp::Dataset::numProcs</a></div><div class="ttdeci">int numProcs</div><div class="ttdoc">Total number of MPI processors.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00198">Dataset.h:198</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_aa0ab32abb821e98058c7df794ca8103d"><div class="ttname"><a href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">nnp::Dataset::structures</a></div><div class="ttdeci">std::vector&lt; Structure &gt; structures</div><div class="ttdoc">All structures in this dataset.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00192">Dataset.h:192</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a96f37380d0a1d86920e3da271df3b089"><div class="ttname"><a href="classnnp_1_1Dataset.html#a96f37380d0a1d86920e3da271df3b089">nnp::Dataset::numProcs</a></div><div class="ttdeci">int numProcs</div><div class="ttdoc">Total number of MPI processors.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00201">Dataset.h:201</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_aa0ab32abb821e98058c7df794ca8103d"><div class="ttname"><a href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">nnp::Dataset::structures</a></div><div class="ttdeci">std::vector&lt; Structure &gt; structures</div><div class="ttdoc">All structures in this dataset.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00195">Dataset.h:195</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_aa12823183030d6cff2e059e860d15671"><div class="ttname"><a href="classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671">nnp::Dataset::writeSymmetryFunctionFile</a></div><div class="ttdeci">void writeSymmetryFunctionFile(std::string fileName=&quot;function.data&quot;)</div><div class="ttdoc">Write symmetry function legacy file (&quot;function.data&quot;).</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01223">Dataset.cpp:1223</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_aa932aedf7af8cf3daea1cae02c3602c4"><div class="ttname"><a href="classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4">nnp::Dataset::prepareNumericForces</a></div><div class="ttdeci">std::size_t prepareNumericForces(Structure &amp;original, double delta)</div><div class="ttdoc">Prepare numeric force check for a single structure.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00886">Dataset.cpp:886</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_aa99d82945d6250000d26f53173d855c3"><div class="ttname"><a href="classnnp_1_1Dataset.html#aa99d82945d6250000d26f53173d855c3">nnp::Dataset::toPhysicalUnits</a></div><div class="ttdeci">void toPhysicalUnits()</div><div class="ttdoc">Switch all structures to physical units.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00961">Dataset.cpp:961</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_abb4a2760ca7eb9c03e2ea37474a431c0"><div class="ttname"><a href="classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0">nnp::Dataset::writeSymmetryFunctionHistograms</a></div><div class="ttdeci">void writeSymmetryFunctionHistograms(std::size_t numBins, std::string fileNameFormat=&quot;sf.%03zu.%04zu.histo&quot;)</div><div class="ttdoc">Calculate and write symmetry function histograms.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01071">Dataset.cpp:1071</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_abb8c5e57c2e0f32a99d0b48c825af848"><div class="ttname"><a href="classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848">nnp::Dataset::writeNeighborHistogram</a></div><div class="ttdeci">std::size_t writeNeighborHistogram(std::string const &amp;fileNameHisto=&quot;neighbors.histo&quot;, std::string const &amp;fileNameStructure=&quot;neighbors.out&quot;)</div><div class="ttdoc">Calculate and write neighbor histogram and per-structure statistics.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01288">Dataset.cpp:1288</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_abd84c06c5a83789ebe6a3ef8075af632"><div class="ttname"><a href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632">nnp::Dataset::setupRandomNumberGenerator</a></div><div class="ttdeci">void setupRandomNumberGenerator()</div><div class="ttdoc">Initialize random number generator.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00110">Dataset.cpp:110</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_ac032639db8f6f1230f759afd3775c200"><div class="ttname"><a href="classnnp_1_1Dataset.html#ac032639db8f6f1230f759afd3775c200">nnp::Dataset::sendStructure</a></div><div class="ttdeci">int sendStructure(Structure const &amp;structure, int dest) const</div><div class="ttdoc">Send one structure to destination process.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00251">Dataset.cpp:251</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_ac1aa836b7597b2e37b2677b36e2c626e"><div class="ttname"><a href="classnnp_1_1Dataset.html#ac1aa836b7597b2e37b2677b36e2c626e">nnp::Dataset::myName</a></div><div class="ttdeci">std::string myName</div><div class="ttdoc">My processor name.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00202">Dataset.h:202</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_acb7687f6863a18f901b4b13bdd88d225"><div class="ttname"><a href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">nnp::Dataset::combineFiles</a></div><div class="ttdeci">void combineFiles(std::string filePrefix) const</div><div class="ttdoc">Combine individual MPI proc files to one.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01661">Dataset.cpp:1661</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_adc4c6b8a47ec99fe2efc2e6851df83e5"><div class="ttname"><a href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">nnp::Dataset::myRank</a></div><div class="ttdeci">int myRank</div><div class="ttdoc">My process ID.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00196">Dataset.h:196</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_ae35949dc7242a6e2f5e81885e737e38f"><div class="ttname"><a href="classnnp_1_1Dataset.html#ae35949dc7242a6e2f5e81885e737e38f">nnp::Dataset::rngGlobal</a></div><div class="ttdeci">gsl_rng * rngGlobal</div><div class="ttdoc">Global GSL random number generator (equal seed for each MPI process).</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00208">Dataset.h:208</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_ac1aa836b7597b2e37b2677b36e2c626e"><div class="ttname"><a href="classnnp_1_1Dataset.html#ac1aa836b7597b2e37b2677b36e2c626e">nnp::Dataset::myName</a></div><div class="ttdeci">std::string myName</div><div class="ttdoc">My processor name.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00205">Dataset.h:205</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_acb7687f6863a18f901b4b13bdd88d225"><div class="ttname"><a href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">nnp::Dataset::combineFiles</a></div><div class="ttdeci">void combineFiles(std::string filePrefix) const</div><div class="ttdoc">Combine individual MPI proc files to one.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01712">Dataset.cpp:1712</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_adc4c6b8a47ec99fe2efc2e6851df83e5"><div class="ttname"><a href="classnnp_1_1Dataset.html#adc4c6b8a47ec99fe2efc2e6851df83e5">nnp::Dataset::myRank</a></div><div class="ttdeci">int myRank</div><div class="ttdoc">My process ID.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00199">Dataset.h:199</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_ae35949dc7242a6e2f5e81885e737e38f"><div class="ttname"><a href="classnnp_1_1Dataset.html#ae35949dc7242a6e2f5e81885e737e38f">nnp::Dataset::rngGlobal</a></div><div class="ttdeci">gsl_rng * rngGlobal</div><div class="ttdoc">Global GSL random number generator (equal seed for each MPI process).</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00211">Dataset.h:211</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_aed1852f4390b8b97e62f697ee4b16676"><div class="ttname"><a href="classnnp_1_1Dataset.html#aed1852f4390b8b97e62f697ee4b16676">nnp::Dataset::getNumStructures</a></div><div class="ttdeci">std::size_t getNumStructures(std::ifstream &amp;dataFile)</div><div class="ttdoc">Get number of structures in data file.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00707">Dataset.cpp:707</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_af767ead6aee5477b94c95fc5db7be2b2"><div class="ttname"><a href="classnnp_1_1Dataset.html#af767ead6aee5477b94c95fc5db7be2b2">nnp::Dataset::collectError</a></div><div class="ttdeci">void collectError(std::string const &amp;property, std::map&lt; std::string, double &gt; &amp;error, std::size_t &amp;count) const</div><div class="ttdoc">Collect error metrics of a property over all MPI procs.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01629">Dataset.cpp:1629</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_afbdec01079adc087d702d5e7fddf2494"><div class="ttname"><a href="classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494">nnp::Dataset::writeNeighborHistogram</a></div><div class="ttdeci">std::size_t writeNeighborHistogram(std::string const &amp;fileName=&quot;neighbors.histo&quot;)</div><div class="ttdoc">Calculate and write neighbor histogram.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01288">Dataset.cpp:1288</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_af767ead6aee5477b94c95fc5db7be2b2"><div class="ttname"><a href="classnnp_1_1Dataset.html#af767ead6aee5477b94c95fc5db7be2b2">nnp::Dataset::collectError</a></div><div class="ttdeci">void collectError(std::string const &amp;property, std::map&lt; std::string, double &gt; &amp;error, std::size_t &amp;count) const</div><div class="ttdoc">Collect error metrics of a property over all MPI procs.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01680">Dataset.cpp:1680</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_affe9632070e632592b6f3d78e4529d3a"><div class="ttname"><a href="classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a">nnp::Dataset::toNormalizedUnits</a></div><div class="ttdeci">void toNormalizedUnits()</div><div class="ttdoc">Switch all structures to normalized units.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00950">Dataset.cpp:950</a></div></div>
 <div class="ttc" id="aclassnnp_1_1ElementMap_html_acd54eb7c8fd1f9967604463ff11ffce1"><div class="ttname"><a href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1">nnp::ElementMap::atomicNumber</a></div><div class="ttdeci">std::size_t atomicNumber(std::size_t index) const</div><div class="ttdoc">Get atomic number from element index.</div><div class="ttdef"><b>Definition:</b> <a href="ElementMap_8h_source.html#l00145">ElementMap.h:145</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Mode_html"><div class="ttname"><a href="classnnp_1_1Mode.html">nnp::Mode</a></div><div class="ttdoc">Base class for all NNP applications.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00082">Mode.h:83</a></div></div>
@@ -1883,7 +1934,7 @@ $(document).ready(function(){initNavTree('Dataset_8cpp_source.html',''); initRes
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_392afdaf85184477b0e70cd55574c790.html">libnnptrain</a></li><li class="navelem"><a class="el" href="Dataset_8cpp.html">Dataset.cpp</a></li>
-    <li class="footer">Generated on Sun May 22 2022 08:58:36 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun May 22 2022 20:50:58 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

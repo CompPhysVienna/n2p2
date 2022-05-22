@@ -18,7 +18,7 @@
 <area shape="rect" id="node17" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="126,911,329,953"/>
 <area shape="rect" id="node18" href="$classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a" title="Switch all structures to normalized units." alt="" coords="127,977,328,1018"/>
 <area shape="rect" id="node19" href="$classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451" title="Check if normalization is enabled." alt="" coords="121,1043,334,1069"/>
-<area shape="rect" id="node20" href="$classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494" title="Calculate and write neighbor histogram." alt="" coords="125,1094,330,1135"/>
+<area shape="rect" id="node20" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="125,1094,330,1135"/>
 <area shape="rect" id="node21" href="$classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671" title="Write symmetry function legacy file (&quot;function.data&quot;)." alt="" coords="120,1159,335,1201"/>
 <area shape="rect" id="node22" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="120,1225,335,1266"/>
 <area shape="rect" id="node23" href="$classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8" title="Write symmetry function scaling values to file." alt="" coords="120,1290,335,1331"/>

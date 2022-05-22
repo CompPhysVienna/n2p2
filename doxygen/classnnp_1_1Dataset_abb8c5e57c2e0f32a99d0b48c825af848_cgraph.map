@@ -1,0 +1,7 @@
+<map id="nnp::Dataset::writeNeighborHistogram" name="nnp::Dataset::writeNeighborHistogram">
+<area shape="rect" id="node1" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="5,74,211,115"/>
+<area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="271,5,445,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one." alt="" coords="259,56,457,83"/>
+<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="505,81,589,108"/>
+<area shape="rect" id="node5" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="275,157,441,184"/>
+</map>

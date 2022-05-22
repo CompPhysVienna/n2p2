@@ -1,4 +1,4 @@
 <map id="nnp::Dataset::writeNeighborHistogram" name="nnp::Dataset::writeNeighborHistogram">
-<area shape="rect" id="node1" title="Calculate and write neighbor histogram." alt="" coords="108,5,313,47"/>
+<area shape="rect" id="node1" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="108,5,313,47"/>
 <area shape="rect" id="node2" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,60,39"/>
 </map>

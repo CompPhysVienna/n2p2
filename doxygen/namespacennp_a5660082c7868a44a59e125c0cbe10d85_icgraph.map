@@ -8,7 +8,7 @@
 <area shape="rect" id="node7" href="$classnnp_1_1KalmanFilter.html#a76fd22632fbda4b77fb51d382cf0889b" title="Header for status report file." alt="" coords="60,289,205,331"/>
 <area shape="rect" id="node8" href="$classnnp_1_1NeuralNetwork.html#a38e5d3edf8eb6c1a28cfddeb674207e2" title="Write connections to file." alt="" coords="57,355,209,396"/>
 <area shape="rect" id="node9" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file." alt="" coords="31,420,234,461"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494" title="Calculate and write neighbor histogram." alt="" coords="30,485,235,527"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="30,485,235,527"/>
 <area shape="rect" id="node11" href="$classnnp_1_1Training.html#ac2e1f74df67860c5776bf811e5b6a518" title="Write neuron statistics collected since last invocation." alt="" coords="36,551,229,592"/>
 <area shape="rect" id="node12" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="25,616,240,657"/>
 <area shape="rect" id="node13" href="$classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8" title="Write symmetry function scaling values to file." alt="" coords="25,681,240,723"/>

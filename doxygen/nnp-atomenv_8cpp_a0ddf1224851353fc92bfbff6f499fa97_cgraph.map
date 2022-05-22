@@ -20,7 +20,7 @@
 <area shape="rect" id="node19" href="$classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a" title="Switch all structures to normalized units." alt="" coords="123,1041,324,1083"/>
 <area shape="rect" id="node20" href="$classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451" title="Check if normalization is enabled." alt="" coords="117,1107,330,1134"/>
 <area shape="rect" id="node21" href="$classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df" title="Write atomic environment file." alt="" coords="127,1159,319,1200"/>
-<area shape="rect" id="node22" href="$classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494" title="Calculate and write neighbor histogram." alt="" coords="121,1224,326,1265"/>
+<area shape="rect" id="node22" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="121,1224,326,1265"/>
 <area shape="rect" id="node23" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="121,1289,326,1331"/>
 <area shape="rect" id="node24" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="116,1355,331,1396"/>
 </map>

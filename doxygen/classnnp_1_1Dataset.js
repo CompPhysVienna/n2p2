@@ -17,7 +17,7 @@ var classnnp_1_1Dataset =
     [ "writeSymmetryFunctionScaling", "classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8", null ],
     [ "writeSymmetryFunctionHistograms", "classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0", null ],
     [ "writeSymmetryFunctionFile", "classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671", null ],
-    [ "writeNeighborHistogram", "classnnp_1_1Dataset.html#afbdec01079adc087d702d5e7fddf2494", null ],
+    [ "writeNeighborHistogram", "classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848", null ],
     [ "sortNeighborLists", "classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f", null ],
     [ "writeNeighborLists", "classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd", null ],
     [ "writeAtomicEnvironmentFile", "classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df", null ],
