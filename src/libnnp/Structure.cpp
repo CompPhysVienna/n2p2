@@ -586,13 +586,15 @@ double Structure::calculateElectrostaticEnergy(
                                             MatrixXd                 gammaSqrt2,
                                             VectorXd                 sigmaSqrtPi,
                                             ScreeningFunction const& fs,
-                                            double const             fourPiEps)
+                                            double const             fourPiEps,
+                                            ErfcBuf&                 erfcBuf)
 {
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
     VectorXd b(numAtoms + 1);
     VectorXd hardnessJ(numAtoms);
     VectorXd Q;
+    erfcBuf.reset(atoms, 2);
 
 #ifdef _OPENMP
 #pragma omp parallel
@@ -645,9 +647,12 @@ double Structure::calculateElectrostaticEnergy(
 
                 double const rij = n.d;
                 size_t const ej = n.element;
-                A(i, j) += (erfc(rij / sqrt2eta)
-                            - erfc(rij / gammaSqrt2(ei, ej))) /
-                           (rij * fourPiEps);
+
+                double erfcSqrt2Eta = erfcBuf.getf(i, k, 0, rij / sqrt2eta);
+                double erfcGammaSqrt2 =
+                            erfcBuf.getf(i, k, 1, rij / gammaSqrt2(ei, ej));
+
+                A(i, j) += (erfcSqrt2Eta - erfcGammaSqrt2) / (rij * fourPiEps);
             }
 
             // reciprocal part
@@ -701,12 +706,13 @@ double Structure::calculateElectrostaticEnergy(
     A(numAtoms, numAtoms) = 0.0;
     hasAMatrix = true;
     b(numAtoms) = chargeRef;
-
+#ifdef _OPENMP
+    }
+#endif
     //TODO: sometimes only recalculation of A matrix is needed, because
     //      Qs are stored.
     Q = A.colPivHouseholderQr().solve(b);
 #ifdef _OPENMP
-    }
     #pragma omp for nowait
 #endif
     for (size_t i = 0; i < numAtoms; ++i)
@@ -831,7 +837,8 @@ double Structure::calculateScreeningEnergy(
 void Structure::calculateDAdrQ(
                             EwaldSetup&  ewaldSetup,
                             MatrixXd     gammaSqrt2,
-                            double const fourPiEps)
+                            double const fourPiEps,
+                            ErfcBuf&     erfcBuf)
 {
 
 #ifdef _OPENMP
@@ -872,7 +879,7 @@ void Structure::calculateDAdrQ(
 #ifdef _OPENMP
         // This way of parallelization slightly changes the result because of
         // numerical errors.
-        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag)
+        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag) schedule(dynamic)
 #endif
         for (size_t i = 0; i < numAtoms; ++i)
         {
@@ -894,13 +901,16 @@ void Structure::calculateDAdrQ(
                 size_t const ej = aj.element;
                 double const Qj = aj.charge;
 
+                double erfcSqrt2Eta = erfcBuf.getf(i, k, 0, rij / sqrt2eta);
+                double erfcGammaSqrt2 =
+                        erfcBuf.getf(i, k, 1, rij / gammaSqrt2(ei, ej));
+
                 Vec3D dAijdri;
                 dAijdri = n.dr / pow(rij, 2)
                           * (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
                           / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei, ej), 2))
                           / gammaSqrt2(ei, ej)) - 1 / rij
-                          * (erfc(rij / sqrt2eta)
-                          - erfc(rij / gammaSqrt2(ei, ej))));
+                          * (erfcSqrt2Eta - erfcGammaSqrt2));
                 dAijdri /= fourPiEps;
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
                 // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
@@ -943,7 +953,7 @@ void Structure::calculateDAdrQ(
     } else
     {
 #ifdef _OPENMP
-        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag)
+        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag) schedule(dynamic)
 #endif
         for (size_t i = 0; i < numAtoms; ++i)
         {

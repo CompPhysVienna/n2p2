@@ -20,6 +20,7 @@
 #include "Atom.h"
 #include "Element.h"
 #include "ElementMap.h"
+#include "ErfcBuf.h"
 #include "Ewald.h"
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
@@ -288,6 +289,7 @@ struct Structure
      * @param[in] fs Screening function.
      * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
      *                  Value depends on unit system (e.g. normalization).
+     * @param[in] erfcBuf helper object to avoid repeated calculation of erfc().
      */
     double                   calculateElectrostaticEnergy(
                                             EwaldSetup&              ewaldSetup,
@@ -295,7 +297,8 @@ struct Structure
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
                                             ScreeningFunction const& fs,
-                                            double const             fourPiEps);
+                                            double const             fourPiEps,
+                                            ErfcBuf&                 erfcBuf);
     /** Calculate screening energy which needs to be added (!) to the
      * electrostatic energy in order to remove contributions in the short range
      * domain.
@@ -322,11 +325,13 @@ struct Structure
      *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
      * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
                             Value depends on unit system (e.g. normalization).
+     * @param[in] erfcBuf helper object to avoid repeated calculation of erfc().
      */
     void                     calculateDAdrQ(
                                         EwaldSetup&     ewaldSetup,
                                         Eigen::MatrixXd gammaSqrt2,
-                                        double const    fourPiEps);
+                                        double const    fourPiEps,
+                                        ErfcBuf&        erfcBuf);
     /** Calculates derivative of the charges with respect to electronegativities.
      *  @param[in] dQdChi vector to store the result. dQdChi[i](j) represents the
      *  derivative for the i-th electronegativity and the j-th charge.
@@ -522,6 +527,7 @@ struct Structure
      */
     std::vector<std::string> info() const;
 };
+
 
 }
 

@@ -20,6 +20,7 @@
 #include "CutoffFunction.h"
 #include "Element.h"
 #include "ElementMap.h"
+#include "ErfcBuf.h"
 #include "Ewald.h"
 #include "Log.h"
 #include "ScreeningFunction.h"
@@ -621,6 +622,7 @@ protected:
         std::vector<Topology> topology;
     };
 
+
     NNPType                    nnpType;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
@@ -645,6 +647,7 @@ protected:
     /// Matrix storing all symmetry function cut-offs for all elements.
     std::vector<
     std::vector<double>>       cutoffs;
+    ErfcBuf                    erfcBuf;
 
     /** Read in weights for a specific type of neural network.
      *

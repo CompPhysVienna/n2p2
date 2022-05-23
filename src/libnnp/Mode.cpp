@@ -1744,7 +1744,8 @@ void Mode::chargeEquilibration( Structure& structure,
                                                 gammaSqrt2,
                                                 sigmaSqrtPi,
                                                 screeningFunction,
-                                                fourPiEps);
+                                                fourPiEps,
+                                                erfcBuf);
 
     //if (!suppressOutput)
     //    log << strpr("Solve relative error: %16.8E\n", error);
@@ -1753,7 +1754,7 @@ void Mode::chargeEquilibration( Structure& structure,
     // executed after calculateElectrostaticEnergy.
     if (derivativesElec)
     {
-        s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps);
+        s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps, erfcBuf);
         s.calculateElectrostaticEnergyDerivatives(hardness,
                                             gammaSqrt2,
                                             sigmaSqrtPi,
