@@ -24,11 +24,6 @@ network potentials with the provided training tools.
 Documentation
 =============
 
-.. danger::
-
-   The build process has changed recently, please have a look at the :ref:`build
-   instructions <build>`!
-
 .. warning::
 
    Unfortunately many parts of the documentation are still unfinished and will
@@ -194,6 +189,7 @@ list of keywords is provided :ref:`here <keywords>`.
 
    tools/libnnp
    tools/nnp-atomenv
+   tools/nnp-checkf
    tools/nnp-convert
    tools/nnp-norm
    tools/nnp-predict

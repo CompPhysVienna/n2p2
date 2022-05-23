@@ -51,6 +51,10 @@ cdef class Structure:
         self.thisptr.readFromLines(lines)
     def calculateNeighborList(self, cutoffRadius):
         self.thisptr.calculateNeighborList(cutoffRadius)
+    def toNormalizedUnits(self, meanEnergy, convEnergy, convLength):
+        self.thisptr.toNormalizedUnits(meanEnergy, convEnergy, convLength)
+    def toPhysicalUnits(self, meanEnergy, convEnergy, convLength):
+        self.thisptr.toPhysicalUnits(meanEnergy, convEnergy, convLength)
     def getMaxNumNeighbors(self):
         return self.thisptr.getMaxNumNeighbors()
     def reset(self):

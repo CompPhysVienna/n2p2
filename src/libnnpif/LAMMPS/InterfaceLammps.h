@@ -50,17 +50,17 @@ public:
      * @param[in] lammpsNtypes Number of atom types in LAMMPS.
      * @param[in] myRank MPI process rank (passed on to structure index).
      */
-    void   initialize(char* const& directory,
-                      char* const& emap,
-                      bool         showew,
-                      bool         resetew,
-                      int          showewsum,
-                      int          maxew,
-                      double       cflength,
-                      double       cfenergy,
-                      double       lammpsCutoff,
-                      int          lammpsNtypes,
-                      int          myRank);
+    void   initialize(char const* const& directory,
+                      char const* const& emap,
+                      bool               showew,
+                      bool               resetew,
+                      int                showewsum,
+                      int                maxew,
+                      double             cflength,
+                      double             cfenergy,
+                      double             lammpsCutoff,
+                      int                lammpsNtypes,
+                      int                myRank);
     /** (Re)set #structure to contain only local LAMMPS atoms.
      *
      * @param[in] numAtomsLocal Number of local atoms.

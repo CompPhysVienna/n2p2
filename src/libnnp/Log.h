@@ -83,6 +83,8 @@ public:
 
     /// Turn on/off output to stdout.
     bool writeToStdout;
+    /// Completely silence output.
+    bool silent;
 
 private:
     /// Memory with all log entries.
@@ -91,10 +93,6 @@ private:
     std::vector<FILE**>         cFilePointers;
     /// Storage for C++ ofstream pointers.
     std::vector<std::ofstream*> streamPointers;
-
-    /** Write introductory lines for NNP library.
-     */
-    void addIntro();
 };
 
 }

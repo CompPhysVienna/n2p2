@@ -64,18 +64,17 @@ Element::Element(size_t const index, ElementMap const& elementMap) :
 
 Element::~Element()
 {
-    for (vector<SymFnc*>::const_iterator
-         it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
-    {
-        delete *it;
-    }
+    clearSymmetryFunctions();
+}
 
-    for (vector<SymGrp*>::const_iterator
-         it = symmetryFunctionGroups.begin();
-         it != symmetryFunctionGroups.end(); ++it)
-    {
-        delete *it;
-    }
+void Element::clearSymmetryFunctions()
+{
+    for (auto& s : symmetryFunctions) delete s;
+    symmetryFunctions.clear();
+    for (auto& s : symmetryFunctionGroups) delete s;
+    symmetryFunctionGroups.clear();
+
+    return;
 }
 
 void Element::addSymmetryFunction(string const& parameters,
@@ -300,6 +299,7 @@ void Element::setupSymmetryFunctionMemory()
             }
         }
     }
+    symmetryFunctionNumTable.clear();
     for (size_t i = 0; i < elementMap.size(); ++i)
     {
         symmetryFunctionNumTable.push_back(symmetryFunctionTable.at(i).size());

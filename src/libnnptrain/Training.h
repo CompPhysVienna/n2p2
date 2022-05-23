@@ -61,7 +61,7 @@ public:
          * computes errors and gradients, and updates weights.
          */
         //PM_DATASET,
-        /** Parallel gradient computation, update on rank 0.
+        /* Parallel gradient computation, update on rank 0.
          *
          * Data set is distributed via MPI, each tasks selects energy/force
          * update candidates, and computes errors and gradients, which are
@@ -138,9 +138,16 @@ public:
      * @param[in] stage Training stage to set.
      */
     void                  setStage(std::size_t stage);
+    /** Apply normalization based on initial weights prediction.
+     */
+    void                  dataSetNormalization();
     /** General training settings and setup of weight update routine.
      */
     void                  setupTraining();
+    /** Set up numeric weight derivatives check.
+     */
+    std::vector<
+    std::string>          setupNumericDerivCheck();
     /** Calculate neighbor lists for all structures.
      */
     void                  calculateNeighborLists();
@@ -287,6 +294,55 @@ public:
      * @param[in] fileName File name for training log.
      */
     void                  setTrainingLogFileName(std::string fileName);
+    /** Get total number of NN connections.
+     *
+     * @param[in] id NN ID to use (e.g. "short").
+     *
+     * @return Sum of all NN weights + biases for all elements
+     */
+    std::size_t           getNumConnections(std::string id = "short") const;
+    /** Get number of NN connections for each element.
+     *
+     * @param[in] id NN ID to use (e.g. "short").
+     *
+     * @return Vector containing number of connections for each element.
+     */
+    std::vector<
+    std::size_t>          getNumConnectionsPerElement(
+                                               std::string id = "short") const;
+    /** Get offsets of NN connections for each element.
+     *
+     * @param[in] id NN ID to use (e.g. "short").
+     *
+     * @return Vector containing offsets for each element.
+     */
+    std::vector<
+    std::size_t>          getConnectionOffsets(std::string id = "short") const;
+    /** Compute derivatives of property with respect to weights.
+     *
+     * @param[in] property Training property for which derivatives should be
+     *                     computed.
+     * @param[in] structure The structure under investigation.
+     * @param[inout] dEdc Weight derivative array (first index = property,
+     *                    second index = weight).
+     */
+    void                  dPdc(std::string                       property,
+                               Structure&                        structure,
+                               std::vector<std::vector<double>>& dEdc);
+    /** Compute numeric derivatives of property with respect to weights.
+     *
+     * @param[in] property Training property for which derivatives should be
+     *                     computed.
+     * @param[in] structure The structure under investigation.
+     * @param[inout] dEdc Weight derivative array (first index = property,
+     *                    second index = weight).
+     * @param[in] delta Delta for central difference.
+     */
+    void                  dPdcN(
+                             std::string                       property,
+                             Structure&                        structure,
+                             std::vector<std::vector<double>>& dEdc,
+                             double                            delta = 1.0E-4);
 
 private:
     /// Contains location of one update candidate (energy or force).

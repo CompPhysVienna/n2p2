@@ -44,17 +44,17 @@ InterfaceLammps::InterfaceLammps() : myRank      (0    ),
 {
 }
 
-void InterfaceLammps::initialize(char* const& directory,
-                                 char* const& emap,
-                                 bool         showew,
-                                 bool         resetew,
-                                 int          showewsum,
-                                 int          maxew,
-                                 double       cflength,
-                                 double       cfenergy,
-                                 double       lammpsCutoff,
-                                 int          lammpsNtypes,
-                                 int          myRank)
+void InterfaceLammps::initialize(char const* const& directory,
+                                 char const* const& emap,
+                                 bool               showew,
+                                 bool               resetew,
+                                 int                showewsum,
+                                 int                maxew,
+                                 double             cflength,
+                                 double             cfenergy,
+                                 double             lammpsCutoff,
+                                 int                lammpsNtypes,
+                                 int                myRank)
 {
     this->emap = emap;
     this->showew = showew;
@@ -66,6 +66,8 @@ void InterfaceLammps::initialize(char* const& directory,
     this->myRank = myRank;
     log.writeToStdout = false;
     string dir(directory);
+    char const separator = '/';
+    if (dir.back() != separator) dir += separator;
     Mode::initialize();
     loadSettingsFile(dir + "input.nn");
     setupGeneric();
@@ -183,6 +185,14 @@ void InterfaceLammps::initialize(char* const& directory,
     {
         vector<string> emapSplit = split(reduce(trim(this->emap), " \t", ""),
                                          ',');
+        if (elementMap.size() < emapSplit.size())
+        {
+            throw runtime_error(strpr("ERROR: Element mapping is inconsistent,"
+                                      " NNP elements: %zu,"
+                                      " emap elements: %zu.\n",
+                                      elementMap.size(),
+                                      emapSplit.size()));
+        }
         for (string s : emapSplit)
         {
             vector<string> typeString = split(s, ':');
@@ -194,21 +204,13 @@ void InterfaceLammps::initialize(char* const& directory,
             int t = stoi(typeString.at(0));
             if (t > lammpsNtypes)
             {
-                throw runtime_error(strpr("ERROR: LAMMPS type \"%s\" not "
+                throw runtime_error(strpr("ERROR: LAMMPS type \"%d\" not "
                                           "present, there are only %d types "
                                           "defined.\n", t, lammpsNtypes));
             }
             size_t e = elementMap[typeString.at(1)];
             mapTypeToElement[t] = e;
             mapElementToType[e] = t;
-        }
-        if (elementMap.size() != mapTypeToElement.size())
-        {
-            throw runtime_error(strpr("ERROR: Element mapping is inconsistent,"
-                                      " NNP elements: %zu,"
-                                      " emap elements: %zu.\n",
-                                      elementMap.size(),
-                                      mapTypeToElement.size()));
         }
     }
     log << "\n";
@@ -373,9 +375,18 @@ double InterfaceLammps::getEnergy() const
 double InterfaceLammps::getAtomicEnergy(int index) const
 {
     Atom const& a = structure.atoms.at(index);
+    Element const& e = elements.at(a.element);
 
-    if (normalize) return physical("energy", a.energy) / cfenergy;
-    else return a.energy / cfenergy;
+    if (normalize)
+    {
+        return (physical("energy", a.energy)
+                + meanEnergy
+                + e.getAtomicEnergyOffset()) / cfenergy;
+    }
+    else
+    {
+        return (a.energy + e.getAtomicEnergyOffset()) / cfenergy;
+    }
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const
@@ -492,23 +503,23 @@ void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
         map<size_t, SymFncStatistics::Container> const& m =
             it->statistics.data;
         size_t n = m.size();
-        MPI_Pack(&(n), 1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+        MPI_Pack((void *) &(n), 1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
         for (map<size_t, SymFncStatistics::Container>::const_iterator
              it2 = m.begin(); it2 != m.end(); ++it2)
         {
-            MPI_Pack(&(it2->first                          ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->first                          ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
             size_t countEW = it2->second.countEW;
-            MPI_Pack(&(countEW                             ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.type                    ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.Gmin                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.Gmax                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(countEW                             ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.type                    ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.Gmin                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.Gmax                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
             // it2->element
             size_t ts = it2->second.element.length() + 1;
-            MPI_Pack(&ts                                    ,       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(it2->second.element.c_str()            ,      ts, MPI_CHAR  , buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.indexStructureEW.front()), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.indexAtomEW.front()     ), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.valueEW.front()         ), countEW, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &ts                                    ,       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) it2->second.element.c_str()            ,      ts, MPI_CHAR  , buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.indexStructureEW.front()), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.indexAtomEW.front()     ), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.valueEW.front()         ), countEW, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
         }
     }
 #endif
@@ -523,33 +534,33 @@ void InterfaceLammps::extractEWBuffer(char const* const& buf, int bs)
          it != elements.end(); ++it)
     {
         size_t n = 0;
-        MPI_Unpack(buf, bs, &p, &(n), 1, MPI_SIZE_T, MPI_COMM_WORLD);
+        MPI_Unpack((void *) buf, bs, &p, &(n), 1, MPI_SIZE_T, MPI_COMM_WORLD);
         for (size_t i = 0; i < n; ++i)
         {
             size_t index = 0;
-            MPI_Unpack(buf, bs, &p, &(index), 1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(index), 1, MPI_SIZE_T, MPI_COMM_WORLD);
             SymFncStatistics::Container& d = it->statistics.data[index];
             size_t countEW = 0;
-            MPI_Unpack(buf, bs, &p, &(countEW                      ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
-            MPI_Unpack(buf, bs, &p, &(d.type                       ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
-            MPI_Unpack(buf, bs, &p, &(d.Gmin                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
-            MPI_Unpack(buf, bs, &p, &(d.Gmax                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(countEW                      ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.type                       ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.Gmin                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.Gmax                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
             // d.element
             size_t ts = 0;
-            MPI_Unpack(buf, bs, &p, &ts                             ,       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &ts                             ,       1, MPI_SIZE_T, MPI_COMM_WORLD);
             char* element = new char[ts];
-            MPI_Unpack(buf, bs, &p, element                         ,      ts, MPI_CHAR  , MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, element                         ,      ts, MPI_CHAR  , MPI_COMM_WORLD);
             d.element = element;
             delete[] element;
             // indexStructureEW.
             d.indexStructureEW.resize(d.countEW + countEW);
-            MPI_Unpack(buf, bs, &p, &(d.indexStructureEW[d.countEW]), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.indexStructureEW[d.countEW]), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
             // indexAtomEW.
             d.indexAtomEW.resize(d.countEW + countEW);
-            MPI_Unpack(buf, bs, &p, &(d.indexAtomEW[d.countEW]     ), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.indexAtomEW[d.countEW]     ), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
             // valueEW.
             d.valueEW.resize(d.countEW + countEW);
-            MPI_Unpack(buf, bs, &p, &(d.valueEW[d.countEW]         ), countEW, MPI_DOUBLE, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.valueEW[d.countEW]         ), countEW, MPI_DOUBLE, MPI_COMM_WORLD);
 
             d.countEW += countEW;
         }
