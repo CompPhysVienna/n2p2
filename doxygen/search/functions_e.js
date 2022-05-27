@@ -14,7 +14,7 @@ var searchData=
   ['registercfilepointer_11',['registerCFilePointer',['../classnnp_1_1Log.html#adba92381da05fda9736b776268ebccfc',1,'nnp::Log']]],
   ['registerelements_12',['registerElements',['../classnnp_1_1ElementMap.html#a17d6d160054a064199a8757eb62b3350',1,'nnp::ElementMap']]],
   ['registerstreampointer_13',['registerStreamPointer',['../classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b',1,'nnp::Log']]],
-  ['remap_14',['remap',['../structnnp_1_1Structure.html#a3259977e4b66dbe020c2e827d10ab18c',1,'nnp::Structure']]],
+  ['remap_14',['remap',['../structnnp_1_1Structure.html#a60c37b89d8e32f6785168f6a6c201859',1,'nnp::Structure::remap()'],['../structnnp_1_1Structure.html#a3259977e4b66dbe020c2e827d10ab18c',1,'nnp::Structure::remap(Atom &amp;atom)']]],
   ['removeenergyoffset_15',['removeEnergyOffset',['../classnnp_1_1Mode.html#aa8ddf0701dbcd60868955ca556892bc5',1,'nnp::Mode']]],
   ['reset_16',['reset',['../classnnp_1_1Stopwatch.html#a42c7014e7fffcf4c56ca6fb07f8eb31c',1,'nnp::Stopwatch::reset()'],['../structnnp_1_1SymFncStatistics_1_1Container.html#a33a794056682677e444f9db893460701',1,'nnp::SymFncStatistics::Container::reset()'],['../structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce',1,'nnp::Structure::reset()']]],
   ['resetextrapolationwarnings_17',['resetExtrapolationWarnings',['../structnnp_1_1SymFncStatistics_1_1Container.html#a25a16e02d9ae9c777a6e05e5d268a6f5',1,'nnp::SymFncStatistics::Container::resetExtrapolationWarnings()'],['../classnnp_1_1SymFncStatistics.html#a70f4c0f9cef912c8d77f3fa9d5493c0a',1,'nnp::SymFncStatistics::resetExtrapolationWarnings()'],['../classnnp_1_1Mode.html#ab71571b8b4742c474c645fa50ffa667e',1,'nnp::Mode::resetExtrapolationWarnings()']]],

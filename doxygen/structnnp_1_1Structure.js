@@ -16,6 +16,7 @@ var structnnp_1_1Structure =
     [ "calculatePbcCopies", "structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a", null ],
     [ "calculateInverseBox", "structnnp_1_1Structure.html#a7d4ec60f305ae52787eb7dc0995eaec3", null ],
     [ "calculateVolume", "structnnp_1_1Structure.html#a10f626682421d3690d8f1cb9ceba006f", null ],
+    [ "remap", "structnnp_1_1Structure.html#a60c37b89d8e32f6785168f6a6c201859", null ],
     [ "remap", "structnnp_1_1Structure.html#a3259977e4b66dbe020c2e827d10ab18c", null ],
     [ "toNormalizedUnits", "structnnp_1_1Structure.html#acd39fe39b2b0e86e676c7bd52dc2b835", null ],
     [ "toPhysicalUnits", "structnnp_1_1Structure.html#a041778a6c0a2f6d436852e2325c65d20", null ],

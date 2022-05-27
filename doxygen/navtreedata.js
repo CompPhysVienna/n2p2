@@ -74,7 +74,7 @@ var NAVTREEINDEX =
 "classnnp_1_1SymGrpExpAngw.html#a44022196cf8f8fa67b692d968445fe08",
 "classnnp_1_1Training.html#aed44026c9d76b19022856e1e82cad8bb",
 "structnnp_1_1Atom.html#a0361a8e48f3b762f76db75abcf6fc305",
-"structnnp_1_1Structure.html#ad47f8d1a1742f5430418fcd1b8919eb6"
+"structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
