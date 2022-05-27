@@ -197,6 +197,9 @@ struct Structure
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();
+    /** Translate all atoms back into box if outside.
+     */
+    void                     remap();
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.

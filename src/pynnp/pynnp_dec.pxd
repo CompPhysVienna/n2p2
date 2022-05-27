@@ -222,6 +222,7 @@ cdef extern from "Structure.h" namespace "nnp":
         #void                     calculatePbcCopies(double cutoffRadius);
         #void                     calculateInverseBox();
         #void                     calculateVolume();
+        void           remap() except +
         #void                     remap(Atom& atom);
         void           toNormalizedUnits(double meanEnergy,
                                          double convEnergy,

@@ -230,14 +230,7 @@ void Structure::readFromLines(vector<string> const& lines)
         }
     }
 
-    if (isPeriodic)
-    {
-        for (vector<Atom>::iterator it = atoms.begin();
-             it != atoms.end(); ++it)
-        {
-            remap((*it));
-        }
-    }
+    if (isPeriodic) remap();
 
     return;
 }
@@ -428,6 +421,16 @@ void Structure::calculateInverseBox()
 void Structure::calculateVolume()
 {
     volume = fabs(box[0] * (box[1].cross(box[2])));
+
+    return;
+}
+
+void Structure::remap()
+{
+    for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
+    {
+        remap((*it));
+    }
 
     return;
 }
