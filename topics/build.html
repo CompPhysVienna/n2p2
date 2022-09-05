@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build instructions &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>Build instructions &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -127,9 +128,9 @@
            <div itemprop="articleBody">
              
   <section id="build-instructions">
-<span id="build"></span><h1>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this headline"></a></h1>
+<span id="build"></span><h1>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this heading"></a></h1>
 <section id="code-structure">
-<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this headline"></a></h2>
+<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this heading"></a></h2>
 <p>This package contains multiple components with varying interdependencies and
 dependencies on third-party libraries. You may not need to build all
 components, this depends on the intended use. The following table lists all
@@ -236,7 +237,7 @@ information).</p>
 </table>
 </section>
 <section id="the-master-makefile">
-<h2>The master makefile<a class="headerlink" href="#the-master-makefile" title="Permalink to this headline"></a></h2>
+<h2>The master makefile<a class="headerlink" href="#the-master-makefile" title="Permalink to this heading"></a></h2>
 <p>A master makefile is provided in the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory which provides targets
 for all individual components.  For instance, compiling the interface library
 <code class="docutils literal notranslate"><span class="pre">libnnpif</span></code> requires only to type</p>
@@ -308,19 +309,19 @@ instance, in order to use 4 processors to build all components type:</p>
 </div>
 </section>
 <section id="individual-component-makefiles">
-<h2>Individual component makefiles<a class="headerlink" href="#individual-component-makefiles" title="Permalink to this headline"></a></h2>
+<h2>Individual component makefiles<a class="headerlink" href="#individual-component-makefiles" title="Permalink to this heading"></a></h2>
 <p>It is also possible to invoke individual makefiles for each component manually.
 Just switch to the corresponding folder and use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">MODE=&lt;mode&gt;</span>
 <span class="pre">COMP=&lt;target&gt;</span></code>. The global build parameters will be used from the
 <code class="docutils literal notranslate"><span class="pre">src/makefile.&lt;target&gt;</span></code> file.</p>
 </section>
 <section id="project-wide-compilation-options">
-<h2>Project-wide compilation options<a class="headerlink" href="#project-wide-compilation-options" title="Permalink to this headline"></a></h2>
+<h2>Project-wide compilation options<a class="headerlink" href="#project-wide-compilation-options" title="Permalink to this heading"></a></h2>
 <p>Each of the build parameter makefiles <code class="docutils literal notranslate"><span class="pre">src/makefile.&lt;target&gt;</span></code> contains a
 section at the end which allows to enable/disable certain options at compile
 time:</p>
 <section id="symmetry-function-groups">
-<h3>Symmetry function groups<a class="headerlink" href="#symmetry-function-groups" title="Permalink to this headline"></a></h3>
+<h3>Symmetry function groups<a class="headerlink" href="#symmetry-function-groups" title="Permalink to this heading"></a></h3>
 <p><strong>Flag:</strong> <code class="docutils literal notranslate"><span class="pre">-DN2P2_NO_SF_GROUPS</span></code> (default: <em>disabled</em>)</p>
 <p>If this flag is set the symmetry function group feature will be disabled
 everywhere. This will result in a much worse performance but may be useful for
@@ -328,7 +329,7 @@ debugging and development purposes. Note that disabling symmetry function groups
 will not change results, please see details in this publication <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
 </section>
 <section id="improved-symmetry-function-derivative-memory">
-<h3>Improved symmetry function derivative memory<a class="headerlink" href="#improved-symmetry-function-derivative-memory" title="Permalink to this headline"></a></h3>
+<h3>Improved symmetry function derivative memory<a class="headerlink" href="#improved-symmetry-function-derivative-memory" title="Permalink to this heading"></a></h3>
 <p><strong>Flag:</strong> <code class="docutils literal notranslate"><span class="pre">-DN2P2_FULL_SFD_MEMORY</span></code> (default: <em>disabled</em>)</p>
 <p>By default <em>n2p2</em> reduces the memory usage when multiple elements are present by
 eliminating storage for symmetry function derivatives which are zero by

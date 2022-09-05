@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Descriptor analysis/Coarse-graining &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>Descriptor analysis/Coarse-graining &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -31,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -124,7 +125,7 @@
            <div itemprop="articleBody">
              
   <section id="descriptor-analysis-coarse-graining">
-<span id="cg-descriptor-analysis"></span><h1>Descriptor analysis/Coarse-graining<a class="headerlink" href="#descriptor-analysis-coarse-graining" title="Permalink to this headline"></a></h1>
+<span id="cg-descriptor-analysis"></span><h1>Descriptor analysis/Coarse-graining<a class="headerlink" href="#descriptor-analysis-coarse-graining" title="Permalink to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The following procedures and analyses should be considered experimental. They
@@ -142,7 +143,7 @@ analysis itself is described in detail inside the Jupyter notebook
 the steps presented in this tutorial.</p>
 </div>
 <section id="step-0-optional-coarse-grained-data-set">
-<h2>Step 0 (optional): Coarse-grained data set<a class="headerlink" href="#step-0-optional-coarse-grained-data-set" title="Permalink to this headline"></a></h2>
+<h2>Step 0 (optional): Coarse-grained data set<a class="headerlink" href="#step-0-optional-coarse-grained-data-set" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This step is optional, the descriptor analysis may also yield insights if
@@ -187,7 +188,7 @@ datasets of configurations. Of course such a task can also be performed with
 external software.</p>
 </section>
 <section id="step-1-create-symmetry-function-set">
-<h2>Step 1: Create symmetry function set<a class="headerlink" href="#step-1-create-symmetry-function-set" title="Permalink to this headline"></a></h2>
+<h2>Step 1: Create symmetry function set<a class="headerlink" href="#step-1-create-symmetry-function-set" title="Permalink to this heading"></a></h2>
 <p>This step is common to regular NNP training with <em>n2p2</em>: for a given data set we
 need to prepare an appropriate symmetry function set and compute the scaling
 data. Please see also <a class="reference internal" href="../topics/training.html#symfunc-setup"><span class="std std-ref">this section</span></a> for further
@@ -213,7 +214,7 @@ functions statistics:</p>
 require the <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> file for the next steps.</p>
 </section>
 <section id="step-2-generate-atomic-environment-data">
-<h2>Step 2: Generate atomic environment data<a class="headerlink" href="#step-2-generate-atomic-environment-data" title="Permalink to this headline"></a></h2>
+<h2>Step 2: Generate atomic environment data<a class="headerlink" href="#step-2-generate-atomic-environment-data" title="Permalink to this heading"></a></h2>
 <p>Next, in order to feed the descriptor analysis Jupyter notebook in the final
 step, we need to prepare atomic environment data for our system. Please read the
 <a class="reference internal" href="../tools/nnp-atomenv.html#nnp-atomenv"><span class="std std-ref">description</span></a> of the tool <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code> for a detailed
@@ -228,7 +229,7 @@ considered for the atomic environment data. Again, we can ignore all output
 files except <code class="docutils literal notranslate"><span class="pre">atomic-env.dGdx</span></code> which we use in the final step.</p>
 </section>
 <section id="step-3-analyze-descriptors">
-<h2>Step 3: Analyze descriptors<a class="headerlink" href="#step-3-analyze-descriptors" title="Permalink to this headline"></a></h2>
+<h2>Step 3: Analyze descriptors<a class="headerlink" href="#step-3-analyze-descriptors" title="Permalink to this heading"></a></h2>
 <p>Finally, everything is ready to start the Jupyter notebook
 <code class="docutils literal notranslate"><span class="pre">analyze-descriptors.ipynb</span></code> which carries out the actual descriptor analysis. The
 notebook and necessary files are provided in <code class="docutils literal notranslate"><span class="pre">step-3_cluster-analysis</span></code>. After

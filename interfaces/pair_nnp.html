@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LAMMPS NNP pair style &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>LAMMPS NNP pair style &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -128,11 +129,11 @@
            <div itemprop="articleBody">
              
   <section id="lammps-nnp-pair-style">
-<span id="pair-nnp"></span><h1>LAMMPS NNP pair style<a class="headerlink" href="#lammps-nnp-pair-style" title="Permalink to this headline"></a></h1>
+<span id="pair-nnp"></span><h1>LAMMPS NNP pair style<a class="headerlink" href="#lammps-nnp-pair-style" title="Permalink to this heading"></a></h1>
 <section id="pair-style-nnp-command">
-<h2>pair_style nnp command<a class="headerlink" href="#pair-style-nnp-command" title="Permalink to this headline"></a></h2>
+<h2>pair_style nnp command<a class="headerlink" href="#pair-style-nnp-command" title="Permalink to this heading"></a></h2>
 <section id="syntax">
-<h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline"></a></h3>
+<h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pair_style nnp keyword value ...
 </pre></div>
 </div>
@@ -178,7 +179,7 @@
 </ul>
 </section>
 <section id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h3>
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pair_style nnp showew yes showewsum 100 maxew 1000 resetew yes cflength 1.8897261328 cfenergy 0.0367493254 emap &quot;1:H,2:O&quot;
 
 pair_style nnp dir &quot;./&quot; showewsum 10000
@@ -192,7 +193,7 @@ pair_coeff * * 6.01
 </div>
 </section>
 <section id="description">
-<h3>Description<a class="headerlink" href="#description" title="Permalink to this headline"></a></h3>
+<h3>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h3>
 <p>This pair style adds an interaction based on the high-dimensional neural network
 potential method <a class="footnote-reference brackets" href="#id4" id="id1">1</a>. These potentials must
 be carefully trained to reproduce the potential energy surface in the desired
@@ -320,17 +321,17 @@ quantities in native NNP units (1 Angstrom = 1.8897261328 Bohr, 1 eV =
 </section>
 <hr class="docutils" />
 <section id="restrictions">
-<h3>Restrictions<a class="headerlink" href="#restrictions" title="Permalink to this headline"></a></h3>
+<h3>Restrictions<a class="headerlink" href="#restrictions" title="Permalink to this heading"></a></h3>
 <p>Please report bugs and feature requests to the <a class="reference external" href="https://github.com/CompPhysVienna/n2p2/issues">n2p2 GitHub issue page</a>.</p>
 </section>
 <section id="related-commands">
-<h3>Related commands<a class="headerlink" href="#related-commands" title="Permalink to this headline"></a></h3>
+<h3>Related commands<a class="headerlink" href="#related-commands" title="Permalink to this heading"></a></h3>
 <p><a class="reference external" href="https://lammps.sandia.gov/doc/pair_coeff.html">pair_coeff</a></p>
 <p><a class="reference external" href="https://lammps.sandia.gov/doc/pair_hybrid.html">pair_hybrid</a></p>
 <p><a class="reference external" href="https://lammps.sandia.gov/doc/units.html">units</a></p>
 </section>
 <section id="default">
-<h3>Default<a class="headerlink" href="#default" title="Permalink to this headline"></a></h3>
+<h3>Default<a class="headerlink" href="#default" title="Permalink to this heading"></a></h3>
 <p>The default options are <em>dir</em> = “nnp/”, <em>showew</em> = yes, <em>showewsum</em> = 0, <em>maxew</em>
 = 0, <em>resetew</em> = no, <em>cflength</em> = 1.0, <em>cfenergy</em> = 1.0. The default atom type
 mapping is determined automatically according to ascending atomic number of

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LAMMPS NNP interface &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>LAMMPS NNP interface &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -126,18 +127,18 @@
            <div itemprop="articleBody">
              
   <section id="lammps-nnp-interface">
-<span id="if-lammps"></span><h1>LAMMPS NNP interface<a class="headerlink" href="#lammps-nnp-interface" title="Permalink to this headline"></a></h1>
+<span id="if-lammps"></span><h1>LAMMPS NNP interface<a class="headerlink" href="#lammps-nnp-interface" title="Permalink to this heading"></a></h1>
 <section id="purpose">
-<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline"></a></h2>
+<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this heading"></a></h2>
 <p>The LAMMPS interface adds the neural network potential method in LAMMPS. Hence,
 one can use a previously fitted NNP to predict energies and forces and use
 LAMMPS to propagate an MD simulation. LAMMPS parallelization via MPI is
 fully supported.</p>
 </section>
 <section id="build-instructions">
-<h2>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this headline"></a></h2>
+<h2>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this heading"></a></h2>
 <section id="automatic-build">
-<h3>Automatic build<a class="headerlink" href="#automatic-build" title="Permalink to this headline"></a></h3>
+<h3>Automatic build<a class="headerlink" href="#automatic-build" title="Permalink to this heading"></a></h3>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The automatic compilation will only work on Unix-like systems as it relies on
@@ -165,7 +166,7 @@ installation somewhere else in your system please follow the manual build
 instructions below.</p>
 </section>
 <section id="manual-build">
-<h3>Manual build<a class="headerlink" href="#manual-build" title="Permalink to this headline"></a></h3>
+<h3>Manual build<a class="headerlink" href="#manual-build" title="Permalink to this heading"></a></h3>
 <p>To build LAMMPS with support for neural network potentials follow these steps:
 First, build the required libraries:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd src
@@ -213,7 +214,7 @@ support, the use of MPI needs to be deactivated for <code class="docutils litera
 </section>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
 <p>The neural network potential method is introduced in the context of a pair style
 named <code class="docutils literal notranslate"><span class="pre">nnp</span></code>. LAMMPS comes with a large collection of these pair styles, e.g. for
 a LJ or Tersoff potential, look

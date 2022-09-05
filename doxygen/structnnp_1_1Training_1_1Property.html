@@ -242,59 +242,59 @@ Public Attributes</h2></td></tr>
 
 <p>Constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8cpp_source.html#l03640">3640</a> of file <a class="el" href="Training_8cpp_source.html">Training.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 3640</span>                                                 :</div>
-<div class="line"><span class="lineno"> 3641</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a>               (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> ),</div>
-<div class="line"><span class="lineno"> 3642</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a>          (<span class="stringliteral">&quot;&quot;</span>       ),</div>
-<div class="line"><span class="lineno"> 3643</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a>                   (<span class="stringliteral">&quot;&quot;</span>       ),</div>
-<div class="line"><span class="lineno"> 3644</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a>                 (<span class="stringliteral">&quot;&quot;</span>       ),</div>
-<div class="line"><span class="lineno"> 3645</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a43c72f360013f0c54bbd093023c109a0">selectionMode</a>          (<a class="code hl_enumvalue" href="classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429">SM_RANDOM</a>),</div>
-<div class="line"><span class="lineno"> 3646</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">numTrainPatterns</a>       (0        ),</div>
-<div class="line"><span class="lineno"> 3647</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a8258157a910c11f3a5ddc6200dc18608">numTestPatterns</a>        (0        ),</div>
-<div class="line"><span class="lineno"> 3648</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a61d413cda5e23ae4a0a6398aec99d7bf">taskBatchSize</a>          (0        ),</div>
-<div class="line"><span class="lineno"> 3649</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5">writeCompEvery</a>         (0        ),</div>
-<div class="line"><span class="lineno"> 3650</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">writeCompAlways</a>        (0        ),</div>
-<div class="line"><span class="lineno"> 3651</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">posUpdateCandidates</a>    (0        ),</div>
-<div class="line"><span class="lineno"> 3652</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">rmseThresholdTrials</a>    (0        ),</div>
-<div class="line"><span class="lineno"> 3653</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e">countUpdates</a>           (0        ),</div>
-<div class="line"><span class="lineno"> 3654</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91">numUpdates</a>             (0        ),</div>
-<div class="line"><span class="lineno"> 3655</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a54c2a8fc1d0aa231de78393cca59c213">patternsPerUpdate</a>      (0        ),</div>
-<div class="line"><span class="lineno"> 3656</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ad882355197f0566544af7a65fb6d6d3f">patternsPerUpdateGlobal</a>(0        ),</div>
-<div class="line"><span class="lineno"> 3657</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">numErrorsGlobal</a>        (0        ),</div>
-<div class="line"><span class="lineno"> 3658</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4fcb8f00175cafcb10a2024b69154c57">epochFraction</a>          (0.0      ),</div>
-<div class="line"><span class="lineno"> 3659</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a48523786912eceacede5ec0983fa9446">rmseThreshold</a>          (0.0      )</div>
-<div class="line"><span class="lineno"> 3660</span>{</div>
-<div class="line"><span class="lineno"> 3661</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;energy&quot;</span>)</div>
-<div class="line"><span class="lineno"> 3662</span>    {</div>
-<div class="line"><span class="lineno"> 3663</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;E&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3664</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;energies&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3665</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSEpa&quot;</span>, <span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAEpa&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
-<div class="line"><span class="lineno"> 3666</span>    }</div>
-<div class="line"><span class="lineno"> 3667</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;force&quot;</span>)</div>
-<div class="line"><span class="lineno"> 3668</span>    {</div>
-<div class="line"><span class="lineno"> 3669</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;F&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3670</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;forces&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3671</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
-<div class="line"><span class="lineno"> 3672</span>    }</div>
-<div class="line"><span class="lineno"> 3673</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;charge&quot;</span>)</div>
-<div class="line"><span class="lineno"> 3674</span>    {</div>
-<div class="line"><span class="lineno"> 3675</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;Q&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3676</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;charges&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3677</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
-<div class="line"><span class="lineno"> 3678</span>    }</div>
-<div class="line"><span class="lineno"> 3679</span>    <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno"> 3680</span>    {</div>
-<div class="line"><span class="lineno"> 3681</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Unknown training property.\n&quot;</span>);</div>
+<p class="definition">Definition at line <a class="el" href="Training_8cpp_source.html#l03650">3650</a> of file <a class="el" href="Training_8cpp_source.html">Training.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 3650</span>                                                 :</div>
+<div class="line"><span class="lineno"> 3651</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a>               (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> ),</div>
+<div class="line"><span class="lineno"> 3652</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a>          (<span class="stringliteral">&quot;&quot;</span>       ),</div>
+<div class="line"><span class="lineno"> 3653</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a>                   (<span class="stringliteral">&quot;&quot;</span>       ),</div>
+<div class="line"><span class="lineno"> 3654</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a>                 (<span class="stringliteral">&quot;&quot;</span>       ),</div>
+<div class="line"><span class="lineno"> 3655</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a43c72f360013f0c54bbd093023c109a0">selectionMode</a>          (<a class="code hl_enumvalue" href="classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429">SM_RANDOM</a>),</div>
+<div class="line"><span class="lineno"> 3656</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">numTrainPatterns</a>       (0        ),</div>
+<div class="line"><span class="lineno"> 3657</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a8258157a910c11f3a5ddc6200dc18608">numTestPatterns</a>        (0        ),</div>
+<div class="line"><span class="lineno"> 3658</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a61d413cda5e23ae4a0a6398aec99d7bf">taskBatchSize</a>          (0        ),</div>
+<div class="line"><span class="lineno"> 3659</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5">writeCompEvery</a>         (0        ),</div>
+<div class="line"><span class="lineno"> 3660</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">writeCompAlways</a>        (0        ),</div>
+<div class="line"><span class="lineno"> 3661</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">posUpdateCandidates</a>    (0        ),</div>
+<div class="line"><span class="lineno"> 3662</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">rmseThresholdTrials</a>    (0        ),</div>
+<div class="line"><span class="lineno"> 3663</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e">countUpdates</a>           (0        ),</div>
+<div class="line"><span class="lineno"> 3664</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91">numUpdates</a>             (0        ),</div>
+<div class="line"><span class="lineno"> 3665</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a54c2a8fc1d0aa231de78393cca59c213">patternsPerUpdate</a>      (0        ),</div>
+<div class="line"><span class="lineno"> 3666</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ad882355197f0566544af7a65fb6d6d3f">patternsPerUpdateGlobal</a>(0        ),</div>
+<div class="line"><span class="lineno"> 3667</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">numErrorsGlobal</a>        (0        ),</div>
+<div class="line"><span class="lineno"> 3668</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4fcb8f00175cafcb10a2024b69154c57">epochFraction</a>          (0.0      ),</div>
+<div class="line"><span class="lineno"> 3669</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a48523786912eceacede5ec0983fa9446">rmseThreshold</a>          (0.0      )</div>
+<div class="line"><span class="lineno"> 3670</span>{</div>
+<div class="line"><span class="lineno"> 3671</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;energy&quot;</span>)</div>
+<div class="line"><span class="lineno"> 3672</span>    {</div>
+<div class="line"><span class="lineno"> 3673</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;E&quot;</span>;</div>
+<div class="line"><span class="lineno"> 3674</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;energies&quot;</span>;</div>
+<div class="line"><span class="lineno"> 3675</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSEpa&quot;</span>, <span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAEpa&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
+<div class="line"><span class="lineno"> 3676</span>    }</div>
+<div class="line"><span class="lineno"> 3677</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;force&quot;</span>)</div>
+<div class="line"><span class="lineno"> 3678</span>    {</div>
+<div class="line"><span class="lineno"> 3679</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;F&quot;</span>;</div>
+<div class="line"><span class="lineno"> 3680</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;forces&quot;</span>;</div>
+<div class="line"><span class="lineno"> 3681</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
 <div class="line"><span class="lineno"> 3682</span>    }</div>
-<div class="line"><span class="lineno"> 3683</span> </div>
-<div class="line"><span class="lineno"> 3684</span>    <span class="comment">// Set up error metrics</span></div>
-<div class="line"><span class="lineno"> 3685</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> m : <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>)</div>
-<div class="line"><span class="lineno"> 3686</span>    {</div>
-<div class="line"><span class="lineno"> 3687</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">errorTrain</a>[m] = 0.0;</div>
-<div class="line"><span class="lineno"> 3688</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">errorTest</a>[m] = 0.0;</div>
-<div class="line"><span class="lineno"> 3689</span>    }</div>
-<div class="line"><span class="lineno"> 3690</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a> = <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>.at(0);</div>
-<div class="line"><span class="lineno"> 3691</span>}</div>
+<div class="line"><span class="lineno"> 3683</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;charge&quot;</span>)</div>
+<div class="line"><span class="lineno"> 3684</span>    {</div>
+<div class="line"><span class="lineno"> 3685</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;Q&quot;</span>;</div>
+<div class="line"><span class="lineno"> 3686</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;charges&quot;</span>;</div>
+<div class="line"><span class="lineno"> 3687</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
+<div class="line"><span class="lineno"> 3688</span>    }</div>
+<div class="line"><span class="lineno"> 3689</span>    <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno"> 3690</span>    {</div>
+<div class="line"><span class="lineno"> 3691</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Unknown training property.\n&quot;</span>);</div>
+<div class="line"><span class="lineno"> 3692</span>    }</div>
+<div class="line"><span class="lineno"> 3693</span> </div>
+<div class="line"><span class="lineno"> 3694</span>    <span class="comment">// Set up error metrics</span></div>
+<div class="line"><span class="lineno"> 3695</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> m : <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>)</div>
+<div class="line"><span class="lineno"> 3696</span>    {</div>
+<div class="line"><span class="lineno"> 3697</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">errorTrain</a>[m] = 0.0;</div>
+<div class="line"><span class="lineno"> 3698</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">errorTest</a>[m] = 0.0;</div>
+<div class="line"><span class="lineno"> 3699</span>    }</div>
+<div class="line"><span class="lineno"> 3700</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a> = <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>.at(0);</div>
+<div class="line"><span class="lineno"> 3701</span>}</div>
 <div class="ttc" id="aclassnnp_1_1Training_html_a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429"><div class="ttname"><a href="classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429">nnp::Training::SM_RANDOM</a></div><div class="ttdeci">@ SM_RANDOM</div><div class="ttdoc">Select candidates randomly.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00107">Training.h:107</a></div></div>
 <div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a0c16f83405eca4c233dfb9bf0008a9f9"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">nnp::Training::Property::numErrorsGlobal</a></div><div class="ttdeci">std::size_t numErrorsGlobal</div><div class="ttdoc">Global number of errors per update.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00405">Training.h:405</a></div></div>
 <div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a19c5f6057a4c916892268a16bc0a97f5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">nnp::Training::Property::numTrainPatterns</a></div><div class="ttdeci">std::size_t numTrainPatterns</div><div class="ttdoc">Number of training patterns in set.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00383">Training.h:383</a></div></div>
@@ -926,7 +926,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacennp.html">nnp</a></li><li class="navelem"><a class="el" href="classnnp_1_1Training.html">Training</a></li><li class="navelem"><a class="el" href="structnnp_1_1Training_1_1Property.html">Property</a></li>
-    <li class="footer">Generated on Fri May 27 2022 12:05:05 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Mon Sep 5 2022 10:42:55 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

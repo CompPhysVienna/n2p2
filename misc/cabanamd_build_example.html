@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CabanaMD GPU build example &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>CabanaMD GPU build example &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -122,7 +123,7 @@
            <div itemprop="articleBody">
              
   <section id="cabanamd-gpu-build-example">
-<span id="cabanamd-build-example"></span><h1>CabanaMD GPU build example<a class="headerlink" href="#cabanamd-gpu-build-example" title="Permalink to this headline"></a></h1>
+<span id="cabanamd-build-example"></span><h1>CabanaMD GPU build example<a class="headerlink" href="#cabanamd-gpu-build-example" title="Permalink to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This is not a fully tested installation guide but rather a collection of
@@ -131,7 +132,7 @@ time. They are kept here only as a reference, for your own build please refer
 to the current build instructions of the individual software packages.</p>
 </div>
 <section id="system-specifications">
-<h2>System specifications<a class="headerlink" href="#system-specifications" title="Permalink to this headline"></a></h2>
+<h2>System specifications<a class="headerlink" href="#system-specifications" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>CPU: <code class="docutils literal notranslate"><span class="pre">Intel(R)</span> <span class="pre">Core(TM)</span> <span class="pre">i7-7800X</span> <span class="pre">(6/12</span> <span class="pre">cores/threads)</span></code></p></li>
 <li><p>RAM: <code class="docutils literal notranslate"><span class="pre">32GB</span></code></p></li>
@@ -143,7 +144,7 @@ to the current build instructions of the individual software packages.</p>
 </ul>
 </section>
 <section id="build-steps">
-<h2>Build steps<a class="headerlink" href="#build-steps" title="Permalink to this headline"></a></h2>
+<h2>Build steps<a class="headerlink" href="#build-steps" title="Permalink to this heading"></a></h2>
 <p>In order to have all packages in one place please first create a working directory for
 these instructions (e.g. <code class="docutils literal notranslate"><span class="pre">CabanaMD-Setup</span></code>) and <code class="docutils literal notranslate"><span class="pre">cd</span></code> there.</p>
 <p>On this particular system it was required to build a CUDA-aware MPI. Create a
@@ -284,7 +285,7 @@ make -j
 <code class="docutils literal notranslate"><span class="pre">CabanaMD/build/bin/</span></code>.</p>
 </section>
 <section id="running-an-example-on-the-gpu">
-<h2>Running an example on the GPU<a class="headerlink" href="#running-an-example-on-the-gpu" title="Permalink to this headline"></a></h2>
+<h2>Running an example on the GPU<a class="headerlink" href="#running-an-example-on-the-gpu" title="Permalink to this heading"></a></h2>
 <p>Finally, we can test it on the GPU with the provided NNP example. Create
 <code class="docutils literal notranslate"><span class="pre">test_CabanaMD_GPU_NNP.sh</span></code> with below content and execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>

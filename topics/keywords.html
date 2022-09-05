@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -31,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -143,7 +144,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-configuration-keywords">
-<span id="keywords"></span><h1>NNP configuration: keywords<a class="headerlink" href="#nnp-configuration-keywords" title="Permalink to this headline"></a></h1>
+<span id="keywords"></span><h1>NNP configuration: keywords<a class="headerlink" href="#nnp-configuration-keywords" title="Permalink to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Documentation under construction…</p>
@@ -157,7 +158,7 @@ important, most keywords may only appear once (exceptions: <code class="docutils
 and <code class="docutils literal notranslate"><span class="pre">atom_energy</span></code>). Here is the list of available keywords (if no usage
 information is provided, then the keyword does not support any arguments).</p>
 <section id="general-nnp-keywords">
-<h2>General NNP keywords<a class="headerlink" href="#general-nnp-keywords" title="Permalink to this headline"></a></h2>
+<h2>General NNP keywords<a class="headerlink" href="#general-nnp-keywords" title="Permalink to this heading"></a></h2>
 <p>These keywords provide the basic setup for a neural network potential.
 Therefore, they are mandatory for most NNP applications and a minimal example
 setup file would contain at least:</p>
@@ -178,7 +179,7 @@ symmetry functions need to be specified by adding multiple lines starting with
 the <code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code> keyword.</p>
 <hr class="docutils" />
 <section id="number-of-elements">
-<h3><code class="docutils literal notranslate"><span class="pre">number_of_elements</span></code><a class="headerlink" href="#number-of-elements" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">number_of_elements</span></code><a class="headerlink" href="#number-of-elements" title="Permalink to this heading"></a></h3>
 <p>Defines the number of elements the neural network potential is designed for.</p>
 <dl class="simple">
 <dt><strong>Usage:</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">number_of_elements</span> <span class="pre">&lt;integer&gt;</span></code></p>
@@ -189,7 +190,7 @@ the <code class="docutils literal notranslate"><span class="pre">symfunction_sho
 </section>
 <hr class="docutils" />
 <section id="elements">
-<h3><code class="docutils literal notranslate"><span class="pre">elements</span></code><a class="headerlink" href="#elements" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">elements</span></code><a class="headerlink" href="#elements" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">elements</span> <span class="pre">&lt;string(s)&gt;</span></code></p>
 </dd>
@@ -205,7 +206,7 @@ contains a list of recognized element symbols.</p>
 </section>
 <hr class="docutils" />
 <section id="atom-energy">
-<h3><code class="docutils literal notranslate"><span class="pre">atom_energy</span></code><a class="headerlink" href="#atom-energy" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">atom_energy</span></code><a class="headerlink" href="#atom-energy" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">atom_energy</span> <span class="pre">&lt;string&gt;</span> <span class="pre">&lt;float&gt;</span></code></p>
 </dd>
@@ -218,7 +219,7 @@ element symbol, the second parameter is the shift energy.</p>
 </section>
 <hr class="docutils" />
 <section id="global-hidden-layers-short">
-<h3><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span></code><a class="headerlink" href="#global-hidden-layers-short" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span></code><a class="headerlink" href="#global-hidden-layers-short" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_hidden_layers_short</span> <span class="pre">&lt;integer&gt;</span></code></p>
 </dd>
@@ -229,7 +230,7 @@ element symbol, the second parameter is the shift energy.</p>
 </section>
 <hr class="docutils" />
 <section id="global-nodes-short">
-<h3><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span></code><a class="headerlink" href="#global-nodes-short" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span></code><a class="headerlink" href="#global-nodes-short" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_nodes_short</span> <span class="pre">&lt;integer(s)&gt;</span></code></p>
 </dd>
@@ -244,7 +245,7 @@ is always only a single output neuron.</p>
 </section>
 <hr class="docutils" />
 <section id="global-activation-short">
-<h3><code class="docutils literal notranslate"><span class="pre">global_activation_short</span></code><a class="headerlink" href="#global-activation-short" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">global_activation_short</span></code><a class="headerlink" href="#global-activation-short" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">global_activation_short</span> <span class="pre">&lt;chars&gt;</span></code></p>
 </dd>
@@ -303,7 +304,7 @@ single characters from the following table (see also
 </section>
 <hr class="docutils" />
 <section id="normalize-nodes">
-<h3><code class="docutils literal notranslate"><span class="pre">normalize_nodes</span></code><a class="headerlink" href="#normalize-nodes" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">normalize_nodes</span></code><a class="headerlink" href="#normalize-nodes" title="Permalink to this heading"></a></h3>
 <p>Activates normalized neural network propagation, i.e. the weighted sum of
 connected neuron values is divided by the number of incoming connections
 before the activation function is applied. Thus, the default formula to calculate the neuron</p>
@@ -315,7 +316,7 @@ before the activation function is applied. Thus, the default formula to calculat
 </section>
 <hr class="docutils" />
 <section id="cutoff-type">
-<h3><code class="docutils literal notranslate"><span class="pre">cutoff_type</span></code><a class="headerlink" href="#cutoff-type" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">cutoff_type</span></code><a class="headerlink" href="#cutoff-type" title="Permalink to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">cutoff_type</span> <span class="pre">&lt;integer&gt;</span> <span class="pre">&lt;&lt;float&gt;&gt;</span></code></p>
 </dd>
@@ -372,13 +373,13 @@ value is <span class="math notranslate nohighlight">\(\alpha = 0.0\)</span>.</p>
 </section>
 <hr class="docutils" />
 <section id="center-symmetry-functions">
-<h3><code class="docutils literal notranslate"><span class="pre">center_symmetry_functions</span></code><a class="headerlink" href="#center-symmetry-functions" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">center_symmetry_functions</span></code><a class="headerlink" href="#center-symmetry-functions" title="Permalink to this heading"></a></h3>
 </section>
 <section id="scale-symmetry-functions">
-<h3><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions</span></code><a class="headerlink" href="#scale-symmetry-functions" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions</span></code><a class="headerlink" href="#scale-symmetry-functions" title="Permalink to this heading"></a></h3>
 </section>
 <section id="scale-symmetry-functions-sigma">
-<h3><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions_sigma</span></code><a class="headerlink" href="#scale-symmetry-functions-sigma" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">scale_symmetry_functions_sigma</span></code><a class="headerlink" href="#scale-symmetry-functions-sigma" title="Permalink to this heading"></a></h3>
 <p>Combining these keywords determines how the symmetry functions are scaled
 before they are used as input for the neural network. See
 <a class="reference internal" href="../api/symmetry_function_scaling.html#_CPPv4N3nnp6SymFnc11ScalingTypeE" title="nnp::SymFnc::ScalingType"><code class="xref cpp cpp-enum docutils literal notranslate"><span class="pre">nnp::SymFnc::ScalingType</span></code></a> and the following table for allowed
@@ -414,10 +415,10 @@ combinations:</p>
 </section>
 <hr class="docutils" />
 <section id="scale-min-short">
-<h3><code class="docutils literal notranslate"><span class="pre">scale_min_short</span></code><a class="headerlink" href="#scale-min-short" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">scale_min_short</span></code><a class="headerlink" href="#scale-min-short" title="Permalink to this heading"></a></h3>
 </section>
 <section id="scale-max-short">
-<h3><code class="docutils literal notranslate"><span class="pre">scale_max_short</span></code><a class="headerlink" href="#scale-max-short" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">scale_max_short</span></code><a class="headerlink" href="#scale-max-short" title="Permalink to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">scale_min_short</span> <span class="pre">&lt;float&gt;</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">scale_max_short</span> <span class="pre">&lt;float&gt;</span></code></p>
@@ -431,7 +432,7 @@ scaling. See <code class="xref cpp cpp-enumerator docutils literal notranslate">
 <hr class="docutils" />
 </section>
 <section id="symfunction-short">
-<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code><a class="headerlink" href="#symfunction-short" title="Permalink to this headline"></a></h3>
+<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code><a class="headerlink" href="#symfunction-short" title="Permalink to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">symfunction_short</span> <span class="pre">&lt;string&gt;</span> <span class="pre">&lt;integer&gt;</span> <span class="pre">...</span></code></p>
 </dd>
@@ -495,12 +496,12 @@ and look for the detailed description of the class.</p>
 </section>
 </section>
 <section id="training-specific-keywords">
-<h2>Training-specific keywords<a class="headerlink" href="#training-specific-keywords" title="Permalink to this headline"></a></h2>
+<h2>Training-specific keywords<a class="headerlink" href="#training-specific-keywords" title="Permalink to this heading"></a></h2>
 <p>The following keywords are solely used for training with <a class="reference internal" href="../tools/nnp-train.html#nnp-train"><span class="std std-ref">nnp-train</span></a>. All
 other tools and interfaces will ignore these keywords.</p>
 <hr class="docutils" />
 <section id="selection-mode">
-<h3><code class="docutils literal notranslate"><span class="pre">selection_mode</span></code><a class="headerlink" href="#selection-mode" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">selection_mode</span></code><a class="headerlink" href="#selection-mode" title="Permalink to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">selection_mode</span> <span class="pre">&lt;integer&gt;</span> <span class="pre">&lt;&lt;pairs</span> <span class="pre">of</span> <span class="pre">integers&gt;&gt;</span></code></p>
 </dd>
@@ -547,7 +548,7 @@ described by Blank and Brown <a class="footnote-reference brackets" href="#id5" 
 </section>
 <hr class="docutils" />
 <section id="main-error-metric">
-<h3><code class="docutils literal notranslate"><span class="pre">main_error_metric</span></code><a class="headerlink" href="#main-error-metric" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">main_error_metric</span></code><a class="headerlink" href="#main-error-metric" title="Permalink to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">main_error_metric</span> <span class="pre">&lt;string&gt;</span></code></p>
 </dd>
@@ -569,7 +570,7 @@ are written.</p>
 <hr class="docutils" />
 </section>
 <section id="normalize-data-set">
-<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span></code><a class="headerlink" href="#normalize-data-set" title="Permalink to this headline"></a></h3>
+<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span></code><a class="headerlink" href="#normalize-data-set" title="Permalink to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span> <span class="pre">&lt;string&gt;</span></code></p>
 </dd>

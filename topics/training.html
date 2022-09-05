@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NNP training procedure &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>NNP training procedure &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-training-procedure">
-<span id="training"></span><h1>NNP training procedure<a class="headerlink" href="#nnp-training-procedure" title="Permalink to this headline"></a></h1>
+<span id="training"></span><h1>NNP training procedure<a class="headerlink" href="#nnp-training-procedure" title="Permalink to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This part of the documentation is incomplete!</p>
@@ -146,7 +147,7 @@ set of configurations to an initial NN potential. However, be aware that
 creating a reliable NNP usually requires repeated data set refining and adequate
 testing before it is ready for production!</p>
 <section id="step-1-data-set">
-<h2>Step 1: Data set<a class="headerlink" href="#step-1-data-set" title="Permalink to this headline"></a></h2>
+<h2>Step 1: Data set<a class="headerlink" href="#step-1-data-set" title="Permalink to this heading"></a></h2>
 <p>Prepare a data set (name the file <code class="docutils literal notranslate"><span class="pre">input.data</span></code>) in the file format described
 <a class="reference internal" href="cfg_file.html#cfg-file"><span class="std std-ref">here</span></a>. Unfortunately there’s no simple recipe how to create a
 “good” set of configurations, you will find more hints in the literature. As a
@@ -154,14 +155,14 @@ starting point you could try with some (100+) configurations taken from an <em>a
 initio</em> MD simulation.</p>
 </section>
 <section id="step-2-prepare-settings-file">
-<h2>Step 2: Prepare settings file<a class="headerlink" href="#step-2-prepare-settings-file" title="Permalink to this headline"></a></h2>
+<h2>Step 2: Prepare settings file<a class="headerlink" href="#step-2-prepare-settings-file" title="Permalink to this heading"></a></h2>
 <p>Prepare a settings file (name the file <code class="docutils literal notranslate"><span class="pre">input.nn</span></code>): Use the recommended file
 <a class="reference external" href="https://github.com/CompPhysVienna/n2p2/blob/master/examples/input.nn.recommended">here</a>
 and change the settings in the “GENERAL NNP SETTINGS” section according to
 your system.</p>
 </section>
 <section id="step-3-optional-data-set-normalization">
-<h2>Step 3 (<strong>optional</strong>): Data set normalization<a class="headerlink" href="#step-3-optional-data-set-normalization" title="Permalink to this headline"></a></h2>
+<h2>Step 3 (<strong>optional</strong>): Data set normalization<a class="headerlink" href="#step-3-optional-data-set-normalization" title="Permalink to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This step is usually not necessary any more because data set normalization is
@@ -186,7 +187,7 @@ necessary.</p>
 </div>
 </section>
 <section id="step-4-symmetry-function-setup">
-<span id="symfunc-setup"></span><h2>Step 4: Symmetry function setup<a class="headerlink" href="#step-4-symmetry-function-setup" title="Permalink to this headline"></a></h2>
+<span id="symfunc-setup"></span><h2>Step 4: Symmetry function setup<a class="headerlink" href="#step-4-symmetry-function-setup" title="Permalink to this heading"></a></h2>
 <p>Change the symmetry function definitions in the “SYMMETRY FUNCTIONS” section of
 the <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> file.. again this not a trivial task, please find more
 information in the literature <a class="footnote-reference brackets" href="#id8" id="id2">2</a> <a class="footnote-reference brackets" href="#id9" id="id3">3</a> <a class="footnote-reference brackets" href="#id10" id="id4">4</a>. See also the description of the
@@ -202,27 +203,27 @@ notebook</a>.</p>
 </div>
 </section>
 <section id="step-5-compute-symmetry-function-statistics">
-<h2>Step 5: Compute symmetry function statistics<a class="headerlink" href="#step-5-compute-symmetry-function-statistics" title="Permalink to this headline"></a></h2>
+<h2>Step 5: Compute symmetry function statistics<a class="headerlink" href="#step-5-compute-symmetry-function-statistics" title="Permalink to this heading"></a></h2>
 <p>With the files <code class="docutils literal notranslate"><span class="pre">input.data</span></code> and <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> ready in the same directoy, run
 the tool <code class="docutils literal notranslate"><span class="pre">nnp-scaling</span></code> (supports MPI parallelization). This will compute all
 symmetry functions for all atoms once and store statistics about them in a
 third file (<code class="docutils literal notranslate"><span class="pre">scaling.data</span></code>) required for training.</p>
 </section>
 <section id="step-6-nnp-training">
-<h2>Step 6: NNP Training<a class="headerlink" href="#step-6-nnp-training" title="Permalink to this headline"></a></h2>
+<h2>Step 6: NNP Training<a class="headerlink" href="#step-6-nnp-training" title="Permalink to this heading"></a></h2>
 <p>Run the actual training program <code class="docutils literal notranslate"><span class="pre">nnp-train</span></code>, preferably in parallel via:
 <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">16</span> <span class="pre">nnp-train</span></code> Be aware of the memory footprint which is estimated
 in the previous step (see end of log file or screen output).</p>
 </section>
 <section id="step-7-collect-weight-files">
-<h2>Step 7: Collect weight files<a class="headerlink" href="#step-7-collect-weight-files" title="Permalink to this headline"></a></h2>
+<h2>Step 7: Collect weight files<a class="headerlink" href="#step-7-collect-weight-files" title="Permalink to this heading"></a></h2>
 <p>Upon training weight files are created for each epoch <code class="docutils literal notranslate"><span class="pre">weights.???.&lt;epoch&gt;</span></code>.
 Select an epoch with satisfying RMSE and rename the corresponding weight
 files to <code class="docutils literal notranslate"><span class="pre">weights.???.data</span></code> (<code class="docutils literal notranslate"><span class="pre">???</span></code> is the atomic number of elements
 occurring).</p>
 </section>
 <section id="step-8-prediction-and-md-simulation">
-<h2>Step 8: Prediction and MD simulation<a class="headerlink" href="#step-8-prediction-and-md-simulation" title="Permalink to this headline"></a></h2>
+<h2>Step 8: Prediction and MD simulation<a class="headerlink" href="#step-8-prediction-and-md-simulation" title="Permalink to this heading"></a></h2>
 <p>Try the potential by predicting energies and forces for a new configuration:
 Collect the files from training (<code class="docutils literal notranslate"><span class="pre">input.nn</span></code>, <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> and
 <code class="docutils literal notranslate"><span class="pre">weights.???</span></code>) in a folder together with a single configuration (named again

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-convert &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>nnp-convert &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -124,7 +125,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-convert">
-<span id="id1"></span><h1>nnp-convert<a class="headerlink" href="#nnp-convert" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>nnp-convert<a class="headerlink" href="#nnp-convert" title="Permalink to this heading"></a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">nnp-convert</span></code> tool converts a given <code class="docutils literal notranslate"><span class="pre">input.data</span></code> set file (see
 <a class="reference internal" href="../topics/cfg_file.html#cfg-file"><span class="std std-ref">format</span></a>) into a different file format. Currently, the following
 file formats are supported:</p>
@@ -133,11 +134,11 @@ file formats are supported:</p>
 <li><p>VASP POSCAR.</p></li>
 </ol>
 <section id="requirements">
-<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <p>A configuration file named <code class="docutils literal notranslate"><span class="pre">input.data</span></code> needs to be present.</p>
 </section>
 <section id="usage">
-<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-convert &lt;format&gt; &lt;elem1 &lt;elem2 ...&gt;&gt;
             &lt;format&gt; ... Structure file output format (xyz/poscar).
             &lt;elemN&gt; .... Symbol for Nth element.
@@ -154,7 +155,7 @@ order should match the one determined by the POTCAR file.</p>
 </div>
 </section>
 <section id="sample-screen-output">
-<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this headline"></a></h2>
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** NNP-CONVERT ***************************************************************
 
 Requested file format  : poscar
@@ -187,7 +188,7 @@ Configuration      20:     144 atoms
 </div>
 </section>
 <section id="file-output">
-<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this headline"></a></h2>
+<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>Main output depends on the chosen target file format:</p>
 <ol class="arabic simple">
@@ -199,7 +200,7 @@ Configuration      20:     144 atoms
 </ul>
 </section>
 <section id="examples">
-<h2>Examples:<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+<h2>Examples:<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
 <ul>
 <li><p>Convert to XYZ:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-convert xyz S Cu

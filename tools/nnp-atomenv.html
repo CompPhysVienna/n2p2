@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-atomenv &mdash; n2p2 - A neural network potential package &#34;6be249e&#34; documentation</title>
+  <title>nnp-atomenv &mdash; n2p2 - A neural network potential package &#34;9bd5231&#34; documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -31,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
           </a>
               <div class="version">
-                "6be249e"
+                "9bd5231"
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -124,7 +125,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-atomenv">
-<span id="id1"></span><h1>nnp-atomenv<a class="headerlink" href="#nnp-atomenv" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>nnp-atomenv<a class="headerlink" href="#nnp-atomenv" title="Permalink to this heading"></a></h1>
 <p>This tool creates files which contain atomic environment data in the form of
 symmetry functions and their derivatives for further processing. In the context
 of high-dimensional neural network potentials symmetry functions act as a local
@@ -177,7 +178,7 @@ x_{i, \alpha}} \quad \frac{\partial \vec{G}_{n^{S_2}(i, 1)}}{\partial x_{i,
 c_{S(i)S_2})}}{\partial x_{i, \alpha}} \quad \ldots,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha = \{0, 1, 2\}\)</span> and <span class="math notranslate nohighlight">\(x_{i, 0} = x_i, x_{i, 1} = y_i, x_{i, 2} = z_i\)</span>.</p>
 <section id="requirements">
-<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <p>A data set with multiple configurations, a settings file and the symmetry
 function scaling data is required:</p>
 <ul class="simple">
@@ -187,7 +188,7 @@ function scaling data is required:</p>
 </ul>
 </section>
 <section id="usage">
-<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np &lt;np&gt; nnp-atomenv &lt;nbins&gt; &lt;ncutij&gt;
 </pre></div>
 </div>
@@ -235,7 +236,7 @@ files!</p>
 </div>
 </section>
 <section id="sample-screen-output">
-<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this headline"></a></h2>
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** SYMMETRY FUNCTION HISTOGRAMS **********************************************
 
 Writing histograms with 500 bins.
@@ -275,7 +276,7 @@ Combining atomic environment file: atomic-env.dGdz.
 </div>
 </section>
 <section id="file-output">
-<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this headline"></a></h2>
+<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">atomic-env.G</span></code>: Symmetry function values of each atom and its closest
 neighbors.</p></li>
