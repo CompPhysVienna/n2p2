@@ -147,6 +147,21 @@ void Structure::readFromLines(vector<string> const& lines)
         splitLine = split(reduce(*line));
         if (splitLine.at(0) == "begin")
         {
+            if (splitLine.size() > 1)
+            {
+                for (vector<string>::const_iterator word =
+                     splitLine.begin() + 1; word != splitLine.end(); ++word)
+                {
+                    if      (*word == "set=train") sampleType = ST_TRAINING;
+                    else if (*word == "set=test") sampleType = ST_TEST;
+                    else
+                    {
+                        throw runtime_error("ERROR: Unknown keyword in "
+                                            "structure specification, check "
+                                            "\"begin\" arguments.\n");
+                    }
+                }
+            }
         }
         else if (splitLine.at(0) == "comment")
         {
