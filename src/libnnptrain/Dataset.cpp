@@ -1040,22 +1040,52 @@ void Dataset::writeSymmetryFunctionScaling(string const& fileName)
         appendLinesToFile(sFile,
                           createFileHeader(title, colSize, colName, colInfo));
 
+        log << "\n";
+        log << "Abbreviations:\n";
+        log << "--------------\n";
+        log << "ind ...... Symmetry function index.\n";
+        log << "min ...... Minimum symmetry function value.\n";
+        log << "max ...... Maximum symmetry function value.\n";
+        log << "mean ..... Mean symmetry function value.\n";
+        log << "sigma .... Standard deviation of symmetry function values.\n";
+        log << "spread ... (max - min) / sigma.\n";
+        log << "\n";
         for (vector<Element>::const_iterator it = elements.begin();
              it != elements.end(); ++it)
         {
+            log << strpr("Scaling data for symmetry functions element %2s :\n",
+                         it->getSymbol().c_str());
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+            log << " ind       min       max      mean     sigma    spread\n";
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
             for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
             {
                 SymFncStatistics::Container const& c
                     = it->statistics.data.at(i);
                 size_t n = c.count;
+                double const mean = c.sum / n;
+                double const sigma = sqrt((c.sum2 - c.sum * c.sum / n)
+                                          / (n - 1));
+                double const spread = (c.max - c.min) / sigma;
                 sFile << strpr("%10d %10d %24.16E %24.16E %24.16E %24.16E\n",
                                it->getIndex() + 1,
                                i + 1,
                                c.min,
                                c.max,
-                               c.sum / n,
-                               sqrt((c.sum2 - c.sum * c.sum / n) / (n - 1)));
+                               mean,
+                               sigma);
+                log << strpr("%4zu %9.2E %9.2E %9.2E %9.2E %9.2E\n",
+                             i + 1,
+                             c.min,
+                             c.max,
+                             mean,
+                             sigma,
+                             spread);
             }
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
         }
         // Finally decided to remove this legacy line...
         //sFile << strpr("%f %f\n", 0.0, 0.0);

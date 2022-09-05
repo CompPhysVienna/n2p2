@@ -544,19 +544,19 @@ void Training::dataSetNormalization()
     log << "----------------------------------\n";
     log << "Reference data statistics:\n";
     log << "----------------------------------\n";
-    log << strpr("Mean/sigma energy per atom : %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma energy per atom : %16.8E   / %16.8E\n",
                  meanEnergyPerAtomRef,
                  sigmaEnergyPerAtomRef);
-    log << strpr("Mean/sigma force           : %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma force           : %16.8E   / %16.8E\n",
                  meanForceRef,
                  sigmaForceRef);
     log << "----------------------------------\n";
     log << "Initial NNP prediction statistics:\n";
     log << "----------------------------------\n";
-    log << strpr("Mean/sigma energy per atom : %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma energy per atom : %16.8E   / %16.8E\n",
                  meanEnergyPerAtomNnp,
                  sigmaEnergyPerAtomNnp);
-    log << strpr("Mean/sigma force           : %16.8E +/- %16.8E\n",
+    log << strpr("Mean/sigma force           : %16.8E   / %16.8E\n",
                  meanForceNnp,
                  sigmaForceNnp);
     log << "----------------------------------\n";
