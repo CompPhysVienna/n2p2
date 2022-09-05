@@ -102,17 +102,22 @@ void Training::selectSets()
     for (size_t i = 0; i < structures.size(); ++i)
     {
         Structure& s = structures.at(i);
-        if (gsl_rng_uniform(rng) < testSetFraction)
+        // Only select set if not already determined.
+        if (s.sampleType == Structure::ST_UNKNOWN)
         {
-            s.sampleType = Structure::ST_TEST;
+            double const r = gsl_rng_uniform(rng);
+            if (r < testSetFraction) s.sampleType = Structure::ST_TEST;
+            else                     s.sampleType = Structure::ST_TRAINING;
+        }
+        if (s.sampleType == Structure::ST_TEST)
+        {
             size_t const& na = s.numAtoms;
             k = "energy"; if (p.exists(k)) p[k].numTestPatterns++;
             k = "force";  if (p.exists(k)) p[k].numTestPatterns += 3 * na;
             k = "charge"; if (p.exists(k)) p[k].numTestPatterns += na;
         }
-        else
+        else if (s.sampleType == Structure::ST_TRAINING)
         {
-            s.sampleType = Structure::ST_TRAINING;
             for (size_t j = 0; j < numElements; ++j)
             {
                 numAtomsPerElement.at(j) += s.numAtomsPerElement.at(j);
@@ -153,6 +158,11 @@ void Training::selectSets()
                     p[k].updateCandidates.back().a = it->index;
                 }
             }
+        }
+        else
+        {
+            log << strpr("WARNING: Structure %zu not assigned to either "
+                         "training or test set.\n", s.index);
         }
     }
     for (size_t i = 0; i < numElements; ++i)
