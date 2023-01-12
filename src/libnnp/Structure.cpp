@@ -663,7 +663,8 @@ double Structure::calculateElectrostaticEnergy(
                 for (auto const &gv: grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
-                    Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    // Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    Vec3D const dr = ai.r - aj.r;
                     A(i, j) += 2 * gv.coeff * cos(gv.k * dr) / fourPiEps;
                     //A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
                 }
