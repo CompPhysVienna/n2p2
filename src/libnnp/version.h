@@ -18,8 +18,8 @@
 #define VERSION_H
 
 #define N2P2_VERSION "v2.2.0"
-#define N2P2_GIT_VERSION ""
-#define N2P2_GIT_REV ""
-#define N2P2_GIT_BRANCH ""
+#define N2P2_GIT_VERSION "539576b"
+#define N2P2_GIT_REV "539576bbe3d2152ad8fcb8ec4fcd7934fd1a2472"
+#define N2P2_GIT_BRANCH "ct_icos_hardcode"
 
 #endif
