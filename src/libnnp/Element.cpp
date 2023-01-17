@@ -339,6 +339,24 @@ void Element::setCutoffFunction(CutoffFunction::CutoffType const cutoffType,
     return;
 }
 
+void Element::setCutoffFunction(CutoffFunction::CutoffType const cutoffType,
+                                double const                     cutoffAlpha,
+				double const icut_beta,
+				double const icut_gamma)
+{
+  setCutoffFunction(cutoffType, cutoffAlpha);
+  cerr << "DEBUG: Element::SetCutoffFunction\n";
+    for (vector<SymFnc*>::const_iterator
+         it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
+    {
+        SymFncBaseCutoff* sfcb = dynamic_cast<SymFncBaseCutoff*>(*it);
+        if (sfcb != nullptr)
+        {
+	  sfcb->setInnerCutoffFunction(icut_beta, icut_gamma);
+        }
+    }
+  
+}
 void Element::setScalingNone() const
 {
     for (size_t i = 0; i < symmetryFunctions.size(); ++i)

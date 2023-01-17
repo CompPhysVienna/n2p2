@@ -37,6 +37,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
     m["elements"                      ] = "";
     m["atom_energy"                   ] = "";
     m["cutoff_type"                   ] = "";
+    m["inner_cutoff"                  ] = ""; 
     m["symfunction_short"             ] = "";
     m["scale_symmetry_functions"      ] = "";
     m["scale_min_short"               ] = "";

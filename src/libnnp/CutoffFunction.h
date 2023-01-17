@@ -68,7 +68,10 @@ public:
         CT_POLY3,
         /** @f$f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1@f$
          */
-        CT_POLY4
+        CT_POLY4,
+	/** @f$f(x) = 1/2(-\cos(2\pi x) + 1)@f$
+         */
+	CT_ICOS
     };
 
     /** Constructor, initializes to ´CT_HARD´.
@@ -99,6 +102,14 @@ public:
      * @param[in] alpha Width parameter @f$\alpha@f$.
      */
     void       setCutoffParameter(double const alpha);
+  /* Set parameter for inner cutoff
+   * 
+   * @param[in] icut_beta inner cutoff function parameter icut_beta
+   * @param[in] icut_gamma inner cutoff function parameter icut_gamma
+   */
+  void setInnerCutoffParameter(double const icut_beta,
+			       double const icut_gamma);
+
     /** Getter for #alpha.
      *
      * @return Cutoff parameter used.
@@ -145,6 +156,11 @@ private:
     double       iw;
     /// Core functions used by POLYN, if any.
     CoreFunction core;
+  /// inner cutoff function parameter beta
+  double icut_beta;
+  /// inner cutoff function parameter gamma
+  double icut_gamma;
+
     /// Function pointer to f.
     double       (CutoffFunction::*fPtr)(double r) const;
     /// Function pointer to df.
@@ -174,6 +190,10 @@ private:
     double   fCORE (double r) const;
     double  dfCORE (double r) const;
     void   fdfCORE (double r, double& fc, double& dfc) const;
+
+    double  fICOS  (double r) const;
+    double dfICOS  (double r) const;
+    void  fdfICOS  (double r, double& fc, double& dfc) const;
 };
 
 //////////////////////////////////

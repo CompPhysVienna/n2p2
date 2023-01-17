@@ -19,7 +19,7 @@ COMP=gnu
 # Possible modes are "static", "shared" and "test".
 # Note: For target "pynnp" there is no "static" mode, "shared" is automatically
 # used instead.
-MODE=static
+MODE=shared
 
 # Installation directory for binaries.
 INSTALL_BIN=$(HOME)/local/bin

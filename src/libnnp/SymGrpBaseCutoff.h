@@ -37,6 +37,8 @@ protected:
     double                     rc;
     /// Cutoff function parameter @f$\alpha@f$ (common feature).
     double                     cutoffAlpha;
+  double icut_beta;
+  double icut_gamma;
     /// Subtype string (specifies cutoff type) (common feature).
     std::string                subtype;
     /// Cutoff function used by this symmetry function group.
