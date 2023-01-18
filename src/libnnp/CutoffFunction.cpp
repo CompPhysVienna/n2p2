@@ -18,8 +18,6 @@
 #include <stdexcept>
 #include <cmath>  // cos, sin, tanh, exp, pow
 #include <limits> // std::numeric_limits
-// for debugging
-#include <iostream>
 
 using namespace std;
 using namespace nnp;
@@ -125,7 +123,6 @@ void CutoffFunction::setInnerCutoffParameter(double const icut_beta,
 {
   this->icut_beta = icut_beta;
   this->icut_gamma = icut_gamma;
-  std::cerr << " icut_beta = " << this->icut_beta << ", icut_gamma = " << this->icut_gamma << "\n";
   return;
 }
 double CutoffFunction::fCOS(double r) const
@@ -269,9 +266,6 @@ void CutoffFunction::fdfICOS(double r, double& fc, double& dfc) const
 {
   double const rii = this->icut_beta * rc; 
   double const rio = this->icut_gamma * rc;
-  std::cerr << "DEBUG: in CutoffFunction::fdfICOS rc = " << rc << "\n";
-  std::cerr << "DEBUG: in CutoffFunction::fdfICOS icut_beta = " << this->icut_beta << ", icut_gamma = " << this->icut_gamma << "\n";
-  std::cerr << "DEBUG: in CutoffFunction::fdfICOS rii = " << rii << ", rio = " << rio << "\n";
   if (r < rii) {
     fc = 0.0;
     dfc = 0.0;

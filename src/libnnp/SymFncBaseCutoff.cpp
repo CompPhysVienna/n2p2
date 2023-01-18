@@ -17,8 +17,6 @@
 #include "SymFncBaseCutoff.h"
 #include "utility.h"
 #include <string>
-// for debugging
-#include <iostream>
 
 using namespace std;
 using namespace nnp;
@@ -56,7 +54,6 @@ void SymFncBaseCutoff::setInnerCutoffFunction(double const icut_beta,
   this->icut_beta = icut_beta;
   this->icut_gamma = icut_gamma;
   fc.setInnerCutoffParameter(icut_beta, icut_gamma);
-  std::cerr << "DEBUG: SymFncBaseCutoff::setInnerCutoffFunction\n";
 }
 
 

@@ -345,7 +345,6 @@ void Element::setCutoffFunction(CutoffFunction::CutoffType const cutoffType,
 				double const icut_gamma)
 {
   setCutoffFunction(cutoffType, cutoffAlpha);
-  cerr << "DEBUG: Element::SetCutoffFunction\n";
     for (vector<SymFnc*>::const_iterator
          it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
     {
