@@ -45,6 +45,14 @@ public:
     void                     setCutoffFunction(CutoffFunction::
                                           CutoffType cutoffType,
                                           double     cutoffAlpha);
+    /** Set cutoff function type and parameter.
+     *
+     * @param[in] icut_beta Inner cutoff function parameter beta
+     * @param[in] icut_gamma Inner cutoff function parameter gamma
+     */
+    void                     setInnerCutoffFunction(double icut_beta,
+						    double icut_gamma);
+
     /** Get private #cutoffAlpha member variable.
      */
     double                   getCutoffAlpha() const;
@@ -56,6 +64,9 @@ public:
     CutoffFunction::
     CutoffType               getCutoffType() const;
 
+  double geticut_beta() const;
+  double geticut_gamma() const;
+
 protected:
     /// Cutoff parameter @f$\alpha@f$.
     double                     cutoffAlpha;
@@ -66,6 +77,8 @@ protected:
     /// Cutoff type used by this symmetry function.
     CutoffFunction::CutoffType cutoffType;
 
+  double icut_beta;
+  double icut_gamma;
     /** Constructor, initializes #type.
      */
     SymFncBaseCutoff(std::size_t type, ElementMap const&);
@@ -82,7 +95,11 @@ inline CutoffFunction::CutoffType SymFncBaseCutoff::getCutoffType() const
 {
     return cutoffType;
 }
+  
+inline double SymFncBaseCutoff::geticut_beta() const { return icut_beta; }
+inline double SymFncBaseCutoff::geticut_gamma() const { return icut_gamma; }
 
 }
+
 
 #endif

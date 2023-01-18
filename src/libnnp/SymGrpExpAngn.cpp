@@ -82,10 +82,13 @@ bool SymGrpExpAngn::addMember(SymFnc const* const symmetryFunction)
         e1          = sf->getE1();
         e2          = sf->getE2();
         convLength  = sf->getConvLength();
+	icut_beta   = sf->geticut_beta();
+	icut_gamma  = sf->geticut_gamma(); 
 
         fc.setCutoffType(cutoffType);
         fc.setCutoffRadius(rc);
         fc.setCutoffParameter(cutoffAlpha);
+	fc.setInnerCutoffParameter(icut_beta, icut_gamma);
     }
 
     if (sf->getCutoffType()  != cutoffType ) return false;
