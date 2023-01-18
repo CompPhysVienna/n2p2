@@ -1,7 +1,5 @@
 *.o
 compile_commands.json
 .clangd
-include/
-*.a
-*.so
+
 
