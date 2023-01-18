@@ -432,8 +432,6 @@ void Mode::setupCutoff()
 	    vector<string> icut_args = split(settings["inner_cutoff"]);
 	    icut_beta  = atof(icut_args.at(0).c_str());
 	    icut_gamma = atof(icut_args.at(1).c_str());
-	    log << "DEBUG: Mode::icut_beta = " << std::to_string(icut_beta) << "\n";
-	    log << "DEBUG: Mode::icut_gamma = " << std::to_string(icut_gamma) << "\n";
 	  }
     }
     else
