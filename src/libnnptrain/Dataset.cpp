@@ -712,7 +712,7 @@ size_t Dataset::getNumStructures(ifstream& dataFile)
     while (getline(dataFile, line))
     {
         splitLine = split(reduce(line));
-        if (splitLine.at(0) == "begin") count++;
+        if (!splitLine.empty() && splitLine.at(0) == "begin") count++;
     }
 
     return count;

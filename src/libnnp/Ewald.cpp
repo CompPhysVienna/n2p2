@@ -142,6 +142,7 @@ double EwaldSetup::calculateKCut()
         kCut = sqrt(-2.0 * log(precision)) / eta;
     else
         kCut = sqrt(2) * s / eta;
+        //if (kCut * pow(eta,2) > pow(volume,1.0/3)/2) 
     return kCut;
 }
 

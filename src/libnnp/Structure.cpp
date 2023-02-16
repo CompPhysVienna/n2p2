@@ -934,9 +934,9 @@ void Structure::calculateDAdrQ(
                 for (auto const &gv: grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
-                    Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    //Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    Vec3D const dr = ai.r - aj.r;
                     dAijdri -= 2 * gv.coeff * sin(gv.k * dr) * gv.k;
-                    //dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
                 }
                 dAijdri /= fourPiEps;
 
@@ -1100,6 +1100,8 @@ void Structure::calculateElectrostaticEnergyDerivatives(
         size_t const ei = ai.element;
         double const Qi = ai.charge;
 
+        // TODO: This loop could be reduced by making use of symmetry, j>=i or
+        // so
         for (size_t j = 0; j < numAtoms; ++j)
         {
             Atom& aj = atoms.at(j);
