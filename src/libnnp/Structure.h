@@ -82,6 +82,8 @@ struct Structure
     double                   chargeRef;
     /// Simulation box volume.
     double                   volume;
+    /// Structure weight
+    double                   strucWeight;
     /// Sample type (training or test set).
     SampleType               sampleType;
     /// Structure comment.

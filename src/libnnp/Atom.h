@@ -114,6 +114,8 @@ struct Atom
     double                   charge;
     /// Atomic reference charge.
     double                   chargeRef;
+    /// Force weight for training.
+    double                   forceWeight;
     /// Cartesian coordinates
     Vec3D                    r;
     /// Force vector calculated by neural network.
