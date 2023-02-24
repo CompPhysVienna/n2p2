@@ -42,6 +42,7 @@ Structure::Structure() :
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
+    strucWeight                   (1.0       ),
     sampleType                    (ST_UNKNOWN),
     comment                       (""        )
 {
@@ -206,6 +207,10 @@ void Structure::readFromLines(vector<string> const& lines)
             atoms.back().r[2]           = atof(splitLine.at(3).c_str());
             atoms.back().element        = elementMap[splitLine.at(4)];
             atoms.back().chargeRef      = atof(splitLine.at(5).c_str());
+            atoms.back().forceWeight    = atof(splitLine.at(6).c_str());
+            if (atoms.back().forceWeight == 0) {
+                atoms.back().forceWeight = 1.0;
+            }
             atoms.back().fRef[0]        = atof(splitLine.at(7).c_str());
             atoms.back().fRef[1]        = atof(splitLine.at(8).c_str());
             atoms.back().fRef[2]        = atof(splitLine.at(9).c_str());
@@ -220,6 +225,10 @@ void Structure::readFromLines(vector<string> const& lines)
         else if (splitLine.at(0) == "charge")
         {
             chargeRef = atof(splitLine[1].c_str());
+        }
+        else if (splitLine.at(0) == "weight")
+        {
+            strucWeight = atof(splitLine[1].c_str());
         }
         else if (splitLine.at(0) == "end")
         {
@@ -555,6 +564,7 @@ void Structure::reset()
     charge                         = 0.0       ;
     chargeRef                      = 0.0       ;
     volume                         = 0.0       ;
+    strucWeight                    = 1.0       ;
     sampleType                     = ST_UNKNOWN;
     comment                        = ""        ;
 

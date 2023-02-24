@@ -2451,12 +2451,12 @@ void Training::update(string const& property)
         {
             if (k == "energy")
             {
-                pu.error.at(0).at(offset2) += s.energyRef - s.energy;
+                pu.error.at(0).at(offset2) += (s.energyRef - s.energy) * s.strucWeight;
             }
             else if (k == "force")
             {
                 Atom const& a = s.atoms.at(c->a);
-                pu.error.at(0).at(offset2) +=  a.fRef[c->c] - a.f[c->c];
+                pu.error.at(0).at(offset2) +=  (a.fRef[c->c] - a.f[c->c]) * s.strucWeight * a.forceWeight;
             }
             else if (k == "charge")
             {
