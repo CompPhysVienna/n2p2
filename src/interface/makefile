@@ -21,9 +21,6 @@ MODE=static
 
 # LAMMPS version string
 LAMMPS_VERSION=stable_23Jun2022
-#LAMMPS_VERSION=stable_29Sep2021
-#LAMMPS_VERSION=patch_27May2021
-#LAMMPS_VERSION=patch_2Jul2021
 
 # Include global (project-wide) settings.
 include $(PROJECT_DIR)/src/makefile.$(COMP)
