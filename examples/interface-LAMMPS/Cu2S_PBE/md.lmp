@@ -1,5 +1,5 @@
 ###############################################################################
-# MD simulation for NN copper sulfide
+# MD simulation for HDNNP copper sulfide
 ###############################################################################
 
 ###############################################################################
@@ -12,8 +12,8 @@ variable cfgFile         string "cu2s_144_low-chalcocite_Evans-1979_PBE.data"
 variable numSteps        equal  100
 variable dt              equal  0.001
 # NN
-variable nnpCutoff       equal  6.01
-variable nnpDir          string "nnp-data"
+variable hdnnpCutoff     equal  6.01
+variable hdnnpDir        string "hdnnp-data"
 # Masses
 variable mass_S          equal  32.065                                                  # mass for element 1 (S)  (g/mol)
 variable mass_Cu         equal  63.546                                                  # mass for element 2 (Cu) (g/mol)
@@ -31,10 +31,10 @@ timestep ${dt}
 thermo 10
 
 ###############################################################################
-# NN
+# HDNNP
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 100 resetew no maxew 100 cflength 1.0 cfenergy 1.0 emap "1:S,2:Cu"
-pair_coeff * * ${nnpCutoff}
+pair_style hdnnp ${hdnnpCutoff} dir ${hdnnpDir} showew no showewsum 100 resetew no maxew 100 cflength 1.0 cfenergy 1.0
+pair_coeff * * S Cu
 
 ###############################################################################
 # INTEGRATOR
