@@ -23,16 +23,16 @@ void nnpToolTestBody(Example_nnp_train const example)
 
     // Grep for "CI-CHECK" for code changes if you want to review output files
     // from non-interactive CI run.
-    ifstream source("nnp-train.log.0000", ios::binary);
-    ofstream dest("../nnp-train.log.0000." + example.name, ios::binary);
-    dest << source.rdbuf();
-    source.close();
-    dest.close();
-    ifstream source2("learning-curve.out", ios::binary);
-    ofstream dest2("../learning-curve.out." + example.name, ios::binary);
-    dest2 << source2.rdbuf();
-    source2.close();
-    dest2.close();
+    //ifstream source("nnp-train.log.0000", ios::binary);
+    //ofstream dest("../nnp-train.log.0000." + example.name, ios::binary);
+    //dest << source.rdbuf();
+    //source.close();
+    //dest.close();
+    //ifstream source2("learning-curve.out", ios::binary);
+    //ofstream dest2("../learning-curve.out." + example.name, ios::binary);
+    //dest2 << source2.rdbuf();
+    //source2.close();
+    //dest2.close();
 
     file.open("learning-curve.out");
     BOOST_REQUIRE(file.is_open());
