@@ -71,7 +71,7 @@ jobs:
       
       - name: Run C++ tests and coverage
         run: |
-          make cpp
+          make cpp LOG_LEVEL=all
           cd cpp
           make coverage
           rm *.gcda *.gcno
