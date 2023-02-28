@@ -263,7 +263,8 @@ void Structure::calculateMaxCutoffRadiusOverall(
     if (isPeriodic)
     {
         ewaldSetup.calculateParameters(volume, numAtoms);
-        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, ewaldSetup.rCut);
+        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall,
+                                     ewaldSetup.params.rCut);
     }
 }
 
@@ -449,7 +450,7 @@ void Structure::setupNeighborCutoffMap(vector<
             // If neighbor distance is higher than current "desired cutoff"
             // then add neighbor cutoff.
             // Attention: a step in the neighbor list could jump over multiple
-            // cutoffs -> don't increment neighbor index
+            // params -> don't increment neighbor index
             if( n.d > elementCutoffs[ic] )
             {
                 a.neighborCutoffs.emplace( elementCutoffs.at(ic), in );
@@ -612,14 +613,15 @@ double Structure::calculateElectrostaticEnergy(
                                 "be sorted for Ewald summation!\n");
         }
 
-        ewaldSetup.calculateParameters(volume, numAtoms);
+        // Should always happen already before neighborlist construction.
+        //ewaldSetup.calculateParameters(volume, numAtoms);
 #ifdef _OPENMP
         }
 #endif
         KspaceGrid grid;
         grid.setup(box, ewaldSetup);
-        double const rcutReal = ewaldSetup.rCut;
-        double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
+        double const rcutReal = ewaldSetup.params.rCut;
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.params.eta;
 
 #ifdef _OPENMP
         #pragma omp for schedule(dynamic)
@@ -870,12 +872,10 @@ void Structure::calculateDAdrQ(
 #ifdef _OPENMP
         #pragma omp single
 #endif
-        ewaldSetup.calculateParameters(volume, numAtoms);
-
         KspaceGrid grid;
         grid.setup(box, ewaldSetup);
-        double rcutReal = ewaldSetup.rCut;
-        double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
+        double rcutReal = ewaldSetup.params.rCut;
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.params.eta;
 
 #ifdef _OPENMP
         // This way of parallelization slightly changes the result because of

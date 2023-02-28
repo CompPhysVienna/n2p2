@@ -51,8 +51,8 @@ void KspaceGrid::setup(Vec3D box[3], EwaldSetup& ewaldSetup)
     kbox[1] = pre * box[2].cross(box[0]);
     kbox[2] = pre * box[0].cross(box[1]);
 
-    eta = ewaldSetup.eta;
-    kCut = ewaldSetup.kCut;
+    eta = ewaldSetup.params.eta;
+    kCut = ewaldSetup.params.kCut;
 
     // Compute box copies required in each direction.
     calculatePbcCopies(kCut);

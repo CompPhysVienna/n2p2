@@ -18,7 +18,7 @@
 #define KSPACE_H
 
 #include "Vec3D.h"
-#include "Ewald.h"
+#include "EwaldSetup.h"
 #include <vector> // std::vector
 
 namespace nnp

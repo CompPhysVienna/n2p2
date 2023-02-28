@@ -21,7 +21,7 @@
 #include "Element.h"
 #include "ElementMap.h"
 #include "ErfcBuf.h"
-#include "Ewald.h"
+#include "EwaldSetup.h"
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
 #include <Eigen/Core>

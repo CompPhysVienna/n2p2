@@ -289,8 +289,8 @@ void Mode::setupElements()
 
     if (settings.keywordExists("atom_energy"))
     {
-        Settings::KeyRange r = settings.getValues("atom_energy");
-        for (Settings::KeyMap::const_iterator it = r.first;
+        settings::Settings::KeyRange r = settings.getValues("atom_energy");
+        for (settings::Settings::KeyMap::const_iterator it = r.first;
              it != r.second; ++it)
         {
             vector<string> args    = split(reduce(it->second.first));
@@ -326,8 +326,8 @@ void Mode::setupElectrostatics(bool   initialHardness,
     // Atomic hardness.
     if (initialHardness)
     {
-        Settings::KeyRange r = settings.getValues("initial_hardness");
-        for (Settings::KeyMap::const_iterator it = r.first;
+        settings::Settings::KeyRange r = settings.getValues("initial_hardness");
+        for (settings::Settings::KeyMap::const_iterator it = r.first;
              it != r.second; ++it)
         {
             vector<string> args    = split(reduce(it->second.first));
@@ -375,8 +375,8 @@ void Mode::setupElectrostatics(bool   initialHardness,
 
     // Gaussian width of charges.
     double maxQsigma = 0.0;
-    Settings::KeyRange r = settings.getValues("fixed_gausswidth");
-    for (Settings::KeyMap::const_iterator it = r.first;
+    settings::Settings::KeyRange r = settings.getValues("fixed_gausswidth");
+    for (settings::Settings::KeyMap::const_iterator it = r.first;
          it != r.second; ++it)
     {
         vector<string> args    = split(reduce(it->second.first));
@@ -403,38 +403,34 @@ void Mode::setupElectrostatics(bool   initialHardness,
         string truncation_method_string =
                 settings["ewald_truncation_error_method"];
         if (truncation_method_string == "0")
-            ewaldSetup.truncMethod =
-                    EWALDTruncMethod::JACKSON_CATLOW;
-        else if (truncation_method_string == "1")
-            ewaldSetup.truncMethod =
-                    EWALDTruncMethod::KOLAFA_PERRAM;
+            ewaldSetup.setTruncMethod(EWALDTruncMethod::JACKSON_CATLOW);
+        if (truncation_method_string == "1")
+            ewaldSetup.setTruncMethod(EWALDTruncMethod::KOLAFA_PERRAM);
     }
     else
-        ewaldSetup.truncMethod =
-                EWALDTruncMethod::JACKSON_CATLOW;
+        ewaldSetup.setTruncMethod(EWALDTruncMethod::JACKSON_CATLOW);
 
     // Ewald precision.
     if (settings.keywordExists("ewald_prec"))
     {
         vector<string> args = split(settings["ewald_prec"]);
-        ewaldSetup.readFromArgs(args, 1 / convCharge);
+        ewaldSetup.readFromArgs(args);
         ewaldSetup.setMaxQSigma(maxQsigma);
         if (normalize)
-            ewaldSetup.toNormalizedUnits(convEnergy, convLength, convCharge);
+            ewaldSetup.toNormalizedUnits(convEnergy, convLength);
     }
-    else if (ewaldSetup.truncMethod ==
-             EWALDTruncMethod::KOLAFA_PERRAM)
+    else if (ewaldSetup.getTruncMethod() == EWALDTruncMethod::KOLAFA_PERRAM)
     {
         throw runtime_error("ERROR: ewald_truncation_error_method 1 requires "
                             "ewald_prec.");
     }
     log << strpr("Ewald truncation error method: %16d\n",
-                 ewaldSetup.truncMethod);
-    log << strpr("Ewald precision: %16.8E\n", ewaldSetup.precision);
-    if (ewaldSetup.truncMethod ==
-        EWALDTruncMethod::KOLAFA_PERRAM)
+                 ewaldSetup.getTruncMethod());
+    log << strpr("Ewald precision:               %16.8E\n",
+                 ewaldSetup.getPrecision());
+    if (ewaldSetup.getTruncMethod() == EWALDTruncMethod::KOLAFA_PERRAM)
         log << strpr("Ewald expected maximum charge: %16.8E\n",
-                     ewaldSetup.maxCharge);
+                     ewaldSetup.getMaxCharge());
     log << "\n";
 
     // Screening function.
@@ -566,8 +562,8 @@ void Mode::setupSymmetryFunctions()
            "**************************************\n";
     log << "\n";
 
-    Settings::KeyRange r = settings.getValues("symfunction_short");
-    for (Settings::KeyMap::const_iterator it = r.first; it != r.second; ++it)
+    settings::Settings::KeyRange r = settings.getValues("symfunction_short");
+    for (settings::Settings::KeyMap::const_iterator it = r.first; it != r.second; ++it)
     {
         vector<string> args    = split(reduce(it->second.first));
         size_t         element = elementMap[args.at(0)];
@@ -1098,11 +1094,6 @@ void Mode::setupCutoffMatrix()
             cutoffs.at(e.getIndex()).push_back(rCutScreen);
         }
     }
-    //for(size_t i = 0; i < numElements; ++i)
-    //{
-    //    Element const& e = elements.at(i);
-    //    e.getCutoffRadii(cutoffs.at(e.getIndex()));
-    //}
 }
 
 void Mode::setupNeuralNetwork()
@@ -1168,8 +1159,8 @@ void Mode::setupNeuralNetwork()
         keyword = "element_hidden_layers" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
-            Settings::KeyRange r = settings.getValues(keyword);
-            for (Settings::KeyMap::const_iterator it = r.first;
+            settings::Settings::KeyRange r = settings.getValues(keyword);
+            for (settings::Settings::KeyMap::const_iterator it = r.first;
                  it != r.second; ++it)
             {
                 vector<string> args = split(reduce(it->second.first));
@@ -1279,8 +1270,8 @@ void Mode::setupNeuralNetwork()
         keyword = "element_nodes" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
-            Settings::KeyRange r = settings.getValues(keyword);
-            for (Settings::KeyMap::const_iterator it = r.first;
+            settings::Settings::KeyRange r = settings.getValues(keyword);
+            for (settings::Settings::KeyMap::const_iterator it = r.first;
                  it != r.second; ++it)
             {
                 vector<string> args = split(reduce(it->second.first));
@@ -1303,8 +1294,8 @@ void Mode::setupNeuralNetwork()
         keyword = "element_activation" + nn.keywordSuffix;
         if (settings.keywordExists(keyword))
         {
-            Settings::KeyRange r = settings.getValues(keyword);
-            for (Settings::KeyMap::const_iterator it = r.first;
+            settings::Settings::KeyRange r = settings.getValues(keyword);
+            for (settings::Settings::KeyMap::const_iterator it = r.first;
                  it != r.second; ++it)
             {
                 vector<string> args = split(reduce(it->second.first));
@@ -1662,11 +1653,11 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     nn.calculateDEdG(&((a.dEdG).front()));
                 }
                 nn.getOutput(&(a.energy));
-                if (!suppressOutput)
-                log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
-                             a.index + 1, elementMap[a.element].c_str(),
-                             a.energy
-                             + elements.at(a.element).getAtomicEnergyOffset());
+                //if (!suppressOutput)
+                //log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
+                //             a.index + 1, elementMap[a.element].c_str(),
+                //             a.energy
+                //             + elements.at(a.element).getAtomicEnergyOffset());
             }
         }
     }
@@ -1747,6 +1738,7 @@ void Mode::chargeEquilibration( Structure& structure,
                                                 fourPiEps,
                                                 erfcBuf);
 
+
     //if (!suppressOutput)
     //    log << strpr("Solve relative error: %16.8E\n", error);
 
@@ -1761,6 +1753,8 @@ void Mode::chargeEquilibration( Structure& structure,
                                             screeningFunction,
                                             fourPiEps);
     }
+
+
 
     //for (auto const& a : structure.atoms)
     //{
@@ -1953,7 +1947,7 @@ void Mode::evaluateNNP(Structure& structure, bool useForces, bool useDEdG)
 
     }
     // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
-    // CI tests because of small numeric changes).
+    //       CI tests because of small numeric changes).
     else structure.calculateNeighborList(maxCutoffRadius, false);
 
 #ifdef NNP_NO_SF_GROUPS
@@ -2120,6 +2114,29 @@ void Mode::convertToPhysicalUnits(Structure& structure) const
     structure.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
 
     return;
+}
+
+void Mode::logEwaldCutoffs()
+{
+    if (ewaldSetup.cutoffsChanged())
+    {
+        EwaldParameters ewaldCutoffs = ewaldSetup.params;
+        if (normalize)
+            ewaldCutoffs = ewaldSetup.params.toPhysicalUnits(convLength);
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+        log << "Ewald parameters for this structure changed:\n";
+        log << strpr("Real space cutoff:         %16.8E\n",
+                     ewaldCutoffs.rCut);
+        log << strpr("Reciprocal space cutoff:   %16.8E\n",
+                     ewaldCutoffs.kCut);
+        log << strpr("Ewald screening parameter: %16.8E\n",
+                     ewaldCutoffs.eta);
+        if (!ewaldSetup.isEstimateReliable())
+            log << strpr("WARNING: Ewald truncation error estimate may not be "
+                         "reliable, better compare it\n"
+                         "         with high accuracy settings.\n");
+    }
 }
 
 void Mode::resetExtrapolationWarnings()

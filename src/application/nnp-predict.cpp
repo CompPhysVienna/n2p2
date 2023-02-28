@@ -63,6 +63,7 @@ int main(int argc, char* argv[])
     prediction.log << "Calculating NNP prediction...\n";
     prediction.predict();
     prediction.log << "\n";
+    prediction.logEwaldCutoffs();
     prediction.log << "-----------------------------------------"
                       "--------------------------------------\n";
     prediction.log << strpr("NNP         total energy: %16.8E\n",

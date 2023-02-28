@@ -21,7 +21,7 @@
 #include "Element.h"
 #include "ElementMap.h"
 #include "ErfcBuf.h"
-#include "Ewald.h"
+#include "EwaldSetup.h"
 #include "Log.h"
 #include "ScreeningFunction.h"
 #include "Settings.h"
@@ -473,6 +473,10 @@ public:
      */
     void                     convertToPhysicalUnits(
                                                    Structure& structure) const;
+    /** Logs Ewald params whenever they change.
+     *
+     */
+    void                     logEwaldCutoffs();
     /** Count total number of extrapolation warnings encountered for all
      * elements and symmetry functions.
      *
@@ -636,7 +640,7 @@ protected:
     double                     convLength;
     double                     convCharge;
     EwaldSetup                 ewaldSetup;
-    Settings                   settings;
+    settings::Settings         settings;
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
     ScreeningFunction          screeningFunction;
