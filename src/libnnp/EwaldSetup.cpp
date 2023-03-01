@@ -18,6 +18,7 @@
 #include "EwaldTruncKolafaFixR.h"
 #include "EwaldTruncKolafaOptEta.h"
 #include "EwaldTruncJackson.h"
+#include "utility.h"
 #include <stdexcept> // std::runtime_error
 #include <memory>    // std::make_unique
 
@@ -28,7 +29,6 @@ using namespace std;
 EwaldSetup::EwaldSetup() : params     (                                ),
                            truncMethod(EWALDTruncMethod::JACKSON_CATLOW),
                            GlobSett   (                                ),
-                           fourPiEps  (1.0                             ),
                            truncImpl  (nullptr                         )
 {
 }
@@ -78,7 +78,9 @@ void EwaldSetup::toNormalizedUnits(double const convEnergy,
     {
         // in KOLAFA_PERRAM method precision has unit of a force.
         GlobSett.precision *= convEnergy / convLength;
-        fourPiEps = 1 / (convLength * convEnergy);
+        GlobSett.fourPiEps /= convLength * convEnergy;
+        // GlobSett.maxQSigma is already normalized
+        params = params.toNormalizedUnits(convLength);
         // Other variables are already normalized.
     }
 }
@@ -90,10 +92,29 @@ void EwaldSetup::calculateParameters(double const volume, size_t const numAtoms)
     EwaldStructureData sData{volume, numAtoms};
     truncImpl->calculateParameters(GlobSett, sData, params);
 }
-
-bool EwaldSetup::cutoffsChanged() const
+void EwaldSetup::logEwaldCutoffs(Log& log, double const lengthConversion) const
 {
-    return truncImpl->cutoffsChanged();
+    if (!publishedNewCutoffs())
+    {
+        EwaldParameters ewaldParams = params.toPhysicalUnits(lengthConversion);
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+        log << "Ewald parameters for this structure changed:\n";
+        log << strpr("Real space cutoff:         %16.8E\n",
+                     ewaldParams.rCut);
+        log << strpr("Reciprocal space cutoff:   %16.8E\n",
+                     ewaldParams.kCut);
+        log << strpr("Ewald screening parameter: %16.8E\n",
+                     ewaldParams.eta);
+        if (!isEstimateReliable())
+            log << strpr("WARNING: Ewald truncation error estimate may not be "
+                         "reliable, better compare it\n"
+                         "         with high accuracy settings.\n");
+    }
+}
+bool EwaldSetup::publishedNewCutoffs() const
+{
+    return truncImpl->publishedNewCutoffs();
 }
 bool EwaldSetup::isEstimateReliable() const
 {

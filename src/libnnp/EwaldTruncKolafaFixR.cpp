@@ -18,8 +18,10 @@ namespace nnp
 
         newCutoffs = (V != volume || N != numAtoms);
         if (!newCutoffs) return;
+        newCutoffsWerePublished = false;
 
         volume = V;
+        fourPiEps = settings.fourPiEps;
         numAtoms = N;
         double rCut = params.rCut;
         if (rCut == 0.0)
@@ -31,7 +33,12 @@ namespace nnp
         params.kCut = calculateKCut(params.eta, settings.precision);
         return;
     }
-
+    bool EwaldTruncKolafaFixR::publishedNewCutoffs()
+    {
+        bool answer = newCutoffsWerePublished;
+        newCutoffsWerePublished = true;
+        return answer;
+    }
     bool EwaldTruncKolafaFixR::isEstimateReliable(
             EwaldGlobalSettings const& settings,
             EwaldParameters const& params) const
@@ -42,7 +49,11 @@ namespace nnp
     double EwaldTruncKolafaFixR::calculateEta(double const rCut,
                                               double const prec) const
     {
-        return rCut / sqrt(-2 * log(sqrt(rCut/2) * prec / C));
+        double x = sqrt(rCut/2) * prec / C;
+        if (x >= 1.0)
+            throw runtime_error("ERROR: Bad Ewald precision settings, try a "
+                                "smaller value.");
+        return rCut / sqrt(-2 * log(x));
     }
 
     double EwaldTruncKolafaFixR::calculateKCut(double const eta,
@@ -76,7 +87,7 @@ namespace nnp
 
     void EwaldTruncKolafaFixR::calculateC(const double qMax)
     {
-        C = 2 * pow(qMax,2.0) * sqrt(numAtoms/volume);
+        C = 2 * pow(qMax,2.0) * sqrt(numAtoms/volume) / fourPiEps;
     }
 
 } // nnp

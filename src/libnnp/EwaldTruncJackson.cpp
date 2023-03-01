@@ -16,6 +16,7 @@ namespace nnp
         double V = sData.getVolume();
         newCutoffs = (V != volume);
         if (!newCutoffs) return;
+        newCutoffsWerePublished = false;
         volume = V;
 
         if ( settings.precision >= 1.0 )
@@ -29,6 +30,13 @@ namespace nnp
         params.rCut = calculateRCut(params.eta, settings.precision);
         params.kCut = calculateKCut(params.eta, settings.precision);
         return;
+    }
+
+    bool EwaldTruncJackson::publishedNewCutoffs()
+    {
+        bool answer = newCutoffsWerePublished;
+        newCutoffsWerePublished = true;
+        return answer;
     }
 
     double EwaldTruncJackson::calculateEta() const

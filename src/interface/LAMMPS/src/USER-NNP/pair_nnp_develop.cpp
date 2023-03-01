@@ -134,7 +134,8 @@ void PairNNPDevelop::updateNeighborlistCutoff()
     if(maxCutoffRadiusOverall > maxCutoffRadiusNeighborList)
     {
         // TODO: Increase slightly to compensate for rounding errors?
-        utils::logmesg(lmp, fmt::format("WARNING: Cutoff too small, need at least: {}\n", maxCutoffRadiusOverall));
+        utils::logmesg(lmp, fmt::format("WARNING: Cutoff too small, need at "
+                                        "least: {}\n", maxCutoffRadiusOverall));
 
         //maxCutoffRadiusNeighborList = maxCutoffRadiusOverall;
         //reinit();

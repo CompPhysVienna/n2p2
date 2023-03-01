@@ -2119,25 +2119,7 @@ void Mode::convertToPhysicalUnits(Structure& structure) const
 void Mode::logEwaldCutoffs()
 {
     if (nnpType != NNPType::HDNNP_4G) return;
-    if (ewaldSetup.cutoffsChanged())
-    {
-        EwaldParameters ewaldCutoffs = ewaldSetup.params;
-        if (normalize)
-            ewaldCutoffs = ewaldSetup.params.toPhysicalUnits(convLength);
-        log << "-----------------------------------------"
-               "--------------------------------------\n";
-        log << "Ewald parameters for this structure changed:\n";
-        log << strpr("Real space cutoff:         %16.8E\n",
-                     ewaldCutoffs.rCut);
-        log << strpr("Reciprocal space cutoff:   %16.8E\n",
-                     ewaldCutoffs.kCut);
-        log << strpr("Ewald screening parameter: %16.8E\n",
-                     ewaldCutoffs.eta);
-        if (!ewaldSetup.isEstimateReliable())
-            log << strpr("WARNING: Ewald truncation error estimate may not be "
-                         "reliable, better compare it\n"
-                         "         with high accuracy settings.\n");
-    }
+    ewaldSetup.logEwaldCutoffs(log, convLength);
 }
 
 void Mode::resetExtrapolationWarnings()

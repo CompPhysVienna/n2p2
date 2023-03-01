@@ -21,10 +21,12 @@ namespace nnp
         double V = sData.getVolume();
         newCutoffs = (volume != V || numAtoms != N);
         if (!newCutoffs) return;
+        newCutoffsWerePublished = false;
 
         volume = V;
         numAtoms = N;
         prec = settings.precision;
+        fourPiEps = settings.fourPiEps;
 
         calculateC(settings.maxCharge);
         calculateEta();
@@ -34,6 +36,12 @@ namespace nnp
         params.rCut = calculateRCut();
         params.kCut = calculateKCut();
     }
+    bool EwaldTruncKolafaOptEta::publishedNewCutoffs()
+    {
+        bool answer = newCutoffsWerePublished;
+        newCutoffsWerePublished = true;
+        return answer;
+    };
 
     void EwaldTruncKolafaOptEta::calculateEta()
     {
@@ -96,6 +104,6 @@ namespace nnp
 
     void EwaldTruncKolafaOptEta::calculateC(double const qMax)
     {
-        C = pow(2, 3.0/4) * pow(qMax,2.0) * sqrt(numAtoms/volume);
+        C = pow(2, 3.0/4) * pow(qMax,2.0) * sqrt(numAtoms/volume) / fourPiEps;
     }
 } // nnp

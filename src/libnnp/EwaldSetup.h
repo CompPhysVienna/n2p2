@@ -19,6 +19,7 @@
 
 //#include "Vec3D.h"
 #include "IEwaldTrunc.h"
+#include "Log.h"
 #include <string>
 #include <vector>
 #include <memory>
@@ -71,20 +72,17 @@ public:
      *
      * @return
      */
-    bool cutoffsChanged() const;
-    bool isEstimateReliable() const;
-
-
+    void logEwaldCutoffs(Log& log, double const lengthConversion) const;
 
 private:
     /// Method for determining real and k space cutoffs.
     EWALDTruncMethod truncMethod;
     EwaldGlobalSettings GlobSett;
-    /// Multiplicative constant \f$ 4 \pi \varepsilon_0 \f$.
-    /// Value depends on unit system (e.g. normalization).
-    double fourPiEps;
+
     std::unique_ptr<IEwaldTrunc> truncImpl;
 
+    bool publishedNewCutoffs() const;
+    bool isEstimateReliable() const;
 };
 
 inline void EwaldSetup::setMaxQSigma(double const maxWidth)

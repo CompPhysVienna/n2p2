@@ -14,6 +14,9 @@ namespace nnp
         double precision = 1.0E-6;
         double maxCharge = 1.0;
         double maxQSigma = 1.0;
+        /// Multiplicative constant \f$ 4 \pi \varepsilon_0 \f$.
+        /// Value depends on unit system (e.g. normalization).
+        double fourPiEps = 1.0;
     };
 
     class EwaldStructureData
@@ -51,6 +54,10 @@ namespace nnp
                                    rCut / convLength,
                                    kCut * convLength};
         }
+        EwaldParameters toNormalizedUnits(double const convLength) const
+        {
+            return toPhysicalUnits(1/convLength);
+        }
     };
 
     class IEwaldTrunc
@@ -59,7 +66,7 @@ namespace nnp
         virtual void calculateParameters(EwaldGlobalSettings const& settings,
                                          EwaldStructureData const& sData,
                                          EwaldParameters &params) = 0;
-        virtual bool cutoffsChanged() const = 0;
+        virtual bool publishedNewCutoffs() = 0;
         virtual bool isEstimateReliable(
                 EwaldGlobalSettings const& settings,
                 EwaldParameters const& params) const = 0;

@@ -14,12 +14,13 @@ namespace nnp
         void calculateParameters(EwaldGlobalSettings const& settings,
                                  EwaldStructureData const& sData,
                                  EwaldParameters &params) override;
-        bool cutoffsChanged() const override {return newCutoffs;};
+        bool publishedNewCutoffs() override;
         virtual bool isEstimateReliable(
                 EwaldGlobalSettings const&,
                 EwaldParameters const&) const override {return true;};
     private:
         bool newCutoffs = true;
+        bool newCutoffsWerePublished = false;
         double volume = 0.0;
 
         double calculateEta() const;

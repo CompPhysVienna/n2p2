@@ -453,6 +453,7 @@ void InterfaceLammps::process()
     {
         chargeEquilibration(structure, true, suppressOutput);
         calculateAtomicNeuralNetworks(structure, true, "short", suppressOutput);
+        ewaldSetup.logEwaldCutoffs(log, convLength * cflength);
     }
     calculateEnergy(structure);
     if (nnpType == NNPType::HDNNP_4G ||
