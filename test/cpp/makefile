@@ -53,6 +53,7 @@ EXE_NOIF=$(SRC_NOIF:%.cpp=%)
 # RULES
 ###############################################################################
 .PHONY: all no-interface coverage clean clean-coverage
+.NOTPARALLEL:
 
 all: $(EXE)
 

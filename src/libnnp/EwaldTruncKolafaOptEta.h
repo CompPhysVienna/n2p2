@@ -18,8 +18,8 @@ namespace nnp
                                  EwaldParameters &params) override;
         bool cutoffsChanged() const override { return newCutoffs; }
         virtual bool isEstimateReliable(
-                EwaldGlobalSettings const& settings,
-                EwaldParameters const& params) const override { return true; };
+                EwaldGlobalSettings const& ,
+                EwaldParameters const& ) const override { return true; };
     private:
         bool newCutoffs = true;
         double C = 0.0;

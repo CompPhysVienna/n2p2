@@ -236,7 +236,7 @@ string Settings::keywordCheck(string const& keyword) const
     bool exact = keywordExists(keyword, true);
     if (!exact)
     {
-        for (auto const alt : *knownKeywords.at(keyword))
+        for (auto const& alt : *knownKeywords.at(keyword))
         {
             if (contents.find(alt) != contents.end()) return alt;
         }

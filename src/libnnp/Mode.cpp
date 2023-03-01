@@ -2118,6 +2118,7 @@ void Mode::convertToPhysicalUnits(Structure& structure) const
 
 void Mode::logEwaldCutoffs()
 {
+    if (nnpType != NNPType::HDNNP_4G) return;
     if (ewaldSetup.cutoffsChanged())
     {
         EwaldParameters ewaldCutoffs = ewaldSetup.params;

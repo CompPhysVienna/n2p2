@@ -869,9 +869,7 @@ void Structure::calculateDAdrQ(
         // we cache it for reuse? Note that we can't calculate dAdrQ already in
         // the loops of calculateElectrostaticEnergy because at this point we don't
         // have the charges.
-#ifdef _OPENMP
-        #pragma omp single
-#endif
+
         KspaceGrid grid;
         grid.setup(box, ewaldSetup);
         double rcutReal = ewaldSetup.params.rCut;
