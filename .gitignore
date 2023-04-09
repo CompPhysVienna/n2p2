@@ -1,3 +1,8 @@
 *.o
 compile_commands.json
 .clangd
+lib/
+bin/
+include/
+application/
+*.so

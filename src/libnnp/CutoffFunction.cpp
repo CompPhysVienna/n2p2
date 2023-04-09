@@ -258,7 +258,7 @@ double CutoffFunction::dfICOS(double r) const
     return 0.0;
   else {
     double const x = (r - rci) / (rc - rci);
-    return -0.5 * PI * cos(PI * x) / (rc - rci);
+    return -0.5 * PI * sin(PI * x) / (rc - rci);
   }
 }
 
@@ -282,7 +282,7 @@ void CutoffFunction::fdfICOS(double r, double& fc, double& dfc) const
   else if (r >= rci){
     double const x = (r - rci) / (rc - rci);
     fc = 0.5 * (cos(PI * x) + 1.0);
-    dfc = -0.5 * PI * cos(PI * x) / (rc - rci);
+    dfc = -0.5 * PI * sin(PI * x) / (rc - rci);
   }
   return;
 }

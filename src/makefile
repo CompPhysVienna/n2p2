@@ -13,13 +13,13 @@ PROJECT_LIB=$(PROJECT_DIR)/lib
 # GENERAL SETTINGS
 ###############################################################################
 # Default compiler (gnu/intel/llvm).
-COMP=gnu
+COMP=intel
 
 # Default build mode.
 # Possible modes are "static", "shared" and "test".
 # Note: For target "pynnp" there is no "static" mode, "shared" is automatically
 # used instead.
-MODE=static
+MODE=shared
 
 # Installation directory for binaries.
 INSTALL_BIN=$(HOME)/local/bin
