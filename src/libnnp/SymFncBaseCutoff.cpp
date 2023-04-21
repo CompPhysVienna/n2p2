@@ -48,6 +48,15 @@ void SymFncBaseCutoff::setCutoffFunction(
     return;
 }
 
+void SymFncBaseCutoff::setInnerCutoffFunction(double const icut_beta,
+					      double const icut_gamma)
+{
+  this->icut_beta = icut_beta;
+  this->icut_gamma = icut_gamma;
+  fc.setInnerCutoffParameter(icut_beta, icut_gamma);
+}
+
+
 SymFncBaseCutoff::SymFncBaseCutoff(size_t type,
                                      ElementMap const& elementMap) :
     SymFnc(type, elementMap),

@@ -84,6 +84,13 @@ void CutoffFunction::setCutoffType(CutoffType const cutoffType)
          dfPtr = &CutoffFunction:: dfCORE;
         fdfPtr = &CutoffFunction::fdfCORE;
     }
+    else if (cutoffType == CT_ICOS)
+    {
+          fPtr = &CutoffFunction::  fICOS;
+         dfPtr = &CutoffFunction:: dfICOS;
+        fdfPtr = &CutoffFunction::fdfICOS;
+    }
+    
     else
     {
         throw invalid_argument("ERROR: Unknown cutoff type.\n");
@@ -111,6 +118,13 @@ void CutoffFunction::setCutoffParameter(double const alpha)
     return;
 }
 
+void CutoffFunction::setInnerCutoffParameter(double const icut_beta,
+					     double const icut_gamma)
+{
+  this->icut_beta = icut_beta;
+  this->icut_gamma = icut_gamma;
+  return;
+}
 double CutoffFunction::fCOS(double r) const
 {
     if (r < rci) return 1.0;
@@ -210,4 +224,65 @@ void CutoffFunction::fdfCORE(double r, double& fc, double& dfc) const
     core.fdf(x, fc, dfc);
     dfc *= iw;
     return;
+}
+
+double CutoffFunction::fICOS(double r) const
+{
+  double const rii = this->icut_beta * rc; 
+  double const rio = this->icut_gamma * rc; 
+  if (r < rii)
+    return 0.0;
+  else if (r >= rii && r <= rio) {
+    double const x = (r - rii) / (rio - rii);
+    return 0.5 * (-cos(PI * x) + 1.0);
+  }
+  else if (r > rio && r < rci)
+    return 1.0;
+  else {
+    double const x = (r - rci) / (rc - rci);
+    return 0.5 * (cos(PI * x) + 1.0);
+  }
+}
+
+double CutoffFunction::dfICOS(double r) const
+{
+  double const rii = this->icut_beta * rc; 
+  double const rio = this->icut_gamma * rc; 
+  if (r < rii)
+    return 0.0;
+  else if (r >= rii && r <= rio) {
+    double const x = (r - rii) / (rio - rii);
+    return 0.5 * PI * sin(PI * x) / (rio - rii);
+  }
+  else if (r > rio && r < rci)
+    return 0.0;
+  else {
+    double const x = (r - rci) / (rc - rci);
+    return -0.5 * PI * sin(PI * x) / (rc - rci);
+  }
+}
+
+void CutoffFunction::fdfICOS(double r, double& fc, double& dfc) const
+{
+  double const rii = this->icut_beta * rc; 
+  double const rio = this->icut_gamma * rc;
+  if (r < rii) {
+    fc = 0.0;
+    dfc = 0.0;
+  }
+  else if (r >= rii && r <= rio) {
+    double const x = (r - rii) / (rio - rii);
+    fc = 0.5 * (-cos(PI * x) + 1.0);
+    dfc = 0.5 * PI * sin(PI * x) / (rio - rii);
+  }
+  else if (r > rio && r < rci){
+    fc = 1.0;
+    dfc = 0.0;
+  }
+  else if (r >= rci){
+    double const x = (r - rci) / (rc - rci);
+    fc = 0.5 * (cos(PI * x) + 1.0);
+    dfc = -0.5 * PI * sin(PI * x) / (rc - rci);
+  }
+  return;
 }

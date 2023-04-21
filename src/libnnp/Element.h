@@ -124,6 +124,17 @@ public:
     void                     setCutoffFunction(
                                  CutoffFunction::CutoffType const cutoffType,
                                  double const                     cutoffAlpha);
+    /** Set cutoff function for all symmetry functions.
+     *
+     * @param[in] cutoffType Type of cutoff function.
+     * @param[in] cutoffAlpha Cutoff parameter for all functions.
+     */
+    void                     setCutoffFunction(
+                                 CutoffFunction::CutoffType const cutoffType,
+                                 double const                     cutoffAlpha,
+				 double const icut_beta,
+				 double const icut_gamma);
+
     /** Set no scaling of symmetry function.
      *
      * Still scaling factors need to be initialized.

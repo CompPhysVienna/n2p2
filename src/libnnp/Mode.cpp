@@ -421,6 +421,19 @@ void Mode::setupCutoff()
         log << "f(r) = 1\n";
         log << "WARNING: Hard cutoff used!\n";
     }
+    else if (cutoffType == CutoffFunction::CT_ICOS)
+    {
+        log << strpr("CutoffFunction::CT_ICOS (%d)\n", cutoffType);
+        log << "x := (r - rc * alpha) / (rc - rc * alpha)\n";
+        log << "f(x) = 1/2 * (-cos(2*pi*x) + 1)\n";
+	
+	if (settings.keywordExists("inner_cutoff"))
+	  {
+	    vector<string> icut_args = split(settings["inner_cutoff"]);
+	    icut_beta  = atof(icut_args.at(0).c_str());
+	    icut_gamma = atof(icut_args.at(1).c_str());
+	  }
+    }
     else
     {
         throw invalid_argument("ERROR: Unknown cutoff type.\n");
@@ -474,8 +487,13 @@ void Mode::setupSymmetryFunctions()
     {
         if (normalize) it->changeLengthUnitSymmetryFunctions(convLength);
         it->sortSymmetryFunctions();
-        maxCutoffRadius = max(it->getMaxCutoffRadius(), maxCutoffRadius);
-        it->setCutoffFunction(cutoffType, cutoffAlpha);
+	maxCutoffRadius = max(it->getMaxCutoffRadius(), maxCutoffRadius);
+	
+	if (settings.keywordExists("inner_cutoff")) {
+	  it->setCutoffFunction(cutoffType, cutoffAlpha, icut_beta, icut_gamma);
+	} else {
+	  it->setCutoffFunction(cutoffType, cutoffAlpha);
+	}
         log << strpr("Short range atomic symmetry functions element %2s :\n",
                      it->getSymbol().c_str());
         log << "--------------------------------------------------"

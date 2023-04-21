@@ -5,8 +5,8 @@
 ###############################################################################
 # Enter here paths to GSL or EIGEN if they are not in your standard include
 # path. DO NOT completely remove the entry, leave at least "./".
-PROJECT_GSL=./
-PROJECT_EIGEN=/usr/include/eigen3/
+PROJECT_GSL=.//jet/home/xyttyxyx/selfcompiled-programs/lib/
+PROJECT_EIGEN=/jet/home/xyttyxyx/selfcompiled-programs/compile/eigen-3.3.9/
 
 ###############################################################################
 # COMPILERS AND FLAGS

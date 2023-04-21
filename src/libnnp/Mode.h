@@ -527,6 +527,9 @@ protected:
     CutoffFunction::CutoffType cutoffType;
     std::vector<Element>       elements;
 
+  double icut_beta;
+  double icut_gamma;
+
     /** Read in weights for a specific type of neural network.
      *
      * @param[in] type Actual network type to initialize ("short" or "charge").
