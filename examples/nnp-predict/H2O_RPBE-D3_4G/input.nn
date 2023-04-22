@@ -1,7 +1,7 @@
-################################################################################
+################################################################
 ### This is the input file for n2p2
 ### It contains only a subset of all keywords
-################################################################################
+#################################################################
 
 ################################################################################
 ### general keywords
@@ -19,6 +19,7 @@ initial_hardness        O        10.0
 fixed_gausswidth  H 0.5858120110359424
 fixed_gausswidth  O 1.2491023848218
 
+
 screen_electrostatics 4.8 12.0
 
 random_seed 12346
@@ -30,14 +31,14 @@ ewald_prec 1.e-5 0.36
 ### NN structure of the short-range NN
 ################################################################################
 global_hidden_layers_short 2
-global_nodes_short 15 15
+global_nodes_short 25 25
 global_activation_short t t l
 
 ################################################################################
 ### NN structure of the electrostatic NN
 ################################################################################
 global_hidden_layers_electrostatic 2
-global_nodes_electrostatic 15 15
+global_nodes_electrostatic 25 25
 global_activation_electrostatic t t l
 
 ###############################################################################
@@ -63,7 +64,7 @@ weights_max                     1.0             # Maximum value for initial rand
 write_weights_epoch             10              # Write weights every this many epochs.
 scale_symmetry_functions
 center_symmetry_functions
-write_neuronstats               0               # Write neuron statistics every this many epochs.
+#write_neuronstats               1              # Write neuron statistics every this many epochs.
 #write_trainlog                                 # Write training log file.
 
 
@@ -89,14 +90,14 @@ short_force_error_threshold     0.80            # RMSE threshold for force updat
 #use_old_weights_short                          # Restart fitting with old weight parameters.
 #repeated_energy_update
 #nguyen_widrow_weights_short                    # Initialize neural network weights according to Nguyen-Widrow scheme.
-write_trainpoints               0               # Write energy comparison every this many epochs.
-write_trainforces               0               # Write force comparison every this many epochs.
+#write_trainpoints               1              # Write energy comparison every this many epochs.
+#write_trainforces               1              # Write force comparison every this many epochs.
 
 ############################
 # KALMAN FILTER (STANDARD) #
 ############################
 # These two parameters are only used if "updater_type" is "1".
-#kalman_lambda_short 0.98000                    # Only for fading memory Kalman filter
+#kalman_lambda_short 0.98000
 #kalman_nue_short 0.99870
 
 kalman_type                     0               # Kalman filter type (0 = Standard, 1 = Fading memory).

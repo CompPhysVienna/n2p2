@@ -371,7 +371,7 @@ real and reciprocal space. For both methods a smaller threshold leads to
 increased radii and thus to a degrade in performance. Also the memory footprint
 can become quite noticeable for very small values.
 
-.. danger::
+.. warning::
 
     If n2p2 crashes in 4G mode because it needs more memory than available on
     the machine, it may be related to the ``<threshold>`` parameter. This can
@@ -389,18 +389,37 @@ can become quite noticeable for very small values.
 * If ``ewald_truncation_error_method 1``
 
     **Usage**:
-        ``ewald_prec <threshold> <max charge>``
+        ``ewald_prec <threshold> <max charge> <<real space cutoff>>``
 
     ``<threshold>`` loosely corresponds to the standard deviation of the
     electrostatic force error one would like to achieve and has to be given in
     the same units as the forces in the training data. However, the methods
     tends to overestimate the actual error, so one may test the accuracy for
     different values. Choosing values that are orders of magnitude smaller than
-    the RMSE of the short-range force errors does not make sense. ``<max
-    charge>`` should be the maximum charge (in magnitude) that appears during
+    the RMSE of the short-range force errors does not make sense.
+    ``<max charge>`` should be the maximum charge (in magnitude) that appears during
     training. This does not have to be very precise but should be given in the
     same units as in the training data. :ref:`nnp-norm` outputs this quantity.
     The default is ``1.``.
+
+    It is important to note that this method has two different modes.
+    ``<<real space cutoff>>`` is an optional parameter. It fixes the real space
+    cutoff in the Ewald summation and adjusts the Ewald parameter and the
+    reciprocal space cutoff accordingly such that the specified ``<threshold>``
+    is still satisfied. If ``<<real space cutoff>>`` is chosen unreasonably
+    small, the truncation error estimate may not be reliable anymore and
+    a warning is given. This mode is useful when n2p2 is used in combination
+    with other programs like LAMMPS, since they often expect a fixed cutoff
+    during the simulation. If ``<<real space cutoff>>`` is not specified, an
+    optimal combination of the real and reciprocal space cutoff is computed.
+    However, "optimal" refers to the computational effort inside n2p2. If used
+    in combination with other programs like LAMMPS, it will not be optimal in
+    general. Also note that the optimal cutoffs may change during the
+    simulation since they depend on factors like simulation cell volume, number
+    of atoms etc. In general we recommend the optimal choice of the cutoffs
+    only if n2p2 is used as a standalone tool. If it is used in the interface
+    mode, a good choice is to set ``<<real space cutoff>>`` to the symmetry
+    function cutoff. This choice may also decrease the memory footprint.
 
 
 Training-specific keywords
