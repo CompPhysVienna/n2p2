@@ -27,7 +27,7 @@ double const CoreFunction::PI_2 = 2.0 * atan(1.0);
 double const CoreFunction::E = exp(1.0);
 
 CoreFunction::CoreFunction() : type      (Type::POLY2            ),
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
                                asymmetric(false                  ),
 #endif
                                fPtr      (&CoreFunction::  fPOLY2),

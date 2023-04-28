@@ -14,8 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <stdexcept>
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
 #include <mpi.h>
 #include "mpi-extra.h"
 #endif
@@ -28,7 +27,7 @@
 #include <string>
 #include <iostream>
 #include <limits>
-
+//#include <stdexcept>
 
 #define TOLCUTOFF 1.0E-2
 
@@ -49,17 +48,17 @@ InterfaceLammps::InterfaceLammps() : myRank             (0    ),
 {
 }
 
-void InterfaceLammps::initialize(char* const& directory,
-                                 char* const& emap,
-                                 bool         showew,
-                                 bool         resetew,
-                                 int          showewsum,
-                                 int          maxew,
-                                 double       cflength,
-                                 double       cfenergy,
-                                 double       lammpsCutoff,
-                                 int          lammpsNtypes,
-                                 int          myRank)
+void InterfaceLammps::initialize(char const* const& directory,
+                                 char const* const& emap,
+                                 bool               showew,
+                                 bool               resetew,
+                                 int                showewsum,
+                                 int                maxew,
+                                 double             cflength,
+                                 double             cfenergy,
+                                 double             lammpsCutoff,
+                                 int                lammpsNtypes,
+                                 int                myRank)
 {
     this->emap = emap;
     this->showew = showew;
@@ -71,6 +70,8 @@ void InterfaceLammps::initialize(char* const& directory,
     this->myRank = myRank;
     log.writeToStdout = false;
     string dir(directory);
+    char const separator = '/';
+    if (dir.back() != separator) dir += separator;
     Mode::initialize();
     loadSettingsFile(dir + "input.nn");
     setupGeneric(dir);
@@ -188,6 +189,14 @@ void InterfaceLammps::initialize(char* const& directory,
     {
         vector<string> emapSplit = split(reduce(trim(this->emap), " \t", ""),
                                          ',');
+        if (elementMap.size() < emapSplit.size())
+        {
+            throw runtime_error(strpr("ERROR: Element mapping is inconsistent,"
+                                      " NNP elements: %zu,"
+                                      " emap elements: %zu.\n",
+                                      elementMap.size(),
+                                      emapSplit.size()));
+        }
         for (string s : emapSplit)
         {
             vector<string> typeString = split(s, ':');
@@ -199,21 +208,13 @@ void InterfaceLammps::initialize(char* const& directory,
             int t = stoi(typeString.at(0));
             if (t > lammpsNtypes)
             {
-                throw runtime_error(strpr("ERROR: LAMMPS type \"%s\" not "
+                throw runtime_error(strpr("ERROR: LAMMPS type \"%d\" not "
                                           "present, there are only %d types "
                                           "defined.\n", t, lammpsNtypes));
             }
             size_t e = elementMap[typeString.at(1)];
             mapTypeToElement[t] = e;
             mapElementToType[e] = t;
-        }
-        if (elementMap.size() != mapTypeToElement.size())
-        {
-            throw runtime_error(strpr("ERROR: Element mapping is inconsistent,"
-                                      " NNP elements: %zu,"
-                                      " emap elements: %zu.\n",
-                                      elementMap.size(),
-                                      mapTypeToElement.size()));
         }
     }
     log << "\n";
@@ -264,7 +265,6 @@ bool InterfaceLammps::getGlobalStructureStatus()
 }
 
 void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
-                                    int const* const atomTag,
                                     int const* const atomType)
 {
     for (size_t i = 0; i < numElements; ++i)
@@ -290,7 +290,6 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         Atom& a = structure.atoms.back();
         a.index                          = i;
         a.indexStructure                 = myRank;
-        a.tag                            = atomTag[i];
         a.element                        = mapTypeToElement[atomType[i]];
         a.numNeighbors                   = 0;
         a.hasSymmetryFunctions           = false;
@@ -318,6 +317,27 @@ void InterfaceLammps::setLocalAtomPositions(double const* const* const atomPos)
             a.r[1] *= convLength;
             a.r[2] *= convLength;
         }
+    }
+
+    return;
+}
+
+void InterfaceLammps::setLocalTags(int const* const atomTag)
+{
+    for (size_t i = 0; i < structure.atoms.size(); i++)
+    {
+        // Implicit conversion from int to int64_t!
+        structure.atoms.at(i).tag = atomTag[i];
+    }
+
+    return;
+}
+
+void InterfaceLammps::setLocalTags(int64_t const* const atomTag)
+{
+    for (size_t i = 0; i < structure.atoms.size(); i++)
+    {
+        structure.atoms.at(i).tag = atomTag[i];
     }
 
     return;
@@ -387,14 +407,14 @@ void InterfaceLammps::allocateNeighborlists(int const* const numneigh)
     }
 }
 
-void InterfaceLammps::addNeighbor(int    i,
-                                  int    j,
-                                  int    tag,
-                                  int    type,
-                                  double dx,
-                                  double dy,
-                                  double dz,
-                                  double d2)
+void InterfaceLammps::addNeighbor(int     i,
+                                  int     j,
+                                  int64_t tag,
+                                  int     type,
+                                  double  dx,
+                                  double  dy,
+                                  double  dz,
+                                  double  d2)
 {
     if (ignoreType[type] ||
         indexMap.at(i) == numeric_limits<size_t>::max()) return;
@@ -442,8 +462,9 @@ void InterfaceLammps::finalizeNeighborList()
 
 void InterfaceLammps::process()
 {
+    // TODO: remove this?
     bool suppressOutput = true;
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
@@ -497,9 +518,18 @@ double InterfaceLammps::getEnergy() const
 double InterfaceLammps::getAtomicEnergy(int index) const
 {
     Atom const& a = structure.atoms.at(index);
+    Element const& e = elements.at(a.element);
 
-    if (normalize) return physical("energy", a.energy) / cfenergy;
-    else return a.energy / cfenergy;
+    if (normalize)
+    {
+        return (physical("energy", a.energy)
+                + meanEnergy
+                + e.getAtomicEnergyOffset()) / cfenergy;
+    }
+    else
+    {
+        return (a.energy + e.getAtomicEnergyOffset()) / cfenergy;
+    }
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const
@@ -524,7 +554,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
         //       (see use of indexmap)
         add3DVecToArray(atomF[ia], selfForce);
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         vector<vector<size_t> > const& tableFull
             = elements.at(a.element).getSymmetryFunctionTable();
 #endif
@@ -542,7 +572,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             // the LAMMPS force array.
             size_t const in = n.index;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             Vec3D pairForce = a.calculatePairForceShort(n, &tableFull);
 #else
             Vec3D pairForce = a.calculatePairForceShort(n);
@@ -572,7 +602,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
             {
                 size_t const j = aj.index;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                 vector<vector<size_t> > const& tableFull
                         = elements.at(aj.element).getSymmetryFunctionTable();
                 Vec3D dChidr = aj.calculateDChidr(ai.index,
@@ -586,14 +616,6 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
                 Vec3D remainingForce = -lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 add3DVecToArray(atomF[i], remainingForce * cfforce * convForce);
 
-                /*
-                loopFile << "i: " << i << ", j: " << j << endl
-                         << "ai.f: " << atomF[i][0] << " " << atomF[i][1] << " " << atomF[i][2] << endl
-                         << "lambda: " << lambdaTotal(j) << endl
-                         << "dChidr: " << dChidr[0] << " " << dChidr[1] << " " << dChidr[2] << endl
-                         << "dAdrQ: " << ai.dAdrQ[j][0] << " " << ai.dAdrQ[j][1] << " " << ai.dAdrQ[j][2] << endl
-                         << endl;
-                 */
             }
         }
     }
@@ -618,7 +640,7 @@ void InterfaceLammps::getCharges(double* const& atomQ) const
 long InterfaceLammps::getEWBufferSize() const
 {
     long bs = 0;
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
     int ss = 0; // size_t size.
     int ds = 0; // double size.
     int cs = 0; // char size.
@@ -654,7 +676,7 @@ long InterfaceLammps::getEWBufferSize() const
 
 void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
 {
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
     int p = 0;
     for (vector<Element>::const_iterator it = elements.begin();
          it != elements.end(); ++it)
@@ -662,23 +684,23 @@ void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
         map<size_t, SymFncStatistics::Container> const& m =
             it->statistics.data;
         size_t n = m.size();
-        MPI_Pack(&(n), 1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+        MPI_Pack((void *) &(n), 1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
         for (map<size_t, SymFncStatistics::Container>::const_iterator
              it2 = m.begin(); it2 != m.end(); ++it2)
         {
-            MPI_Pack(&(it2->first                          ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->first                          ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
             size_t countEW = it2->second.countEW;
-            MPI_Pack(&(countEW                             ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.type                    ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.Gmin                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.Gmax                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(countEW                             ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.type                    ),       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.Gmin                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.Gmax                    ),       1, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
             // it2->element
             size_t ts = it2->second.element.length() + 1;
-            MPI_Pack(&ts                                    ,       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(it2->second.element.c_str()            ,      ts, MPI_CHAR  , buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.indexStructureEW.front()), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.indexAtomEW.front()     ), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
-            MPI_Pack(&(it2->second.valueEW.front()         ), countEW, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &ts                                    ,       1, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) it2->second.element.c_str()            ,      ts, MPI_CHAR  , buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.indexStructureEW.front()), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.indexAtomEW.front()     ), countEW, MPI_SIZE_T, buf, bs, &p, MPI_COMM_WORLD);
+            MPI_Pack((void *) &(it2->second.valueEW.front()         ), countEW, MPI_DOUBLE, buf, bs, &p, MPI_COMM_WORLD);
         }
     }
 #endif
@@ -687,39 +709,39 @@ void InterfaceLammps::fillEWBuffer(char* const& buf, int bs) const
 
 void InterfaceLammps::extractEWBuffer(char const* const& buf, int bs)
 {
-#ifndef NNP_NO_MPI
+#ifndef N2P2_NO_MPI
     int p = 0;
     for (vector<Element>::iterator it = elements.begin();
          it != elements.end(); ++it)
     {
         size_t n = 0;
-        MPI_Unpack(buf, bs, &p, &(n), 1, MPI_SIZE_T, MPI_COMM_WORLD);
+        MPI_Unpack((void *) buf, bs, &p, &(n), 1, MPI_SIZE_T, MPI_COMM_WORLD);
         for (size_t i = 0; i < n; ++i)
         {
             size_t index = 0;
-            MPI_Unpack(buf, bs, &p, &(index), 1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(index), 1, MPI_SIZE_T, MPI_COMM_WORLD);
             SymFncStatistics::Container& d = it->statistics.data[index];
             size_t countEW = 0;
-            MPI_Unpack(buf, bs, &p, &(countEW                      ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
-            MPI_Unpack(buf, bs, &p, &(d.type                       ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
-            MPI_Unpack(buf, bs, &p, &(d.Gmin                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
-            MPI_Unpack(buf, bs, &p, &(d.Gmax                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(countEW                      ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.type                       ),       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.Gmin                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.Gmax                       ),       1, MPI_DOUBLE, MPI_COMM_WORLD);
             // d.element
             size_t ts = 0;
-            MPI_Unpack(buf, bs, &p, &ts                             ,       1, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &ts                             ,       1, MPI_SIZE_T, MPI_COMM_WORLD);
             char* element = new char[ts];
-            MPI_Unpack(buf, bs, &p, element                         ,      ts, MPI_CHAR  , MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, element                         ,      ts, MPI_CHAR  , MPI_COMM_WORLD);
             d.element = element;
             delete[] element;
             // indexStructureEW.
             d.indexStructureEW.resize(d.countEW + countEW);
-            MPI_Unpack(buf, bs, &p, &(d.indexStructureEW[d.countEW]), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.indexStructureEW[d.countEW]), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
             // indexAtomEW.
             d.indexAtomEW.resize(d.countEW + countEW);
-            MPI_Unpack(buf, bs, &p, &(d.indexAtomEW[d.countEW]     ), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.indexAtomEW[d.countEW]     ), countEW, MPI_SIZE_T, MPI_COMM_WORLD);
             // valueEW.
             d.valueEW.resize(d.countEW + countEW);
-            MPI_Unpack(buf, bs, &p, &(d.valueEW[d.countEW]         ), countEW, MPI_DOUBLE, MPI_COMM_WORLD);
+            MPI_Unpack((void *) buf, bs, &p, &(d.valueEW[d.countEW]         ), countEW, MPI_DOUBLE, MPI_COMM_WORLD);
 
             d.countEW += countEW;
         }

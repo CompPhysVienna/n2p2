@@ -137,7 +137,7 @@ void SymGrpExpRadWeighted::setScalingFactors()
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
 void SymGrpExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
 {
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     // Can use cache indices of any member because this group is defined via
     // identical symmetry function type and cutoff functions.
     auto cacheIndices = members.at(0)->getCacheIndices();
@@ -160,7 +160,7 @@ void SymGrpExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
             // Calculate cutoff function and derivative.
             double pfc;
             double pdfc;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             if (cacheIndices[nej].size() == 0) fc.fdf(rij, pfc, pdfc);
             else
             {
@@ -190,7 +190,7 @@ void SymGrpExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
                 double const p1drijz = p1 * d1[2];
 
                 // Save force contributions in Atom storage.
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                 size_t ki = memberIndex[k];
 #else
                 size_t const ki = memberIndex[k];
@@ -204,7 +204,7 @@ void SymGrpExpRadWeighted::calculate(Atom& atom, bool const derivatives) const
                 dGdr[1] += p1drijy;
                 dGdr[2] += p1drijz;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                 ki = memberIndexPerElement[k][nej];
 #endif
                 dGdr = n.dGdr[ki].r;

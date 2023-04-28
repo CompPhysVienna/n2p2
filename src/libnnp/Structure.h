@@ -24,12 +24,12 @@
 #include "EwaldSetup.h"
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
-#include <Eigen/Core>
-#include <cstddef> // std::size_t
-#include <fstream> // std::ofstream
-#include <map>     // std::map
-#include <string>  // std::string
-#include <vector>  // std::vector
+#include <Eigen/Core> // MatrixXd, VectorXd
+#include <cstddef>    // std::size_t
+#include <fstream>    // std::ofstream
+#include <map>        // std::map
+#include <string>     // std::string
+#include <vector>     // std::vector
 
 namespace nnp
 {
@@ -184,7 +184,6 @@ struct Structure
      *                         than the cutoff radius.
      * @param[in] sortByDistance Sort neighborlist from nearest to farthest neighbor.
      *
-     * @return Maximum of {maxCutoffRadius, rcutScreen, rCut}.
      */
     void                     calculateNeighborList(
                                                     double  cutoffRadius,
@@ -383,6 +382,9 @@ struct Structure
      *  force calculation in 4G NN.
      */
     Eigen::VectorXd const calculateForceLambdaElec() const;
+    /** Translate all atoms back into box if outside.
+     */
+    void                     remap();
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.
@@ -527,7 +529,6 @@ struct Structure
      */
     std::vector<std::string> info() const;
 };
-
 
 }
 

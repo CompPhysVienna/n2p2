@@ -155,7 +155,7 @@ void SymGrpExpAngn::sortMembers()
 // expressions are kept in comments marked with "SIMPLE EXPRESSIONS:".
 void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
 {
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     // Can use cache indices of any member because this group is defined via
     // identical symmetry function type, neighbors and cutoff functions.
     auto cacheIndices = members.at(0)->getCacheIndices();
@@ -184,7 +184,7 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
             // Calculate cutoff function and derivative.
             double pfcij;
             double pdfcij;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             if (cacheIndices[nej].size() == 0) fc.fdf(rij, pfcij, pdfcij);
             else
             {
@@ -229,7 +229,7 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
                             // Energy calculation.
                             double pfcik;
                             double pdfcik;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                             if (cacheIndices[nek].size() == 0)
                             {
                                 fc.fdf(rik, pfcik, pdfcik);
@@ -358,7 +358,7 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
                                 double const p3drjky = p3 * dr3[1];
                                 double const p3drjkz = p3 * dr3[2];
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                                 size_t li = memberIndex[l];
 #else
                                 size_t const li = memberIndex[l];
@@ -368,7 +368,7 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
                                 dGdr[1] += p1drijy + p2driky;
                                 dGdr[2] += p1drijz + p2drikz;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                                 li = memberIndexPerElement[l][nej];
 #endif
                                 dGdr = nj.dGdr[li].r;
@@ -376,7 +376,7 @@ void SymGrpExpAngn::calculate(Atom& atom, bool const derivatives) const
                                 dGdr[1] -= p1drijy + p3drjky;
                                 dGdr[2] -= p1drijz + p3drjkz;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                                 li = memberIndexPerElement[l][nek];
 #endif
                                 dGdr = nk.dGdr[li].r;

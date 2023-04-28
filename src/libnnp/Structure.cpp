@@ -18,15 +18,14 @@
 #include "Structure.h"
 #include "Vec3D.h"
 #include "utility.h"
-#include <Eigen/Dense>
-#include <algorithm> // std::max
-#include <cmath>     // fabs, erf
-#include <cstdlib>   // atof
-#include <limits>    // std::numeric_limits
-#include <stdexcept> // std::runtime_error
-#include <string>    // std::getline
+#include <Eigen/Dense> // MatrixXd, VectorXd
+#include <algorithm>   // std::max
+#include <cmath>       // fabs, erf
+#include <cstdlib>     // atof
+#include <limits>      // std::numeric_limits
+#include <stdexcept>   // std::runtime_error
+#include <string>      // std::getline
 #include <iostream>
-//#include <iomanip>
 
 using namespace std;
 using namespace nnp;
@@ -159,6 +158,21 @@ void Structure::readFromLines(vector<string> const& lines)
         splitLine = split(reduce(*line));
         if (splitLine.at(0) == "begin")
         {
+            if (splitLine.size() > 1)
+            {
+                for (vector<string>::const_iterator word =
+                     splitLine.begin() + 1; word != splitLine.end(); ++word)
+                {
+                    if      (*word == "set=train") sampleType = ST_TRAINING;
+                    else if (*word == "set=test") sampleType = ST_TEST;
+                    else
+                    {
+                        throw runtime_error("ERROR: Unknown keyword in "
+                                            "structure specification, check "
+                                            "\"begin\" arguments.\n");
+                    }
+                }
+            }
         }
         else if (splitLine.at(0) == "comment")
         {
@@ -197,7 +211,7 @@ void Structure::readFromLines(vector<string> const& lines)
             atoms.push_back(Atom());
             atoms.back().index          = numAtoms;
             atoms.back().indexStructure = index;
-            atoms.back().tag            = numAtoms;
+            atoms.back().tag            = numAtoms; // Implicit conversion!
             atoms.back().r[0]           = atof(splitLine.at(1).c_str());
             atoms.back().r[1]           = atof(splitLine.at(2).c_str());
             atoms.back().r[2]           = atof(splitLine.at(3).c_str());
@@ -242,14 +256,7 @@ void Structure::readFromLines(vector<string> const& lines)
         }
     }
 
-    if (isPeriodic)
-    {
-        for (vector<Atom>::iterator it = atoms.begin();
-             it != atoms.end(); ++it)
-        {
-            remap((*it));
-        }
-    }
+    if (isPeriodic) remap();
 
     return;
 }
@@ -311,7 +318,7 @@ void Structure::calculateNeighborList(
                                     atoms[i].neighbors.
                                         back().index = j;
                                     atoms[i].neighbors.
-                                        back().tag = j;
+                                        back().tag = j; // Implicit conversion!
                                     atoms[i].neighbors.
                                         back().element = atoms[j].element;
                                     atoms[i].neighbors.
@@ -335,12 +342,6 @@ void Structure::calculateNeighborList(
                     }
                 }
             }
-            //if (sortByDistance)
-            //{
-            //    sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
-            //    //TODO: maybe sort neighborsUnique too?
-            //    atoms[i].NeighborListIsSorted = true;
-            //}
             atoms[i].hasNeighborList = true;
         }
     }
@@ -366,7 +367,7 @@ void Structure::calculateNeighborList(
                     {
                         atoms[i].neighbors.push_back(Atom::Neighbor());
                         atoms[i].neighbors.back().index   = j;
-                        atoms[i].neighbors.back().tag     = j;
+                        atoms[i].neighbors.back().tag     = j; // Impl. conv.!
                         atoms[i].neighbors.back().element = atoms[j].element;
                         atoms[i].neighbors.back().d       = dr.norm();
                         atoms[i].neighbors.back().dr      = dr;
@@ -377,12 +378,6 @@ void Structure::calculateNeighborList(
                     }
                 }
             }
-            //if (sortByDistance)
-            //{
-            //    sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
-            //    //TODO: maybe sort neighborsUnique too?
-            //    atoms[i].NeighborListIsSorted = true;
-            //}
             atoms[i].hasNeighborList = true;
         }
     }
@@ -1055,7 +1050,7 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomIndices,
         {
             Atom const& aj = atoms.at(j);
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             vector<vector<size_t> > const *const tableFull
                     = &(elements.at(aj.element).getSymmetryFunctionTable());
 #else
@@ -1074,7 +1069,6 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomIndices,
     }
     return;
 }
-
 
 
 void Structure::calculateElectrostaticEnergyDerivatives(
@@ -1206,6 +1200,15 @@ VectorXd const Structure::calculateForceLambdaElec() const
     dEelecdQ(numAtoms) = 0;
     VectorXd const lambdaElec = A.colPivHouseholderQr().solve(-dEelecdQ);
     return lambdaElec;
+}
+
+void Structure::remap()
+{
+    for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
+    {
+        remap((*it));
+    }
+    return;
 }
 
 void Structure::remap(Atom& atom)
@@ -1403,7 +1406,6 @@ void Structure::updateError(string const&        property,
 
 string Structure::getEnergyLine() const
 {
-    //cout << (energyRef - energy) / numAtoms << endl;
     return strpr("%10zu %16.8E %16.8E\n",
                  index,
                  energyRef / numAtoms,

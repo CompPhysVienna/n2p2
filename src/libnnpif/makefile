@@ -46,7 +46,7 @@ LIB=lib$(NAME)
 # PROJECT COMPILER AND FLAGS
 ###############################################################################
 CC=$(PROJECT_CC)
-ifneq (,$(findstring NNP_NO_MPI,${PROJECT_OPTIONS}))
+ifneq (,$(findstring N2P2_NO_MPI,${PROJECT_OPTIONS}))
 MPICC=${PROJECT_CC}
 CFLAGS=${PROJECT_CFLAGS}
 else
@@ -88,20 +88,41 @@ OBJ=$(SRC:.cpp=.o)
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all headers lammps-mf clean rebuild
+.PHONY: all \
+	headers \
+	lammps-prep \
+	lammps-mf \
+	lammps-mf-internal \
+	lammps-cmake \
+	clean rebuild
 
 ifeq ($(MODE), shared)
-all: headers lammps-mf $(LIB).so
+all: headers lammps-prep $(LIB).so
 else
-all: headers lammps-mf $(LIB).a
+all: headers lammps-prep $(LIB).a
 endif
 
 headers:
 	cp $(HEADERS) $(PROJECT_INCLUDE)
 
+LAMMPS_OPTIONS := $(filter -DN2P2_%,$(OPTIONS))
+lammps-prep: lammps-mf lammps-cmake
+
 lammps-mf:
-	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1 $(OPTIONS) -I$(PROJECT_EIGEN)," LAMMPS/Makefile.lammps
-	@rm LAMMPS/Makefile.lammps.bak
+	cp LAMMPS/Makefile.lammps $(PROJECT_LIB)/Makefile.lammps-extra
+	@sed -i.bak -E "s,(hdnnp_SYSINC =).*,\1 $(LAMMPS_OPTIONS)," $(PROJECT_LIB)/Makefile.lammps-extra
+	@rm $(PROJECT_LIB)/Makefile.lammps-extra.bak
+
+lammps-mf-internal: lammps-mf
+	sed -i.bak -E "s,hdnnp,nnp," $(PROJECT_LIB)/Makefile.lammps-extra
+	@rm $(PROJECT_LIB)/Makefile.lammps-extra.bak
+
+lammps-cmake:
+	$(RM) -f $(PROJECT_LIB)/lammps-extra.cmake
+	touch $(PROJECT_LIB)/lammps-extra.cmake
+	for flag in $(LAMMPS_OPTIONS); do \
+		echo "target_compile_definitions(lammps PRIVATE $${flag})" >> $(PROJECT_LIB)/lammps-extra.cmake; \
+	done
 
 $(LIB).so: CFLAGS+= -fPIC
 $(LIB).so: $(OBJ)
@@ -115,7 +136,7 @@ $(LIB).a: $(OBJ)
 %.o: %.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ -c $<
 
-clean: clean-headers clean-lammps-mf
+clean: clean-headers clean-lammps-prep
 	$(RM) $(OBJ)
 	$(RM) $(OBJ:.o=.gcno) $(OBJ:.o=.gcda) $(LIB).so $(LIB).a
 	$(RM) $(PROJECT_LIB)/$(LIB).so $(PROJECT_LIB)/$(LIB).a
@@ -123,8 +144,8 @@ clean: clean-headers clean-lammps-mf
 clean-headers:
 	cd $(PROJECT_INCLUDE) && $(RM) $(notdir $(HEADERS))
 
-clean-lammps-mf:
-	@sed -i.bak -E "s,(nnp_SYSINC =).*,\1," LAMMPS/Makefile.lammps
-	@rm LAMMPS/Makefile.lammps.bak
+clean-lammps-prep:
+	$(RM) $(PROJECT_LIB)/Makefile.lammps-extra
+	$(RM) $(PROJECT_LIB)/lammps-extra.cmake
 
 rebuild: clean all

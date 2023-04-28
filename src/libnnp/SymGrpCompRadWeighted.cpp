@@ -142,7 +142,7 @@ void SymGrpCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
                 if (rij <= mrl[k] || rij >= mrc[k]) continue;
                 double rad;
                 double drad;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                 auto ci = sf.getCacheIndices();
                 if (ci[ne].size() == 0) sf.getCompactOnly(rij, rad, drad);
                 else
@@ -168,7 +168,7 @@ void SymGrpCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
                 double const p1drijz = drad * d1[2];
 
                 // Save force contributions in Atom storage.
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                 size_t ki = memberIndex[k];
 #else
                 size_t const ki = memberIndex[k];
@@ -182,7 +182,7 @@ void SymGrpCompRadWeighted::calculate(Atom& atom, bool const derivatives) const
                 dGdr[1] += p1drijy;
                 dGdr[2] += p1drijz;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                 ki = memberIndexPerElement[k][ne];
 #endif
                 dGdr = n.dGdr[ki].r;

@@ -69,7 +69,7 @@ public:
      * @return Type used.
      */
     Type                     getType() const;
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
     /** Set asymmetric property.
      *
      * @param[in] asymmetric Whether asymmetry should be activated.
@@ -112,7 +112,7 @@ private:
     static double const E;
     /// Core function type.
     Type                type;
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
     /// Enables asymmetry modification (use with polynomials).
     bool                asymmetric;
 #endif
@@ -157,7 +157,7 @@ private:
 
 inline CoreFunction::Type CoreFunction::getType() const { return type; }
 
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
 inline void CoreFunction::setAsymmetric(bool asymmetric)
 {
     this->asymmetric = asymmetric;
@@ -170,7 +170,7 @@ inline bool CoreFunction::getAsymmetric() const { return asymmetric; }
 
 inline double CoreFunction::f(double x) const
 {
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
     if (asymmetric) x = (2.0 - x) * x;
 #endif
     return (this->*fPtr)(x);
@@ -178,7 +178,7 @@ inline double CoreFunction::f(double x) const
 
 inline double CoreFunction::df(double x) const
 {
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
     if (asymmetric) return (2.0 - 2.0 * x) * (this->*dfPtr)((2.0 - x) * x);
     else return (this->*dfPtr)(x);
 #else
@@ -188,7 +188,7 @@ inline double CoreFunction::df(double x) const
 
 inline void CoreFunction::fdf(double x, double& fx, double& dfx) const
 {
-#ifndef NNP_NO_ASYM_POLY
+#ifndef N2P2_NO_ASYM_POLY
     if (asymmetric)
     {
         (this->*fdfPtr)((2.0 - x) * x, fx, dfx);

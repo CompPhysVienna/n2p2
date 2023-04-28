@@ -20,6 +20,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
@@ -33,7 +34,8 @@
 extensions = [
     'breathe',
 #    'exhale',
-    'sphinx.ext.mathjax'
+    'sphinx.ext.mathjax',
+    'sphinx_rtd_theme'
 ]
 
 # Setup the breathe extension
@@ -109,7 +111,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'n2p2 - A neural network potential package'
-copyright = u'2020, Andreas Singraber'
+copyright = u'2022, Andreas Singraber'
 author = u'Andreas Singraber'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -119,7 +121,7 @@ author = u'Andreas Singraber'
 # The short X.Y version.
 with open('../../../libnnp/version.h') as f:
     for line in f:
-        if 'NNP_GIT_VERSION' in line:
+        if 'N2P2_GIT_VERSION' in line:
             version = line.split()[2]
 #version = u'1.0.0'
 # The full version, including alpha/beta/rc tags.

@@ -138,9 +138,16 @@ public:
      * @param[in] stage Training stage to set.
      */
     void                  setStage(std::size_t stage);
+    /** Apply normalization based on initial weights prediction.
+     */
+    void                  dataSetNormalization();
     /** General training settings and setup of weight update routine.
      */
     void                  setupTraining();
+    /** Set up numeric weight derivatives check.
+     */
+    std::vector<
+    std::string>          setupNumericDerivCheck();
     /** Calculate neighbor lists for all structures.
      */
     void                  calculateNeighborLists();
@@ -306,6 +313,55 @@ public:
      * @param[in] fileName File name for training log.
      */
     void                  setTrainingLogFileName(std::string fileName);
+    /** Get total number of NN connections.
+     *
+     * @param[in] id NN ID to use (e.g. "short").
+     *
+     * @return Sum of all NN weights + biases for all elements
+     */
+    std::size_t           getNumConnections(std::string id = "short") const;
+    /** Get number of NN connections for each element.
+     *
+     * @param[in] id NN ID to use (e.g. "short").
+     *
+     * @return Vector containing number of connections for each element.
+     */
+    std::vector<
+    std::size_t>          getNumConnectionsPerElement(
+                                               std::string id = "short") const;
+    /** Get offsets of NN connections for each element.
+     *
+     * @param[in] id NN ID to use (e.g. "short").
+     *
+     * @return Vector containing offsets for each element.
+     */
+    std::vector<
+    std::size_t>          getConnectionOffsets(std::string id = "short") const;
+    /** Compute derivatives of property with respect to weights.
+     *
+     * @param[in] property Training property for which derivatives should be
+     *                     computed.
+     * @param[in] structure The structure under investigation.
+     * @param[inout] dEdc Weight derivative array (first index = property,
+     *                    second index = weight).
+     */
+    void                  dPdc(std::string                       property,
+                               Structure&                        structure,
+                               std::vector<std::vector<double>>& dEdc);
+    /** Compute numeric derivatives of property with respect to weights.
+     *
+     * @param[in] property Training property for which derivatives should be
+     *                     computed.
+     * @param[in] structure The structure under investigation.
+     * @param[inout] dEdc Weight derivative array (first index = property,
+     *                    second index = weight).
+     * @param[in] delta Delta for central difference.
+     */
+    void                  dPdcN(
+                             std::string                       property,
+                             Structure&                        structure,
+                             std::vector<std::vector<double>>& dEdc,
+                             double                            delta = 1.0E-4);
 
 private:
     /// Contains update candidate which is grouped with others to specific
@@ -329,10 +385,6 @@ private:
     {
         /// Structure index.
         std::size_t s;
-        /// Atom index (only used for force candidates).
-        //std::size_t a;
-        /// Component index (x,y,z -> 0,1,2, only used for force candidates).
-        //std::size_t c;
         /// Absolute value of error with respect to reference value (in case of
         /// subcandidates, average is taken)
         double      error;
@@ -485,7 +537,8 @@ private:
     std::size_t              writeNeuronStatisticsAlways;
     /// Update counter (for all training quantities together).
     std::size_t              countUpdates;
-    /// Total number of weights. If nnpType 4G also h = sqrt(J) is counted.
+    /// Total number of weights. If nnpType 4G also h = sqrt(J) (hardness) is
+    /// counted.
     std::size_t              numWeights;
     /// Force update weight.
     double                   forceWeight;
@@ -506,7 +559,7 @@ private:
     std::vector<std::size_t> weightsOffset;
     /// Vector of actually used training properties.
     std::vector<std::string> pk;
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>      dGdxia;
@@ -584,7 +637,7 @@ private:
                              std::size_t isg,
                              std::size_t is,
                              std::size_t ia);
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
     /** Collect derivative of symmetry functions with respect to one atom's
      * coordinate.
      *

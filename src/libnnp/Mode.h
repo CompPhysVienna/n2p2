@@ -115,6 +115,7 @@ public:
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.
+     * @param[in] skipNormalize Whether to skip normalization setup.
      * @param[in] initialHardness Signalizes to use initial hardness in NN
      *                  settings.
      *
@@ -122,14 +123,17 @@ public:
      * networks. No symmetry function scaling data is read, no weights are set.
      */
     void                     setupGeneric(std::string const& nnpDir = "",
-                                          bool      initialHardness = false);
+                                          bool               skipNormalize = false,
+                                          bool               initialHardness = false);
     /** Set up normalization.
+     *
+     * @param[in] standalone Whether to write section header and footer.
      *
      * If the keywords `mean_energy`, `conv_length` and
      * `conv_length` are present, the provided conversion factors are used to
      * internally use a different unit system.
      */
-    void                     setupNormalization();
+    void                     setupNormalization(bool standalone = true);
     /** Set up the element map.
      *
      * Uses keyword `elements`. This function should follow immediately after
@@ -181,7 +185,7 @@ public:
      * ensure that correct scaling behavior has already been set.
      */
     virtual void             setupSymmetryFunctionGroups();
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
     /** Set up symmetry function cache.
      *
      * @param[in] verbose If true, print more cache information.
@@ -335,6 +339,7 @@ public:
      * @param[in] suppressOutput Turn on/off output generation (for example
      *                        during training.
      */
+    // TODO: remove suppressOutput again
     void                     calculateAtomicNeuralNetworks(
                                            Structure&  structure,
                                            bool const  derivatives,
@@ -488,7 +493,7 @@ public:
     void                     resetExtrapolationWarnings();
     /** Getter for Mode::nnpType.
      *
-     * @return HDNNP type (2G, 4G,..)
+     * @return HDNNP type (2G, 4G,..) that was set up.
      */
     NNPType                  getNnpType() const;
     /** Getter for Mode::meanEnergy.

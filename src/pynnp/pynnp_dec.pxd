@@ -17,6 +17,7 @@
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
+from libc.stdint cimport int64_t
 
 ###############################################################################
 # CutoffFunction
@@ -135,7 +136,7 @@ cdef extern from "Atom.h" namespace "nnp":
     cdef cppclass Atom:
         cppclass Neighbor:
             size_t         index
-            size_t         tag
+            int64_t        tag
             size_t         element
             double         d
             Vec3D          dr
@@ -154,7 +155,7 @@ cdef extern from "Atom.h" namespace "nnp":
         bool             useChargeNeuron
         size_t           index
         size_t           indexStructure
-        size_t           tag
+        int64_t          tag
         size_t           element
         size_t           numNeighbors
         size_t           numNeighborsUnique
@@ -221,13 +222,14 @@ cdef extern from "Structure.h" namespace "nnp":
         #void                     calculatePbcCopies(double cutoffRadius);
         #void                     calculateInverseBox();
         #void                     calculateVolume();
+        void           remap() except +
         #void                     remap(Atom& atom);
-        #void                     toNormalizedUnits(double meanEnergy,
-        #                                           double convEnergy,
-        #                                           double convLength);
-        #void                     toPhysicalUnits(double meanEnergy,
-        #                                         double convEnergy,
-        #                                         double convLength);
+        void           toNormalizedUnits(double meanEnergy,
+                                         double convEnergy,
+                                         double convLength) except +
+        void           toPhysicalUnits(double meanEnergy,
+                                       double convEnergy,
+                                       double convLength) except +
         size_t         getMaxNumNeighbors() except +
         #void                     freeAtoms(bool all);
         void           reset() except +
@@ -271,6 +273,8 @@ cdef extern from "Mode.h" namespace "nnp":
         void           setupSymmetryFunctionScalingNone() except +
         void           setupSymmetryFunctionScaling(string fileName) except +
         void           setupSymmetryFunctionGroups() except +
+        void           setupSymmetryFunctionCache(bool verbose) except +
+        void           setupSymmetryFunctionMemory(bool verbose) except +
         void           setupSymmetryFunctionStatistics(
                                      bool collectStatistics,
                                      bool collectExtrapolationWarnings,
@@ -289,10 +293,9 @@ cdef extern from "Mode.h" namespace "nnp":
                                                 bool      derivatives) except +
         void           calculateEnergy(Structure structure) except +
         void           calculateForces(Structure structure) except +
-        #void                     addEnergyOffset(Structure& structure,
-        #                                         bool       ref = true);
-        #void                     removeEnergyOffset(Structure& structure,
-        #                                            bool       ref = true);
+        void           addEnergyOffset(Structure structure, bool ref) except +
+        void           removeEnergyOffset(Structure structure,
+                                          bool      ref) except +
         #double                   getEnergyOffset(Structure const& structure) const;
         #double                   getEnergyWithOffset(
         #                                        Structure const& structure,
@@ -311,13 +314,13 @@ cdef extern from "Mode.h" namespace "nnp":
         #                                               Structure& structure) const;
         #std::size_t              getNumExtrapolationWarnings() const;
         #void                     resetExtrapolationWarnings();
-        #double                   getMeanEnergy() const;
-        #double                   getConvEnergy() const;
-        #double                   getConvLength() const;
+        double         getMeanEnergy() except +
+        double         getConvEnergy() except +
+        double         getConvLength() except +
         double         getMaxCutoffRadius() except +
         #std::size_t              getNumElements() const;
         #std::vector<std::size_t> getNumSymmetryFunctions() const;
-        #bool                     useNormalization() const;
+        bool           useNormalization() except +
         bool           settingsKeywordExists(string keyword) except +
         string         settingsGetValue(string keyword) except +
         #std::vector<std::size_t> pruneSymmetryFunctionsRange(double threshold);

@@ -171,7 +171,7 @@ bool SymFncBaseCompAngWeighted::checkRelevantElement(size_t /*index*/) const
     return true;
 }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
 vector<string> SymFncBaseCompAngWeighted::getCacheIdentifiers() const
 {
     vector<string> v;

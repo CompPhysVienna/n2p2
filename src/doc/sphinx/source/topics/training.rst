@@ -40,6 +40,12 @@ your system.
 
 Step 3 (**optional**): Data set normalization
 """""""""""""""""""""""""""""""""""""""""""""
+.. note::
+
+   This step is usually not necessary any more because data set normalization is
+   handled on-the-fly during training with the keyword
+   :ref:`normalize_data_set`.
+
 As explained :ref:`here <units>` it may be useful to ensure that training is
 independent of the chosen unit system. With ``input.nn`` and ``input.data``
 present run the tool :ref:`nnp-norm` which implements a normalization procedure
@@ -56,6 +62,8 @@ Whenever the data set is changed, do not forget to repeat this step.
    radii, some symmetry function parameters) need to be converted manually. Any
    unit conversion will be handled internally and no user intervention is
    necessary.
+
+.. _symfunc_setup:
 
 Step 4: Symmetry function setup
 """""""""""""""""""""""""""""""

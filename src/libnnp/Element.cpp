@@ -44,6 +44,7 @@
 #include "SymGrpCompAngwWeighted.h"
 #include "utility.h"
 #include <iostream>  // std::cerr
+#include <cinttypes> // PRId64
 #include <cstdlib>   // atoi
 #include <algorithm> // std::sort, std::min, std::max
 #include <limits>    // std::numeric_limits
@@ -65,18 +66,17 @@ Element::Element(size_t const index, ElementMap const& elementMap) :
 
 Element::~Element()
 {
-    for (vector<SymFnc*>::const_iterator
-         it = symmetryFunctions.begin(); it != symmetryFunctions.end(); ++it)
-    {
-        delete *it;
-    }
+    clearSymmetryFunctions();
+}
 
-    for (vector<SymGrp*>::const_iterator
-         it = symmetryFunctionGroups.begin();
-         it != symmetryFunctionGroups.end(); ++it)
-    {
-        delete *it;
-    }
+void Element::clearSymmetryFunctions()
+{
+    for (auto& s : symmetryFunctions) delete s;
+    symmetryFunctions.clear();
+    for (auto& s : symmetryFunctionGroups) delete s;
+    symmetryFunctionGroups.clear();
+
+    return;
 }
 
 void Element::addSymmetryFunction(string const& parameters,
@@ -301,6 +301,7 @@ void Element::setupSymmetryFunctionMemory()
             }
         }
     }
+    symmetryFunctionNumTable.clear();
     for (size_t i = 0; i < elementMap.size(); ++i)
     {
         symmetryFunctionNumTable.push_back(symmetryFunctionTable.at(i).size());
@@ -504,8 +505,8 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
             if (statistics.writeExtrapolationWarnings)
             {
                 cerr << strpr("### NNP EXTRAPOLATION WARNING ### "
-                              "STRUCTURE: %6zu ATOM: %9zu ELEMENT: %2s "
-                              "SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
+                              "STRUCTURE: %6zu ATOM: %9" PRId64 " ELEMENT: "
+                              "%2s SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
                               "MIN: %10.3E MAX: %10.3E\n",
                               atom.indexStructure,
                               atom.tag,
@@ -520,8 +521,8 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
             {
                 throw out_of_range(
                         strpr("### NNP EXTRAPOLATION WARNING ### "
-                              "STRUCTURE: %6zu ATOM: %9zu ELEMENT: %2s "
-                              "SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
+                              "STRUCTURE: %6zu ATOM: %9" PRId64 " ELEMENT: "
+                              "%2s SYMFUNC: %4zu TYPE: %2zu VALUE: %10.3E "
                               "MIN: %10.3E MAX: %10.3E\n"
                               "ERROR: Symmetry function value out of range.\n",
                               atom.indexStructure,
@@ -539,7 +540,7 @@ size_t Element::updateSymmetryFunctionStatistics(Atom const& atom)
     return countExtrapolationWarnings;
 }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
 void Element::setCacheIndices(vector<vector<SFCacheList>> cacheLists)
 {
     this->cacheLists = cacheLists;

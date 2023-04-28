@@ -103,9 +103,15 @@ void Training::selectSets()
     for (size_t i = 0; i < structures.size(); ++i)
     {
         Structure& s = structures.at(i);
-        if (gsl_rng_uniform(rng) < testSetFraction)
+        // Only select set if not already determined.
+        if (s.sampleType == Structure::ST_UNKNOWN)
         {
-            s.sampleType = Structure::ST_TEST;
+            double const r = gsl_rng_uniform(rng);
+            if (r < testSetFraction) s.sampleType = Structure::ST_TEST;
+            else                     s.sampleType = Structure::ST_TRAINING;
+        }
+        if (s.sampleType == Structure::ST_TEST)
+        {
             size_t const& na = s.numAtoms;
             k = "energy"; if (p.exists(k)) p[k].numTestPatterns++;
             k = "force";  if (p.exists(k)) p[k].numTestPatterns += 3 * na;
@@ -118,9 +124,8 @@ void Training::selectSets()
                 k = "charge"; if (p.exists(k)) p[k].numTestPatterns += na;
             }
         }
-        else
+        else if (s.sampleType == Structure::ST_TRAINING)
         {
-            s.sampleType = Structure::ST_TRAINING;
             for (size_t j = 0; j < numElements; ++j)
             {
                 numAtomsPerElement.at(j) += s.numAtomsPerElement.at(j);
@@ -160,17 +165,6 @@ void Training::selectSets()
                             .back().c = j;
                     }
                 }
-                    //for (vector<Atom>::const_iterator it = s.atoms.begin();
-                    //     it != s.atoms.end(); ++it)
-                    //{
-                    //    for (size_t j = 0; j < 3; ++j)
-                    //    {
-                    //        p[k].updateCandidates.push_back(UpdateCandidate());
-                    //        p[k].updateCandidates.back().s = i;
-                    //        p[k].updateCandidates.back().a = it->index;
-                    //        p[k].updateCandidates.back().c = j;
-                    //    }
-                    //}
             }
             k = "charge";
             if (p.exists(k))
@@ -197,6 +191,11 @@ void Training::selectSets()
                 }
 
             }
+        }
+        else
+        {
+            log << strpr("WARNING: Structure %zu not assigned to either "
+                         "training or test set.\n", s.index);
         }
     }
     for (size_t i = 0; i < numElements; ++i)
@@ -381,15 +380,15 @@ void Training::setStage(size_t stage)
 {
     this->stage = stage;
 
-    // NNP of type HDNNP_2G trains "properties" -> "network":
-    // * "energy" (optionally: "force") -> "short"
+    // NNP of type HDNNP_2G trains <properties> -> <network>:
+    //   "energy" (optionally: "force") -> "short"
     if (nnpType == NNPType::HDNNP_2G)
     {
         pk.push_back("energy");
         if (settings.keywordExists("use_short_forces")) pk.push_back("force");
         nnId = "short";
     }
-    // NNP of type HDNNP_4G or HDNNP_Q trains "properties" -> "network":
+    // NNP of type HDNNP_4G or HDNNP_Q trains <properties> -> <network>:
     // * stage 1: "charge" -> "elec"
     // * stage 2: "energy" (optionally: "force") -> "short"
     else if (nnpType == NNPType::HDNNP_4G ||
@@ -423,6 +422,314 @@ void Training::setStage(size_t stage)
                                                forward_as_tuple(key));
                  };
     for (auto k : pk) initP(k);
+
+    return;
+}
+
+void Training::dataSetNormalization()
+{
+    log << "\n";
+    log << "*** DATA SET NORMALIZATION **************"
+           "**************************************\n";
+    log << "\n";
+
+    log << "Computing statistics from reference data and initial "
+           "prediction...\n";
+    log << "\n";
+
+    bool useForcesLocal = settings.keywordExists("use_short_forces");
+
+    if ( (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q) &&
+          stage == 1)
+    {
+        throw runtime_error("ERROR: Normalization of charges not yet "
+                            "implemented\n.");
+    }
+    writeWeights("short", "weights.%03zu.norm");
+    if ( (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q) &&
+          stage == 2)
+    {
+        writeWeights("elec", "weightse.%03zu.norm");
+    }
+
+    ofstream fileEvsV;
+    fileEvsV.open(strpr("evsv.dat.%04d", myRank).c_str());
+    if (myRank == 0)
+    {
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Energy vs. volume comparison.");
+        colSize.push_back(16);
+        colName.push_back("V_atom");
+        colInfo.push_back("Volume per atom.");
+        colSize.push_back(16);
+        colName.push_back("Eref_atom");
+        colInfo.push_back("Reference energy per atom.");
+        colSize.push_back(10);
+        colName.push_back("N");
+        colInfo.push_back("Number of atoms.");
+        colSize.push_back(16);
+        colName.push_back("V");
+        colInfo.push_back("Volume of structure.");
+        colSize.push_back(16);
+        colName.push_back("Eref");
+        colInfo.push_back("Reference energy of structure.");
+        colSize.push_back(16);
+        colName.push_back("Eref_offset");
+        colInfo.push_back("Reference energy of structure (including offset).");
+        appendLinesToFile(fileEvsV,
+                          createFileHeader(title, colSize, colName, colInfo));
+    }
+
+    size_t numAtomsTotal         = 0;
+    size_t numStructures         = 0;
+    double meanEnergyPerAtomRef  = 0.0;
+    double meanEnergyPerAtomNnp  = 0.0;
+    double sigmaEnergyPerAtomRef = 0.0;
+    double sigmaEnergyPerAtomNnp = 0.0;
+    double meanForceRef          = 0.0;
+    double meanForceNnp          = 0.0;
+    double sigmaForceRef         = 0.0;
+    double sigmaForceNnp         = 0.0;
+    for (auto& s : structures)
+    {
+        // File output for evsv.dat.
+        fileEvsV << strpr("%16.8E %16.8E %10zu %16.8E %16.8E %16.8E\n",
+                          s.volume / s.numAtoms,
+                          s.energyRef / s.numAtoms,
+                          s.numAtoms,
+                          s.volume,
+                          s.energyRef,
+                          getEnergyWithOffset(s, true));
+        s.calculateNeighborList(maxCutoffRadius);
+        // TODO: handle 4G case
+#ifdef N2P2_NO_SF_GROUPS
+        calculateSymmetryFunctions(s, true);
+#else
+        calculateSymmetryFunctionGroups(s, true);
+#endif
+        calculateAtomicNeuralNetworks(s, true);
+        calculateEnergy(s);
+        if (useForcesLocal) calculateForces(s);
+        s.clearNeighborList();
+
+        numStructures++;
+        numAtomsTotal += s.numAtoms;
+        meanEnergyPerAtomRef += s.energyRef / s.numAtoms;
+        meanEnergyPerAtomNnp += s.energy    / s.numAtoms;
+        for (auto& a : s.atoms)
+        {
+            meanForceRef += a.fRef[0] + a.fRef[1] + a.fRef[2];
+            meanForceNnp += a.f   [0] + a.f   [1] + a.f   [2];
+        }
+    }
+
+    fileEvsV.flush();
+    fileEvsV.close();
+    MPI_Barrier(MPI_COMM_WORLD);
+    log << "Writing energy/atom vs. volume/atom data to \"evsv.dat\".\n";
+    if (myRank == 0) combineFiles("evsv.dat");
+    MPI_Allreduce(MPI_IN_PLACE, &numStructures       , 1, MPI_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &numAtomsTotal       , 1, MPI_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &meanForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    meanEnergyPerAtomRef /= numStructures;
+    meanEnergyPerAtomNnp /= numStructures;
+    meanForceRef /= 3 * numAtomsTotal;
+    meanForceNnp /= 3 * numAtomsTotal;
+    for (auto const& s : structures)
+    {
+        double ediffRef = s.energyRef / s.numAtoms - meanEnergyPerAtomRef;
+        double ediffNnp = s.energy    / s.numAtoms - meanEnergyPerAtomNnp;
+        sigmaEnergyPerAtomRef += ediffRef * ediffRef;
+        sigmaEnergyPerAtomNnp += ediffNnp * ediffNnp;
+        for (auto const& a : s.atoms)
+        {
+            double fdiffRef = a.fRef[0] - meanForceRef;
+            double fdiffNnp = a.f   [0] - meanForceNnp;
+            sigmaForceRef += fdiffRef * fdiffRef;
+            sigmaForceNnp += fdiffNnp * fdiffNnp;
+            fdiffRef = a.fRef[1] - meanForceRef;
+            fdiffNnp = a.f   [1] - meanForceNnp;
+            sigmaForceRef += fdiffRef * fdiffRef;
+            sigmaForceNnp += fdiffNnp * fdiffNnp;
+            fdiffRef = a.fRef[2] - meanForceRef;
+            fdiffNnp = a.f   [2] - meanForceNnp;
+            sigmaForceRef += fdiffRef * fdiffRef;
+            sigmaForceNnp += fdiffNnp * fdiffNnp;
+        }
+    }
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &sigmaForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    sigmaEnergyPerAtomRef = sqrt(sigmaEnergyPerAtomRef / (numStructures - 1));
+    sigmaEnergyPerAtomNnp = sqrt(sigmaEnergyPerAtomNnp / (numStructures - 1));
+    sigmaForceRef = sqrt(sigmaForceRef / (3 * numAtomsTotal - 1));
+    sigmaForceNnp = sqrt(sigmaForceNnp / (3 * numAtomsTotal - 1));
+    log << "\n";
+    log << strpr("Total number of structures : %zu\n", numStructures);
+    log << strpr("Total number of atoms      : %zu\n", numAtomsTotal);
+    log << "----------------------------------\n";
+    log << "Reference data statistics:\n";
+    log << "----------------------------------\n";
+    log << strpr("Mean/sigma energy per atom : %16.8E   / %16.8E\n",
+                 meanEnergyPerAtomRef,
+                 sigmaEnergyPerAtomRef);
+    log << strpr("Mean/sigma force           : %16.8E   / %16.8E\n",
+                 meanForceRef,
+                 sigmaForceRef);
+    log << "----------------------------------\n";
+    log << "Initial NNP prediction statistics:\n";
+    log << "----------------------------------\n";
+    log << strpr("Mean/sigma energy per atom : %16.8E   / %16.8E\n",
+                 meanEnergyPerAtomNnp,
+                 sigmaEnergyPerAtomNnp);
+    log << strpr("Mean/sigma force           : %16.8E   / %16.8E\n",
+                 meanForceNnp,
+                 sigmaForceNnp);
+    log << "----------------------------------\n";
+    // Now set conversion quantities of Mode class.
+    if (settings["normalize_data_set"] == "stats-only")
+    {
+        log << "Data set statistics computation completed, now make up for \n";
+        log << "initially skipped normalization setup...\n";
+        log << "\n";
+        setupNormalization(false);
+    }
+    else if (settings["normalize_data_set"] == "ref")
+    {
+        log << "Normalization based on standard deviation of reference data "
+               "selected:\n";
+        log << "\n";
+        log << "  mean(e_ref) = 0, sigma(e_ref) = sigma(F_ref) = 1\n";
+        log << "\n";
+        meanEnergy = meanEnergyPerAtomRef;
+        convEnergy = 1.0 / sigmaEnergyPerAtomRef;
+        if (useForcesLocal) convLength = sigmaForceRef / sigmaEnergyPerAtomRef;
+        else convLength = 1.0;
+        normalize = true;
+    }
+    else if (settings["normalize_data_set"] == "force")
+    {
+        if (!useForcesLocal)
+        {
+            throw runtime_error("ERROR: Selected normalization mode only "
+                                "possible when forces are available.\n");
+        }
+        log << "Normalization based on standard deviation of reference forces "
+               "and their\n";
+        log << "initial prediction selected:\n";
+        log << "\n";
+        log << "  mean(e_ref) = 0, sigma(F_NNP) = sigma(F_ref) = 1\n";
+        log << "\n";
+        meanEnergy = meanEnergyPerAtomRef;
+        convEnergy = sigmaForceNnp / sigmaForceRef;
+        convLength = sigmaForceNnp;
+        normalize = true;
+    }
+    else
+    {
+        throw runtime_error("ERROR: Unknown data set normalization mode.\n");
+    }
+
+    if (settings["normalize_data_set"] != "stats-only")
+    {
+        log << "Final conversion data:\n";
+        log << strpr("Mean ref. energy per atom = %24.16E\n", meanEnergy);
+        log << strpr("Conversion factor energy  = %24.16E\n", convEnergy);
+        log << strpr("Conversion factor length  = %24.16E\n", convLength);
+        log << "----------------------------------\n";
+    }
+
+    if ((myRank == 0) &&
+        (settings["normalize_data_set"] != "stats-only"))
+    {
+        log << "\n";
+        log << "Writing backup of original settings file to "
+               "\"input.nn.bak\".\n";
+        ofstream fileSettings;
+        fileSettings.open("input.nn.bak");
+        writeSettingsFile(&fileSettings);
+        fileSettings.close();
+
+        log << "\n";
+        log << "Writing normalization data to settings file \"input.nn\".\n";
+        string n1 = strpr("mean_energy %24.16E # nnp-train\n",
+                          meanEnergyPerAtomRef);
+        string n2 = strpr("conv_energy %24.16E # nnp-train\n",
+                          convEnergy);
+        string n3 = strpr("conv_length %24.16E # nnp-train\n",
+                          convLength);
+        // Check for existing normalization header and record line numbers
+        // to replace.
+        auto lines = settings.getSettingsLines();
+        map<size_t, string> replace;
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            vector<string> sl = split(lines.at(i));
+            if (sl.size() > 0)
+            {
+                if (sl.at(0) == "mean_energy") replace[i] = n1;
+                if (sl.at(0) == "conv_energy") replace[i] = n2;
+                if (sl.at(0) == "conv_length") replace[i] = n3;
+            }
+        }
+        if (!replace.empty())
+        {
+            log << "WARNING: Preexisting normalization data was found and "
+                   "replaced in original \"input.nn\" file.\n";
+        }
+
+        fileSettings.open("input.nn");
+        if (replace.empty())
+        {
+            fileSettings << "#########################################"
+                            "######################################\n";
+            fileSettings << "# DATA SET NORMALIZATION\n";
+            fileSettings << "#########################################"
+                            "######################################\n";
+            fileSettings << n1;
+            fileSettings << n2;
+            fileSettings << n3;
+            fileSettings << "#########################################"
+                            "######################################\n";
+            fileSettings << "\n";
+        }
+        settings.writeSettingsFile(&fileSettings, replace);
+        fileSettings.close();
+    }
+
+    // Now make up for left-out normalization setup, need to repeat entire
+    // symmetry function setup.
+    log << "\n";
+    if (normalize)
+    {
+        log << "Silently repeating symmetry function setup...\n";
+        log.silent = true;
+        for (auto& e : elements) e.clearSymmetryFunctions();
+        setupSymmetryFunctions();
+#ifndef N2P2_FULL_SFD_MEMORY
+        setupSymmetryFunctionMemory(false);
+#endif
+#ifndef N2P2_NO_SF_CACHE
+        setupSymmetryFunctionCache();
+#endif
+#ifndef N2P2_NO_SF_GROUPS
+        setupSymmetryFunctionGroups();
+#endif
+        setupSymmetryFunctionScaling();
+        setupSymmetryFunctionStatistics(false, false, false, false);
+        log.silent = false;
+    }
+
+    log << "*****************************************"
+           "**************************************\n";
 
     return;
 }
@@ -899,6 +1206,44 @@ void Training::setupTraining()
     return;
 }
 
+vector<string> Training::setupNumericDerivCheck()
+{
+    log << "\n";
+    log << "*** SETUP WEIGHT DERIVATIVES CHECK ******"
+           "**************************************\n";
+    log << "\n";
+
+    log << "Weight derivatives will be checked for these properties:\n";
+    for (auto k : pk) log << " - " + p[k].plural + "\n";
+    log << "\n";
+
+    if (nnpType == NNPType::HDNNP_2G)
+    {
+        nnId = "short";
+        readNeuralNetworkWeights(nnId, "weights.%03zu.data");
+    }
+    else if ( (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q) &&
+               stage == 1)
+    {
+        nnId = "elec";
+        readNeuralNetworkWeights(nnId, "weightse.%03zu.data");
+    }
+    else if ( (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q) &&
+               stage == 2)
+    {
+        nnId = "short";
+        readNeuralNetworkWeights("elec", "weightse.%03zu.data");
+        readNeuralNetworkWeights(nnId, "weights.%03zu.data");
+    }
+    initializeWeightsMemory();
+    getWeights();
+
+    log << "*****************************************"
+           "**************************************\n";
+
+    return pk;
+}
+
 void Training::calculateNeighborLists()
 {
     sw["nl"].start();
@@ -1074,12 +1419,12 @@ void Training::calculateError(
     for (vector<Structure>::iterator it = structures.begin();
          it != structures.end(); ++it)
     {
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
         calculateSymmetryFunctions((*it), useForces);
 #else
         calculateSymmetryFunctionGroups((*it), useForces);
 #endif
-
+        // TODO: Can we use evaluateNNP?
         if ( nnpType == Mode::NNPType::HDNNP_4G )
         {
             if ( stage == 1 )
@@ -1282,7 +1627,7 @@ void Training::printEpoch()
         log << strpr("%-6s", caps.c_str());
         log << strpr("  %5zu", epoch);
         log << strpr("  %7zu", p[k].countUpdates);
-        if (normalize) // && (k != "charge"))
+        if (normalize)
         {
             log << strpr("   %11.5E   %11.5E",
                          physical(k, p[k].errorTrain.at(p[k].displayMetric)),
@@ -1450,13 +1795,13 @@ void Training::writeLearningCurve(bool append, string const fileName) const
                     colSize.push_back(16);
                     colName.push_back(m + "_" + p[k].tiny + "train_iu");
                     colInfo.push_back(strpr(
-                                       (text[m] + " (internal units)").c_str(),
+                                       (text[m] + " (training units)").c_str(),
                                        "training",
                                        p[k].plural.c_str()));
                     colSize.push_back(16);
                     colName.push_back(m + "_" + p[k].tiny + "test_iu");
                     colInfo.push_back(strpr(
-                                       (text[m] + " (internal units)").c_str(),
+                                       (text[m] + " (training units)").c_str(),
                                        "test",
                                        p[k].plural.c_str()));
                 }
@@ -1673,7 +2018,7 @@ void Training::sortUpdateCandidates(string const& property)
         else if (property == "force")
         {
             Structure const& s = structures.at(uc.s);
-            uc.error = 0;
+            uc.error = 0.0;
             for (auto &sc : uc.subCandidates)
             {
                 Atom const& ai = s.atoms.at(sc.a);
@@ -1685,7 +2030,7 @@ void Training::sortUpdateCandidates(string const& property)
         else if (property == "charge")
         {
             Structure const& s = structures.at(uc.s);
-            uc.error = 0;
+            uc.error = 0.0;
             for (auto const& a : s.atoms)
             {
                 uc.error = fabs(a.chargeRef - a.charge);
@@ -2105,7 +2450,6 @@ void Training::update(string const& property)
                 }
                 // If loop continues, free memory and remember best candidate
                 // so far.
-                // TODO: free electrostatics?
                 if (freeMemory)
                 {
                     s.freeAtoms(true, maxCutoffRadius);
@@ -2118,7 +2462,6 @@ void Training::update(string const& property)
                     indexBest = *posCandidates;
                 }
                 // Increment position in update candidate list.
-                //pu.posUpdateCandidates++;
                 (*posCandidates)++;
             }
             // Break loop for all selection modes but SM_THRESHOLD.
@@ -2137,14 +2480,12 @@ void Training::update(string const& property)
         if (pu.selectionMode == SM_THRESHOLD && il == trials)
         {
             // Set best candidate.
-            //currentUpdateCandidates.at(b) =
-            //    &(pu.updateCandidates.at(indexBest));
             currentUpdateCandidates.at(b) = indexBest;
             currentRmseFraction.at(b) = rmseFractionBest;
             // Need to calculate the symmetry functions again, maybe results
             // were not stored.
             Structure& s = structures.at(c->s);
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
             calculateSymmetryFunctions(s, derivatives);
 #else
             calculateSymmetryFunctionGroups(s, derivatives);
@@ -2176,7 +2517,7 @@ void Training::update(string const& property)
         // dEdc, dFdc or dQdc for energy, force or charge update, respectively.
         vector<vector<double>> dXdc;
         dXdc.resize(numElements);
-        // Temporary storage vector for charge deviations in structure
+        // Temporary storage vector for charge errors in structure
         Eigen::VectorXd QError;
         QError.resize(s.numAtoms);
         double QErrorNorm = 0;
@@ -2286,7 +2627,7 @@ void Training::update(string const& property)
                 {
                     // For force update save derivative of symmetry function
                     // with respect to coordinate.
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                     collectDGdxia((*it), sC->a, sC->c);
 
                     if (nnpType == NNPType::HDNNP_4G)
@@ -2318,7 +2659,7 @@ void Training::update(string const& property)
 
                     // Compute derivative of output node with respect to all
                     // neural network connections (weights + biases).
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                     nn.calculateDFdc(&(dXdc.at(i).front()),
                                      &(dGdxia.front()));
 #else
@@ -2722,7 +3063,6 @@ void Training::update(string const& property)
         for (int i = 0; i < myCurrentUpdateCandidates; ++i)
         {
             procUpdateCandidate.at(i) = myRank;
-            //UpdateCandidate& c = *(currentUpdateCandidates.at(i));
             UpdateCandidate* c = NULL;
             SubCandidate* sC = NULL;
             if (useSubCandidates)
@@ -2835,7 +3175,7 @@ vector<
 vector<double>> Training::calculateWeightDerivatives(Structure* structure)
 {
     Structure& s = *structure;
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
     calculateSymmetryFunctions(s, false);
 #else
     calculateSymmetryFunctionGroups(s, false);
@@ -2876,13 +3216,13 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
                                                       std::size_t atom,
                                                       std::size_t component)
 {
-    // TODO: Add HDNNP-4G
     Structure& s = *structure;
-#ifdef NNP_NO_SF_GROUPS
+#ifdef N2P2_NO_SF_GROUPS
     calculateSymmetryFunctions(s, true);
 #else
     calculateSymmetryFunctionGroups(s, true);
 #endif
+    // TODO: Is charge equilibration necessary here?
 
     vector<vector<double> > dFdc;
     vector<vector<double> > dfdc;
@@ -2898,7 +3238,7 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
     for (vector<Atom>::iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         collectDGdxia((*it), atom, component);
 #else
         it->collectDGdxia(atom, component, maxCutoffRadius);
@@ -2906,9 +3246,10 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
         size_t i = it->element;
         NeuralNetwork& nn = elements.at(i).neuralNetworks.at("short");
         nn.setInput(&((it->G).front()));
+        // TODO: what about charge neuron for 4G?
         nn.propagate();
         nn.getOutput(&(it->energy));
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         nn.calculateDFdc(&(dfdc.at(i).front()), &(dGdxia.front()));
 #else
         nn.calculateDFdc(&(dfdc.at(i).front()), &(it->dGdxia.front()));
@@ -2925,6 +3266,195 @@ vector<double>> Training::calculateWeightDerivatives(Structure*  structure,
 void Training::setTrainingLogFileName(string fileName)
 {
     trainingLogFileName = fileName;
+
+    return;
+}
+
+size_t Training::getNumConnections(string id) const
+{
+    size_t n = 0;
+    for (auto const& e : elements)
+    {
+        n += e.neuralNetworks.at(id).getNumConnections();
+    }
+
+    return n;
+}
+
+vector<size_t> Training::getNumConnectionsPerElement(string id) const
+{
+    vector<size_t> npe;
+    for (auto const& e : elements)
+    {
+        npe.push_back(e.neuralNetworks.at(id).getNumConnections());
+    }
+
+    return npe;
+}
+
+vector<size_t> Training::getConnectionOffsets(string id) const
+{
+    vector<size_t> offset;
+    size_t n = 0;
+    for (auto const& e : elements)
+    {
+        offset.push_back(n);
+        n += e.neuralNetworks.at(id).getNumConnections();
+    }
+
+    return offset;
+}
+
+void Training::dPdc(string                  property,
+                    Structure&              structure,
+                    vector<vector<double>>& dPdc)
+{
+    auto npe = getNumConnectionsPerElement();
+    auto off = getConnectionOffsets();
+    dPdc.clear();
+
+    if (property == "energy")
+    {
+        dPdc.resize(1);
+        dPdc.at(0).resize(getNumConnections(), 0.0);
+        for (auto const& a : structure.atoms)
+        {
+            size_t e = a.element;
+            NeuralNetwork& nn = elements.at(e).neuralNetworks.at(nnId);
+            nn.setInput(a.G.data());
+            nn.propagate();
+            vector<double> tmp(npe.at(e), 0.0);
+            nn.calculateDEdc(tmp.data());
+            for (size_t j = 0; j < tmp.size(); ++j)
+            {
+                dPdc.at(0).at(off.at(e) + j) += tmp.at(j);
+            }
+        }
+    }
+    else if (property == "force")
+    {
+        dPdc.resize(3 * structure.numAtoms);
+        size_t count = 0;
+        for (size_t ia = 0; ia < structure.numAtoms; ++ia)
+        {
+            for (size_t ixyz = 0; ixyz < 3; ++ixyz)
+            {
+                dPdc.at(count).resize(getNumConnections(), 0.0);
+                for (auto& a : structure.atoms)
+                {
+#ifndef N2P2_FULL_SFD_MEMORY
+                    collectDGdxia(a, ia, ixyz);
+#else
+                    a.collectDGdxia(ia, ixyz);
+#endif
+                    size_t e = a.element;
+                    NeuralNetwork& nn = elements.at(e).neuralNetworks.at(nnId);
+                    nn.setInput(a.G.data());
+                    nn.propagate();
+                    nn.calculateDEdG(a.dEdG.data());
+                    nn.getOutput(&(a.energy));
+                    vector<double> tmp(npe.at(e), 0.0);
+#ifndef N2P2_FULL_SFD_MEMORY
+                    nn.calculateDFdc(tmp.data(), dGdxia.data());
+#else
+                    nn.calculateDFdc(tmp.data(), a.dGdxia.data());
+#endif
+                    for (size_t j = 0; j < tmp.size(); ++j)
+                    {
+                        dPdc.at(count).at(off.at(e) + j) += tmp.at(j);
+                    }
+                }
+                count++;
+            }
+        }
+    }
+    else
+    {
+        throw runtime_error("ERROR: Weight derivatives not implemented for "
+                            "property \"" + property + "\".\n");
+    }
+
+    return;
+}
+
+void Training::dPdcN(string                  property,
+                     Structure&              structure,
+                     vector<vector<double>>& dPdc,
+                     double                  delta)
+{
+    auto npe = getNumConnectionsPerElement();
+    auto off = getConnectionOffsets();
+    dPdc.clear();
+
+    if (property == "energy")
+    {
+        dPdc.resize(1);
+        for (size_t ie = 0; ie < numElements; ++ie)
+        {
+            for (size_t ic = 0; ic < npe.at(ie); ++ic)
+            {
+                size_t const o = off.at(ie) + ic;
+                double const w = weights.at(0).at(o);
+
+                weights.at(0).at(o) += delta;
+                setWeights();
+                calculateAtomicNeuralNetworks(structure, false);
+                calculateEnergy(structure);
+                double energyHigh = structure.energy;
+
+                weights.at(0).at(o) -= 2.0 * delta;
+                setWeights();
+                calculateAtomicNeuralNetworks(structure, false);
+                calculateEnergy(structure);
+                double energyLow = structure.energy;
+
+                dPdc.at(0).push_back((energyHigh - energyLow) / (2.0 * delta));
+                weights.at(0).at(o) = w;
+            }
+        }
+    }
+    else if (property == "force")
+    {
+        size_t count = 0;
+        dPdc.resize(3 * structure.numAtoms);
+        for (size_t ia = 0; ia < structure.numAtoms; ++ia)
+        {
+            for (size_t ixyz = 0; ixyz < 3; ++ixyz)
+            {
+                for (size_t ie = 0; ie < numElements; ++ie)
+                {
+                    for (size_t ic = 0; ic < npe.at(ie); ++ic)
+                    {
+                        size_t const o = off.at(ie) + ic;
+                        double const w = weights.at(0).at(o);
+
+                        weights.at(0).at(o) += delta;
+                        setWeights();
+                        calculateAtomicNeuralNetworks(structure, true);
+                        calculateForces(structure);
+                        double forceHigh = structure.atoms.at(ia).f[ixyz];
+
+                        weights.at(0).at(o) -= 2.0 * delta;
+                        setWeights();
+                        calculateAtomicNeuralNetworks(structure, true);
+                        calculateForces(structure);
+                        double forceLow = structure.atoms.at(ia).f[ixyz];
+
+                        dPdc.at(count).push_back((forceHigh - forceLow)
+                                                 / (2.0 * delta));
+                        weights.at(0).at(o) = w;
+                    }
+                }
+                count++;
+            }
+        }
+    }
+    else
+    {
+        throw runtime_error("ERROR: Numeric weight derivatives not "
+                            "implemented for property \""
+                            + property + "\".\n");
+    }
 
     return;
 }
@@ -3041,7 +3571,7 @@ void Training::addTrainingLogEntry(int                 proc,
     return;
 }
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
 void Training::collectDGdxia(Atom const& atom,
                              size_t      indexAtom,
                              size_t      indexComponent)
@@ -3059,6 +3589,7 @@ void Training::collectDGdxia(Atom const& atom,
     vector<vector<size_t> > const& tableFull
         = elements.at(atom.element).getSymmetryFunctionTable();
 
+    // TODO: Check if maxCutoffRadius is needed here
     for (size_t i = 0; i < atom.numNeighbors; i++)
     {
         if (atom.neighbors[i].index == indexAtom)
@@ -3318,7 +3849,30 @@ void Training::setupUpdatePlan(string const& property)
     // Actual property modified here.
     Property& pa = p[property];
     string keyword = property + "_fraction";
+
+    // Override force fraction if keyword "energy_force_ratio" is provided.
+    if (property == "force" &&
+        p.exists("energy") &&
+        settings.keywordExists("force_energy_ratio"))
+    {
+        double const ratio = atof(settings["force_energy_ratio"].c_str());
+        if (settings.keywordExists(keyword))
+        {
+            log << "WARNING: Given force fraction is ignored because "
+                   "force/energy ratio is provided.\n";
+        }
+        log << strpr("Desired force/energy update ratio              : %.6f\n",
+                     ratio);
+        log << "----------------------------------------------\n";
+        pa.epochFraction = (p["energy"].numTrainPatterns * ratio)
+                         / p["force"].numTrainPatterns;
+    }
+    // Default action = read "<property>_fraction" keyword.
+    else
+    {
     pa.epochFraction = atof(settings[keyword].c_str());
+    }
+
     keyword = "task_batch_size_" + property;
     pa.taskBatchSize = (size_t)atoi(settings[keyword].c_str());
     if (pa.taskBatchSize == 0)
@@ -3377,8 +3931,12 @@ void Training::setupUpdatePlan(string const& property)
     log << "Update plan for property \"" + property + "\":\n";
     log << strpr("- Per-task batch size                          : %zu\n",
                  pa.taskBatchSize);
-    log << strpr("- Fraction of patterns used per epoch          : %.4f\n",
+    log << strpr("- Fraction of patterns used per epoch          : %.6f\n",
                  pa.epochFraction);
+    if (pa.numUpdates == 0)
+    {
+        log << "WARNING: No updates are planned for this property.";
+    }
     log << strpr("- Updates per epoch                            : %zu\n",
                  pa.numUpdates);
     log << strpr("- Patterns used per update (rank %3d / global) : "

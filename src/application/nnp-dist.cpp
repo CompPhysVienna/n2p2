@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <limits>
 #include <map>
 #include <string>
 #include <utility>
@@ -72,6 +73,11 @@ int main(int argc, char* argv[])
     log << strpr("Histogram bins    : %zu\n", numBins);
     bool calcAdf = (bool)atoi(argv[3]);
     log << strpr("Calculate ADF     : %d\n", calcAdf);
+
+    double minCellLength = numeric_limits<double>::max();
+    double maxCellLength = 0.0;
+    vector<size_t> periodicStructures;
+    vector<vector<double>> cellLengths(3);
 
     size_t numRdf = numElements * (numElements + 1);
     numRdf /= 2;
@@ -143,6 +149,14 @@ int main(int argc, char* argv[])
     {
         structure.readFromFile(inputFile);
         structure.calculateNeighborList(cutoffRadius);
+        if (structure.isPeriodic)
+        {
+            periodicStructures.push_back(countStructures);
+            for (size_t i = 0; i < 3; ++i)
+            {
+                cellLengths.at(i).push_back(structure.box[i].norm());
+            }
+        }
         for (vector<Atom>::const_iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
@@ -204,6 +218,7 @@ int main(int argc, char* argv[])
             for (size_t j = i; j < numElements; ++j)
             {
                 size_t const nnj = structure.numAtomsPerElement.at(j);
+                if (nni == 0 || nnj == 0) continue;
                 pair<size_t, size_t> e(i, j);
                 for (size_t n = 0; n < numBins; ++n)
                 {
@@ -270,11 +285,63 @@ int main(int argc, char* argv[])
                          numberDensity.at(i), numberDensity.at(i) / (*minnd));
         }
     }
+
+    ofstream outputFile;
+    if (countPeriodicStructures > 0)
+    {
+        outputFile.open("cell-lengths.out");
+
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Unit cell vector lengths for each periodic "
+                        "structure.");
+        colSize.push_back(10);
+        colName.push_back("index");
+        colInfo.push_back("Index of periodic structure in data set "
+                          "(starting with 1).");
+        colSize.push_back(16);
+        colName.push_back("norm(A)");
+        colInfo.push_back("Norm of 1st unit cell vector.");
+        colSize.push_back(16);
+        colName.push_back("norm(B)");
+        colInfo.push_back("Norm of 2nd unit cell vector.");
+        colSize.push_back(16);
+        colName.push_back("norm(C)");
+        colInfo.push_back("Norm of 3rd unit cell vector.");
+
+        appendLinesToFile(outputFile,
+                          createFileHeader(title,
+                                           colSize,
+                                           colName,
+                                           colInfo));
+
+        for (size_t i = 0; i < periodicStructures.size(); ++i)
+        {
+            outputFile << strpr("%10zu %16.8E %16.8E %16.8E\n",
+                                periodicStructures.at(i) + 1,
+                                cellLengths.at(0).at(i),
+                                cellLengths.at(1).at(i),
+                                cellLengths.at(2).at(i));
+            for (size_t j = 0; j < 3; ++j)
+            {
+                minCellLength = min(minCellLength, cellLengths.at(j).at(i));
+                maxCellLength = max(maxCellLength, cellLengths.at(j).at(i));
+            }
+        }
+
+        outputFile.close();
+
+        log << strpr("Minimum unit cell vector length     : %16.8E\n",
+                     minCellLength);
+        log << strpr("Maximum unit cell vector length     : %16.8E\n",
+                     maxCellLength);
+    }
     log << "*****************************************"
            "**************************************\n";
 
-
-    ofstream outputFile;
     for (size_t i = 0; i < numElements; ++i)
     {
         for (size_t j = i; j < numElements; ++j)

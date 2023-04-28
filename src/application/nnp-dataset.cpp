@@ -206,9 +206,9 @@ int main(int argc, char* argv[])
     for (vector<Structure>::iterator it = dataset.structures.begin();
          it != dataset.structures.end(); ++it)
     {
-        dataset.evaluateNNP((*it), useForces, true);
         // Set derivatives argument to true in any case to fill dEdG vectors
         // in atom storage.
+        dataset.evaluateNNP((*it), useForces, true);
 
         // Loop over atoms, collect sensitivity data and clear memory.
         for (vector<Atom>::iterator it2 = it->atoms.begin();
@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
             it2->dEdG.clear();
             vector<double>(it2->dEdG).swap(it2->dEdG);
 
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
             it2->dGdxia.clear();
             vector<double>(it2->dGdxia).swap(it2->dGdxia);
 #endif

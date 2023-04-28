@@ -20,6 +20,7 @@
 #include "utility.h"
 #include <algorithm> // std::max, std::find, std::find_if, std::sort, std::fill
 #include <cmath>     // sqrt, fabs
+#include <cstdint>   // int64_t
 #include <cstdlib>   // atoi
 #include <cstdio>    // fprintf, fopen, fclose, remove
 #include <iostream>  // std::ios::binary
@@ -163,17 +164,19 @@ void Dataset::setupRandomNumberGenerator()
 
 int Dataset::calculateBufferSize(Structure const& structure) const
 {
-    int              bs  = 0;         // Send buffer size.
-    int              is  = 0;         // int size.
-    int              ss  = 0;         // size_t size.
-    int              ds  = 0;         // double size.
-    int              cs  = 0;         // char size.
+    int              bs   = 0;         // Send buffer size.
+    int              is   = 0;         // int size.
+    int              i64s = 0;         // int64_t size.
+    int              ss   = 0;         // size_t size.
+    int              ds   = 0;         // double size.
+    int              cs   = 0;         // char size.
     Structure const& s   = structure; // Shortcut for structure.
 
-    MPI_Pack_size(1, MPI_INT   , comm, &is);
-    MPI_Pack_size(1, MPI_SIZE_T, comm, &ss);
-    MPI_Pack_size(1, MPI_DOUBLE, comm, &ds);
-    MPI_Pack_size(1, MPI_CHAR  , comm, &cs);
+    MPI_Pack_size(1, MPI_INT    , comm, &is  );
+    MPI_Pack_size(1, MPI_INT64_T, comm, &i64s);
+    MPI_Pack_size(1, MPI_SIZE_T , comm, &ss  );
+    MPI_Pack_size(1, MPI_DOUBLE , comm, &ds  );
+    MPI_Pack_size(1, MPI_CHAR   , comm, &cs  );
 
     // Structure
     bs += 5 * cs + 4 * ss + 4 * is + 5 * ds;
@@ -189,7 +192,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
     bs += s.numAtomsPerElement.size() * ss;
     // Structure.atoms
     bs += ss;
-    bs += s.atoms.size() * (4 * cs + 7 * ss + 4 * ds + 3 * 3 * ds);
+    bs += s.atoms.size() * (4 * cs + 6 * ss + i64s + 3 * ds + 3 * 3 * ds);
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
@@ -202,7 +205,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.numSymmetryFunctionDerivatives
         bs += ss;
         bs += it->numSymmetryFunctionDerivatives.size() * ss;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
         // Atom.cacheSizePerElement
         bs += ss;
         bs += it->cacheSizePerElement.size() * ss;
@@ -216,7 +219,7 @@ int Dataset::calculateBufferSize(Structure const& structure) const
         // Atom.dQdG
         bs += ss;
         bs += it->dQdG.size() * ds;
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
         // Atom.dGdxia
         bs += ss;
         bs += it->dGdxia.size() * ds;
@@ -230,8 +233,8 @@ int Dataset::calculateBufferSize(Structure const& structure) const
              it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
         {
             // Neighbor
-            bs += 3 * ss + ds + 3 * ds;
-#ifndef NNP_NO_SF_CACHE
+            bs += 2 * ss + i64s + ds + 3 * ds;
+#ifndef N2P2_NO_SF_CACHE
             // Neighbor.cache
             bs += ss;
             bs += it2->cache.size() * ds;
@@ -314,7 +317,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
             MPI_Pack(&(it->useChargeNeuron               ), 1, MPI_CHAR  , buf, bs, &p, comm);
             MPI_Pack(&(it->index                         ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->indexStructure                ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-            MPI_Pack(&(it->tag                           ), 1, MPI_SIZE_T, buf, bs, &p, comm);
+            MPI_Pack(&(it->tag                           ), 1, MPI_INT64_T, buf, bs, &p, comm);
             MPI_Pack(&(it->element                       ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->numNeighbors                  ), 1, MPI_SIZE_T, buf, bs, &p, comm);
             MPI_Pack(&(it->numNeighborsUnique            ), 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -351,7 +354,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, buf, bs, &p, comm);
             }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             // Atom.cacheSizePerElement
             ts2 = it->cacheSizePerElement.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -385,7 +388,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                 MPI_Pack(&(it->dQdG.front()), ts2, MPI_DOUBLE, buf, bs, &p, comm);
             }
 
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
             // Atom.dGdxia
             ts2 = it->dGdxia.size();
             MPI_Pack(&ts2, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -416,14 +419,14 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
                      it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
                 {
                     // Neighbor
-                    MPI_Pack(&(it2->index      ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->tag        ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T, buf, bs, &p, comm);
-                    MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE, buf, bs, &p, comm);
-                    MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE, buf, bs, &p, comm);
+                    MPI_Pack(&(it2->index      ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+                    MPI_Pack(&(it2->tag        ), 1, MPI_INT64_T, buf, bs, &p, comm);
+                    MPI_Pack(&(it2->element    ), 1, MPI_SIZE_T , buf, bs, &p, comm);
+                    MPI_Pack(&(it2->d          ), 1, MPI_DOUBLE , buf, bs, &p, comm);
+                    MPI_Pack(  it2->dr.r        , 3, MPI_DOUBLE , buf, bs, &p, comm);
 
                     size_t ts3 = 0;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                     // Neighbor.cache
                     ts3 = it2->cache.size();
                     MPI_Pack(&ts3, 1, MPI_SIZE_T, buf, bs, &p, comm);
@@ -539,7 +542,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
             MPI_Unpack(buf, bs, &p, &(it->useChargeNeuron               ), 1, MPI_CHAR  , comm);
             MPI_Unpack(buf, bs, &p, &(it->index                         ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->indexStructure                ), 1, MPI_SIZE_T, comm);
-            MPI_Unpack(buf, bs, &p, &(it->tag                           ), 1, MPI_SIZE_T, comm);
+            MPI_Unpack(buf, bs, &p, &(it->tag                           ), 1, MPI_INT64_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->element                       ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->numNeighbors                  ), 1, MPI_SIZE_T, comm);
             MPI_Unpack(buf, bs, &p, &(it->numNeighborsUnique            ), 1, MPI_SIZE_T, comm);
@@ -582,7 +585,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->numSymmetryFunctionDerivatives.front()), ts2, MPI_SIZE_T, comm);
             }
 
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
             // Atom.cacheSizePerElement
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -624,7 +627,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
                 MPI_Unpack(buf, bs, &p, &(it->dQdG.front()), ts2, MPI_DOUBLE, comm);
             }
 
-#ifdef NNP_FULL_SFD_MEMORY
+#ifdef N2P2_FULL_SFD_MEMORY
             // Atom.dGdxia
             ts2 = 0;
             MPI_Unpack(buf, bs, &p, &ts2, 1, MPI_SIZE_T, comm);
@@ -661,14 +664,14 @@ int Dataset::recvStructure(Structure* const structure, int src)
                      it->neighbors.begin(); it2 != it->neighbors.end(); ++it2)
                 {
                     // Neighbor
-                    MPI_Unpack(buf, bs, &p, &(it2->index      ), 1, MPI_SIZE_T, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_SIZE_T, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T, comm);
-                    MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE, comm);
-                    MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE, comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->index      ), 1, MPI_SIZE_T , comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->tag        ), 1, MPI_INT64_T, comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->element    ), 1, MPI_SIZE_T , comm);
+                    MPI_Unpack(buf, bs, &p, &(it2->d          ), 1, MPI_DOUBLE , comm);
+                    MPI_Unpack(buf, bs, &p,   it2->dr.r        , 3, MPI_DOUBLE , comm);
 
                     size_t ts3 = 0;
-#ifndef NNP_NO_SF_CACHE
+#ifndef N2P2_NO_SF_CACHE
                     // Neighbor.cache
                     ts3 = 0;
                     MPI_Unpack(buf, bs, &p, &ts3, 1, MPI_SIZE_T, comm);
@@ -799,7 +802,7 @@ int Dataset::distributeStructures(bool          randomize,
         vector<size_t> countStructuresPerProc;
 
         countStructuresPerProc.resize(numProcs, 0);
-        
+
         if (randomize)
         {
             while (countStructures < numStructures)
@@ -882,6 +885,70 @@ int Dataset::distributeStructures(bool          randomize,
     return bytesTransferred;
 }
 
+size_t Dataset::prepareNumericForces(Structure& original, double delta)
+{
+    // Be sure that structure memory is cleared.
+    vector<Structure>().swap(structures);
+
+    // Send original to all processors.
+    for (int p = 1; p < numProcs; ++p)
+    {
+        if (myRank == 0) sendStructure(original, p);
+        else if (myRank == p) recvStructure(&original, 0);
+    }
+
+    vector<size_t> numStructuresPerProc(numProcs, 0);
+    // Number of structures that need to be calculated:
+    // - Original structure +
+    // - Two times for each force component.
+    numStructures = 1 + 6 * original.numAtoms;
+    size_t quotient = numStructures / numProcs;
+    size_t remainder = numStructures % numProcs;
+    for (size_t i = 0; i < (size_t) numProcs; i++)
+    {
+        numStructuresPerProc.at(i) = quotient;
+        if (remainder > 0 && i < remainder) numStructuresPerProc.at(i)++;
+    }
+
+    // Rank 0 needs an unaltered version.
+    if (myRank == 0)
+    {
+        structures.push_back(original);
+        structures.back().setElementMap(elementMap);
+        structures.back().comment = "original";
+    }
+    // Now make as many copies as each processor needs.
+    size_t count = 0;
+    size_t iAtom = 0;
+    size_t ixyz = 0;
+    int sign = 0;
+    for (int p = 0; p < numProcs; ++p)
+    {
+        size_t istart = 0;
+        if (p == 0) istart = 1;
+        for (size_t i = istart; i < numStructuresPerProc.at(p); ++i)
+        {
+            iAtom = count / 6;
+            ixyz = count % 3;
+            sign = 2 * ((count % 6) / 3) - 1;
+            if (p == myRank)
+            {
+                structures.push_back(original);
+                Structure& s = structures.back();
+                s.setElementMap(elementMap);
+                // Write identifiers to comment field.
+                s.comment = strpr("%zu %zu %zu %d", count, iAtom, ixyz, sign);
+                // Modify atom position.
+                s.atoms.at(iAtom).r[ixyz] += sign * delta;
+                if (s.isPeriodic) s.remap(s.atoms.at(iAtom));
+            }
+            count++;
+        }
+    }
+
+    return numStructures;
+}
+
 void Dataset::toNormalizedUnits()
 {
     for (vector<Structure>::iterator it = structures.begin();
@@ -889,7 +956,7 @@ void Dataset::toNormalizedUnits()
     {
         it->toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
-    
+
     return;
 }
 
@@ -900,7 +967,7 @@ void Dataset::toPhysicalUnits()
     {
         it->toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
-    
+
     return;
 }
 
@@ -975,22 +1042,52 @@ void Dataset::writeSymmetryFunctionScaling(string const& fileName)
         appendLinesToFile(sFile,
                           createFileHeader(title, colSize, colName, colInfo));
 
+        log << "\n";
+        log << "Abbreviations:\n";
+        log << "--------------\n";
+        log << "ind ...... Symmetry function index.\n";
+        log << "min ...... Minimum symmetry function value.\n";
+        log << "max ...... Maximum symmetry function value.\n";
+        log << "mean ..... Mean symmetry function value.\n";
+        log << "sigma .... Standard deviation of symmetry function values.\n";
+        log << "spread ... (max - min) / sigma.\n";
+        log << "\n";
         for (vector<Element>::const_iterator it = elements.begin();
              it != elements.end(); ++it)
         {
+            log << strpr("Scaling data for symmetry functions element %2s :\n",
+                         it->getSymbol().c_str());
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
+            log << " ind       min       max      mean     sigma    spread\n";
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
             for (size_t i = 0; i < it->numSymmetryFunctions(); ++i)
             {
                 SymFncStatistics::Container const& c
                     = it->statistics.data.at(i);
                 size_t n = c.count;
+                double const mean = c.sum / n;
+                double const sigma = sqrt((c.sum2 - c.sum * c.sum / n)
+                                          / (n - 1));
+                double const spread = (c.max - c.min) / sigma;
                 sFile << strpr("%10d %10d %24.16E %24.16E %24.16E %24.16E\n",
                                it->getIndex() + 1,
                                i + 1,
                                c.min,
                                c.max,
-                               c.sum / n,
-                               sqrt((c.sum2 - c.sum * c.sum / n) / (n - 1)));
+                               mean,
+                               sigma);
+                log << strpr("%4zu %9.2E %9.2E %9.2E %9.2E %9.2E\n",
+                             i + 1,
+                             c.min,
+                             c.max,
+                             mean,
+                             sigma,
+                             spread);
             }
+            log << "-----------------------------------------"
+                   "--------------------------------------\n";
         }
         // Finally decided to remove this legacy line...
         //sFile << strpr("%f %f\n", 0.0, 0.0);
@@ -1180,7 +1277,7 @@ void Dataset::writeSymmetryFunctionFile(string fileName)
     {
         // If this proc holds structure with matching index,
         // open file and write symmetry functions.
-        if (i == it->index)
+        if (it != structures.end() && i == it->index)
         {
             ofstream file;
             file.open(fileName.c_str(), ios_base::app);
@@ -1220,46 +1317,89 @@ void Dataset::writeSymmetryFunctionFile(string fileName)
     return;
 }
 
-size_t Dataset::writeNeighborHistogram(string const& fileName)
+size_t Dataset::writeNeighborHistogram(string const& fileNameHisto,
+                                       string const& fileNameStructure)
 {
     log << "\n";
-    log << "*** NEIGHBOR HISTOGRAMS *****************"
+    log << "*** NEIGHBOR STATISTICS/HISTOGRAM *******"
            "**************************************\n";
     log << "\n";
 
-    // Determine maximum number of neighbors.
-    size_t numAtoms = 0;
+    ofstream statFile;
+    string fileNameLocal = strpr("%s.%04d", fileNameStructure.c_str(), myRank);
+    statFile.open(fileNameLocal.c_str());
+    if (myRank == 0)
+    {
+        // File header.
+        vector<string> title;
+        vector<string> colName;
+        vector<string> colInfo;
+        vector<size_t> colSize;
+        title.push_back("Neighbor statistics for each structure.");
+        colSize.push_back(10);
+        colName.push_back("struct");
+        colInfo.push_back("Index of structure (starting with 1).");
+        colSize.push_back(10);
+        colName.push_back("natoms");
+        colInfo.push_back("Number of atoms in structure.");
+        colSize.push_back(10);
+        colName.push_back("min");
+        colInfo.push_back("Minimum number of neighbors over all atoms.");
+        colSize.push_back(10);
+        colName.push_back("max");
+        colInfo.push_back("Maximum number of neighbors over all atoms.");
+        colSize.push_back(16);
+        colName.push_back("mean");
+        colInfo.push_back("Mean number of neighbors over all atoms.");
+        appendLinesToFile(statFile,
+                          createFileHeader(title, colSize, colName, colInfo));
+    }
+
+    // Compute per-structure statistics and prepare histogram boundaries.
+    size_t numAtomsGlobal = 0;
+    size_t minNeighborsGlobal = numeric_limits<size_t>::max();
+    size_t maxNeighborsGlobal = 0;
+    double meanNeighborsGlobal = 0.0;
+    for (auto const& s : structures)
+    {
     size_t minNeighbors = numeric_limits<size_t>::max();
     size_t maxNeighbors = 0;
     double meanNeighbors = 0.0;
-    for (vector<Structure>::const_iterator it = structures.begin();
-         it != structures.end(); ++it)
+        for (auto const& a : s.atoms)
     {
-        numAtoms += it->numAtoms;
-        for (vector<Atom>::const_iterator it2 = it->atoms.begin();
-             it2 != it->atoms.end(); ++it2)
-        {
-            size_t const n = it2->numNeighbors;
+            size_t const n = a.numNeighbors;
             minNeighbors = min(minNeighbors, n);
             maxNeighbors = max(maxNeighbors, n);
             meanNeighbors += n;
         }
+        numAtomsGlobal += s.numAtoms;
+        minNeighborsGlobal = min(minNeighborsGlobal, minNeighbors);
+        maxNeighborsGlobal = max(maxNeighborsGlobal, maxNeighbors);
+        meanNeighborsGlobal += meanNeighbors;
+        statFile << strpr("%10zu %10zu %10zu %10zu %16.8E\n",
+                          s.index + 1,
+                          s.numAtoms,
+                          minNeighbors,
+                          maxNeighbors,
+                          meanNeighbors / s.numAtoms);
     }
-    MPI_Allreduce(MPI_IN_PLACE, &numAtoms     , 1, MPI_SIZE_T, MPI_SUM, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &minNeighbors , 1, MPI_SIZE_T, MPI_MIN, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &maxNeighbors , 1, MPI_SIZE_T, MPI_MAX, comm);
-    MPI_Allreduce(MPI_IN_PLACE, &meanNeighbors, 1, MPI_DOUBLE, MPI_SUM, comm);
-    log << strpr("Minimum number of neighbors: %d\n", minNeighbors);
+    statFile.flush();
+    statFile.close();
+    MPI_Allreduce(MPI_IN_PLACE, &numAtomsGlobal     , 1, MPI_SIZE_T, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &minNeighborsGlobal , 1, MPI_SIZE_T, MPI_MIN, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &maxNeighborsGlobal , 1, MPI_SIZE_T, MPI_MAX, comm);
+    MPI_Allreduce(MPI_IN_PLACE, &meanNeighborsGlobal, 1, MPI_DOUBLE, MPI_SUM, comm);
+    log << strpr("Minimum number of neighbors: %d\n", minNeighborsGlobal);
     log << strpr("Mean    number of neighbors: %.1f\n",
-                 meanNeighbors / numAtoms);
-    log << strpr("Maximum number of neighbors: %d\n", maxNeighbors);
+                 meanNeighborsGlobal / numAtomsGlobal);
+    log << strpr("Maximum number of neighbors: %d\n", maxNeighborsGlobal);
 
     // Calculate neighbor histogram.
     gsl_histogram* histNeighbors = NULL;
-    histNeighbors = gsl_histogram_alloc(maxNeighbors + 1);
+    histNeighbors = gsl_histogram_alloc(maxNeighborsGlobal + 1);
     gsl_histogram_set_ranges_uniform(histNeighbors,
                                      -0.5,
-                                     maxNeighbors + 0.5);
+                                     maxNeighborsGlobal + 0.5);
     for (vector<Structure>::const_iterator it = structures.begin();
          it != structures.end(); ++it)
     {
@@ -1269,18 +1409,18 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
             gsl_histogram_increment(histNeighbors, it2->numNeighbors);
         }
     }
-    MPI_Allreduce(MPI_IN_PLACE, histNeighbors->bin, maxNeighbors + 1, MPI_DOUBLE, MPI_SUM, comm);
+    MPI_Allreduce(MPI_IN_PLACE, histNeighbors->bin, maxNeighborsGlobal + 1, MPI_DOUBLE, MPI_SUM, comm);
 
     // Write histogram to file.
     if (myRank == 0)
     {
-        log << strpr("Neighbor histogram file: %s.\n", fileName.c_str());
+        log << strpr("Neighbor histogram file: %s.\n", fileNameHisto.c_str());
         FILE* fp = 0;
-        fp = fopen(fileName.c_str(), "w");
+        fp = fopen(fileNameHisto.c_str(), "w");
         if (fp == 0)
         {
             throw runtime_error(strpr("ERROR: Could not open file: %s.\n",
-                                      fileName.c_str()));
+                                      fileNameHisto.c_str()));
         }
 
         // File header.
@@ -1288,7 +1428,7 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
         vector<string> colName;
         vector<string> colInfo;
         vector<size_t> colSize;
-        title.push_back("Symmetry function histogram.");
+        title.push_back("Neighbor count histogram.");
         colSize.push_back(9);
         colName.push_back("neigh_l");
         colInfo.push_back("Number of neighbors, left bin limit.");
@@ -1307,12 +1447,20 @@ size_t Dataset::writeNeighborHistogram(string const& fileName)
         fp = 0;
     }
 
+    MPI_Barrier(comm);
+    if (myRank == 0)
+    {
+        log << strpr("Combining per-structure neighbor statistics file: %s.\n",
+                     fileNameStructure.c_str());
+        combineFiles(fileNameStructure);
+    }
+
     gsl_histogram_free(histNeighbors);
 
     log << "*****************************************"
            "**************************************\n";
 
-    return maxNeighbors;
+    return maxNeighborsGlobal;
 }
 
 void Dataset::sortNeighborLists()
@@ -1623,4 +1771,3 @@ void Dataset::combineFiles(string filePrefix) const
 
     return;
 }
-

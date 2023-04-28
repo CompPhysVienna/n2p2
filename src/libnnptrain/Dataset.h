@@ -97,6 +97,17 @@ public:
                                      bool               excludeRank0 = false,
                                      std::string const& fileName
                                          = "input.data");
+    /** Prepare numeric force check for a single structure.
+     *
+     * @param[inout] original The structure under investigation.
+     * @param[in] delta Central difference delta for positions
+     *
+     * @return Number of structures distributed (= 1 + 6 * numAtoms).
+     *
+     * Distributes copies of original structure among all processors and
+     * modifies positions for central difference.
+     */
+    std::size_t prepareNumericForces(Structure& original, double delta);
     /** Switch all structures to normalized units.
      */
     void        toNormalizedUnits();
@@ -128,14 +139,17 @@ public:
      */
     void        writeSymmetryFunctionFile(std::string fileName
                                               = "function.data");
-    /** Calculate and write neighbor histogram.
+    /** Calculate and write neighbor histogram and per-structure statistics.
      *
-     * @param[in] fileName Name of histogram file.
+     * @param[in] fileNameHisto Name of histogram file.
+     * @param[in] fileNameStructure Name of per-structure file.
      *
      * @return Maximum number of neighbors.
      */
-    std::size_t writeNeighborHistogram(std::string const& fileName
-                                           = "neighbors.histo");
+    std::size_t writeNeighborHistogram(std::string const& fileNameHisto
+                                           = "neighbors.histo",
+                                       std::string const& fileNameStructure
+                                           = "neighbors.out");
     /** Sort all neighbor lists according to element and distance.
      */
     void        sortNeighborLists();
