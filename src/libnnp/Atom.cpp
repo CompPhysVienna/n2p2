@@ -423,7 +423,8 @@ Vec3D Atom::calculateDChidr(size_t const atomIndexOfR,
     for (size_t m = 0; m < numNeighbors; ++m)
     {
         Atom::Neighbor const& n = neighbors.at(m);
-        if (n.tag == atomIndexOfR)
+	// atomIndexOfR must not be larger than ~max(int64_t)/2.
+        if (n.tag == (int64_t)atomIndexOfR)
         {
 #ifndef NNP_FULL_SFD_MEMORY
             vector<size_t> const& table = tableFull->at(n.element);

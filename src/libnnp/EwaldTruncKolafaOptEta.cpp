@@ -41,7 +41,7 @@ namespace nnp
         bool answer = newCutoffsWerePublished;
         newCutoffsWerePublished = true;
         return answer;
-    };
+    }
 
     void EwaldTruncKolafaOptEta::calculateEta()
     {
