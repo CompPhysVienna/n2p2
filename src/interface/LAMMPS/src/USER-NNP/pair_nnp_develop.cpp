@@ -39,7 +39,12 @@ void PairNNPDevelop::compute(int eflag, int vflag)
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
 
   // Set number of local atoms and add index and element.
-  interface.setLocalAtoms(atom->nlocal,atom->tag,atom->type);
+  interface.setLocalAtoms(atom->nlocal, atom->type);
+  // Transfer tags separately. Interface::setLocalTags is overloaded internally
+  // to work with both -DLAMMPS_SMALLBIG (tagint = int) and -DLAMMPS_BIGBIG
+  // (tagint = int64_t)
+  interface.setLocalTags(atom->tag);
+
 
   // Also set absolute atom positions.
   interface.setLocalAtomPositions(atom->x);

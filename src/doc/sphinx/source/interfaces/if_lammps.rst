@@ -22,6 +22,7 @@ Automatic build
    The automatic compilation will only work on Unix-like systems as it relies on
    tools such as ``sed`` and ``tar``.
 
+
 For convenience the main makefile provides the compilation target ``lammps-nnp``
 which will automatically download LAMMPS (version ``stable_3Mar2020`` from the
 `GitHub releases page <https://github.com/lammps/lammps/releases>`__) into the
@@ -34,7 +35,8 @@ LAMMPS with NNP support is as easy as typing
 
    make lammps-nnp
 
-in the n2p2 ``src`` directory. Uninstall with ``make clean-lammps-nnp``.
+in the n2p2 ``src`` directory. Uninstall with ``make clean-lammps-nnp``. The
+automatic build requires ``wget`` to be installed.
 
 .. note::
 
