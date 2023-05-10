@@ -462,18 +462,16 @@ void InterfaceLammps::finalizeNeighborList()
 
 void InterfaceLammps::process()
 {
-    // TODO: remove this?
-    bool suppressOutput = true;
 #ifdef N2P2_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
-    calculateAtomicNeuralNetworks(structure, true, "", suppressOutput);
+    calculateAtomicNeuralNetworks(structure, true, "");
     if (nnpType == NNPType::HDNNP_4G)
     {
-        chargeEquilibration(structure, true, suppressOutput);
-        calculateAtomicNeuralNetworks(structure, true, "short", suppressOutput);
+        chargeEquilibration(structure, true);
+        calculateAtomicNeuralNetworks(structure, true, "short");
         ewaldSetup.logEwaldCutoffs(log, convLength * cflength);
     }
     calculateEnergy(structure);

@@ -1429,25 +1429,25 @@ void Training::calculateError(
         {
             if ( stage == 1 )
             {
-                calculateAtomicNeuralNetworks((*it), useForces, nnId, true);
-                chargeEquilibration((*it), false, true);
+                calculateAtomicNeuralNetworks((*it), useForces, nnId);
+                chargeEquilibration((*it), false);
             }
             else
             {
                 if ( !it->hasCharges || (!it->hasAMatrix && useForces) )
                 {
                     calculateAtomicNeuralNetworks((*it), useForces,
-                                                    "elec", true);
-                    chargeEquilibration((*it), useForces, true);
+                                                    "elec");
+                    chargeEquilibration((*it), useForces);
                 }
-                calculateAtomicNeuralNetworks((*it), useForces, "short", true);
+                calculateAtomicNeuralNetworks((*it), useForces, "short");
                 calculateEnergy((*it));
                 if (useForces) calculateForces((*it));
             }
         }
         else
         {
-            calculateAtomicNeuralNetworks((*it), useForces, nnId, true);
+            calculateAtomicNeuralNetworks((*it), useForces, nnId);
             calculateEnergy((*it));
             if (useForces) calculateForces((*it));
         }
@@ -2362,10 +2362,10 @@ void Training::update(string const& property)
                     {
                         if (!s.hasCharges)
                         {
-                            calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
-                            chargeEquilibration(s, derivatives, true);
+                            calculateAtomicNeuralNetworks(s, derivatives, "elec");
+                            chargeEquilibration(s, derivatives);
                         }
-                        calculateAtomicNeuralNetworks(s, derivatives, "short", true);
+                        calculateAtomicNeuralNetworks(s, derivatives, "short");
                         calculateEnergy(s);
                         currentRmseFraction.at(b) = fabs(s.energyRef - s.energy)
                                                   / (s.numAtoms
@@ -2395,10 +2395,10 @@ void Training::update(string const& property)
                     {
                         if (!s.hasAMatrix)
                         {
-                            calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
-                            chargeEquilibration(s, derivatives, true);
+                            calculateAtomicNeuralNetworks(s, derivatives, "elec");
+                            chargeEquilibration(s, derivatives);
                         }
-                        calculateAtomicNeuralNetworks(s, derivatives, "short", true);
+                        calculateAtomicNeuralNetworks(s, derivatives, "short");
                         calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
                         currentRmseFraction.at(b) =
@@ -2418,8 +2418,8 @@ void Training::update(string const& property)
                     // Assume stage 1.
                     if (nnpType == NNPType::HDNNP_4G)
                     {
-                        calculateAtomicNeuralNetworks(s, derivatives,"",true);
-                        chargeEquilibration(s, false, true);
+                        calculateAtomicNeuralNetworks(s, derivatives, "");
+                        chargeEquilibration(s, false);
                         Eigen::VectorXd QError;
                         double QErrorNorm;
                         calculateChargeErrorVec(s, QError, QErrorNorm);
@@ -2564,8 +2564,8 @@ void Training::update(string const& property)
             {
                 if (nnpType == NNPType::HDNNP_4G && !s.hasCharges)
                 {
-                   calculateAtomicNeuralNetworks(s, derivatives, "elec", true);
-                   chargeEquilibration(s, derivatives, true);
+                   calculateAtomicNeuralNetworks(s, derivatives, "elec");
+                   chargeEquilibration(s, derivatives);
                 }
                 // Loop over atoms and calculate atomic energy contributions.
                 for (vector<Atom>::iterator it = s.atoms.begin();
@@ -2611,9 +2611,8 @@ void Training::update(string const& property)
                 {
                     if (!s.hasAMatrix)
                     {
-                       calculateAtomicNeuralNetworks(s, derivatives, "elec",
-                                                        true);
-                       chargeEquilibration(s, derivatives, true);
+                       calculateAtomicNeuralNetworks(s, derivatives, "elec");
+                       chargeEquilibration(s, derivatives);
                     }
                     s.calculateDQdr(vector<size_t>{sC->a},
                                     vector<size_t>{sC->c},
@@ -2718,7 +2717,7 @@ void Training::update(string const& property)
                     }
 
                 }
-                chargeEquilibration(s, false, true);
+                chargeEquilibration(s, false);
 
                 vector<Eigen::VectorXd> dQdChi;
                 s.calculateDQdChi(dQdChi);

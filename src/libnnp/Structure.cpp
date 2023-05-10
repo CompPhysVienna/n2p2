@@ -238,6 +238,15 @@ void Structure::readFromLines(vector<string> const& lines)
             {
                 throw runtime_error("ERROR: Strange number of box vectors.\n");
             }
+            if (isPeriodic &&
+                abs(chargeRef) > 10*std::numeric_limits<double>::epsilon())
+            {
+                throw runtime_error("ERROR: In structure with index "
+                                    + to_string(index)
+                                    + "; if PBCs are applied, the\n"
+                                    "simulation cell has to be neutrally "
+                                    "charged.\n");
+            }
             break;
         }
         else

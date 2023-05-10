@@ -336,28 +336,21 @@ public:
      *                        (required for force calculation).
      * @param[in] id Neural network ID to use. If empty, the first entry
      *                        nnk.front() is used.
-     * @param[in] suppressOutput Turn on/off output generation (for example
-     *                        during training.
      */
-    // TODO: remove suppressOutput again
     void                     calculateAtomicNeuralNetworks(
                                            Structure&  structure,
                                            bool const  derivatives,
-                                           std::string id = "",
-                                           bool const  suppressOutput = false);
+                                           std::string id = "");
     /** Perform global charge equilibration method.
      *
      * @param[in] structure Input structure.
      * @param[in] derivativesElec Turn on/off calculation of dElecdQ and
      *                          pElecpr (Typically needed for elecstrosttic
      *                          forces).
-     * @param[in] suppressOutput Turn on/off output generation (for example
-     *                          during training.
      */
     void                     chargeEquilibration(
                                                 Structure& structure,
-                                                bool const derivativesElec,
-                                                bool const suppressOutput = false);
+                                                bool const derivativesElec);
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.

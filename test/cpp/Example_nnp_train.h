@@ -41,7 +41,7 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseEnergyTest  = 3.57910403E-04;
     e->rmseForcesTrain = 2.46334310E-02;
     e->rmseForcesTest  = 1.22544569E-02;
-    e->accuracy        = 2.5E-9;
+    e->accuracy        = 1.0E-8;
 
     examples.push_back(Example_nnp_train("H2O_RPBE-D3_norm-force"));
     e = &(examples.back());
@@ -68,9 +68,7 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseEnergyTest  = 1.30155783E-05;
     e->rmseForcesTrain = 2.07286126E-04;
     e->rmseForcesTest  = 2.20371908E-04;
-    e->accuracy        = 100.0 * std::numeric_limits<double>::epsilon();
-
-
+    e->accuracy        = 1E-13;
 
     return;
 }

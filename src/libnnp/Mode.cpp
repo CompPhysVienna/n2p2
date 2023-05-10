@@ -1634,8 +1634,7 @@ void Mode::calculateSymmetryFunctionGroups(Structure& structure,
 
 void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                                          bool const derivatives,
-                                         string id,
-                                         bool const suppressOutput)
+                                         string id)
 {
     if (id == "") id = nnk.front();
 
@@ -1678,9 +1677,6 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 nn.getOutput(&(a.chi));
                 //double chi = a.chi;
                 if (normalize) a.chi = normalized("negativity", a.chi);
-                //if (!suppressOutput)
-                //log << strpr("Atom %5zu (%2s) chi: %16.8E\n",
-                //             a.index, elementMap[a.element].c_str(), chi);
             }
         }
         else if (id == "short")
@@ -1705,11 +1701,6 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                     nn.calculateDEdG(&((a.dEdG).front()));
                 }
                 nn.getOutput(&(a.energy));
-                //if (!suppressOutput)
-                //log << strpr("Atom %5zu (%2s) energy: %16.8E\n",
-                //             a.index + 1, elementMap[a.element].c_str(),
-                //             a.energy
-                //             + elements.at(a.element).getAtomicEnergyOffset());
             }
         }
     }
@@ -1754,8 +1745,7 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 
 // TODO: Make this const?
 void Mode::chargeEquilibration( Structure& structure,
-                                bool const derivativesElec,
-                                bool const suppressOutput)
+                                bool const derivativesElec)
 {
     Structure& s = structure;
 
@@ -1782,17 +1772,13 @@ void Mode::chargeEquilibration( Structure& structure,
         }
     }
 
-    double const error = s.calculateElectrostaticEnergy(ewaldSetup,
-                                                hardness,
-                                                gammaSqrt2,
-                                                sigmaSqrtPi,
-                                                screeningFunction,
-                                                fourPiEps,
-                                                erfcBuf);
-
-
-    //if (!suppressOutput)
-    //    log << strpr("Solve relative error: %16.8E\n", error);
+    s.calculateElectrostaticEnergy(ewaldSetup,
+                                   hardness,
+                                   gammaSqrt2,
+                                   sigmaSqrtPi,
+                                   screeningFunction,
+                                   fourPiEps,
+                                   erfcBuf);
 
     // TODO: leave these 2 functions here or move it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
@@ -1806,22 +1792,9 @@ void Mode::chargeEquilibration( Structure& structure,
                                             fourPiEps);
     }
 
-
-
     //for (auto const& a : structure.atoms)
     //{
-    //    if (!suppressOutput)
-    //        log << strpr("Atom %5zu (%2s) q: %16.8E\n",
-    //                 a.index, elementMap[a.element].c_str(), a.charge);
     //    //structure.charge += a.charge;
-    //}
-    //
-    //if (!suppressOutput)
-    //{
-    //    log << strpr("Total charge: %16.8E (ref: %16.8E)\n",
-    //                 structure.charge, structure.chargeRef);
-
-    //    log << strpr("Electrostatic energy: %16.8E\n", structure.energyElec);
     //}
     return;
 }
