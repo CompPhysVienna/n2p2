@@ -1,11 +1,11 @@
-from distutils.core import setup
-from distutils.extension import Extension
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 import glob
 
-include_dir = "../libnnp/"
+sources_dir = "../libnnp/"
+includes = []
 sources = ["pynnp.pyx"]
-sources += glob.glob(include_dir + "*.cpp")
+sources += glob.glob(sources_dir + "*.cpp")
 compile_options = ["-std=c++11"] #, "-fopenmp"]
 link_options = [] #"-fopenmp"]
 
@@ -13,7 +13,7 @@ extension = [Extension("*",
                        sources,
                        extra_compile_args=compile_options,
                        extra_link_args=link_options,
-                       include_dirs=[include_dir],
+                       include_dirs=[sources_dir]+includes,
                        language="c++")]
 
 setup(

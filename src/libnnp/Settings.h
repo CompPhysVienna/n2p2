@@ -17,6 +17,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "Key.h"
+#include "ISettings.h"
 #include <cstddef> // std::size_t
 #include <fstream> // std::ofstream
 #include <map>     // std::multimap
@@ -27,22 +29,14 @@
 
 namespace nnp
 {
+namespace settings
+{
+
 
 /// Reads and analyzes settings file and stores parameters.
-class Settings
+class Settings : public ISettings
 {
 public:
-    /// Keyword properties.
-    struct Key
-    {
-        /// Whether this keyword has no alternative definitions or spellings.
-        bool isUnique() const {return (words.size() == 1);}
-
-        /// A short description of the keyword.
-        std::string              description;
-        /// Alternative keywords (first entry is main name).
-        std::vector<std::string> words;
-    };
 
     typedef std::multimap<std::string,
                           std::pair<std::string, std::size_t> > KeyMap;
@@ -67,6 +61,8 @@ public:
      */
     std::size_t              loadFile(
                                      std::string const& fileName = "input.nn");
+    bool                     keywordExists(Key const&  key,
+                                           bool const exact = false) const override;
     /** Check if keyword is present in settings file.
      *
      * @param[in] keyword Keyword string.
@@ -89,6 +85,7 @@ public:
      * @return Keyword or alternative found in file contents.
      */
     std::string              keywordCheck(std::string const& keyword) const;
+    std::string              getValue(Key const& key) const override;
     /** Get value for given keyword.
      *
      * @param[in] keyword Keyword string.
@@ -170,6 +167,7 @@ private:
     std::size_t, std::size_t> sanityCheck();
 };
 
+}
 }
 
 #endif

@@ -63,10 +63,27 @@ int main(int argc, char* argv[])
     prediction.log << "Calculating NNP prediction...\n";
     prediction.predict();
     prediction.log << "\n";
+    prediction.logEwaldCutoffs();
     prediction.log << "-----------------------------------------"
                       "--------------------------------------\n";
-    prediction.log << strpr("NNP energy: %16.8E\n",
+    prediction.log << strpr("NNP         total energy: %16.8E\n",
                             prediction.structure.energy);
+    if (prediction.getNnpType() == Mode::NNPType::HDNNP_4G)
+    {
+        prediction.log << strpr("NNP electrostatic energy: %16.8E\n",
+                                prediction.structure.energyElec);
+        prediction.log << "\n";
+        prediction.log << "NNP charges:\n";
+        for (auto const& a : s.atoms)
+        {
+            prediction.log << strpr("%10zu %2s %16.8E\n",
+                                    a.index + 1,
+                                    prediction.elementMap[a.element].c_str(),
+                                    a.charge);
+        }
+        prediction.log << strpr("NNP total charge: %16.8E (ref: %16.8E)\n",
+                          s.charge, s.chargeRef);
+    }
     prediction.log << "\n";
     prediction.log << "NNP forces:\n";
     for (vector<Atom>::const_iterator it = s.atoms.begin();
@@ -93,27 +110,36 @@ int main(int argc, char* argv[])
     vector<string> colInfo;
     vector<size_t> colSize;
     title.push_back("Energy comparison.");
-    colSize.push_back(16);
-    colName.push_back("Ennp");
-    colInfo.push_back("Potential energy predicted by NNP.");
-    colSize.push_back(16);
+    colSize.push_back(10);
+    colName.push_back("conf");
+    colInfo.push_back("Configuration index (starting with 1).");
+    colSize.push_back(10);
+    colName.push_back("natoms");
+    colInfo.push_back("Number of atoms in configuration.");
+    colSize.push_back(24);
     colName.push_back("Eref");
     colInfo.push_back("Reference potential energy.");
-    colSize.push_back(16);
+    colSize.push_back(24);
+    colName.push_back("Ennp");
+    colInfo.push_back("Potential energy predicted by NNP.");
+    colSize.push_back(24);
     colName.push_back("Ediff");
-    colInfo.push_back("Difference between reference and NNP prediction.");
-    colSize.push_back(16);
+    colInfo.push_back("Difference in energy per atom between reference and "
+                      "NNP prediction.");
+    colSize.push_back(24);
     colName.push_back("E_offset");
     colInfo.push_back("Sum of atomic offset energies "
                       "(included in column Ennp).");
     appendLinesToFile(file,
                       createFileHeader(title, colSize, colName, colInfo));
 
-    file << strpr("%16.8E %16.8E %16.8E %16.8E\n",
-                  prediction.structure.energy,
-                  prediction.structure.energyRef,
-                  prediction.structure.energyRef - prediction.structure.energy,
-                  prediction.getEnergyOffset(prediction.structure));
+    file << strpr("%10zu %10zu %24.16E %24.16E %24.16E %24.16E\n",
+                  s.index + 1,
+                  s.numAtoms,
+                  s.energyRef,
+                  s.energy,
+                  (s.energyRef - s.energy) / s.numAtoms,
+                  prediction.getEnergyOffset(s));
     file.close();
 
     prediction.log << " - nnatoms.out\n";
@@ -126,15 +152,24 @@ int main(int argc, char* argv[])
     colSize.clear();
     title.push_back("Energy contributions calculated from NNP.");
     colSize.push_back(10);
+    colName.push_back("conf");
+    colInfo.push_back("Configuration index (starting with 1).");
+    colSize.push_back(10);
     colName.push_back("index");
-    colInfo.push_back("Atom index.");
-    colSize.push_back(2);
-    colName.push_back("e");
-    colInfo.push_back("Element of atom.");
-    colSize.push_back(16);
-    colName.push_back("charge");
-    colInfo.push_back("Atomic charge (not used).");
-    colSize.push_back(16);
+    colInfo.push_back("Atom index (starting with 1).");
+    colSize.push_back(3);
+    colName.push_back("Z");
+    colInfo.push_back("Nuclear charge of atom.");
+    colSize.push_back(24);
+    colName.push_back("Qref");
+    colInfo.push_back("Reference atomic charge.");
+    colSize.push_back(24);
+    colName.push_back("Qnnp");
+    colInfo.push_back("NNP atomic charge.");
+    colSize.push_back(24);
+    colName.push_back("Eref_atom");
+    colInfo.push_back("Reference atomic energy contribution.");
+    colSize.push_back(24);
     colName.push_back("Ennp_atom");
     colInfo.push_back("Atomic energy contribution (physical units, no mean "
                       "or offset energy added).");
@@ -144,10 +179,13 @@ int main(int argc, char* argv[])
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
-        file << strpr("%10d %2s %16.8E %16.8E\n",
-                      it->index,
-                      prediction.elementMap[it->element].c_str(),
+        file << strpr("%10zu %10zu %3zu %24.16E %24.16E %24.16E %24.16E\n",
+                      s.index + 1,
+                      it->index + 1,
+                      prediction.elementMap.atomicNumber(it->element),
+                      it->chargeRef,
                       it->charge,
+                      0.0,
                       it->energy);
     }
     file.close();
@@ -161,50 +199,46 @@ int main(int argc, char* argv[])
     colInfo.clear();
     colSize.clear();
     title.push_back("Atomic force comparison (ordered by atom index).");
-    colSize.push_back(16);
-    colName.push_back("fx");
-    colInfo.push_back("Force in x direction.");
-    colSize.push_back(16);
-    colName.push_back("fy");
-    colInfo.push_back("Force in y direction.");
-    colSize.push_back(16);
-    colName.push_back("fz");
-    colInfo.push_back("Force in z direction.");
-    colSize.push_back(16);
+    colSize.push_back(10);
+    colName.push_back("conf");
+    colInfo.push_back("Configuration index (starting with 1).");
+    colSize.push_back(10);
+    colName.push_back("index");
+    colInfo.push_back("Atom index (starting with 1).");
+    colSize.push_back(24);
     colName.push_back("fxRef");
     colInfo.push_back("Reference force in x direction.");
-    colSize.push_back(16);
+    colSize.push_back(24);
     colName.push_back("fyRef");
     colInfo.push_back("Reference force in y direction.");
-    colSize.push_back(16);
+    colSize.push_back(24);
     colName.push_back("fzRef");
     colInfo.push_back("Reference force in z direction.");
-    colSize.push_back(16);
-    colName.push_back("fxDiff");
-    colInfo.push_back("Difference between reference and NNP force in x dir.");
-    colSize.push_back(16);
-    colName.push_back("fyDiff");
-    colInfo.push_back("Difference between reference and NNP force in y dir.");
-    colSize.push_back(16);
-    colName.push_back("fzDiff");
-    colInfo.push_back("Difference between reference and NNP force in z dir.");
+    colSize.push_back(24);
+    colName.push_back("fx");
+    colInfo.push_back("Force in x direction.");
+    colSize.push_back(24);
+    colName.push_back("fy");
+    colInfo.push_back("Force in y direction.");
+    colSize.push_back(24);
+    colName.push_back("fz");
+    colInfo.push_back("Force in z direction.");
     appendLinesToFile(file,
                       createFileHeader(title, colSize, colName, colInfo));
 
     for (vector<Atom>::const_iterator it = s.atoms.begin();
          it != s.atoms.end(); ++it)
     {
-        file << strpr("%16.8E %16.8E %16.8E %16.8E %16.8E "
-                      "%16.8E %16.8E %16.8E %16.8E\n",
-                      it->f[0],
-                      it->f[1],
-                      it->f[2],
+        file << strpr("%10zu %10zu %24.16E %24.16E %24.16E %24.16E %24.16E "
+                      "%24.16E\n",
+                      s.index + 1,
+                      it->index + 1,
                       it->fRef[0],
                       it->fRef[1],
                       it->fRef[2],
-                      it->fRef[0] - it->f[0],
-                      it->fRef[1] - it->f[1],
-                      it->fRef[2] - it->f[2]);
+                      it->f[0],
+                      it->f[1],
+                      it->f[2]);
     }
     file.close();
 

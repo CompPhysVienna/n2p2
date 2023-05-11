@@ -17,13 +17,15 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include <cstdio>    // FILE
-#include <fstream>   // std::ofstream
-#include <map>       // std::map
-#include <sstream>   // std::stringstream
-#include <stdexcept> // std::range_error
-#include <string>    // std::string
-#include <vector>    // std::vector
+#include <cstdio>           // FILE
+#include <fstream>          // std::ofstream
+#include <map>              // std::map
+#include <sstream>          // std::stringstream
+#include <stdexcept>        // std::range_error
+#include <string>           // std::string
+#include <vector>           // std::vector
+#include <unordered_map>    // std::unordered_map
+#include <algorithm>        // std::find
 
 namespace nnp
 {
@@ -75,6 +77,13 @@ std::string              pad(std::string const& input,
 /** String version of printf function.
  */
 std::string              strpr(const char* format, ...);
+/** Capitalize first letter of word.
+ *
+ * @param[in] word String to capitalize.
+ *
+ * @return Input string with first letter in capital letters.
+ */
+std::string              cap(std::string word);
 /** Generate output file header with info section and column labels.
  *
  * @param[in] title Multiple lines of title text.
@@ -145,6 +154,33 @@ V const&                 safeFind(std::map<K, V> const&           stdMap,
         throw std::range_error(message.str());
     }
     return stdMap.find(key)->second;
+}
+
+/** Test if vector contains specified value.
+ *
+ * @param[in] stdVec Vector to search in.
+ * @param[in] value Value to search for.
+ * @return `True` if value is located in vector.
+ */
+template<typename T>
+bool                    vectorContains(std::vector<T> const& stdVec,
+                                       T value)
+{
+    return (std::find(stdVec.begin(), stdVec.end(), value) != stdVec.end());
+}
+/** Test if unordered map contains specified key.
+ *
+ * @param[in] stdMap Map to search in.
+ * @param[in] key Key to search for.
+ * @return `True` if key is located in map.
+ */
+
+template<typename T, typename U>
+bool                    unorderedMapContainsKey(
+                                    std::unordered_map<T, U> const& stdMap,
+                                    T key)
+{
+    return ( stdMap.find(key) != stdMap.end() );
 }
 
 /** Compare pointer targets

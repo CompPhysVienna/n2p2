@@ -62,7 +62,7 @@ AR=$(PROJECT_AR)
 ARFLAGS=$(PROJECT_ARFLAGS)
 
 # Extra include paths for compiling.
-INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
+INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_EIGEN)
 
 
 ###############################################################################

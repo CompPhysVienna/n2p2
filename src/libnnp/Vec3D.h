@@ -18,6 +18,7 @@
 #define VEC3D_H
 
 #include <cstddef>   // std::size_t
+#include <utility>   // std::move
 #include <cmath>     // sqrt
 #include <stdexcept> // std::runtime_error
 
@@ -39,6 +40,9 @@ struct Vec3D
     /** Copy constructor.
      */
     Vec3D(Vec3D const& source);
+    /** Move constructor.
+     */
+    Vec3D(Vec3D&& source);
     /** Overload = operator.
      *
      * @return Vector with copied data.
@@ -69,6 +73,13 @@ struct Vec3D
      * @return Scalar product of two vectors.
      */
     double        operator*(Vec3D const& v) const;
+    /** Overload * operator to implement (left) multiplication with a matrix
+     * defined as Vec3D A[3]. By convention A[i][j] gives the element of j-th
+     * row and i-th column.
+     *
+     * @return Original vector multiplied with a matrix.
+     */
+    Vec3D&        operator*=(Vec3D const  (& A) [3]);
     /** Overload [] operator to return coordinate by index.
      *
      * @return x,y or z when index is 0, 1 or 2, respectively.
@@ -134,6 +145,11 @@ Vec3D operator-(Vec3D v);
  * @return Vector multiplied with scalar.
  */
 Vec3D operator*(Vec3D v, double const a);
+/** Overload * operator to implement (left) multiplication with a matrix.
+ *
+ * @return Vector multiplied with a matrix.
+ */
+Vec3D operator*(Vec3D const  (& A) [3], Vec3D v);
 /** Overload / operator to implement division by scalar.
  *
  * @return Vector divided by scalar.
@@ -168,6 +184,13 @@ inline Vec3D::Vec3D(Vec3D const& source)
     r[0] = source.r[0];
     r[1] = source.r[1];
     r[2] = source.r[2];
+}
+
+inline Vec3D::Vec3D(Vec3D&& source)
+{
+    r[0] = std::move(source.r[0]);
+    r[1] = std::move(source.r[1]);
+    r[2] = std::move(source.r[2]);
 }
 
 inline Vec3D& Vec3D::operator=(Vec3D const& rhs)
@@ -206,6 +229,20 @@ inline Vec3D& Vec3D::operator*=(double const a)
     return *this;
 }
 
+inline Vec3D& Vec3D::operator*=(Vec3D const  (& A) [3])
+{
+    Vec3D w;
+    for (size_t i=0; i<3; ++i)
+    {
+        for (size_t j=0; j<3; ++j)
+        {
+            w.r[i] += A[j][i] * r[j];
+        }
+    }
+    *this = w;
+    return *this;
+}
+
 inline Vec3D& Vec3D::operator/=(double const a)
 {
     *this *= 1.0 / a;
@@ -217,6 +254,7 @@ inline double Vec3D::operator*(Vec3D const& v) const
 {
     return r[0] * v.r[0] + r[1] * v.r[1] + r[2] * v.r[2];
 }
+
 
 // Doxygen requires namespace prefix for arguments...
 inline double& Vec3D::operator[](std::size_t const index)
@@ -318,6 +356,11 @@ inline Vec3D operator/(Vec3D v, double const a)
 inline Vec3D operator*(double const a, Vec3D v)
 {
     return v *= a;
+}
+
+inline Vec3D operator*(Vec3D const  (& A) [3], Vec3D v)
+{
+    return v *= A;
 }
 
 }

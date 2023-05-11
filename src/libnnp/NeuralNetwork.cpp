@@ -37,7 +37,7 @@ NeuralNetwork(int                              numLayers,
     if (numLayers < 3)
     {
         fprintf(stderr,
-                "ERROR: Neural network must have at least three layers");
+                "ERROR: Neural network must have at least three layers\n");
         exit(EXIT_FAILURE);
     }
     numHiddenLayers = numLayers - 2;
@@ -358,6 +358,8 @@ void NeuralNetwork::setInput(double const* const& input) const
 {
     for (int i = 0; i < inputLayer->numNeurons; i++)
     {
+        // TODO: replace by calling setInput from above
+        // also, for 4G we need charges
         double const& value = input[i];
         Neuron& n = inputLayer->neurons[i];
         n.count++;
@@ -1071,4 +1073,26 @@ vector<string> NeuralNetwork::info() const
     }
 
     return v;
+}
+
+NeuralNetwork::ActivationFunction nnp::activationFromString(string c)
+{
+    NeuralNetwork::ActivationFunction a;
+
+    if      (c == "l") a = NeuralNetwork::AF_IDENTITY;
+    else if (c == "t") a = NeuralNetwork::AF_TANH;
+    else if (c == "s") a = NeuralNetwork::AF_LOGISTIC;
+    else if (c == "p") a = NeuralNetwork::AF_SOFTPLUS;
+    else if (c == "r") a = NeuralNetwork::AF_RELU;
+    else if (c == "g") a = NeuralNetwork::AF_GAUSSIAN;
+    else if (c == "c") a = NeuralNetwork::AF_COS;
+    else if (c == "S") a = NeuralNetwork::AF_REVLOGISTIC;
+    else if (c == "e") a = NeuralNetwork::AF_EXP;
+    else if (c == "h") a = NeuralNetwork::AF_HARMONIC;
+    else
+    {
+        throw runtime_error("ERROR: Unknown activation function.\n");
+    }
+
+    return a;
 }

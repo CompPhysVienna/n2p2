@@ -19,6 +19,8 @@
 #define COREFUNCTION_H
 
 #include <cmath>
+#include <string>
+#include <vector>
 
 namespace nnp
 {
@@ -29,6 +31,9 @@ public:
     /// List of available function types.
     enum class Type
     {
+        /** @f$f(x) = \frac{1}{2} \left[ \cos (\pi x) + 1\right] @f$
+         */
+        COS,
         /** @f$f(x) = (2x - 3)x^2 + 1@f$
          */
         POLY1,
@@ -53,45 +58,57 @@ public:
      *
      * @param[in] type Type of core function used.
      */
-    void   setType(Type const type);
+    void                     setType(Type const type);
+    /** Set function type.
+     *
+     * @param[in] typeString Type (string version) of core function used.
+     */
+    void                     setType(std::string const typeString);
     /** Getter for #type.
      *
      * @return Type used.
      */
-    Type   getType() const;
+    Type                     getType() const;
 #ifndef N2P2_NO_ASYM_POLY
     /** Set asymmetric property.
      *
      * @param[in] asymmetric Whether asymmetry should be activated.
      */
-    void   setAsymmetric(bool asymmetric);
+    void                     setAsymmetric(bool asymmetric);
     /** Getter for #asymmetric.
      *
      * @return Whether asymmetry is activated.
      */
-    bool   getAsymmetric() const;
+    bool                     getAsymmetric() const;
 #endif
     /** Calculate function value @f$f(x)@f$.
      *
      * @param[in] x Function argument.
      * @return Function value.
      */
-    double f(double x) const;
+    double                   f(double x) const;
     /** Calculate derivative of function at argument @f$\frac{df(x)}{dx}@f$.
      *
      * @param[in] x Function argument.
      * @return Function derivative value.
      */
-    double df(double x) const;
+    double                   df(double x) const;
     /** Calculate function and derivative at once.
      *
      * @param[in] x Function argument.
      * @param[out] fx Function value.
      * @param[out] dfx Derivative value.
      */
-    void   fdf(double x, double& fx, double& dfx) const;
+    void                     fdf(double x, double& fx, double& dfx) const;
+    /** Get string with formula of compact function.
+     *
+     * @return Information string.
+     */
+    std::vector<std::string> info() const;
 
 private:
+    static double const PI;
+    static double const PI_2;
     static double const E;
     /// Core function type.
     Type                type;
@@ -109,6 +126,10 @@ private:
                                        double& dfx) const;
 
     // Individual functions.
+    double   fCOS(double x) const;
+    double  dfCOS(double x) const;
+    void   fdfCOS(double x, double& fx, double& dfx) const;
+
     double   fPOLY1(double x) const;
     double  dfPOLY1(double x) const;
     void   fdfPOLY1(double x, double& fx, double& dfx) const;
@@ -134,10 +155,7 @@ private:
 // Inlined function definitions //
 //////////////////////////////////
 
-inline CoreFunction::Type CoreFunction::getType() const
-{
-    return type;
-}
+inline CoreFunction::Type CoreFunction::getType() const { return type; }
 
 #ifndef N2P2_NO_ASYM_POLY
 inline void CoreFunction::setAsymmetric(bool asymmetric)
@@ -147,10 +165,7 @@ inline void CoreFunction::setAsymmetric(bool asymmetric)
     return;
 }
 
-inline bool CoreFunction::getAsymmetric() const
-{
-    return asymmetric;
-}
+inline bool CoreFunction::getAsymmetric() const { return asymmetric; }
 #endif
 
 inline double CoreFunction::f(double x) const
@@ -183,6 +198,24 @@ inline void CoreFunction::fdf(double x, double& fx, double& dfx) const
 #else
     (this->*fdfPtr)(x, fx, dfx);
 #endif
+    return;
+}
+
+inline double CoreFunction::fCOS(double x) const
+{
+    return 0.5 * (cos(PI * x) + 1.0);
+}
+
+inline double CoreFunction::dfCOS(double x) const
+{
+    return -PI_2 * sin(PI * x);
+}
+
+inline void CoreFunction::fdfCOS(double x, double& fx, double& dfx) const
+{
+    double const temp = cos(PI * x);
+    fx = 0.5 * (temp + 1.0);
+    dfx = -0.5 * PI * sqrt(1.0 - temp * temp);
     return;
 }
 

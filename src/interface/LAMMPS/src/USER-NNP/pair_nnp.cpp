@@ -14,6 +14,7 @@
 #include "neigh_request.h"
 #include "memory.h"
 #include "error.h"
+#include "force.h"
 #include "update.h"
 #include "utils.h"
 
@@ -48,7 +49,7 @@ void PairNNP::compute(int eflag, int vflag)
   interface.setLocalTags(atom->tag);
 
   // Transfer local neighbor list to NNP interface.
-  transferNeighborList();
+  transferNeighborList(maxCutoffRadius);
 
   // Compute symmetry functions, atomic neural networks and add up energy.
   interface.process();
@@ -214,9 +215,9 @@ void PairNNP::init_style()
   // Activate screen and logfile output only for rank 0.
   if (comm->me == 0) {
     if (lmp->screen != NULL)
-      interface.log.registerCFilePointer(&(lmp->screen));    
+      interface.log.registerCFilePointer(&(lmp->screen));
     if (lmp->logfile != NULL)
-      interface.log.registerCFilePointer(&(lmp->logfile));    
+      interface.log.registerCFilePointer(&(lmp->logfile));
   }
 
   // Initialize interface on all processors.
@@ -236,6 +237,10 @@ void PairNNP::init_style()
   // maximum symmetry function cutoff radius.
   if (maxCutoffRadius < interface.getMaxCutoffRadius())
     error->all(FLERR,"Inconsistent cutoff radius");
+
+  // newton off is currently not handled
+  if (force->newton_pair != 1)
+    error->all(FLERR, "Pair style nnp requires newton pair on");
 }
 
 /* ----------------------------------------------------------------------
@@ -301,10 +306,14 @@ void PairNNP::allocate()
   memory->create(cutsq,n+1,n+1,"pair:cutsq");
 }
 
-void PairNNP::transferNeighborList()
+void PairNNP::transferNeighborList(double const cutoffRadius)
 {
   // Transfer neighbor list to NNP.
-  double rc2 = maxCutoffRadius * maxCutoffRadius;
+  double rc2 = cutoffRadius * cutoffRadius;
+  interface.allocateNeighborlists(list->numneigh);
+#ifdef _OPENMP
+  #pragma omp parallel for
+#endif
   for (int ii = 0; ii < list->inum; ++ii) {
     int i = list->ilist[ii];
     for (int jj = 0; jj < list->numneigh[i]; ++jj) {
@@ -315,11 +324,15 @@ void PairNNP::transferNeighborList()
       double dz = atom->x[i][2] - atom->x[j][2];
       double d2 = dx * dx + dy * dy + dz * dz;
       if (d2 <= rc2) {
-        // atom->tag[j] will be implicitly converted to int64_t internally.
-        interface.addNeighbor(i,j,atom->tag[j],atom->type[j],dx,dy,dz,d2);
+        if (!interface.getGlobalStructureStatus())
+          // atom->tag[j] will be implicitly converted to int64_t internally.
+          interface.addNeighbor(i,j,atom->tag[j],atom->type[j],dx,dy,dz,d2);
+        else
+          interface.addNeighbor(i,j,atom->map(atom->tag[j]),atom->type[j],dx,dy,dz,d2);
       }
     }
   }
+  interface.finalizeNeighborList();
 }
 
 void PairNNP::handleExtrapolationWarnings()

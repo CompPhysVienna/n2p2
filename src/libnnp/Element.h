@@ -69,6 +69,12 @@ public:
     /** Set #atomicEnergyOffset.
      */
     void                     setAtomicEnergyOffset(double atomicEnergyOffset);
+    /** Set #hardness.
+     */
+    void                     setHardness(double hardness);
+    /** Set #qsigma.
+     */
+    void                     setQsigma(double qsigma);
     /** Get #index.
      */
     std::size_t              getIndex() const;
@@ -78,6 +84,12 @@ public:
     /** Get #atomicEnergyOffset.
      */
     double                   getAtomicEnergyOffset() const;
+    /** Get #hardness.
+     */
+    double                   getHardness() const;
+    /** Get #qsigma.
+     */
+    double                   getQsigma() const;
     /** Get #symbol.
      */
     std::string              getSymbol() const;
@@ -163,6 +175,11 @@ public:
      * @return Maximum cutoff radius.
      */
     double                   getMaxCutoffRadius() const;
+    /** Get all different cutoff radii belonging to this element.
+     *
+     * @param[in] cutoffs Vector to append the result.
+     */
+    void                    getCutoffRadii(std::vector<double>& cutoffs) const;
     /** Get number of relevant symmetry functions per element.
      *
      * @return #symmetryFunctionNumTable
@@ -240,6 +257,10 @@ protected:
     std::size_t                           atomicNumber;
     /// Offset energy for every atom of this element.
     double                                atomicEnergyOffset;
+    /// Atomic hardness for global charge equilibration.
+    double                                hardness;
+    /// Gaussian width of charge distribution.
+    double                                qsigma;
     /// Element symbol.
     std::string                           symbol;
     /// Number of relevant symmetry functions for each neighbor element.
@@ -267,6 +288,20 @@ inline void Element::setAtomicEnergyOffset(double atomicEnergyOffset)
     return;
 }
 
+inline void Element::setHardness(double hardness)
+{
+    this->hardness = hardness;
+
+    return;
+}
+
+inline void Element::setQsigma(double qsigma)
+{
+    this->qsigma = qsigma;
+
+    return;
+}
+
 inline size_t Element::getIndex() const
 {
     return index;
@@ -280,6 +315,16 @@ inline size_t Element::getAtomicNumber() const
 inline double Element::getAtomicEnergyOffset() const
 {
     return atomicEnergyOffset;
+}
+
+inline double Element::getHardness() const
+{
+    return hardness;
+}
+
+inline double Element::getQsigma() const
+{
+    return qsigma;
 }
 
 inline std::string Element::getSymbol() const

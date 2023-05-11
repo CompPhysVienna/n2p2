@@ -52,16 +52,16 @@ APP_CORE=nnp-convert \
 # Applications which require libnnp and libnnptrain
 # but do not use class Training (only Dataset):
 APP_DATASET=nnp-atomenv \
-	    nnp-checkf \
-	    nnp-comp2 \
+            nnp-checkf \
+            nnp-comp2 \
             nnp-dataset \
             nnp-norm \
             nnp-scaling
 
 # Applications which require libnnp and libnnptrain:
 APP_TRAINING=nnp-checkdw \
-	     nnp-norm2 \
-	     nnp-train
+             nnp-norm2 \
+             nnp-train
 
 # All applications together.
 APP=$(APP_CORE) $(APP_DATASET) $(APP_TRAINING)
@@ -78,7 +78,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 all: $(APP_CORE) $(APP_DATASET) $(APP_TRAINING)
 
 # Applications which require only libnnp:
-$(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/
+$(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_EIGEN)
 ifeq ($(MODE), shared)
 $(APP_CORE): LDFLAGS=-L$(PROJECT_LIB) -lnnp
 else
@@ -91,7 +91,7 @@ $(APP_CORE):
 
 # Applications which require libnnp and libnnptrain
 # but do not use class Training (only Dataset):
-$(APP_DATASET): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_GSL)
+$(APP_DATASET): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_GSL) -I$(PROJECT_EIGEN)
 ifeq ($(MODE), shared)
 $(APP_DATASET): LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLAGS_BLAS)
 else

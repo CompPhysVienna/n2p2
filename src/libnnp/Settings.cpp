@@ -22,106 +22,123 @@
 
 using namespace std;
 using namespace nnp;
+using namespace settings;
 
-map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
+map<string, shared_ptr<settings::Key>> const createKnownKeywordsMap()
 {
     // Main keyword names and descriptions.
     map<string, string> m;
     // Alternative names.
     map<string, vector<string>> a;
     // Complete keyword map to return.
-    map<string, shared_ptr<Settings::Key>> r;
+    map<string, shared_ptr<settings::Key>> r;
 
     // Required for prediction.
-    m["number_of_elements"            ] = "";
-    m["elements"                      ] = "";
-    m["atom_energy"                   ] = "";
-    m["cutoff_type"                   ] = "";
-    m["symfunction_short"             ] = "";
-    m["scale_symmetry_functions"      ] = "";
-    m["scale_min_short"               ] = "";
-    m["scale_max_short"               ] = "";
-    m["center_symmetry_functions"     ] = "";
-    m["scale_symmetry_functions_sigma"] = "";
-    m["global_hidden_layers_short"    ] = "";
-    m["global_nodes_short"            ] = "";
-    m["global_activation_short"       ] = "";
-    m["element_nodes_short"           ] = "";
-    m["normalize_nodes"               ] = "";
-    m["mean_energy"                   ] = "";
-    m["conv_length"                   ] = "";
-    m["conv_energy"                   ] = "";
-    m["nnp_type"                      ] = "";
+    m["number_of_elements"                 ] = "";
+    m["elements"                           ] = "";
+    m["atom_energy"                        ] = "";
+    m["cutoff_type"                        ] = "";
+    m["symfunction_short"                  ] = "";
+    m["scale_symmetry_functions"           ] = "";
+    m["scale_min_short"                    ] = "";
+    m["scale_max_short"                    ] = "";
+    m["center_symmetry_functions"          ] = "";
+    m["scale_symmetry_functions_sigma"     ] = "";
+    m["global_hidden_layers_short"         ] = "";
+    m["global_hidden_layers_electrostatic" ] = "";
+    m["global_nodes_short"                 ] = "";
+    m["global_nodes_electrostatic"         ] = "";
+    m["global_activation_short"            ] = "";
+    m["global_activation_electrostatic"    ] = "";
+    m["element_hidden_layers_short"        ] = "";
+    m["element_hidden_layers_electrostatic"] = "";
+    m["element_nodes_short"                ] = "";
+    m["element_nodes_electrostatic"        ] = "";
+    m["element_activation_short"           ] = "";
+    m["element_activation_electrostatic"   ] = "";
+    m["normalize_nodes"                    ] = "";
+    m["mean_energy"                        ] = "";
+    m["conv_length"                        ] = "";
+    m["conv_energy"                        ] = "";
+    m["conv_charge"                        ] = "";
+    m["nnp_type"                           ] = "";
+    m["fixed_gausswidth"                   ] = "";
+    m["ewald_truncation_error_method"      ] = "";
+    m["ewald_prec"                         ] = "";
+    m["screen_electrostatics"              ] = "";
+    m["four_pi_epsilon"                    ] = "";
 
     // Training keywords.
-    m["random_seed"                   ] = "";
-    m["test_fraction"                 ] = "";
-    m["epochs"                        ] = "";
+    m["random_seed"                        ] = "";
+    m["test_fraction"                      ] = "";
+    m["epochs"                             ] = "";
     m["normalize_data_set"            ] = "";
-    m["use_short_forces"              ] = "";
-    m["rmse_threshold"                ] = "";
-    m["rmse_threshold_energy"         ] = "";
-    m["rmse_threshold_force"          ] = "";
-    m["rmse_threshold_charge"         ] = "";
-    m["rmse_threshold_trials"         ] = "";
-    m["rmse_threshold_trials_energy"  ] = "";
-    m["rmse_threshold_trials_force"   ] = "";
-    m["rmse_threshold_trials_charge"  ] = "";
-    m["energy_fraction"               ] = "";
-    m["force_fraction"                ] = "";
+    m["use_short_forces"                   ] = "";
+    m["rmse_threshold"                     ] = "";
+    m["rmse_threshold_energy"              ] = "";
+    m["rmse_threshold_force"               ] = "";
+    m["rmse_threshold_charge"              ] = "";
+    m["rmse_threshold_trials"              ] = "";
+    m["rmse_threshold_trials_energy"       ] = "";
+    m["rmse_threshold_trials_force"        ] = "";
+    m["rmse_threshold_trials_charge"       ] = "";
+    m["energy_fraction"                    ] = "";
+    m["force_fraction"                     ] = "";
     m["force_energy_ratio"            ] = "";
-    m["charge_fraction"               ] = "";
-    m["use_old_weights_short"         ] = "";
-    m["use_old_weights_charge"        ] = "";
-    m["weights_min"                   ] = "";
-    m["weights_max"                   ] = "";
-    m["nguyen_widrow_weights_short"   ] = "";
-    m["nguyen_widrow_weights_charge"  ] = "";
-    m["precondition_weights"          ] = "";
-    m["main_error_metric"             ] = "";
-    m["write_trainpoints"             ] = "";
-    m["write_trainforces"             ] = "";
-    m["write_traincharges"            ] = "";
-    m["write_weights_epoch"           ] = "";
-    m["write_neuronstats"             ] = "";
-    m["write_trainlog"                ] = "";
-    m["repeated_energy_update"        ] = "";
-    m["updater_type"                  ] = "";
-    m["parallel_mode"                 ] = "";
-    m["jacobian_mode"                 ] = "";
-    m["update_strategy"               ] = "";
-    m["selection_mode"                ] = "";
-    m["selection_mode_energy"         ] = "";
-    m["selection_mode_force"          ] = "";
-    m["selection_mode_charge"         ] = "";
-    m["task_batch_size_energy"        ] = "";
-    m["task_batch_size_force"         ] = "";
-    m["task_batch_size_charge"        ] = "";
-    m["gradient_type"                 ] = "";
-    m["gradient_eta"                  ] = "";
-    m["gradient_adam_eta"             ] = "";
-    m["gradient_adam_beta1"           ] = "";
-    m["gradient_adam_beta2"           ] = "";
-    m["gradient_adam_epsilon"         ] = "";
-    m["kalman_type"                   ] = "";
-    m["kalman_epsilon"                ] = "";
-    m["kalman_eta"                    ] = "";
-    m["kalman_etatau"                 ] = "";
-    m["kalman_etamax"                 ] = "";
-    m["kalman_q0"                     ] = "";
-    m["kalman_qtau"                   ] = "";
-    m["kalman_qmin"                   ] = "";
-    m["kalman_lambda_short"           ] = "";
-    m["kalman_nue_short"              ] = "";
-    m["memorize_symfunc_results"      ] = "";
-    m["force_weight"                  ] = "";
+    m["charge_fraction"                    ] = "";
+    m["use_old_weights_short"              ] = "";
+    m["use_old_weights_charge"             ] = "";
+    m["weights_min"                        ] = "";
+    m["weights_max"                        ] = "";
+    m["initial_hardness"                   ] = "";
+    m["nguyen_widrow_weights_short"        ] = "";
+    m["nguyen_widrow_weights_charge"       ] = "";
+    m["precondition_weights"               ] = "";
+    m["main_error_metric"                  ] = "";
+    m["write_trainpoints"                  ] = "";
+    m["write_trainforces"                  ] = "";
+    m["write_traincharges"                 ] = "";
+    m["write_weights_epoch"                ] = "";
+    m["write_neuronstats"                  ] = "";
+    m["write_trainlog"                     ] = "";
+    m["repeated_energy_update"             ] = "";
+    m["updater_type"                       ] = "";
+    m["parallel_mode"                      ] = "";
+    m["jacobian_mode"                      ] = "";
+    m["update_strategy"                    ] = "";
+    m["selection_mode"                     ] = "";
+    m["selection_mode_energy"              ] = "";
+    m["selection_mode_force"               ] = "";
+    m["selection_mode_charge"              ] = "";
+    m["task_batch_size_energy"             ] = "";
+    m["task_batch_size_force"              ] = "";
+    m["task_batch_size_charge"             ] = "";
+    m["gradient_type"                      ] = "";
+    m["gradient_eta"                       ] = "";
+    m["gradient_adam_eta"                  ] = "";
+    m["gradient_adam_beta1"                ] = "";
+    m["gradient_adam_beta2"                ] = "";
+    m["gradient_adam_epsilon"              ] = "";
+    m["kalman_type"                        ] = "";
+    m["kalman_epsilon"                     ] = "";
+    m["kalman_eta"                         ] = "";
+    m["kalman_etatau"                      ] = "";
+    m["kalman_etamax"                      ] = "";
+    m["kalman_q0"                          ] = "";
+    m["kalman_qtau"                        ] = "";
+    m["kalman_qmin"                        ] = "";
+    m["kalman_lambda_short"                ] = "";
+    m["kalman_nue_short"                   ] = "";
+    m["memorize_symfunc_results"           ] = "";
+    m["force_weight"                       ] = "";
 
     // Alternative keyword names.
-    a["nnp_type"]              = {"nn_type"};
+    a["nnp_type"             ] = {"nnp_generation", "nnp_type_gen", "nnp_gen"};
     a["rmse_threshold_energy"] = {"short_energy_error_threshold"};
     a["rmse_threshold_force" ] = {"short_force_error_threshold"};
     a["energy_fraction"      ] = {"short_energy_fraction"};
     a["force_fraction"       ] = {"short_force_fraction"};
+    a["symfunction_short"    ] = {"symfunction"};
 
     for (auto im : m)
     {
@@ -131,11 +148,11 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
             throw runtime_error("ERROR: Multiple definition of keyword.\n");
         }
         // Insert new shared pointer to a Key object.
-        r[im.first] = make_shared<Settings::Key>();
+        r[im.first] = make_shared<settings::Key>();
         // Add main keyword as first entry in alternatives list.
-        r.at(im.first)->words.push_back(im.first);
+        r.at(im.first)->addAlternative(im.first);
         // Add description text.
-        r.at(im.first)->description = im.second;
+        r.at(im.first)->setDescription(im.second);
         // Check if alternative keywords exist.
         if (a.find(im.first) != a.end())
         {
@@ -151,7 +168,7 @@ map<string, shared_ptr<Settings::Key>> const createKnownKeywordsMap()
                 // Set map entry, i.e. shared pointer, to Key object.
                 r[alt] = r.at(im.first);
                 // Add alternative keyword to list.
-                r[alt]->words.push_back(alt);
+                r[alt]->addAlternative(alt);
             }
         }
     }
@@ -166,6 +183,7 @@ string Settings::operator[](string const& keyword) const
     return getValue(keyword);
 }
 
+
 size_t Settings::loadFile(string const& fileName)
 {
     this->fileName = fileName;
@@ -173,7 +191,11 @@ size_t Settings::loadFile(string const& fileName)
     readFile();
     return parseLines();
 }
-
+bool Settings::keywordExists(Key const& key,
+                             bool const exact) const
+{
+    return keywordExists(key.getMainKeyword(), exact);
+}
 bool Settings::keywordExists(string const& keyword, bool exact) const
 {
     if (knownKeywords.find(keyword) == knownKeywords.end())
@@ -181,13 +203,13 @@ bool Settings::keywordExists(string const& keyword, bool exact) const
         throw runtime_error("ERROR: Not in the list of allowed keyword: \"" +
                             keyword + "\".\n");
     }
-    if (exact || knownKeywords.at(keyword)->isUnique())
+    if (exact || knownKeywords.at(keyword)->hasUniqueKeyword())
     {
         return (contents.find(keyword) != contents.end());
     }
     else
     {
-        for (auto alternative : knownKeywords.at(keyword)->words)
+        for (auto alternative : *knownKeywords.at(keyword))
         {
             if (contents.find(alternative) != contents.end()) return true;
         }
@@ -199,7 +221,7 @@ bool Settings::keywordExists(string const& keyword, bool exact) const
 string Settings::keywordCheck(string const& keyword) const
 {
     bool exists = keywordExists(keyword, false);
-    bool unique = knownKeywords.at(keyword)->isUnique();
+    bool unique = knownKeywords.at(keyword)->hasUniqueKeyword();
     if (!exists)
     {
         if (unique)
@@ -217,13 +239,18 @@ string Settings::keywordCheck(string const& keyword) const
     bool exact = keywordExists(keyword, true);
     if (!exact)
     {
-        for (auto alt : knownKeywords.at(keyword)->words)
+        for (auto const& alt : *knownKeywords.at(keyword))
         {
             if (contents.find(alt) != contents.end()) return alt;
         }
     }
 
     return keyword;
+}
+
+string Settings::getValue(Key const& key) const
+{
+    return contents.find(key.getMainKeyword())->second.first;
 }
 
 string Settings::getValue(string const& keyword) const
@@ -385,9 +412,12 @@ pair<size_t, size_t> Settings::sanityCheck()
          it != knownKeywords.end(); ++it)
     {
         if (contents.count((*it).first) > 1
+            && (*it).first != "symfunction"
             && (*it).first != "symfunction_short"
             && (*it).first != "atom_energy"
-            && (*it).first != "element_nodes_short")
+            && (*it).first != "element_nodes_short"
+            && (*it).first != "fixed_gausswidth"
+            && (*it).first != "initial_hardness")
         {
             countProblems++;
             countCritical++;
@@ -401,9 +431,9 @@ pair<size_t, size_t> Settings::sanityCheck()
     for (KeywordList::const_iterator it = knownKeywords.begin();
          it != knownKeywords.end(); ++it)
     {
-        if (it->second->isUnique()) continue;
+        if (it->second->hasUniqueKeyword()) continue;
         vector<string> duplicates;
-        for (auto keyword : it->second->words)
+        for (auto keyword : *it->second)
         {
             if (contents.find(keyword) != contents.end())
             {

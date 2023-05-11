@@ -22,25 +22,29 @@
 #include "Atom.h"
 #include "Element.h"
 #include "utility.h"
+#include <Eigen/Dense>
 #include <cmath>
 #include <string>
 #include <iostream>
 #include <limits>
+//#include <stdexcept>
 
 #define TOLCUTOFF 1.0E-2
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
 
-InterfaceLammps::InterfaceLammps() : myRank      (0    ),
-                                     initialized (false),
-                                     showew      (true ),
-                                     resetew     (false),
-                                     showewsum   (0    ),
-                                     maxew       (0    ),
-                                     cflength    (1.0  ),
-                                     cfenergy    (1.0  )
-                                     
+InterfaceLammps::InterfaceLammps() : myRank             (0    ),
+                                     initialized        (false),
+                                     hasGlobalStructure (false),
+                                     showew             (true ),
+                                     resetew            (false),
+                                     showewsum          (0    ),
+                                     maxew              (0    ),
+                                     cflength           (1.0  ),
+                                     cfenergy           (1.0  )
+
 {
 }
 
@@ -70,7 +74,7 @@ void InterfaceLammps::initialize(char const* const& directory,
     if (dir.back() != separator) dir += separator;
     Mode::initialize();
     loadSettingsFile(dir + "input.nn");
-    setupGeneric();
+    setupGeneric(dir);
     setupSymmetryFunctionScaling(dir + "scaling.data");
     bool collectStatistics = false;
     bool collectExtrapolationWarnings = false;
@@ -84,7 +88,7 @@ void InterfaceLammps::initialize(char const* const& directory,
                                     collectExtrapolationWarnings,
                                     writeExtrapolationWarnings,
                                     stopOnExtrapolationWarnings);
-    setupNeuralNetworkWeights(dir + "weights.%03d.data");
+    setupNeuralNetworkWeights(dir);
 
     log << "\n";
     log << "*** SETUP: LAMMPS INTERFACE *************"
@@ -250,6 +254,16 @@ void InterfaceLammps::initialize(char const* const& directory,
     initialized = true;
 }
 
+void InterfaceLammps::setGlobalStructureStatus(bool const status)
+{
+    hasGlobalStructure = status;
+}
+
+bool InterfaceLammps::getGlobalStructureStatus()
+{
+    return hasGlobalStructure;
+}
+
 void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
                                     int const* const atomType)
 {
@@ -265,6 +279,7 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
     structure.energy                         = 0.0;
     structure.atoms.clear();
     indexMap.clear();
+    structure.atoms.reserve(numAtomsLocal);
     indexMap.resize(numAtomsLocal, numeric_limits<size_t>::max());
     for (int i = 0; i < numAtomsLocal; i++)
     {
@@ -283,6 +298,25 @@ void InterfaceLammps::setLocalAtoms(int              numAtomsLocal,
         a.numNeighborsPerElement.clear();
         a.numNeighborsPerElement.resize(numElements, 0);
         structure.numAtomsPerElement[a.element]++;
+    }
+
+    return;
+}
+
+void InterfaceLammps::setLocalAtomPositions(double const* const* const atomPos)
+{
+    for (size_t i = 0; i < structure.numAtoms; ++i)
+    {
+        Atom& a = structure.atoms.at(i);
+        a.r[0] = atomPos[i][0] * cflength;
+        a.r[1] = atomPos[i][1] * cflength;
+        a.r[2] = atomPos[i][2] * cflength;
+        if (normalize)
+        {
+            a.r[0] *= convLength;
+            a.r[1] *= convLength;
+            a.r[2] *= convLength;
+        }
     }
 
     return;
@@ -309,6 +343,70 @@ void InterfaceLammps::setLocalTags(int64_t const* const atomTag)
     return;
 }
 
+void InterfaceLammps::setBoxVectors(double const* boxlo,
+                                    double const* boxhi,
+                                    double const  xy,
+                                    double const  xz,
+                                    double const  yz)
+{
+    structure.isPeriodic = true;
+
+    // Box vector a
+    structure.box[0][0] = boxhi[0] - boxlo[0];
+    structure.box[0][1] = 0;
+    structure.box[0][2] = 0;
+
+    // Box vector b
+    structure.box[1][0] = xy;
+    structure.box[1][1] = boxhi[1] - boxlo[1];
+    structure.box[1][2] = 0;
+
+    // Box vector c
+    structure.box[2][0] = xz;
+    structure.box[2][1] = yz;
+    structure.box[2][2] = boxhi[2] - boxlo[2];
+
+    // LAMMPS may set triclinic = 1 even if the following condition is not
+    // satisfied.
+    if (structure.box[0][1] > numeric_limits<double>::min() ||
+        structure.box[0][2] > numeric_limits<double>::min() ||
+        structure.box[1][0] > numeric_limits<double>::min() ||
+        structure.box[1][2] > numeric_limits<double>::min() ||
+        structure.box[2][0] > numeric_limits<double>::min() ||
+        structure.box[2][1] > numeric_limits<double>::min())
+    {
+        structure.isTriclinic = true;
+    }
+
+    for(size_t i = 0; i < 3; ++i)
+    {
+        structure.box[i] *= cflength;
+        if (normalize) structure.box[i] *= convLength;
+    }
+
+    structure.calculateInverseBox();
+    structure.calculateVolume();
+    //cout << "Box vectors: \n";
+    //for(size_t i = 0; i < 3; ++i)
+    //{
+    //    for(size_t j = 0; j < 3; ++j)
+    //    {
+    //        cout << structure.box[i][j] / convLength << " ";
+    //    }
+    //    cout << endl;
+    //}
+
+}
+
+void InterfaceLammps::allocateNeighborlists(int const* const numneigh)
+{
+    for(size_t i = 0; i < structure.numAtoms; ++i)
+    {
+        auto& a = structure.atoms.at(i);
+        a.neighbors.reserve(numneigh[i]);
+    }
+}
+
 void InterfaceLammps::addNeighbor(int     i,
                                   int     j,
                                   int64_t tag,
@@ -325,8 +423,9 @@ void InterfaceLammps::addNeighbor(int     i,
     a.neighbors.push_back(Atom::Neighbor());
     a.numNeighborsPerElement.at(mapTypeToElement[type])++;
     Atom::Neighbor& n = a.neighbors.back();
-    n.index   = j;
-    n.tag     = tag;
+
+    n.index = j;
+    n.tag = tag;
     n.element = mapTypeToElement[type];
     n.dr[0]   = dx * cflength;
     n.dr[1]   = dy * cflength;
@@ -334,13 +433,31 @@ void InterfaceLammps::addNeighbor(int     i,
     n.d       = sqrt(d2) * cflength;
     if (normalize)
     {
-        n.dr[0] *= convLength;
-        n.dr[1] *= convLength;
-        n.dr[2] *= convLength;
-        n.d     *= convLength;
+        n.dr *= convLength;
+        n.d  *= convLength;
     }
 
     return;
+}
+
+
+void InterfaceLammps::finalizeNeighborList()
+{
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        for (auto& a : structure.atoms)
+        {
+            a.hasNeighborList = true;
+        }
+        // Ewald summation cut-off depends on box vectors.
+        structure.calculateMaxCutoffRadiusOverall(
+                                            ewaldSetup,
+                                            screeningFunction.getOuter(),
+                                            maxCutoffRadius);
+        structure.sortNeighborList();
+        structure.setupNeighborCutoffMap(cutoffs);
+    }
+
 }
 
 void InterfaceLammps::process()
@@ -350,8 +467,16 @@ void InterfaceLammps::process()
 #else
     calculateSymmetryFunctionGroups(structure, true);
 #endif
-    calculateAtomicNeuralNetworks(structure, true);
+    calculateAtomicNeuralNetworks(structure, true, "");
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        chargeEquilibration(structure, true);
+        calculateAtomicNeuralNetworks(structure, true, "short");
+        ewaldSetup.logEwaldCutoffs(log, convLength * cflength);
+    }
     calculateEnergy(structure);
+    if (nnpType == NNPType::HDNNP_4G ||
+        nnpType == NNPType::HDNNP_Q) calculateCharge(structure);
     if (normalize)
     {
         structure.energy = physicalEnergy(structure, false);
@@ -365,6 +490,22 @@ double InterfaceLammps::getMaxCutoffRadius() const
 {
     if (normalize) return maxCutoffRadius / convLength / cflength;
     else return maxCutoffRadius / cflength;
+}
+
+double InterfaceLammps::getMaxCutoffRadiusOverall()
+{
+    double cutoff = 0;
+    if(nnpType == NNPType::HDNNP_4G)
+    {
+        structure.calculateMaxCutoffRadiusOverall(
+                                        ewaldSetup,
+                                        screeningFunction.getOuter(),
+                                        maxCutoffRadius);
+        cutoff = structure.maxCutoffRadiusOverall / cflength;
+        if (normalize) cutoff /= convLength;
+    }
+    else cutoff = getMaxCutoffRadius();
+    return cutoff;
 }
 
 double InterfaceLammps::getEnergy() const
@@ -402,58 +543,96 @@ void InterfaceLammps::getForces(double* const* const& atomF) const
     // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
     // atoms and their neighbors. These are now summed up to the force
     // contributions of local and ghost atoms.
-    Atom const* a = NULL;
-
-    for (size_t i =  0; i < structure.atoms.size(); ++i)
+    for (auto const& a : structure.atoms)
     {
-        // Set pointer to atom.
-        a = &(structure.atoms.at(i));
+        size_t const ia = a.index;
+        Vec3D selfForce = a.calculateSelfForceShort();
+        selfForce *= cfforce * convForce;
+        // TODO: ia is not the right index when some atom types are excluded / ignored
+        //       (see use of indexmap)
+        add3DVecToArray(atomF[ia], selfForce);
 
 #ifndef N2P2_FULL_SFD_MEMORY
         vector<vector<size_t> > const& tableFull
-            = elements.at(a->element).getSymmetryFunctionTable();
+            = elements.at(a.element).getSymmetryFunctionTable();
 #endif
         // Loop over all neighbor atoms. Some are local, some are ghost atoms.
-        for (vector<Atom::Neighbor>::const_iterator n = a->neighbors.begin();
-             n != a->neighbors.end(); ++n)
+
+        //for (auto const& n : a.neighbors)
+        size_t const numNeighbors = a.getStoredMinNumNeighbors(maxCutoffRadius);
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
+        for (size_t k = 0; k < numNeighbors; ++k)
         {
+            Atom::Neighbor const& n = a.neighbors[k];
             // Temporarily save the neighbor index. Note: this is the index for
             // the LAMMPS force array.
-            size_t const in = n->index;
-            // Now loop over all symmetry functions and add force contributions
-            // (local + ghost atoms).
+            size_t const in = n.index;
+
 #ifndef N2P2_FULL_SFD_MEMORY
-            vector<size_t> const& table = tableFull.at(n->element);
-            for (size_t s = 0; s < n->dGdr.size(); ++s)
-            {
-                double const dEdG = a->dEdG[table.at(s)] * cfforce * convForce;
+            Vec3D pairForce = a.calculatePairForceShort(n, &tableFull);
 #else
-            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
-            {
-                double const dEdG = a->dEdG[s] * cfforce * convForce;
+            Vec3D pairForce = a.calculatePairForceShort(n);
 #endif
-                double const* const dGdr = n->dGdr[s].r;
-                atomF[in][0] -= dEdG * dGdr[0];
-                atomF[in][1] -= dEdG * dGdr[1];
-                atomF[in][2] -= dEdG * dGdr[2];
-            }
-        }
-        // Temporarily save the atom index. Note: this is the index for
-        // the LAMMPS force array.
-        size_t const ia = a->index;
-        // Loop over all symmetry functions and add force contributions (local
-        // atoms).
-        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
-        {
-            double const dEdG = a->dEdG[s] * cfforce * convForce;
-            double const* const dGdr = a->dGdr[s].r;
-            atomF[ia][0] -= dEdG * dGdr[0];
-            atomF[ia][1] -= dEdG * dGdr[1];
-            atomF[ia][2] -= dEdG * dGdr[2];
+            pairForce *= cfforce * convForce;
+            add3DVecToArray(atomF[in], pairForce);
         }
     }
 
+    // Comment: Will not work with multiple MPI tasks but this routine will
+    //          probably be obsolete when Emir's solution is finished.
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        Structure const& s = structure;
+        VectorXd lambdaTotal = s.calculateForceLambdaTotal();
+
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
+        // OpenMP 4.0 doesn't support range based loops
+        for (size_t i = 0; i < s.numAtoms; ++i)
+        {
+            auto const& ai = s.atoms[i];
+            add3DVecToArray(atomF[i], -ai.pEelecpr * cfforce * convForce);
+
+            for (auto const& aj : s.atoms)
+            {
+                size_t const j = aj.index;
+
+#ifndef N2P2_FULL_SFD_MEMORY
+                vector<vector<size_t> > const& tableFull
+                        = elements.at(aj.element).getSymmetryFunctionTable();
+                Vec3D dChidr = aj.calculateDChidr(ai.index,
+                                                  maxCutoffRadius,
+                                                  &tableFull);
+#else
+                Vec3D dChidr = aj.calculateDChidr(ai.index,
+                                                  maxCutoffRadius);
+#endif
+
+                Vec3D remainingForce = -lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
+                add3DVecToArray(atomF[i], remainingForce * cfforce * convForce);
+
+            }
+        }
+    }
     return;
+}
+
+void InterfaceLammps::getCharges(double* const& atomQ) const
+{
+    if (nnpType != NNPType::HDNNP_4G) return;
+    if (!atomQ) return;
+
+    Structure const& s = structure;
+#ifdef _OPENMP
+    #pragma omp parallel for
+#endif
+    for (size_t i = 0; i < s.numAtoms; ++i)
+    {
+        atomQ[i] = s.atoms[i].charge;
+    }
 }
 
 long InterfaceLammps::getEWBufferSize() const
@@ -594,4 +773,19 @@ void InterfaceLammps::clearExtrapolationWarnings()
     }
 
     return;
+}
+
+void InterfaceLammps::writeToFile(string const fileName,
+                                  bool const   append)
+{
+    structure.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge);
+    structure.writeToFile(fileName, false, append);
+    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
+}
+
+void InterfaceLammps::add3DVecToArray(double *const & arr, Vec3D const& v) const
+{
+    arr[0] += v[0];
+    arr[1] += v[1];
+    arr[2] += v[2];
 }

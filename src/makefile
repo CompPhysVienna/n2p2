@@ -42,14 +42,21 @@ INTERFACES=LAMMPS CabanaMD
 ###############################################################################
 # APPLICATION TARGET NAMES
 ###############################################################################
+
+# Variables should not contain "entering directory...", so we temporarily
+# disable it
+MAKEFLAGS_ORIGINAL:=$(MAKEFLAGS)
+MAKEFLAGS += --no-print-directory
+
 # Call makefile in "application" directory to list targets.
-APP_LIBNNP=$(shell cd application && $(MAKE) $(MFLAGS) list-libnnp)
-APP_LIBNNPTRAIN=$(shell cd application && $(MAKE) $(MFLAGS) list-libnnptrain)
-APP=$(shell cd application && $(MAKE) $(MFLAGS) list-all)
+APP_LIBNNP:=$(shell cd application && $(MAKE) $(MFLAGS) list-libnnp)
+APP_LIBNNPTRAIN:=$(shell cd application && $(MAKE) $(MFLAGS) list-libnnptrain)
+APP:=$(shell cd application && $(MAKE) $(MFLAGS) list-all)
 
 # Targets for cleaning.
 CLEAN_APP=$(patsubst %, clean-%, $(APP))
 
+MAKEFLAGS:=$(MAKEFLAGS_ORIGINAL)
 
 ###############################################################################
 # RULES

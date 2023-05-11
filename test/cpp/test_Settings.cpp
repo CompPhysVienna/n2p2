@@ -25,7 +25,7 @@ BOOST_FIXTURE_TEST_CASE(ReadRecommendedSettings_NoCriticalErrors,
     bfs::copy_file("../../examples/input.nn.recommended", "test/input.nn");
     bfs::current_path("test");
 
-    Settings s;
+    settings::Settings s;
     size_t numCriticalProblems = s.loadFile();
     BOOST_REQUIRE_EQUAL(numCriticalProblems, 0);
 
@@ -53,7 +53,7 @@ BOOST_FIXTURE_TEST_CASE(UnknownKeyword_NoCriticalErrors,
     f.flush();
     f.close();
 
-    Settings s;
+    settings::Settings s;
     size_t numCriticalProblems = s.loadFile();
     BOOST_REQUIRE_EQUAL(numCriticalProblems, 0);
 
@@ -84,7 +84,7 @@ BOOST_FIXTURE_TEST_CASE(DuplicatedKeyword_CriticalError,
     f.flush();
     f.close();
 
-    Settings s;
+    settings::Settings s;
     size_t numCriticalProblems = s.loadFile();
     BOOST_REQUIRE_EQUAL(numCriticalProblems, 1);
 
@@ -112,7 +112,7 @@ BOOST_FIXTURE_TEST_CASE(DuplicatedAlternativeKeyword_CriticalError,
     f.flush();
     f.close();
 
-    Settings s;
+    settings::Settings s;
     size_t numCriticalProblems = s.loadFile();
     BOOST_REQUIRE_EQUAL(numCriticalProblems, 2);
 
@@ -134,7 +134,7 @@ BOOST_FIXTURE_TEST_CASE(UseAlternativeKeyword_CorrectValue,
     bfs::copy_file("../../examples/input.nn.recommended", "test/input.nn");
     bfs::current_path("test");
 
-    Settings s;
+    settings::Settings s;
     s.loadFile();
 
     double value = atof(s["short_force_error_threshold"].c_str());

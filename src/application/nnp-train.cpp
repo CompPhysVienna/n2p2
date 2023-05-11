@@ -56,7 +56,9 @@ int main(int argc, char* argv[])
     // If initial-weights-based normalization is enabled skip normalization
     // setup here.
     training.setupGeneric(
-        training.settingsKeywordExists("normalize_data_set")
+        "",
+        training.settingsKeywordExists("normalize_data_set"),
+        stage == 1
     );
     training.setupSymmetryFunctionScaling();
     training.setupSymmetryFunctionStatistics(false, false, false, false);

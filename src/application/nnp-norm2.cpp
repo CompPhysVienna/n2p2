@@ -71,7 +71,8 @@ int main(int argc, char* argv[])
     training.setupSymmetryFunctionStatistics(false, false, false, false);
 
     auto nnpType = training.getNnpType();
-    if (nnpType == Training::NNPType::SHORT_CHARGE_NN && stage == 1)
+    if ( (nnpType == Training::NNPType::HDNNP_4G ||
+          nnpType == Training::NNPType::HDNNP_Q) && stage == 1)
     {
         throw runtime_error("ERROR: Normalization of charges not yet "
                             "implemented\n.");
@@ -101,7 +102,8 @@ int main(int argc, char* argv[])
     training.initializeWeights();
 
     training.writeWeights("short", "weights.%03zu.norm");
-    if (nnpType == Training::NNPType::SHORT_CHARGE_NN && stage == 2)
+    if ( (nnpType == Training::NNPType::HDNNP_4G ||
+          nnpType == Training::NNPType::HDNNP_Q) && stage == 2)
     {
         training.writeWeights("charge", "weightse.%03zu.norm");
     }

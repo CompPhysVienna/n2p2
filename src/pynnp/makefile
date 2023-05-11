@@ -12,6 +12,9 @@ PROJECT_LIB=$(PROJECT_DIR)/lib
 ###############################################################################
 # GENERAL SETTINGS
 ###############################################################################
+# Default compiler, may be overridden by master makefile or command line.
+COMP=gnu
+
 # Default build mode, may be overridden command line.
 # Possible modes are "shared" and "test".
 MODE=shared
@@ -20,24 +23,38 @@ ifeq ($(MODE), static)
 override MODE=shared
 endif
 
+# Include global (project-wide) settings.
+include $(PROJECT_DIR)/src/makefile.$(COMP)
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all clean
+.PHONY: all setup-py clean-setup-py clean
 
 ifeq ($(MODE), shared)
-all:
+all: setup-py
 	python3 setup.py build_ext --inplace
 	cp pynnp*.so $(PROJECT_LIB)
 else
-all:
+all: setup-py
 	python3 setup-test.py build_ext --inplace --define CYTHON_TRACE
 	cp pynnp*.so $(PROJECT_LIB)
 endif
 
-clean:
+setup-py:
+	@sed -i.bak -E "s,(includes =).*,\1 [\"$(PROJECT_EIGEN)\"]," setup.py
+	@rm setup.py.bak
+	@sed -i.bak -E "s,(includes =).*,\1 [\"$(PROJECT_EIGEN)\"]," setup-test.py
+	@rm setup-test.py.bak
+
+clean: clean-setup-py
 	$(RM) pynnp.cpp pynnp*.so
 	$(RM) -r build
 	$(RM) $(PROJECT_LIB)/pynnp*.so
 	$(RM) ./*.html
+
+clean-setup-py:
+	@sed -i.bak -E "s,(includes =).*,\1 []," setup.py
+	@rm setup.py.bak
+	@sed -i.bak -E "s,(includes =).*,\1 []," setup-test.py
+	@rm setup-test.py.bak

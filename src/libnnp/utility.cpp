@@ -101,6 +101,13 @@ string strpr(const char* format, ...)
     return s;
 }
 
+string cap(string word)
+{
+    word[0] = toupper(word[0]);
+
+    return word;
+}
+
 vector<string> createFileHeader(vector<string> const& title,
                                 vector<size_t> const& colSize,
                                 vector<string> const& colName,
