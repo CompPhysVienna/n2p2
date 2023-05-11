@@ -47,6 +47,7 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                convEnergy                (1.0              ),
                convLength                (1.0              ),
                convCharge                (1.0              ),
+               fourPiEps                 (1.0              ),
                ewaldSetup                {}
 {
 }
@@ -482,6 +483,12 @@ void Mode::setupElectrostatics(bool   initialHardness,
         log << strpr("Ewald expected maximum charge: %16.8E\n",
                      ewaldSetup.getMaxCharge());
     log << "\n";
+
+    // 4 * pi * epsilon
+    if (settings.keywordExists("four_pi_epsilon"))
+        fourPiEps = atof(settings["four_pi_epsilon"].c_str());
+    if (normalize)
+        fourPiEps *= pow(convCharge, 2) / (convLength * convEnergy);
 
     // Screening function.
     if (settings.keywordExists("screen_electrostatics"))
@@ -1753,12 +1760,6 @@ void Mode::chargeEquilibration( Structure& structure,
     VectorXd hardness(numElements);
     MatrixXd gammaSqrt2(numElements, numElements);
     VectorXd sigmaSqrtPi(numElements);
-    // In case of natural units and no normalization
-    double fourPiEps = 1;
-    // In case of natural units but with normalization. Other units currently
-    // not supported.
-    if (normalize)
-        fourPiEps = pow(convCharge, 2) / (convLength * convEnergy);
 
     for (size_t i = 0; i < numElements; ++i)
     {

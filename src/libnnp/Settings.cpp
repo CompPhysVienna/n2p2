@@ -66,6 +66,7 @@ map<string, shared_ptr<settings::Key>> const createKnownKeywordsMap()
     m["ewald_truncation_error_method"      ] = "";
     m["ewald_prec"                         ] = "";
     m["screen_electrostatics"              ] = "";
+    m["four_pi_epsilon"                    ] = "";
 
     // Training keywords.
     m["random_seed"                        ] = "";

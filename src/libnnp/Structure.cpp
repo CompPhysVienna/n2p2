@@ -744,7 +744,7 @@ double Structure::calculateElectrostaticEnergy(
 }
 
 double Structure::calculateScreeningEnergy(
-                                        Eigen::MatrixXd          gammaSqrt2,
+                                        MatrixXd                 gammaSqrt2,
                                         VectorXd                 sigmaSqrtPi,
                                         ScreeningFunction const& fs,
                                         double const             fourPiEps)

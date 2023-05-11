@@ -637,6 +637,7 @@ protected:
     double                     convEnergy;
     double                     convLength;
     double                     convCharge;
+    double                     fourPiEps;
     EwaldSetup                 ewaldSetup;
     settings::Settings         settings;
     SymFnc::ScalingType        scalingType;
