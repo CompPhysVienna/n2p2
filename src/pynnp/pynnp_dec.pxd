@@ -82,7 +82,7 @@ cdef extern from "Log.h" namespace "nnp":
 ###############################################################################
 # Settings
 ###############################################################################
-cdef extern from "Settings.h" namespace "nnp":
+cdef extern from "Settings.h" namespace "nnp::settings":
     #typedef std::multimap<std::string,
     #                      std::pair<std::string, std::size_t> > KeyMap;
     #typedef std::pair<KeyMap::const_iterator,
@@ -226,10 +226,12 @@ cdef extern from "Structure.h" namespace "nnp":
         #void                     remap(Atom& atom);
         void           toNormalizedUnits(double meanEnergy,
                                          double convEnergy,
-                                         double convLength) except +
+                                         double convLength,
+                                         double convCharge) except +
         void           toPhysicalUnits(double meanEnergy,
                                        double convEnergy,
-                                       double convLength) except +
+                                       double convLength,
+                                       double convCharge) except +
         size_t         getMaxNumNeighbors() except +
         #void                     freeAtoms(bool all);
         void           reset() except +

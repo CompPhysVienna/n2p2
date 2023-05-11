@@ -53,10 +53,10 @@ cdef class Structure:
         self.thisptr.calculateNeighborList(cutoffRadius)
     def remap(self):
         self.thisptr.remap()
-    def toNormalizedUnits(self, meanEnergy, convEnergy, convLength):
-        self.thisptr.toNormalizedUnits(meanEnergy, convEnergy, convLength)
-    def toPhysicalUnits(self, meanEnergy, convEnergy, convLength):
-        self.thisptr.toPhysicalUnits(meanEnergy, convEnergy, convLength)
+    def toNormalizedUnits(self, meanEnergy, convEnergy, convLength, convCharge):
+        self.thisptr.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge)
+    def toPhysicalUnits(self, meanEnergy, convEnergy, convLength, convCharge):
+        self.thisptr.toPhysicalUnits(meanEnergy, convEnergy, convLength, convCharge)
     def getMaxNumNeighbors(self):
         return self.thisptr.getMaxNumNeighbors()
     def reset(self):
