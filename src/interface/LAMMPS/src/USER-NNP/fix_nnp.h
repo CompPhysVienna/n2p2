@@ -39,56 +39,59 @@ namespace LAMMPS_NS {
         void setup_pre_force(int);
         virtual void pre_force(int);
 
-        //void setup_pre_force_respa(int, int);
-        //void pre_force_respa(int, int, int);
-
         void min_setup_pre_force(int);
         void min_pre_force(int);
-
-        int matvecs;
-        double qeq_time;
 
     protected:
 
         class PairNNP *nnp; // interface to NNP pair_style
+        class KSpaceNNP *kspacennp; // interface to NNP kspace_style
         class NeighList *list;
         char *pertype_option;
+
+        int nnpflag;
+        int kspaceflag; // 0:Ewald Sum, 1:PPPM
+        int ngroup;
 
         bool periodic; // true if periodic
         double qRef; // total reference charge of the system
         double *Q;
 
         virtual void pertype_parameters(char*);
-        void   isPeriodic(); // true if periodic
-        void calculate_electronegativities();
-        void process_first_network(); // run first NN and calculate atomic electronegativities
-        void allocate_QEq(); // allocate QEq arrays
-        void deallocate_QEq(); // deallocate QEq arrays
-        void map_localids();
+        void isPeriodic(); // check for periodicity
+        void calculate_electronegativities(); // calculates electronegatives via running first set of NNs
+        void process_first_network(); // interfaces to n2p2 and runs first NN
+        void allocate_QEq(); // allocates QEq arrays
+        void deallocate_QEq(); // deallocates QEq arrays
 
-        /// QEq energy minimization via gsl
-        gsl_multimin_function_fdf QEq_minimizer; // find a better name
+        /// QEq energy minimization via gsl library
+
+        gsl_multimin_function_fdf QEq_minimizer; // minimizer object
         const gsl_multimin_fdfminimizer_type *T;
         gsl_multimin_fdfminimizer *s;
+
         double QEq_f(const gsl_vector*); // f : QEq energy as a function of atomic charges
         void QEq_df(const gsl_vector*, gsl_vector*); // df : Gradient of QEq energy with respect to atomic charges
-        void QEq_fdf(const gsl_vector*, double*, gsl_vector*); // fdf
-        static double QEq_f_wrap(const gsl_vector*, void*); // wrapper function of f
-        static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*); // wrapper function of df
-        static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*); // wrapper function of fdf
-        void calculate_QEqCharges(); // QEq minimizer
+        void QEq_fdf(const gsl_vector*, double*, gsl_vector*); // f * df
+
+        static double QEq_f_wrap(const gsl_vector*, void*); // wrapper of f
+        static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*); // wrapper of df
+        static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*); // wrapper of f * df
+
+        void calculate_QEqCharges(); // main function where minimization happens
+
+        void calculate_erfc_terms(); // loops over neighbors of local atoms and calculates erfc terms
+                                     // these consume the most time. Storing them speeds up calculations
 
         /// Global storage
-        double *coords,*xf,*yf,*zf; // global arrays for atom positions
-        double *xbuf; // memory for atom positions
-        int ntotal;
-        int xbufsize;
-
-        void pack_positions(); // pack atom->x into xbuf
-        void gather_positions();
+        int *type_all,*type_loc;
+        double *qall,*qall_loc;
+        double *dEdQ_all,*dEdQ_loc; // gradient of the charge equilibration energy wrt charges
+        double *xx,*xy,*xz; // global positions (here only for nonperiodic case)
+        double *xx_loc,*xy_loc,*xz_loc; // sparse local positions (here only for nonperiodic case)
 
 
-        /// Matrix Approach (DEPRECATED and to be deleted)
+        /* Matrix Approach (DEPRECATED and to be deleted)
         int nevery,nnpflag;
         int n, N, m_fill;
         int n_cap, m_cap;
@@ -112,7 +115,7 @@ namespace LAMMPS_NS {
         virtual double parallel_vector_acc( double*, int );
 
         virtual void vector_sum(double*,double,double*,double,double*,int);
-        virtual void vector_add(double*, double, double*,int);
+        virtual void vector_add(double*, double, double*,int);*/
 
     };
 

@@ -18,7 +18,9 @@
 #define STRUCTURE_H
 
 #include "Atom.h"
+#include "Element.h"
 #include "ElementMap.h"
+#include "Ewald.h"
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
 #include <Eigen/Core>
@@ -164,7 +166,7 @@ struct Structure
      * @param[in] maxCutoffRadius maximal cut-off of symmetry functions.
      */
     double                   getMaxCutoffRadiusOverall(
-                                                        double precision,
+                                                        EwaldSetup& ewaldSetup,
                                                         double rcutScreen,
                                                         double maxCutoffRadius);
     /** Calculate neighbor list for all atoms.
@@ -255,11 +257,12 @@ struct Structure
      * @param[in] fs Screening function.
      */
     double                   calculateElectrostaticEnergy(
-                                            double                   precision,
+                                            EwaldSetup&              ewaldSetup,
                                             Eigen::VectorXd          hardness,
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
-                                            ScreeningFunction const& fs);
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps);
      /** Calculate screening energy which needs to be added (!) to the
      * electrostatic energy in order to remove contributions in the short range
      * domain.
@@ -274,7 +277,8 @@ struct Structure
     double                   calculateScreeningEnergy(  
                                             Eigen::MatrixXd          gammaSqrt2,
                                             Eigen::VectorXd          sigmaSqrtPi,
-                                            ScreeningFunction const& fs);
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps);
      /** Calculates derivative of A-matrix with respect to the atoms positions and
      * contract it with Q. 
      * @param[in] precision Ewald precision parameters.
@@ -284,8 +288,9 @@ struct Structure
      * @param[in] fs Screening function.
      */
     void                     calculateDAdrQ(
-                                        double                   precision, 
-                                        Eigen::MatrixXd          gammaSqrt2);
+                                        EwaldSetup&              ewaldSetup,
+                                        Eigen::MatrixXd          gammaSqrt2,
+                                        double const             fourPiEps);
      /** Calculates partial derivatives of electrostatic Energy with respect
      * to atom's coordinates and charges.
      * @param[in] hardness Vector containing the hardness of all elements.
@@ -300,7 +305,8 @@ struct Structure
                                         Eigen::VectorXd          hardness,
                                         Eigen::MatrixXd          gammaSqrt2,
                                         Eigen::VectorXd          sigmaSqrtPi,
-                                        ScreeningFunction const& fs);
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps);
     /** Translate atom back into box if outside.
      *
      * @param[in,out] atom Atom to be remapped.
@@ -314,7 +320,8 @@ struct Structure
      */
     void                     toNormalizedUnits(double meanEnergy,
                                                double convEnergy,
-                                               double convLength);
+                                               double convLength,
+                                               double convCharge);
     /** Switch to physical units, shift energy and change energy and length unit.
      *
      * @param[in] meanEnergy Mean energy per atom (in old units).

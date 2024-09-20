@@ -251,15 +251,16 @@ void Structure::readFromLines(vector<string> const& lines)
 }
 
 double Structure::getMaxCutoffRadiusOverall(
-                                            double precision, 
+                                            EwaldSetup& ewaldSetup,
                                             double rcutScreen,
                                             double maxCutoffRadius)
 {
     double maxCutoffRadiusOverall = max(rcutScreen, maxCutoffRadius);
     if (isPeriodic)
     {
-        double rcutReal = getRcutReal(box, precision);
-        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, rcutReal);
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        //double rcutReal = getRcutReal(box, precision);
+        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall, ewaldSetup.rCut);
 
     }
     return maxCutoffRadiusOverall;
@@ -504,11 +505,12 @@ void Structure::calculateVolume()
 }
 
 double Structure::calculateElectrostaticEnergy(
-                                            double                   precision,
+                                            EwaldSetup&              ewaldSetup,
                                             VectorXd                 hardness,
                                             MatrixXd                 gammaSqrt2,
                                             VectorXd                 sigmaSqrtPi,
-                                            ScreeningFunction const& fs)
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps)
 {
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
@@ -522,12 +524,13 @@ double Structure::calculateElectrostaticEnergy(
                                             "be sorted for Ewald summation!"
                                             << endl;
 
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        double const rcutReal = ewaldSetup.rCut;
         KspaceGrid grid;
-        double rcutReal = grid.setup(box, precision);
-        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
-        rcutReal = 8.00;
+        grid.setup(box, ewaldSetup);
         fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
         double const sqrt2eta = sqrt(2.0) * grid.eta;
+
 
         for (size_t i = 0; i < numAtoms; ++i)
         {
@@ -540,7 +543,7 @@ double Structure::calculateElectrostaticEnergy(
             // space. At the moment both terms are included to match the results
             // with RuNNer.
             //A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
-            A(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI));
+            A(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI)) / fourPiEps;
             
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
@@ -555,18 +558,15 @@ double Structure::calculateElectrostaticEnergy(
                 if (rij >= rcutReal) break;
                 size_t const ej = aj.element;
                 A(i, j) += (erfc(rij / sqrt2eta)
-                          - erfc(rij / gammaSqrt2(ei, ej))) / rij;
+                          - erfc(rij / gammaSqrt2(ei, ej))) / (rij * fourPiEps);
             }
-
             // reciprocal part
-            //for (size_t j = i + 1; j < numAtoms; ++j)
             for (size_t j = i; j < numAtoms; ++j)
             {
                 Atom const& aj = atoms.at(j);
-                for (auto const& gv : grid.kvectors)
-                {
+                for (auto const& gv : grid.kvectors) {
                     // Multiply by 2 because our grid is only a half-sphere
-                    A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
+                    A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r)) / fourPiEps;
                 }
                 A(j, i) = A(i, j);
             }
@@ -586,7 +586,7 @@ double Structure::calculateElectrostaticEnergy(
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
 
-            A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
+            A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei) / fourPiEps;
             hardnessJ(i) = hardness(ei);
             b(i) = -ai.chi;
             for (size_t j = i + 1; j < numAtoms; ++j)
@@ -595,7 +595,7 @@ double Structure::calculateElectrostaticEnergy(
                 size_t const ej = aj.element;
                 double const rij = (ai.r - aj.r).norm();
 
-                A(i, j) = erf(rij / gammaSqrt2(ei, ej)) / rij;
+                A(i, j) = erf(rij / gammaSqrt2(ei, ej)) / (rij * fourPiEps);
                 A(j, i) = A(i, j);
 
             }
@@ -623,20 +623,19 @@ double Structure::calculateElectrostaticEnergy(
     double const EQeq = 0.5 * Q.head(numAtoms).transpose() * A.topLeftCorner(numAtoms, numAtoms) * Q.head(numAtoms) - Q.head(numAtoms).dot(b.head(numAtoms));
     fprintf(stderr, "EQeq(A) = %24.16E\n", EQeq);
 
-    energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs);
+    energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs, fourPiEps);
 
     {
         MatrixXd D(numAtoms, numAtoms);
         D.setZero();
         VectorXd chi(numAtoms);
-        chi.setZero();
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        double const rcutReal = ewaldSetup.rCut;
         KspaceGrid grid;
-        double rcutReal = grid.setup(box, precision);
-        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
-        rcutReal = 8.00;
-        fprintf(stderr, "CAUTION: rcutReal = %f\n", rcutReal);
+        grid.setup(box, ewaldSetup);
+
+        chi.setZero();
         double const sqrt2eta = sqrt(2.0) * grid.eta;
-        fprintf(stderr, "ETA = %24.16E\n", grid.eta);
 
         for (size_t i = 0; i < numAtoms; ++i)
         {
@@ -650,7 +649,7 @@ double Structure::calculateElectrostaticEnergy(
             // with RuNNer.
             //A(i, i) = hardness(ei) + 1.0 / sigmaSqrtPi(ei);
             D(i, i) += hardness(ei) + 1.0 / sigmaSqrtPi(ei)
-                     - 2 / (sqrt2eta * sqrt(M_PI));
+                     - 2 / (sqrt2eta * sqrt(M_PI)) / fourPiEps;
 
             hardnessJ(i) = hardness(ei);
             chi(i) = ai.chi;
@@ -665,18 +664,12 @@ double Structure::calculateElectrostaticEnergy(
                 if (rij >= rcutReal) break;
                 size_t const ej = aj.element;
                 D(i, j) += (erfc(rij / sqrt2eta)
-                          - erfc(rij / gammaSqrt2(ei, ej))) / rij;
+                          - erfc(rij / gammaSqrt2(ei, ej))) / (rij/fourPiEps);
             }
 
             for (size_t k = 0; k< grid.kvectors.size(); ++k)
             {
-                fprintf(stderr, "H: kcoeff[%zu] = %24.16E %24.16E\n", k, grid.kvectors.at(k).coeff, sqrt(grid.kvectors.at(k).knorm2));
-            }
-            KspaceGrid gridFull;
-            gridFull.setup(box, precision, false);
-            for (size_t k = 0; k< gridFull.kvectors.size(); ++k)
-            {
-                fprintf(stderr, "F: kcoeff[%zu] = %24.16E %24.16E\n", k, gridFull.kvectors.at(k).coeff, sqrt(gridFull.kvectors.at(k).knorm2));
+                //fprintf(stderr, "H: kcoeff[%zu] = %24.16E %24.16E\n", k, grid.kvectors.at(k).coeff, sqrt(grid.kvectors.at(k).knorm2));
             }
             // reciprocal part
             //for (size_t j = i + 1; j < numAtoms; ++j)
@@ -686,7 +679,7 @@ double Structure::calculateElectrostaticEnergy(
                 for (auto const& gv : grid.kvectors)
                 {
                     // Multiply by 2 because our grid is only a half-sphere
-                    D(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
+                    D(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r)) / fourPiEps;
                 }
                 D(j, i) = D(i, j);
             }
@@ -701,7 +694,8 @@ double Structure::calculateElectrostaticEnergy(
 double Structure::calculateScreeningEnergy(
                                         Eigen::MatrixXd          gammaSqrt2,
                                         VectorXd                 sigmaSqrtPi,
-                                        ScreeningFunction const& fs)
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps)
 
 {
     double energyScreen = 0;
@@ -714,7 +708,7 @@ double Structure::calculateScreeningEnergy(
             Atom const& ai = atoms.at(i);
             size_t const ei = ai.element;
             double const Qi = ai.charge;
-            energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei));
+            energyScreen -=  Qi * Qi / (2 * sigmaSqrtPi(ei) * fourPiEps) ;
             for (auto const& aj : ai.neighbors)
             {
                 size_t const j = aj.index;
@@ -725,9 +719,10 @@ double Structure::calculateScreeningEnergy(
                 //TODO: Maybe add charge to neighbor class?
                 double const Qj = atoms.at(j).charge;
                 energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej))
-                                * (fs.f(rij) - 1) / rij;
+                                * (fs.f(rij) - 1) / (rij * fourPiEps);
             }
         }
+
         cout << "screening energy: " << energyScreen << endl;
     }
     else
@@ -755,8 +750,9 @@ double Structure::calculateScreeningEnergy(
 
 
 void Structure::calculateDAdrQ(
-                            double                   precision, 
-                            MatrixXd                 gammaSqrt2)
+                            EwaldSetup&              ewaldSetup,
+                            MatrixXd                 gammaSqrt2,
+                            double const             fourPiEps)
 {
     // TODO: This initialization loop could probably be avoid, maybe use
     // default constructor?
@@ -773,9 +769,11 @@ void Structure::calculateDAdrQ(
         // we cache it for reuse? Note that we can't calculate dAdrQ already in
         // the loops of calculateElectrostaticEnergy because at this point we don't
         // have the charges.
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        double rcutReal = ewaldSetup.rCut;
         KspaceGrid grid;
-        double rcutReal = grid.setup(box, precision);
-        double const sqrt2eta = sqrt(2.0) * grid.eta;
+        grid.setup(box, ewaldSetup);
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.eta;
 
         for (size_t i = 0; i < numAtoms; ++i)
         {
@@ -803,6 +801,7 @@ void Structure::calculateDAdrQ(
                             - erfc(rij/gammaSqrt2(ei,ej))));
                 // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i 
                 // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
+                dAijdri /= fourPiEps;
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
@@ -819,6 +818,7 @@ void Structure::calculateDAdrQ(
                     // Multiply by 2 because our grid is only a half-sphere
                     dAijdri -= 2 * gv.coeff * sin(gv.k * (ai.r - aj.r)) * gv.k;
                 }
+                dAijdri /= fourPiEps;
                 ai.dAdrQ[i] += dAijdri * Qj;
                 aj.dAdrQ[j] -= dAijdri * Qi;
                 ai.dAdrQ[j] += dAijdri * Qi;
@@ -862,7 +862,8 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                         Eigen::VectorXd          hardness,
                                         Eigen::MatrixXd          gammaSqrt2,
                                         VectorXd                 sigmaSqrtPi,
-                                        ScreeningFunction const& fs)
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps)
 {
     double rcutScreen = fs.getOuter();
     for (size_t i = 0; i < numAtoms; ++i)
@@ -877,14 +878,12 @@ void Structure::calculateElectrostaticEnergyDerivatives(
             double const Qj = aj.charge;
             
             ai.pEelecpr += 0.5 * Qj * ai.dAdrQ[j];
-
             // Diagonal terms contain self-interaction --> screened
             if (i != j) ai.dEelecdQ += Qj * A(i,j);
             else if (isPeriodic)
             {
                 // TODO: should this part moved below ?
-                ai.dEelecdQ += Qi * (A(i,i) - hardness(ei)
-                                - 1 / sigmaSqrtPi(ei));
+                ai.dEelecdQ += Qi * (A(i,i) - hardness(ei) - 1 / (sigmaSqrtPi(ei) * fourPiEps));
             }
         }
 
@@ -896,6 +895,7 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                 Atom& aj = atoms.at(j);
                 if (j < i) continue;
                 double const rij = ajN.d;
+
                 if (rij >= rcutScreen) break;
 
                 size_t const ej = aj.element;
@@ -910,11 +910,14 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
                                 * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
                                 * (fsRij - 1) / rij);
-                
+                Tij /= fourPiEps;
+
+                double Sij = erfRij * (fsRij - 1) / rij;
+                Sij /= fourPiEps;
+
                 ai.pEelecpr += Tij;
                 aj.pEelecpr -= Tij;
 
-                double Sij = erfRij * (fsRij - 1) / rij;
                 ai.dEelecdQ += Qj * Sij;
                 aj.dEelecdQ += Qi * Sij;
             }
@@ -938,11 +941,12 @@ void Structure::calculateElectrostaticEnergyDerivatives(
                                 * exp(- pow(rij / gammaSqrt2(ei,ej),2))
                                 * (fsRij - 1) + erfRij * fs.df(rij) - erfRij  
                                 * (fsRij - 1) / rij);
-                
+                Tij /= fourPiEps;
                 ai.pEelecpr += Tij;
                 aj.pEelecpr -= Tij;
 
                 double Sij = erfRij * (fsRij - 1) / rij;
+                Sij /= fourPiEps;
                 ai.dEelecdQ += Qj * Sij;
                 aj.dEelecdQ += Qi * Sij;
             }
@@ -979,7 +983,8 @@ void Structure::remap(Atom& atom)
 
 void Structure::toNormalizedUnits(double meanEnergy,
                                   double convEnergy,
-                                  double convLength)
+                                  double convLength,
+                                  double convCharge)
 {
     if (isPeriodic)
     {
@@ -993,11 +998,13 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
     energyRef = (energyRef - numAtoms * meanEnergy) * convEnergy;
     energy = (energy - numAtoms * meanEnergy) * convEnergy;
+    chargeRef *= convCharge;
+    charge *= convCharge;
     volume *= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toNormalizedUnits(convEnergy, convLength);
+        it->toNormalizedUnits(convEnergy, convLength, convCharge);
     }
 
     return;

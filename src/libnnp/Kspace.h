@@ -18,11 +18,19 @@
 #define KSPACE_H
 
 #include "Vec3D.h"
+#include "Ewald.h"
 #include <vector> // std::vector
 
 namespace nnp
 {
-
+enum class KSPACESolver {
+    /// Solver 0: Ewald summation.
+    EWALD_SUM,
+    /// Solver 1: PPPM.
+    PPPM,
+    /// Solver 2: Ewald summation in LAMMPS.
+    EWALD_SUM_LAMMPS
+};
 class Kvector
 {
 public:
@@ -42,12 +50,14 @@ public:
 class KspaceGrid
 {
 public:
+    /// Method for calculating the reciprocal part.
+    KSPACESolver kspaceSolver;
     /// Ewald summation eta parameter.
     double               eta;
     /// Cutoff in reciprocal space.
-    double               rcut;
+    double               kCut;
     /// Cutoff in real space.
-    double               rcutReal;
+    double               rCut;
     /// Volume of real box.
     double               volume;
     /// Ewald sum prefactor @f$\frac{2\pi}{V}@f$.
@@ -72,10 +82,7 @@ public:
      *
      * @return Real space cutoff radius.
      */
-    double setup(Vec3D       box[3],
-                 double      precision,
-                 bool        halfSphere = true,
-                 std::size_t numAtoms = 0);
+    void setup(Vec3D       box[3], EwaldSetup& ewaldSetup);
 
 private:
     /** Compute box copies in each direction.
@@ -96,7 +103,7 @@ private:
      *
      * @return Real space cutoff radius.
      */
-    double getRcutReal(Vec3D box[3], double precision, size_t numAtoms = 0);
+    //double getRcutReal(Vec3D box[3], double precision, size_t numAtoms = 0);
 }
 
 #endif

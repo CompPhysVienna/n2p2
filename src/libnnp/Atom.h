@@ -192,7 +192,8 @@ struct Atom
      * @param[in] convLength Multiplicative length unit conversion factor.
      */
     void                     toNormalizedUnits(double convEnergy,
-                                               double convLength);
+                                               double convLength,
+                                               double convCharge);
     /** Switch to physical length and energy units.
      *
      * @param[in] convEnergy Multiplicative energy unit conversion factor.

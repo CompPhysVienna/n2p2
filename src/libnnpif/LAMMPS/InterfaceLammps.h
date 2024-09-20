@@ -22,6 +22,7 @@
 #include <map>     // std::map
 #include <cstddef> // std::size_t
 #include <string>  // std::string
+#include <vector>  // std::vector
 
 namespace nnp
 {
@@ -106,11 +107,23 @@ public:
      * @attention These atomic contributions are not physical!
      */
     double getAtomicEnergy(int index) const;
+    /** Adds electrostatic energy contribution to the total structure energy
+     *
+     * @param[in] electrostatic energy (calculated in LAMMPS).
+     *
+     */
+    void addElectrostaticEnergy(double energy);
     /** Calculate forces and add to LAMMPS atomic force arrays.
      *
      * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
      */
     void   getForces(double* const* const& atomF) const;
+    /** Calculate chi-term for forces and add to LAMMPS atomic force arrays.
+     *
+     * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
+     */
+    void   getForcesChi(double const* const&  lambda,
+                        double* const* const& atomF) const;
     /** Check if this interface is correctly initialized.
      *
      * @return `True` if initialized, `False` otherwise.
@@ -121,6 +134,11 @@ public:
      * @return Largest cutoff of all symmetry functions.
      */
     double getMaxCutoffRadius() const;
+    /** Get Ewald precision parameter
+     *
+     * @return Ewald precision parameter.
+     */
+    double getEwaldPrec() const;
     /** Calculate buffer size for extrapolation warning communication.
      *
      * @return Buffer size.
@@ -169,10 +187,12 @@ public:
     void getScreeningInfo(double* const& rScreen) const;
     /** Transfer spatial derivatives of atomic electronegativities
      *
-     * @param ai
-     * @param dChidxyz
+     * @param[in] tag Atom of interest
+     * @param dChidx
+     * @param dChidy
+     * @param dChidz
      */
-    void   getdChidxyz(int ai, double* const* const& dChidxyz) const;
+    void   getdChidxyz(int tag, double* const& dChidx, double* const& dChidy, double* const& dChidz) const;
     /** Set isElecDone true after running the first NN in 4G-HDNNPs
      */
     void   setElecDone();

@@ -17,6 +17,7 @@
 #include "Prediction.h"
 #include "Stopwatch.h"
 #include <fstream>   // std::ifstream
+#include <iostream>
 #include <map>       // std::map
 #include <stdexcept> // std::runtime_error
 #include "utility.h"
@@ -56,7 +57,7 @@ void Prediction::readStructureFromFile(string const& fileName)
     removeEnergyOffset(structure);
     if (normalize)
     {
-        structure.toNormalizedUnits(meanEnergy, convEnergy, convLength);
+        structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
     }
     file.close();
 
@@ -71,19 +72,18 @@ void Prediction::predict()
     if (nnpType == NNPType::HDNNP_4G)
     {
         maxCutoffRadiusOverall = structure.getMaxCutoffRadiusOverall(
-                                                ewaldPrecision,
+                                                ewaldSetup,
                                                 screeningFunction.getOuter(),
                                                 maxCutoffRadius);
-    }
-    //maxCutoffRadiusOverall = 8.01; // fixing cutoff for testing at the moment
-    // TODO: For the moment sort neighbors only for 4G-HDNNPs (breaks some
+    }	
+    // TODO: For the moment sort neighbors only for 4G-HDNNPs
     // CI tests because of small numeric changes).
     Stopwatch sw;
     sw.start();
     structure.calculateNeighborList(maxCutoffRadiusOverall,
-                                    nnpType == NNPType::HDNNP_4G);
-    sw.stop();
-
+                                    nnpType == NNPType::HDNNP_4G); 
+     sw.stop();
+     // fixing cutoff for testing at the moment
 #ifdef NNP_NO_SF_GROUPS
     calculateSymmetryFunctions(structure, true);
 #else

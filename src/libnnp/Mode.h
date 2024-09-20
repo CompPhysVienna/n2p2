@@ -19,6 +19,8 @@
 
 #include "CutoffFunction.h"
 #include "Element.h"
+#include "Ewald.h"
+#include "Kspace.h"
 #include "ElementMap.h"
 #include "Log.h"
 #include "ScreeningFunction.h"
@@ -474,12 +476,36 @@ public:
      * @return Length unit conversion factor.
      */
     double                   getConvLength() const;
-    /** Getter for Mode::ewaldPrecision.
+    /** Getter for Mode::ewaldSetup.precision.
      *
      * @return Ewald precision in 4G-HDNNPs.
      *
      */
     double                   getEwaldPrecision() const;
+    /** Getter for Mode::ewaldSetup.maxCharge.
+     *
+     * @return Ewald max charge if specified in 4G-HDNNPs.
+     *
+     */
+    double                   getEwaldMaxCharge() const;
+    /** Getter for Mode::ewaldSetup.maxQsigma.
+     *
+     * @return Ewald max sigma parameter in 4G-HDNNPs.
+     *
+     */
+    double                   getEwaldMaxSigma() const;
+    /** Getter for Mode::ewaldSetup.truncMethod.
+     *
+     * @return Ewald truncation method in 4G-HDNNPs.
+     *
+     */
+    EWALDTruncMethod         getEwaldTruncationMethod() const;
+    /** Getter for Mode::kspaceSolver.
+     *
+     * @return K-space solver to be used in 4G-HDNNPs.
+     *
+     */
+    KSPACESolver         kspaceSolver() const;
     /** Getter for Mode::maxCutoffRadius.
      *
      * @return Maximum cutoff radius of all symmetry functions.
@@ -494,6 +520,11 @@ public:
      * The number of elements is determined by setupElements().
      */
     std::size_t              getNumElements() const;
+    /** Getter for Mode::screeningFunction.
+     *
+     * @return Copy of screening function instance.
+     */
+    ScreeningFunction        getScreeningFunction() const;
     /** Get number of symmetry functions per element.
      *
      * @return Vector with number of symmetry functions for each element.
@@ -606,7 +637,9 @@ protected:
     double                     meanEnergy;
     double                     convEnergy;
     double                     convLength;
-    double                     ewaldPrecision;
+    double                     convCharge;
+    EwaldSetup                 ewaldSetup;
+    KspaceGrid                 kspaceGrid;
     Settings                   settings;
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
@@ -655,12 +688,37 @@ inline double Mode::getMaxCutoffRadius() const
 
 inline double Mode::getEwaldPrecision() const
 {
-    return ewaldPrecision;
+    return ewaldSetup.precision;
+}
+
+inline double Mode::getEwaldMaxCharge() const
+{
+    return ewaldSetup.maxCharge;
+}
+
+inline double Mode::getEwaldMaxSigma() const
+{
+    return ewaldSetup.maxQsigma;
+}
+
+inline EWALDTruncMethod Mode::getEwaldTruncationMethod() const
+{
+    return ewaldSetup.truncMethod;
+}
+
+inline KSPACESolver Mode::kspaceSolver() const
+{
+    return kspaceGrid.kspaceSolver;
 }
 
 inline std::size_t Mode::getNumElements() const
 {
     return numElements;
+}
+
+inline ScreeningFunction Mode::getScreeningFunction() const
+{
+    return screeningFunction;
 }
 
 inline bool Mode::useNormalization() const

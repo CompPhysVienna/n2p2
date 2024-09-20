@@ -46,7 +46,9 @@ Mode::Mode() : nnpType                   (NNPType::HDNNP_2G),
                meanEnergy                (0.0              ),
                convEnergy                (1.0              ),
                convLength                (1.0              ),
-               ewaldPrecision            (0.0              )
+               convCharge                (1.0              ),
+               ewaldSetup                {},
+               kspaceGrid                {}
 {
 }
 
@@ -206,6 +208,12 @@ void Mode::setupNormalization()
         log << strpr("Mean energy per atom     : %24.16E\n", meanEnergy);
         log << strpr("Conversion factor energy : %24.16E\n", convEnergy);
         log << strpr("Conversion factor length : %24.16E\n", convLength);
+        //if (settings.keywordExists("conv_charge"))
+        //{
+        //    convCharge = atof(settings["conv_charge"].c_str());
+        //    log << strpr("Conversion factor charge : %24.16E\n",
+        //                 convCharge);
+        //}
         if (settings.keywordExists("atom_energy"))
         {
             log << "\n";
@@ -356,6 +364,90 @@ void Mode::setupElectrostatics(bool   initialHardness,
     log << "\n";
 
     // Gaussian width of charges.
+    double maxQsigma = 0.0;
+    Settings::KeyRange r = settings.getValues("fixed_gausswidth");
+    for (Settings::KeyMap::const_iterator it = r.first;
+         it != r.second; ++it) {
+        vector <string> args = split(reduce(it->second.first));
+        size_t element = elementMap[args.at(0)];
+        double qsigma = atof(args.at(1).c_str());
+        if (normalize) qsigma *= convLength;
+        elements.at(element).setQsigma(qsigma);
+
+        maxQsigma = max(qsigma, maxQsigma);
+    }
+    log << "Gaussian width of charge distribution per element:\n";
+    for (size_t i = 0; i < elementMap.size(); ++i)
+    {
+        double qsigma = elements.at(i).getQsigma();
+        if (normalize) qsigma /= convLength;
+        log << strpr("Element %2zu: %16.8E\n",
+                     i, qsigma);
+    }
+    log << "\n";
+
+    // K-Space Solver
+    if (settings.keywordExists("kspace_solver"))
+    {
+        string kspace_solver_string =
+                settings["kspace_solver"];
+        if (kspace_solver_string == "ewald")
+            kspaceGrid.kspaceSolver =
+                    KSPACESolver::EWALD_SUM;
+        else if (kspace_solver_string == "pppm")
+            kspaceGrid.kspaceSolver =
+                    KSPACESolver::PPPM;
+        else if (kspace_solver_string == "ewald_lammps")
+            kspaceGrid.kspaceSolver =
+                    KSPACESolver::EWALD_SUM_LAMMPS;
+    }
+    else
+        kspaceGrid.kspaceSolver =
+                KSPACESolver::EWALD_SUM;
+
+
+    // Ewald truncation error method.
+    if (settings.keywordExists("ewald_truncation_error_method"))
+    {
+        string truncation_method_string =
+                settings["ewald_truncation_error_method"];
+        if (truncation_method_string == "0")
+            ewaldSetup.truncMethod =
+                    EWALDTruncMethod::JACKSON_CATLOW;
+        else if (truncation_method_string == "1")
+            ewaldSetup.truncMethod =
+                    EWALDTruncMethod::KOLAFA_PERRAM;
+    }
+    else
+        ewaldSetup.truncMethod =
+                EWALDTruncMethod::JACKSON_CATLOW;
+
+    // Ewald precision.
+    if (settings.keywordExists("ewald_prec"))
+    {
+        vector<string> args = split(settings["ewald_prec"]);
+        ewaldSetup.readFromArgs(args, 1 / convCharge);
+        ewaldSetup.setMaxQSigma(maxQsigma);
+        if (normalize)
+            ewaldSetup.toNormalizedUnits(convEnergy, convLength, convCharge);
+    }
+    else if (ewaldSetup.truncMethod ==
+             EWALDTruncMethod::KOLAFA_PERRAM)
+    {
+        throw runtime_error("ERROR: ewald_truncation_error_method 1 requires "
+                            "ewald_prec.");
+    }
+    log << strpr("Ewald truncation error method: %16d\n",
+                 ewaldSetup.truncMethod);
+    log << strpr("Ewald precision: %16.8E\n", ewaldSetup.precision);
+    if (ewaldSetup.truncMethod ==
+        EWALDTruncMethod::KOLAFA_PERRAM)
+        log << strpr("Ewald expected maximum charge: %16.8E\n",
+                     ewaldSetup.maxCharge);
+    log << "\n";
+
+    /*
+    // Gaussian width of charges.
     Settings::KeyRange r = settings.getValues("fixed_gausswidth");
     for (Settings::KeyMap::const_iterator it = r.first;
          it != r.second; ++it)
@@ -379,7 +471,7 @@ void Mode::setupElectrostatics(bool   initialHardness,
     }
     else ewaldPrecision = 1.0E-6;
     log << strpr("Ewald precision: %16.8E\n", ewaldPrecision);
-    log << "\n";
+    log << "\n";*/
 
     // Screening function.
     if (settings.keywordExists("screen_electrostatics"))
@@ -1627,6 +1719,15 @@ void Mode::chargeEquilibration(Structure& structure)
     VectorXd hardness(numElements);
     MatrixXd gammaSqrt2(numElements, numElements);
     VectorXd sigmaSqrtPi(numElements);
+    // In case of natural units and no normalization
+    double fourPiEps = 1;
+    // In case of natural units but with normalization. Other units currently
+    // not supported.
+    if (normalize)
+        fourPiEps = pow(convCharge, 2) / (convLength * convEnergy);
+
+    fourPiEps = 1;
+
     for (size_t i = 0; i < numElements; ++i)
     {
         hardness(i) = elements.at(i).getHardness();
@@ -1638,22 +1739,23 @@ void Mode::chargeEquilibration(Structure& structure)
             gammaSqrt2(i, j) = sqrt(2.0 * (iSigma * iSigma + jSigma * jSigma));
         }
     }
-
-    double const error = s.calculateElectrostaticEnergy(ewaldPrecision,
+    double const error = s.calculateElectrostaticEnergy(ewaldSetup,
 		                                        hardness,
 		                                        gammaSqrt2,
                                                 sigmaSqrtPi,
-                                                screeningFunction);
+                                                screeningFunction,
+                                                fourPiEps);
 
     log << strpr("Solve relative error: %16.8E\n", error);
 
     // TODO: leave these 2 functions here or shift it to e.g. forces? Needs to be
     // executed after calculateElectrostaticEnergy.
-    s.calculateDAdrQ(ewaldPrecision, gammaSqrt2);
+    s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps);
     s.calculateElectrostaticEnergyDerivatives(hardness,
                                             gammaSqrt2,
                                             sigmaSqrtPi,
-                                            screeningFunction);
+                                            screeningFunction,
+                                            fourPiEps);
 
     for (auto const& a : structure.atoms)
     {
@@ -1778,7 +1880,6 @@ void Mode::calculateForces(Structure& structure) const
                 }
             }
         }
-        //std::cout << "Short : " << ai->f[0] << '\t' << ai->f[1] << '\t' << ai->f[2] << '\n';
     }
 
     if (nnpType == NNPType::HDNNP_4G) {
@@ -1836,7 +1937,6 @@ void Mode::calculateForces(Structure& structure) const
                 ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
                 ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
             }
-            //std::cout << "Total : " << ai.f[0] << '\t' << ai.f[1] << '\t' << ai.f[2] << '\n';
         }
     }
     return;
@@ -1953,7 +2053,7 @@ double Mode::physicalEnergy(Structure const& structure, bool ref) const
 
 void Mode::convertToNormalizedUnits(Structure& structure) const
 {
-    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength);
+    structure.toNormalizedUnits(meanEnergy, convEnergy, convLength, convCharge);
 
     return;
 }

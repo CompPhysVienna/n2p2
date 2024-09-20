@@ -18,6 +18,7 @@
 #include <cmath>
 #include <cstring>
 #include "pair_nnp.h"
+#include "kspace_nnp.h"
 #include "atom.h"
 #include "comm.h"
 #include "domain.h" // check for periodicity
@@ -49,38 +50,31 @@ using namespace nnp;
 
 FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
         Fix(lmp, narg, arg),
-        matvecs       (0      ),
-        qeq_time      (0.0    ),
         nnp           (nullptr),
+        kspacennp     (nullptr),
         list          (nullptr),
         pertype_option(nullptr),
+        nnpflag       (0      ),
+        kspaceflag    (0      ),
+        ngroup        (0      ),
         periodic      (false  ),
         qRef          (0.0    ),
         Q             (nullptr),
-        coords        (nullptr),
-        xf            (nullptr),
-        yf            (nullptr),
-        zf            (nullptr),
-        xbuf          (nullptr),
-        ntotal        (0      ),
-        xbufsize      (0      ),
-        nevery        (0      ),
-        nnpflag       (0      ),
-        n             (0      ),
-        N             (0      ),
-        m_fill        (0      ),
-        n_cap         (0      ),
-        m_cap         (0      ),
-        pack_flag     (0      ),
-        ngroup        (0      ),
-        nprev         (0      ),
-        Q_hist        (nullptr),
-        p             (nullptr),
-        q             (nullptr),
-        r             (nullptr),
-        d             (nullptr)
+        type_all      (nullptr),
+        type_loc      (nullptr),
+        qall          (nullptr),
+        qall_loc      (nullptr),
+        dEdQ_all      (nullptr),
+        dEdQ_loc      (nullptr),
+        xx            (nullptr),
+        xy            (nullptr),
+        xz            (nullptr),
+        xx_loc        (nullptr),
+        xy_loc        (nullptr),
+        xz_loc        (nullptr)
+
 {
-    if (narg<9 || narg>10) error->all(FLERR,"Illegal fix nnp command");
+    if (narg<9 || narg>11) error->all(FLERR,"Illegal fix nnp command");
 
     nevery = utils::inumeric(FLERR,arg[3],false,lmp);
     if (nevery <= 0) error->all(FLERR,"Illegal fix nnp command");
@@ -90,7 +84,10 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     strcpy(pertype_option,arg[8]);
 
     nnp = nullptr;
+    kspacennp = nullptr;
     nnp = (PairNNP *) force->pair_match("^nnp",0);
+    kspacennp = (KSpaceNNP *) force->kspace_match("^nnp",0);
+
     nnp->chi = nullptr;
     nnp->hardness = nullptr;
     nnp->sigmaSqrtPi = nullptr;
@@ -103,37 +100,21 @@ FixNNP::FixNNP(LAMMPS *lmp, int narg, char **arg) :
     nnp->min_tol = utils::numeric(FLERR,arg[5],false,lmp); //tolerance
     nnp->step = utils::numeric(FLERR,arg[6],false,lmp); //initial nnp->step size
     nnp->maxit = utils::inumeric(FLERR,arg[7],false,lmp); //maximum number of iterations
-
+    nnp->minim_init_style = utils::inumeric(FLERR,arg[10],false,lmp); //initialization style
 
     // TODO: check these initializations and allocations
-    coords = xf = yf = zf = nullptr;
-    xbuf = nullptr;
     int natoms = atom->natoms;
-    int nloc = atom->nlocal;
-    xbufsize = 3*natoms;
-    memory->create(coords,3*natoms,"fix_nnp:coords");
-    memory->create(xbuf,xbufsize,"fix_nnp:buf");
-    xf = &coords[0*natoms];
-    yf = &coords[1*natoms];
-    zf = &coords[2*natoms];
-    ntotal = 0;
 
-    /*
-     *
-     * n = n_cap = 0;
-    N = 0;
-    m_fill = m_cap = 0;
-    pack_flag = 0;
-    Q = NULL;
-    nprev = 4;
-    comm_forward = comm_reverse = 1;
-    Q_hist = NULL;
-    grow_arrays(atom->nmax);
-    atom->add_callback(0);
-    for (int i = 0; i < atom->nmax; i++)
-        for (int j = 0; j < nprev; ++j)
-            Q_hist[i][j] = 0;
-    */
+    // TODO: these are not necessary in case of periodic systems
+    memory->create(xx,atom->natoms,"fix_nnp:xx");
+    memory->create(xy,atom->natoms,"fix_nnp:xy");
+    memory->create(xz,atom->natoms,"fix_nnp:xz");
+    memory->create(xx_loc,atom->natoms,"fix_nnp:xx_loc");
+    memory->create(xy_loc,atom->natoms,"fix_nnp:xy_loc");
+    memory->create(xz_loc,atom->natoms,"fix_nnp:xz_loc");
+    memory->create(type_loc,atom->natoms,"fix_nnp:type_loc");
+    memory->create(type_all,atom->natoms,"fix_nnp:type_all");
+    
 }
 
 /* ---------------------------------------------------------------------- */
@@ -143,21 +124,26 @@ FixNNP::~FixNNP()
     if (copymode) return;
 
     delete[] pertype_option;
-
-    // unregister callbacks to this fix from Atom class
-    atom->delete_callback(id,0);
-
-    //memory->destroy(Q_hist);
+    
     memory->destroy(nnp->chi);
     memory->destroy(nnp->hardness);
     memory->destroy(nnp->sigmaSqrtPi);
     memory->destroy(nnp->gammaSqrt2);
 
-    memory->destroy(xbuf);
-    memory->destroy(coords);
-    memory->destroy(xf);
-    memory->destroy(yf);
-    memory->destroy(zf);
+    memory->destroy(qall);
+    memory->destroy(qall_loc);
+    memory->destroy(dEdQ_loc);
+    memory->destroy(dEdQ_all);
+    
+    memory->destroy(xx);
+    memory->destroy(xy);
+    memory->destroy(xz);
+    memory->destroy(xx_loc);
+    memory->destroy(xy_loc);
+    memory->destroy(xz_loc);
+    memory->destroy(type_loc);
+    memory->destroy(type_all);
+    
 }
 
 void FixNNP::post_constructor()
@@ -193,13 +179,14 @@ void FixNNP::init()
     neighbor->requests[irequest]->ghost = 1;
 
     isPeriodic();
+
     // TODO : do we really need a full NL in periodic cases ?
     if (periodic) { // periodic : full neighborlist
         neighbor->requests[irequest]->half = 0;
         neighbor->requests[irequest]->full = 1;
-        nnp->ewaldPrecision = nnp->interface.getEwaldPrecision(); // read precision from n2p2
     }
 
+    allocate_QEq();
 }
 
 void FixNNP::pertype_parameters(char *arg)
@@ -220,20 +207,40 @@ void FixNNP::allocate_QEq()
     memory->create(nnp->sigmaSqrtPi,ne,"qeq:nnp->sigmaSqrtPi");
     memory->create(nnp->gammaSqrt2,ne,ne,"qeq:nnp->gammaSqrt2");
     memory->create(nnp->screening_info,4,"qeq:screening");
-
-    // TODO: check, these communications are from original LAMMPS code
-    /*MPI_Bcast(&nnp->chi[1],nloc,MPI_DOUBLE,0,world);
-    MPI_Bcast(&nnp->hardness[1],nloc,MPI_DOUBLE,0,world);
-    MPI_Bcast(&nnp->sigma[1],nloc,MPI_DOUBLE,0,world);*/
+    memory->create(qall,atom->natoms,"qeq:qall");
+    memory->create(qall_loc,atom->natoms,"qeq:qall_loc");
+    memory->create(dEdQ_loc,atom->natoms,"qeq:dEdQ_loc");
+    memory->create(dEdQ_all,atom->natoms,"qeq:dEdQ_all");
+    
+    // Initialization
+    for (int i =0; i < atom->natoms; i++){
+        nnp->chi[i] = 0.0;
+    }
+    for (int i = 0; i < ne; i++){
+	nnp->hardness[i] = 0.0;
+	nnp->sigmaSqrtPi[i] = 0.0;
+	for (int j = 0; j < ne; j++){
+		nnp->gammaSqrt2[i][j] = 0.0;
+	}
+    }
+    for (int i = 0; i < 4; i++){
+	    nnp->screening_info[i] = 0.0;
+    }
 }
 
 // Deallocate QEq arrays
 void FixNNP::deallocate_QEq() {
+
     memory->destroy(nnp->chi);
     memory->destroy(nnp->hardness);
     memory->destroy(nnp->sigmaSqrtPi);
     memory->destroy(nnp->gammaSqrt2);
     memory->destroy(nnp->screening_info);
+    memory->destroy(qall);
+    memory->destroy(qall_loc);
+    memory->destroy(dEdQ_loc);
+    memory->destroy(dEdQ_all);
+
 }
 
 void FixNNP::init_list(int /*id*/, NeighList *ptr)
@@ -244,6 +251,50 @@ void FixNNP::init_list(int /*id*/, NeighList *ptr)
 void FixNNP::setup_pre_force(int vflag)
 {
     pre_force(vflag);
+}
+
+void FixNNP::min_setup_pre_force(int vflag)
+{
+    setup_pre_force(vflag);
+}
+
+void FixNNP::min_pre_force(int vflag)
+{
+    pre_force(vflag);
+}
+
+// Main calculation routine, runs before pair->compute at each timennp->step
+void FixNNP::pre_force(int /*vflag*/) {
+
+    double *q = atom->q;
+    double Qtot_loc = 0.0;
+    int n = atom->nlocal;
+    int j,jmap;
+
+    //deallocate_QEq();
+    //allocate_QEq();
+    
+    if(periodic) {
+        //force->kspace->setup();
+	kspacennp->ewald_sfexp();
+    }
+    
+    // Calculate atomic electronegativities \Chi_i
+    calculate_electronegativities();
+    
+    // Calculate the current total charge
+    for (int i = 0; i < n; i++) {
+        //std::cout << q[i] << '\n';
+        Qtot_loc += q[i];
+    }
+    MPI_Allreduce(&Qtot_loc,&qRef,1,MPI_DOUBLE,MPI_SUM,world);
+
+    //TODO
+    calculate_erfc_terms();
+
+    // Minimize QEq energy and calculate atomic charges
+    calculate_QEqCharges();
+
 }
 
 void FixNNP::calculate_electronegativities()
@@ -277,103 +328,55 @@ void FixNNP::process_first_network()
     }
 }
 
-void FixNNP::min_setup_pre_force(int vflag)
+// This routine is called once. Complementary error function terms are calculated and stored
+void FixNNP::calculate_erfc_terms()
 {
-    setup_pre_force(vflag);
-}
+    int i,j,jmap;
+    int nlocal = atom->nlocal;
+    int *tag = atom->tag;
+    int *type = atom->type;
 
-void FixNNP::min_pre_force(int vflag)
-{
-    pre_force(vflag);
-}
+    double **x = atom->x;
+    double eta;
 
-// Main calculation routine, runs before pair->compute at each timennp->step
-void FixNNP::pre_force(int /*vflag*/) {
-
-    double *q = atom->q;
-
-    deallocate_QEq();
-    allocate_QEq();
-
-    if(periodic) nnp->kspace_setup();
-
-    // Calculate atomic electronegativities \Chi_i
-    calculate_electronegativities();
-
-    // Calculate the current total charge
-    // TODO: communication
-    double Qtot = 0.0;
-    int n = atom->nlocal;
-    for (int i = 0; i < n; i++) {
-        Qtot += q[i];
-    }
-    // TODO: qRef was just set before in calculate_electronegativities() to
-    // structure.chargeRef, why is it reset here already?
-    qRef = Qtot;
-
-    auto start = high_resolution_clock::now();
-    // Minimize QEq energy and calculate atomic charges
-    calculate_QEqCharges();
-
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "CalculateQeqCharges : " << duration.count() << '\n';
-
-    /*Qtot = 0.0;
-    for (int i=0; i < atom->nlocal; i++)
+    int maxnumneigh = 0;
+    // TODO is this already available in LAMMPS ?
+    for (int i = 0; i < nlocal; i++)
     {
-        std::cout << atom->q[i] << '\n';
-        Qtot += atom->q[i];
+      int nneigh = list->numneigh[i];
+      if (nneigh > maxnumneigh) maxnumneigh = nneigh;
     }
-    std::cout << "Total charge : " << Qtot << '\n'; //TODO: remove, for debugging
-    */
+    
+    //maxnumneigh = 100000;
+    // allocate and initialize
+    memory->create(nnp->erfc_val,nlocal+1,maxnumneigh+1,"fix_nnp:erfc_val");
 
-    /*gather_positions(); // parallelization based on dump_dcd.cpp
+    for (int i = 0; i < nlocal; i++){
+        for (int j = 0; j < maxnumneigh; j++)		
+            nnp->erfc_val[i][j] = 0.0;
+    }
 
-    if (comm->me != 0)
+    if (periodic)
     {
-        for (int i = 0; i < 12; i++)
+        eta = 1 / kspacennp->g_ewald; // LAMMPS truncation
+        double sqrt2eta = (sqrt(2.0) * eta);
+        for (i = 0; i < nlocal; i++)
         {
-            std::cout << xf[i] << '\t' << yf[i] << '\t' << zf[i] <<  '\n';
-        }
-        for (int i = 0; i < 36; i++)
-        {
-            //std::cout << xbuf[i] << '\n';
+            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
+                j = list->firstneigh[i][jj];
+                j &= NEIGHMASK;
+                jmap = atom->map(tag[j]);
+                double const dx = x[i][0] - x[j][0];
+                double const dy = x[i][1] - x[j][1];
+                double const dz = x[i][2] - x[j][2];
+                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
+                nnp->erfc_val[i][jj] = (erfc(rij/sqrt2eta) - erfc(rij/nnp->gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
+            }
         }
     }
-
-    exit(0);
-
-
-    for (int i = 0; i < n; i++) {
-        std::cout << atom->q[i] << '\n';
-    }
-    exit(0);*/
-
-    /*double t_start, t_end;
-
-    if (update->ntimennp->step % nevery) return;
-    if (comm->me == 0) t_start = MPI_Wtime();
-
-    n = atom->nlocal;
-    N = atom->nlocal + atom->nghost;
-
-    // grow arrays if necessary
-    // need to be atom->nmax in length
-
-    if (atom->nmax > nmax) reallocate_storage();
-    if (n > n_cap * DANGER_ZONE || m_fill > m_cap * DANGER_ZONE)
-        //reallocate_matrix();
-        */
-    /*if (comm->me == 0) {
-        t_end = MPI_Wtime();
-        qeq_time = t_end - t_start;
-    }*/
 }
-
 
 // QEq energy function, $E_{QEq}$
-// TODO: communication
 double FixNNP::QEq_f(const gsl_vector *v)
 {
     int i,j,jmap;
@@ -390,101 +393,106 @@ double FixNNP::QEq_f(const gsl_vector *v)
     double E_real,E_recip,E_self; // for periodic examples
     double iiterm,ijterm;
 
+    double eta;
 
-    // TODO: indices & electrostatic energy
+    if(periodic) eta = 1 / kspacennp->g_ewald; // LAMMPS truncation
+
     E_qeq = 0.0;
+    E_qeq_loc = 0.0;
     E_scr = 0.0;
+    E_scr_loc = 0.0;
     nnp->E_elec = 0.0;
+
     if (periodic)
     {
-        //TODO: add an i-j loop, j over neighbors (realcutoff)
-        double sqrt2eta = (sqrt(2.0) * nnp->ewaldEta);
-        double c1 = 0; // counter for real-space operations
+        double sqrt2eta = (sqrt(2.0) * eta);
         E_recip = 0.0;
         E_real = 0.0;
         E_self = 0.0;
-        //fprintf(stderr, "ETA = %24.16E\n", nnp->ewaldEta);
         for (i = 0; i < nlocal; i++) // over local atoms
         {
-            double const qi = gsl_vector_get(v, i);
+            double const qi = gsl_vector_get(v, tag[i]-1);
             double qi2 = qi * qi;
             // Self term
-            E_self += qi2 * (1 / (2.0 * nnp->sigmaSqrtPi[type[i]-1])
-                    - 1 / (sqrt(2.0 * M_PI) * nnp->ewaldEta));
-            //fprintf(stderr, "q(%3d) = %24.16E, J = %24.16E\n", i, qi, nnp->hardness[type[i]-1]);
-            E_qeq += nnp->chi[i] * qi
-                  + 0.5 * nnp->hardness[type[i]-1] * qi2;
-            E_scr -= qi2 / (2.0 * nnp->sigmaSqrtPi[type[i]-1]); // self screening term
+            E_self += qi2 * (1 / (2.0 * nnp->sigmaSqrtPi[type[i]-1]) - 1 / (sqrt(2.0 * M_PI) * eta));
+            E_qeq_loc += nnp->chi[i] * qi + 0.5 * nnp->hardness[type[i]-1] * qi2;
+            E_scr -= qi2 / (2.0 * nnp->sigmaSqrtPi[type[i]-1]); // self screening term TODO:parallel ?
             // Real Term
-            // TODO: we loop over the full neighbor list, this can be optimized
+            // TODO: we loop over the full neighbor list, could this be optimized ?
             for (int jj = 0; jj < list->numneigh[i]; ++jj) {
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
-                jmap = atom->map(tag[j]); //TODO: check
-                double const qj = gsl_vector_get(v, jmap);
+                jmap = atom->map(tag[j]);
+                double const qj = gsl_vector_get(v, tag[j]-1); // mapping based on tags
                 double const dx = x[i][0] - x[j][0];
                 double const dy = x[i][1] - x[j][1];
                 double const dz = x[i][2] - x[j][2];
                 double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
-                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
-                double real = 0.5 * qi * qj * erfcRij;
+                //double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
+                //double real = 0.5 * qi * qj * erfcRij;
+                double real = 0.5 * qi * qj * nnp->erfc_val[i][jj];
                 E_real += real;
                 if (rij <= nnp->screening_info[2]) {
-                    E_scr += 0.5 * qi * qj * erf(rij/nnp->gammaSqrt2[type[i]-1][type[jmap]-1])*(nnp->screening_f(rij) - 1) / rij;
+                    E_scr += 0.5 * qi * qj *
+                            erf(rij/nnp->gammaSqrt2[type[i]-1][type[jmap]-1])*(nnp->screening_f(rij) - 1) / rij;
                 }
             }
         }
         // Reciprocal Term
-        for (int k = 0; k < nnp->kcount; k++) // over k-space
+        if (kspacennp->ewaldflag) // Ewald Sum
         {
-            //fprintf(stderr, "kcoeff[%d] = %24.16E\n", k, nnp->kcoeff[k]);
-            nnp->sf_real[k] = 0.0;
-            nnp->sf_im[k] = 0.0;
-            // TODO: this loop over all atoms can be replaced by a MPIallreduce ?
-            for (i = 0; i < nall; i++) //TODO: discuss this additional inner loop
-            {
-                double const qi = gsl_vector_get(v,i);
-                nnp->sf_real[k] += qi * nnp->sfexp_rl[k][i];
-                nnp->sf_im[k] += qi * nnp->sfexp_im[k][i];
-            }
-            // TODO: sf_real->sf_real_all or MPIAllreduce for E_recip ?
-            //fprintf(stderr, "sfexp %d : %24.16E\n", k, nnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2)));
-            E_recip += nnp->kcoeff[k] * (pow(nnp->sf_real[k],2) + pow(nnp->sf_im[k],2));
+            // Calls the charge equilibration energy calculation routine in the KSpace base class
+            // Returns reciprocal energy
+            E_recip = kspacennp->compute_ewald_eqeq(v);
         }
-        nnp->E_elec = E_real + E_self + E_recip;
-        E_qeq += nnp->E_elec;
+        else if (kspacennp->pppmflag) // PPPM
+        {
+            //TODO: add contributions to Eqeq for PPPM style
+            kspacennp->particle_map();
+            kspacennp->make_rho_qeq(v); // map my particle charge onto my local 3d density grid
+            E_recip = kspacennp->compute_pppm_eqeq(); // TODO: WIP
+        }
+        nnp->E_elec = E_real + E_self; // do not add E_recip, it is already global
+        E_qeq_loc += nnp->E_elec;
     }else
     {
         // first loop over local atoms
         for (i = 0; i < nlocal; i++) {
-            double const qi = gsl_vector_get(v,i);
-            // add i terms here
-            iiterm = qi * qi / (2.0 * nnp->sigmaSqrtPi[type[i]-1]);
-            E_qeq += iiterm + nnp->chi[i]*qi + 0.5*nnp->hardness[type[i]-1]*qi*qi;
+            double const qi = gsl_vector_get(v,tag[i]-1);
+            double qi2 = qi * qi;
+            // add i terms
+            iiterm = qi2 * (1 / (2.0 * nnp->sigmaSqrtPi[type[i]-1]) + (0.5 * nnp->hardness[type[i]-1]));
+            E_qeq_loc += iiterm + nnp->chi[i] * qi;
             nnp->E_elec += iiterm;
-            E_scr -= iiterm;
-            // second loop over 'all' atoms
-            for (j = i + 1; j < nall; j++) {
+            E_scr -= iiterm; //TODO parallel ?
+            // Looping over all atoms (parallelization of necessary arrays has been done beforehand)
+            for (j = 0; j < nall; j++) {
                 double const qj = gsl_vector_get(v, j);
-                double const dx = x[j][0] - x[i][0];
-                double const dy = x[j][1] - x[i][1];
-                double const dz = x[j][2] - x[i][2];
+                double const dx = xx[j] - x[i][0];
+                double const dy = xy[j] - x[i][1];
+                double const dz = xz[j] - x[i][2];
                 double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
-                ijterm = (erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij);
-                E_qeq += ijterm * qi * qj;
-                nnp->E_elec += ijterm;
-                if(rij <= nnp->screening_info[2]) {
-                    E_scr += ijterm * (nnp->screening_f(rij) - 1);
+                if (rij != 0.0) //TODO check
+                {
+                    ijterm = (erf(rij / nnp->gammaSqrt2[type[i]-1][type_all[j]-1]) / rij);
+                    E_qeq_loc += 0.5 * ijterm * qi * qj;
+                    nnp->E_elec += ijterm;
+                    if(rij <= nnp->screening_info[2]) {
+                        E_scr += ijterm * (nnp->screening_f(rij) - 1);
+                    }
                 }
             }
         }
     }
 
+    //TODO: add communication steps for E_elec !!!
     nnp->E_elec = nnp->E_elec + E_scr; // add screening energy
 
-    //MPI_Allreduce(E_qeq_loc,E_qeq,1,MPI_DOUBLE,MPI_SUM,world);
+    MPI_Allreduce(&E_qeq_loc,&E_qeq,1,MPI_DOUBLE,MPI_SUM,world); // MPI_SUM of local QEQ contributions
 
-    fprintf(stderr, "EQeq = %24.16E\n", E_qeq);
+    if (periodic) E_qeq += E_recip; // adding already all-reduced reciprocal part now
+
+    //fprintf(stderr, "Erecip = %24.16E\n", E_recip);
     return E_qeq;
 }
 
@@ -495,7 +503,6 @@ double FixNNP::QEq_f_wrap(const gsl_vector *v, void *params)
 }
 
 // QEq energy gradient, $\partial E_{QEq} / \partial Q_i$
-// TODO: communication
 void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
 {
     int i,j,jmap;
@@ -508,79 +515,95 @@ void FixNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     double *q = atom->q;
 
     double grad;
+    double grad_sum_loc;
     double grad_sum;
+    double grad_recip; // reciprocal space contribution to the gradient
     double grad_i;
-    double jsum,ksum; //summation over neighbors & kspace respectively
+    double jsum; //summation over neighbors & kspace respectively
     double recip_sum;
 
-    //gsl_vector *dEdQ_loc;
-    //dEdQ_loc = gsl_vector_alloc(nsize);
+    double eta;
+
+    if (periodic) eta = 1 / kspacennp->g_ewald; // LAMMPS truncation
+
 
     grad_sum = 0.0;
+    grad_sum_loc = 0.0;
     if (periodic)
     {
-        double sqrt2eta = (sqrt(2.0) * nnp->ewaldEta);
+        double sqrt2eta = (sqrt(2.0) * eta);
         for (i = 0; i < nlocal; i++) // over local atoms
         {
-            double const qi = gsl_vector_get(v,i);
+            double const qi = gsl_vector_get(v,tag[i]-1);
             // Reciprocal contribution
-            ksum = 0.0;
-            for (int k = 0; k < nnp->kcount; k++) // over k-space
+            if (kspacennp->ewaldflag)
             {
-                ksum += 2.0 * nnp->kcoeff[k] *
-                        (nnp->sf_real[k] * nnp->sfexp_rl[k][i] + nnp->sf_im[k] * nnp->sfexp_im[k][i]);
+                grad_recip = 0.0;
+                for (int k = 0; k < kspacennp->kcount; k++) // over k-space
+                {
+                    grad_recip += 2.0 * kspacennp->kcoeff[k] *
+                            (kspacennp->sf_real[k] * kspacennp->sfexp_rl[k][i] +
+                             kspacennp->sf_im[k] *   kspacennp->sfexp_im[k][i]);
+                }
+            }
+            else if (kspacennp->pppmflag)
+            {
+                //TODO: calculate dEdQ_i for a given local atom i
+                grad_recip = kspacennp->compute_pppm_dEdQ(i);
             }
             // Real contribution - over neighbors
             jsum = 0.0;
             for (int jj = 0; jj < list->numneigh[i]; ++jj) {
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
-                jmap = atom->map(tag[j]); //TODO: check
-                double const qj = gsl_vector_get(v, jmap);
-                double const dx = x[i][0] - x[j][0];
-                double const dy = x[i][1] - x[j][1];
-                double const dz = x[i][2] - x[j][2];
-                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
-                double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1]));
-                jsum += qj * erfcRij / rij;
+                double const qj = gsl_vector_get(v, tag[j]-1);
+                //jmap = atom->map(tag[j]);
+                //double const dx = x[i][0] - x[j][0];
+                //double const dy = x[i][1] - x[j][1];
+                //double const dz = x[i][2] - x[j][2];
+                //double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
+                //double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / nnp->gammaSqrt2[type[i]-1][type[jmap]-1]));
+                //jsum += qj * erfcRij / rij;
+                jsum += qj * nnp->erfc_val[i][jj];
             }
-            grad = jsum + ksum + nnp->chi[i] + nnp->hardness[type[i]-1]*qi +
-                   qi * (1/(nnp->sigmaSqrtPi[type[i]-1])- 2/(nnp->ewaldEta * sqrt(2.0 * M_PI)));
-            grad_sum += grad;
-            gsl_vector_set(dEdQ,i,grad);
+            grad = jsum + grad_recip + nnp->chi[i] + nnp->hardness[type[i]-1]*qi +
+                   qi * (1/(nnp->sigmaSqrtPi[type[i]-1])- 2/(eta * sqrt(2.0 * M_PI)));
+            grad_sum_loc += grad;
+            dEdQ_loc[tag[i]-1] = grad; // fill gradient array based on tags instead of local IDs
         }
     }else
     {
         // first loop over local atoms
         for (i = 0; i < nlocal; i++) { // TODO: indices
-            double const qi = gsl_vector_get(v,i);
+            double const qi = gsl_vector_get(v,tag[i]-1);
             // second loop over 'all' atoms
             jsum = 0.0;
+            // Looping over all atoms (parallelization of necessary arrays has been done beforehand)
             for (j = 0; j < nall; j++) {
-                if (j != i) {
+                {
                     double const qj = gsl_vector_get(v, j);
-                    double const dx = x[j][0] - x[i][0];
-                    double const dy = x[j][1] - x[i][1];
-                    double const dz = x[j][2] - x[i][2];
+                    double const dx = xx[j] - x[i][0];
+                    double const dy = xy[j] - x[i][1];
+                    double const dz = xz[j] - x[i][2];
                     double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * nnp->cflength;
-                    jsum += qj * erf(rij / nnp->gammaSqrt2[type[i]-1][type[j]-1]) / rij;
+                    if (rij != 0.0) jsum += qj * erf(rij / nnp->gammaSqrt2[type[i]-1][type_all[j]-1]) / rij;
                 }
             }
             grad = nnp->chi[i] + nnp->hardness[type[i]-1]*qi + qi/(nnp->sigmaSqrtPi[type[i]-1]) + jsum;
-            grad_sum += grad;
-            gsl_vector_set(dEdQ,i,grad);
+            grad_sum_loc += grad;
+            dEdQ_loc[tag[i]-1] = grad;
+            //gsl_vector_set(dEdQ,i,grad);
         }
     }
 
-    // Gradient projection //TODO: communication ?
-    for (i = 0; i < nall; i++){
-        grad_i = gsl_vector_get(dEdQ,i);
-        gsl_vector_set(dEdQ,i,grad_i - (grad_sum)/nall);
-        fprintf(stderr, "dEQeq[%d] = %24.16E\n", i, gsl_vector_get(dEdQ,i));
-        //gsl_vector_set(dEdQ,i,grad_i);
-    }
+    MPI_Allreduce(dEdQ_loc,dEdQ_all,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+    MPI_Allreduce(&grad_sum_loc,&grad_sum,1,MPI_DOUBLE,MPI_SUM,world);
 
-    //MPI_Allreduce(dEdQ_loc,dEdQ,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+    // Gradient projection
+    for (i = 0; i < nall; i++){
+        grad_i = dEdQ_all[i];
+        gsl_vector_set(dEdQ,i,grad_i - (grad_sum)/nall);
+    }
 }
 
 // QEq energy gradient - wrapper
@@ -603,13 +626,14 @@ void FixNNP::QEq_fdf_wrap(const gsl_vector *v, void *params, double *E, gsl_vect
 }
 
 // Main minimization routine
-// TODO: communication
 void FixNNP::calculate_QEqCharges()
 {
     size_t iter = 0;
     int status;
     int i,j;
     int nsize;
+    int nlocal;
+    int *tag = atom->tag;
 
     double *q = atom->q;
     double qsum_it;
@@ -618,6 +642,7 @@ void FixNNP::calculate_QEqCharges()
     double df,alpha;
 
     nsize = atom->natoms; // total number of atoms
+    nlocal = atom->nlocal; // total number of atoms
 
     gsl_vector *Q; // charge vector
     QEq_minimizer.n = nsize; // it should be n_all in the future
@@ -626,122 +651,112 @@ void FixNNP::calculate_QEqCharges()
     QEq_minimizer.fdf = &QEq_fdf_wrap;
     QEq_minimizer.params = this;
 
-    fprintf(stderr, "q[%d] = %24.16E\n", atom->tag[0], q[0]);
-    //q[ 0] =  9.0172983387062006E-02;
-    //q[ 1] =  1.3641844939732600E-01;
-    //q[ 2] =  1.1534057032122748E-01;
-    //q[ 3] = -2.6183165626861749E-01;
-    //q[ 4] =  1.2478853272527497E-01;
-    //q[ 5] =  9.9154652510639193E-02;
-    //q[ 6] = -2.0320633594884582E-01;
-    //q[ 7] =  1.5077528010356031E-01;
-    //q[ 8] =  1.0545961981723477E-01;
-    //q[ 9] =  1.0721155781927211E-01;
-    //q[10] = -2.5637106920821656E-01;
-    //q[11] =  1.3767024849619425E-01;
-    //q[12] = -2.2006091505768430E-01;
-    //q[13] = -2.3518637803977813E-01;
-    //q[14] =  1.1004800576876206E-01;
-    //q[15] =  1.2457842239861068E-01;
-    //q[16] =  1.1434733344402730E-01;
-    //q[17] = -2.8256347534442394E-01;
-    //q[18] =  1.2747526484297361E-01;
-    //q[19] = -2.3412971681479519E-01;
-    //q[20] =  1.1415705913922840E-01;
-    //q[21] = -2.7263628991795930E-01;
-    //q[22] =  1.1263403257973484E-01;
-    //q[23] =  1.1034962117814638E-01;
-    //q[24] =  1.1847178479117916E-01;
-    //q[25] =  1.3658196132808181E-01;
-    //q[26] =  1.3761295680984550E-01;
-    //q[27] = -2.7372231339107417E-01;
-    //q[28] = -2.2955663167309948E-01;
-    //q[29] =  1.3433991100513271E-01;
-    //q[30] =  1.2277837277223856E-01;
-    //q[31] = -2.2058240732065956E-01;
-    //q[32] =  1.1917909653994410E-01;
-    //q[33] =  1.2797577200732246E-01;
-    //q[34] = -2.0590918634609698E-01;
-    //q[35] =  1.1823488614823419E-01;
+    //fprintf(stderr, "q[%d] = %24.16E\n", atom->tag[0], q[0]);
 
-    // Allocation : set initial guess is the current charge vector
-    Q = gsl_vector_alloc(nsize);
-    for (i = 0; i < nsize; i++) {
-        gsl_vector_set(Q,i,q[i]);
-        //fprintf(stderr, "q(%3d) = %16.8E\n", i, q[i]);
+    // Allocation
+    //memory->create(qall,atom->natoms,"qeq:qall");
+    //memory->create(qall_loc,atom->natoms,"qeq:qall_loc");
+    //memory->create(dEdQ_loc,atom->natoms,"qeq:dEdQ_loc");
+    //memory->create(dEdQ_all,atom->natoms,"qeq:dEdQ_all");
+    
+    // Initialization
+    for (int i =0; i < atom->natoms; i++){
+        qall[i] = 0.0;
+        qall_loc[i] = 0.0;
+        dEdQ_loc[i] = 0.0;
+        dEdQ_all[i] = 0.0;
     }
 
-    // Numeric vs. analytic derivatives check:
-    //fprintf(stderr, "EQeq = %24.16E\n", QEq_f(Q));
-    //gsl_vector *dEdQ = gsl_vector_calloc(nsize);
-    //QEq_df(Q, dEdQ);
-    //double const delta = 1.0E-5;
-    //for (i = 0; i < nsize; ++i)
-    //{
-    //    double const qi = gsl_vector_get(Q, i);
-    //    gsl_vector_set(Q, i, qi - delta);
-    //    double const low = QEq_f(Q);
-    //    gsl_vector_set(Q, i, qi + delta);
-    //    double const high = QEq_f(Q);
-    //    gsl_vector_set(Q, i, qi);
-    //    double const numeric = (high - low) / (2.0 * delta);
-    //    double const analytic = gsl_vector_get(dEdQ, i);
-    //    fprintf(stderr, "NA-Check: q = %16.8E dEQeq/dq(%3d) = %16.8E / %16.8E (Numeric/Analytic), Diff: %16.8E (low: %16.8E, high: %16.8E)\n", qi, i, numeric, analytic, numeric - analytic, low, high);
-    //}
-    //gsl_vector_free(dEdQ);
-    //exit(1);
+    for (int i = 0; i < atom->nlocal; i++) {
+        qall_loc[tag[i] - 1] = q[i];
+    }
+
+    MPI_Allreduce(qall_loc,qall,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+
+    if (!periodic) // we need global position arrays in nonperiodic systems
+    {
+        // Initialize global arrays
+        for (int i = 0; i < atom->natoms; i++){
+            type_loc[i] = 0;
+            xx_loc[i] = 0.0;
+            xy_loc[i] = 0.0;
+            xz_loc[i] = 0.0;
+            xx[i] = 0.0;
+            xy[i] = 0.0;
+            xz[i] = 0.0;
+        }
+
+        // Create global sparse arrays here
+        for (int i = 0; i < atom->nlocal; i++){
+            xx_loc[tag[i]-1] = atom->x[i][0];
+            xy_loc[tag[i]-1] = atom->x[i][1];
+            xz_loc[tag[i]-1] = atom->x[i][2];
+            type_loc[tag[i]-1] = atom->type[i];
+        }
+        MPI_Allreduce(xx_loc,xx,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+        MPI_Allreduce(xy_loc,xy,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+        MPI_Allreduce(xz_loc,xz,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+        MPI_Allreduce(type_loc,type_all,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+    }
+
+
+    // Set the initial guess vector 
+    Q = gsl_vector_alloc(nsize);
+    for (i = 0; i < nsize; i++)
+    {
+	if (nnp->minim_init_style == 0)
+	{
+	    gsl_vector_set(Q, i, 0.0);
+	}else if (nnp->minim_init_style == 1)
+	{
+	    gsl_vector_set(Q, i, qall[i]);   
+	}else
+	{
+	    error->all(FLERR,"Invalid minimization style. Allowed values are 0 and 1.");
+	}
+    }
+
+    //memory->destroy(qall);
+    //memory->destroy(qall_loc);
 
     // TODO: is bfgs2 standard ?
-    //T = gsl_multimin_fdfminimizer_conjugate_fr; // minimization algorithm
-    //T = gsl_multimin_fdfminimizer_conjugate_pr; // minimization algorithm
-    //T = gsl_multimin_fdfminimizer_steepest_descent; // minimization algorithm
     T = gsl_multimin_fdfminimizer_vector_bfgs2;
     s = gsl_multimin_fdfminimizer_alloc(T, nsize);
     gsl_multimin_fdfminimizer_set(s, &QEq_minimizer, Q, nnp->step, nnp->min_tol); // tol = 0 might be expensive ???
     do
     {
-        fprintf(stderr, "eqeq-iter %zu\n", iter);
+        //fprintf(stderr, "eqeq-iter %zu\n", iter);
         iter++;
         qsum_it = 0.0;
         gradsum = 0.0;
-        //std::cout << "iteration : " << iter << '\n';
-        //std::cout << "------------------------" << '\n';
-        //auto start_it = high_resolution_clock::now();
         status = gsl_multimin_fdfminimizer_iterate(s);
-        //auto stop_it = high_resolution_clock::now();
-        //auto duration_it = duration_cast<microseconds>(stop_it - start_it);
-        //std::cout << "Iteration time : " << duration_it.count() << '\n';
-
         // Projection (enforcing constraints)
         // TODO: could this be done more efficiently ?
         for(i = 0; i < nsize; i++) {
             qsum_it = qsum_it + gsl_vector_get(s->x, i); // total charge after the minimization nnp->step
         }
-
         for(i = 0; i < nsize; i++) {
             qi = gsl_vector_get(s->x,i);
             gsl_vector_set(s->x,i, qi - (qsum_it-qRef)/nsize); // charge projection
         }
-
         status = gsl_multimin_test_gradient(s->gradient, nnp->grad_tol); // check for convergence
 
+        // TODO: dump also iteration time ?
         if (status == GSL_SUCCESS)
             printf ("Minimum charge distribution is found at iteration : %zu\n", iter);
-        //fprintf(stderr, "iter %10ld q %24.16E\n", iter, gsl_vector_get(s->x, 0));
-
     }
     while (status == GSL_CONTINUE && iter < nnp->maxit);
 
-    // Read charges into LAMMPS atom->q array before deallocating
-    for (i = 0; i < nsize; i++) {
-        q[i] = gsl_vector_get(s->x,i);
-        //fprintf(stderr, "q(%3d) = %16.8E\n", i, q[i]);
-        //gsl_vector_set(Q, i, q[i]);
+    // Read calculated atomic charges back into local arrays for further calculations
+    for (int i = 0; i < atom->nlocal; i++){
+        q[i] = gsl_vector_get(s->x,tag[i]-1);
     }
 
     // Deallocation
     gsl_multimin_fdfminimizer_free(s);
     gsl_vector_free(Q);
+    //memory->destroy(dEdQ_loc);
+    //memory->destroy(dEdQ_all);
 }
 
 // Check if the system is periodic
@@ -750,318 +765,3 @@ void FixNNP::isPeriodic()
     if (domain->nonperiodic == 0) periodic = true;
     else                          periodic = false;
 }
-
-
-void FixNNP::pack_positions()
-{
-    int m,n;
-    //tagint *tag = atom->tag;
-    double **x = atom->x;
-    //int *mask = atom->mask;
-    int nlocal = atom->nlocal;
-
-    m = n = 0;
-
-    for (int i = 0; i < nlocal; i++)
-    {
-        //if (mask[i] & groupbit) {
-            xbuf[m++] = x[i][0];
-            xbuf[m++] = x[i][1];
-            xbuf[m++] = x[i][2];
-            //ids[n++] = tag[i];
-        //}
-    }
-}
-
-void FixNNP::gather_positions()
-{
-    int tmp,nlines;
-    int size_one = 1;
-    int nme =  atom->nlocal; //TODO this should be fixed
-    int me = comm->me;
-    int nprocs = comm->nprocs;
-
-    MPI_Status status;
-    MPI_Request request;
-
-    pack_positions();
-
-    // TODO: check all parameters and clean
-    if (me == 0) {
-        for (int iproc = 0; iproc < nprocs; iproc++) {
-            if (iproc) {
-                //MPI_Irecv(xbuf,maxbuf*size_one,MPI_DOUBLE,me+iproc,0,world,&request);
-                MPI_Irecv(xbuf,xbufsize,MPI_DOUBLE,me+iproc,0,world,&request);
-                MPI_Send(&tmp,0,MPI_INT,me+iproc,0,world);
-                MPI_Wait(&request,&status);
-                MPI_Get_count(&status,MPI_DOUBLE,&nlines);
-                nlines /= size_one; // TODO : do we need ?
-            } else nlines = nme;
-            std::cout << 165 << '\n';
-            std::cout << nlines << '\n';
-            // copy buf atom coords into 3 global arrays
-            int m = 0;
-            for (int i = 0; i < nlines; i++) { //TODO : check this
-                //std::cout << xbuf[m] << '\n';
-                xf[ntotal] = xbuf[m++];
-                yf[ntotal] = xbuf[m++];
-                zf[ntotal] = xbuf[m++];
-                ntotal++;
-            }
-            std::cout << ntotal << '\n';
-            // if last chunk of atoms in this snapshot, write global arrays to file
-            /*if (ntotal == natoms) {
-                ntotal = 0;
-            }*/
-        }
-        //if (flush_flag && fp) fflush(fp);
-    }
-    else {
-        MPI_Recv(&tmp,0,MPI_INT,me,0,world,MPI_STATUS_IGNORE);
-        MPI_Rsend(xbuf,xbufsize,MPI_DOUBLE,me,0,world);
-    }
-}
-
-
-/// Fix communication subroutines inherited from the parent Fix class
-/// They are used in all fixes in LAMMPS, TODO: check, they might be helpful for us as well
-
-/* ----------------------------------------------------------------------
-   memory usage of local atom-based arrays
-------------------------------------------------------------------------- */
-
-double FixNNP::memory_usage()
-{
-    double bytes;
-
-    bytes = atom->nmax*2 * sizeof(double); // Q_hist
-    bytes += atom->nmax*11 * sizeof(double); // storage
-    bytes += n_cap*2 * sizeof(int); // matrix...
-    bytes += m_cap * sizeof(int);
-    bytes += m_cap * sizeof(double);
-
-    return bytes;
-}
-
-
-int FixNNP::pack_forward_comm(int n, int *list, double *buf,
-                                  int /*pbc_flag*/, int * /*pbc*/)
-{
-    int m;
-
-    if (pack_flag == 1)
-        for(m = 0; m < n; m++) buf[m] = d[list[m]];
-    else if (pack_flag == 2)
-        for(m = 0; m < n; m++) buf[m] = Q[list[m]];
-    else if (pack_flag == 4)
-        for(m = 0; m < n; m++) buf[m] = atom->q[list[m]];
-    else if (pack_flag == 5) {
-        m = 0;
-        for(int i = 0; i < n; i++) {
-            int j = 2 * list[i];
-            buf[m++] = d[j  ];
-            buf[m++] = d[j+1];
-        }
-        return m;
-    }
-    return n;
-}
-
-void FixNNP::unpack_forward_comm(int n, int first, double *buf)
-{
-    int i, m;
-
-    if (pack_flag == 1)
-        for(m = 0, i = first; m < n; m++, i++) d[i] = buf[m];
-    else if (pack_flag == 2)
-        for(m = 0, i = first; m < n; m++, i++) Q[i] = buf[m];
-    else if (pack_flag == 4)
-        for(m = 0, i = first; m < n; m++, i++) atom->q[i] = buf[m];
-    else if (pack_flag == 5) {
-        int last = first + n;
-        m = 0;
-        for(i = first; i < last; i++) {
-            int j = 2 * i;
-            d[j  ] = buf[m++];
-            d[j+1] = buf[m++];
-        }
-    }
-}
-
-int FixNNP::pack_reverse_comm(int n, int first, double *buf)
-{
-    int i, m;
-    if (pack_flag == 5) {
-        m = 0;
-        int last = first + n;
-        for(i = first; i < last; i++) {
-            int indxI = 2 * i;
-            buf[m++] = q[indxI  ];
-            buf[m++] = q[indxI+1];
-        }
-        return m;
-    } else {
-        for (m = 0, i = first; m < n; m++, i++) buf[m] = q[i];
-        return n;
-    }
-}
-
-void FixNNP::unpack_reverse_comm(int n, int *list, double *buf)
-{
-    if (pack_flag == 5) {
-        int m = 0;
-        for(int i = 0; i < n; i++) {
-            int indxI = 2 * list[i];
-            q[indxI  ] += buf[m++];
-            q[indxI+1] += buf[m++];
-        }
-    } else {
-        for (int m = 0; m < n; m++) q[list[m]] += buf[m];
-    }
-}
-
-/* ----------------------------------------------------------------------
-   allocate fictitious charge arrays
-------------------------------------------------------------------------- */
-
-void FixNNP::grow_arrays(int nmax)
-{
-    memory->grow(Q_hist,nmax,nprev,"qeq:Q_hist");
-}
-
-/* ----------------------------------------------------------------------
-   copy values within fictitious charge arrays
-------------------------------------------------------------------------- */
-
-void FixNNP::copy_arrays(int i, int j, int /*delflag*/)
-{
-    for (int m = 0; m < nprev; m++) {
-        Q_hist[j][m] = Q_hist[i][m];
-    }
-}
-
-/* ----------------------------------------------------------------------
-   pack values in local atom-based array for exchange with another proc
-------------------------------------------------------------------------- */
-int FixNNP::pack_exchange(int i, double *buf)
-{
-    for (int m = 0; m < nprev; m++) buf[m] = Q_hist[i][m];
-    return nprev;
-    //for (int m = 0; m < nprev; m++) buf[nprev+m] = t_hist[i][m];
-    //return nprev*2;
-
-}
-
-/* ----------------------------------------------------------------------
-   unpack values in local atom-based array from exchange with another proc
-------------------------------------------------------------------------- */
-
-int FixNNP::unpack_exchange(int nlocal, double *buf)
-{
-    for (int m = 0; m < nprev; m++) Q_hist[nlocal][m] = buf[m];
-    return nprev;
-    //for (int m = 0; m < nprev; m++) t_hist[nlocal][m] = buf[nprev+m];
-    //return nprev*2;
-}
-
-double FixNNP::parallel_norm( double *v, int n)
-{
-    int  i;
-    double my_sum, norm_sqr;
-
-    int ii;
-    int *ilist;
-
-    ilist = list->ilist;
-
-    my_sum = 0.0;
-    norm_sqr = 0.0;
-    for (ii = 0; ii < n; ++ii) {
-        i = ilist[ii];
-        if (atom->mask[i] & groupbit)
-            my_sum += SQR( v[i]);
-    }
-
-    MPI_Allreduce( &my_sum, &norm_sqr, 1, MPI_DOUBLE, MPI_SUM, world);
-
-    return sqrt( norm_sqr);
-}
-
-double FixNNP::parallel_dot( double *v1, double *v2, int n)
-{
-    int  i;
-    double my_dot, res;
-
-    int ii;
-    int *ilist;
-
-    ilist = list->ilist;
-
-    my_dot = 0.0;
-    res = 0.0;
-    for (ii = 0; ii < n; ++ii) {
-        i = ilist[ii];
-        if (atom->mask[i] & groupbit)
-            my_dot += v1[i] * v2[i];
-    }
-
-    MPI_Allreduce( &my_dot, &res, 1, MPI_DOUBLE, MPI_SUM, world);
-
-    return res;
-}
-
-double FixNNP::parallel_vector_acc( double *v, int n)
-{
-    int  i;
-    double my_acc, res;
-
-    int ii;
-    int *ilist;
-
-    ilist = list->ilist;
-
-    my_acc = 0.0;
-    res = 0.0;
-    for (ii = 0; ii < n; ++ii) {
-        i = ilist[ii];
-        if (atom->mask[i] & groupbit)
-            my_acc += v[i];
-    }
-
-    MPI_Allreduce( &my_acc, &res, 1, MPI_DOUBLE, MPI_SUM, world);
-
-    return res;
-}
-
-void FixNNP::vector_sum( double* dest, double c, double* v,
-                             double d, double* y, int k)
-{
-    int kk;
-    int *ilist;
-
-    ilist = list->ilist;
-
-    for (--k; k>=0; --k) {
-        kk = ilist[k];
-        if (atom->mask[kk] & groupbit)
-            dest[kk] = c * v[kk] + d * y[kk];
-    }
-}
-void FixNNP::vector_add( double* dest, double c, double* v, int k)
-{
-    int kk;
-    int *ilist;
-
-    ilist = list->ilist;
-
-    for (--k; k>=0; --k) {
-        kk = ilist[k];
-        if (atom->mask[kk] & groupbit)
-            dest[kk] += c * v[kk];
-    }
-}
-
-
-
-
-

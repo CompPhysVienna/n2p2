@@ -57,7 +57,7 @@ lammps-nnp:
 		sed -i.bak "/^LINKFLAGS =/ s/$$/ $(LAMMPS_DEBUG) $(PROJECT_TEST)/" lammps-nnp/src/MAKE/Makefile.mpi; \
 	fi
 	@rm lammps-nnp/src/MAKE/Makefile.mpi.bak
-	cd lammps-nnp/src/ && $(MAKE) yes-user-nnp && $(MAKE) yes-molecule && $(MAKE) mpi
+	cd lammps-nnp/src/ && $(MAKE) yes-user-nnp && $(MAKE) yes-kspace && $(MAKE) yes-molecule && $(MAKE) mpi
 	cp lammps-nnp/src/lmp_mpi $(PROJECT_BIN)/
 
 clean-lammps-nnp:

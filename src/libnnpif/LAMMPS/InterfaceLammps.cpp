@@ -387,11 +387,9 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
     for (size_t i = 0; i < structure.atoms.size(); ++i) {
         Atom const& a = structure.atoms.at(i);
         size_t const ia = a.index;
-        //size_t const ea = a.element;
         atomChi[ia] = a.chi;
-        //atomJ[ia] = elements.at(ea).getHardness();
-        //atomSigma[ia] = elements.at(ea).getQsigma();
     }
+
     for (size_t i = 0; i < numElements; ++i)
     {
         double const iSigma = elements.at(i).getQsigma();
@@ -417,7 +415,8 @@ void InterfaceLammps::getdEdQ(double* const& dEtotdQ) const
     }
 }
 
-void InterfaceLammps::getdChidxyz(int ind, double *const *const &dChidxyz) const
+void InterfaceLammps::getdChidxyz(int ind,
+        double *const &dChidx, double *const &dChidy, double *const &dChidz) const
 {
     Atom const &ai = structure.atoms.at(ind);
 
@@ -452,9 +451,9 @@ void InterfaceLammps::getdChidxyz(int ind, double *const *const &dChidxyz) const
 #endif
                 }
             }
-        dChidxyz[j][0] = dChi[0];
-        dChidxyz[j][1] = dChi[1];
-        dChidxyz[j][2] = dChi[2];
+        dChidx[j] = dChi[0];
+        dChidy[j] = dChi[1];
+        dChidz[j] = dChi[2];
         }
 }
 
@@ -474,9 +473,19 @@ void InterfaceLammps::getScreeningInfo(double* const& screenInfo) const
     screenInfo[3] = 1.0 / (screenInfo[2] - screenInfo[1]); // scale
 }
 
+double InterfaceLammps::getEwaldPrec() const
+{
+    return Mode::getEwaldPrecision();
+}
+
 void InterfaceLammps::setElecDone()
 {
     if (isElecDone) isElecDone = false;
+}
+
+void InterfaceLammps::addElectrostaticEnergy(double eElec)
+{
+    structure.energyElec = eElec;
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const {
@@ -506,37 +515,109 @@ void InterfaceLammps::getForces(double* const* const& atomF) const {
             // Temporarily save the neighbor index. Note: this is the index for
             // the LAMMPS force array.
             size_t const in = n->index;
-            //std::cout << "Chi : " << a->chi << '\t' << "nei :" << n->index << '\n';
             // Now loop over all symmetry functions and add force contributions
             // (local + ghost atoms).
 #ifndef NNP_FULL_SFD_MEMORY
             vector <size_t> const &table = tableFull.at(n->element);
-            for (size_t s = 0; s < n->dGdr.size(); ++s) {
+            for (size_t s = 0; s < n->dGdr.size(); ++s)
+            {
                 double const dEdG = a->dEdG[table.at(s)] * cfforce * convForce;
 #else
-                for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
-                {
-                    double const dEdG = a->dEdG[s] * cfforce * convForce;
+            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
+            {
+                double const dEdG = a->dEdG[s] * cfforce * convForce;
 #endif
-                    double const *const dGdr = n->dGdr[s].r;
-                    atomF[in][0] -= dEdG * dGdr[0];
-                    atomF[in][1] -= dEdG * dGdr[1];
-                    atomF[in][2] -= dEdG * dGdr[2];
-                }
+                double const *const dGdr = n->dGdr[s].r;
+                atomF[in][0] -= dEdG * dGdr[0];
+                atomF[in][1] -= dEdG * dGdr[1];
+                atomF[in][2] -= dEdG * dGdr[2];
             }
+        }
         // Temporarily save the atom index. Note: this is the index for
         // the LAMMPS force array.
         size_t const ia = a->index;
         // Loop over all symmetry functions and add force contributions (local
         // atoms).
-        for (size_t s = 0; s < a->numSymmetryFunctions; ++s) {
+        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
+        {
             double const dEdG = a->dEdG[s] * cfforce * convForce;
             double const *const dGdr = a->dGdr[s].r;
             atomF[ia][0] -= dEdG * dGdr[0];
             atomF[ia][1] -= dEdG * dGdr[1];
             atomF[ia][2] -= dEdG * dGdr[2];
+        }
+    }
+
+    return;
+}
+
+void InterfaceLammps::getForcesChi(double const* const&  lambda,
+                                   double* const* const& atomF) const {
+    double const cfforce = cflength / cfenergy;
+    double convForce = 1.0;
+    if (normalize) {
+        convForce = convLength / convEnergy;
+    }
+
+    // Loop over all local atoms. Neural network and Symmetry function
+    // derivatives are saved in the dEdG arrays of atoms and dGdr arrays of
+    // atoms and their neighbors. These are now summed up to the force
+    // contributions of local and ghost atoms.
+    Atom const *a = NULL;
+
+    for (size_t i = 0; i < structure.atoms.size(); ++i) {
+        // Set pointer to atom.
+        a = &(structure.atoms.at(i));
+
+        // Temporarily save the atom index. Note: this is the index for
+        // the LAMMPS force array.
+        size_t const ia = a->index;
+        // Also save tag - 1 which is the correct position in lambda array.
+        size_t const ta = a->tag - 1;
+
+#ifndef NNP_FULL_SFD_MEMORY
+        vector <vector<size_t>> const &tableFull
+                = elements.at(a->element).getSymmetryFunctionTable();
+#endif
+        // Loop over all neighbor atoms. Some are local, some are ghost atoms.
+        for (vector<Atom::Neighbor>::const_iterator n = a->neighbors.begin();
+             n != a->neighbors.end(); ++n) {
+            // Temporarily save the neighbor index. Note: this is the index for
+            // the LAMMPS force array.
+            size_t const in = n->index;
+            // Also save tag - 1 which is the correct position in lambda array.
+            size_t const tn = n->tag - 1;
+            //std::cout << "Chi : " << a->chi << '\t' << "nei :" << n->index << '\n';
+            // Now loop over all symmetry functions and add force contributions
+            // (local + ghost atoms).
+#ifndef NNP_FULL_SFD_MEMORY
+            vector <size_t> const &table = tableFull.at(n->element);
+            for (size_t s = 0; s < n->dGdr.size(); ++s)
+            {
+                double const dChidG = a->dChidG[table.at(s)]
+                                    * cfforce * convForce;
+#else
+            for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
+            {
+                double const dChidG = a->dChidG[s] * cfforce * convForce;
+#endif
+                double const *const dGdr = n->dGdr[s].r;
+                atomF[in][0] -= lambda[ta] * dChidG * dGdr[0];
+                atomF[in][1] -= lambda[ta] * dChidG * dGdr[1];
+                atomF[in][2] -= lambda[ta] * dChidG * dGdr[2];
             }
         }
+        // Loop over all symmetry functions and add force contributions (local
+        // atoms).
+        for (size_t s = 0; s < a->numSymmetryFunctions; ++s)
+        {
+            double const dChidG = a->dChidG[s] * cfforce * convForce;
+            double const *const dGdr = a->dGdr[s].r;
+            atomF[ia][0] -= lambda[ta] * dChidG * dGdr[0];
+            atomF[ia][1] -= lambda[ta] * dChidG * dGdr[1];
+            atomF[ia][2] -= lambda[ta] * dChidG * dGdr[2];
+        }
+    }
 
     return;
 }
