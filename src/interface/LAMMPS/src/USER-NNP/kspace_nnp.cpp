@@ -60,7 +60,7 @@ enum{FORWARD_IK,FORWARD_AD,FORWARD_IK_PERATOM,FORWARD_AD_PERATOM};
 /* ---------------------------------------------------------------------- */
 
 KSpaceNNP::KSpaceNNP(LAMMPS *lmp) : KSpace(lmp),
-      kxvecs(nullptr), kyvecs(nullptr), kzvecs(nullptr), ug(nullptr), eg(nullptr), vg(nullptr),
+      kxvecs(nullptr), kyvecs(nullptr), kzvecs(nullptr), kcoeff(nullptr), ug(nullptr), eg(nullptr), vg(nullptr),
       ek(nullptr), sfexp_rl(nullptr), sfexp_im(nullptr), sf_real(nullptr), sf_im(nullptr),
       sfexp_rl_all(nullptr),sfexp_im_all(nullptr),
       cs(nullptr), sn(nullptr), factors(nullptr),
@@ -88,6 +88,7 @@ KSpaceNNP::KSpaceNNP(LAMMPS *lmp) : KSpace(lmp),
 
     kmax = 0;
     kxvecs = kyvecs = kzvecs = nullptr;
+    kcoeff = nullptr;
     ug = nullptr;
     eg = vg = nullptr;
     ek = nullptr;
@@ -502,13 +503,10 @@ void KSpaceNNP::setup()
         kzmax_orig = kzmax;
 
 	//allocate();
-
         // if size has grown, reallocate k-dependent and nlocal-dependent arrays
         if (kmax > kmax_old) {
-
             deallocate();
             allocate();
-
             memory->destroy(ek);
             memory->destroy3d_offset(cs,-kmax_created);
             memory->destroy3d_offset(sn,-kmax_created);
@@ -1135,7 +1133,7 @@ void KSpaceNNP::allocate()
         memory->create(sfexp_im,kmax3d,atom->natoms,"ewald:sfexp_im");
         memory->create(sf_real,kmax3d,"ewald:sf_rl");
         memory->create(sf_im,kmax3d,"ewald:sf_im");
-        
+	
 	//memory->create(eg,kmax3d,3,"ewald:eg");
         //memory->create(vg,kmax3d,6,"ewald:vg"); // TODO: might be required for pressure
 
@@ -1184,7 +1182,6 @@ void KSpaceNNP::deallocate()
     }
     else if (ewaldflag)
     {
-	int nloc = atom->nlocal;
         
 	//delete [] kxvecs;
   	//delete [] kyvecs;
@@ -1206,7 +1203,7 @@ void KSpaceNNP::deallocate()
 	memory->destroy(kcoeff);
 	
 	memory->destroy(sf_real);
-        memory->destroy(sf_im);	
+        memory->destroy(sf_im);
 	memory->destroy(sfexp_rl);
         memory->destroy(sfexp_im);
 	

@@ -291,9 +291,12 @@ void FixNNP::pre_force(int /*vflag*/) {
 
     //TODO
     calculate_erfc_terms();
-
+    
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     // Minimize QEq energy and calculate atomic charges
     calculate_QEqCharges();
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "iQEq time (s) = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0 << std::endl;
 
 }
 
