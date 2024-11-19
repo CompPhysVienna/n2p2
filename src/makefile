@@ -162,9 +162,32 @@ $(CLEAN_APP):
 ##############
 # lammps-nnp #
 ##############
+define LAMMPS_NNP_WARNING
+##############################################################
+#           __      ___   ___ _  _ ___ _  _  ___             #
+#           \ \    / /_\ | _ \ \| |_ _| \| |/ __|            #
+#            \ \/\/ / _ \|   / .` || || .` | (_ |            #
+#             \_/\_/_/ \_\_|_\_|\_|___|_|\_|\___|            #
+#                                                            #
+# This is a development build of LAMMPS + n2p2!              #
+#                                                            #
+# n2p2's makefile feature to build an automatically patched  #
+# version of LAMMPS is designed for development purposes and #
+# not guarantueed to work. The recommended way to build and  #
+# link LAMMPS with n2p2 is based on the build system of      #
+# LAMMPS and described here:                                 #
+#                                                            #
+# https://docs.lammps.org/Build_extras.html#ml-hdnnp         #
+#                                                            #
+##############################################################
+endef
+
+export LAMMPS_NNP_WARNING
 lammps-nnp: libnnpif
+	@echo "$$LAMMPS_NNP_WARNING"
 	cd libnnpif && $(MAKE) lammps-mf
 	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
+	@echo "$$LAMMPS_NNP_WARNING"
 
 clean-lammps-nnp:
 	#cd interface && $(MAKE) $@
