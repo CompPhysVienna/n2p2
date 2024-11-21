@@ -66,10 +66,13 @@ cdef class Vec3D:
     def __mul__(ls, rs):
         if isinstance(ls, Vec3D) and isinstance(rs, Vec3D):
             return ls.mul_Vec3D(rs)
-        elif isinstance(ls, float) and isinstance(rs, Vec3D):
-            return rs.mul_lfloat(ls)
         elif isinstance(ls, Vec3D) and isinstance(rs, float):
             return ls.mul_rfloat(rs)
+        else:
+            return NotImplemented
+    def __rmul__(rs, ls):
+        if isinstance(ls, float) and isinstance(rs, Vec3D):
+            return rs.mul_lfloat(ls)
         else:
             return NotImplemented
     def mul_Vec3D(Vec3D self, Vec3D v):
