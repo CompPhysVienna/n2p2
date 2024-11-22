@@ -66,12 +66,12 @@ jobs:
         working-directory: ./src
       
       - name: Build LAMMPS with n2p2 support
-        run: make MODE=test lammps-nnp
+        run: make MODE=test lammps-hdnnp
         working-directory: ./src
       
       - name: Run C++ tests and coverage
         run: |
-          make cpp LOG_LEVEL=all
+          make cpp
           cd cpp
           make coverage
           rm *.gcda *.gcno

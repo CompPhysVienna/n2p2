@@ -61,7 +61,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 	libnnp \
 	libnnptrain \
 	libnnpif \
-	lammps-nnp \
+	lammps-hdnnp \
 	pynnp \
 	clean-doc \
 	clean-doc-sphinx \
@@ -70,7 +70,7 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 	clean-libnnp \
 	clean-libnnptrain \
 	clean-libnnpif \
-	clean-lammps-nnp \
+	clean-lammps-hdnnp \
 	clean-pynnp \
 	install \
 	uninstall
@@ -84,7 +84,7 @@ clean: clean-libnnp \
        clean-libnnptrain \
        clean-libnnpif \
        clean-app \
-       clean-lammps-nnp \
+       clean-lammps-hdnnp \
        clean-pynnp
 
 clean-all: clean \
@@ -159,9 +159,9 @@ $(APP_LIBNNPTRAIN): libnnptrain
 $(CLEAN_APP):
 	cd application && $(MAKE) $@
 
-##############
-# lammps-nnp #
-##############
+################
+# lammps-hdnnp #
+################
 define LAMMPS_NNP_WARNING
 ##############################################################
 #           __      ___   ___ _  _ ___ _  _  ___             #
@@ -183,15 +183,15 @@ define LAMMPS_NNP_WARNING
 endef
 
 export LAMMPS_NNP_WARNING
-lammps-nnp: libnnpif
+lammps-hdnnp: libnnpif
 	@echo "$$LAMMPS_NNP_WARNING"
 	cd libnnpif && $(MAKE) lammps-mf
 	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
 	@echo "$$LAMMPS_NNP_WARNING"
 
-clean-lammps-nnp:
+clean-lammps-hdnnp:
 	#cd interface && $(MAKE) $@
-	cd interface && $(MAKE) clean-lammps-nnp-keep-file
+	cd interface && $(MAKE) clean-lammps-hdnnp-keep-file
 
 #########
 # pynnp #

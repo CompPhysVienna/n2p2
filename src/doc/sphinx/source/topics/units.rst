@@ -17,8 +17,8 @@ e.g. :math:`\eta, r_c`, need to be given in length units).
    potential is used to drive an MD simulation in LAMMPS. If the LAMMPS units
    (see command `units <https://lammps.sandia.gov/doc/units.html>`__) are not
    matching with those used during NNP training, appropriate conversion factors
-   need to be provided. See the :ref:`pair_style nnp reference <pair_nnp>` for
-   further details. 
+   need to be provided. See the `pair_style hdnnp reference
+   <https://docs.lammps.org/pair_hdnnp.html>`__ for further details.
 
 Normalizing the data set: "internal" units
 ------------------------------------------

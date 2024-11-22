@@ -114,8 +114,7 @@ Try the potential by predicting energies and forces for a new configuration:
 Collect the files from training (``input.nn``, ``scaling.data`` and
 ``weights.???``) in a folder together with a single configuration (named again
 ``input.data``) and run the tool ``nnp-predict``. Alternatively, try to run a MD
-simulation with LAMMPS (see setup instructions :ref:`here <if_lammps>` and
-:ref:`here <pair_nnp>`).
+simulation with LAMMPS (see setup instructions :ref:`here <if_lammps>`).
 
 Please also have a look at the ``examples`` directory which provides working
 example setups for each tool. If there are problems don't hesitate to ask
