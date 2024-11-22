@@ -1,7 +1,7 @@
 .. _if_lammps:
 
-LAMMPS NNP interface
-====================
+LAMMPS interface
+================
 
 Purpose
 -------
@@ -14,104 +14,151 @@ fully supported.
 Build instructions
 ------------------
 
-Automatic build
-^^^^^^^^^^^^^^^
+The recommended way to build LAMMPS together with n2p2 is using the LAMMPS
+package management and build system. If you are new to LAMMPS, please start with
+the basics of the LAMMPS build system which are described
+`here <https://docs.lammps.org/Build.html>`__. Specific instructions for the
+LAMMPS + n2p2 build can be found here:
 
-.. important::
+* `LAMMPS Packages with extra build options: ML-HDNNP <https://docs.lammps.org/Build_extras.html#ml-hdnnp>`__
+* `LAMMPS Packages details: ML-HDNNP <https://docs.lammps.org/Packages_details.html#pkg-ml-hdnnp>`__
 
-   The automatic compilation will only work on Unix-like systems as it relies on
-   tools such as ``sed`` and ``tar``.
+For example, these commands will build LAMMPS with n2p2 support following the
+traditional makefile method:
 
-For convenience the main makefile provides the compilation target ``lammps-nnp``
-which will automatically download LAMMPS (version ``stable_3Mar2020`` from the
-`GitHub releases page <https://github.com/lammps/lammps/releases>`__) into the
-``interface`` directory, unpack it to ``lammps-nnp``, add the necessary n2p2
-files to it and compile the LAMMPS ``mpi`` target. Finally, the binary
-``lmp_mpi`` will be copied to the n2p2 ``bin`` directory. Hence, compiling
-LAMMPS with NNP support is as easy as typing
+.. code-block:: shell
 
-.. code-block:: none
+   cd /path/to/lammps/src
 
-   make lammps-nnp
+   # Enable ML-HDNNP package:
+   make yes-ml-hdnnp
 
-in the n2p2 ``src`` directory. Uninstall with ``make clean-lammps-nnp``.
+   # Automatically download and build n2p2:
+   make lib-hdnnp args="-b"
+   # Alternatively, use existing n2p2 installation:
+   # (follow instructions in <path-to-lammps>/lib/hdnnp/README)
+   # make lib-hdnnp args="-p path/to/n2p2
 
-.. note::
+   # Build LAMMPS for desired target, for example:
+   make mpi -j
 
-   Before compiling the LAMMPS makefile (``src/MAKE/Makefile.mpi``) will be altered to
-   use the compiler and flags from the n2p2 target makefile (default:
-   ``makefile.gnu``).
+Alternatively, the CMake build commands may look like this:
 
-If this procedure fails or you prefer to add NNP support to an existing LAMMPS
-installation somewhere else in your system please follow the manual build
-instructions below.
+.. code-block:: shell
 
-Manual build
-^^^^^^^^^^^^
-
-To build LAMMPS with support for neural network potentials follow these steps:
-First, build the required libraries:
-
-.. code-block:: none
-
-   cd src
-   make libnnpif
-
-For dynamic linking add the argument ``MODE=shared``.
-
-.. note::
-
-   If dynamic linking (\ ``make libnnpif MODE=shared``\ ) is used, you need to make the NNP
-   libraries visibile in your system, e.g. add this line in your ``.bashrc``\ :
-
-.. code-block:: none
-
-   export LD_LIBRARY_PATH=<path-to-n2p2>/lib:${LD_LIBRARY_PATH}
-
-Then change to the LAMMPS root directory and link the repository root folder to
-the ``lib`` subdirectory:
-
-.. code-block:: bash
-
-   cd <path-to-LAMMPS>/
-   ln -s <path-to-n2p2> lib/nnp
-
-.. danger::
-
-   The link should be named ``nnp``\ , NOT ``n2p2``\ !
-
-Next, copy the USER-NNP package to the LAMMPS source directory:
-
-.. code-block:: bash
-
-   cp -r src/interface/LAMMPS/src/USER-NNP <path-to-LAMMPS>/src
-
-Finally activate the NNP package in LAMMPS:
-
-.. code-block:: bash
-
-   cd <path-to-LAMMPS>/src
-   make yes-user-nnp
-
-Now, you can compile LAMMPS for your target as usual:
-
-.. code-block:: bash
-
-   make <target>
-
-.. note::
-
-   If you want to compile a serial version of LAMMPS with neural network potential
-   support, the use of MPI needs to be deactivated for ``libnnpif``. Just enable the
-   ``-DNOMPI`` option in the settings makefile of your choice, e.g. ``makefile.gnu``.
+   cd path/to/lammps
+   mkdir build; cd build
+   cmake ../cmake -D PKG_ML-HDNNP=yes -D DOWNLOAD_N2P2=yes
+   cmake --build . -j
 
 Usage
 -----
 
 The neural network potential method is introduced in the context of a pair style
-named ``nnp``. LAMMPS comes with a large collection of these pair styles, e.g. for
+named ``hdnnp``. LAMMPS comes with a large collection of these pair styles, e.g. for
 a LJ or Tersoff potential, look
-`here <http://lammps.sandia.gov/doc/pair_style.html>`_ for more information. The
-setup of a ``nnp`` pair style is done by issuing two commands: ``pair_style`` and
-``pair_coeff``. See :ref:`this page <pair_nnp>` for a detailed
+`here <https://docs.lammps.org/Commands_pair.html>`__ for more information. The
+setup of a ``hdnnp`` pair style is done by issuing two commands: ``pair_style`` and
+``pair_coeff``. See the `pair style hdnnp
+<https://docs.lammps.org/pair_hdnnp.html>`__ documentation page for a detailed
 description.
+
+Development build
+-----------------
+
+.. danger::
+
+   This is not the recommended way to build LAMMPS + n2p2, please consider using
+   the LAMMPS package and build system as described above! The development build
+   usually does not offer any benefit. Instead, it may include unstable or
+   untested additions, or may even not compile at all.
+
+For the development build the main makefile provides the compilation target
+``lammps-hdnnp`` which will automatically download LAMMPS (from the `GitHub
+releases page <https://github.com/lammps/lammps/releases>`__) into the
+``interface`` directory, unpack it to ``lammps-hdnnp``, add the necessary n2p2
+files to it and compile the LAMMPS ``mpi`` target. Finally, the binary
+``lmp_mpi`` will be copied to the n2p2 ``bin`` directory. Hence, compiling
+LAMMPS with NNP support is as easy as typing
+
+The LAMMPS version which will be downloaded is determined in
+``src/interface/makefile``. Close to the top there is a variable ``LAMMPS_VERSION``
+which contains the LAMMPS version string, e.g. ``stable_29Aug2024``. This
+default value can be changed in the makefile or also on the command-line if
+desired:
+
+.. code-block:: none
+
+   make LAMMPS_VERSION=stable_2Aug2023 lammps-hdnnp -j
+
+The development build will perform the following actions:
+
+1. If not present, download the LAMMPS source tarball from GitHub.
+2. Unpack the LAMMPS source code.
+3. Link the necessary folders and files to the ``lammps-hdnnp/lib/hdnnp``
+   directory.
+4. Copy the contents of n2p2's ``src/LAMMPS/src/ML-HDNNP`` folder to the LAMMPS
+   ML-HDNNP package folder.
+5. Modify the LAMMPS ``mpi`` target makefile to contain compiler flags from
+   n2p2.
+6. Enable the ML-HDNNP package with ``make yes-ml-hdnnp``.
+7. Compile the LAMMPS ``mpi`` target.
+8. Copy the executable ``lmp_mpi`` to n2p2's ``bin`` directory.
+
+Since in step 4 the LAMMPS-distributed ``hdnnp`` pair style files are replaced
+with the ones located in n2p2, this build may not be identical to the
+recommended way of installing LAMMPS + n2p2 described above.
+
+.. note::
+
+   The automatic compilation will only work on Unix-like systems as it relies on
+   tools such as ``wget``, ``sed`` and ``tar``.
+
+To remove the developer build run ``make clean-lammps-hdnnp``. However, this
+will not delete the downloaded LAMMPS tarballs in the ``src/interface``
+directory so they can be reused for the next build. Please delete them
+manually if desired.
+
+.. important::
+
+   During development be aware that the **copied** files in the LAMMPS ``src``
+   or ``src/ML-HDNNP`` directories are not managed by git. Be sure to transfer
+   modifications back to n2p2's ``src/interface/LAMMPS/src/ML-HDNNP`` directory
+   before cleaning!
+
+Note on older development builds
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Previous versions of n2p2 (before 2.3.0) had a similar automatic development
+build with **older** pair style source code files (pre-dating the `merge request
+<https://github.com/lammps/lammps/pull/2626>`__ for the official LAMMPS repo).
+The most obvious difference is that the pair style name was ``nnp`` and not
+``hdnnp``. This version of the LAMMPS interface is not supported anymore. For
+future installations please always try to use the recommended build method
+described at the top of this page.
+
+LAMMPS script files using the ``nnp`` pair style require three minor modifications
+to be converted to the official ``hdnpp`` version:
+
+1. Replace the pair style name.
+2. The element mapping previously entered via the ``emap`` keyword is now listed
+   in the ``pair_coeff`` line in the usual LAMMPS style.
+3. The cutoff radius is moved from the ``pair_coeff`` line to the first
+   (mandatory) argument of the ``pair_style`` line.
+
+Here is an example:
+
+.. code-block:: shell
+
+   # Old nnp pair style lines:
+   pair_style nnp showew no showewsum 100 maxew 1000 resetew yes emap "1:H,2:O"
+   pair_coeff * * 6.01
+
+   # Corresponding hdnnp pair style lines:
+   pair_style hdnnp 6.01 showew no showewsum 100 maxew 1000 resetew yes
+   pair_coeff * * H O
+
+Please consult the `pair style hdnnp
+<https://docs.lammps.org/pair_hdnnp.html>`__ documentation page for details. The
+documentation for the old ``nnp`` pair style is kept in the n2p2 repository
+here: ``src/doc/sphinx/source/old/pair_nnp.rst``.

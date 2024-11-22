@@ -44,7 +44,7 @@ LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -lboost_system -lbo
 # DEFINE SOURCES
 ###############################################################################
 SRC=$(wildcard test_*.cpp)
-SRC_NOIF=$(filter-out test_lammps_nnp.cpp, $(SRC))
+SRC_NOIF=$(filter-out test_lammps_hdnnp.cpp, $(SRC))
 EXE=$(SRC:%.cpp=%)
 EXE_NOIF=$(SRC_NOIF:%.cpp=%)
 
