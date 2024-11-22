@@ -1,4 +1,4 @@
 <map id="nnp::InterfaceLammps::getForces" name="nnp::InterfaceLammps::getForces">
-<area shape="rect" id="node1" title="Calculate forces and add to LAMMPS atomic force arrays." alt="" coords="217,5,385,47"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairNNP.html#a73d444d0478d9bb8608dc2d977e01430" title=" " alt="" coords="5,5,169,47"/>
+<area shape="rect" id="node1" title="Calculate forces and add to LAMMPS atomic force arrays." alt="" coords="237,5,405,47"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a4e58bc34943d699e1f974b411c4037a4" title=" " alt="" coords="5,5,189,47"/>
 </map>

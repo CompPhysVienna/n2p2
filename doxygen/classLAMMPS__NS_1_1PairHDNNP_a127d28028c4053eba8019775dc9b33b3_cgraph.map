@@ -1,0 +1,6 @@
+<map id="LAMMPS_NS::PairHDNNP::init_style" name="LAMMPS_NS::PairHDNNP::init_style">
+<area shape="rect" id="node1" title=" " alt="" coords="5,71,189,112"/>
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="260,5,428,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a7e9dc6faa2321eb86e04f4b0e026ed7f" title="Check if this interface is correctly initialized." alt="" coords="260,71,428,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Log.html#adba92381da05fda9736b776268ebccfc" title="Register new C&#45;style FILE* pointer for output." alt="" coords="237,137,451,163"/>
+</map>

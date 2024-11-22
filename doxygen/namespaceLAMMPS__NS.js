@@ -1,4 +1,4 @@
 var namespaceLAMMPS__NS =
 [
-    [ "PairNNP", "classLAMMPS__NS_1_1PairNNP.html", "classLAMMPS__NS_1_1PairNNP" ]
+    [ "PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", "classLAMMPS__NS_1_1PairHDNNP" ]
 ];

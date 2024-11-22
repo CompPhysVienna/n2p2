@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-atomenv &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>nnp-atomenv &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -113,8 +113,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>nnp-atomenv</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">nnp-atomenv</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tools/nnp-atomenv.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -125,7 +125,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-atomenv">
-<span id="id1"></span><h1>nnp-atomenv<a class="headerlink" href="#nnp-atomenv" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>nnp-atomenv<a class="headerlink" href="#nnp-atomenv" title="Link to this heading"></a></h1>
 <p>This tool creates files which contain atomic environment data in the form of
 symmetry functions and their derivatives for further processing. In the context
 of high-dimensional neural network potentials symmetry functions act as a local
@@ -178,7 +178,7 @@ x_{i, \alpha}} \quad \frac{\partial \vec{G}_{n^{S_2}(i, 1)}}{\partial x_{i,
 c_{S(i)S_2})}}{\partial x_{i, \alpha}} \quad \ldots,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha = \{0, 1, 2\}\)</span> and <span class="math notranslate nohighlight">\(x_{i, 0} = x_i, x_{i, 1} = y_i, x_{i, 2} = z_i\)</span>.</p>
 <section id="requirements">
-<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<h2>Requirements:<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <p>A data set with multiple configurations, a settings file and the symmetry
 function scaling data is required:</p>
 <ul class="simple">
@@ -188,7 +188,7 @@ function scaling data is required:</p>
 </ul>
 </section>
 <section id="usage">
-<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<h2>Usage:<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np &lt;np&gt; nnp-atomenv &lt;nbins&gt; &lt;ncutij&gt;
 </pre></div>
 </div>
@@ -236,7 +236,7 @@ files!</p>
 </div>
 </section>
 <section id="sample-screen-output">
-<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this heading"></a></h2>
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** SYMMETRY FUNCTION HISTOGRAMS **********************************************
 
 Writing histograms with 500 bins.
@@ -276,7 +276,7 @@ Combining atomic environment file: atomic-env.dGdz.
 </div>
 </section>
 <section id="file-output">
-<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this heading"></a></h2>
+<h2>File output:<a class="headerlink" href="#file-output" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">atomic-env.G</span></code>: Symmetry function values of each atom and its closest
 neighbors.</p></li>

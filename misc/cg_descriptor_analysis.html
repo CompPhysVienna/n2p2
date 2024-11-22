@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Descriptor analysis/Coarse-graining &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Descriptor analysis/Coarse-graining &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -113,8 +113,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Descriptor analysis/Coarse-graining</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Descriptor analysis/Coarse-graining</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/misc/cg_descriptor_analysis.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -125,7 +125,7 @@
            <div itemprop="articleBody">
              
   <section id="descriptor-analysis-coarse-graining">
-<span id="cg-descriptor-analysis"></span><h1>Descriptor analysis/Coarse-graining<a class="headerlink" href="#descriptor-analysis-coarse-graining" title="Permalink to this heading"></a></h1>
+<span id="cg-descriptor-analysis"></span><h1>Descriptor analysis/Coarse-graining<a class="headerlink" href="#descriptor-analysis-coarse-graining" title="Link to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The following procedures and analyses should be considered experimental. They
@@ -143,7 +143,7 @@ analysis itself is described in detail inside the Jupyter notebook
 the steps presented in this tutorial.</p>
 </div>
 <section id="step-0-optional-coarse-grained-data-set">
-<h2>Step 0 (optional): Coarse-grained data set<a class="headerlink" href="#step-0-optional-coarse-grained-data-set" title="Permalink to this heading"></a></h2>
+<h2>Step 0 (optional): Coarse-grained data set<a class="headerlink" href="#step-0-optional-coarse-grained-data-set" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This step is optional, the descriptor analysis may also yield insights if
@@ -160,9 +160,10 @@ coordinates of all molecules via</p>
 <p>where <span class="math notranslate nohighlight">\(\Delta \vec{r}_{jk} = \vec{r}_j - \vec{r}_k\)</span>. The force acting on
 the center of mass is then just the sum of all forces in each molecule.</p>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/water-full-cg.jpeg"><img alt="Water molecule with center of mass position." src="../_images/water-full-cg.jpeg" style="width: 250px;" /></a>
+<a class="reference internal image-reference" href="../_images/water-full-cg.jpeg"><img alt="Water molecule with center of mass position." src="../_images/water-full-cg.jpeg" style="width: 250px;" />
+</a>
 <figcaption>
-<p><span class="caption-text">A water molecule and its coarse-grained (center of mass) representation (turquoise sphere).</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-text">A water molecule and its coarse-grained (center of mass) representation (turquoise sphere).</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>An example C++ code is provided to perform this conversion in <code class="docutils literal notranslate"><span class="pre">nnp-cgdata.cpp</span></code>
@@ -188,7 +189,7 @@ datasets of configurations. Of course such a task can also be performed with
 external software.</p>
 </section>
 <section id="step-1-create-symmetry-function-set">
-<h2>Step 1: Create symmetry function set<a class="headerlink" href="#step-1-create-symmetry-function-set" title="Permalink to this heading"></a></h2>
+<h2>Step 1: Create symmetry function set<a class="headerlink" href="#step-1-create-symmetry-function-set" title="Link to this heading"></a></h2>
 <p>This step is common to regular NNP training with <em>n2p2</em>: for a given data set we
 need to prepare an appropriate symmetry function set and compute the scaling
 data. Please see also <a class="reference internal" href="../topics/training.html#symfunc-setup"><span class="std std-ref">this section</span></a> for further
@@ -207,21 +208,21 @@ symfunction_short Cm 3 Cm Cm 0.03 -1.0 1.0   12.00000
 <p>Together with the data set file <code class="docutils literal notranslate"><span class="pre">input.data</span></code> (file is provided, it is the
 <code class="docutils literal notranslate"><span class="pre">output.data</span></code> of step 0 above) we can proceed to compute the symmetry
 functions statistics:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np <span class="m">4</span> ../../../bin/nnp-scaling <span class="m">500</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>../../../bin/nnp-scaling<span class="w"> </span><span class="m">500</span>
 </pre></div>
 </div>
 <p>We can safely ignore (or delete) the output files <code class="docutils literal notranslate"><span class="pre">sf.???.????.histo</span></code>, we only
 require the <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> file for the next steps.</p>
 </section>
 <section id="step-2-generate-atomic-environment-data">
-<h2>Step 2: Generate atomic environment data<a class="headerlink" href="#step-2-generate-atomic-environment-data" title="Permalink to this heading"></a></h2>
+<h2>Step 2: Generate atomic environment data<a class="headerlink" href="#step-2-generate-atomic-environment-data" title="Link to this heading"></a></h2>
 <p>Next, in order to feed the descriptor analysis Jupyter notebook in the final
 step, we need to prepare atomic environment data for our system. Please read the
 <a class="reference internal" href="../tools/nnp-atomenv.html#nnp-atomenv"><span class="std std-ref">description</span></a> of the tool <code class="docutils literal notranslate"><span class="pre">nnp-atomenv</span></code> for a detailed
 explanation how this data is constructed. The required files from the previous
 steps are prepared in the <code class="docutils literal notranslate"><span class="pre">step-2_atomic-env</span></code> directory. For the
 coarse-graining example we use the command</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../../../bin/nnp-atomenv <span class="m">500</span> <span class="m">4</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../../../bin/nnp-atomenv<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="m">4</span>
 </pre></div>
 </div>
 <p>where the second argument determines the maximum number of neighbor particles
@@ -229,18 +230,19 @@ considered for the atomic environment data. Again, we can ignore all output
 files except <code class="docutils literal notranslate"><span class="pre">atomic-env.dGdx</span></code> which we use in the final step.</p>
 </section>
 <section id="step-3-analyze-descriptors">
-<h2>Step 3: Analyze descriptors<a class="headerlink" href="#step-3-analyze-descriptors" title="Permalink to this heading"></a></h2>
+<h2>Step 3: Analyze descriptors<a class="headerlink" href="#step-3-analyze-descriptors" title="Link to this heading"></a></h2>
 <p>Finally, everything is ready to start the Jupyter notebook
 <code class="docutils literal notranslate"><span class="pre">analyze-descriptors.ipynb</span></code> which carries out the actual descriptor analysis. The
 notebook and necessary files are provided in <code class="docutils literal notranslate"><span class="pre">step-3_cluster-analysis</span></code>. After
 starting Jupyter with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter notebook analyze-descriptors.ipynb
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter<span class="w"> </span>notebook<span class="w"> </span>analyze-descriptors.ipynb
 </pre></div>
 </div>
 <p>we can run all cells which may take a while. All further steps of the descriptor
 analysis are described in the notebook’s comment cells.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../_images/jupyter-notebook.jpeg"><img alt="Preview of the Jupyter notebook." src="../_images/jupyter-notebook.jpeg" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="../_images/jupyter-notebook.jpeg"><img alt="Preview of the Jupyter notebook." src="../_images/jupyter-notebook.jpeg" style="width: 600px;" />
+</a>
 </figure>
 </section>
 </section>

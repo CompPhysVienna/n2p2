@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory layout &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Memory layout &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -85,8 +85,62 @@
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_types.html">Symmetry function types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_scaling.html">Symmetry function scaling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Memory layout</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#configuration-storage">Configuration storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-storage">Configuration storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp4AtomE"><code class="docutils literal notranslate"><span class="pre">Atom</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom5indexE"><code class="docutils literal notranslate"><span class="pre">Atom::index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom7elementE"><code class="docutils literal notranslate"><span class="pre">Atom::element</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom6energyE"><code class="docutils literal notranslate"><span class="pre">Atom::energy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom6chargeE"><code class="docutils literal notranslate"><span class="pre">Atom::charge</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1rE"><code class="docutils literal notranslate"><span class="pre">Atom::r</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1fE"><code class="docutils literal notranslate"><span class="pre">Atom::f</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4fRefE"><code class="docutils literal notranslate"><span class="pre">Atom::fRef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1GE"><code class="docutils literal notranslate"><span class="pre">Atom::G</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4dEdGE"><code class="docutils literal notranslate"><span class="pre">Atom::dEdG</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4dGdrE"><code class="docutils literal notranslate"><span class="pre">Atom::dGdr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom9neighborsE"><code class="docutils literal notranslate"><span class="pre">Atom::neighbors</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp4Atom8NeighborE"><code class="docutils literal notranslate"><span class="pre">Neighbor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor5indexE"><code class="docutils literal notranslate"><span class="pre">Neighbor::index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor7elementE"><code class="docutils literal notranslate"><span class="pre">Neighbor::element</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor1dE"><code class="docutils literal notranslate"><span class="pre">Neighbor::d</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor2drE"><code class="docutils literal notranslate"><span class="pre">Neighbor::dr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor4dGdrE"><code class="docutils literal notranslate"><span class="pre">Neighbor::dGdr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp9StructureE"><code class="docutils literal notranslate"><span class="pre">Structure</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure5indexE"><code class="docutils literal notranslate"><span class="pre">Structure::index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure6energyE"><code class="docutils literal notranslate"><span class="pre">Structure::energy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure9energyRefE"><code class="docutils literal notranslate"><span class="pre">Structure::energyRef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure9chargeRefE"><code class="docutils literal notranslate"><span class="pre">Structure::chargeRef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure3boxE"><code class="docutils literal notranslate"><span class="pre">Structure::box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure5atomsE"><code class="docutils literal notranslate"><span class="pre">Structure::atoms</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp7DatasetE"><code class="docutils literal notranslate"><span class="pre">Dataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp7Dataset10structuresE"><code class="docutils literal notranslate"><span class="pre">Dataset::structures</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp10ElementMapE"><code class="docutils literal notranslate"><span class="pre">ElementMap</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp10ElementMapixEKNSt6size_tE"><code class="docutils literal notranslate"><span class="pre">ElementMap::operator[]()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp10ElementMapixEKNSt6stringE"><code class="docutils literal notranslate"><span class="pre">ElementMap::operator[]()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE"><code class="docutils literal notranslate"><span class="pre">Vec3D</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D4normEv"><code class="docutils literal notranslate"><span class="pre">Vec3D::norm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D5norm2Ev"><code class="docutils literal notranslate"><span class="pre">Vec3D::norm2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp5Vec3D9normalizeEv"><code class="docutils literal notranslate"><span class="pre">Vec3D::normalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D5crossERK5Vec3D"><code class="docutils literal notranslate"><span class="pre">Vec3D::cross()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp5Vec3D1rE"><code class="docutils literal notranslate"><span class="pre">Vec3D::r</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp5splitERKNSt6stringEc"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp5strprEPKcz"><code class="docutils literal notranslate"><span class="pre">strpr()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -111,8 +165,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Memory layout</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Memory layout</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/memory_layout.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -123,78 +177,78 @@
            <div itemprop="articleBody">
              
   <section id="memory-layout">
-<span id="id1"></span><h1>Memory layout<a class="headerlink" href="#memory-layout" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Memory layout<a class="headerlink" href="#memory-layout" title="Link to this heading"></a></h1>
 <section id="configuration-storage">
-<h2>Configuration storage<a class="headerlink" href="#configuration-storage" title="Permalink to this heading"></a></h2>
+<h2>Configuration storage<a class="headerlink" href="#configuration-storage" title="Link to this heading"></a></h2>
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4AtomE">
-<span id="_CPPv3N3nnp4AtomE"></span><span id="_CPPv2N3nnp4AtomE"></span><span id="nnp::Atom"></span><span class="target" id="structnnp_1_1Atom"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Atom</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4AtomE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4AtomE"></span><span id="_CPPv2N3nnp4AtomE"></span><span id="nnp::Atom"></span><span class="target" id="structnnp_1_1Atom"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Atom</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4AtomE" title="Link to this definition"></a><br /></dt>
 <dd><p>Storage for a single atom. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom5indexE">
-<span id="_CPPv3N3nnp4Atom5indexE"></span><span id="_CPPv2N3nnp4Atom5indexE"></span><span id="nnp::Atom::index__std::s"></span><span class="target" id="structnnp_1_1Atom_1a2e45492f424bf0af6841ce9a9033d11e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom5indexE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom5indexE"></span><span id="_CPPv2N3nnp4Atom5indexE"></span><span id="nnp::Atom::index__std::s"></span><span class="target" id="structnnp_1_1Atom_1a2e45492f424bf0af6841ce9a9033d11e"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom5indexE" title="Link to this definition"></a><br /></dt>
 <dd><p>Index number of this atom. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom7elementE">
-<span id="_CPPv3N3nnp4Atom7elementE"></span><span id="_CPPv2N3nnp4Atom7elementE"></span><span id="nnp::Atom::element__std::s"></span><span class="target" id="structnnp_1_1Atom_1a807a4cf41842f8225d88f1848f1ef6ee"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">element</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom7elementE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom7elementE"></span><span id="_CPPv2N3nnp4Atom7elementE"></span><span id="nnp::Atom::element__std::s"></span><span class="target" id="structnnp_1_1Atom_1a807a4cf41842f8225d88f1848f1ef6ee"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">element</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom7elementE" title="Link to this definition"></a><br /></dt>
 <dd><p>Element index of this atom. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom6energyE">
-<span id="_CPPv3N3nnp4Atom6energyE"></span><span id="_CPPv2N3nnp4Atom6energyE"></span><span id="nnp::Atom::energy__double"></span><span class="target" id="structnnp_1_1Atom_1abae2157524b61b7772f09d7fae340fa3"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">energy</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom6energyE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom6energyE"></span><span id="_CPPv2N3nnp4Atom6energyE"></span><span id="nnp::Atom::energy__double"></span><span class="target" id="structnnp_1_1Atom_1abae2157524b61b7772f09d7fae340fa3"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">energy</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom6energyE" title="Link to this definition"></a><br /></dt>
 <dd><p>Atomic energy determined by neural network. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom6chargeE">
-<span id="_CPPv3N3nnp4Atom6chargeE"></span><span id="_CPPv2N3nnp4Atom6chargeE"></span><span id="nnp::Atom::charge__double"></span><span class="target" id="structnnp_1_1Atom_1a2352aabf707595bd9893ed59a9c4977e"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">charge</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom6chargeE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom6chargeE"></span><span id="_CPPv2N3nnp4Atom6chargeE"></span><span id="nnp::Atom::charge__double"></span><span class="target" id="structnnp_1_1Atom_1a2352aabf707595bd9893ed59a9c4977e"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">charge</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom6chargeE" title="Link to this definition"></a><br /></dt>
 <dd><p>Atomic charge determined by neural network. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom1rE">
-<span id="_CPPv3N3nnp4Atom1rE"></span><span id="_CPPv2N3nnp4Atom1rE"></span><span id="nnp::Atom::r__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1a0e8397ecd8e60cf9db1f4dfe7378d447"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom1rE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom1rE"></span><span id="_CPPv2N3nnp4Atom1rE"></span><span id="nnp::Atom::r__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1a0e8397ecd8e60cf9db1f4dfe7378d447"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom1rE" title="Link to this definition"></a><br /></dt>
 <dd><p>Cartesian coordinates. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom1fE">
-<span id="_CPPv3N3nnp4Atom1fE"></span><span id="_CPPv2N3nnp4Atom1fE"></span><span id="nnp::Atom::f__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1a170d82083599ace5c7973bd22c79ddae"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">f</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom1fE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom1fE"></span><span id="_CPPv2N3nnp4Atom1fE"></span><span id="nnp::Atom::f__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1a170d82083599ace5c7973bd22c79ddae"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">f</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom1fE" title="Link to this definition"></a><br /></dt>
 <dd><p>Force vector calculated by neural network. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom4fRefE">
-<span id="_CPPv3N3nnp4Atom4fRefE"></span><span id="_CPPv2N3nnp4Atom4fRefE"></span><span id="nnp::Atom::fRef__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1a3ef1d07944abca654800f68676cd2e89"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fRef</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom4fRefE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom4fRefE"></span><span id="_CPPv2N3nnp4Atom4fRefE"></span><span id="nnp::Atom::fRef__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1a3ef1d07944abca654800f68676cd2e89"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fRef</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom4fRefE" title="Link to this definition"></a><br /></dt>
 <dd><p>Reference force vector from data set. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom1GE">
-<span id="_CPPv3N3nnp4Atom1GE"></span><span id="_CPPv2N3nnp4Atom1GE"></span><span id="nnp::Atom::G__std::vector:double:"></span><span class="target" id="structnnp_1_1Atom_1abc64f09e49aabb8112004f5af6983102"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">G</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom1GE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom1GE"></span><span id="_CPPv2N3nnp4Atom1GE"></span><span id="nnp::Atom::G__std::vector:double:"></span><span class="target" id="structnnp_1_1Atom_1abc64f09e49aabb8112004f5af6983102"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">G</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom1GE" title="Link to this definition"></a><br /></dt>
 <dd><p>Symmetry function values. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom4dEdGE">
-<span id="_CPPv3N3nnp4Atom4dEdGE"></span><span id="_CPPv2N3nnp4Atom4dEdGE"></span><span id="nnp::Atom::dEdG__std::vector:double:"></span><span class="target" id="structnnp_1_1Atom_1a139bcae479dfbf132aa5e33956c0610d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dEdG</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom4dEdGE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom4dEdGE"></span><span id="_CPPv2N3nnp4Atom4dEdGE"></span><span id="nnp::Atom::dEdG__std::vector:double:"></span><span class="target" id="structnnp_1_1Atom_1a139bcae479dfbf132aa5e33956c0610d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dEdG</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom4dEdGE" title="Link to this definition"></a><br /></dt>
 <dd><p>Derivative of atomic energy with respect to symmetry functions. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom4dGdrE">
-<span id="_CPPv3N3nnp4Atom4dGdrE"></span><span id="_CPPv2N3nnp4Atom4dGdrE"></span><span id="nnp::Atom::dGdr__std::vector:Vec3D:"></span><span class="target" id="structnnp_1_1Atom_1a482ea8be24723a1a05012e4d405a60db"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dGdr</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom4dGdrE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom4dGdrE"></span><span id="_CPPv2N3nnp4Atom4dGdrE"></span><span id="nnp::Atom::dGdr__std::vector:Vec3D:"></span><span class="target" id="structnnp_1_1Atom_1a482ea8be24723a1a05012e4d405a60db"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dGdr</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom4dGdrE" title="Link to this definition"></a><br /></dt>
 <dd><p>Derivative of symmetry functions with respect to this atom’s coordinates. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom9neighborsE">
-<span id="_CPPv3N3nnp4Atom9neighborsE"></span><span id="_CPPv2N3nnp4Atom9neighborsE"></span><span id="nnp::Atom::neighbors__std::vector:Neighbor:"></span><span class="target" id="structnnp_1_1Atom_1a0361a8e48f3b762f76db75abcf6fc305"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp4Atom8NeighborE" title="nnp::Atom::Neighbor"><span class="n"><span class="pre">Neighbor</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">neighbors</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom9neighborsE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom9neighborsE"></span><span id="_CPPv2N3nnp4Atom9neighborsE"></span><span id="nnp::Atom::neighbors__std::vector:Neighbor:"></span><span class="target" id="structnnp_1_1Atom_1a0361a8e48f3b762f76db75abcf6fc305"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp4Atom8NeighborE" title="nnp::Atom::Neighbor"><span class="n"><span class="pre">Neighbor</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">neighbors</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom9neighborsE" title="Link to this definition"></a><br /></dt>
 <dd><p><a class="reference internal" href="#structnnp_1_1Atom_1_1Neighbor"><span class="std std-ref">Neighbor</span></a> array (maximum number defined in macros.h. </p>
 </dd></dl>
 
@@ -203,37 +257,37 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom8NeighborE">
-<span id="_CPPv3N3nnp4Atom8NeighborE"></span><span id="_CPPv2N3nnp4Atom8NeighborE"></span><span id="nnp::Atom::Neighbor"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Neighbor</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8NeighborE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom8NeighborE"></span><span id="_CPPv2N3nnp4Atom8NeighborE"></span><span id="nnp::Atom::Neighbor"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Neighbor</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8NeighborE" title="Link to this definition"></a><br /></dt>
 <dd><p>Struct to store information on neighbor atoms. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom8Neighbor5indexE">
-<span id="_CPPv3N3nnp4Atom8Neighbor5indexE"></span><span id="_CPPv2N3nnp4Atom8Neighbor5indexE"></span><span id="nnp::Atom::Neighbor::index__std::s"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a2a19893fb87b0de43ec460939209d726"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor5indexE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom8Neighbor5indexE"></span><span id="_CPPv2N3nnp4Atom8Neighbor5indexE"></span><span id="nnp::Atom::Neighbor::index__std::s"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a2a19893fb87b0de43ec460939209d726"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor5indexE" title="Link to this definition"></a><br /></dt>
 <dd><p>Index of neighbor atom. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom8Neighbor7elementE">
-<span id="_CPPv3N3nnp4Atom8Neighbor7elementE"></span><span id="_CPPv2N3nnp4Atom8Neighbor7elementE"></span><span id="nnp::Atom::Neighbor::element__std::s"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a3c0720664c09022328aeb7a676b1a266"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">element</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor7elementE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom8Neighbor7elementE"></span><span id="_CPPv2N3nnp4Atom8Neighbor7elementE"></span><span id="nnp::Atom::Neighbor::element__std::s"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a3c0720664c09022328aeb7a676b1a266"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">element</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor7elementE" title="Link to this definition"></a><br /></dt>
 <dd><p>Element index of neighbor atom. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom8Neighbor1dE">
-<span id="_CPPv3N3nnp4Atom8Neighbor1dE"></span><span id="_CPPv2N3nnp4Atom8Neighbor1dE"></span><span id="nnp::Atom::Neighbor::d__double"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a46922b548b9819bbdeafaa0d9db9aa05"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">d</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor1dE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom8Neighbor1dE"></span><span id="_CPPv2N3nnp4Atom8Neighbor1dE"></span><span id="nnp::Atom::Neighbor::d__double"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a46922b548b9819bbdeafaa0d9db9aa05"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">d</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor1dE" title="Link to this definition"></a><br /></dt>
 <dd><p>Distance to neighbor atom. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom8Neighbor2drE">
-<span id="_CPPv3N3nnp4Atom8Neighbor2drE"></span><span id="_CPPv2N3nnp4Atom8Neighbor2drE"></span><span id="nnp::Atom::Neighbor::dr__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a5f338e8ace13b36746031fa76f1e170f"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dr</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor2drE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom8Neighbor2drE"></span><span id="_CPPv2N3nnp4Atom8Neighbor2drE"></span><span id="nnp::Atom::Neighbor::dr__Vec3D"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1a5f338e8ace13b36746031fa76f1e170f"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dr</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor2drE" title="Link to this definition"></a><br /></dt>
 <dd><p>Distance vector to neighbor atom. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp4Atom8Neighbor4dGdrE">
-<span id="_CPPv3N3nnp4Atom8Neighbor4dGdrE"></span><span id="_CPPv2N3nnp4Atom8Neighbor4dGdrE"></span><span id="nnp::Atom::Neighbor::dGdr__std::vector:Vec3D:"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1ace4770399203773624ab9c7db8db66d5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dGdr</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor4dGdrE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp4Atom8Neighbor4dGdrE"></span><span id="_CPPv2N3nnp4Atom8Neighbor4dGdrE"></span><span id="nnp::Atom::Neighbor::dGdr__std::vector:Vec3D:"></span><span class="target" id="structnnp_1_1Atom_1_1Neighbor_1ace4770399203773624ab9c7db8db66d5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dGdr</span></span></span><a class="headerlink" href="#_CPPv4N3nnp4Atom8Neighbor4dGdrE" title="Link to this definition"></a><br /></dt>
 <dd><p>Derivatives of symmetry functions with respect to neighbor coordinates. </p>
 <p>May be empty, only filled when needed. Contains <span class="math notranslate nohighlight">\( \frac{\partial G_i}{\partial \alpha_j} \)</span>, where <span class="math notranslate nohighlight">\(G_i\)</span> is a symmetry function of atom <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(\alpha_j\)</span> is a coordinate <span class="math notranslate nohighlight">\( \alpha = x,y,z \)</span> of neighbor atom <span class="math notranslate nohighlight">\( j \)</span>, necessary for force calculation. </p>
 </dd></dl>
@@ -243,43 +297,43 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9StructureE">
-<span id="_CPPv3N3nnp9StructureE"></span><span id="_CPPv2N3nnp9StructureE"></span><span id="nnp::Structure"></span><span class="target" id="structnnp_1_1Structure"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Structure</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9StructureE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9StructureE"></span><span id="_CPPv2N3nnp9StructureE"></span><span id="nnp::Structure"></span><span class="target" id="structnnp_1_1Structure"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Structure</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9StructureE" title="Link to this definition"></a><br /></dt>
 <dd><p>Storage for one atomic configuration. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9Structure5indexE">
-<span id="_CPPv3N3nnp9Structure5indexE"></span><span id="_CPPv2N3nnp9Structure5indexE"></span><span id="nnp::Structure::index__std::s"></span><span class="target" id="structnnp_1_1Structure_1a5af7b5cd0a2154c2e34a3b8a73a51ca6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure5indexE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9Structure5indexE"></span><span id="_CPPv2N3nnp9Structure5indexE"></span><span id="nnp::Structure::index__std::s"></span><span class="target" id="structnnp_1_1Structure_1a5af7b5cd0a2154c2e34a3b8a73a51ca6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">index</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure5indexE" title="Link to this definition"></a><br /></dt>
 <dd><p>Index number of this structure. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9Structure6energyE">
-<span id="_CPPv3N3nnp9Structure6energyE"></span><span id="_CPPv2N3nnp9Structure6energyE"></span><span id="nnp::Structure::energy__double"></span><span class="target" id="structnnp_1_1Structure_1aa9fd0fd0f8a23b6bf96247589feceeb5"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">energy</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure6energyE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9Structure6energyE"></span><span id="_CPPv2N3nnp9Structure6energyE"></span><span id="nnp::Structure::energy__double"></span><span class="target" id="structnnp_1_1Structure_1aa9fd0fd0f8a23b6bf96247589feceeb5"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">energy</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure6energyE" title="Link to this definition"></a><br /></dt>
 <dd><p>Potential energy determined by neural network. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9Structure9energyRefE">
-<span id="_CPPv3N3nnp9Structure9energyRefE"></span><span id="_CPPv2N3nnp9Structure9energyRefE"></span><span id="nnp::Structure::energyRef__double"></span><span class="target" id="structnnp_1_1Structure_1aaee087b13af754a75198def4d12c8b61"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">energyRef</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure9energyRefE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9Structure9energyRefE"></span><span id="_CPPv2N3nnp9Structure9energyRefE"></span><span id="nnp::Structure::energyRef__double"></span><span class="target" id="structnnp_1_1Structure_1aaee087b13af754a75198def4d12c8b61"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">energyRef</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure9energyRefE" title="Link to this definition"></a><br /></dt>
 <dd><p>Reference potential energy. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9Structure9chargeRefE">
-<span id="_CPPv3N3nnp9Structure9chargeRefE"></span><span id="_CPPv2N3nnp9Structure9chargeRefE"></span><span id="nnp::Structure::chargeRef__double"></span><span class="target" id="structnnp_1_1Structure_1a65839bc1a3213a6d77e064b5edade786"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chargeRef</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure9chargeRefE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9Structure9chargeRefE"></span><span id="_CPPv2N3nnp9Structure9chargeRefE"></span><span id="nnp::Structure::chargeRef__double"></span><span class="target" id="structnnp_1_1Structure_1a65839bc1a3213a6d77e064b5edade786"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chargeRef</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure9chargeRefE" title="Link to this definition"></a><br /></dt>
 <dd><p>Reference charge. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9Structure3boxE">
-<span id="_CPPv3N3nnp9Structure3boxE"></span><span id="_CPPv2N3nnp9Structure3boxE"></span><span id="nnp::Structure::box__Vec3DA"></span><span class="target" id="structnnp_1_1Structure_1a21e5cd213176fab9075b3f040dd6dee6"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">box</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure3boxE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9Structure3boxE"></span><span id="_CPPv2N3nnp9Structure3boxE"></span><span id="nnp::Structure::box__Vec3DA"></span><span class="target" id="structnnp_1_1Structure_1a21e5cd213176fab9075b3f040dd6dee6"></span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">box</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure3boxE" title="Link to this definition"></a><br /></dt>
 <dd><p>Simulation box vectors. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp9Structure5atomsE">
-<span id="_CPPv3N3nnp9Structure5atomsE"></span><span id="_CPPv2N3nnp9Structure5atomsE"></span><span id="nnp::Structure::atoms__std::vector:Atom:"></span><span class="target" id="structnnp_1_1Structure_1adee965dec483f9479378a2ed4acd5544"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp4AtomE" title="nnp::Atom"><span class="n"><span class="pre">Atom</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">atoms</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure5atomsE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp9Structure5atomsE"></span><span id="_CPPv2N3nnp9Structure5atomsE"></span><span id="nnp::Structure::atoms__std::vector:Atom:"></span><span class="target" id="structnnp_1_1Structure_1adee965dec483f9479378a2ed4acd5544"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp4AtomE" title="nnp::Atom"><span class="n"><span class="pre">Atom</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">atoms</span></span></span><a class="headerlink" href="#_CPPv4N3nnp9Structure5atomsE" title="Link to this definition"></a><br /></dt>
 <dd><p>Vector of all atoms in this structure. </p>
 </dd></dl>
 
@@ -288,14 +342,14 @@
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp7DatasetE">
-<span id="_CPPv3N3nnp7DatasetE"></span><span id="_CPPv2N3nnp7DatasetE"></span><span id="nnp::Dataset"></span><span class="target" id="classnnp_1_1Dataset"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Dataset</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Mode</span></span><a class="headerlink" href="#_CPPv4N3nnp7DatasetE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp7DatasetE"></span><span id="_CPPv2N3nnp7DatasetE"></span><span id="nnp::Dataset"></span><span class="target" id="classnnp_1_1Dataset"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Dataset</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Mode</span></span><a class="headerlink" href="#_CPPv4N3nnp7DatasetE" title="Link to this definition"></a><br /></dt>
 <dd><p>Collect and process large data sets. </p>
 <p>Subclassed by nnp::Training</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp7Dataset10structuresE">
-<span id="_CPPv3N3nnp7Dataset10structuresE"></span><span id="_CPPv2N3nnp7Dataset10structuresE"></span><span id="nnp::Dataset::structures__std::vector:Structure:"></span><span class="target" id="classnnp_1_1Dataset_1aa0ab32abb821e98058c7df794ca8103d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp9StructureE" title="nnp::Structure"><span class="n"><span class="pre">Structure</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">structures</span></span></span><a class="headerlink" href="#_CPPv4N3nnp7Dataset10structuresE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp7Dataset10structuresE"></span><span id="_CPPv2N3nnp7Dataset10structuresE"></span><span id="nnp::Dataset::structures__std::vector:Structure:"></span><span class="target" id="classnnp_1_1Dataset_1aa0ab32abb821e98058c7df794ca8103d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N3nnp9StructureE" title="nnp::Structure"><span class="n"><span class="pre">Structure</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">structures</span></span></span><a class="headerlink" href="#_CPPv4N3nnp7Dataset10structuresE" title="Link to this definition"></a><br /></dt>
 <dd><p>All structures in this dataset. </p>
 </dd></dl>
 
@@ -304,22 +358,22 @@
 
 </section>
 <section id="helper-classes-and-functions">
-<h2>Helper classes and functions<a class="headerlink" href="#helper-classes-and-functions" title="Permalink to this heading"></a></h2>
+<h2>Helper classes and functions<a class="headerlink" href="#helper-classes-and-functions" title="Link to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp10ElementMapE">
-<span id="_CPPv3N3nnp10ElementMapE"></span><span id="_CPPv2N3nnp10ElementMapE"></span><span id="nnp::ElementMap"></span><span class="target" id="classnnp_1_1ElementMap"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ElementMap</span></span></span><a class="headerlink" href="#_CPPv4N3nnp10ElementMapE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp10ElementMapE"></span><span id="_CPPv2N3nnp10ElementMapE"></span><span id="nnp::ElementMap"></span><span class="target" id="classnnp_1_1ElementMap"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ElementMap</span></span></span><a class="headerlink" href="#_CPPv4N3nnp10ElementMapE" title="Link to this definition"></a><br /></dt>
 <dd><p>Contains element map. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK3nnp10ElementMapixEKNSt6size_tE">
-<span id="_CPPv3NK3nnp10ElementMapixEKNSt6size_tE"></span><span id="_CPPv2NK3nnp10ElementMapixEKNSt6size_tE"></span><span id="nnp::ElementMap::subscript-operator__std::sCC"></span><span class="target" id="classnnp_1_1ElementMap_1a43d5d34598cfe35bf3e9cbb88d0dd161"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp10ElementMapixEKNSt6size_tE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3NK3nnp10ElementMapixEKNSt6size_tE"></span><span id="_CPPv2NK3nnp10ElementMapixEKNSt6size_tE"></span><span id="nnp::ElementMap::subscript-operator__std::sCC"></span><span class="target" id="classnnp_1_1ElementMap_1a43d5d34598cfe35bf3e9cbb88d0dd161"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp10ElementMapixEKNSt6size_tE" title="Link to this definition"></a><br /></dt>
 <dd><p>Overload [] operator for index search. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> – <strong>[in]</strong> Element index. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Symbol of element in map. </p>
 </dd>
 </dl>
@@ -327,13 +381,13 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK3nnp10ElementMapixEKNSt6stringE">
-<span id="_CPPv3NK3nnp10ElementMapixEKNSt6stringE"></span><span id="_CPPv2NK3nnp10ElementMapixEKNSt6stringE"></span><span id="nnp::ElementMap::subscript-operator__ssCC"></span><span class="target" id="classnnp_1_1ElementMap_1abb596b30ef866d5aca7c243ea1ffd84c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">symbol</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp10ElementMapixEKNSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3NK3nnp10ElementMapixEKNSt6stringE"></span><span id="_CPPv2NK3nnp10ElementMapixEKNSt6stringE"></span><span id="nnp::ElementMap::subscript-operator__ssCC"></span><span class="target" id="classnnp_1_1ElementMap_1abb596b30ef866d5aca7c243ea1ffd84c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">symbol</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp10ElementMapixEKNSt6stringE" title="Link to this definition"></a><br /></dt>
 <dd><p>Overload [] operator for symbol search. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>symbol</strong> – <strong>[in]</strong> Element symbol. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Index of element in map. </p>
 </dd>
 </dl>
@@ -344,16 +398,16 @@
 
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp5Vec3DE">
-<span id="_CPPv3N3nnp5Vec3DE"></span><span id="_CPPv2N3nnp5Vec3DE"></span><span id="nnp::Vec3D"></span><span class="target" id="structnnp_1_1Vec3D"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Vec3D</span></span></span><a class="headerlink" href="#_CPPv4N3nnp5Vec3DE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp5Vec3DE"></span><span id="_CPPv2N3nnp5Vec3DE"></span><span id="nnp::Vec3D"></span><span class="target" id="structnnp_1_1Vec3D"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Vec3D</span></span></span><a class="headerlink" href="#_CPPv4N3nnp5Vec3DE" title="Link to this definition"></a><br /></dt>
 <dd><p>Vector in 3 dimensional real space. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK3nnp5Vec3D4normEv">
-<span id="_CPPv3NK3nnp5Vec3D4normEv"></span><span id="_CPPv2NK3nnp5Vec3D4normEv"></span><span id="nnp::Vec3D::normC"></span><span class="target" id="structnnp_1_1Vec3D_1aeb7a761001a28045ccb6cfb175f5d399"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">norm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp5Vec3D4normEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3NK3nnp5Vec3D4normEv"></span><span id="_CPPv2NK3nnp5Vec3D4normEv"></span><span id="nnp::Vec3D::normC"></span><span class="target" id="structnnp_1_1Vec3D_1aeb7a761001a28045ccb6cfb175f5d399"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">norm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp5Vec3D4normEv" title="Link to this definition"></a><br /></dt>
 <dd><p>Calculate norm of vector. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Norm of vector. </p>
 </dd>
 </dl>
@@ -361,10 +415,10 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK3nnp5Vec3D5norm2Ev">
-<span id="_CPPv3NK3nnp5Vec3D5norm2Ev"></span><span id="_CPPv2NK3nnp5Vec3D5norm2Ev"></span><span id="nnp::Vec3D::norm2C"></span><span class="target" id="structnnp_1_1Vec3D_1a4dd2e5fef207b1bd2021142bf678f251"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">norm2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp5Vec3D5norm2Ev" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3NK3nnp5Vec3D5norm2Ev"></span><span id="_CPPv2NK3nnp5Vec3D5norm2Ev"></span><span id="nnp::Vec3D::norm2C"></span><span class="target" id="structnnp_1_1Vec3D_1a4dd2e5fef207b1bd2021142bf678f251"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">norm2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp5Vec3D5norm2Ev" title="Link to this definition"></a><br /></dt>
 <dd><p>Calculate square of norm of vector. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Square of norm of vector. </p>
 </dd>
 </dl>
@@ -372,16 +426,16 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp5Vec3D9normalizeEv">
-<span id="_CPPv3N3nnp5Vec3D9normalizeEv"></span><span id="_CPPv2N3nnp5Vec3D9normalizeEv"></span><span id="nnp::Vec3D::normalize"></span><span class="target" id="structnnp_1_1Vec3D_1a6a59afd117951d8bc98391da9d894741"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">normalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp5Vec3D9normalizeEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp5Vec3D9normalizeEv"></span><span id="_CPPv2N3nnp5Vec3D9normalizeEv"></span><span id="nnp::Vec3D::normalize"></span><span class="target" id="structnnp_1_1Vec3D_1a6a59afd117951d8bc98391da9d894741"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">normalize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp5Vec3D9normalizeEv" title="Link to this definition"></a><br /></dt>
 <dd><p>Normalize vector, norm equals 1.0 afterwards. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4NK3nnp5Vec3D5crossERK5Vec3D">
-<span id="_CPPv3NK3nnp5Vec3D5crossERK5Vec3D"></span><span id="_CPPv2NK3nnp5Vec3D5crossERK5Vec3D"></span><span id="nnp::Vec3D::cross__Vec3DCRC"></span><span class="target" id="structnnp_1_1Vec3D_1acb8ab5515d194a43e10c2fa43636dffc"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cross</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">v</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp5Vec3D5crossERK5Vec3D" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3NK3nnp5Vec3D5crossERK5Vec3D"></span><span id="_CPPv2NK3nnp5Vec3D5crossERK5Vec3D"></span><span id="nnp::Vec3D::cross__Vec3DCRC"></span><span class="target" id="structnnp_1_1Vec3D_1acb8ab5515d194a43e10c2fa43636dffc"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cross</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE" title="nnp::Vec3D"><span class="n"><span class="pre">Vec3D</span></span></a><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">v</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK3nnp5Vec3D5crossERK5Vec3D" title="Link to this definition"></a><br /></dt>
 <dd><p>Cross product, argument vector is second in product. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Cross product of two vectors. </p>
 </dd>
 </dl>
@@ -392,7 +446,7 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp5Vec3D1rE">
-<span id="_CPPv3N3nnp5Vec3D1rE"></span><span id="_CPPv2N3nnp5Vec3D1rE"></span><span id="nnp::Vec3D::r__doubleA"></span><span class="target" id="structnnp_1_1Vec3D_1a4edaddb021629424003223c131f44d6d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N3nnp5Vec3D1rE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp5Vec3D1rE"></span><span id="_CPPv2N3nnp5Vec3D1rE"></span><span id="nnp::Vec3D::r__doubleA"></span><span class="target" id="structnnp_1_1Vec3D_1a4edaddb021629424003223c131f44d6d"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">r</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N3nnp5Vec3D1rE" title="Link to this definition"></a><br /></dt>
 <dd><p>cartesian coordinates. </p>
 </dd></dl>
 
@@ -401,16 +455,16 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp5splitERKNSt6stringEc">
-<span id="_CPPv3N3nnp5splitERKNSt6stringEc"></span><span id="_CPPv2N3nnp5splitERKNSt6stringEc"></span><span id="nnp::split__ssCR.c"></span><span class="target" id="namespacennp_1a6ecc8126eac4f4c52283f9f776986aa0"></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">split</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delimiter</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'</span> <span class="pre">'</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp5splitERKNSt6stringEc" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp5splitERKNSt6stringEc"></span><span id="_CPPv2N3nnp5splitERKNSt6stringEc"></span><span id="nnp::split__ssCR.c"></span><span class="target" id="namespacennp_1a6ecc8126eac4f4c52283f9f776986aa0"></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">split</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">input</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">delimiter</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'</span> <span class="pre">'</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp5splitERKNSt6stringEc" title="Link to this definition"></a><br /></dt>
 <dd><p>Split string at each delimiter. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input</strong> – <strong>[in]</strong> Input string. </p></li>
 <li><p><strong>delimiter</strong> – <strong>[in]</strong> Delimiter character (default ‘ ‘). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Vector containing the string parts. </p>
 </dd>
 </dl>
@@ -418,7 +472,7 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp5strprEPKcz">
-<span id="_CPPv3N3nnp5strprEPKcz"></span><span id="_CPPv2N3nnp5strprEPKcz"></span><span id="nnp::strpr__cCP.z"></span><span class="target" id="namespacennp_1a398f0bcafb57e99ba1581c4b8f8a7f76"></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">strpr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp5strprEPKcz" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp5strprEPKcz"></span><span id="_CPPv2N3nnp5strprEPKcz"></span><span id="nnp::strpr__cCP.z"></span><span class="target" id="namespacennp_1a398f0bcafb57e99ba1581c4b8f8a7f76"></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">strpr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">format</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp5strprEPKcz" title="Link to this definition"></a><br /></dt>
 <dd><p>String version of printf function. </p>
 </dd></dl>
 

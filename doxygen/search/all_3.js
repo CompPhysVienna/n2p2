@@ -38,7 +38,7 @@ var searchData=
   ['dftanhu_35',['dfTANHU',['../classnnp_1_1CutoffFunction.html#a9b8e50892ac89fcb6ebcf7eef846025a',1,'nnp::CutoffFunction']]],
   ['dgdr_36',['dGdr',['../structnnp_1_1Atom_1_1Neighbor.html#ace4770399203773624ab9c7db8db66d5',1,'nnp::Atom::Neighbor::dGdr()'],['../structnnp_1_1Atom.html#a482ea8be24723a1a05012e4d405a60db',1,'nnp::Atom::dGdr()']]],
   ['dgdxia_37',['dGdxia',['../classnnp_1_1Training.html#a040f4feb5130b36ba185f437e6999a62',1,'nnp::Training']]],
-  ['directory_38',['directory',['../classLAMMPS__NS_1_1PairNNP.html#a2b0d4ed687bdd7016655bf2036ea2351',1,'LAMMPS_NS::PairNNP']]],
+  ['directory_38',['directory',['../classLAMMPS__NS_1_1PairHDNNP.html#ac70798487946ec127bf86267b9ce0c10',1,'LAMMPS_NS::PairHDNNP']]],
   ['displaymetric_39',['displayMetric',['../structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85',1,'nnp::Training::Property']]],
   ['distributestructures_40',['distributeStructures',['../classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd',1,'nnp::Dataset']]],
   ['dpdc_41',['dPdc',['../classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697',1,'nnp::Training']]],

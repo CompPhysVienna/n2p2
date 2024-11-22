@@ -1,7 +1,7 @@
 var annotated_dup =
 [
     [ "LAMMPS_NS", "namespaceLAMMPS__NS.html", [
-      [ "PairNNP", "classLAMMPS__NS_1_1PairNNP.html", "classLAMMPS__NS_1_1PairNNP" ]
+      [ "PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", "classLAMMPS__NS_1_1PairHDNNP" ]
     ] ],
     [ "nnp", "namespacennp.html", [
       [ "Atom", "structnnp_1_1Atom.html", "structnnp_1_1Atom" ],

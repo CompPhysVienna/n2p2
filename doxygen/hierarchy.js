@@ -28,7 +28,7 @@ var hierarchy =
     [ "nnp::NeuralNetwork", "classnnp_1_1NeuralNetwork.html", null ],
     [ "nnp::NeuralNetwork::Neuron", "structnnp_1_1NeuralNetwork_1_1Neuron.html", null ],
     [ "Pair", "classPair.html", [
-      [ "LAMMPS_NS::PairNNP", "classLAMMPS__NS_1_1PairNNP.html", null ]
+      [ "LAMMPS_NS::PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", null ]
     ] ],
     [ "nnp::Training::Property", "structnnp_1_1Training_1_1Property.html", null ],
     [ "nnp::Settings", "classnnp_1_1Settings.html", null ],

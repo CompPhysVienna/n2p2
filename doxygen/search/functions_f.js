@@ -42,7 +42,7 @@ var searchData=
   ['setsizeobservation_39',['setSizeObservation',['../classnnp_1_1KalmanFilter.html#aa75026a60054469cc7fb3a211e501f2f',1,'nnp::KalmanFilter']]],
   ['setstage_40',['setStage',['../classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a',1,'nnp::Training']]],
   ['setstate_41',['setState',['../classnnp_1_1KalmanFilter.html#a5f3cd56e4f996086a9b1689ed2466be8',1,'nnp::KalmanFilter::setState()'],['../classnnp_1_1Updater.html#a76ad56d61d38810a999f234123e0c325',1,'nnp::Updater::setState()'],['../classnnp_1_1GradientDescent.html#ab62491101a113800d9d07c1746bdeb6d',1,'nnp::GradientDescent::setState()']]],
-  ['settings_42',['settings',['../classLAMMPS__NS_1_1PairNNP.html#a7dc305bee73e05889a2c851b41854fe1',1,'LAMMPS_NS::PairNNP']]],
+  ['settings_42',['settings',['../classLAMMPS__NS_1_1PairHDNNP.html#a70b54cc53a77ea69edcf36013e9257c0',1,'LAMMPS_NS::PairHDNNP']]],
   ['settingsgetvalue_43',['settingsGetValue',['../classnnp_1_1Mode.html#a9b7eeb5daa541cc8e3ab36a9bcf69ab8',1,'nnp::Mode']]],
   ['settingskeywordexists_44',['settingsKeywordExists',['../classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275',1,'nnp::Mode']]],
   ['settraininglogfilename_45',['setTrainingLogFileName',['../classnnp_1_1Training.html#a00f0177f326dacee6f7c5a1f7628e21c',1,'nnp::Training']]],

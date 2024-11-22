@@ -9,7 +9,7 @@ var searchData=
   ['h_5ft_5fint_6',['h_t_int',['../classnnp_1_1ModeCabana.html#a6e0ab944650a329b22006071d03aa020',1,'nnp::ModeCabana']]],
   ['h_5ft_5fmass_7',['h_t_mass',['../classnnp_1_1ModeCabana.html#a94b9b54df51bb02f61b5e8addf97b989',1,'nnp::ModeCabana']]],
   ['h_5fweights_8',['h_weights',['../classnnp_1_1ModeCabana.html#ad79c91a0dc4ebb1429a19ee8446cbd54',1,'nnp::ModeCabana']]],
-  ['handleextrapolationwarnings_9',['handleExtrapolationWarnings',['../classLAMMPS__NS_1_1PairNNP.html#a31e9057e2529ee8a779496358dcbd4f8',1,'LAMMPS_NS::PairNNP']]],
+  ['handleextrapolationwarnings_9',['handleExtrapolationWarnings',['../classLAMMPS__NS_1_1PairHDNNP.html#a2aa4271e700abf521d402ff68f4771c8',1,'LAMMPS_NS::PairHDNNP']]],
   ['hasneighborlist_10',['hasNeighborList',['../structnnp_1_1Atom.html#aa4a9596079af5fb7a6218f74b073a690',1,'nnp::Atom::hasNeighborList()'],['../structnnp_1_1Structure.html#af21dfbdaf41e8332ee0f773a070f3f74',1,'nnp::Structure::hasNeighborList()']]],
   ['hasstructures_11',['hasStructures',['../classnnp_1_1Training.html#aeee2583a1323180d235f16717111f39e',1,'nnp::Training']]],
   ['hassymmetryfunctionderivatives_12',['hasSymmetryFunctionDerivatives',['../structnnp_1_1Atom.html#a1f3ed8b68d3c546d068024b0c949eac1',1,'nnp::Atom::hasSymmetryFunctionDerivatives()'],['../structnnp_1_1Structure.html#a82f10399909e0f7fa8f6344c305781cc',1,'nnp::Structure::hasSymmetryFunctionDerivatives()']]],

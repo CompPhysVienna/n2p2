@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-prune &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>nnp-prune &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -111,8 +111,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>nnp-prune</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">nnp-prune</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tools/nnp-prune.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -123,20 +123,20 @@
            <div itemprop="articleBody">
              
   <section id="nnp-prune">
-<span id="id1"></span><h1>nnp-prune<a class="headerlink" href="#nnp-prune" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>nnp-prune<a class="headerlink" href="#nnp-prune" title="Link to this heading"></a></h1>
 <p>The tool <code class="docutils literal notranslate"><span class="pre">nnp-prune</span></code> is used to identify and remove symmetry functions that have
 little effect on the training performance. There are two modes of operation:</p>
 <section id="prune-before-training">
-<h2>Prune before training<a class="headerlink" href="#prune-before-training" title="Permalink to this heading"></a></h2>
+<h2>Prune before training<a class="headerlink" href="#prune-before-training" title="Link to this heading"></a></h2>
 <p>Here, symmetry functions are discarded if their range (i.e. maximum - minimum
 value over the entire data set) is below a provided threshold. The first step
 is to calculate all symmetry functions with <a class="reference internal" href="nnp-scaling.html#nnp-scaling"><span class="std std-ref">nnp-scaling</span></a>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np <span class="m">4</span> nnp-scaling <span class="m">500</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>nnp-scaling<span class="w"> </span><span class="m">500</span>
 </pre></div>
 </div>
 <p>This will produce the file <code class="docutils literal notranslate"><span class="pre">scaling.data</span></code> where minimum, maximum, mean and sigma
 values are stored. Then, in the same directory call for example</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnp-prune range <span class="m">1</span>.0E-4
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnp-prune<span class="w"> </span>range<span class="w"> </span><span class="m">1</span>.0E-4
 </pre></div>
 </div>
 <p>to eliminate all symmetry functions with range below <span class="math notranslate nohighlight">\(10^{-4}\)</span>. The resulting
@@ -147,19 +147,19 @@ training process (note: do not forget to calculate <code class="docutils literal
 <a class="reference internal" href="nnp-scaling.html#nnp-scaling"><span class="std std-ref">nnp-scaling</span></a>).</p>
 </section>
 <section id="prune-after-training">
-<h2>Prune after training<a class="headerlink" href="#prune-after-training" title="Permalink to this heading"></a></h2>
+<h2>Prune after training<a class="headerlink" href="#prune-after-training" title="Link to this heading"></a></h2>
 <p>After a neural network potential has been fitted with <code class="docutils literal notranslate"><span class="pre">nnp-train</span></code> it is possible
 to identify unnecessary symmetry functions with a so-called sensitivity
 analysis. Here, the derivatives of the output neuron with respect to the input
 layer neurons, i.e. the symmetry functions, are averaged over the whole data.
 This analysis is automatically performed by <code class="docutils literal notranslate"><span class="pre">nnp-dataset</span></code> and the results are
 stored in files like <code class="docutils literal notranslate"><span class="pre">sensitivity.008.out</span></code> (for the oxygen neural network):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun -np <span class="m">4</span> nnp-dataset <span class="m">1</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpirun<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>nnp-dataset<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 <p>With the sensitivity data ready, use the pruning tool to automatically remove
 symmetry functions with a sensitivity below the threshold:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnp-prune sensitivity <span class="m">0</span>.5 max
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nnp-prune<span class="w"> </span>sensitivity<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>max
 </pre></div>
 </div>
 <p>Here, the threshold is set to 0.5% where 100% is equal to the total sum of all

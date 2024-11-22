@@ -12,7 +12,7 @@ var searchData=
   ['dfptr_9',['dfPtr',['../classnnp_1_1CoreFunction.html#a48d68d78fc4b119434fde769305f9ab1',1,'nnp::CoreFunction::dfPtr()'],['../classnnp_1_1CutoffFunction.html#a9204d9d7da0b9c8f35463ccd6f948d00',1,'nnp::CutoffFunction::dfPtr()']]],
   ['dgdr_10',['dGdr',['../structnnp_1_1Atom_1_1Neighbor.html#ace4770399203773624ab9c7db8db66d5',1,'nnp::Atom::Neighbor::dGdr()'],['../structnnp_1_1Atom.html#a482ea8be24723a1a05012e4d405a60db',1,'nnp::Atom::dGdr()']]],
   ['dgdxia_11',['dGdxia',['../classnnp_1_1Training.html#a040f4feb5130b36ba185f437e6999a62',1,'nnp::Training']]],
-  ['directory_12',['directory',['../classLAMMPS__NS_1_1PairNNP.html#a2b0d4ed687bdd7016655bf2036ea2351',1,'LAMMPS_NS::PairNNP']]],
+  ['directory_12',['directory',['../classLAMMPS__NS_1_1PairHDNNP.html#ac70798487946ec127bf86267b9ce0c10',1,'LAMMPS_NS::PairHDNNP']]],
   ['displaymetric_13',['displayMetric',['../structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85',1,'nnp::Training::Property']]],
   ['dqdg_14',['dQdG',['../structnnp_1_1Atom.html#a20f75208c3f07e1cf93f375e327c8548',1,'nnp::Atom']]],
   ['dr_15',['dr',['../structnnp_1_1Atom_1_1Neighbor.html#a5f338e8ace13b36746031fa76f1e170f',1,'nnp::Atom::Neighbor']]],

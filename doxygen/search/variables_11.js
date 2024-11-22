@@ -5,7 +5,7 @@ var searchData=
   ['rci_2',['rci',['../classnnp_1_1CutoffFunction.html#a0cfa150a9bdccd7069db2658c6476fcd',1,'nnp::CutoffFunction']]],
   ['rcinv_3',['rcinv',['../classnnp_1_1CutoffFunction.html#a3b49fe0d0a23564e793c4870326e9189',1,'nnp::CutoffFunction']]],
   ['repeatedenergyupdates_4',['repeatedEnergyUpdates',['../classnnp_1_1Training.html#ab8e2ffef22c4331c2892ddbd01436ec6',1,'nnp::Training']]],
-  ['resetew_5',['resetew',['../classnnp_1_1InterfaceLammps.html#a7d53a23dedee7f177c33e015ac5cabe6',1,'nnp::InterfaceLammps::resetew()'],['../classLAMMPS__NS_1_1PairNNP.html#a60a86e0d39210c4f90ba0e1f8af20bd3',1,'LAMMPS_NS::PairNNP::resetew()']]],
+  ['resetew_5',['resetew',['../classnnp_1_1InterfaceLammps.html#a7d53a23dedee7f177c33e015ac5cabe6',1,'nnp::InterfaceLammps::resetew()'],['../classLAMMPS__NS_1_1PairHDNNP.html#a62690d07e37c16e690190c744b473606',1,'LAMMPS_NS::PairHDNNP::resetew()']]],
   ['resetloop_6',['resetLoop',['../classnnp_1_1Stopwatch.html#a4400f3c976b5e75468c18d9a142441ea',1,'nnp::Stopwatch']]],
   ['reversemap_7',['reverseMap',['../classnnp_1_1ElementMap.html#a3ca5228c68df8f79b47532adf5c1f6f3',1,'nnp::ElementMap']]],
   ['right_8',['right',['../classnnp_1_1CompactFunction.html#a9e7f3b1f1492bdf36840ae79e87452dd',1,'nnp::CompactFunction']]],

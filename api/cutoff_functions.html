@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cutoff functions &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Cutoff functions &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -81,7 +81,21 @@
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="neural_network.html">Neural network</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Cutoff functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cutoff functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffTypeE"><code class="docutils literal notranslate"><span class="pre">CutoffType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_HARDE"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_HARD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_COSE"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_COS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_TANHUE"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_TANHU</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_TANH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_EXPE"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_EXP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY1E"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_POLY1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY2E"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_POLY2</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY3E"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_POLY3</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY4E"><code class="docutils literal notranslate"><span class="pre">CutoffType::CT_POLY4</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_types.html">Symmetry function types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_scaling.html">Symmetry function scaling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="memory_layout.html">Memory layout</a></li>
@@ -107,8 +121,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Cutoff functions</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cutoff functions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/cutoff_functions.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -119,10 +133,10 @@
            <div itemprop="articleBody">
              
   <section id="cutoff-functions">
-<span id="id1"></span><h1>Cutoff functions<a class="headerlink" href="#cutoff-functions" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Cutoff functions<a class="headerlink" href="#cutoff-functions" title="Link to this heading"></a></h1>
 <dl class="cpp enum">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffTypeE">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffTypeE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffTypeE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutoffFunction</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">CutoffType</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffTypeE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffTypeE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffTypeE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CutoffFunction</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">CutoffType</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffTypeE" title="Link to this definition"></a><br /></dt>
 <dd><p>List of available cutoff function types. </p>
 <p>Most cutoff types allow the definition of an inner cutoff <span class="math notranslate nohighlight">\( r_{ci} := \alpha \, r_c\)</span>. Then the cutoff is equal to <span class="math notranslate nohighlight">\(1\)</span> up to the inner cutoff:</p>
 <p><span class="math notranslate nohighlight">\( f_c(r) =
@@ -131,61 +145,61 @@
 f(x), &amp; \text{for } r_{ci} \le r &lt; r_c \text{ where }
 x := \frac{r - r_{ci}}{r_c - r_{ci}} \\
 0 &amp; \text{for } r \geq r_c
-\end{cases} \)</span> </p>
+\end{cases} \)</span></p>
 <p><em>Values:</em></p>
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType7CT_HARDE">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType7CT_HARDE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType7CT_HARDE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8aad0969728f1ff733e44eeb23a0243f29"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_HARD</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_HARDE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = 1\)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType7CT_HARDE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType7CT_HARDE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8aad0969728f1ff733e44eeb23a0243f29"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_HARD</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_HARDE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType6CT_COSE">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType6CT_COSE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType6CT_COSE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8adb8558ac5f4c7f7e47ecc6e6febf6cc1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_COS</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_COSE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = \frac{1}{2} \left[ \cos (\pi x) + 1\right] \)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType6CT_COSE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType6CT_COSE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8adb8558ac5f4c7f7e47ecc6e6febf6cc1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_COS</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_COSE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = \frac{1}{2} \left[ \cos (\pi x) + 1\right] \)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType8CT_TANHUE">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_TANHUE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_TANHUE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8aea950c10f5352bfe6d601fd68e61237c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_TANHU</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_TANHUE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_c(r) = \tanh^3 \left(1 - \frac{r}{r_c} \right) \)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_TANHUE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_TANHUE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8aea950c10f5352bfe6d601fd68e61237c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_TANHU</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_TANHUE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_c(r) = \tanh^3 \left(1 - \frac{r}{r_c} \right) \)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType7CT_TANHE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType7CT_TANHE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8a0ec474efe78ea6ee51f6a92b109c1688"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_TANH</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType7CT_TANHE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType7CT_TANHE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8a0ec474efe78ea6ee51f6a92b109c1688"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_TANH</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType7CT_TANHE" title="Link to this definition"></a><br /></dt>
 <dd><p><span class="math notranslate nohighlight">\(f_c(r) = c \tanh^3 \left(1 - \frac{r}{r_c} \right),\,
-        f(0) = 1 \)</span> </p>
+        f(0) = 1 \)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType6CT_EXPE">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType6CT_EXPE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType6CT_EXPE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8ac56c478b60424a8239af9240824c75ab"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_EXP</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_EXPE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = e^{1 - \frac{1}{1 - x^2}}\)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType6CT_EXPE"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType6CT_EXPE"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8ac56c478b60424a8239af9240824c75ab"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_EXP</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType6CT_EXPE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = e^{1 - \frac{1}{1 - x^2}}\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY1E">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY1E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY1E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8aa026feb56e31f7b86310470f6d4b8fc3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY1</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY1E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = (2x - 3)x^2 + 1\)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY1E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY1E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8aa026feb56e31f7b86310470f6d4b8fc3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY1</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY1E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = (2x - 3)x^2 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY2E">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY2E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY2E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8a58e2b60c88345e1eda934ccfa8a502db"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY2</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY2E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = ((15 - 6x)x - 10) x^3 + 1\)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY2E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY2E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8a58e2b60c88345e1eda934ccfa8a502db"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY2</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY2E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = ((15 - 6x)x - 10) x^3 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY3E">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY3E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY3E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8af34a44bd38be6dfdde4bc60a19c09e34"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY3</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY3E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x(20x - 70) + 84) - 35)x^4 + 1\)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY3E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY3E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8af34a44bd38be6dfdde4bc60a19c09e34"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY3</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY3E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x(20x - 70) + 84) - 35)x^4 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY4E">
-<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY4E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY4E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8ae5d32c978f9537fd2e2fa4ac42797cc7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY4</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY4E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1\)</span> </p>
+<span id="_CPPv3N3nnp14CutoffFunction10CutoffType8CT_POLY4E"></span><span id="_CPPv2N3nnp14CutoffFunction10CutoffType8CT_POLY4E"></span><span class="target" id="classnnp_1_1CutoffFunction_1a0a5fd8220ae66e1442b6692885316fa8ae5d32c978f9537fd2e2fa4ac42797cc7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CT_POLY4</span></span></span><a class="headerlink" href="#_CPPv4N3nnp14CutoffFunction10CutoffType8CT_POLY4E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1\)</span></p>
 </dd></dl>
 
 </dd></dl>

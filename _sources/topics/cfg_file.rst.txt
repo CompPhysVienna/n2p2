@@ -96,3 +96,37 @@ configuration file with 3 structures, 2 periodic and 1 non-periodic:
    energy 543.210
    charge 0.0
    end
+
+Manual train/test set definition
+--------------------------------
+
+Since n2p2 version 2.3.0 it is possible to manually assign structures to the
+training or test set already in the ``input.data`` file. Just add the string
+``set=train`` or ``set=test`` right after the structure start marker ``begin``.
+For example:
+
+.. code-block:: none
+
+   begin set=train
+   lattice 1.0 0.0 0.0
+   lattice 0.0 1.0 0.0
+   lattice 0.0 0.0 1.0
+   atom 0.1 0.2 0.3 Cd -0.1 0.0 -0.1 -0.3  0.1
+   atom 0.1 0.1 0.4 S   0.1 0.0  1.1 -0.2  0.4
+   energy 123.456
+   charge 0.0
+   end
+   begin set=test
+   lattice 1.0 0.0 0.0
+   lattice 0.0 1.0 0.0
+   lattice 0.0 0.0 1.0
+   atom 0.1 0.2 0.3 Cd -0.1 0.0 -0.1 -0.3  0.1
+   atom 0.1 0.1 0.4 S   0.1 0.0  1.1 -0.2  0.4
+   energy 123.456
+   charge 0.0
+   end
+
+This assignment takes precedence over the usual random split performed by
+``nnp-train``. Structures which are not labelled with the ``set=`` method will
+still be assigned randomly to training/test sets according to the
+``test_fraction`` keyword.

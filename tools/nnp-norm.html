@@ -1,21 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-norm &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>nnp-norm &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,8 +56,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -112,8 +112,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>nnp-norm</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">nnp-norm</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tools/nnp-norm.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -124,7 +124,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-norm">
-<span id="id1"></span><h1>nnp-norm<a class="headerlink" href="#nnp-norm" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>nnp-norm<a class="headerlink" href="#nnp-norm" title="Link to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The use of this tool is not recommended any more because the data set
@@ -133,7 +133,7 @@ keyword <a class="reference internal" href="../topics/keywords.html#normalize-da
 </div>
 <p>This is a helper tool for the <a class="reference internal" href="../topics/training.html#training"><span class="std std-ref">training procedure</span></a> which enables
 an optional data set normalization. Please have a look at this <a class="reference internal" href="../topics/units.html#units"><span class="std std-ref">explanation</span></a> why normalization may help to achieve consistent training results.
-A full description of the procedure is provided in section 3.1 in <a class="footnote-reference brackets" href="#id3" id="id2">1</a>. In
+A full description of the procedure is provided in section 3.1 in <a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. In
 short, the normalization is achieved by subtracting a mean energy per atom and
 converting energy and length units in such way that the energies per atom and the
 forces have unit standard deviation. In practice, this requires three numbers
@@ -149,7 +149,7 @@ the settings file. Other n2p2 tools will read them in, confirm the activation of
 the normalization in the log file and automatically apply unit conversion
 on-the-fly. No additional intervention by the user is required!</p>
 <section id="requirements">
-<h2>Requirements:<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<h2>Requirements:<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <p>A data set with multiple configurations and a basic settings file are required:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">input.data</span></code></p></li>
@@ -159,13 +159,13 @@ on-the-fly. No additional intervention by the user is required!</p>
 basic information about elements is needed.</p>
 </section>
 <section id="usage">
-<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<h2>Usage:<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-norm
 </pre></div>
 </div>
 </section>
 <section id="sample-screen-output">
-<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this heading"></a></h2>
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** DATA SET NORMALIZATION ****************************************************
 
 Writing energy/atom vs. volume/atom data to &quot;evsv.dat&quot;.
@@ -190,7 +190,7 @@ Use this settings file for normalized training.
 </div>
 </section>
 <section id="file-output">
-<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this heading"></a></h2>
+<h2>File output:<a class="headerlink" href="#file-output" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">input.nn</span></code>: The settings file with additional normalization header.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input.nn.bak</span></code>: A backup of the original settings file without normalization keywords.</p></li>
@@ -199,13 +199,14 @@ data set.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">output.data</span></code>: The data set with normalization applied, only for debugging
 purposes.</p></li>
 </ul>
-<dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
-<dd><p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
 Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
 Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b01092">https://doi.org/10.1021/acs.jctc.8b01092</a></p>
-</dd>
-</dl>
+</aside>
+</aside>
 </section>
 </section>
 

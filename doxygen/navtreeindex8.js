@@ -1,13 +1,5 @@
 var NAVTREEINDEX8 =
 {
-"classnnp_1_1SymFncExpAngnWeighted.html#ac3eab8a314a09461d0c790eb854a9356":[0,0,1,33,24],
-"classnnp_1_1SymFncExpAngnWeighted.html#acfa61a6c875475e2bb209234507a5fdd":[0,0,1,33,3],
-"classnnp_1_1SymFncExpAngnWeighted.html#acfa61a6c875475e2bb209234507a5fdd":[1,0,1,33,3],
-"classnnp_1_1SymFncExpAngnWeighted.html#ae7c913dcf361906115a98cb42fd1470a":[1,0,1,33,4],
-"classnnp_1_1SymFncExpAngnWeighted.html#ae7c913dcf361906115a98cb42fd1470a":[0,0,1,33,4],
-"classnnp_1_1SymFncExpAngnWeighted.html#aefe6a02065aee9916deddc329b045f4f":[1,0,1,33,18],
-"classnnp_1_1SymFncExpAngnWeighted.html#aefe6a02065aee9916deddc329b045f4f":[0,0,1,33,18],
-"classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56":[1,0,1,33,6],
 "classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56":[0,0,1,33,6],
 "classnnp_1_1SymFncExpAngnWeighted.html#afaeba93571718bb07521c9c207ec986b":[0,0,1,33,10],
 "classnnp_1_1SymFncExpAngnWeighted.html#afaeba93571718bb07521c9c207ec986b":[1,0,1,33,10],
@@ -249,5 +241,13 @@ var NAVTREEINDEX8 =
 "classnnp_1_1SymGrpBaseCompAngWeighted.html#a4344c4e05ff11765a47a8ce90401ee88":[0,0,1,41,6],
 "classnnp_1_1SymGrpBaseCompAngWeighted.html#a531009ca5d295b9009ea74d21720c6f9":[0,0,1,41,4],
 "classnnp_1_1SymGrpBaseCompAngWeighted.html#a531009ca5d295b9009ea74d21720c6f9":[1,0,1,41,4],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#a826febb60c27c4726ff3f5b2bc8ccc39":[0,0,1,41,5]
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#a826febb60c27c4726ff3f5b2bc8ccc39":[0,0,1,41,5],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#a826febb60c27c4726ff3f5b2bc8ccc39":[1,0,1,41,5],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#a8dbe0c0e7564660b0f1280a314ba54df":[0,0,1,41,9],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#a8dbe0c0e7564660b0f1280a314ba54df":[1,0,1,41,9],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab6dc5db1aa79fdc9ae32b3dae511918d":[0,0,1,41,3],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab6dc5db1aa79fdc9ae32b3dae511918d":[1,0,1,41,3],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab734dffc37f54ca35fb4cf74b95527e4":[0,0,1,41,8],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab734dffc37f54ca35fb4cf74b95527e4":[1,0,1,41,8],
+"classnnp_1_1SymGrpBaseCompAngWeighted.html#af463977ae7c8508cd5888bfdc672fd65":[0,0,1,41,1]
 };

@@ -1,21 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CabanaMD GPU build example &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>CabanaMD GPU build example &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,8 +56,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -111,8 +111,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>CabanaMD GPU build example</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CabanaMD GPU build example</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/misc/cabanamd_build_example.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -123,7 +123,7 @@
            <div itemprop="articleBody">
              
   <section id="cabanamd-gpu-build-example">
-<span id="cabanamd-build-example"></span><h1>CabanaMD GPU build example<a class="headerlink" href="#cabanamd-gpu-build-example" title="Permalink to this heading"></a></h1>
+<span id="cabanamd-build-example"></span><h1>CabanaMD GPU build example<a class="headerlink" href="#cabanamd-gpu-build-example" title="Link to this heading"></a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This is not a fully tested installation guide but rather a collection of
@@ -132,7 +132,7 @@ time. They are kept here only as a reference, for your own build please refer
 to the current build instructions of the individual software packages.</p>
 </div>
 <section id="system-specifications">
-<h2>System specifications<a class="headerlink" href="#system-specifications" title="Permalink to this heading"></a></h2>
+<h2>System specifications<a class="headerlink" href="#system-specifications" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>CPU: <code class="docutils literal notranslate"><span class="pre">Intel(R)</span> <span class="pre">Core(TM)</span> <span class="pre">i7-7800X</span> <span class="pre">(6/12</span> <span class="pre">cores/threads)</span></code></p></li>
 <li><p>RAM: <code class="docutils literal notranslate"><span class="pre">32GB</span></code></p></li>
@@ -144,7 +144,7 @@ to the current build instructions of the individual software packages.</p>
 </ul>
 </section>
 <section id="build-steps">
-<h2>Build steps<a class="headerlink" href="#build-steps" title="Permalink to this heading"></a></h2>
+<h2>Build steps<a class="headerlink" href="#build-steps" title="Link to this heading"></a></h2>
 <p>In order to have all packages in one place please first create a working directory for
 these instructions (e.g. <code class="docutils literal notranslate"><span class="pre">CabanaMD-Setup</span></code>) and <code class="docutils literal notranslate"><span class="pre">cd</span></code> there.</p>
 <p>On this particular system it was required to build a CUDA-aware MPI. Create a
@@ -152,16 +152,16 @@ file <code class="docutils literal notranslate"><span class="pre">build_openmpi.
 commands one by one):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.0.tar.gz
-tar -xvzf openmpi-4.1.0.tar.gz
-mv openmpi-4.1.0 openmpi
+wget<span class="w"> </span>https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.0.tar.gz
+tar<span class="w"> </span>-xvzf<span class="w"> </span>openmpi-4.1.0.tar.gz
+mv<span class="w"> </span>openmpi-4.1.0<span class="w"> </span>openmpi
 
-<span class="nb">cd</span> openmpi
-mkdir build
-./configure --prefix<span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/build --with-cuda<span class="o">=</span>/usr/local/cuda-11.0 <span class="o">&amp;&amp;</span> <span class="se">\</span>
-make all -j <span class="o">&amp;&amp;</span> <span class="se">\</span>
-make install
-<span class="nb">cd</span> ..
+<span class="nb">cd</span><span class="w"> </span>openmpi
+mkdir<span class="w"> </span>build
+./configure<span class="w"> </span>--prefix<span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/build<span class="w"> </span>--with-cuda<span class="o">=</span>/usr/local/cuda-11.0<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+make<span class="w"> </span>all<span class="w"> </span>-j<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+make<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <p>After successful compilation you should see binaries in <code class="docutils literal notranslate"><span class="pre">openmpi/build/bin/</span></code>.
@@ -171,28 +171,28 @@ Be sure to set the path to your CUDA installation correctly in the
 Create and execute a file <code class="docutils literal notranslate"><span class="pre">build_kokkos.sh</span></code> with this content:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-git clone git@github.com:kokkos/kokkos.git
-<span class="nb">export</span> <span class="nv">COMPILER</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/kokkos/bin/nvcc_wrapper
-<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>sm_61
+git<span class="w"> </span>clone<span class="w"> </span>git@github.com:kokkos/kokkos.git
+<span class="nb">export</span><span class="w"> </span><span class="nv">COMPILER</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/kokkos/bin/nvcc_wrapper
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>sm_61
 <span class="c1"># CAUTION: Also set the flag (-D Kokkos_ARCH_PASCAL61=On)</span>
-<span class="nb">cd</span> kokkos
-git checkout <span class="m">3</span>.2.00
-mkdir build
-<span class="nb">cd</span> build
-cmake ../ <span class="se">\</span>
- -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">COMPILER</span><span class="si">}</span> <span class="se">\</span>
- -D <span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span> <span class="se">\</span>
- -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>./install <span class="se">\</span>
- -D <span class="nv">Kokkos_CUDA_DIR</span><span class="o">=</span>/usr/local/cuda-11.0/ <span class="se">\</span>
- -D <span class="nv">Kokkos_ENABLE_SERIAL</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Kokkos_ENABLE_OPENMP</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Kokkos_ENABLE_CUDA</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Kokkos_ENABLE_CUDA_LAMBDA</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Kokkos_ENABLE_CUDA_UVM</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Kokkos_ARCH_PASCAL61</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Kokkos_ENABLE_HWLOC</span><span class="o">=</span>On <span class="o">&amp;&amp;</span>
-make install -j
-<span class="nb">cd</span> ../..
+<span class="nb">cd</span><span class="w"> </span>kokkos
+git<span class="w"> </span>checkout<span class="w"> </span><span class="m">3</span>.2.00
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>../<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">COMPILER</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span>./install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_CUDA_DIR</span><span class="o">=</span>/usr/local/cuda-11.0/<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ENABLE_SERIAL</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ENABLE_OPENMP</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ENABLE_CUDA</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ENABLE_CUDA_LAMBDA</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ENABLE_CUDA_UVM</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ARCH_PASCAL61</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Kokkos_ENABLE_HWLOC</span><span class="o">=</span>On<span class="w"> </span><span class="o">&amp;&amp;</span>
+make<span class="w"> </span>install<span class="w"> </span>-j
+<span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
 <p>Make sure to set the <code class="docutils literal notranslate"><span class="pre">ARCH</span></code> and <code class="docutils literal notranslate"><span class="pre">Kokkos_ARCH_???</span></code> correctly for your GPU
@@ -203,30 +203,30 @@ and headers in the <code class="docutils literal notranslate"><span class="pre">
 <code class="docutils literal notranslate"><span class="pre">build_Cabana.sh</span></code>, fill in below commands and execute it:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-git clone git@github.com:ECP-copa/Cabana.git
-<span class="nb">cd</span> Cabana
+git<span class="w"> </span>clone<span class="w"> </span>git@github.com:ECP-copa/Cabana.git
+<span class="nb">cd</span><span class="w"> </span>Cabana
 <span class="c1"># No specific version is specified in the docs, only &quot;master&quot;. If that does not</span>
 <span class="c1"># work at a later point in time use this line to get a commit that worked:</span>
-git checkout 5c2503aa72c3e3cb4db34ea52e41a2ac446e5719
-<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>sm_61
-<span class="nb">export</span> <span class="nv">OPENMPI_BUILD_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../openmpi/build
-<span class="nb">export</span> <span class="nv">KOKKOS_SRC_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../kokkos
-<span class="nb">export</span> <span class="nv">KOKKOS_INSTALL_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/build/install
-mkdir build
-<span class="nb">cd</span> build
-cmake ../ <span class="se">\</span>
- -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="s2">&quot;Release&quot;</span> <span class="se">\</span>
- -D <span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span><span class="s2">;</span><span class="si">${</span><span class="nv">KOKKOS_INSTALL_DIR</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
- -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/install <span class="se">\</span>
- -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/bin/nvcc_wrapper <span class="se">\</span>
- -D <span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span> <span class="se">\</span>
- -D <span class="nv">MPI_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span>/bin/mpic++ <span class="se">\</span>
- -D <span class="nv">Cabana_REQUIRE_CUDA</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Cabana_ENABLE_MPI</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">Cabana_ENABLE_TESTING</span><span class="o">=</span>OFF <span class="se">\</span>
- -D <span class="nv">Cabana_ENABLE_EXAMPLES</span><span class="o">=</span>OFF <span class="o">&amp;&amp;</span> <span class="se">\</span>
-make install -j
-<span class="nb">cd</span> ../..
+git<span class="w"> </span>checkout<span class="w"> </span>5c2503aa72c3e3cb4db34ea52e41a2ac446e5719
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>sm_61
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENMPI_BUILD_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../openmpi/build
+<span class="nb">export</span><span class="w"> </span><span class="nv">KOKKOS_SRC_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../kokkos
+<span class="nb">export</span><span class="w"> </span><span class="nv">KOKKOS_INSTALL_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/build/install
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>../<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="s2">&quot;Release&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span><span class="s2">;</span><span class="si">${</span><span class="nv">KOKKOS_INSTALL_DIR</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/bin/nvcc_wrapper<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">MPI_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span>/bin/mpic++<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Cabana_REQUIRE_CUDA</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Cabana_ENABLE_MPI</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Cabana_ENABLE_TESTING</span><span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Cabana_ENABLE_EXAMPLES</span><span class="o">=</span>OFF<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+make<span class="w"> </span>install<span class="w"> </span>-j
+<span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
 <p>Again, check that the <code class="docutils literal notranslate"><span class="pre">ARCH</span></code> variable is set correctly. Since we have excluded
@@ -237,12 +237,12 @@ headers in <code class="docutils literal notranslate"><span class="pre">build/in
 <code class="docutils literal notranslate"><span class="pre">build_n2p2.sh</span></code> with the follwing lines and execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-git clone https://github.com/CompPhysVienna/n2p2
-<span class="nb">cd</span> n2p2
-git checkout v2.0.1
-<span class="nb">cd</span> src
-make libnnpif -j
-<span class="nb">cd</span> ../..
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/CompPhysVienna/n2p2
+<span class="nb">cd</span><span class="w"> </span>n2p2
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.1
+<span class="nb">cd</span><span class="w"> </span>src
+make<span class="w"> </span>libnnpif<span class="w"> </span>-j
+<span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
 <p>Now there should be headers in <code class="docutils literal notranslate"><span class="pre">n2p2/include</span></code>.</p>
@@ -251,50 +251,50 @@ file <code class="docutils literal notranslate"><span class="pre">build_CabanaMD
 the <code class="docutils literal notranslate"><span class="pre">ARCH</span></code> variable):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-git clone git@github.com:ECP-copa/CabanaMD.git
-<span class="nb">cd</span> CabanaMD
+git<span class="w"> </span>clone<span class="w"> </span>git@github.com:ECP-copa/CabanaMD.git
+<span class="nb">cd</span><span class="w"> </span>CabanaMD
 <span class="c1"># No specific version is specified in the docs, only &quot;master&quot;. If that does not</span>
 <span class="c1"># work at a later point in time use this line to get a commit that worked:</span>
-git checkout 15fa51c03a388c6c7f59dbbd4e21ecc3e5c7459b
-<span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>sm_61
-<span class="nb">export</span> <span class="nv">OPENMPI_BUILD_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../openmpi/build
-<span class="nb">export</span> <span class="nv">KOKKOS_SRC_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../kokkos
-<span class="nb">export</span> <span class="nv">CABANA_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../Cabana/build/install
-<span class="nb">export</span> <span class="nv">N2P2_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../n2p2
-mkdir build
-<span class="nb">cd</span> build
-cmake ../ <span class="se">\</span>
- -D <span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="s2">&quot;Release&quot;</span> <span class="se">\</span>
- -D <span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span><span class="s2">;</span><span class="si">${</span><span class="nv">CABANA_DIR</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
- -D <span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/install <span class="se">\</span>
- -D <span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/bin/nvcc_wrapper <span class="se">\</span>
- -D <span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span> <span class="se">\</span>
- -D <span class="nv">MPI_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span>/bin/mpic++ <span class="se">\</span>
- -D <span class="nv">Cabana_ENABLE_MPI</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">N2P2_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">N2P2_DIR</span><span class="si">}</span> <span class="se">\</span>
- -D <span class="nv">CabanaMD_VECTORLENGTH</span><span class="o">=</span><span class="m">32</span> <span class="se">\</span>
- -D <span class="nv">CabanaMD_ENABLE_NNP</span><span class="o">=</span>On <span class="se">\</span>
- -D <span class="nv">CabanaMD_MAXSYMMFUNC_NNP</span><span class="o">=</span><span class="m">30</span> <span class="se">\</span>
- -D <span class="nv">CabanaMD_VECTORLENGTH_NNP</span><span class="o">=</span><span class="m">1</span> <span class="se">\</span>
- -D <span class="nv">CabanaMD_ENABLE_TESTING</span><span class="o">=</span>OFF <span class="o">&amp;&amp;</span> <span class="se">\</span>
-make -j
-<span class="nb">cd</span> ../..
+git<span class="w"> </span>checkout<span class="w"> </span>15fa51c03a388c6c7f59dbbd4e21ecc3e5c7459b
+<span class="nb">export</span><span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>sm_61
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENMPI_BUILD_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../openmpi/build
+<span class="nb">export</span><span class="w"> </span><span class="nv">KOKKOS_SRC_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../kokkos
+<span class="nb">export</span><span class="w"> </span><span class="nv">CABANA_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../Cabana/build/install
+<span class="nb">export</span><span class="w"> </span><span class="nv">N2P2_DIR</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/../n2p2
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>../<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="s2">&quot;Release&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_PREFIX_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span><span class="s2">;</span><span class="si">${</span><span class="nv">CABANA_DIR</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_INSTALL_PREFIX</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/install<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">KOKKOS_SRC_DIR</span><span class="si">}</span>/bin/nvcc_wrapper<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CMAKE_CXX_FLAGS</span><span class="o">=</span>-arch<span class="o">=</span><span class="si">${</span><span class="nv">ARCH</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">MPI_CXX_COMPILER</span><span class="o">=</span><span class="si">${</span><span class="nv">OPENMPI_BUILD_DIR</span><span class="si">}</span>/bin/mpic++<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">Cabana_ENABLE_MPI</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">N2P2_DIR</span><span class="o">=</span><span class="si">${</span><span class="nv">N2P2_DIR</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CabanaMD_VECTORLENGTH</span><span class="o">=</span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CabanaMD_ENABLE_NNP</span><span class="o">=</span>On<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CabanaMD_MAXSYMMFUNC_NNP</span><span class="o">=</span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CabanaMD_VECTORLENGTH_NNP</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>-D<span class="w"> </span><span class="nv">CabanaMD_ENABLE_TESTING</span><span class="o">=</span>OFF<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+make<span class="w"> </span>-j
+<span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
 <p>If successful you will now find the CabanaMD executable <code class="docutils literal notranslate"><span class="pre">cbnMD</span></code> in
 <code class="docutils literal notranslate"><span class="pre">CabanaMD/build/bin/</span></code>.</p>
 </section>
 <section id="running-an-example-on-the-gpu">
-<h2>Running an example on the GPU<a class="headerlink" href="#running-an-example-on-the-gpu" title="Permalink to this heading"></a></h2>
+<h2>Running an example on the GPU<a class="headerlink" href="#running-an-example-on-the-gpu" title="Link to this heading"></a></h2>
 <p>Finally, we can test it on the GPU with the provided NNP example. Create
 <code class="docutils literal notranslate"><span class="pre">test_CabanaMD_GPU_NNP.sh</span></code> with below content and execute:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
-<span class="nb">cd</span> CabanaMD
-build/bin/cbnMD -il input/in.nnp --device-type CUDA
-mv cabanaMD.out ..
-mv cabanaMD.err ..
-<span class="nb">cd</span> ..
+<span class="nb">cd</span><span class="w"> </span>CabanaMD
+build/bin/cbnMD<span class="w"> </span>-il<span class="w"> </span>input/in.nnp<span class="w"> </span>--device-type<span class="w"> </span>CUDA
+mv<span class="w"> </span>cabanaMD.out<span class="w"> </span>..
+mv<span class="w"> </span>cabanaMD.err<span class="w"> </span>..
+<span class="nb">cd</span><span class="w"> </span>..
 </pre></div>
 </div>
 <p>You should see the (slightly modified) n2p2 library output and in the output

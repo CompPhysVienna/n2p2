@@ -11,7 +11,7 @@ var searchData=
   ['indices_8',['indices',['../structnnp_1_1Element_1_1SFCacheList.html#af53ba3e4e067d5c3a58e80490e53a6be',1,'nnp::Element::SFCacheList']]],
   ['initialized_9',['initialized',['../classnnp_1_1InterfaceLammps.html#a05ad5b918d5551c98dbcf8ae071f2fad',1,'nnp::InterfaceLammps']]],
   ['inputlayer_10',['inputLayer',['../classnnp_1_1NeuralNetwork.html#a0c17ca3a07ca010d5911a8fb93a71069',1,'nnp::NeuralNetwork']]],
-  ['interface_11',['interface',['../classLAMMPS__NS_1_1PairNNP.html#a09ac472e69f897dca95d890ab84f3c84',1,'LAMMPS_NS::PairNNP']]],
+  ['interface_11',['interface',['../classLAMMPS__NS_1_1PairHDNNP.html#aec4551f6a8c13535aedff64f7852164f',1,'LAMMPS_NS::PairHDNNP']]],
   ['invbox_12',['invbox',['../structnnp_1_1Structure.html#a177773f58df6da23d833e1cca0eb2cf8',1,'nnp::Structure']]],
   ['isperiodic_13',['isPeriodic',['../structnnp_1_1Structure.html#a4d8ebcacb8fc434178c7c90cb2f70110',1,'nnp::Structure']]],
   ['istriclinic_14',['isTriclinic',['../structnnp_1_1Structure.html#a2627321edafea60f478b35e7387e0681',1,'nnp::Structure']]],

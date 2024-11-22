@@ -1,21 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build instructions &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Build instructions &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -65,8 +66,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -116,8 +116,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Build instructions</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Build instructions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/topics/build.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -128,20 +128,15 @@
            <div itemprop="articleBody">
              
   <section id="build-instructions">
-<span id="build"></span><h1>Build instructions<a class="headerlink" href="#build-instructions" title="Permalink to this heading"></a></h1>
+<span id="build"></span><h1>Build instructions<a class="headerlink" href="#build-instructions" title="Link to this heading"></a></h1>
 <section id="code-structure">
-<h2>Code structure<a class="headerlink" href="#code-structure" title="Permalink to this heading"></a></h2>
+<h2>Code structure<a class="headerlink" href="#code-structure" title="Link to this heading"></a></h2>
 <p>This package contains multiple components with varying interdependencies and
 dependencies on third-party libraries. You may not need to build all
 components, this depends on the intended use. The following table lists all
 components and their respective requirements (follow the links for more
 information).</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 28%" />
-<col style="width: 26%" />
-<col style="width: 46%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Requirements</p></th>
@@ -221,9 +216,9 @@ information).</p>
 <td><p>libnnptrain</p></td>
 <td><p>Train a neural network potential.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../interfaces/if_lammps.html#if-lammps"><span class="std std-ref">lammps-nnp</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../interfaces/if_lammps.html#if-lammps"><span class="std std-ref">lammps-hdnnp</span></a></p></td>
 <td><p>libnnpif</p></td>
-<td><p>Pair style <cite>nnp</cite> for LAMMPS</p></td>
+<td><p>Pair style <code class="docutils literal notranslate"><span class="pre">hdnnp</span></code> for LAMMPS</p></td>
 </tr>
 <tr class="row-odd"><td><p>pynnp</p></td>
 <td><p>libnnp, python, cython</p></td>
@@ -237,34 +232,34 @@ information).</p>
 </table>
 </section>
 <section id="the-master-makefile">
-<h2>The master makefile<a class="headerlink" href="#the-master-makefile" title="Permalink to this heading"></a></h2>
+<h2>The master makefile<a class="headerlink" href="#the-master-makefile" title="Link to this heading"></a></h2>
 <p>A master makefile is provided in the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory which provides targets
 for all individual components.  For instance, compiling the interface library
 <code class="docutils literal notranslate"><span class="pre">libnnpif</span></code> requires only to type</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make libnnpif
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>libnnpif
 </pre></div>
 </div>
 <p>in the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory. Similarly, to build the application <code class="docutils literal notranslate"><span class="pre">nnp-predict</span></code>
 run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make nnp-predict
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>nnp-predict
 </pre></div>
 </div>
 <p>If an application depends on libraries, these will be built in advance
 automatically. Compiled binaries will be copied to the <code class="docutils literal notranslate"><span class="pre">bin</span></code> path (relative to
 the root directory), whereas libraries can be found in the <code class="docutils literal notranslate"><span class="pre">lib</span></code> folder.  To
 clean up individual components use</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make clean-&lt;component&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>clean-&lt;component&gt;
 </pre></div>
 </div>
 <p>or to clean everything (except documentation) use</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make clean
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>clean
 </pre></div>
 </div>
 <p>By default, all libraries and applications will be built for static linking,
 i.e <code class="docutils literal notranslate"><span class="pre">.a</span></code> versions of libraries and statically built versions of executables
 are created. If dynamic linking is preferred use the <code class="docutils literal notranslate"><span class="pre">MODE=shared</span></code> switch as
 additional argument of the make command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="nv">MODE</span><span class="o">=</span>shared nnp-predict
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">MODE</span><span class="o">=</span>shared<span class="w"> </span>nnp-predict
 </pre></div>
 </div>
 <p>This will build <code class="docutils literal notranslate"><span class="pre">.so</span></code> versions of libraries and executables which require
@@ -283,7 +278,7 @@ applications.</p></li>
 <p>Currently the build process has been tested with two different compilers, the
 GNU compiler g++ 5.4 (<code class="docutils literal notranslate"><span class="pre">gnu</span></code>) and the Intel compiler 17 (<code class="docutils literal notranslate"><span class="pre">intel</span></code>). It is
 possible to switch between them via the <code class="docutils literal notranslate"><span class="pre">COMP</span></code> variable, e.g.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make libnnp <span class="nv">COMP</span><span class="o">=</span>intel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>libnnp<span class="w"> </span><span class="nv">COMP</span><span class="o">=</span>intel
 </pre></div>
 </div>
 <p>If you need to change compiler variables and paths have a look at the
@@ -295,7 +290,7 @@ src/makefile.intel
 <p>You can also create new parameter makefiles based on the above and change the
 file name suffix according to your target:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>src/makefile.&lt;target&gt;
-make libnnp <span class="nv">COMP</span><span class="o">=</span>&lt;target&gt;
+make<span class="w"> </span>libnnp<span class="w"> </span><span class="nv">COMP</span><span class="o">=</span>&lt;target&gt;
 </pre></div>
 </div>
 <div class="admonition note">
@@ -303,33 +298,33 @@ make libnnp <span class="nv">COMP</span><span class="o">=</span>&lt;target&gt;
 <p>In contrast to earlier versions it is now safe to use the <cite>-j</cite> switch to
 enable parallel compilation. By default only a single processor is used. For
 instance, in order to use 4 processors to build all components type:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make -j <span class="m">4</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="individual-component-makefiles">
-<h2>Individual component makefiles<a class="headerlink" href="#individual-component-makefiles" title="Permalink to this heading"></a></h2>
+<h2>Individual component makefiles<a class="headerlink" href="#individual-component-makefiles" title="Link to this heading"></a></h2>
 <p>It is also possible to invoke individual makefiles for each component manually.
 Just switch to the corresponding folder and use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">MODE=&lt;mode&gt;</span>
 <span class="pre">COMP=&lt;target&gt;</span></code>. The global build parameters will be used from the
 <code class="docutils literal notranslate"><span class="pre">src/makefile.&lt;target&gt;</span></code> file.</p>
 </section>
 <section id="project-wide-compilation-options">
-<h2>Project-wide compilation options<a class="headerlink" href="#project-wide-compilation-options" title="Permalink to this heading"></a></h2>
+<h2>Project-wide compilation options<a class="headerlink" href="#project-wide-compilation-options" title="Link to this heading"></a></h2>
 <p>Each of the build parameter makefiles <code class="docutils literal notranslate"><span class="pre">src/makefile.&lt;target&gt;</span></code> contains a
 section at the end which allows to enable/disable certain options at compile
 time:</p>
 <section id="symmetry-function-groups">
-<h3>Symmetry function groups<a class="headerlink" href="#symmetry-function-groups" title="Permalink to this heading"></a></h3>
+<h3>Symmetry function groups<a class="headerlink" href="#symmetry-function-groups" title="Link to this heading"></a></h3>
 <p><strong>Flag:</strong> <code class="docutils literal notranslate"><span class="pre">-DN2P2_NO_SF_GROUPS</span></code> (default: <em>disabled</em>)</p>
 <p>If this flag is set the symmetry function group feature will be disabled
 everywhere. This will result in a much worse performance but may be useful for
 debugging and development purposes. Note that disabling symmetry function groups
-will not change results, please see details in this publication <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
+will not change results, please see details in this publication <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 </section>
 <section id="improved-symmetry-function-derivative-memory">
-<h3>Improved symmetry function derivative memory<a class="headerlink" href="#improved-symmetry-function-derivative-memory" title="Permalink to this heading"></a></h3>
+<h3>Improved symmetry function derivative memory<a class="headerlink" href="#improved-symmetry-function-derivative-memory" title="Link to this heading"></a></h3>
 <p><strong>Flag:</strong> <code class="docutils literal notranslate"><span class="pre">-DN2P2_FULL_SFD_MEMORY</span></code> (default: <em>disabled</em>)</p>
 <p>By default <em>n2p2</em> reduces the memory usage when multiple elements are present by
 eliminating storage for symmetry function derivatives which are zero by
@@ -373,12 +368,6 @@ Relevant symmetry functions for neighbors with element:
 <p>Benchmarking the training program and the LAMMPS interface with the same
 system gives the following results:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 47%" />
-<col style="width: 19%" />
-<col style="width: 17%" />
-<col style="width: 17%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">-DN2P2_FULL_SFD_MEMORY</span></code></p></th>
 <th class="head"><p><em>enabled</em></p></th>
@@ -407,13 +396,14 @@ system gives the following results:</p>
 <p>Given the significant reduction in memory and the negligible impact on speed
 the improved memory layout is used by default (<code class="docutils literal notranslate"><span class="pre">-DN2P2_FULL_SFD_MEMORY</span></code>
 disabled).</p>
-<dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>Singraber, A.; Behler, J.; Dellago, C. Library-Based LAMMPS
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Singraber, A.; Behler, J.; Dellago, C. Library-Based LAMMPS
 Implementation of High-Dimensional Neural Network Potentials. J. Chem. Theory
 Comput. 2019, 15 (3), 1827–1840. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b00770">https://doi.org/10.1021/acs.jctc.8b00770</a></p>
-</dd>
-</dl>
+</aside>
+</aside>
 </section>
 </section>
 </section>

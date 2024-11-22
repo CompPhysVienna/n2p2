@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Neural network &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Neural network &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -80,7 +80,22 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Neural network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Neural network</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunctionE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_IDENTITY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_TANH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_LOGISTIC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_SOFTPLUS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_RELU</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_GAUSSIAN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_COSE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_COS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_REVLOGISTIC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_EXP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE"><code class="docutils literal notranslate"><span class="pre">ActivationFunction::AF_HARMONIC</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="cutoff_functions.html">Cutoff functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_types.html">Symmetry function types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_scaling.html">Symmetry function scaling</a></li>
@@ -107,8 +122,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Neural network</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Neural network</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/neural_network.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -119,70 +134,70 @@
            <div itemprop="articleBody">
              
   <section id="neural-network">
-<span id="id1"></span><h1>Neural network<a class="headerlink" href="#neural-network" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Neural network<a class="headerlink" href="#neural-network" title="Link to this heading"></a></h1>
 <dl class="cpp enum">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunctionE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunctionE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunctionE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbed"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">NeuralNetwork</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ActivationFunction</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunctionE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunctionE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunctionE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbed"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">NeuralNetwork</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ActivationFunction</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunctionE" title="Link to this definition"></a><br /></dt>
 <dd><p>List of available activation function types. </p>
 <p><em>Values:</em></p>
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda5b0c59d80a0e661ef1f0bfc3df1f5a04"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_IDENTITY</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = x\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda5b0c59d80a0e661ef1f0bfc3df1f5a04"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_IDENTITY</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_IDENTITYE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = x\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda1569427fccd98a9f3e8ec25d334b982b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_TANH</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \tanh(x)\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda1569427fccd98a9f3e8ec25d334b982b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_TANH</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_TANHE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \tanh(x)\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda5915a5141aaee3c8fd8ea61da99b3b41"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_LOGISTIC</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = 1 / (1 + \mathrm{e}^{-x})\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda5915a5141aaee3c8fd8ea61da99b3b41"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_LOGISTIC</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_LOGISTICE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = 1 / (1 + \mathrm{e}^{-x})\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda85811bbf7c259d1fee628b2a69114530"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_SOFTPLUS</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \ln (1 + \mathrm{e}^x)\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda85811bbf7c259d1fee628b2a69114530"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_SOFTPLUS</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_SOFTPLUSE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \ln (1 + \mathrm{e}^x)\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedafe93c3a968224442e85a58ba3627e3a9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_RELU</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedafe93c3a968224442e85a58ba3627e3a9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_RELU</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction7AF_RELUE" title="Link to this definition"></a><br /></dt>
 <dd><p><span class="math notranslate nohighlight">\(f_a(x) = \max(0, x)\)</span> (NOT recommended for HDNNPs!) </p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda66545b5c028ebb8934093188e3279492"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_GAUSSIAN</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \mathrm{e}^{-x^2 / 2}\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda66545b5c028ebb8934093188e3279492"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_GAUSSIAN</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_GAUSSIANE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \mathrm{e}^{-x^2 / 2}\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_COSE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction6AF_COSE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction6AF_COSE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda2721d2639f95e923ac6fafd0980a2588"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_COS</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_COSE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \cos (x)\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction6AF_COSE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction6AF_COSE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbeda2721d2639f95e923ac6fafd0980a2588"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_COS</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_COSE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \cos (x)\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedaf1b2dce761bdf00c9ff8d6ebd1374578"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_REVLOGISTIC</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = 1 - 1 / (1 + \mathrm{e}^{-x})\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedaf1b2dce761bdf00c9ff8d6ebd1374578"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_REVLOGISTIC</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction14AF_REVLOGISTICE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = 1 - 1 / (1 + \mathrm{e}^{-x})\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedad56bdaa89dd2aa1d72d539995267a967"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_EXP</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \mathrm{e}^{-x}\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedad56bdaa89dd2aa1d72d539995267a967"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_EXP</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction6AF_EXPE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = \mathrm{e}^{-x}\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE">
-<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedaf565187036a46ee35d905df14542dc01"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_HARMONIC</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f_a(x) = x^2\)</span> </p>
+<span id="_CPPv3N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE"></span><span id="_CPPv2N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE"></span><span class="target" id="classnnp_1_1NeuralNetwork_1a032b3b525f06cd70953aec8e6aeedbedaf565187036a46ee35d905df14542dc01"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AF_HARMONIC</span></span></span><a class="headerlink" href="#_CPPv4N3nnp13NeuralNetwork18ActivationFunction11AF_HARMONICE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f_a(x) = x^2\)</span></p>
 </dd></dl>
 
 </dd></dl>

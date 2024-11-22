@@ -26,7 +26,7 @@ var searchData=
   ['af_5frevlogistic_23',['AF_REVLOGISTIC',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbedaf1b2dce761bdf00c9ff8d6ebd1374578',1,'nnp::NeuralNetwork']]],
   ['af_5fsoftplus_24',['AF_SOFTPLUS',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda85811bbf7c259d1fee628b2a69114530',1,'nnp::NeuralNetwork']]],
   ['af_5ftanh_25',['AF_TANH',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda1569427fccd98a9f3e8ec25d334b982b',1,'nnp::NeuralNetwork']]],
-  ['allocate_26',['allocate',['../structnnp_1_1Atom.html#a2de21db9dfe00cf608d5b77e6b0f6299',1,'nnp::Atom::allocate()'],['../classLAMMPS__NS_1_1PairNNP.html#aaab51e14d349b0429dc43e122351c338',1,'LAMMPS_NS::PairNNP::allocate()']]],
+  ['allocate_26',['allocate',['../structnnp_1_1Atom.html#a2de21db9dfe00cf608d5b77e6b0f6299',1,'nnp::Atom::allocate()'],['../classLAMMPS__NS_1_1PairHDNNP.html#a9d298c51f5dee773e901bf52c49f847a',1,'LAMMPS_NS::PairHDNNP::allocate()']]],
   ['allocatearrays_27',['allocateArrays',['../classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7',1,'nnp::Training']]],
   ['allocatelayer_28',['allocateLayer',['../classnnp_1_1NeuralNetwork.html#a4f06892244af00ab70125061bbcbe3c3',1,'nnp::NeuralNetwork']]],
   ['alpha_29',['alpha',['../classnnp_1_1CutoffFunction.html#ac446e2e99aa95f5f5ebd14987b17a842',1,'nnp::CutoffFunction']]],

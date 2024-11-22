@@ -1,21 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-select &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>nnp-select &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,8 +56,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -112,8 +112,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>nnp-select</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">nnp-select</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tools/nnp-select.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -124,7 +124,7 @@
            <div itemprop="articleBody">
              
   <section id="nnp-select">
-<span id="id1"></span><h1>nnp-select<a class="headerlink" href="#nnp-select" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>nnp-select<a class="headerlink" href="#nnp-select" title="Link to this heading"></a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">nnp-select</span></code> tool extracts a small subset from a larger training data set,
 e.g. for testing purposes. The initial set <code class="docutils literal notranslate"><span class="pre">input.data</span></code> is expected to be
 located in the current working directory. Two different modes of operation are
@@ -134,7 +134,7 @@ supported: selecting structures</p>
 <li><p>at regular intervals.</p></li>
 </ol>
 <section id="usage">
-<h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<h2>Usage:<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-select &lt;mode&gt; &lt;arg1 &lt;arg2&gt;&gt;
            &lt;mode&gt; ... Choose selection mode (random/interval).
            Arguments for mode &quot;random&quot;:
@@ -148,7 +148,7 @@ supported: selecting structures</p>
 </div>
 </section>
 <section id="sample-screen-output">
-<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Permalink to this heading"></a></h2>
+<h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*** NNP-SELECT ****************************************************************
 
 Selecting every 3 structure.
@@ -168,7 +168,7 @@ Selected structures percentage: 37.500 %
 </div>
 </section>
 <section id="file-output">
-<h2>File output:<a class="headerlink" href="#file-output" title="Permalink to this heading"></a></h2>
+<h2>File output:<a class="headerlink" href="#file-output" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">output.data</span></code>: The requested subset of training structures.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">reject.data</span></code>: The rejected configurations, i.e. all data minus <code class="docutils literal notranslate"><span class="pre">output.data</span></code>.</p></li>
@@ -176,7 +176,7 @@ Selected structures percentage: 37.500 %
 </ul>
 </section>
 <section id="examples">
-<h2>Examples:<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h2>
+<h2>Examples:<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <ul>
 <li><p>Select randomly 10% of the original set with random seed 123:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-select random 0.1 123

@@ -1,0 +1,11 @@
+<map id="LAMMPS_NS::PairHDNNP::compute" name="LAMMPS_NS::PairHDNNP::compute">
+<area shape="rect" id="node1" title=" " alt="" coords="5,235,189,276"/>
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a680dca82d8c1670ac2effe7ba7df60fc" title="Return energy contribution of one atom." alt="" coords="264,5,432,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a5efd42ba997e4cefca70ae3445f60f3f" title="Return sum of local energy contributions." alt="" coords="264,71,432,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#a69139b2e95478a30532b1171c284ce4c" title="Calculate forces and add to LAMMPS atomic force arrays." alt="" coords="264,136,432,177"/>
+<area shape="rect" id="node5" href="$classLAMMPS__NS_1_1PairHDNNP.html#a2aa4271e700abf521d402ff68f4771c8" title=" " alt="" coords="237,201,459,243"/>
+<area shape="rect" id="node6" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="264,267,432,308"/>
+<area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#aa7ef0738c6df7b3d65b35a0f1c884f49" title="(Re)set structure to contain only local LAMMPS atoms." alt="" coords="264,332,432,373"/>
+<area shape="rect" id="node8" href="$classnnp_1_1InterfaceLammps.html#a1c2c6944f8458c58a174d0e058649139" title="Set atom tags (int version, &#45;DLAMMPS_SMALLBIG)." alt="" coords="264,397,432,439"/>
+<area shape="rect" id="node9" href="$classLAMMPS__NS_1_1PairHDNNP.html#a6b82b9bc322304eb775dcf68b909ce6c" title=" " alt="" coords="256,463,440,504"/>
+</map>

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['p_0',['p',['../classnnp_1_1Training.html#a5ef4b4d51191c4c67be8dc39c7bfd3ed',1,'nnp::Training::p()'],['../nnp-cutoff_8cpp.html#a7e13621a6fab9b292d4807e65151be1e',1,'p():&#160;nnp-cutoff.cpp']]],
-  ['p_1',['P',['../classnnp_1_1KalmanFilter.html#ae982861edd340e8dc12d455a5033ae32',1,'nnp::KalmanFilter']]],
+  ['p_0',['P',['../classnnp_1_1KalmanFilter.html#ae982861edd340e8dc12d455a5033ae32',1,'nnp::KalmanFilter']]],
+  ['p_1',['p',['../nnp-cutoff_8cpp.html#a7e13621a6fab9b292d4807e65151be1e',1,'p():&#160;nnp-cutoff.cpp'],['../classnnp_1_1Training.html#a5ef4b4d51191c4c67be8dc39c7bfd3ed',1,'nnp::Training::p()']]],
   ['parallelmode_2',['parallelMode',['../classnnp_1_1Training.html#ac2bec3d1ad183e620687bf41ede6f5ad',1,'nnp::Training']]],
   ['parameters_3',['parameters',['../classnnp_1_1SymFnc.html#a74876e41f1b9beffa755ef2c6e13d88f',1,'nnp::SymFnc']]],
   ['parameterscommon_4',['parametersCommon',['../classnnp_1_1SymGrp.html#aab0565c3367fa6540c745f55a2d6f7a4',1,'nnp::SymGrp']]],

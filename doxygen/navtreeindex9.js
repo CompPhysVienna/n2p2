@@ -1,13 +1,5 @@
 var NAVTREEINDEX9 =
 {
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#a826febb60c27c4726ff3f5b2bc8ccc39":[1,0,1,41,5],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#a8dbe0c0e7564660b0f1280a314ba54df":[0,0,1,41,9],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#a8dbe0c0e7564660b0f1280a314ba54df":[1,0,1,41,9],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab6dc5db1aa79fdc9ae32b3dae511918d":[0,0,1,41,3],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab6dc5db1aa79fdc9ae32b3dae511918d":[1,0,1,41,3],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab734dffc37f54ca35fb4cf74b95527e4":[0,0,1,41,8],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#ab734dffc37f54ca35fb4cf74b95527e4":[1,0,1,41,8],
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#af463977ae7c8508cd5888bfdc672fd65":[0,0,1,41,1],
 "classnnp_1_1SymGrpBaseCompAngWeighted.html#af463977ae7c8508cd5888bfdc672fd65":[1,0,1,41,1],
 "classnnp_1_1SymGrpBaseCutoff.html":[1,0,1,42],
 "classnnp_1_1SymGrpBaseCutoff.html":[0,0,1,42],
@@ -249,5 +241,13 @@ var NAVTREEINDEX9 =
 "classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380":[0,0,1,52,5],
 "classnnp_1_1SymGrpExpAngw.html#a407c926208755f1cc0a41841bbd40100":[1,0,1,52,6],
 "classnnp_1_1SymGrpExpAngw.html#a407c926208755f1cc0a41841bbd40100":[0,0,1,52,6],
-"classnnp_1_1SymGrpExpAngw.html#a44022196cf8f8fa67b692d968445fe08":[1,0,1,52,0]
+"classnnp_1_1SymGrpExpAngw.html#a44022196cf8f8fa67b692d968445fe08":[1,0,1,52,0],
+"classnnp_1_1SymGrpExpAngw.html#a44022196cf8f8fa67b692d968445fe08":[0,0,1,52,0],
+"classnnp_1_1SymGrpExpAngw.html#a60adc7d3e9eaaccbaac73c445a32a928":[1,0,1,52,1],
+"classnnp_1_1SymGrpExpAngw.html#a60adc7d3e9eaaccbaac73c445a32a928":[0,0,1,52,1],
+"classnnp_1_1SymGrpExpAngw.html#a8f14fc72bac5087e327959ee0c507fd4":[1,0,1,52,4],
+"classnnp_1_1SymGrpExpAngw.html#a8f14fc72bac5087e327959ee0c507fd4":[0,0,1,52,4],
+"classnnp_1_1SymGrpExpAngw.html#a98ab5cf71ff0af5e4d05f4fa04e73e62":[1,0,1,52,2],
+"classnnp_1_1SymGrpExpAngw.html#a98ab5cf71ff0af5e4d05f4fa04e73e62":[0,0,1,52,2],
+"classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc":[1,0,1,52,3]
 };

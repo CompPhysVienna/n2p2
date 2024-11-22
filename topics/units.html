@@ -1,26 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Units &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Units &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LAMMPS NNP interface" href="../interfaces/if_lammps.html" />
+    <link rel="next" title="LAMMPS interface" href="../interfaces/if_lammps.html" />
     <link rel="prev" title="NNP training procedure" href="training.html" /> 
 </head>
 
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -59,8 +60,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -110,8 +110,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Units</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Units</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/topics/units.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -122,7 +122,7 @@
            <div itemprop="articleBody">
              
   <section id="units">
-<span id="id1"></span><h1>Units<a class="headerlink" href="#units" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Units<a class="headerlink" href="#units" title="Link to this heading"></a></h1>
 <p>In principle the library and all applications are agnostic to a specific system
 of physical units. This means that numeric values in input files are processed
 unaltered. Hence, it is the user’s responsibility to provide data in a
@@ -136,11 +136,10 @@ e.g. <span class="math notranslate nohighlight">\(\eta, r_c\)</span>, need to be
 potential is used to drive an MD simulation in LAMMPS. If the LAMMPS units
 (see command <a class="reference external" href="https://lammps.sandia.gov/doc/units.html">units</a>) are not
 matching with those used during NNP training, appropriate conversion factors
-need to be provided. See the <a class="reference internal" href="../interfaces/pair_nnp.html#pair-nnp"><span class="std std-ref">pair_style nnp reference</span></a> for
-further details.</p>
+need to be provided. See the <a class="reference external" href="https://docs.lammps.org/pair_hdnnp.html">pair_style hdnnp reference</a> for further details.</p>
 </div>
 <section id="normalizing-the-data-set-internal-units">
-<h2>Normalizing the data set: “internal” units<a class="headerlink" href="#normalizing-the-data-set-internal-units" title="Permalink to this heading"></a></h2>
+<h2>Normalizing the data set: “internal” units<a class="headerlink" href="#normalizing-the-data-set-internal-units" title="Link to this heading"></a></h2>
 <p>Processing data sets unaltered potentially introduces a dependence of training
 results on the chosen unit system, i.e. if the same data set would be set up
 with different physical unit systems, it is unclear whether the training would
@@ -161,20 +160,21 @@ output or in the file header. The default output of all tools is given in the
 original physical unit system.</p>
 </div>
 <p>For further details see the <a class="reference internal" href="keywords.html#normalize-data-set"><span class="std std-ref">keyword description</span></a>, the
-<a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">tool description</span></a> and a recent publication <a class="footnote-reference brackets" href="#id3" id="id2">1</a>.</p>
+<a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">tool description</span></a> and a recent publication <a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The described data set normalization step is <strong>optional</strong>, you are not
 required to perform it. It is also not guaranteed that the quality of
 training will increase in all cases.</p>
 </div>
-<dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
-<dd><p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
 Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
 Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b01092">https://doi.org/10.1021/acs.jctc.8b01092</a></p>
-</dd>
-</dl>
+</aside>
+</aside>
 </section>
 </section>
 
@@ -183,7 +183,7 @@ Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="ht
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="training.html" class="btn btn-neutral float-left" title="NNP training procedure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../interfaces/if_lammps.html" class="btn btn-neutral float-right" title="LAMMPS NNP interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../interfaces/if_lammps.html" class="btn btn-neutral float-right" title="LAMMPS interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Symmetry function types &mdash; n2p2 - A neural network potential package &#34;539576b&#34; documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>Symmetry function types &mdash; n2p2 - A neural network potential package &#34;e6a46df&#34; documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2b224a83"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> n2p2 - A neural network potential package
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            n2p2 - A neural network potential package
           </a>
-              <div class="version">
-                "539576b"
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,8 +57,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfaces</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS NNP interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/pair_nnp.html">LAMMPS NNP pair style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/if_lammps.html">LAMMPS interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/if_cabanamd.html">CabanaMD interface</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tools</span></p>
@@ -83,10 +83,38 @@
 <li class="toctree-l1"><a class="reference internal" href="neural_network.html">Neural network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cutoff_functions.html">Cutoff functions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Symmetry function types</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#behler-and-parrinello-prl-2007">Behler and Parrinello PRL 2007</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#behler-jcp-2011">Behler JCP 2011</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#gastegger-et-al-jcp-2018">Gastegger et al. JCP 2018</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bircher-et-al-arxiv-2020">Bircher et al. arXiv 2020</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#behler-and-parrinello-prl-2007">Behler and Parrinello PRL 2007</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp12SymFncExpRadE"><code class="docutils literal notranslate"><span class="pre">SymFncExpRad</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncExpAngnE"><code class="docutils literal notranslate"><span class="pre">SymFncExpAngn</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#behler-jcp-2011">Behler JCP 2011</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncExpAngwE"><code class="docutils literal notranslate"><span class="pre">SymFncExpAngw</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gastegger-et-al-jcp-2018">Gastegger et al. JCP 2018</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp20SymFncExpRadWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncExpRadWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncExpAngnWeighted</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#bircher-et-al-arxiv-2020">Bircher et al. arXiv 2020</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncCompRadE"><code class="docutils literal notranslate"><span class="pre">SymFncCompRad</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncCompAngnE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncCompAngwE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp21SymFncCompRadWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncCompRadWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngnWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngwWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE"><code class="docutils literal notranslate"><span class="pre">setCompactFunction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4TypeE"><code class="docutils literal notranslate"><span class="pre">Type</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY1E"><code class="docutils literal notranslate"><span class="pre">Type::POLY1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY2E"><code class="docutils literal notranslate"><span class="pre">Type::POLY2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY3E"><code class="docutils literal notranslate"><span class="pre">Type::POLY3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY4E"><code class="docutils literal notranslate"><span class="pre">Type::POLY4</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type3EXPE"><code class="docutils literal notranslate"><span class="pre">Type::EXP</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_scaling.html">Symmetry function scaling</a></li>
@@ -113,8 +141,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Symmetry function types</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Symmetry function types</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/symmetry_function_types.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -125,19 +153,19 @@
            <div itemprop="articleBody">
              
   <section id="symmetry-function-types">
-<span id="id1"></span><h1>Symmetry function types<a class="headerlink" href="#symmetry-function-types" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Symmetry function types<a class="headerlink" href="#symmetry-function-types" title="Link to this heading"></a></h1>
 <section id="behler-and-parrinello-prl-2007">
-<h2>Behler and Parrinello PRL 2007<a class="headerlink" href="#behler-and-parrinello-prl-2007" title="Permalink to this heading"></a></h2>
+<h2>Behler and Parrinello PRL 2007<a class="headerlink" href="#behler-and-parrinello-prl-2007" title="Link to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12SymFncExpRadE">
-<span id="_CPPv3N3nnp12SymFncExpRadE"></span><span id="_CPPv2N3nnp12SymFncExpRadE"></span><span id="nnp::SymFncExpRad"></span><span class="target" id="classnnp_1_1SymFncExpRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp12SymFncExpRadE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp12SymFncExpRadE"></span><span id="_CPPv2N3nnp12SymFncExpRadE"></span><span id="nnp::SymFncExpRad"></span><span class="target" id="classnnp_1_1SymFncExpRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp12SymFncExpRadE" title="Link to this definition"></a><br /></dt>
 <dd><p>Radial symmetry function (type 2) </p>
 <p><div class="math notranslate nohighlight">
 \[
 G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
         f_c(r_{ij}) 
 \]</div>
- Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">2</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
+ Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -145,14 +173,14 @@ G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-neighbor&gt;</span> <span class="pre">...</span></code> element symbol of neighbor atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;eta&gt;</span> <span class="pre">................</span></code> <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rshift&gt;</span> <span class="pre">.............</span></code> <span class="math notranslate nohighlight">\(r_\mathrm{s}\)</span></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">............</span></code> <span class="math notranslate nohighlight">\(r_c\)</span> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">............</span></code> <span class="math notranslate nohighlight">\(r_c\)</span></p></li>
 </ul>
 </p>
 </dd></dl>
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13SymFncExpAngnE">
-<span id="_CPPv3N3nnp13SymFncExpAngnE"></span><span id="_CPPv2N3nnp13SymFncExpAngnE"></span><span id="nnp::SymFncExpAngn"></span><span class="target" id="classnnp_1_1SymFncExpAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngnE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp13SymFncExpAngnE"></span><span id="_CPPv2N3nnp13SymFncExpAngnE"></span><span id="nnp::SymFncExpAngn"></span><span class="target" id="classnnp_1_1SymFncExpAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngnE" title="Link to this definition"></a><br /></dt>
 <dd><p>Angular symmetry function (type 3) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -162,7 +190,7 @@ G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
         + (r_{jk}-r_s)^2 ) }
         f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
 \end{split}\]</div>
- Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">3</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
+ Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -180,10 +208,10 @@ G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
 
 </section>
 <section id="behler-jcp-2011">
-<h2>Behler JCP 2011<a class="headerlink" href="#behler-jcp-2011" title="Permalink to this heading"></a></h2>
+<h2>Behler JCP 2011<a class="headerlink" href="#behler-jcp-2011" title="Link to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13SymFncExpAngwE">
-<span id="_CPPv3N3nnp13SymFncExpAngwE"></span><span id="_CPPv2N3nnp13SymFncExpAngwE"></span><span id="nnp::SymFncExpAngw"></span><span class="target" id="classnnp_1_1SymFncExpAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngwE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp13SymFncExpAngwE"></span><span id="_CPPv2N3nnp13SymFncExpAngwE"></span><span id="nnp::SymFncExpAngw"></span><span class="target" id="classnnp_1_1SymFncExpAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngwE" title="Link to this definition"></a><br /></dt>
 <dd><p>Angular symmetry function (type 9) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -192,7 +220,7 @@ G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
         \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
         f_c(r_{ij}) f_c(r_{ik}) 
 \end{split}\]</div>
- Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">9</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
+ Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -210,10 +238,10 @@ G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
 
 </section>
 <section id="gastegger-et-al-jcp-2018">
-<h2>Gastegger et al. JCP 2018<a class="headerlink" href="#gastegger-et-al-jcp-2018" title="Permalink to this heading"></a></h2>
+<h2>Gastegger et al. JCP 2018<a class="headerlink" href="#gastegger-et-al-jcp-2018" title="Link to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp20SymFncExpRadWeightedE">
-<span id="_CPPv3N3nnp20SymFncExpRadWeightedE"></span><span id="_CPPv2N3nnp20SymFncExpRadWeightedE"></span><span id="nnp::SymFncExpRadWeighted"></span><span class="target" id="classnnp_1_1SymFncExpRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp20SymFncExpRadWeightedE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp20SymFncExpRadWeightedE"></span><span id="_CPPv2N3nnp20SymFncExpRadWeightedE"></span><span id="nnp::SymFncExpRadWeighted"></span><span class="target" id="classnnp_1_1SymFncExpRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp20SymFncExpRadWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted radial symmetry function (type 12) </p>
 <p><div class="math notranslate nohighlight">
 \[
@@ -221,21 +249,21 @@ G^{12}_i = \sum_{j \neq i} Z_j \,
            \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
            f_c(r_{ij}) 
 \]</div>
- Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">12</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
+ Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;element-central&gt;</span> <span class="pre">....</span></code> element symbol of central atom</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;eta&gt;</span> <span class="pre">................</span></code> <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rshift&gt;</span> <span class="pre">.............</span></code> <span class="math notranslate nohighlight">\(r_\mathrm{s}\)</span></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">............</span></code> <span class="math notranslate nohighlight">\(r_c\)</span> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">............</span></code> <span class="math notranslate nohighlight">\(r_c\)</span></p></li>
 </ul>
 </p>
 </dd></dl>
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp21SymFncExpAngnWeightedE">
-<span id="_CPPv3N3nnp21SymFncExpAngnWeightedE"></span><span id="_CPPv2N3nnp21SymFncExpAngnWeightedE"></span><span id="nnp::SymFncExpAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncExpAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp21SymFncExpAngnWeightedE"></span><span id="_CPPv2N3nnp21SymFncExpAngnWeightedE"></span><span id="nnp::SymFncExpAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncExpAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted angular symmetry function (type 13) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -246,7 +274,7 @@ G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
            (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
            f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
 \end{split}\]</div>
- Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">13</span> <span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
+ Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -255,17 +283,17 @@ G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;rshift&gt;</span> <span class="pre">..............</span></code> <span class="math notranslate nohighlight">\(r_s\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;lambda&gt;</span> <span class="pre">..............</span></code> <span class="math notranslate nohighlight">\(\lambda\)</span></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;zeta&gt;</span> <span class="pre">................</span></code> <span class="math notranslate nohighlight">\(\zeta\)</span></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">.............</span></code> <span class="math notranslate nohighlight">\(r_c\)</span> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;rcutoff&gt;</span> <span class="pre">.............</span></code> <span class="math notranslate nohighlight">\(r_c\)</span></p></li>
 </ul>
 </p>
 </dd></dl>
 
 </section>
 <section id="bircher-et-al-arxiv-2020">
-<h2>Bircher et al. arXiv 2020<a class="headerlink" href="#bircher-et-al-arxiv-2020" title="Permalink to this heading"></a></h2>
+<h2>Bircher et al. arXiv 2020<a class="headerlink" href="#bircher-et-al-arxiv-2020" title="Link to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp13SymFncCompRadE">
-<span id="_CPPv3N3nnp13SymFncCompRadE"></span><span id="_CPPv2N3nnp13SymFncCompRadE"></span><span id="nnp::SymFncCompRad"></span><span class="target" id="classnnp_1_1SymFncCompRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncCompRadE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp13SymFncCompRadE"></span><span id="_CPPv2N3nnp13SymFncCompRadE"></span><span id="nnp::SymFncCompRad"></span><span class="target" id="classnnp_1_1SymFncCompRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncCompRadE" title="Link to this definition"></a><br /></dt>
 <dd><p>Radial symmetry function with compact support (type 20) </p>
 <p><div class="math notranslate nohighlight">
 \[
@@ -273,7 +301,7 @@ G^{20}_i = \sum_{\substack{j \neq i}}
            C(r_{ij}, r_l, r_c),
 \]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
-<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">20</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
+<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -289,7 +317,7 @@ G^{20}_i = \sum_{\substack{j \neq i}}
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14SymFncCompAngnE">
-<span id="_CPPv3N3nnp14SymFncCompAngnE"></span><span id="_CPPv2N3nnp14SymFncCompAngnE"></span><span id="nnp::SymFncCompAngn"></span><span class="target" id="classnnp_1_1SymFncCompAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngnE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp14SymFncCompAngnE"></span><span id="_CPPv2N3nnp14SymFncCompAngnE"></span><span id="nnp::SymFncCompAngn"></span><span class="target" id="classnnp_1_1SymFncCompAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngnE" title="Link to this definition"></a><br /></dt>
 <dd><p>Narrow angular symmetry function with compact support (type 21) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -300,7 +328,7 @@ G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
            C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
-<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">21</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
+<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -323,7 +351,7 @@ G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14SymFncCompAngwE">
-<span id="_CPPv3N3nnp14SymFncCompAngwE"></span><span id="_CPPv2N3nnp14SymFncCompAngwE"></span><span id="nnp::SymFncCompAngw"></span><span class="target" id="classnnp_1_1SymFncCompAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngwE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp14SymFncCompAngwE"></span><span id="_CPPv2N3nnp14SymFncCompAngwE"></span><span id="nnp::SymFncCompAngw"></span><span class="target" id="classnnp_1_1SymFncCompAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngwE" title="Link to this definition"></a><br /></dt>
 <dd><p>Wide angular symmetry function with compact support (type 22) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -333,7 +361,7 @@ G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
            C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
-<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">22</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
+<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">22</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -356,7 +384,7 @@ G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp21SymFncCompRadWeightedE">
-<span id="_CPPv3N3nnp21SymFncCompRadWeightedE"></span><span id="_CPPv2N3nnp21SymFncCompRadWeightedE"></span><span id="nnp::SymFncCompRadWeighted"></span><span class="target" id="classnnp_1_1SymFncCompRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncCompRadWeightedE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp21SymFncCompRadWeightedE"></span><span id="_CPPv2N3nnp21SymFncCompRadWeightedE"></span><span id="nnp::SymFncCompRadWeighted"></span><span class="target" id="classnnp_1_1SymFncCompRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncCompRadWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted radial symmetry function with compact support (type 23) </p>
 <p><div class="math notranslate nohighlight">
 \[
@@ -365,7 +393,7 @@ G^{23}_i = \sum_{\substack{j \neq i}}
            C(r_{ij}, r_l, r_c),
 \]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
-<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">23</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
+<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -380,7 +408,7 @@ G^{23}_i = \sum_{\substack{j \neq i}}
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp22SymFncCompAngnWeightedE">
-<span id="_CPPv3N3nnp22SymFncCompAngnWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngnWeightedE"></span><span id="nnp::SymFncCompAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp22SymFncCompAngnWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngnWeightedE"></span><span id="nnp::SymFncCompAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted narrow angular symmetry function with compact support (type 24) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -392,7 +420,7 @@ G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
            C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
-<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">24</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
+<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -413,7 +441,7 @@ G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp22SymFncCompAngwWeightedE">
-<span id="_CPPv3N3nnp22SymFncCompAngwWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngwWeightedE"></span><span id="nnp::SymFncCompAngwWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngwWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngwWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp22SymFncCompAngwWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngwWeightedE"></span><span id="nnp::SymFncCompAngwWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngwWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngwWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted wide angular symmetry function with compact support (type 25) </p>
 <p><div class="math notranslate nohighlight">
 \[\begin{split}
@@ -424,7 +452,7 @@ G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
            C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
-<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span> <span class="mi">25</span> <span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
+<p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
 </pre></div>
 </div>
  where<ul class="simple">
@@ -445,7 +473,7 @@ G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE">
-<span id="_CPPv3N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE"></span><span id="_CPPv2N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE"></span><span id="nnp::SymFncBaseComp::setCompactFunction__ss"></span><span class="target" id="classnnp_1_1SymFncBaseComp_1af9759a78267835f7af4c79f64199e26e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">setCompactFunction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">subtype</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE"></span><span id="_CPPv2N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE"></span><span id="nnp::SymFncBaseComp::setCompactFunction__ss"></span><span class="target" id="classnnp_1_1SymFncBaseComp_1af9759a78267835f7af4c79f64199e26e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">setCompactFunction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">subtype</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE" title="Link to this definition"></a><br /></dt>
 <dd><p>Set radial compact function. </p>
 <p>
 The subtype argument determines which <a class="reference internal" href="#classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdf"><span class="std std-ref">CoreFunction::Type</span></a> is used to generate the CompactFunction used by symmetry functions. The following strings are accepted (without the apostrophes):<ul class="simple">
@@ -454,7 +482,7 @@ The subtype argument determines which <a class="reference internal" href="#class
 </ul>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>subtype</strong> – <strong>[in]</strong> Core function specification.</p>
 </dd>
 </dl>
@@ -462,37 +490,37 @@ The subtype argument determines which <a class="reference internal" href="#class
 
 <dl class="cpp enum-class">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12CoreFunction4TypeE">
-<span id="_CPPv3N3nnp12CoreFunction4TypeE"></span><span id="_CPPv2N3nnp12CoreFunction4TypeE"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdf"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CoreFunction</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Type</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4TypeE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N3nnp12CoreFunction4TypeE"></span><span id="_CPPv2N3nnp12CoreFunction4TypeE"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdf"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">CoreFunction</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Type</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4TypeE" title="Link to this definition"></a><br /></dt>
 <dd><p>List of available function types. </p>
 <p><em>Values:</em></p>
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12CoreFunction4Type5POLY1E">
-<span id="_CPPv3N3nnp12CoreFunction4Type5POLY1E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY1E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfac95d41c930756d1c7c8630de81e53388"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY1</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY1E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = (2x - 3)x^2 + 1\)</span> </p>
+<span id="_CPPv3N3nnp12CoreFunction4Type5POLY1E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY1E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfac95d41c930756d1c7c8630de81e53388"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY1</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY1E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = (2x - 3)x^2 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12CoreFunction4Type5POLY2E">
-<span id="_CPPv3N3nnp12CoreFunction4Type5POLY2E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY2E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfaaf04e237242767ad09b3ed7125b44bf9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY2</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY2E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = ((15 - 6x)x - 10) x^3 + 1\)</span> </p>
+<span id="_CPPv3N3nnp12CoreFunction4Type5POLY2E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY2E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfaaf04e237242767ad09b3ed7125b44bf9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY2</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY2E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = ((15 - 6x)x - 10) x^3 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12CoreFunction4Type5POLY3E">
-<span id="_CPPv3N3nnp12CoreFunction4Type5POLY3E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY3E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfae1b601534c2c991b69548e15c54fbf46"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY3</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY3E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x(20x - 70) + 84) - 35)x^4 + 1\)</span> </p>
+<span id="_CPPv3N3nnp12CoreFunction4Type5POLY3E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY3E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfae1b601534c2c991b69548e15c54fbf46"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY3</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY3E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x(20x - 70) + 84) - 35)x^4 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12CoreFunction4Type5POLY4E">
-<span id="_CPPv3N3nnp12CoreFunction4Type5POLY4E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY4E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfa4d4c239e0a70b1026a7204d164684ec7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY4</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY4E" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1\)</span> </p>
+<span id="_CPPv3N3nnp12CoreFunction4Type5POLY4E"></span><span id="_CPPv2N3nnp12CoreFunction4Type5POLY4E"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfa4d4c239e0a70b1026a7204d164684ec7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">POLY4</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type5POLY4E" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = (x(x((315 - 70x)x - 540) + 420) - 126)x^5 + 1\)</span></p>
 </dd></dl>
 
 <dl class="cpp enumerator">
 <dt class="sig sig-object cpp" id="_CPPv4N3nnp12CoreFunction4Type3EXPE">
-<span id="_CPPv3N3nnp12CoreFunction4Type3EXPE"></span><span id="_CPPv2N3nnp12CoreFunction4Type3EXPE"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfa8c670f8c37b95e1ed14a0ce414b049c7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EXP</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type3EXPE" title="Permalink to this definition"></a><br /></dt>
-<dd><p><span class="math notranslate nohighlight">\(f(x) = e^{1 - \frac{1}{1 - x^2}}\)</span> </p>
+<span id="_CPPv3N3nnp12CoreFunction4Type3EXPE"></span><span id="_CPPv2N3nnp12CoreFunction4Type3EXPE"></span><span class="target" id="classnnp_1_1CoreFunction_1ac0dbc4de27e067c87ea2cef5ac067cdfa8c670f8c37b95e1ed14a0ce414b049c7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EXP</span></span></span><a class="headerlink" href="#_CPPv4N3nnp12CoreFunction4Type3EXPE" title="Link to this definition"></a><br /></dt>
+<dd><p><span class="math notranslate nohighlight">\(f(x) = e^{1 - \frac{1}{1 - x^2}}\)</span></p>
 </dd></dl>
 
 </dd></dl>

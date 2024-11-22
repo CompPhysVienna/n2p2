@@ -18,7 +18,7 @@ var searchData=
   ['elementmap_2eh_15',['ElementMap.h',['../ElementMap_8h.html',1,'']]],
   ['elements_16',['elements',['../classnnp_1_1ModeCabana.html#aec0627677be56ed7f287500f7c373980',1,'nnp::ModeCabana::elements()'],['../classnnp_1_1Mode.html#a6f777011d3e3fbe644616e7763f9dd11',1,'nnp::Mode::elements()']]],
   ['elementstrings_17',['elementStrings',['../classnnp_1_1ModeCabana.html#a10839affdcfbe190403ccd5484fb7b74',1,'nnp::ModeCabana']]],
-  ['emap_18',['emap',['../classnnp_1_1InterfaceLammps.html#afe883bceac8277fcfca37aca7554a841',1,'nnp::InterfaceLammps::emap()'],['../classLAMMPS__NS_1_1PairNNP.html#a5786a3f83a657a154509fd0cddd84879',1,'LAMMPS_NS::PairNNP::emap()']]],
+  ['emap_18',['emap',['../classnnp_1_1InterfaceLammps.html#afe883bceac8277fcfca37aca7554a841',1,'nnp::InterfaceLammps::emap()'],['../classLAMMPS__NS_1_1PairHDNNP.html#a8e26553ac8109a74d96aa54002c1bf52',1,'LAMMPS_NS::PairHDNNP::emap()']]],
   ['energy_19',['energy',['../structnnp_1_1Atom.html#abae2157524b61b7772f09d7fae340fa3',1,'nnp::Atom::energy()'],['../structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5',1,'nnp::Structure::energy()']]],
   ['energyref_20',['energyRef',['../structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61',1,'nnp::Structure']]],
   ['epoch_21',['epoch',['../classnnp_1_1Training.html#a08b98e274dffce06459a1c29a05e90a7',1,'nnp::Training']]],
