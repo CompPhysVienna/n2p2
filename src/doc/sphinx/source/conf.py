@@ -111,7 +111,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'n2p2 - A neural network potential package'
-copyright = u'2022, Andreas Singraber'
+copyright = u'2024, Andreas Singraber'
 author = u'Andreas Singraber'
 
 # The version info for the project you're documenting, acts as replacement for

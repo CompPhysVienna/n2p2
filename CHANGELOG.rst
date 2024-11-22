@@ -3,7 +3,7 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
-Version 2.3.0 - 2024-11-??
+Version 2.3.0 - 2024-11-23
 --------------------------
 
 New features
