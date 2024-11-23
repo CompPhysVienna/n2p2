@@ -37,7 +37,8 @@ Atom::Atom() : hasNeighborList               (false),
                numSymmetryFunctions          (0    ),
                energy                        (0.0  ),
                charge                        (0.0  ),
-               chargeRef                     (0.0  )
+               chargeRef                     (0.0  ),
+               forceWeight                   (1.0  )
 {
 }
 
@@ -363,6 +364,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("energy                         : %16.8E\n", energy));
     v.push_back(strpr("charge                         : %16.8E\n", charge));
     v.push_back(strpr("chargeRef                      : %16.8E\n", chargeRef));
+    v.push_back(strpr("forceWeight                    : %16.8E\n", forceWeight));
     v.push_back(strpr("r                              : %16.8E %16.8E %16.8E\n", r[0], r[1], r[2]));
     v.push_back(strpr("f                              : %16.8E %16.8E %16.8E\n", f[0], f[1], f[2]));
     v.push_back(strpr("fRef                           : %16.8E %16.8E %16.8E\n", fRef[0], fRef[1], fRef[2]));
