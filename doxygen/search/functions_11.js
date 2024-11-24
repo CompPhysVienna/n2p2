@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['unscale_0',['unscale',['../classnnp_1_1SymFnc.html#ab51a2ffbfcb479e8a09a73bb31551501',1,'nnp::SymFnc::unscale()'],['../classnnp_1_1ElementCabana.html#ad4b133ffd2f13e5163a9d51c888ebbeb',1,'nnp::ElementCabana::unscale()']]],
-  ['update_1',['update',['../classnnp_1_1GradientDescent.html#af70ae5d1478a4d09c3c0fcf714a942e0',1,'nnp::GradientDescent::update()'],['../classnnp_1_1KalmanFilter.html#a0683a07b11f424b766636dee9ef65582',1,'nnp::KalmanFilter::update()'],['../classnnp_1_1KalmanFilter.html#afd60320bc82cb87db51c925133ef7f22',1,'nnp::KalmanFilter::update(std::size_t const sizeObservation)'],['../classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d',1,'nnp::Training::update()'],['../classnnp_1_1Updater.html#ae0727a8da45cb1439bf0f3d2318c4084',1,'nnp::Updater::update()']]],
-  ['updateerror_2',['updateError',['../structnnp_1_1Atom.html#a961d26bfcf8ca8a5bbdefff543754425',1,'nnp::Atom::updateError()'],['../structnnp_1_1Structure.html#add58b9575e3ae19f82991a445aec6b97',1,'nnp::Structure::updateError()']]],
-  ['updater_3',['Updater',['../classnnp_1_1Updater.html#a125abe1065797290fda5ef71205217fd',1,'nnp::Updater']]],
-  ['updatesymmetryfunctionstatistics_4',['updateSymmetryFunctionStatistics',['../classnnp_1_1Element.html#a6dc921df037ff55fa8e20a834b1bf486',1,'nnp::Element']]],
-  ['updatetime_5',['updateTime',['../classnnp_1_1Stopwatch.html#a2a82d088939f4f37d3c27c793dca4933',1,'nnp::Stopwatch']]],
-  ['usenormalization_6',['useNormalization',['../classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451',1,'nnp::Mode']]]
+  ['tonormalizedunits_0',['toNormalizedUnits',['../structnnp_1_1Atom.html#a88a7b5fcad370c82a811c71333224bc4',1,'nnp::Atom::toNormalizedUnits()'],['../classnnp_1_1EwaldSetup.html#a28e7b45be9299516677ef802e19fee07',1,'nnp::EwaldSetup::toNormalizedUnits()'],['../structnnp_1_1EwaldParameters.html#a983d253bc4fa0f65c96e626c7a4df188',1,'nnp::EwaldParameters::toNormalizedUnits()'],['../structnnp_1_1Structure.html#abd33241d3bdecf5f1a7eee012118cea3',1,'nnp::Structure::toNormalizedUnits()'],['../classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a',1,'nnp::Dataset::toNormalizedUnits()']]],
+  ['tophysicalunits_1',['toPhysicalUnits',['../structnnp_1_1Atom.html#a5300bfe6c03cef1a4762d35e5927d76d',1,'nnp::Atom::toPhysicalUnits()'],['../structnnp_1_1EwaldParameters.html#a359d3712d7223131afeb3062c9c3ba6d',1,'nnp::EwaldParameters::toPhysicalUnits()'],['../structnnp_1_1Structure.html#a1858d3c06446ad91b0876f8ca30b2686',1,'nnp::Structure::toPhysicalUnits()'],['../classnnp_1_1Dataset.html#aa99d82945d6250000d26f53173d855c3',1,'nnp::Dataset::toPhysicalUnits()']]],
+  ['topology_2',['Topology',['../structnnp_1_1Mode_1_1NNSetup_1_1Topology.html#a3d2b6ab5429c0215b0b8150bd357a497',1,'nnp::Mode::NNSetup::Topology']]],
+  ['training_3',['Training',['../classnnp_1_1Training.html#af98b1bc7ed710e2fa008a72ad29dbdae',1,'nnp::Training']]],
+  ['transferneighborlist_4',['transferNeighborList',['../classLAMMPS__NS_1_1PairHDNNP.html#a6b82b9bc322304eb775dcf68b909ce6c',1,'LAMMPS_NS::PairHDNNP::transferNeighborList()'],['../classLAMMPS__NS_1_1PairHDNNPDevelop.html#a773a4f7a612e123c428fba7948afea2f',1,'LAMMPS_NS::PairHDNNPDevelop::transferNeighborList()']]],
+  ['trim_5',['trim',['../namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9',1,'nnp']]]
 ];

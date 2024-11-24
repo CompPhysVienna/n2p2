@@ -1,0 +1,7 @@
+<map id="LAMMPS_NS::PairHDNNPExternal::settings" name="LAMMPS_NS::PairHDNNPExternal::settings">
+<area shape="rect" id="node1" title=" " alt="" coords="5,110,244,151"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="292,29,533,56"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#a17d6d160054a064199a8757eb62b3350" title="Extract all elements and store in element map." alt="" coords="315,81,510,122"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="301,147,524,173"/>
+<area shape="rect" id="node5" href="$classnnp_1_1ElementMap.html#a94031b84fe2b38bbdb62ba700d5481a4" title="Get element map size." alt="" coords="581,172,752,199"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="nnp::Structure::calculateDQdr" name="nnp::Structure::calculateDQdr">
+<area shape="rect" id="node1" title="Calculates derivative of the charges with respect to the atom&#39;s position." alt="" coords="212,5,425,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,5,164,32"/>
+</map>

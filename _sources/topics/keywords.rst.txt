@@ -304,7 +304,7 @@ scaling. See :cpp:enumerator:`nnp::SymmetryFunction::ScalingType`.
    ``symfunction_short O 13 0.1 0.2 1.0 8.0 16.0``
 
 Defines a symmetry function for a specific element. The first argument is the
-element symbol, the second sets the the type. The remaining parameters depend on
+element symbol, the second sets the type. The remaining parameters depend on
 the symmetry function type, follow the links in the right column of the table
 and look for the detailed description of the class.
 
@@ -335,6 +335,92 @@ and look for the detailed description of the class.
      - :cpp:class:`nnp::SymFncCompAngnWeighted`
    * - 25
      - :cpp:class:`nnp::SymFncCompAngwWeighted`
+
+----
+
+``ewald_truncation_error_method``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In 4G the Ewald summation is used if periodic boundary conditions are applied.
+Both the reciprocal and the real space sum need to be truncated. For this, two
+different schemes are available. This defines the behaviour of ``ewald_prec``.
+
+**Usage**:
+   ``ewald_truncation_error_method <mode>``
+
+**Examples**:
+   ``ewald_truncation_error_method 1``
+
+
+*  ``0``: *default*, **Method by Jackson & Catlow**
+
+    This method is based on the idea to truncate all terms that are smaller in
+    magnitude than a certain threshold [3]_. It is the method used in *RuNNer*.
+
+*  ``1``: **Method by Kolafa & Perram**
+
+    Statistical assumptions are made of the material to incorporate cancelling
+    effects of the energy contributions [4]_. It is the recommended method.
+
+``ewald_prec``
+^^^^^^^^^^^^^^
+
+Depending on the mode in ``ewald_truncation_error_method`` this keyword has
+different meanings. The parameter ``<threshold>`` determines the cutoff radii in
+real and reciprocal space. For both methods a smaller threshold leads to
+increased radii and thus to a degrade in performance. Also the memory footprint
+can become quite noticeable for very small values.
+
+.. warning::
+
+    If n2p2 crashes in 4G mode because it needs more memory than available on
+    the machine, it may be related to the ``<threshold>`` parameter. This can
+    be tested by increasing its value considerably.
+
+* If ``ewald_truncation_error_method 0``
+
+    **Usage**:
+        ``ewald_prec <threshold>``
+
+    ``<threshold>`` is a dimensionless parameter that controls the accuracy of
+    the Ewald summation. Typical values are in the range of ``1.e-2`` to
+    ``1.e-7``.
+
+* If ``ewald_truncation_error_method 1``
+
+    **Usage**:
+        ``ewald_prec <threshold> <max charge> <<real space cutoff>>``
+
+    ``<threshold>`` loosely corresponds to the standard deviation of the
+    electrostatic force error one would like to achieve and has to be given in
+    the same units as the forces in the training data. However, the methods
+    tends to overestimate the actual error, so one may test the accuracy for
+    different values. Choosing values that are orders of magnitude smaller than
+    the RMSE of the short-range force errors does not make sense.
+    ``<max charge>`` should be the maximum charge (in magnitude) that appears during
+    training. This does not have to be very precise but should be given in the
+    same units as in the training data. :ref:`nnp-norm` outputs this quantity.
+    The default is ``1.``.
+
+    It is important to note that this method has two different modes.
+    ``<<real space cutoff>>`` is an optional parameter. It fixes the real space
+    cutoff in the Ewald summation and adjusts the Ewald parameter and the
+    reciprocal space cutoff accordingly such that the specified ``<threshold>``
+    is still satisfied. If ``<<real space cutoff>>`` is chosen unreasonably
+    small, the truncation error estimate may not be reliable anymore and
+    a warning is given. This mode is useful when n2p2 is used in combination
+    with other programs like LAMMPS, since they often expect a fixed cutoff
+    during the simulation. If ``<<real space cutoff>>`` is not specified, an
+    optimal combination of the real and reciprocal space cutoff is computed.
+    However, "optimal" refers to the computational effort inside n2p2. If used
+    in combination with other programs like LAMMPS, it will not be optimal in
+    general. Also note that the optimal cutoffs may change during the
+    simulation since they depend on factors like simulation cell volume, number
+    of atoms etc. In general we recommend the optimal choice of the cutoffs
+    only if n2p2 is used as a standalone tool. If it is used in the interface
+    mode, a good choice is to set ``<<real space cutoff>>`` to the symmetry
+    function cutoff. This choice may also decrease the memory footprint.
+
 
 Training-specific keywords
 --------------------------
@@ -509,3 +595,11 @@ Three different modes of normalization can be selected:
 .. [2] Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
    Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
    Theory Comput. 2019, 15 (5), 3075–3092. https://doi.org/10.1021/acs.jctc.8b01092
+
+.. [3] Jackson, R. A.; Catlow, C. R. A. Computer Simulation Studies of Zeolite
+   Structure. Molecular Simulation 1988, 1 (4), 207–224.
+   https://doi.org/10.1080/08927028808080944.
+
+.. [4] Kolafa, J.; Perram, J. W. Cutoff Errors in the Ewald Summation Formulae
+   for Point Charge Systems. Molecular Simulation 1992, 9 (5), 351–368.
+   https://doi.org/10.1080/08927029208049126.

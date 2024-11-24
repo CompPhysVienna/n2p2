@@ -14,7 +14,11 @@ var searchData=
   ['tldf_11',['tldf',['../nnp-cutoff_8cpp.html#a93580980feac1f6ed9dc8236bee6f92a',1,'nnp-cutoff.cpp']]],
   ['tlf_12',['tlf',['../nnp-cutoff_8cpp.html#a6c570e9992047addb331a45be3b03752',1,'nnp-cutoff.cpp']]],
   ['tlfdf_13',['tlfdf',['../nnp-cutoff_8cpp.html#a2b9daf1692e6c847ba8ea8cc04af48fb',1,'nnp-cutoff.cpp']]],
-  ['traininglog_14',['trainingLog',['../classnnp_1_1Training.html#a385a420ca6f05019c349d0ca5d6bf10b',1,'nnp::Training']]],
-  ['traininglogfilename_15',['trainingLogFileName',['../classnnp_1_1Training.html#a3f209dcaac73586a0ebb0ea92680ee3e',1,'nnp::Training']]],
-  ['type_16',['type',['../classnnp_1_1GradientDescent.html#ab0383b8be2b378d5dac6f378f185dafa',1,'nnp::GradientDescent::type()'],['../classnnp_1_1KalmanFilter.html#a3bc9cd4501729de55ce51c0f3a184fae',1,'nnp::KalmanFilter::type()'],['../classnnp_1_1SymGrp.html#a046ec5da264f282ee1bea2468a584efa',1,'nnp::SymGrp::type()'],['../structnnp_1_1SymFncStatistics_1_1Container.html#ac1e817bbee88d9a003b5b31a32ab84e5',1,'nnp::SymFncStatistics::Container::type()'],['../classnnp_1_1SymFnc.html#a53753dda8bc4226c3b02678cf040dff7',1,'nnp::SymFnc::type()'],['../classnnp_1_1CoreFunction.html#a10c6f38ed9164f0c338c517c35ed1cdb',1,'nnp::CoreFunction::type()']]]
+  ['topology_14',['topology',['../structnnp_1_1Mode_1_1NNSetup.html#a15793af85c9508bc1aa3ffb4c46d0176',1,'nnp::Mode::NNSetup']]],
+  ['traininglog_15',['trainingLog',['../classnnp_1_1Training.html#a385a420ca6f05019c349d0ca5d6bf10b',1,'nnp::Training']]],
+  ['traininglogfilename_16',['trainingLogFileName',['../classnnp_1_1Training.html#a3f209dcaac73586a0ebb0ea92680ee3e',1,'nnp::Training']]],
+  ['trovertk_17',['TrOverTk',['../namespacennp.html#ae417f0f37d4302d86a60ebd30ed3b723',1,'nnp']]],
+  ['truncimpl_18',['truncImpl',['../classnnp_1_1EwaldSetup.html#aba668d1e182d8aecd9bffff4e34475c4',1,'nnp::EwaldSetup']]],
+  ['truncmethod_19',['truncMethod',['../classnnp_1_1EwaldSetup.html#a4e0fe5f31331f4cf012e184cda17cd2d',1,'nnp::EwaldSetup']]],
+  ['type_20',['type',['../classnnp_1_1KalmanFilter.html#a3bc9cd4501729de55ce51c0f3a184fae',1,'nnp::KalmanFilter::type()'],['../classnnp_1_1GradientDescent.html#ab0383b8be2b378d5dac6f378f185dafa',1,'nnp::GradientDescent::type()'],['../classnnp_1_1SymGrp.html#a046ec5da264f282ee1bea2468a584efa',1,'nnp::SymGrp::type()'],['../structnnp_1_1SymFncStatistics_1_1Container.html#ac1e817bbee88d9a003b5b31a32ab84e5',1,'nnp::SymFncStatistics::Container::type()'],['../classnnp_1_1SymFnc.html#a53753dda8bc4226c3b02678cf040dff7',1,'nnp::SymFnc::type()'],['../classnnp_1_1CoreFunction.html#a10c6f38ed9164f0c338c517c35ed1cdb',1,'nnp::CoreFunction::type()']]]
 ];

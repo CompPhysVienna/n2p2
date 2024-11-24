@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jacobianmode_0',['JacobianMode',['../classnnp_1_1Training.html#a45f426cc1948a782e161d0bd0072fbaa',1,'nnp::Training']]]
+  ['ewaldtruncmethod_0',['EWALDTruncMethod',['../namespacennp.html#a2114f19077189df6123879a0a8543ac3',1,'nnp']]]
 ];

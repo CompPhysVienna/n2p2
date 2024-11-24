@@ -1,0 +1,4 @@
+<map id="nnp::EwaldSetup::calculateParameters" name="nnp::EwaldSetup::calculateParameters">
+<area shape="rect" id="node1" title="Compute eta, rCut and kCut." alt="" coords="233,5,431,47"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a46770abdefe49a0ab488049caa99905c" title="Calculate maximal cut&#45;off if cut&#45;off of screening and real part Ewald summation are also considered." alt="" coords="5,5,185,47"/>
+</map>

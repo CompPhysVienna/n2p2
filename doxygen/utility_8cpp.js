@@ -6,6 +6,7 @@ var utility_8cpp =
     [ "reduce", "utility_8cpp.html#aaa30280456ea59152f9e6c240f41ea93", null ],
     [ "pad", "utility_8cpp.html#a1589c883b03419579131181b3337f531", null ],
     [ "strpr", "utility_8cpp.html#a398f0bcafb57e99ba1581c4b8f8a7f76", null ],
+    [ "cap", "utility_8cpp.html#a2ef6196f4080273f88097014ce467d86", null ],
     [ "createFileHeader", "utility_8cpp.html#a5660082c7868a44a59e125c0cbe10d85", null ],
     [ "appendLinesToFile", "utility_8cpp.html#aeed037cd4a793db2c1b490e6607c0866", null ],
     [ "appendLinesToFile", "utility_8cpp.html#a4b5f07fce978bae748e269c74cc60277", null ],

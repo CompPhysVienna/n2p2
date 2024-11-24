@@ -1,4 +1,5 @@
 <map id="nnp::InterfaceLammps::getEnergy" name="nnp::InterfaceLammps::getEnergy">
-<area shape="rect" id="node1" title="Return sum of local energy contributions." alt="" coords="237,5,405,47"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a4e58bc34943d699e1f974b411c4037a4" title=" " alt="" coords="5,5,189,47"/>
+<area shape="rect" id="node1" title="Return sum of local energy contributions." alt="" coords="292,39,460,80"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a4e58bc34943d699e1f974b411c4037a4" title=" " alt="" coords="33,5,217,47"/>
+<area shape="rect" id="node3" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a9f919fc12ad3bfd827bdbabe883cf8bc" title=" " alt="" coords="5,71,244,112"/>
 </map>

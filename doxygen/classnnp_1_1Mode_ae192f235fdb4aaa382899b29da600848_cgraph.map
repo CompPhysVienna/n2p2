@@ -1,0 +1,5 @@
+<map id="nnp::Mode::setupCutoffMatrix" name="nnp::Mode::setupCutoffMatrix">
+<area shape="rect" id="node1" title="Setup matrix storing all symmetry function cut&#45;offs for each element." alt="" coords="5,42,220,69"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ScreeningFunction.html#a39a14618e686220bf57a679b68e1739a" title="Getter for outer." alt="" coords="268,5,441,47"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a431f556c745c1ee81a32e80d0def6c0a" title="Test if vector contains specified value." alt="" coords="279,71,431,98"/>
+</map>

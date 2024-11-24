@@ -1,13 +1,14 @@
 <map id="nnp::Structure" name="nnp::Structure">
-<area shape="rect" id="node1" title="Storage for one atomic configuration." alt="" coords="707,356,820,383"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="275,123,411,149"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,79,92,105"/>
-<area shape="rect" id="node4" title=" " alt="" coords="318,173,369,200"/>
-<area shape="rect" id="node5" title=" " alt="" coords="19,300,79,327"/>
-<area shape="rect" id="node10" title=" " alt="" coords="250,331,437,357"/>
-<area shape="rect" id="node6" title=" " alt="" coords="324,381,363,408"/>
-<area shape="rect" id="node7" title=" " alt="" coords="15,509,82,536"/>
-<area shape="rect" id="node9" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="296,553,391,580"/>
-<area shape="rect" id="node8" title=" " alt="" coords="293,604,394,631"/>
-<area shape="rect" id="node11" title=" " alt="" coords="249,655,437,681"/>
+<area shape="rect" id="node1" title="Storage for one atomic configuration." alt="" coords="707,408,820,435"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="275,117,411,144"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,73,92,100"/>
+<area shape="rect" id="node4" title=" " alt="" coords="318,200,369,227"/>
+<area shape="rect" id="node5" title=" " alt="" coords="19,327,79,353"/>
+<area shape="rect" id="node11" title=" " alt="" coords="250,357,437,384"/>
+<area shape="rect" id="node6" title=" " alt="" coords="324,408,363,435"/>
+<area shape="rect" id="node7" title=" " alt="" coords="15,609,82,636"/>
+<area shape="rect" id="node9" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="296,653,391,680"/>
+<area shape="rect" id="node8" title=" " alt="" coords="293,704,394,731"/>
+<area shape="rect" id="node10" title=" " alt="" coords="303,755,384,781"/>
+<area shape="rect" id="node12" title=" " alt="" coords="249,805,437,832"/>
 </map>

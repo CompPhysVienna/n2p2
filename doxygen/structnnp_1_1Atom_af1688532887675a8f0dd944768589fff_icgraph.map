@@ -1,5 +1,0 @@
-<map id="nnp::Atom::getNumNeighbors" name="nnp::Atom::getNumNeighbors">
-<area shape="rect" id="node1" title="Calculate number of neighbors for a given cutoff radius." alt="" coords="279,46,493,73"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="5,5,231,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="5,71,231,112"/>
-</map>

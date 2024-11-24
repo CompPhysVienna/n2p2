@@ -1,0 +1,6 @@
+<map id="nnp::KspaceGrid::setup" name="nnp::KspaceGrid::setup">
+<area shape="rect" id="node1" title="Set up reciprocal box vectors and eta." alt="" coords="5,71,177,98"/>
+<area shape="rect" id="node2" href="$classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2" title="Compute box copies in each direction." alt="" coords="225,5,420,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Vec3D.html#acb8ab5515d194a43e10c2fa43636dffc" title="Cross product, argument vector is second in product." alt="" coords="468,42,605,69"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Vec3D.html#a4dd2e5fef207b1bd2021142bf678f251" title="Calculate square of norm of vector." alt="" coords="250,122,395,149"/>
+</map>

@@ -7,9 +7,13 @@ var searchData=
   ['h_5fnumsfgperelem_4',['h_numSFGperElem',['../classnnp_1_1ModeCabana.html#a44b050501017245197156097a0ae45d5',1,'nnp::ModeCabana']]],
   ['h_5fnumsfperelem_5',['h_numSFperElem',['../classnnp_1_1ModeCabana.html#ad16e78cd9b3bef6b869b8dcca3a7cccb',1,'nnp::ModeCabana']]],
   ['h_5fweights_6',['h_weights',['../classnnp_1_1ModeCabana.html#ad79c91a0dc4ebb1429a19ee8446cbd54',1,'nnp::ModeCabana']]],
-  ['hasneighborlist_7',['hasNeighborList',['../structnnp_1_1Atom.html#aa4a9596079af5fb7a6218f74b073a690',1,'nnp::Atom::hasNeighborList()'],['../structnnp_1_1Structure.html#af21dfbdaf41e8332ee0f773a070f3f74',1,'nnp::Structure::hasNeighborList()']]],
-  ['hasstructures_8',['hasStructures',['../classnnp_1_1Training.html#aeee2583a1323180d235f16717111f39e',1,'nnp::Training']]],
-  ['hassymmetryfunctionderivatives_9',['hasSymmetryFunctionDerivatives',['../structnnp_1_1Atom.html#a1f3ed8b68d3c546d068024b0c949eac1',1,'nnp::Atom::hasSymmetryFunctionDerivatives()'],['../structnnp_1_1Structure.html#a82f10399909e0f7fa8f6344c305781cc',1,'nnp::Structure::hasSymmetryFunctionDerivatives()']]],
-  ['hassymmetryfunctions_10',['hasSymmetryFunctions',['../structnnp_1_1Atom.html#a8b6403674a98b82e02508193fa86f196',1,'nnp::Atom::hasSymmetryFunctions()'],['../structnnp_1_1Structure.html#aff934fe32fb46e93dd9551d50ed4b0b6',1,'nnp::Structure::hasSymmetryFunctions()']]],
-  ['hasupdaters_11',['hasUpdaters',['../classnnp_1_1Training.html#a3c709ea24c0cb6ea3bfdaaae6efd2202',1,'nnp::Training']]]
+  ['hardness_7',['hardness',['../classnnp_1_1Element.html#aad40bc2c5e0ba85680eeedcfa41aa0ea',1,'nnp::Element']]],
+  ['hasamatrix_8',['hasAMatrix',['../structnnp_1_1Structure.html#a79b8f1a7b53aebd41dab2838084b5618',1,'nnp::Structure']]],
+  ['hascharges_9',['hasCharges',['../structnnp_1_1Structure.html#af9eaacc767607b846ddf9b30109c570e',1,'nnp::Structure']]],
+  ['hasglobalstructure_10',['hasGlobalStructure',['../classnnp_1_1InterfaceLammps.html#a447fc7baad8d8c9e0d0a21593aa114a2',1,'nnp::InterfaceLammps']]],
+  ['hasneighborlist_11',['hasNeighborList',['../structnnp_1_1Atom.html#aa4a9596079af5fb7a6218f74b073a690',1,'nnp::Atom::hasNeighborList()'],['../structnnp_1_1Structure.html#af21dfbdaf41e8332ee0f773a070f3f74',1,'nnp::Structure::hasNeighborList()']]],
+  ['hasstructures_12',['hasStructures',['../classnnp_1_1Training.html#aeee2583a1323180d235f16717111f39e',1,'nnp::Training']]],
+  ['hassymmetryfunctionderivatives_13',['hasSymmetryFunctionDerivatives',['../structnnp_1_1Atom.html#a1f3ed8b68d3c546d068024b0c949eac1',1,'nnp::Atom::hasSymmetryFunctionDerivatives()'],['../structnnp_1_1Structure.html#a82f10399909e0f7fa8f6344c305781cc',1,'nnp::Structure::hasSymmetryFunctionDerivatives()']]],
+  ['hassymmetryfunctions_14',['hasSymmetryFunctions',['../structnnp_1_1Atom.html#a8b6403674a98b82e02508193fa86f196',1,'nnp::Atom::hasSymmetryFunctions()'],['../structnnp_1_1Structure.html#aff934fe32fb46e93dd9551d50ed4b0b6',1,'nnp::Structure::hasSymmetryFunctions()']]],
+  ['hasupdaters_15',['hasUpdaters',['../classnnp_1_1Training.html#a3c709ea24c0cb6ea3bfdaaae6efd2202',1,'nnp::Training']]]
 ];

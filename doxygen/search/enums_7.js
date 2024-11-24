@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['parallelmode_0',['ParallelMode',['../classnnp_1_1Training.html#a6671e3eb01b86af1162273218df0e5ed',1,'nnp::Training']]]
+  ['nnptype_0',['NNPType',['../classnnp_1_1Mode.html#a46a0c99828036f91e87b97344b36fa8c',1,'nnp::Mode']]]
 ];

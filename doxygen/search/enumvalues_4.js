@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['jm_5ffull_0',['JM_FULL',['../classnnp_1_1Training.html#a45f426cc1948a782e161d0bd0072fbaaa672da672184b11db8b20c6044e228ad2',1,'nnp::Training']]],
-  ['jm_5fsum_1',['JM_SUM',['../classnnp_1_1Training.html#a45f426cc1948a782e161d0bd0072fbaaa158efa3ab967d65d8574555d24e6fefd',1,'nnp::Training']]],
-  ['jm_5ftask_2',['JM_TASK',['../classnnp_1_1Training.html#a45f426cc1948a782e161d0bd0072fbaaa1ccf21386e53c6bde891425257092575',1,'nnp::Training']]]
+  ['hdnnp_5f2g_0',['HDNNP_2G',['../classnnp_1_1Mode.html#a46a0c99828036f91e87b97344b36fa8ca4a1269b1b05138bde47b6abcbbe2db7e',1,'nnp::Mode']]],
+  ['hdnnp_5f4g_1',['HDNNP_4G',['../classnnp_1_1Mode.html#a46a0c99828036f91e87b97344b36fa8cadbf17803dd1a7d3e0d6ab137ee03d7dd',1,'nnp::Mode']]],
+  ['hdnnp_5fq_2',['HDNNP_Q',['../classnnp_1_1Mode.html#a46a0c99828036f91e87b97344b36fa8cadba7ea6524890314a0dd5fc8f2ca46e8',1,'nnp::Mode']]]
 ];

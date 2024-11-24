@@ -1,6 +1,6 @@
 <map id="nnp::Training::initializeWeights" name="nnp::Training::initializeWeights">
-<area shape="rect" id="node1" title="Initialize weights for all elements." alt="" coords="5,27,175,69"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file." alt="" coords="496,5,705,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights." alt="" coords="244,27,427,69"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a494c9900a501676733155cca1b856be3" title="Read in weights for a specific type of neural network." alt="" coords="223,93,448,134"/>
+<area shape="rect" id="node1" title="Initialize weights for all elements." alt="" coords="5,59,175,100"/>
+<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="496,29,663,71"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a4d15c6af81c325b25baff79d6a678451" title="Randomly initialize specificy neural network weights." alt="" coords="244,59,427,100"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a28ab813622bd4ee19cbfbb15c4411317" title="Read in weights for a specific type of neural network." alt="" coords="223,124,448,165"/>
 </map>

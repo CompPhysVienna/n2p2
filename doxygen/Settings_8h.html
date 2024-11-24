@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('Settings_8h.html',''); initResizable()
   <div class="headertitle"><div class="title">Settings.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstddef&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="Key_8h_source.html">Key.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ISettings_8h_source.html">ISettings.h</a>&quot;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
@@ -108,14 +110,16 @@ Include dependency graph for Settings.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="Settings_8h__incl.png" border="0" usemap="#a_2home_2runner_2work_2n2p2_2n2p2_2src_2libnnp_2Settings_8h" alt=""/></div>
 <map name="a_2home_2runner_2work_2n2p2_2n2p2_2src_2libnnp_2Settings_8h" id="a_2home_2runner_2work_2n2p2_2n2p2_2src_2libnnp_2Settings_8h">
-<area shape="rect" title=" " alt="" coords="214,5,409,47"/>
-<area shape="rect" title=" " alt="" coords="5,95,76,121"/>
-<area shape="rect" title=" " alt="" coords="100,95,173,121"/>
-<area shape="rect" title=" " alt="" coords="198,95,249,121"/>
-<area shape="rect" title=" " alt="" coords="273,95,350,121"/>
-<area shape="rect" title=" " alt="" coords="374,95,433,121"/>
-<area shape="rect" title=" " alt="" coords="457,95,517,121"/>
-<area shape="rect" title=" " alt="" coords="541,95,604,121"/>
+<area shape="rect" title=" " alt="" coords="167,5,361,47"/>
+<area shape="rect" href="Key_8h.html" title=" " alt="" coords="56,169,112,196"/>
+<area shape="rect" title=" " alt="" coords="5,244,64,271"/>
+<area shape="rect" title=" " alt="" coords="101,244,163,271"/>
+<area shape="rect" href="ISettings_8h.html" title=" " alt="" coords="63,95,153,121"/>
+<area shape="rect" title=" " alt="" coords="229,95,299,121"/>
+<area shape="rect" title=" " alt="" coords="323,95,397,121"/>
+<area shape="rect" title=" " alt="" coords="421,95,472,121"/>
+<area shape="rect" title=" " alt="" coords="496,95,573,121"/>
+<area shape="rect" title=" " alt="" coords="598,95,658,121"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -134,16 +138,15 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnnp_1_1Settings.html">nnp::Settings</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads and analyzes settings file and stores parameters.  <a href="classnnp_1_1Settings.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Settings_1_1Key.html">nnp::Settings::Key</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyword properties.  <a href="structnnp_1_1Settings_1_1Key.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnnp_1_1settings_1_1Settings.html">nnp::settings::Settings</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads and analyzes settings file and stores parameters.  <a href="classnnp_1_1settings_1_1Settings.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacennp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacennp.html">nnp</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacennp_1_1settings"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacennp_1_1settings.html">nnp::settings</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
@@ -152,7 +155,7 @@ Namespaces</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_881441af78b1e0875bdddb157c69d9c1.html">libnnp</a></li><li class="navelem"><a class="el" href="Settings_8h.html">Settings.h</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:35 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:48 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

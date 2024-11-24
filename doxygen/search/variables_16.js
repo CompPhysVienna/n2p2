@@ -1,12 +1,12 @@
 var searchData=
 [
   ['w_0',['w',['../classnnp_1_1KalmanFilter.html#a421dc9ca0dcf1213d7424611b29071b0',1,'nnp::KalmanFilter']]],
-  ['weightoffset_1',['weightOffset',['../classnnp_1_1NeuralNetwork.html#a59be6ffbe6c6c5ae246cb105e188fa1b',1,'nnp::NeuralNetwork']]],
-  ['weights_2',['weights',['../structnnp_1_1NeuralNetwork_1_1Neuron.html#a2e81c4bbc7861ab9ca5071c07bddf26e',1,'nnp::NeuralNetwork::Neuron::weights()'],['../classnnp_1_1ModeCabana.html#aa003a2ea438f3e4102f59cd3c1db5ab5',1,'nnp::ModeCabana::weights()'],['../classnnp_1_1Training.html#af28c4111f0f053fbccb6b072b47c6fea',1,'nnp::Training::weights()']]],
-  ['weightsoffset_3',['weightsOffset',['../classnnp_1_1Training.html#a8745838265af0e0436fc024d0c80de74',1,'nnp::Training']]],
-  ['weightspertask_4',['weightsPerTask',['../structnnp_1_1Training_1_1Property.html#a9c1498b6d1ba640b41701ee752010128',1,'nnp::Training::Property']]],
-  ['width_5',['width',['../classnnp_1_1CompactFunction.html#a042940c11a32fbefb19f6d8fbee00406',1,'nnp::CompactFunction']]],
-  ['words_6',['words',['../structnnp_1_1Settings_1_1Key.html#a1ce0bae88684ddfa4332585e8f92a262',1,'nnp::Settings::Key']]],
+  ['weightfileformat_1',['weightFileFormat',['../structnnp_1_1Mode_1_1NNSetup.html#a40c385458a3c79d8b27f00c73d58208a',1,'nnp::Mode::NNSetup']]],
+  ['weightoffset_2',['weightOffset',['../classnnp_1_1NeuralNetwork.html#a59be6ffbe6c6c5ae246cb105e188fa1b',1,'nnp::NeuralNetwork']]],
+  ['weights_3',['weights',['../structnnp_1_1NeuralNetwork_1_1Neuron.html#a2e81c4bbc7861ab9ca5071c07bddf26e',1,'nnp::NeuralNetwork::Neuron::weights()'],['../classnnp_1_1ModeCabana.html#aa003a2ea438f3e4102f59cd3c1db5ab5',1,'nnp::ModeCabana::weights()'],['../classnnp_1_1Training.html#af28c4111f0f053fbccb6b072b47c6fea',1,'nnp::Training::weights()']]],
+  ['weightsoffset_4',['weightsOffset',['../classnnp_1_1Training.html#a8745838265af0e0436fc024d0c80de74',1,'nnp::Training']]],
+  ['weightspertask_5',['weightsPerTask',['../structnnp_1_1Training_1_1Property.html#a9c1498b6d1ba640b41701ee752010128',1,'nnp::Training::Property']]],
+  ['width_6',['width',['../classnnp_1_1CompactFunction.html#a042940c11a32fbefb19f6d8fbee00406',1,'nnp::CompactFunction']]],
   ['writecompalways_7',['writeCompAlways',['../structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f',1,'nnp::Training::Property']]],
   ['writecompevery_8',['writeCompEvery',['../structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5',1,'nnp::Training::Property']]],
   ['writeextrapolationwarnings_9',['writeExtrapolationWarnings',['../classnnp_1_1SymFncStatistics.html#ac0fcc6624614a22b59b729872c22aac1',1,'nnp::SymFncStatistics']]],

@@ -1,0 +1,8 @@
+<map id="nnp::Mode::calculateAtomicNeuralNetworks" name="nnp::Mode::calculateAtomicNeuralNetworks">
+<area shape="rect" id="node1" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="5,129,208,171"/>
+<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="265,5,417,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="265,71,417,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a7607132302e2b0f3e1a9dec67cd24062" title="Apply normalization to given property." alt="" coords="256,137,427,163"/>
+<area shape="rect" id="node5" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="265,188,417,229"/>
+<area shape="rect" id="node6" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="265,253,417,295"/>
+</map>

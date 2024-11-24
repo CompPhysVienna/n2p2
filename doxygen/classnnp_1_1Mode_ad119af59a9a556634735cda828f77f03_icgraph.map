@@ -1,0 +1,7 @@
+<map id="nnp::Mode::chargeEquilibration" name="nnp::Mode::chargeEquilibration">
+<area shape="rect" id="node1" title="Perform global charge equilibration method." alt="" coords="236,101,460,127"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="11,5,183,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="5,71,188,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="13,123,181,164"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="17,189,176,215"/>
+</map>

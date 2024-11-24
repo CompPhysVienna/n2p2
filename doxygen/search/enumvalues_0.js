@@ -9,5 +9,6 @@ var searchData=
   ['af_5frelu_6',['AF_RELU',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbedafe93c3a968224442e85a58ba3627e3a9',1,'nnp::NeuralNetwork']]],
   ['af_5frevlogistic_7',['AF_REVLOGISTIC',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbedaf1b2dce761bdf00c9ff8d6ebd1374578',1,'nnp::NeuralNetwork']]],
   ['af_5fsoftplus_8',['AF_SOFTPLUS',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda85811bbf7c259d1fee628b2a69114530',1,'nnp::NeuralNetwork']]],
-  ['af_5ftanh_9',['AF_TANH',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda1569427fccd98a9f3e8ec25d334b982b',1,'nnp::NeuralNetwork']]]
+  ['af_5ftanh_9',['AF_TANH',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda1569427fccd98a9f3e8ec25d334b982b',1,'nnp::NeuralNetwork']]],
+  ['af_5funset_10',['AF_UNSET',['../classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda6da7e88084e905ca63568ffa102500a6',1,'nnp::NeuralNetwork']]]
 ];

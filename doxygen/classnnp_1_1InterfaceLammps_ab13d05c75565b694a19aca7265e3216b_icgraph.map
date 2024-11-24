@@ -1,0 +1,4 @@
+<map id="nnp::InterfaceLammps::getCharges" name="nnp::InterfaceLammps::getCharges">
+<area shape="rect" id="node1" title="Transfer charges (in units of e) to LAMMPS atomic charge vector." alt="" coords="292,5,460,47"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a9f919fc12ad3bfd827bdbabe883cf8bc" title=" " alt="" coords="5,5,244,47"/>
+</map>

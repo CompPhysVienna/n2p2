@@ -58,6 +58,29 @@ information).
 | doc                             | Sphinx, Doxygen, Breathe     | Documentation.                                       |
 +---------------------------------+------------------------------+------------------------------------------------------+
 
+Dependencies
+------------
+
+In order to compile n2p2 the following packages/libraries are needed
+
+    * **make**
+    * **C++ Compiler** (Makefiles are provided for GNU, Intel and LLVM)
+    * **Eigen**
+    * **MPI** Implementation (e.g. OpenMPI)
+    * **BLAS** Implementation
+    * **GNU Scientific Library** (GSL).
+
+If the compiler can't find Eigen although it is installed, you may need to
+create a symlink to the directory the compiler is looking for. This is
+explained here: https://eigen.tuxfamily.org/dox/GettingStarted.html.
+
+For example on **Ubuntu** one can run
+
+.. code-block:: bash
+
+    apt install build-essential libeigen3-dev libopenmpi-dev libblas-dev libgsl-dev
+
+
 The master makefile
 -------------------
 

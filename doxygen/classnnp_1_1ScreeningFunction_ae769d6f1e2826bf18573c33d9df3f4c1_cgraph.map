@@ -1,0 +1,5 @@
+<map id="nnp::ScreeningFunction::info" name="nnp::ScreeningFunction::info">
+<area shape="rect" id="node1" title="Get string with information of screening function." alt="" coords="5,23,179,65"/>
+<area shape="rect" id="node2" href="$classnnp_1_1CoreFunction.html#a0fbe900a2ae42418626568168aab4903" title="Get string with formula of compact function." alt="" coords="227,5,399,32"/>
+<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="447,31,531,57"/>
+</map>

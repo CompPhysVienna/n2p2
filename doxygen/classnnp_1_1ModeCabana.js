@@ -69,6 +69,6 @@ var classnnp_1_1ModeCabana =
     [ "cutoffAlpha", "classnnp_1_1ModeCabana.html#aded25017ec58efa0cc8d55bb9fb7dd25", null ],
     [ "convEnergy", "classnnp_1_1ModeCabana.html#a09461989d84484833b10c96e6871f87e", null ],
     [ "convLength", "classnnp_1_1ModeCabana.html#a1d6eccfa0f21d64823f74cc75c89473f", null ],
-    [ "settings", "classnnp_1_1ModeCabana.html#acaf7de3d7a75f960af6a66c3e9ab6acb", null ],
+    [ "settings", "classnnp_1_1ModeCabana.html#a8d4ee30c2eeba410d938e38c90030976", null ],
     [ "cutoffType", "classnnp_1_1ModeCabana.html#af7e76062a64f8acdcf384bc487f8a4fb", null ]
 ];

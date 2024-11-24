@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nnp-train &mdash; n2p2 - A neural network potential package &#34;e51667a&#34; documentation</title>
+  <title>nnp-train &mdash; n2p2 - A neural network potential package &#34;61daa0d&#34; documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a20672d4"></script>
+      <script src="../_static/documentation_options.js?v=76d34e72"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -74,7 +74,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-screen-output">Sample screen output:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#file-output">File output:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-output">File output:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#always-generated">Always generated:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional">Optional:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -129,20 +133,213 @@
 <p class="admonition-title">Warning</p>
 <p>Documentation in progress…</p>
 </div>
+<p>This tool implements the actual training procedure for a given data set. It is
+able to train both 2G and 4G <a class="footnote-reference brackets" href="#id3" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> neural networks (NN). In the latter case the
+training procedure consists of two training stages. Stage 1 needs to be done
+first. It is the training of the charge NNs. After this is finished one can go
+to stage 2 which consists of training the short-ranged NNs by fitting the data
+to energy and forces.</p>
 <section id="requirements">
 <h2>Requirements:<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">input.data</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input.nn</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaling.data</span></code></p></li>
+</ul>
+<p>Additionally for stage 2 in the 4G case:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hardness.???.data</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weightse.???.data</span></code></p></li>
+</ul>
 </section>
 <section id="usage">
 <h2>Usage:<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nnp-train
+<p>When training a 2G NN the following command will train a NN with the given
+topology in <code class="docutils literal notranslate"><span class="pre">input.nn</span></code> for the given data set with 4 MPI tasks</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np 4 nnp-train
 </pre></div>
 </div>
+<p>If one has specified a 4G NN the command is</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mpirun -np 4 nnp-train &lt;n&gt;
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&lt;n&gt;</span></code> is the stage (1 or 2). After finishing stage 1 one has to choose
+the NN architecture of the preferred training epoch. Usually one picks the epoch
+with the lowest RMSE in the training set but there may be reasons to deviate
+from that rule. After deciding for epoch <code class="docutils literal notranslate"><span class="pre">&lt;m&gt;</span></code> one has to rename the files
+<code class="docutils literal notranslate"><span class="pre">hardness.???.&lt;m&gt;.out</span></code> and <code class="docutils literal notranslate"><span class="pre">weightse.???.&lt;m&gt;.out</span></code> to <code class="docutils literal notranslate"><span class="pre">hardness.???.data</span></code>
+and <code class="docutils literal notranslate"><span class="pre">weightse.???.data</span></code>, respectively.
+When the training is finished (after stage 2 with the 4G NN or after the
+training with the 2G NN) it is again necessary to pick an epoch <code class="docutils literal notranslate"><span class="pre">&lt;m&gt;</span></code> of this
+run and rename the files <code class="docutils literal notranslate"><span class="pre">weights.???.&lt;m&gt;.out</span></code> to <code class="docutils literal notranslate"><span class="pre">weights.???.data</span></code>.</p>
 </section>
 <section id="sample-screen-output">
 <h2>Sample screen output:<a class="headerlink" href="#sample-screen-output" title="Link to this heading"></a></h2>
+<p>A typical stage 1 training with a 4G network looks like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+.
+.
+*** TRAINING LOOP *************************************************************
+
+The training loop output covers different errors, update and
+timing information. The following quantities are organized
+according to the matrix scheme below:
+-------------------------------------------------------------------
+ep ........ Epoch.
+Q_count ... Number of charge updates.
+Q_train ... RMSE of training charges.
+Q_test .... RMSE of test     charges.
+Q_pt ...... Percentage of time for charge updates w.r.t. to t_train.
+count ..... Total number of updates.
+train ..... Percentage of time for training.
+error ..... Percentage of time for error calculation.
+other ..... Percentage of time for other purposes.
+epoch ..... Total time for this epoch (seconds).
+total ..... Total time for all epochs (seconds).
+-------------------------------------------------------------------
+charge     ep  Q_count       Q_train        Q_test    Q_pt
+timing     ep    count  train  error  other      epoch      total
+-------------------------------------------------------------------
+CHARGE      0        0   2.30301E-01   2.75350E-01     0.0
+TIMING      0        0    0.0   58.3   41.7       0.09       0.09
+------
+CHARGE      1        4   1.64420E-02   1.25118E-02   100.0
+TIMING      1        4   92.8    3.8    3.3       0.41       0.49
+------
+CHARGE      2        4   8.13293E-03   4.64616E-03   100.0
+TIMING      2        4   91.7    4.5    3.9       0.34       0.83
+------
+.
+.
+.
+------
+CHARGE     10        4   3.41430E-03   2.22138E-03   100.0
+TIMING     10        4   90.0    5.0    5.0       0.38       3.65
+-------------------------------------------------------------------------------
+TIMING Training loop finished: 3.65 seconds.
+*******************************************************************************
+</pre></div>
+</div>
+<p>Whereas 2G NN training or stage 2 training with 4G NN produces something similar
+to this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+.
+.
+*** TRAINING LOOP *************************************************************
+
+The training loop output covers different errors, update and
+timing information. The following quantities are organized
+according to the matrix scheme below:
+-------------------------------------------------------------------
+ep ........ Epoch.
+E_count ... Number of energy updates.
+E_train ... RMSE of training energies per atom.
+E_test .... RMSE of test     energies per atom.
+E_pt ...... Percentage of time for energy updates w.r.t. to t_train.
+F_count ... Number of force updates.
+F_train ... RMSE of training forces.
+F_test .... RMSE of test     forces.
+F_pt ...... Percentage of time for force updates w.r.t. to t_train.
+count ..... Total number of updates.
+train ..... Percentage of time for training.
+error ..... Percentage of time for error calculation.
+other ..... Percentage of time for other purposes.
+epoch ..... Total time for this epoch (seconds).
+total ..... Total time for all epochs (seconds).
+-------------------------------------------------------------------
+energy     ep  E_count       E_train        E_test    E_pt
+force      ep  F_count       F_train        F_test    F_pt
+timing     ep    count  train  error  other      epoch      total
+-------------------------------------------------------------------
+ENERGY      0        0   1.80089E-02   1.72559E-02     0.0
+FORCE       0        0   1.76247E-01   1.93256E-01     0.0
+TIMING      0        0    0.0   82.9   17.1       0.12       0.12
+------
+ENERGY      1        4   5.48098E-05   2.99658E-05    15.5
+FORCE       1       16   3.97965E-03   3.93252E-03    84.5
+TIMING      1       20   95.4    3.5    1.1       1.21       1.33
+------
+ENERGY      2        4   1.62363E-05   8.82677E-06    14.1
+FORCE       2       16   3.15635E-03   2.18593E-03    85.9
+TIMING      2       20   95.2    3.6    1.1       1.23       2.56
+------
+.
+.
+.
+------
+ENERGY     10        4   2.47602E-05   8.54473E-06    14.2
+FORCE      10       16   8.73691E-03   1.41630E-02    85.8
+TIMING     10       20   94.5    4.0    1.5       1.23      12.35
+-------------------------------------------------------------------------------
+TIMING Training loop finished: 12.35 seconds.
+*******************************************************************************
+</pre></div>
+</div>
 </section>
 <section id="file-output">
 <h2>File output:<a class="headerlink" href="#file-output" title="Link to this heading"></a></h2>
+<section id="always-generated">
+<h3>Always generated:<a class="headerlink" href="#always-generated" title="Link to this heading"></a></h3>
+<p>In the following <code class="docutils literal notranslate"><span class="pre">[...]</span></code> is a part of the filename that only exists in 4G training.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">learning-curve.out[.stage-&lt;n&gt;]</span></code>: Contains the errors of the NN after each
+epoch for all quantities that are used for this training.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test.data</span></code>: Contains the data that is only used for testing but not for
+training (formatted like <code class="docutils literal notranslate"><span class="pre">input.data</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">train.data</span></code>: Contains the data that is only used for training but not for
+testing (formatted like <code class="docutils literal notranslate"><span class="pre">input.data</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updater.???.out[.stage-&lt;n&gt;]</span></code>: Contains informations about the optimization
+algorithm that was used for training the NN.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timing.out[.stage-&lt;n&gt;]</span></code>: Contains information about the time needed for
+individual tasks in the training procedure (e.g. update and error
+calculation).</p></li>
+</ul>
+</section>
+<section id="optional">
+<h3>Optional:<a class="headerlink" href="#optional" title="Link to this heading"></a></h3>
+<p>In 4G stage 1 (if <code class="docutils literal notranslate"><span class="pre">write_weights_epoch</span></code> is set non-zero):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hardness.???.??????.out</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weightse.???.??????.out</span></code></p></li>
+</ul>
+<p>In 2G and 4G stage 2 (if <code class="docutils literal notranslate"><span class="pre">write_weights_epoch</span></code> is set non-zero):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">weights.???.??????.out</span></code></p></li>
+</ul>
+<p>In 4G stage 1 (if <code class="docutils literal notranslate"><span class="pre">write_traincharges</span></code> is set non-zero):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">traincharges.??????.out</span></code>: Contains a comparison between the reference charges
+and the predicted charges for the data used in the training after the epoch
+denoted by <code class="docutils literal notranslate"><span class="pre">??????</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">testcharges.??????.out</span></code>: Contains a comparison between the reference charges
+and the predicted charges for the data used for testing after the epoch
+denoted by <code class="docutils literal notranslate"><span class="pre">??????</span></code>.</p></li>
+</ul>
+<p>In 2G or 4G stage 2 (if <code class="docutils literal notranslate"><span class="pre">write_trainpoints</span></code> is set non-zero):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trainpoints.??????.out</span></code>: Contains a comparison between the reference energies
+and the predicted energies for the data used in the training after the epoch
+denoted by <code class="docutils literal notranslate"><span class="pre">??????</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">testpoints.??????.out</span></code>: Contains a comparison between the reference
+energies and the predicted energies for the data used for testing after the epoch
+denoted by <code class="docutils literal notranslate"><span class="pre">??????</span></code>.</p></li>
+</ul>
+<p>In 2G or 4G stage 2 (if <code class="docutils literal notranslate"><span class="pre">write_trainforces</span></code> is set non-zero):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trainforces.??????.out</span></code>: Contains a comparison between the reference forces
+and the predicted forces for the data used in the training after the epoch
+denoted by <code class="docutils literal notranslate"><span class="pre">??????</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">testforces.??????.out</span></code>: Contains a comparison between the reference
+forces and the predicted forces for the data used for testing after the epoch
+denoted by <code class="docutils literal notranslate"><span class="pre">??????</span></code>.</p></li>
+</ul>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>Ko, T. W.; Finkler, J. A.; Goedecker, S.; Behler, J. A Fourth-Generation High-Dimensional Neural Network Potential with Accurate Electrostatics Including Non-Local Charge Transfer. Nature Communications 2021, 12 (1), 398. <a class="reference external" href="https://doi.org/10.1038/s41467-020-20427-2">https://doi.org/10.1038/s41467-020-20427-2</a>.</p>
+</aside>
+</aside>
+</section>
 </section>
 </section>
 

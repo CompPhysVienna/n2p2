@@ -1,0 +1,5 @@
+<map id="nnp::InterfaceLammps::getForces" name="nnp::InterfaceLammps::getForces">
+<area shape="rect" id="node1" title="Calculate forces and add to LAMMPS atomic force arrays." alt="" coords="5,39,173,80"/>
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a2edade718126500176cabbba6933effa" title="Add a Vec3D vector to a 3D array in place." alt="" coords="227,5,395,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a9373df62476af32ec7c479bbc3fcb063" title="Calculate lambda_total vector which is needed for the total force calculation in 4G NN." alt="" coords="221,71,401,112"/>
+</map>

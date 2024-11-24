@@ -1,0 +1,4 @@
+<map id="nnp::Structure::calculateDQdJ" name="nnp::Structure::calculateDQdJ">
+<area shape="rect" id="node1" title="Calculates derivative of the charges with respect to atomic hardness." alt="" coords="212,5,424,32"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,5,164,32"/>
+</map>

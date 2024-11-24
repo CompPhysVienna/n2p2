@@ -1,0 +1,10 @@
+<map id="nnp::ScreeningFunction::getOuter" name="nnp::ScreeningFunction::getOuter">
+<area shape="rect" id="node1" title="Getter for outer." alt="" coords="276,195,449,236"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ac91c699d5b568d865f43ab30fe42f250" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="5,5,228,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#ac0de14f9b249aa70a7648c7c3c1cc783" title="Calculate neighbor lists for all structures." alt="" coords="31,71,203,112"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="27,136,207,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="25,202,208,229"/>
+<area shape="rect" id="node6" href="$classnnp_1_1InterfaceLammps.html#ad0bfcbe0f61990f71705942c8e847627" title="Sorts neighbor list and creates cutoff map if necessary." alt="" coords="33,253,201,295"/>
+<area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#a424a1a3da552a795a7b1e945303905b6" title="Get largest cutoff including structure specific cutoff and screening cutoff." alt="" coords="12,319,221,360"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#ae192f235fdb4aaa382899b29da600848" title="Setup matrix storing all symmetry function cut&#45;offs for each element." alt="" coords="9,385,224,411"/>
+</map>

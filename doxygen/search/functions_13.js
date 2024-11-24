@@ -1,25 +1,5 @@
 var searchData=
 [
-  ['writeatomicenvironmentfile_0',['writeAtomicEnvironmentFile',['../classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df',1,'nnp::Dataset']]],
-  ['writeconnections_1',['writeConnections',['../classnnp_1_1NeuralNetwork.html#a38e5d3edf8eb6c1a28cfddeb674207e2',1,'nnp::NeuralNetwork']]],
-  ['writeextrapolationwarnings_2',['writeExtrapolationWarnings',['../classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395',1,'nnp::InterfaceLammps']]],
-  ['writelearningcurve_3',['writeLearningCurve',['../classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d',1,'nnp::Training']]],
-  ['writeneighborhistogram_4',['writeNeighborHistogram',['../classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848',1,'nnp::Dataset']]],
-  ['writeneighborlists_5',['writeNeighborLists',['../classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd',1,'nnp::Dataset']]],
-  ['writeneuronstatistics_6',['writeNeuronStatistics',['../classnnp_1_1Training.html#ac2e1f74df67860c5776bf811e5b6a518',1,'nnp::Training']]],
-  ['writeneuronstatisticsepoch_7',['writeNeuronStatisticsEpoch',['../classnnp_1_1Training.html#a79793fcf50af45c9b128ea972b14b6a8',1,'nnp::Training']]],
-  ['writeprunedsettingsfile_8',['writePrunedSettingsFile',['../classnnp_1_1Mode.html#a6ac0b02c0a91917b17cd6e2fb96afb18',1,'nnp::Mode']]],
-  ['writesetstofiles_9',['writeSetsToFiles',['../classnnp_1_1Training.html#af4cbb8263eeb79634e06fc62dc4b359d',1,'nnp::Training']]],
-  ['writesettingsfile_10',['writeSettingsFile',['../classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a',1,'nnp::Mode::writeSettingsFile()'],['../classnnp_1_1Settings.html#a6aaa131c802c7cdd0645a41ee12807b5',1,'nnp::Settings::writeSettingsFile()']]],
-  ['writesymmetryfunctionfile_11',['writeSymmetryFunctionFile',['../classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671',1,'nnp::Dataset']]],
-  ['writesymmetryfunctionhistograms_12',['writeSymmetryFunctionHistograms',['../classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0',1,'nnp::Dataset']]],
-  ['writesymmetryfunctionscaling_13',['writeSymmetryFunctionScaling',['../classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8',1,'nnp::Dataset']]],
-  ['writesymmetryfunctionshape_14',['writeSymmetryFunctionShape',['../classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f',1,'nnp::SetupAnalysis']]],
-  ['writetimingdata_15',['writeTimingData',['../classnnp_1_1Training.html#a9920793c17beef42f87017464599f464',1,'nnp::Training']]],
-  ['writetofile_16',['writeToFile',['../structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af',1,'nnp::Structure::writeToFile(std::string const fileName=&quot;output.data&quot;, bool const ref=true, bool const append=false) const'],['../structnnp_1_1Structure.html#a64ded940e3f99aa86b3fa75a37357a29',1,'nnp::Structure::writeToFile(std::ofstream *const &amp;file, bool const ref=true) const']]],
-  ['writetofileposcar_17',['writeToFilePoscar',['../structnnp_1_1Structure.html#a7eaa3ccba6309f828c2444ee627d7ee5',1,'nnp::Structure::writeToFilePoscar(std::ofstream *const &amp;file) const'],['../structnnp_1_1Structure.html#a5e1f59c24c85703e6e78c7f85d47a2d8',1,'nnp::Structure::writeToFilePoscar(std::ofstream *const &amp;file, std::string const elements) const']]],
-  ['writetofilexyz_18',['writeToFileXyz',['../structnnp_1_1Structure.html#a8285382c3e2d908c8073a1fac315176b',1,'nnp::Structure']]],
-  ['writeupdaterstatus_19',['writeUpdaterStatus',['../classnnp_1_1Training.html#ad50f7e1c48f3f558653f831aae83a38c',1,'nnp::Training']]],
-  ['writeweights_20',['writeWeights',['../classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7',1,'nnp::Training']]],
-  ['writeweightsepoch_21',['writeWeightsEpoch',['../classnnp_1_1Training.html#a369e6446df8b2b39db30b799c912afde',1,'nnp::Training']]]
+  ['vec3d_0',['Vec3D',['../structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8',1,'nnp::Vec3D::Vec3D()'],['../structnnp_1_1Vec3D.html#ae3353099b87aeacc143c4faca2d6d7ff',1,'nnp::Vec3D::Vec3D(double x, double y, double z)'],['../structnnp_1_1Vec3D.html#a8018bcc4ebaed539e840f12293ffc8bb',1,'nnp::Vec3D::Vec3D(Vec3D const &amp;source)'],['../structnnp_1_1Vec3D.html#a7ad617db189ecfba716fd5fae55e20fc',1,'nnp::Vec3D::Vec3D(Vec3D &amp;&amp;source)']]],
+  ['vectorcontains_1',['vectorContains',['../namespacennp.html#a431f556c745c1ee81a32e80d0def6c0a',1,'nnp']]]
 ];

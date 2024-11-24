@@ -1,0 +1,4 @@
+<map id="nnp::Training::calculateChargeErrorVec" name="nnp::Training::calculateChargeErrorVec">
+<area shape="rect" id="node1" title="Calculate vector of charge errors in one structure." alt="" coords="212,5,384,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,13,164,39"/>
+</map>

@@ -1,11 +1,11 @@
 <map id="main" name="main">
 <area shape="rect" id="node1" title=" " alt="" coords="5,717,60,744"/>
 <area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="137,5,310,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="122,57,325,98"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="122,57,325,98"/>
 <area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="122,123,325,149"/>
 <area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="124,173,323,200"/>
 <area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="111,225,336,266"/>
-<area shape="rect" id="node7" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="387,689,471,716"/>
+<area shape="rect" id="node7" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="387,860,471,887"/>
 <area shape="rect" id="node8" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="111,342,336,383"/>
 <area shape="rect" id="node9" href="$classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one." alt="" coords="124,408,323,435"/>
 <area shape="rect" id="node10" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="141,459,306,485"/>
@@ -19,7 +19,7 @@
 <area shape="rect" id="node18" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="132,911,315,953"/>
 <area shape="rect" id="node19" href="$classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a" title="Set training stage (if multiple stages are needed for NNP type)." alt="" coords="138,977,309,1004"/>
 <area shape="rect" id="node20" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file." alt="" coords="120,1029,327,1070"/>
-<area shape="rect" id="node21" href="$classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="131,1095,315,1121"/>
+<area shape="rect" id="node21" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="131,1095,315,1121"/>
 <area shape="rect" id="node22" href="$classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455" title="Initialize MPI with MPI_COMM_WORLD." alt="" coords="137,1169,310,1196"/>
 <area shape="rect" id="node23" href="$classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632" title="Initialize random number generator." alt="" coords="122,1221,325,1262"/>
 <area shape="rect" id="node24" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="122,1286,325,1327"/>

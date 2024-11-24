@@ -1,4 +1,7 @@
 <map id="nnp::Vec3D::cross" name="nnp::Vec3D::cross">
-<area shape="rect" id="node1" title="Cross product, argument vector is second in product." alt="" coords="233,13,371,39"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a" title="Calculate required PBC copies." alt="" coords="5,5,185,47"/>
+<area shape="rect" id="node1" title="Cross product, argument vector is second in product." alt="" coords="480,101,617,127"/>
+<area shape="rect" id="node2" href="$classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2" title="Compute box copies in each direction." alt="" coords="231,5,426,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="5,42,177,69"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#a924f2222a9df39041690d23f2d5963fd" title="Calculate required PBC copies." alt="" coords="239,123,419,164"/>
+<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a4a593b477540ad63365bfa292d0f54f1" title="Check if cut&#45;off radius is small enough to apply minimum image convention." alt="" coords="225,188,432,229"/>
 </map>

@@ -1,22 +1,22 @@
 <map id="nnp::ModeCabana&lt; t_device &gt;" name="nnp::ModeCabana&lt; t_device &gt;">
-<area shape="rect" id="node1" title="Derived Cabana main NNP class." alt="" coords="632,581,791,622"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="285,87,376,113"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,56,72,83"/>
-<area shape="rect" id="node4" title=" " alt="" coords="237,137,424,164"/>
-<area shape="rect" id="node5" title=" " alt="" coords="246,189,415,230"/>
-<area shape="rect" id="node6" title=" " alt="" coords="246,254,415,295"/>
-<area shape="rect" id="node7" title=" " alt="" coords="233,319,428,361"/>
-<area shape="rect" id="node8" title=" " alt="" coords="239,385,423,426"/>
-<area shape="rect" id="node9" title=" " alt="" coords="250,450,411,491"/>
-<area shape="rect" id="node10" title=" " alt="" coords="247,515,414,557"/>
-<area shape="rect" id="node11" title=" " alt="" coords="253,581,408,622"/>
-<area shape="rect" id="node12" title=" " alt="" coords="250,646,411,687"/>
-<area shape="rect" id="node13" title=" " alt="" coords="249,711,412,753"/>
-<area shape="rect" id="node14" title=" " alt="" coords="249,777,412,818"/>
-<area shape="rect" id="node15" title=" " alt="" coords="311,843,350,869"/>
-<area shape="rect" id="node16" title=" " alt="" coords="241,895,421,937"/>
-<area shape="rect" id="node17" title=" " alt="" coords="245,965,416,1006"/>
-<area shape="rect" id="node18" title=" " alt="" coords="249,1030,412,1071"/>
-<area shape="rect" id="node19" title=" " alt="" coords="281,1096,380,1123"/>
-<area shape="rect" id="node20" title=" " alt="" coords="235,1147,427,1189"/>
+<area shape="rect" id="node1" title="Derived Cabana main NNP class." alt="" coords="752,665,911,706"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="405,144,496,171"/>
+<area shape="rect" id="node3" title=" " alt="" coords="65,109,132,136"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,179,192,205"/>
+<area shape="rect" id="node5" title=" " alt="" coords="366,273,535,314"/>
+<area shape="rect" id="node6" title=" " alt="" coords="366,338,535,379"/>
+<area shape="rect" id="node7" title=" " alt="" coords="353,403,548,445"/>
+<area shape="rect" id="node8" title=" " alt="" coords="359,469,543,510"/>
+<area shape="rect" id="node9" title=" " alt="" coords="370,534,531,575"/>
+<area shape="rect" id="node10" title=" " alt="" coords="367,599,534,641"/>
+<area shape="rect" id="node11" title=" " alt="" coords="373,665,528,706"/>
+<area shape="rect" id="node12" title=" " alt="" coords="370,730,531,771"/>
+<area shape="rect" id="node13" title=" " alt="" coords="369,795,532,837"/>
+<area shape="rect" id="node14" title=" " alt="" coords="369,861,532,902"/>
+<area shape="rect" id="node15" title=" " alt="" coords="431,927,470,953"/>
+<area shape="rect" id="node16" title=" " alt="" coords="361,979,541,1021"/>
+<area shape="rect" id="node17" title=" " alt="" coords="365,1049,536,1090"/>
+<area shape="rect" id="node18" title=" " alt="" coords="369,1114,532,1155"/>
+<area shape="rect" id="node19" title=" " alt="" coords="401,1180,500,1207"/>
+<area shape="rect" id="node20" title=" " alt="" coords="355,1231,547,1273"/>
 </map>

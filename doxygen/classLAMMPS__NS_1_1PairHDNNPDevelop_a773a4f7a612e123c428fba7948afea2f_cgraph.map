@@ -1,0 +1,7 @@
+<map id="LAMMPS_NS::PairHDNNPDevelop::transferNeighborList" name="LAMMPS_NS::PairHDNNPDevelop::transferNeighborList">
+<area shape="rect" id="node1" title=" " alt="" coords="5,104,244,145"/>
+<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#af5aab023a5bf8f326a6f5a7e4515e09c" title="Add one neighbor to atom (int64_t version, &#45;DLAMMPS_BIGBIG)." alt="" coords="305,5,473,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a21635e0bdb42f74425b11639d736f3cb" title="Allocate neighbor lists." alt="" coords="305,71,473,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#ad0bfcbe0f61990f71705942c8e847627" title="Sorts neighbor list and creates cutoff map if necessary." alt="" coords="305,136,473,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1InterfaceLammps.html#a9b4d26ddb1306921b33674d1026e47be" title="Check if n2p2 knows about global structure." alt="" coords="292,201,485,243"/>
+</map>

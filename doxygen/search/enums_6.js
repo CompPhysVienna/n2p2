@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nnptype_0',['NNPType',['../classnnp_1_1Mode.html#a46a0c99828036f91e87b97344b36fa8c',1,'nnp::Mode']]]
+  ['modificationscheme_0',['ModificationScheme',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1',1,'nnp::NeuralNetwork']]]
 ];

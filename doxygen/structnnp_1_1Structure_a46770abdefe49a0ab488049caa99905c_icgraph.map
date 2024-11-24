@@ -1,0 +1,6 @@
+<map id="nnp::Structure::calculateMaxCutoffRadiusOverall" name="nnp::Structure::calculateMaxCutoffRadiusOverall">
+<area shape="rect" id="node1" title="Calculate maximal cut&#45;off if cut&#45;off of screening and real part Ewald summation are also considered." alt="" coords="263,57,443,98"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="19,5,201,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ad0bfcbe0f61990f71705942c8e847627" title="Sorts neighbor list and creates cutoff map if necessary." alt="" coords="26,57,194,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#a424a1a3da552a795a7b1e945303905b6" title="Get largest cutoff including structure specific cutoff and screening cutoff." alt="" coords="5,122,215,163"/>
+</map>

@@ -1,5 +1,6 @@
 <map id="nnp::ElementMap::registerElements" name="nnp::ElementMap::registerElements">
-<area shape="rect" id="node1" title="Extract all elements and store in element map." alt="" coords="269,23,464,65"/>
-<area shape="rect" id="node2" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="86,5,141,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="5,56,221,83"/>
+<area shape="rect" id="node1" title="Extract all elements and store in element map." alt="" coords="292,57,487,98"/>
+<area shape="rect" id="node2" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="97,5,152,32"/>
+<area shape="rect" id="node3" href="$classLAMMPS__NS_1_1PairHDNNPExternal.html#a70609e0f2ee4740e959d9b4462f3283d" title=" " alt="" coords="5,57,244,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="17,123,233,149"/>
 </map>

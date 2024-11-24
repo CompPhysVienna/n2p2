@@ -105,9 +105,10 @@ Collaboration diagram for nnp::Training::UpdateCandidate:</div>
 <div class="dyncontent">
 <div class="center"><img src="structnnp_1_1Training_1_1UpdateCandidate__coll__graph.png" border="0" usemap="#annp_1_1Training_1_1UpdateCandidate_coll__map" alt="Collaboration graph"/></div>
 <map name="annp_1_1Training_1_1UpdateCandidate_coll__map" id="annp_1_1Training_1_1UpdateCandidate_coll__map">
-<area shape="rect" title="Contains location of one update candidate (energy or force)." alt="" coords="5,124,232,151"/>
-<area shape="rect" title=" " alt="" coords="45,5,105,32"/>
-<area shape="rect" title=" " alt="" coords="129,5,196,32"/>
+<area shape="rect" title="Contains location of one update candidate (energy or force)." alt="" coords="78,124,305,151"/>
+<area shape="rect" title=" " alt="" coords="5,13,65,39"/>
+<area shape="rect" title=" " alt="" coords="158,13,225,39"/>
+<area shape="rect" title=" " alt="" coords="249,5,438,47"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -122,20 +123,20 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ad631306aff9f9e0bca74425d3ab9e5bc"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#ad631306aff9f9e0bca74425d3ab9e5bc">s</a></td></tr>
 <tr class="memdesc:ad631306aff9f9e0bca74425d3ab9e5bc"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structnnp_1_1Structure.html" title="Storage for one atomic configuration.">Structure</a> index.  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#ad631306aff9f9e0bca74425d3ab9e5bc">More...</a><br /></td></tr>
 <tr class="separator:ad631306aff9f9e0bca74425d3ab9e5bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38352286993a1ab398323449c40f0a10"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#a38352286993a1ab398323449c40f0a10">a</a></td></tr>
-<tr class="memdesc:a38352286993a1ab398323449c40f0a10"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structnnp_1_1Atom.html" title="Storage for a single atom.">Atom</a> index (only used for force candidates).  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#a38352286993a1ab398323449c40f0a10">More...</a><br /></td></tr>
-<tr class="separator:a38352286993a1ab398323449c40f0a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bbdc3fd01e620d5b5020331bde0d4df"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#a6bbdc3fd01e620d5b5020331bde0d4df">c</a></td></tr>
-<tr class="memdesc:a6bbdc3fd01e620d5b5020331bde0d4df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Component index (x,y,z -&gt; 0,1,2, only used for force candidates).  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#a6bbdc3fd01e620d5b5020331bde0d4df">More...</a><br /></td></tr>
-<tr class="separator:a6bbdc3fd01e620d5b5020331bde0d4df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59ab964d029ae002653ce35b49a74b15"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">error</a></td></tr>
-<tr class="memdesc:a59ab964d029ae002653ce35b49a74b15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absolute value of error with respect to reference value.  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">More...</a><br /></td></tr>
+<tr class="memdesc:a59ab964d029ae002653ce35b49a74b15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absolute value of error with respect to reference value (in case of subcandidates, average is taken)  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">More...</a><br /></td></tr>
 <tr class="separator:a59ab964d029ae002653ce35b49a74b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa56b4a0dcfb4066565ec546a433e91bf"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#aa56b4a0dcfb4066565ec546a433e91bf">posSubCandidates</a></td></tr>
+<tr class="memdesc:aa56b4a0dcfb4066565ec546a433e91bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current position in sub-candidate list (SM_SORT/_THRESHOLD).  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#aa56b4a0dcfb4066565ec546a433e91bf">More...</a><br /></td></tr>
+<tr class="separator:aa56b4a0dcfb4066565ec546a433e91bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ab01259355901288cafdd1ca0553b0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structnnp_1_1Training_1_1SubCandidate.html">SubCandidate</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#a78ab01259355901288cafdd1ca0553b0">subCandidates</a></td></tr>
+<tr class="memdesc:a78ab01259355901288cafdd1ca0553b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector containing grouped candidates.  <a href="structnnp_1_1Training_1_1UpdateCandidate.html#a78ab01259355901288cafdd1ca0553b0">More...</a><br /></td></tr>
+<tr class="separator:a78ab01259355901288cafdd1ca0553b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Contains location of one update candidate (energy or force). </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00349">349</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00384">384</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3752901967e1ed48ad51ba05e15bf8d1" name="a3752901967e1ed48ad51ba05e15bf8d1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3752901967e1ed48ad51ba05e15bf8d1">&#9670;&nbsp;</a></span>operator&lt;()</h2>
@@ -163,11 +164,11 @@ Public Attributes</h2></td></tr>
 
 <p>Overload &lt; operator to sort in <em>descending</em> order. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00361">361</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  361</span>                                                         {</div>
-<div class="line"><span class="lineno">  362</span>            <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">error</a> &gt; rhs.error;</div>
-<div class="line"><span class="lineno">  363</span>        }</div>
-<div class="ttc" id="astructnnp_1_1Training_1_1UpdateCandidate_html_a59ab964d029ae002653ce35b49a74b15"><div class="ttname"><a href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">nnp::Training::UpdateCandidate::error</a></div><div class="ttdeci">double error</div><div class="ttdoc">Absolute value of error with respect to reference value.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00358">Training.h:358</a></div></div>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00399">399</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  399</span>                                                         {</div>
+<div class="line"><span class="lineno">  400</span>            <span class="keywordflow">return</span> this-&gt;<a class="code hl_variable" href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">error</a> &gt; rhs.error;</div>
+<div class="line"><span class="lineno">  401</span>        }</div>
+<div class="ttc" id="astructnnp_1_1Training_1_1UpdateCandidate_html_a59ab964d029ae002653ce35b49a74b15"><div class="ttname"><a href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">nnp::Training::UpdateCandidate::error</a></div><div class="ttdeci">double error</div><div class="ttdoc">Absolute value of error with respect to reference value (in case of subcandidates,...</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00390">Training.h:390</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#a59ab964d029ae002653ce35b49a74b15">error</a>.</p>
 
@@ -188,47 +189,7 @@ Public Attributes</h2></td></tr>
 
 <p><a class="el" href="structnnp_1_1Structure.html" title="Storage for one atomic configuration.">Structure</a> index. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00352">352</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
-
-</div>
-</div>
-<a id="a38352286993a1ab398323449c40f0a10" name="a38352286993a1ab398323449c40f0a10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38352286993a1ab398323449c40f0a10">&#9670;&nbsp;</a></span>a</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t nnp::Training::UpdateCandidate::a</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><a class="el" href="structnnp_1_1Atom.html" title="Storage for a single atom.">Atom</a> index (only used for force candidates). </p>
-
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00354">354</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
-
-</div>
-</div>
-<a id="a6bbdc3fd01e620d5b5020331bde0d4df" name="a6bbdc3fd01e620d5b5020331bde0d4df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6bbdc3fd01e620d5b5020331bde0d4df">&#9670;&nbsp;</a></span>c</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t nnp::Training::UpdateCandidate::c</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Component index (x,y,z -&gt; 0,1,2, only used for force candidates). </p>
-
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00356">356</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00387">387</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -246,11 +207,52 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Absolute value of error with respect to reference value. </p>
+<p>Absolute value of error with respect to reference value (in case of subcandidates, average is taken) </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00358">358</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00390">390</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html#a3752901967e1ed48ad51ba05e15bf8d1">operator&lt;()</a>.</p>
+
+</div>
+</div>
+<a id="aa56b4a0dcfb4066565ec546a433e91bf" name="aa56b4a0dcfb4066565ec546a433e91bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa56b4a0dcfb4066565ec546a433e91bf">&#9670;&nbsp;</a></span>posSubCandidates</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t nnp::Training::UpdateCandidate::posSubCandidates</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Current position in sub-candidate list (SM_SORT/_THRESHOLD). </p>
+
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00392">392</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
+
+</div>
+</div>
+<a id="a78ab01259355901288cafdd1ca0553b0" name="a78ab01259355901288cafdd1ca0553b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78ab01259355901288cafdd1ca0553b0">&#9670;&nbsp;</a></span>subCandidates</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structnnp_1_1Training_1_1SubCandidate.html">SubCandidate</a>&gt; nnp::Training::UpdateCandidate::subCandidates</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Vector containing grouped candidates. </p>
+<p >If no grouping intended, vector will contain only single entry. </p>
+
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00396">396</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
 </div>
 </div>
@@ -263,7 +265,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacennp.html">nnp</a></li><li class="navelem"><a class="el" href="classnnp_1_1Training.html">Training</a></li><li class="navelem"><a class="el" href="structnnp_1_1Training_1_1UpdateCandidate.html">UpdateCandidate</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:36 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:49 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

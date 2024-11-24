@@ -1,4 +1,5 @@
 <map id="nnp::readColumnsFromFile" name="nnp::readColumnsFromFile">
-<area shape="rect" id="node1" title=" " alt="" coords="279,13,475,39"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a494c9900a501676733155cca1b856be3" title="Read in weights for a specific type of neural network." alt="" coords="5,5,231,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="279,42,475,69"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a28ab813622bd4ee19cbfbb15c4411317" title="Read in weights for a specific type of neural network." alt="" coords="5,5,231,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a5518489591ce8c418b3ef00e17aa347f" title="Set up electrostatics related stuff (hardness, screening, ...)." alt="" coords="7,71,229,98"/>
 </map>

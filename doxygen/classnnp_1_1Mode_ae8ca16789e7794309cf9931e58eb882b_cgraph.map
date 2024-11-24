@@ -1,7 +1,7 @@
 <map id="nnp::Mode::loadSettingsFile" name="nnp::Mode::loadSettingsFile">
-<area shape="rect" id="node1" title="Open settings file and load all keywords into memory." alt="" coords="5,81,208,108"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#a10b63d77176a5a7a4f171e16bc1fccae" title="Get logged information about settings file." alt="" coords="291,5,431,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file." alt="" coords="256,56,465,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Settings.html#a75b72141bb978f048344f4e0093f208c" title="Load a file with settings." alt="" coords="277,107,444,133"/>
-<area shape="rect" id="node5" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="319,157,403,184"/>
+<area shape="rect" id="node1" title="Open settings file and load all keywords into memory." alt="" coords="5,135,208,162"/>
+<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#a10b63d77176a5a7a4f171e16bc1fccae" title="Get logged information about settings file." alt="" coords="256,5,423,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="256,95,423,136"/>
+<area shape="rect" id="node4" href="$classnnp_1_1settings_1_1Settings.html#a75b72141bb978f048344f4e0093f208c" title="Load a file with settings." alt="" coords="256,160,423,201"/>
+<area shape="rect" id="node5" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="297,226,381,253"/>
 </map>

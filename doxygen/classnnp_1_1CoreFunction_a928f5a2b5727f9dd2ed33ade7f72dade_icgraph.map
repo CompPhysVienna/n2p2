@@ -1,6 +1,9 @@
 <map id="nnp::CoreFunction::setType" name="nnp::CoreFunction::setType">
-<area shape="rect" id="node1" title="Set function type." alt="" coords="220,71,367,112"/>
-<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a536489fb399dcb5d1ede0b2933f0ff04" title="Constructor, initializes to #CoreFunction::Type::POLY2." alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1CompactFunction.html#a2cd584131611f1feecf0886d3bbd3413" title="Set type." alt="" coords="5,71,172,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CutoffFunction.html#aa1f346f37b24b88ca7cd9846bdae30bf" title="Set cutoff type." alt="" coords="15,136,163,177"/>
+<area shape="rect" id="node1" title="Set function type." alt="" coords="227,169,373,211"/>
+<area shape="rect" id="node2" href="$classnnp_1_1CompactFunction.html#a536489fb399dcb5d1ede0b2933f0ff04" title="Constructor, initializes to #CoreFunction::Type::POLY2." alt="" coords="9,5,175,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ScreeningFunction.html#a20fb53b6ed3df0e0efa5945ac9215476" title="Constructor, initializes to #CoreFunction::Type::POLY2." alt="" coords="5,71,179,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1CompactFunction.html#a2cd584131611f1feecf0886d3bbd3413" title="Set type." alt="" coords="9,136,175,177"/>
+<area shape="rect" id="node5" href="$classnnp_1_1ScreeningFunction.html#a059ec05dac28bb42e4db47f7899f9ca7" title="Set functional form of transition region." alt="" coords="5,201,179,243"/>
+<area shape="rect" id="node6" href="$classnnp_1_1CutoffFunction.html#aa1f346f37b24b88ca7cd9846bdae30bf" title="Set cutoff type." alt="" coords="18,267,166,308"/>
+<area shape="rect" id="node7" href="$classnnp_1_1CoreFunction.html#a01ba4fdb28b712144a47ce51fbf650a4" title="Set function type." alt="" coords="19,332,165,373"/>
 </map>

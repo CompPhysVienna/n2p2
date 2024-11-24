@@ -159,8 +159,14 @@ Public Attributes</h2></td></tr>
 <tr class="memdesc:a28f0cd4b60f5955b1aa862c37567cb0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Up to this epoch comparison is written every epoch.  <a href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">More...</a><br /></td></tr>
 <tr class="separator:a28f0cd4b60f5955b1aa862c37567cb0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe1cf7a3763961006e72dc75f56ad864"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">posUpdateCandidates</a></td></tr>
-<tr class="memdesc:afe1cf7a3763961006e72dc75f56ad864"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current position in update candidate list (SM_SORT).  <a href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">More...</a><br /></td></tr>
+<tr class="memdesc:afe1cf7a3763961006e72dc75f56ad864"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current position in update candidate list (SM_SORT/_THRESHOLD).  <a href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">More...</a><br /></td></tr>
 <tr class="separator:afe1cf7a3763961006e72dc75f56ad864"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9de3e8040d6dfd4645a7a819defc264d"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1Property.html#a9de3e8040d6dfd4645a7a819defc264d">numGroupedSubCand</a></td></tr>
+<tr class="memdesc:a9de3e8040d6dfd4645a7a819defc264d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of subcandidates which are considered before changing the update candidate.  <a href="structnnp_1_1Training_1_1Property.html#a9de3e8040d6dfd4645a7a819defc264d">More...</a><br /></td></tr>
+<tr class="separator:a9de3e8040d6dfd4645a7a819defc264d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01f62d24b17dd0581eed047d248b4067"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1Property.html#a01f62d24b17dd0581eed047d248b4067">countGroupedSubCand</a></td></tr>
+<tr class="memdesc:a01f62d24b17dd0581eed047d248b4067"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counter for number of used subcandidates belonging to same update candidate.  <a href="structnnp_1_1Training_1_1Property.html#a01f62d24b17dd0581eed047d248b4067">More...</a><br /></td></tr>
+<tr class="separator:a01f62d24b17dd0581eed047d248b4067"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af77b515f04b843319a50af7ee0d38297"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">rmseThresholdTrials</a></td></tr>
 <tr class="memdesc:af77b515f04b843319a50af7ee0d38297"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum trials for SM_THRESHOLD selection mode.  <a href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">More...</a><br /></td></tr>
 <tr class="separator:af77b515f04b843319a50af7ee0d38297"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,7 +228,7 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Specific training quantity (e.g. energies, forces, charges). </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00367">367</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00405">405</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7a82a46166246c1490bd0f8361d5ed6d" name="a7a82a46166246c1490bd0f8361d5ed6d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7a82a46166246c1490bd0f8361d5ed6d">&#9670;&nbsp;</a></span>Property()</h2>
@@ -242,82 +248,86 @@ Public Attributes</h2></td></tr>
 
 <p>Constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8cpp_source.html#l03650">3650</a> of file <a class="el" href="Training_8cpp_source.html">Training.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno"> 3650</span>                                                 :</div>
-<div class="line"><span class="lineno"> 3651</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a>               (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> ),</div>
-<div class="line"><span class="lineno"> 3652</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a>          (<span class="stringliteral">&quot;&quot;</span>       ),</div>
-<div class="line"><span class="lineno"> 3653</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a>                   (<span class="stringliteral">&quot;&quot;</span>       ),</div>
-<div class="line"><span class="lineno"> 3654</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a>                 (<span class="stringliteral">&quot;&quot;</span>       ),</div>
-<div class="line"><span class="lineno"> 3655</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a43c72f360013f0c54bbd093023c109a0">selectionMode</a>          (<a class="code hl_enumvalue" href="classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429">SM_RANDOM</a>),</div>
-<div class="line"><span class="lineno"> 3656</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">numTrainPatterns</a>       (0        ),</div>
-<div class="line"><span class="lineno"> 3657</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a8258157a910c11f3a5ddc6200dc18608">numTestPatterns</a>        (0        ),</div>
-<div class="line"><span class="lineno"> 3658</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a61d413cda5e23ae4a0a6398aec99d7bf">taskBatchSize</a>          (0        ),</div>
-<div class="line"><span class="lineno"> 3659</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5">writeCompEvery</a>         (0        ),</div>
-<div class="line"><span class="lineno"> 3660</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">writeCompAlways</a>        (0        ),</div>
-<div class="line"><span class="lineno"> 3661</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">posUpdateCandidates</a>    (0        ),</div>
-<div class="line"><span class="lineno"> 3662</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">rmseThresholdTrials</a>    (0        ),</div>
-<div class="line"><span class="lineno"> 3663</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e">countUpdates</a>           (0        ),</div>
-<div class="line"><span class="lineno"> 3664</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91">numUpdates</a>             (0        ),</div>
-<div class="line"><span class="lineno"> 3665</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a54c2a8fc1d0aa231de78393cca59c213">patternsPerUpdate</a>      (0        ),</div>
-<div class="line"><span class="lineno"> 3666</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ad882355197f0566544af7a65fb6d6d3f">patternsPerUpdateGlobal</a>(0        ),</div>
-<div class="line"><span class="lineno"> 3667</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">numErrorsGlobal</a>        (0        ),</div>
-<div class="line"><span class="lineno"> 3668</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4fcb8f00175cafcb10a2024b69154c57">epochFraction</a>          (0.0      ),</div>
-<div class="line"><span class="lineno"> 3669</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a48523786912eceacede5ec0983fa9446">rmseThreshold</a>          (0.0      )</div>
-<div class="line"><span class="lineno"> 3670</span>{</div>
-<div class="line"><span class="lineno"> 3671</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;energy&quot;</span>)</div>
-<div class="line"><span class="lineno"> 3672</span>    {</div>
-<div class="line"><span class="lineno"> 3673</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;E&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3674</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;energies&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3675</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSEpa&quot;</span>, <span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAEpa&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
-<div class="line"><span class="lineno"> 3676</span>    }</div>
-<div class="line"><span class="lineno"> 3677</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;force&quot;</span>)</div>
-<div class="line"><span class="lineno"> 3678</span>    {</div>
-<div class="line"><span class="lineno"> 3679</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;F&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3680</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;forces&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3681</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
-<div class="line"><span class="lineno"> 3682</span>    }</div>
-<div class="line"><span class="lineno"> 3683</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;charge&quot;</span>)</div>
-<div class="line"><span class="lineno"> 3684</span>    {</div>
-<div class="line"><span class="lineno"> 3685</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;Q&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3686</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;charges&quot;</span>;</div>
-<div class="line"><span class="lineno"> 3687</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
-<div class="line"><span class="lineno"> 3688</span>    }</div>
-<div class="line"><span class="lineno"> 3689</span>    <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno"> 3690</span>    {</div>
-<div class="line"><span class="lineno"> 3691</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Unknown training property.\n&quot;</span>);</div>
-<div class="line"><span class="lineno"> 3692</span>    }</div>
-<div class="line"><span class="lineno"> 3693</span> </div>
-<div class="line"><span class="lineno"> 3694</span>    <span class="comment">// Set up error metrics</span></div>
-<div class="line"><span class="lineno"> 3695</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> m : <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>)</div>
-<div class="line"><span class="lineno"> 3696</span>    {</div>
-<div class="line"><span class="lineno"> 3697</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">errorTrain</a>[m] = 0.0;</div>
-<div class="line"><span class="lineno"> 3698</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">errorTest</a>[m] = 0.0;</div>
-<div class="line"><span class="lineno"> 3699</span>    }</div>
-<div class="line"><span class="lineno"> 3700</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a> = <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>.at(0);</div>
-<div class="line"><span class="lineno"> 3701</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Training_8cpp_source.html#l04085">4085</a> of file <a class="el" href="Training_8cpp_source.html">Training.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno"> 4085</span>                                                 :</div>
+<div class="line"><span class="lineno"> 4086</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a>               (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> ),</div>
+<div class="line"><span class="lineno"> 4087</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a>          (<span class="stringliteral">&quot;&quot;</span>       ),</div>
+<div class="line"><span class="lineno"> 4088</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a>                   (<span class="stringliteral">&quot;&quot;</span>       ),</div>
+<div class="line"><span class="lineno"> 4089</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a>                 (<span class="stringliteral">&quot;&quot;</span>       ),</div>
+<div class="line"><span class="lineno"> 4090</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a43c72f360013f0c54bbd093023c109a0">selectionMode</a>          (<a class="code hl_enumvalue" href="classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429">SM_RANDOM</a>),</div>
+<div class="line"><span class="lineno"> 4091</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">numTrainPatterns</a>       (0        ),</div>
+<div class="line"><span class="lineno"> 4092</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a8258157a910c11f3a5ddc6200dc18608">numTestPatterns</a>        (0        ),</div>
+<div class="line"><span class="lineno"> 4093</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a61d413cda5e23ae4a0a6398aec99d7bf">taskBatchSize</a>          (0        ),</div>
+<div class="line"><span class="lineno"> 4094</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5">writeCompEvery</a>         (0        ),</div>
+<div class="line"><span class="lineno"> 4095</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">writeCompAlways</a>        (0        ),</div>
+<div class="line"><span class="lineno"> 4096</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">posUpdateCandidates</a>    (0        ),</div>
+<div class="line"><span class="lineno"> 4097</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a9de3e8040d6dfd4645a7a819defc264d">numGroupedSubCand</a>      (0        ),</div>
+<div class="line"><span class="lineno"> 4098</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a01f62d24b17dd0581eed047d248b4067">countGroupedSubCand</a>    (0        ),</div>
+<div class="line"><span class="lineno"> 4099</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">rmseThresholdTrials</a>    (0        ),</div>
+<div class="line"><span class="lineno"> 4100</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e">countUpdates</a>           (0        ),</div>
+<div class="line"><span class="lineno"> 4101</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91">numUpdates</a>             (0        ),</div>
+<div class="line"><span class="lineno"> 4102</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a54c2a8fc1d0aa231de78393cca59c213">patternsPerUpdate</a>      (0        ),</div>
+<div class="line"><span class="lineno"> 4103</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ad882355197f0566544af7a65fb6d6d3f">patternsPerUpdateGlobal</a>(0        ),</div>
+<div class="line"><span class="lineno"> 4104</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">numErrorsGlobal</a>        (0        ),</div>
+<div class="line"><span class="lineno"> 4105</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4fcb8f00175cafcb10a2024b69154c57">epochFraction</a>          (0.0      ),</div>
+<div class="line"><span class="lineno"> 4106</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a48523786912eceacede5ec0983fa9446">rmseThreshold</a>          (0.0      )</div>
+<div class="line"><span class="lineno"> 4107</span>{</div>
+<div class="line"><span class="lineno"> 4108</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;energy&quot;</span>)</div>
+<div class="line"><span class="lineno"> 4109</span>    {</div>
+<div class="line"><span class="lineno"> 4110</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;E&quot;</span>;</div>
+<div class="line"><span class="lineno"> 4111</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;energies&quot;</span>;</div>
+<div class="line"><span class="lineno"> 4112</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSEpa&quot;</span>, <span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAEpa&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
+<div class="line"><span class="lineno"> 4113</span>    }</div>
+<div class="line"><span class="lineno"> 4114</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;force&quot;</span>)</div>
+<div class="line"><span class="lineno"> 4115</span>    {</div>
+<div class="line"><span class="lineno"> 4116</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;F&quot;</span>;</div>
+<div class="line"><span class="lineno"> 4117</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;forces&quot;</span>;</div>
+<div class="line"><span class="lineno"> 4118</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
+<div class="line"><span class="lineno"> 4119</span>    }</div>
+<div class="line"><span class="lineno"> 4120</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a> == <span class="stringliteral">&quot;charge&quot;</span>)</div>
+<div class="line"><span class="lineno"> 4121</span>    {</div>
+<div class="line"><span class="lineno"> 4122</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a> = <span class="stringliteral">&quot;Q&quot;</span>;</div>
+<div class="line"><span class="lineno"> 4123</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a> = <span class="stringliteral">&quot;charges&quot;</span>;</div>
+<div class="line"><span class="lineno"> 4124</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a> = {<span class="stringliteral">&quot;RMSE&quot;</span>, <span class="stringliteral">&quot;MAE&quot;</span>};</div>
+<div class="line"><span class="lineno"> 4125</span>    }</div>
+<div class="line"><span class="lineno"> 4126</span>    <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno"> 4127</span>    {</div>
+<div class="line"><span class="lineno"> 4128</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Unknown training property.\n&quot;</span>);</div>
+<div class="line"><span class="lineno"> 4129</span>    }</div>
+<div class="line"><span class="lineno"> 4130</span> </div>
+<div class="line"><span class="lineno"> 4131</span>    <span class="comment">// Set up error metrics</span></div>
+<div class="line"><span class="lineno"> 4132</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> m : <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>)</div>
+<div class="line"><span class="lineno"> 4133</span>    {</div>
+<div class="line"><span class="lineno"> 4134</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">errorTrain</a>[m] = 0.0;</div>
+<div class="line"><span class="lineno"> 4135</span>        <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">errorTest</a>[m] = 0.0;</div>
+<div class="line"><span class="lineno"> 4136</span>    }</div>
+<div class="line"><span class="lineno"> 4137</span>    <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a> = <a class="code hl_variable" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>.at(0);</div>
+<div class="line"><span class="lineno"> 4138</span>}</div>
 <div class="ttc" id="aclassnnp_1_1Training_html_a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429"><div class="ttname"><a href="classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98a38d533d5bcbf5f303309afa61b8eb429">nnp::Training::SM_RANDOM</a></div><div class="ttdeci">@ SM_RANDOM</div><div class="ttdoc">Select candidates randomly.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00107">Training.h:107</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a0c16f83405eca4c233dfb9bf0008a9f9"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">nnp::Training::Property::numErrorsGlobal</a></div><div class="ttdeci">std::size_t numErrorsGlobal</div><div class="ttdoc">Global number of errors per update.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00405">Training.h:405</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a19c5f6057a4c916892268a16bc0a97f5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">nnp::Training::Property::numTrainPatterns</a></div><div class="ttdeci">std::size_t numTrainPatterns</div><div class="ttdoc">Number of training patterns in set.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00383">Training.h:383</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a28f0cd4b60f5955b1aa862c37567cb0f"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">nnp::Training::Property::writeCompAlways</a></div><div class="ttdeci">std::size_t writeCompAlways</div><div class="ttdoc">Up to this epoch comparison is written every epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00391">Training.h:391</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a39a47d1709827f134033ddae59459436"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">nnp::Training::Property::property</a></div><div class="ttdeci">std::string property</div><div class="ttdoc">Copy of identifier within Property map.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00373">Training.h:373</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a43c72f360013f0c54bbd093023c109a0"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a43c72f360013f0c54bbd093023c109a0">nnp::Training::Property::selectionMode</a></div><div class="ttdeci">SelectionMode selectionMode</div><div class="ttdoc">Selection mode for update candidates.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00381">Training.h:381</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a4617cc6dde93700e2a722b856ef5af91"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91">nnp::Training::Property::numUpdates</a></div><div class="ttdeci">std::size_t numUpdates</div><div class="ttdoc">Number of desired updates per epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00399">Training.h:399</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a48523786912eceacede5ec0983fa9446"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a48523786912eceacede5ec0983fa9446">nnp::Training::Property::rmseThreshold</a></div><div class="ttdeci">double rmseThreshold</div><div class="ttdoc">RMSE threshold for update candidates.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00409">Training.h:409</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a4c74c75e823c044b1546f736da5bd968"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">nnp::Training::Property::plural</a></div><div class="ttdeci">std::string plural</div><div class="ttdoc">Plural string of property;.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00379">Training.h:379</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a4fcb8f00175cafcb10a2024b69154c57"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a4fcb8f00175cafcb10a2024b69154c57">nnp::Training::Property::epochFraction</a></div><div class="ttdeci">double epochFraction</div><div class="ttdoc">Desired update fraction per epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00407">Training.h:407</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a54c2a8fc1d0aa231de78393cca59c213"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a54c2a8fc1d0aa231de78393cca59c213">nnp::Training::Property::patternsPerUpdate</a></div><div class="ttdeci">std::size_t patternsPerUpdate</div><div class="ttdoc">Patterns used per update.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00401">Training.h:401</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a61d413cda5e23ae4a0a6398aec99d7bf"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a61d413cda5e23ae4a0a6398aec99d7bf">nnp::Training::Property::taskBatchSize</a></div><div class="ttdeci">std::size_t taskBatchSize</div><div class="ttdoc">Batch size for each MPI task.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00387">Training.h:387</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a6ee48d9822bba7639b345da7700a9d85"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">nnp::Training::Property::displayMetric</a></div><div class="ttdeci">std::string displayMetric</div><div class="ttdoc">Error metric for display.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00375">Training.h:375</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a75cf7cb26af96ab83ad077a59dc83bb3"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">nnp::Training::Property::tiny</a></div><div class="ttdeci">std::string tiny</div><div class="ttdoc">Tiny abbreviation string for property.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00377">Training.h:377</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a7669ec0930fba8a3c00769622cba9a01"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">nnp::Training::Property::errorMetrics</a></div><div class="ttdeci">std::vector&lt; std::string &gt; errorMetrics</div><div class="ttdoc">Error metrics available for this property.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00415">Training.h:415</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a8258157a910c11f3a5ddc6200dc18608"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a8258157a910c11f3a5ddc6200dc18608">nnp::Training::Property::numTestPatterns</a></div><div class="ttdeci">std::size_t numTestPatterns</div><div class="ttdoc">Number of training patterns in set.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00385">Training.h:385</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a83476357f0f604bcbe7134fc5d85046e"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e">nnp::Training::Property::countUpdates</a></div><div class="ttdeci">std::size_t countUpdates</div><div class="ttdoc">Counter for updates per epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00397">Training.h:397</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a882e48ff8c1cf29bd18a9916519f27a5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5">nnp::Training::Property::writeCompEvery</a></div><div class="ttdeci">std::size_t writeCompEvery</div><div class="ttdoc">Write comparison every this many epochs.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00389">Training.h:389</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_ab71068e08e9c78fe54f9384450b24b1a"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">nnp::Training::Property::errorTrain</a></div><div class="ttdeci">std::map&lt; std::string, double &gt; errorTrain</div><div class="ttdoc">Current error metrics of training patterns.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00418">Training.h:418</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_ad882355197f0566544af7a65fb6d6d3f"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#ad882355197f0566544af7a65fb6d6d3f">nnp::Training::Property::patternsPerUpdateGlobal</a></div><div class="ttdeci">std::size_t patternsPerUpdateGlobal</div><div class="ttdoc">Patterns used per update (summed over all MPI tasks).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00403">Training.h:403</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_ae087afb9a8321eed110cc3c50d57d6e5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">nnp::Training::Property::errorTest</a></div><div class="ttdeci">std::map&lt; std::string, double &gt; errorTest</div><div class="ttdoc">Current error metrics of test patterns.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00421">Training.h:421</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_af77b515f04b843319a50af7ee0d38297"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">nnp::Training::Property::rmseThresholdTrials</a></div><div class="ttdeci">std::size_t rmseThresholdTrials</div><div class="ttdoc">Maximum trials for SM_THRESHOLD selection mode.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00395">Training.h:395</a></div></div>
-<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_afe1cf7a3763961006e72dc75f56ad864"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">nnp::Training::Property::posUpdateCandidates</a></div><div class="ttdeci">std::size_t posUpdateCandidates</div><div class="ttdoc">Current position in update candidate list (SM_SORT).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00393">Training.h:393</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a01f62d24b17dd0581eed047d248b4067"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a01f62d24b17dd0581eed047d248b4067">nnp::Training::Property::countGroupedSubCand</a></div><div class="ttdeci">std::size_t countGroupedSubCand</div><div class="ttdoc">Counter for number of used subcandidates belonging to same update candidate.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00437">Training.h:437</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a0c16f83405eca4c233dfb9bf0008a9f9"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a0c16f83405eca4c233dfb9bf0008a9f9">nnp::Training::Property::numErrorsGlobal</a></div><div class="ttdeci">std::size_t numErrorsGlobal</div><div class="ttdoc">Global number of errors per update.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00449">Training.h:449</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a19c5f6057a4c916892268a16bc0a97f5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a19c5f6057a4c916892268a16bc0a97f5">nnp::Training::Property::numTrainPatterns</a></div><div class="ttdeci">std::size_t numTrainPatterns</div><div class="ttdoc">Number of training patterns in set.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00421">Training.h:421</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a28f0cd4b60f5955b1aa862c37567cb0f"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f">nnp::Training::Property::writeCompAlways</a></div><div class="ttdeci">std::size_t writeCompAlways</div><div class="ttdoc">Up to this epoch comparison is written every epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00429">Training.h:429</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a39a47d1709827f134033ddae59459436"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">nnp::Training::Property::property</a></div><div class="ttdeci">std::string property</div><div class="ttdoc">Copy of identifier within Property map.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00411">Training.h:411</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a43c72f360013f0c54bbd093023c109a0"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a43c72f360013f0c54bbd093023c109a0">nnp::Training::Property::selectionMode</a></div><div class="ttdeci">SelectionMode selectionMode</div><div class="ttdoc">Selection mode for update candidates.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00419">Training.h:419</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a4617cc6dde93700e2a722b856ef5af91"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91">nnp::Training::Property::numUpdates</a></div><div class="ttdeci">std::size_t numUpdates</div><div class="ttdoc">Number of desired updates per epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00443">Training.h:443</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a48523786912eceacede5ec0983fa9446"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a48523786912eceacede5ec0983fa9446">nnp::Training::Property::rmseThreshold</a></div><div class="ttdeci">double rmseThreshold</div><div class="ttdoc">RMSE threshold for update candidates.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00453">Training.h:453</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a4c74c75e823c044b1546f736da5bd968"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">nnp::Training::Property::plural</a></div><div class="ttdeci">std::string plural</div><div class="ttdoc">Plural string of property;.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00417">Training.h:417</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a4fcb8f00175cafcb10a2024b69154c57"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a4fcb8f00175cafcb10a2024b69154c57">nnp::Training::Property::epochFraction</a></div><div class="ttdeci">double epochFraction</div><div class="ttdoc">Desired update fraction per epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00451">Training.h:451</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a54c2a8fc1d0aa231de78393cca59c213"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a54c2a8fc1d0aa231de78393cca59c213">nnp::Training::Property::patternsPerUpdate</a></div><div class="ttdeci">std::size_t patternsPerUpdate</div><div class="ttdoc">Patterns used per update.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00445">Training.h:445</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a61d413cda5e23ae4a0a6398aec99d7bf"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a61d413cda5e23ae4a0a6398aec99d7bf">nnp::Training::Property::taskBatchSize</a></div><div class="ttdeci">std::size_t taskBatchSize</div><div class="ttdoc">Batch size for each MPI task.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00425">Training.h:425</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a6ee48d9822bba7639b345da7700a9d85"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">nnp::Training::Property::displayMetric</a></div><div class="ttdeci">std::string displayMetric</div><div class="ttdoc">Error metric for display.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00413">Training.h:413</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a75cf7cb26af96ab83ad077a59dc83bb3"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">nnp::Training::Property::tiny</a></div><div class="ttdeci">std::string tiny</div><div class="ttdoc">Tiny abbreviation string for property.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00415">Training.h:415</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a7669ec0930fba8a3c00769622cba9a01"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">nnp::Training::Property::errorMetrics</a></div><div class="ttdeci">std::vector&lt; std::string &gt; errorMetrics</div><div class="ttdoc">Error metrics available for this property.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00459">Training.h:459</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a8258157a910c11f3a5ddc6200dc18608"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a8258157a910c11f3a5ddc6200dc18608">nnp::Training::Property::numTestPatterns</a></div><div class="ttdeci">std::size_t numTestPatterns</div><div class="ttdoc">Number of training patterns in set.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00423">Training.h:423</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a83476357f0f604bcbe7134fc5d85046e"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e">nnp::Training::Property::countUpdates</a></div><div class="ttdeci">std::size_t countUpdates</div><div class="ttdoc">Counter for updates per epoch.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00441">Training.h:441</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a882e48ff8c1cf29bd18a9916519f27a5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5">nnp::Training::Property::writeCompEvery</a></div><div class="ttdeci">std::size_t writeCompEvery</div><div class="ttdoc">Write comparison every this many epochs.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00427">Training.h:427</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_a9de3e8040d6dfd4645a7a819defc264d"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#a9de3e8040d6dfd4645a7a819defc264d">nnp::Training::Property::numGroupedSubCand</a></div><div class="ttdeci">std::size_t numGroupedSubCand</div><div class="ttdoc">Number of subcandidates which are considered before changing the update candidate.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00434">Training.h:434</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_ab71068e08e9c78fe54f9384450b24b1a"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">nnp::Training::Property::errorTrain</a></div><div class="ttdeci">std::map&lt; std::string, double &gt; errorTrain</div><div class="ttdoc">Current error metrics of training patterns.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00462">Training.h:462</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_ad882355197f0566544af7a65fb6d6d3f"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#ad882355197f0566544af7a65fb6d6d3f">nnp::Training::Property::patternsPerUpdateGlobal</a></div><div class="ttdeci">std::size_t patternsPerUpdateGlobal</div><div class="ttdoc">Patterns used per update (summed over all MPI tasks).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00447">Training.h:447</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_ae087afb9a8321eed110cc3c50d57d6e5"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">nnp::Training::Property::errorTest</a></div><div class="ttdeci">std::map&lt; std::string, double &gt; errorTest</div><div class="ttdoc">Current error metrics of test patterns.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00465">Training.h:465</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_af77b515f04b843319a50af7ee0d38297"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297">nnp::Training::Property::rmseThresholdTrials</a></div><div class="ttdeci">std::size_t rmseThresholdTrials</div><div class="ttdoc">Maximum trials for SM_THRESHOLD selection mode.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00439">Training.h:439</a></div></div>
+<div class="ttc" id="astructnnp_1_1Training_1_1Property_html_afe1cf7a3763961006e72dc75f56ad864"><div class="ttname"><a href="structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864">nnp::Training::Property::posUpdateCandidates</a></div><div class="ttdeci">std::size_t posUpdateCandidates</div><div class="ttdoc">Current position in update candidate list (SM_SORT/_THRESHOLD).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00431">Training.h:431</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Training_1_1Property.html#a6ee48d9822bba7639b345da7700a9d85">displayMetric</a>, <a class="el" href="structnnp_1_1Training_1_1Property.html#a7669ec0930fba8a3c00769622cba9a01">errorMetrics</a>, <a class="el" href="structnnp_1_1Training_1_1Property.html#ae087afb9a8321eed110cc3c50d57d6e5">errorTest</a>, <a class="el" href="structnnp_1_1Training_1_1Property.html#ab71068e08e9c78fe54f9384450b24b1a">errorTrain</a>, <a class="el" href="structnnp_1_1Training_1_1Property.html#a4c74c75e823c044b1546f736da5bd968">plural</a>, <a class="el" href="structnnp_1_1Training_1_1Property.html#a39a47d1709827f134033ddae59459436">property</a>, and <a class="el" href="structnnp_1_1Training_1_1Property.html#a75cf7cb26af96ab83ad077a59dc83bb3">tiny</a>.</p>
 
@@ -338,7 +348,7 @@ Public Attributes</h2></td></tr>
 
 <p>Copy of identifier within <a class="el" href="structnnp_1_1Training_1_1Property.html" title="Specific training quantity (e.g. energies, forces, charges).">Property</a> map. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00373">373</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00411">411</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>.</p>
 
@@ -358,7 +368,7 @@ Public Attributes</h2></td></tr>
 
 <p>Error metric for display. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00375">375</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00413">413</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>.</p>
 
@@ -378,7 +388,7 @@ Public Attributes</h2></td></tr>
 
 <p>Tiny abbreviation string for property. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00377">377</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00415">415</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>.</p>
 
@@ -398,7 +408,7 @@ Public Attributes</h2></td></tr>
 
 <p>Plural string of property;. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00379">379</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00417">417</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>.</p>
 
@@ -418,7 +428,7 @@ Public Attributes</h2></td></tr>
 
 <p>Selection mode for update candidates. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00381">381</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00419">419</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -438,7 +448,7 @@ Public Attributes</h2></td></tr>
 
 <p>Number of training patterns in set. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00383">383</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00421">421</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>.</p>
 
@@ -458,7 +468,7 @@ Public Attributes</h2></td></tr>
 
 <p>Number of training patterns in set. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00385">385</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00423">423</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 </div>
 </div>
@@ -476,7 +486,7 @@ Public Attributes</h2></td></tr>
 
 <p>Batch size for each MPI task. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00387">387</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00425">425</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -496,7 +506,7 @@ Public Attributes</h2></td></tr>
 
 <p>Write comparison every this many epochs. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00389">389</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00427">427</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 </div>
 </div>
@@ -514,7 +524,7 @@ Public Attributes</h2></td></tr>
 
 <p>Up to this epoch comparison is written every epoch. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00391">391</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00429">429</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 </div>
 </div>
@@ -530,9 +540,49 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Current position in update candidate list (SM_SORT). </p>
+<p>Current position in update candidate list (SM_SORT/_THRESHOLD). </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00393">393</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00431">431</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
+
+</div>
+</div>
+<a id="a9de3e8040d6dfd4645a7a819defc264d" name="a9de3e8040d6dfd4645a7a819defc264d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9de3e8040d6dfd4645a7a819defc264d">&#9670;&nbsp;</a></span>numGroupedSubCand</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t nnp::Training::Property::numGroupedSubCand</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of subcandidates which are considered before changing the update candidate. </p>
+
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00434">434</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
+
+</div>
+</div>
+<a id="a01f62d24b17dd0581eed047d248b4067" name="a01f62d24b17dd0581eed047d248b4067"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01f62d24b17dd0581eed047d248b4067">&#9670;&nbsp;</a></span>countGroupedSubCand</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t nnp::Training::Property::countGroupedSubCand</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Counter for number of used subcandidates belonging to same update candidate. </p>
+
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00437">437</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -552,7 +602,7 @@ Public Attributes</h2></td></tr>
 
 <p>Maximum trials for SM_THRESHOLD selection mode. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00395">395</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00439">439</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -572,7 +622,7 @@ Public Attributes</h2></td></tr>
 
 <p>Counter for updates per epoch. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00397">397</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00441">441</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -592,7 +642,7 @@ Public Attributes</h2></td></tr>
 
 <p>Number of desired updates per epoch. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00399">399</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00443">443</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451">nnp::Training::setupTraining()</a>, and <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>.</p>
 
@@ -612,7 +662,7 @@ Public Attributes</h2></td></tr>
 
 <p>Patterns used per update. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00401">401</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00445">445</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -632,7 +682,7 @@ Public Attributes</h2></td></tr>
 
 <p>Patterns used per update (summed over all MPI tasks). </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00403">403</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00447">447</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451">nnp::Training::setupTraining()</a>, and <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>.</p>
 
@@ -652,7 +702,7 @@ Public Attributes</h2></td></tr>
 
 <p>Global number of errors per update. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00405">405</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00449">449</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7">nnp::Training::allocateArrays()</a>, and <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>.</p>
 
@@ -672,9 +722,9 @@ Public Attributes</h2></td></tr>
 
 <p>Desired update fraction per epoch. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00407">407</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00451">451</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
 </div>
 </div>
@@ -692,7 +742,7 @@ Public Attributes</h2></td></tr>
 
 <p>RMSE threshold for update candidates. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00409">409</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00453">453</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -712,7 +762,7 @@ Public Attributes</h2></td></tr>
 
 <p>Errors per task for each update. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00411">411</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00455">455</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7">nnp::Training::allocateArrays()</a>, <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -732,7 +782,7 @@ Public Attributes</h2></td></tr>
 
 <p>Offset for combined error per task. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00413">413</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00457">457</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -752,7 +802,7 @@ Public Attributes</h2></td></tr>
 
 <p>Error metrics available for this property. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00415">415</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00459">459</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>.</p>
 
@@ -772,7 +822,7 @@ Public Attributes</h2></td></tr>
 
 <p>Current error metrics of training patterns. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00418">418</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00462">462</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -792,7 +842,7 @@ Public Attributes</h2></td></tr>
 
 <p>Current error metrics of test patterns. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00421">421</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00465">465</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="structnnp_1_1Training_1_1Property.html#a7a82a46166246c1490bd0f8361d5ed6d">Property()</a>.</p>
 
@@ -812,7 +862,7 @@ Public Attributes</h2></td></tr>
 
 <p>Vector with indices of training patterns. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00423">423</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00467">467</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -832,7 +882,7 @@ Public Attributes</h2></td></tr>
 
 <p>Weights per task per updater. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00426">426</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00470">470</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -852,7 +902,7 @@ Public Attributes</h2></td></tr>
 
 <p>Stride for Jacobians per task per updater. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00429">429</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00473">473</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78">nnp::Training::setupUpdatePlan()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -872,7 +922,7 @@ Public Attributes</h2></td></tr>
 
 <p>Global error vector (per updater). </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00432">432</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00476">476</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7">nnp::Training::allocateArrays()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -892,7 +942,7 @@ Public Attributes</h2></td></tr>
 
 <p>Global Jacobian (per updater). </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00435">435</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00479">479</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7">nnp::Training::allocateArrays()</a>, and <a class="el" href="classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d">nnp::Training::update()</a>.</p>
 
@@ -912,7 +962,7 @@ Public Attributes</h2></td></tr>
 
 <p>Schedule for varying selection mode. </p>
 
-<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00438">438</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Training_8h_source.html#l00482">482</a> of file <a class="el" href="Training_8h_source.html">Training.h</a>.</p>
 
 </div>
 </div>
@@ -926,7 +976,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacennp.html">nnp</a></li><li class="navelem"><a class="el" href="classnnp_1_1Training.html">Training</a></li><li class="navelem"><a class="el" href="structnnp_1_1Training_1_1Property.html">Property</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:36 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:49 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

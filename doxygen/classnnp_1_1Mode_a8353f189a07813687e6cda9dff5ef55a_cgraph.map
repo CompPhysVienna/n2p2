@@ -1,4 +1,4 @@
 <map id="nnp::Mode::convertToNormalizedUnits" name="nnp::Mode::convertToNormalizedUnits">
 <area shape="rect" id="node1" title="Convert one structure to normalized units." alt="" coords="5,5,241,47"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#acd39fe39b2b0e86e676c7bd52dc2b835" title="Normalize structure, shift energy and change energy and length unit." alt="" coords="289,5,499,47"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#abd33241d3bdecf5f1a7eee012118cea3" title="Normalize structure, shift energy and change energy, length and charge unit." alt="" coords="289,5,499,47"/>
 </map>

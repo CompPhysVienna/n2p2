@@ -1,0 +1,5 @@
+<map id="nnp::Structure::sortNeighborList" name="nnp::Structure::sortNeighborList">
+<area shape="rect" id="node1" title="Sort all neighbor lists of this structure with respect to the distance." alt="" coords="233,46,461,73"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="5,5,185,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ad0bfcbe0f61990f71705942c8e847627" title="Sorts neighbor list and creates cutoff map if necessary." alt="" coords="11,71,179,112"/>
+</map>

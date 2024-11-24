@@ -1,0 +1,4 @@
+<map id="nnp::Atom::allocate" name="nnp::Atom::allocate">
+<area shape="rect" id="node1" title="Allocate vectors related to symmetry functions (G, dEdG)." alt="" coords="5,13,155,39"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="203,5,417,47"/>
+</map>

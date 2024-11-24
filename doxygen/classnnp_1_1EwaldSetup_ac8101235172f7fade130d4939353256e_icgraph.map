@@ -1,0 +1,5 @@
+<map id="nnp::EwaldSetup::logEwaldCutoffs" name="nnp::EwaldSetup::logEwaldCutoffs">
+<area shape="rect" id="node1" title="Use after Ewald summation!" alt="" coords="256,27,453,69"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a23588ef86a99e8e3d7d818d3c515fd34" title="Logs Ewald params whenever they change." alt="" coords="5,5,208,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="23,57,191,98"/>
+</map>

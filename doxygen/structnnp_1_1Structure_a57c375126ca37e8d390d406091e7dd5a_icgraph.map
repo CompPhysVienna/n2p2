@@ -1,8 +1,9 @@
 <map id="nnp::Structure::setElementMap" name="nnp::Structure::setElementMap">
-<area shape="rect" id="node1" title="Set element map of structure." alt="" coords="375,137,597,163"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors." alt="" coords="130,5,305,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="133,71,301,112"/>
+<area shape="rect" id="node1" title="Set element map of structure." alt="" coords="395,166,617,193"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors." alt="" coords="140,5,315,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="143,71,311,112"/>
 <area shape="rect" id="node4" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,166,60,193"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4" title="Prepare numeric force check for a single structure." alt="" coords="108,188,327,229"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title=" " alt="" coords="110,253,325,295"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4" title="Prepare numeric force check for a single structure." alt="" coords="118,188,337,229"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title=" " alt="" coords="120,253,335,295"/>
+<area shape="rect" id="node7" href="$classLAMMPS__NS_1_1PairHDNNPExternal.html#a70609e0f2ee4740e959d9b4462f3283d" title=" " alt="" coords="108,319,347,360"/>
 </map>

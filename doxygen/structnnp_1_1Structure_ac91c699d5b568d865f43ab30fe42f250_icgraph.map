@@ -1,0 +1,4 @@
+<map id="nnp::Structure::calculateElectrostaticEnergyDerivatives" name="nnp::Structure::calculateElectrostaticEnergyDerivatives">
+<area shape="rect" id="node1" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="277,5,500,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="5,13,229,39"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="nnp::Structure::calculateDQdr" name="nnp::Structure::calculateDQdr">
+<area shape="rect" id="node1" title="Calculates derivative of the charges with respect to the atom&#39;s position." alt="" coords="5,5,219,32"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a13d0265e748da4aa1a7050ac5cc14ebd" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="267,5,467,32"/>
+</map>

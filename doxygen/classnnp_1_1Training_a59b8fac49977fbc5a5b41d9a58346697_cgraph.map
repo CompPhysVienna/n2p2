@@ -3,7 +3,7 @@
 <area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#aa38d991173328eb5c977dacf39347dca" title="Calculate derivative of output neuron with respect to connections." alt="" coords="244,5,396,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="244,71,396,112"/>
 <area shape="rect" id="node4" href="$classnnp_1_1NeuralNetwork.html#a4526b9a7e947a38b861098d0826a6161" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="244,136,396,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a80d3c7681f0727847d717ab7a333abbf" title="Collect derivative of symmetry functions with repect to one atom&#39;s coordinate." alt="" coords="218,202,422,229"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a80d3c7681f0727847d717ab7a333abbf" title="Collect derivative of symmetry functions with respect to one atom&#39;s coordinate." alt="" coords="218,202,422,229"/>
 <area shape="rect" id="node6" href="$classnnp_1_1Training.html#ad19f84cd6d5a49157b03501cce982602" title="Get offsets of NN connections for each element." alt="" coords="217,253,423,295"/>
 <area shape="rect" id="node7" href="$classnnp_1_1Training.html#a8e3ffcaf2ddbd4f4ec209a52a2a35c26" title="Get total number of NN connections." alt="" coords="197,319,443,346"/>
 <area shape="rect" id="node8" href="$classnnp_1_1Training.html#ad724e9e50935b9427f736362fcc4edd5" title="Get number of NN connections for each element." alt="" coords="197,371,443,412"/>

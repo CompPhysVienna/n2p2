@@ -192,213 +192,257 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   63</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Calculating NNP prediction...\n&quot;</span>;</div>
 <div class="line"><span class="lineno">   64</span>    prediction.<a class="code hl_function" href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858">predict</a>();</div>
 <div class="line"><span class="lineno">   65</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   66</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;-----------------------------------------&quot;</span></div>
-<div class="line"><span class="lineno">   67</span>                      <span class="stringliteral">&quot;--------------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   68</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;NNP energy: %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">   69</span>                            prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">energy</a>);</div>
-<div class="line"><span class="lineno">   70</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   71</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;NNP forces:\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   72</span>    <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it = s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.begin();</div>
-<div class="line"><span class="lineno">   73</span>         it != s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.end(); ++it)</div>
-<div class="line"><span class="lineno">   74</span>    {</div>
-<div class="line"><span class="lineno">   75</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %2s %16.8E %16.8E %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">   76</span>                                it-&gt;index + 1,</div>
-<div class="line"><span class="lineno">   77</span>                                prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[it-&gt;element].c_str(),</div>
-<div class="line"><span class="lineno">   78</span>                                it-&gt;element,</div>
-<div class="line"><span class="lineno">   79</span>                                it-&gt;f[0],</div>
-<div class="line"><span class="lineno">   80</span>                                it-&gt;f[1],</div>
-<div class="line"><span class="lineno">   81</span>                                it-&gt;f[2]);</div>
-<div class="line"><span class="lineno">   82</span>    }</div>
-<div class="line"><span class="lineno">   83</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;-----------------------------------------&quot;</span></div>
-<div class="line"><span class="lineno">   84</span>                      <span class="stringliteral">&quot;--------------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   85</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing output files...\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   86</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot; - energy.out\n&quot;</span>;</div>
-<div class="line"><span class="lineno">   87</span>    ofstream file;</div>
-<div class="line"><span class="lineno">   88</span>    file.open(<span class="stringliteral">&quot;energy.out&quot;</span>);</div>
-<div class="line"><span class="lineno">   89</span> </div>
-<div class="line"><span class="lineno">   90</span>    <span class="comment">// File header.</span></div>
-<div class="line"><span class="lineno">   91</span>    vector&lt;string&gt; title;</div>
-<div class="line"><span class="lineno">   92</span>    vector&lt;string&gt; colName;</div>
-<div class="line"><span class="lineno">   93</span>    vector&lt;string&gt; colInfo;</div>
-<div class="line"><span class="lineno">   94</span>    vector&lt;size_t&gt; colSize;</div>
-<div class="line"><span class="lineno">   95</span>    title.push_back(<span class="stringliteral">&quot;Energy comparison.&quot;</span>);</div>
-<div class="line"><span class="lineno">   96</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">   97</span>    colName.push_back(<span class="stringliteral">&quot;Ennp&quot;</span>);</div>
-<div class="line"><span class="lineno">   98</span>    colInfo.push_back(<span class="stringliteral">&quot;Potential energy predicted by NNP.&quot;</span>);</div>
-<div class="line"><span class="lineno">   99</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  100</span>    colName.push_back(<span class="stringliteral">&quot;Eref&quot;</span>);</div>
-<div class="line"><span class="lineno">  101</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference potential energy.&quot;</span>);</div>
-<div class="line"><span class="lineno">  102</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  103</span>    colName.push_back(<span class="stringliteral">&quot;Ediff&quot;</span>);</div>
-<div class="line"><span class="lineno">  104</span>    colInfo.push_back(<span class="stringliteral">&quot;Difference between reference and NNP prediction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  105</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  106</span>    colName.push_back(<span class="stringliteral">&quot;E_offset&quot;</span>);</div>
-<div class="line"><span class="lineno">  107</span>    colInfo.push_back(<span class="stringliteral">&quot;Sum of atomic offset energies &quot;</span></div>
-<div class="line"><span class="lineno">  108</span>                      <span class="stringliteral">&quot;(included in column Ennp).&quot;</span>);</div>
-<div class="line"><span class="lineno">  109</span>    <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file,</div>
-<div class="line"><span class="lineno">  110</span>                      <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
-<div class="line"><span class="lineno">  111</span> </div>
-<div class="line"><span class="lineno">  112</span>    file &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%16.8E %16.8E %16.8E %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  113</span>                  prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">energy</a>,</div>
-<div class="line"><span class="lineno">  114</span>                  prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">energyRef</a>,</div>
-<div class="line"><span class="lineno">  115</span>                  prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">energyRef</a> - prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">energy</a>,</div>
-<div class="line"><span class="lineno">  116</span>                  prediction.<a class="code hl_function" href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de">getEnergyOffset</a>(prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>));</div>
-<div class="line"><span class="lineno">  117</span>    file.close();</div>
-<div class="line"><span class="lineno">  118</span> </div>
-<div class="line"><span class="lineno">  119</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot; - nnatoms.out\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  120</span>    file.open(<span class="stringliteral">&quot;nnatoms.out&quot;</span>);</div>
-<div class="line"><span class="lineno">  121</span> </div>
-<div class="line"><span class="lineno">  122</span>    <span class="comment">// File header.</span></div>
-<div class="line"><span class="lineno">  123</span>    title.clear();</div>
-<div class="line"><span class="lineno">  124</span>    colName.clear();</div>
-<div class="line"><span class="lineno">  125</span>    colInfo.clear();</div>
-<div class="line"><span class="lineno">  126</span>    colSize.clear();</div>
-<div class="line"><span class="lineno">  127</span>    title.push_back(<span class="stringliteral">&quot;Energy contributions calculated from NNP.&quot;</span>);</div>
-<div class="line"><span class="lineno">  128</span>    colSize.push_back(10);</div>
-<div class="line"><span class="lineno">  129</span>    colName.push_back(<span class="stringliteral">&quot;index&quot;</span>);</div>
-<div class="line"><span class="lineno">  130</span>    colInfo.push_back(<span class="stringliteral">&quot;Atom index.&quot;</span>);</div>
-<div class="line"><span class="lineno">  131</span>    colSize.push_back(2);</div>
-<div class="line"><span class="lineno">  132</span>    colName.push_back(<span class="stringliteral">&quot;e&quot;</span>);</div>
-<div class="line"><span class="lineno">  133</span>    colInfo.push_back(<span class="stringliteral">&quot;Element of atom.&quot;</span>);</div>
-<div class="line"><span class="lineno">  134</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  135</span>    colName.push_back(<span class="stringliteral">&quot;charge&quot;</span>);</div>
-<div class="line"><span class="lineno">  136</span>    colInfo.push_back(<span class="stringliteral">&quot;Atomic charge (not used).&quot;</span>);</div>
-<div class="line"><span class="lineno">  137</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  138</span>    colName.push_back(<span class="stringliteral">&quot;Ennp_atom&quot;</span>);</div>
-<div class="line"><span class="lineno">  139</span>    colInfo.push_back(<span class="stringliteral">&quot;Atomic energy contribution (physical units, no mean &quot;</span></div>
-<div class="line"><span class="lineno">  140</span>                      <span class="stringliteral">&quot;or offset energy added).&quot;</span>);</div>
-<div class="line"><span class="lineno">  141</span>    <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file,</div>
-<div class="line"><span class="lineno">  142</span>                      <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
-<div class="line"><span class="lineno">  143</span> </div>
-<div class="line"><span class="lineno">  144</span>    <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it = s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.begin();</div>
-<div class="line"><span class="lineno">  145</span>         it != s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.end(); ++it)</div>
-<div class="line"><span class="lineno">  146</span>    {</div>
-<div class="line"><span class="lineno">  147</span>        file &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10d %2s %16.8E %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  148</span>                      it-&gt;index,</div>
-<div class="line"><span class="lineno">  149</span>                      prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[it-&gt;element].c_str(),</div>
-<div class="line"><span class="lineno">  150</span>                      it-&gt;charge,</div>
-<div class="line"><span class="lineno">  151</span>                      it-&gt;energy);</div>
-<div class="line"><span class="lineno">  152</span>    }</div>
-<div class="line"><span class="lineno">  153</span>    file.close();</div>
-<div class="line"><span class="lineno">  154</span> </div>
-<div class="line"><span class="lineno">  155</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot; - nnforces.out\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  156</span>    file.open(<span class="stringliteral">&quot;nnforces.out&quot;</span>);</div>
-<div class="line"><span class="lineno">  157</span> </div>
-<div class="line"><span class="lineno">  158</span>    <span class="comment">// File header.</span></div>
-<div class="line"><span class="lineno">  159</span>    title.clear();</div>
-<div class="line"><span class="lineno">  160</span>    colName.clear();</div>
-<div class="line"><span class="lineno">  161</span>    colInfo.clear();</div>
-<div class="line"><span class="lineno">  162</span>    colSize.clear();</div>
-<div class="line"><span class="lineno">  163</span>    title.push_back(<span class="stringliteral">&quot;Atomic force comparison (ordered by atom index).&quot;</span>);</div>
-<div class="line"><span class="lineno">  164</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  165</span>    colName.push_back(<span class="stringliteral">&quot;fx&quot;</span>);</div>
-<div class="line"><span class="lineno">  166</span>    colInfo.push_back(<span class="stringliteral">&quot;Force in x direction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  167</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  168</span>    colName.push_back(<span class="stringliteral">&quot;fy&quot;</span>);</div>
-<div class="line"><span class="lineno">  169</span>    colInfo.push_back(<span class="stringliteral">&quot;Force in y direction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  170</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  171</span>    colName.push_back(<span class="stringliteral">&quot;fz&quot;</span>);</div>
-<div class="line"><span class="lineno">  172</span>    colInfo.push_back(<span class="stringliteral">&quot;Force in z direction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  173</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  174</span>    colName.push_back(<span class="stringliteral">&quot;fxRef&quot;</span>);</div>
-<div class="line"><span class="lineno">  175</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference force in x direction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  176</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  177</span>    colName.push_back(<span class="stringliteral">&quot;fyRef&quot;</span>);</div>
-<div class="line"><span class="lineno">  178</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference force in y direction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  179</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  180</span>    colName.push_back(<span class="stringliteral">&quot;fzRef&quot;</span>);</div>
-<div class="line"><span class="lineno">  181</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference force in z direction.&quot;</span>);</div>
-<div class="line"><span class="lineno">  182</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  183</span>    colName.push_back(<span class="stringliteral">&quot;fxDiff&quot;</span>);</div>
-<div class="line"><span class="lineno">  184</span>    colInfo.push_back(<span class="stringliteral">&quot;Difference between reference and NNP force in x dir.&quot;</span>);</div>
-<div class="line"><span class="lineno">  185</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  186</span>    colName.push_back(<span class="stringliteral">&quot;fyDiff&quot;</span>);</div>
-<div class="line"><span class="lineno">  187</span>    colInfo.push_back(<span class="stringliteral">&quot;Difference between reference and NNP force in y dir.&quot;</span>);</div>
-<div class="line"><span class="lineno">  188</span>    colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  189</span>    colName.push_back(<span class="stringliteral">&quot;fzDiff&quot;</span>);</div>
-<div class="line"><span class="lineno">  190</span>    colInfo.push_back(<span class="stringliteral">&quot;Difference between reference and NNP force in z dir.&quot;</span>);</div>
-<div class="line"><span class="lineno">  191</span>    <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file,</div>
-<div class="line"><span class="lineno">  192</span>                      <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
-<div class="line"><span class="lineno">  193</span> </div>
-<div class="line"><span class="lineno">  194</span>    <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it = s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.begin();</div>
-<div class="line"><span class="lineno">  195</span>         it != s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.end(); ++it)</div>
-<div class="line"><span class="lineno">  196</span>    {</div>
-<div class="line"><span class="lineno">  197</span>        file &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%16.8E %16.8E %16.8E %16.8E %16.8E &quot;</span></div>
-<div class="line"><span class="lineno">  198</span>                      <span class="stringliteral">&quot;%16.8E %16.8E %16.8E %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  199</span>                      it-&gt;f[0],</div>
-<div class="line"><span class="lineno">  200</span>                      it-&gt;f[1],</div>
-<div class="line"><span class="lineno">  201</span>                      it-&gt;f[2],</div>
-<div class="line"><span class="lineno">  202</span>                      it-&gt;fRef[0],</div>
-<div class="line"><span class="lineno">  203</span>                      it-&gt;fRef[1],</div>
-<div class="line"><span class="lineno">  204</span>                      it-&gt;fRef[2],</div>
-<div class="line"><span class="lineno">  205</span>                      it-&gt;fRef[0] - it-&gt;f[0],</div>
-<div class="line"><span class="lineno">  206</span>                      it-&gt;fRef[1] - it-&gt;f[1],</div>
-<div class="line"><span class="lineno">  207</span>                      it-&gt;fRef[2] - it-&gt;f[2]);</div>
-<div class="line"><span class="lineno">  208</span>    }</div>
-<div class="line"><span class="lineno">  209</span>    file.close();</div>
-<div class="line"><span class="lineno">  210</span> </div>
-<div class="line"><span class="lineno">  211</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing structure with NNP prediction &quot;</span></div>
-<div class="line"><span class="lineno">  212</span>                      <span class="stringliteral">&quot;to \&quot;output.data\&quot;.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  213</span>    file.open(<span class="stringliteral">&quot;output.data&quot;</span>);</div>
-<div class="line"><span class="lineno">  214</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_function" href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af">writeToFile</a>(&amp;file, <span class="keyword">false</span>);</div>
-<div class="line"><span class="lineno">  215</span>    file.close();</div>
-<div class="line"><span class="lineno">  216</span> </div>
-<div class="line"><span class="lineno">  217</span>    <span class="keywordflow">if</span> (structureInfo)</div>
-<div class="line"><span class="lineno">  218</span>    {</div>
-<div class="line"><span class="lineno">  219</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing detailed structure information to &quot;</span></div>
-<div class="line"><span class="lineno">  220</span>                          <span class="stringliteral">&quot;\&quot;structure.out\&quot;.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  221</span>        file.open(<span class="stringliteral">&quot;structure.out&quot;</span>);</div>
-<div class="line"><span class="lineno">  222</span>        vector&lt;string&gt; info = prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_function" href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef">info</a>();</div>
-<div class="line"><span class="lineno">  223</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file, info);</div>
-<div class="line"><span class="lineno">  224</span>        file.close();</div>
-<div class="line"><span class="lineno">  225</span>    }</div>
-<div class="line"><span class="lineno">  226</span> </div>
-<div class="line"><span class="lineno">  227</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Finished.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  228</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
-<div class="line"><span class="lineno">  229</span>                      <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  230</span>    <a class="code hl_variable" href="nnp-cutoff_8cpp.html#af6fd65a690619ab800f6ddc3ff64eebb">logFile</a>.close();</div>
-<div class="line"><span class="lineno">  231</span> </div>
-<div class="line"><span class="lineno">  232</span>    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><span class="lineno">  233</span>}</div>
+<div class="line"><span class="lineno">   66</span>    prediction.<a class="code hl_function" href="classnnp_1_1Mode.html#a23588ef86a99e8e3d7d818d3c515fd34">logEwaldCutoffs</a>();</div>
+<div class="line"><span class="lineno">   67</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;-----------------------------------------&quot;</span></div>
+<div class="line"><span class="lineno">   68</span>                      <span class="stringliteral">&quot;--------------------------------------\n&quot;</span>;</div>
+<div class="line"><span class="lineno">   69</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;NNP         total energy: %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">   70</span>                            prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">energy</a>);</div>
+<div class="line"><span class="lineno">   71</span>    <span class="keywordflow">if</span> (prediction.<a class="code hl_function" href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">getNnpType</a>() == Mode::NNPType::HDNNP_4G)</div>
+<div class="line"><span class="lineno">   72</span>    {</div>
+<div class="line"><span class="lineno">   73</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;NNP electrostatic energy: %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">   74</span>                                prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa8d5c1fa9994b603c38e25250da743df">energyElec</a>);</div>
+<div class="line"><span class="lineno">   75</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">   76</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;NNP charges:\n&quot;</span>;</div>
+<div class="line"><span class="lineno">   77</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; a : s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>)</div>
+<div class="line"><span class="lineno">   78</span>        {</div>
+<div class="line"><span class="lineno">   79</span>            prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %2s %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">   80</span>                                    a.index + 1,</div>
+<div class="line"><span class="lineno">   81</span>                                    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[a.element].c_str(),</div>
+<div class="line"><span class="lineno">   82</span>                                    a.charge);</div>
+<div class="line"><span class="lineno">   83</span>        }</div>
+<div class="line"><span class="lineno">   84</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;NNP total charge: %16.8E (ref: %16.8E)\n&quot;</span>,</div>
+<div class="line"><span class="lineno">   85</span>                          s.<a class="code hl_variable" href="structnnp_1_1Structure.html#a50427699538016623ef2331c9eb67f01">charge</a>, s.<a class="code hl_variable" href="structnnp_1_1Structure.html#a65839bc1a3213a6d77e064b5edade786">chargeRef</a>);</div>
+<div class="line"><span class="lineno">   86</span>    }</div>
+<div class="line"><span class="lineno">   87</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">   88</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;NNP forces:\n&quot;</span>;</div>
+<div class="line"><span class="lineno">   89</span>    <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it = s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.begin();</div>
+<div class="line"><span class="lineno">   90</span>         it != s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.end(); ++it)</div>
+<div class="line"><span class="lineno">   91</span>    {</div>
+<div class="line"><span class="lineno">   92</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %2s %16.8E %16.8E %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">   93</span>                                it-&gt;index + 1,</div>
+<div class="line"><span class="lineno">   94</span>                                prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>[it-&gt;element].c_str(),</div>
+<div class="line"><span class="lineno">   95</span>                                it-&gt;element,</div>
+<div class="line"><span class="lineno">   96</span>                                it-&gt;f[0],</div>
+<div class="line"><span class="lineno">   97</span>                                it-&gt;f[1],</div>
+<div class="line"><span class="lineno">   98</span>                                it-&gt;f[2]);</div>
+<div class="line"><span class="lineno">   99</span>    }</div>
+<div class="line"><span class="lineno">  100</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;-----------------------------------------&quot;</span></div>
+<div class="line"><span class="lineno">  101</span>                      <span class="stringliteral">&quot;--------------------------------------\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  102</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing output files...\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  103</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot; - energy.out\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  104</span>    ofstream file;</div>
+<div class="line"><span class="lineno">  105</span>    file.open(<span class="stringliteral">&quot;energy.out&quot;</span>);</div>
+<div class="line"><span class="lineno">  106</span> </div>
+<div class="line"><span class="lineno">  107</span>    <span class="comment">// File header.</span></div>
+<div class="line"><span class="lineno">  108</span>    vector&lt;string&gt; title;</div>
+<div class="line"><span class="lineno">  109</span>    vector&lt;string&gt; colName;</div>
+<div class="line"><span class="lineno">  110</span>    vector&lt;string&gt; colInfo;</div>
+<div class="line"><span class="lineno">  111</span>    vector&lt;size_t&gt; colSize;</div>
+<div class="line"><span class="lineno">  112</span>    title.push_back(<span class="stringliteral">&quot;Energy comparison.&quot;</span>);</div>
+<div class="line"><span class="lineno">  113</span>    colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  114</span>    colName.push_back(<span class="stringliteral">&quot;conf&quot;</span>);</div>
+<div class="line"><span class="lineno">  115</span>    colInfo.push_back(<span class="stringliteral">&quot;Configuration index (starting with 1).&quot;</span>);</div>
+<div class="line"><span class="lineno">  116</span>    colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  117</span>    colName.push_back(<span class="stringliteral">&quot;natoms&quot;</span>);</div>
+<div class="line"><span class="lineno">  118</span>    colInfo.push_back(<span class="stringliteral">&quot;Number of atoms in configuration.&quot;</span>);</div>
+<div class="line"><span class="lineno">  119</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  120</span>    colName.push_back(<span class="stringliteral">&quot;Eref&quot;</span>);</div>
+<div class="line"><span class="lineno">  121</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference potential energy.&quot;</span>);</div>
+<div class="line"><span class="lineno">  122</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  123</span>    colName.push_back(<span class="stringliteral">&quot;Ennp&quot;</span>);</div>
+<div class="line"><span class="lineno">  124</span>    colInfo.push_back(<span class="stringliteral">&quot;Potential energy predicted by NNP.&quot;</span>);</div>
+<div class="line"><span class="lineno">  125</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  126</span>    colName.push_back(<span class="stringliteral">&quot;Ediff&quot;</span>);</div>
+<div class="line"><span class="lineno">  127</span>    colInfo.push_back(<span class="stringliteral">&quot;Difference in energy per atom between reference and &quot;</span></div>
+<div class="line"><span class="lineno">  128</span>                      <span class="stringliteral">&quot;NNP prediction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  129</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  130</span>    colName.push_back(<span class="stringliteral">&quot;E_offset&quot;</span>);</div>
+<div class="line"><span class="lineno">  131</span>    colInfo.push_back(<span class="stringliteral">&quot;Sum of atomic offset energies &quot;</span></div>
+<div class="line"><span class="lineno">  132</span>                      <span class="stringliteral">&quot;(included in column Ennp).&quot;</span>);</div>
+<div class="line"><span class="lineno">  133</span>    <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file,</div>
+<div class="line"><span class="lineno">  134</span>                      <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
+<div class="line"><span class="lineno">  135</span> </div>
+<div class="line"><span class="lineno">  136</span>    file &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %10zu %24.16E %24.16E %24.16E %24.16E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  137</span>                  s.<a class="code hl_variable" href="structnnp_1_1Structure.html#a5af7b5cd0a2154c2e34a3b8a73a51ca6">index</a> + 1,</div>
+<div class="line"><span class="lineno">  138</span>                  s.<a class="code hl_variable" href="structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90">numAtoms</a>,</div>
+<div class="line"><span class="lineno">  139</span>                  s.<a class="code hl_variable" href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">energyRef</a>,</div>
+<div class="line"><span class="lineno">  140</span>                  s.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">energy</a>,</div>
+<div class="line"><span class="lineno">  141</span>                  (s.<a class="code hl_variable" href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">energyRef</a> - s.<a class="code hl_variable" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">energy</a>) / s.<a class="code hl_variable" href="structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90">numAtoms</a>,</div>
+<div class="line"><span class="lineno">  142</span>                  prediction.<a class="code hl_function" href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de">getEnergyOffset</a>(s));</div>
+<div class="line"><span class="lineno">  143</span>    file.close();</div>
+<div class="line"><span class="lineno">  144</span> </div>
+<div class="line"><span class="lineno">  145</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot; - nnatoms.out\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  146</span>    file.open(<span class="stringliteral">&quot;nnatoms.out&quot;</span>);</div>
+<div class="line"><span class="lineno">  147</span> </div>
+<div class="line"><span class="lineno">  148</span>    <span class="comment">// File header.</span></div>
+<div class="line"><span class="lineno">  149</span>    title.clear();</div>
+<div class="line"><span class="lineno">  150</span>    colName.clear();</div>
+<div class="line"><span class="lineno">  151</span>    colInfo.clear();</div>
+<div class="line"><span class="lineno">  152</span>    colSize.clear();</div>
+<div class="line"><span class="lineno">  153</span>    title.push_back(<span class="stringliteral">&quot;Energy contributions calculated from NNP.&quot;</span>);</div>
+<div class="line"><span class="lineno">  154</span>    colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  155</span>    colName.push_back(<span class="stringliteral">&quot;conf&quot;</span>);</div>
+<div class="line"><span class="lineno">  156</span>    colInfo.push_back(<span class="stringliteral">&quot;Configuration index (starting with 1).&quot;</span>);</div>
+<div class="line"><span class="lineno">  157</span>    colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  158</span>    colName.push_back(<span class="stringliteral">&quot;index&quot;</span>);</div>
+<div class="line"><span class="lineno">  159</span>    colInfo.push_back(<span class="stringliteral">&quot;Atom index (starting with 1).&quot;</span>);</div>
+<div class="line"><span class="lineno">  160</span>    colSize.push_back(3);</div>
+<div class="line"><span class="lineno">  161</span>    colName.push_back(<span class="stringliteral">&quot;Z&quot;</span>);</div>
+<div class="line"><span class="lineno">  162</span>    colInfo.push_back(<span class="stringliteral">&quot;Nuclear charge of atom.&quot;</span>);</div>
+<div class="line"><span class="lineno">  163</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  164</span>    colName.push_back(<span class="stringliteral">&quot;Qref&quot;</span>);</div>
+<div class="line"><span class="lineno">  165</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference atomic charge.&quot;</span>);</div>
+<div class="line"><span class="lineno">  166</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  167</span>    colName.push_back(<span class="stringliteral">&quot;Qnnp&quot;</span>);</div>
+<div class="line"><span class="lineno">  168</span>    colInfo.push_back(<span class="stringliteral">&quot;NNP atomic charge.&quot;</span>);</div>
+<div class="line"><span class="lineno">  169</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  170</span>    colName.push_back(<span class="stringliteral">&quot;Eref_atom&quot;</span>);</div>
+<div class="line"><span class="lineno">  171</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference atomic energy contribution.&quot;</span>);</div>
+<div class="line"><span class="lineno">  172</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  173</span>    colName.push_back(<span class="stringliteral">&quot;Ennp_atom&quot;</span>);</div>
+<div class="line"><span class="lineno">  174</span>    colInfo.push_back(<span class="stringliteral">&quot;Atomic energy contribution (physical units, no mean &quot;</span></div>
+<div class="line"><span class="lineno">  175</span>                      <span class="stringliteral">&quot;or offset energy added).&quot;</span>);</div>
+<div class="line"><span class="lineno">  176</span>    <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file,</div>
+<div class="line"><span class="lineno">  177</span>                      <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
+<div class="line"><span class="lineno">  178</span> </div>
+<div class="line"><span class="lineno">  179</span>    <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it = s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.begin();</div>
+<div class="line"><span class="lineno">  180</span>         it != s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.end(); ++it)</div>
+<div class="line"><span class="lineno">  181</span>    {</div>
+<div class="line"><span class="lineno">  182</span>        file &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %10zu %3zu %24.16E %24.16E %24.16E %24.16E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  183</span>                      s.<a class="code hl_variable" href="structnnp_1_1Structure.html#a5af7b5cd0a2154c2e34a3b8a73a51ca6">index</a> + 1,</div>
+<div class="line"><span class="lineno">  184</span>                      it-&gt;index + 1,</div>
+<div class="line"><span class="lineno">  185</span>                      prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">elementMap</a>.<a class="code hl_function" href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1">atomicNumber</a>(it-&gt;element),</div>
+<div class="line"><span class="lineno">  186</span>                      it-&gt;chargeRef,</div>
+<div class="line"><span class="lineno">  187</span>                      it-&gt;charge,</div>
+<div class="line"><span class="lineno">  188</span>                      0.0,</div>
+<div class="line"><span class="lineno">  189</span>                      it-&gt;energy);</div>
+<div class="line"><span class="lineno">  190</span>    }</div>
+<div class="line"><span class="lineno">  191</span>    file.close();</div>
+<div class="line"><span class="lineno">  192</span> </div>
+<div class="line"><span class="lineno">  193</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot; - nnforces.out\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  194</span>    file.open(<span class="stringliteral">&quot;nnforces.out&quot;</span>);</div>
+<div class="line"><span class="lineno">  195</span> </div>
+<div class="line"><span class="lineno">  196</span>    <span class="comment">// File header.</span></div>
+<div class="line"><span class="lineno">  197</span>    title.clear();</div>
+<div class="line"><span class="lineno">  198</span>    colName.clear();</div>
+<div class="line"><span class="lineno">  199</span>    colInfo.clear();</div>
+<div class="line"><span class="lineno">  200</span>    colSize.clear();</div>
+<div class="line"><span class="lineno">  201</span>    title.push_back(<span class="stringliteral">&quot;Atomic force comparison (ordered by atom index).&quot;</span>);</div>
+<div class="line"><span class="lineno">  202</span>    colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  203</span>    colName.push_back(<span class="stringliteral">&quot;conf&quot;</span>);</div>
+<div class="line"><span class="lineno">  204</span>    colInfo.push_back(<span class="stringliteral">&quot;Configuration index (starting with 1).&quot;</span>);</div>
+<div class="line"><span class="lineno">  205</span>    colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  206</span>    colName.push_back(<span class="stringliteral">&quot;index&quot;</span>);</div>
+<div class="line"><span class="lineno">  207</span>    colInfo.push_back(<span class="stringliteral">&quot;Atom index (starting with 1).&quot;</span>);</div>
+<div class="line"><span class="lineno">  208</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  209</span>    colName.push_back(<span class="stringliteral">&quot;fxRef&quot;</span>);</div>
+<div class="line"><span class="lineno">  210</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference force in x direction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  211</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  212</span>    colName.push_back(<span class="stringliteral">&quot;fyRef&quot;</span>);</div>
+<div class="line"><span class="lineno">  213</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference force in y direction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  214</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  215</span>    colName.push_back(<span class="stringliteral">&quot;fzRef&quot;</span>);</div>
+<div class="line"><span class="lineno">  216</span>    colInfo.push_back(<span class="stringliteral">&quot;Reference force in z direction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  217</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  218</span>    colName.push_back(<span class="stringliteral">&quot;fx&quot;</span>);</div>
+<div class="line"><span class="lineno">  219</span>    colInfo.push_back(<span class="stringliteral">&quot;Force in x direction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  220</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  221</span>    colName.push_back(<span class="stringliteral">&quot;fy&quot;</span>);</div>
+<div class="line"><span class="lineno">  222</span>    colInfo.push_back(<span class="stringliteral">&quot;Force in y direction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  223</span>    colSize.push_back(24);</div>
+<div class="line"><span class="lineno">  224</span>    colName.push_back(<span class="stringliteral">&quot;fz&quot;</span>);</div>
+<div class="line"><span class="lineno">  225</span>    colInfo.push_back(<span class="stringliteral">&quot;Force in z direction.&quot;</span>);</div>
+<div class="line"><span class="lineno">  226</span>    <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file,</div>
+<div class="line"><span class="lineno">  227</span>                      <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
+<div class="line"><span class="lineno">  228</span> </div>
+<div class="line"><span class="lineno">  229</span>    <span class="keywordflow">for</span> (vector&lt;Atom&gt;::const_iterator it = s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.begin();</div>
+<div class="line"><span class="lineno">  230</span>         it != s.<a class="code hl_variable" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">atoms</a>.end(); ++it)</div>
+<div class="line"><span class="lineno">  231</span>    {</div>
+<div class="line"><span class="lineno">  232</span>        file &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%10zu %10zu %24.16E %24.16E %24.16E %24.16E %24.16E &quot;</span></div>
+<div class="line"><span class="lineno">  233</span>                      <span class="stringliteral">&quot;%24.16E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  234</span>                      s.<a class="code hl_variable" href="structnnp_1_1Structure.html#a5af7b5cd0a2154c2e34a3b8a73a51ca6">index</a> + 1,</div>
+<div class="line"><span class="lineno">  235</span>                      it-&gt;index + 1,</div>
+<div class="line"><span class="lineno">  236</span>                      it-&gt;fRef[0],</div>
+<div class="line"><span class="lineno">  237</span>                      it-&gt;fRef[1],</div>
+<div class="line"><span class="lineno">  238</span>                      it-&gt;fRef[2],</div>
+<div class="line"><span class="lineno">  239</span>                      it-&gt;f[0],</div>
+<div class="line"><span class="lineno">  240</span>                      it-&gt;f[1],</div>
+<div class="line"><span class="lineno">  241</span>                      it-&gt;f[2]);</div>
+<div class="line"><span class="lineno">  242</span>    }</div>
+<div class="line"><span class="lineno">  243</span>    file.close();</div>
+<div class="line"><span class="lineno">  244</span> </div>
+<div class="line"><span class="lineno">  245</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing structure with NNP prediction &quot;</span></div>
+<div class="line"><span class="lineno">  246</span>                      <span class="stringliteral">&quot;to \&quot;output.data\&quot;.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  247</span>    file.open(<span class="stringliteral">&quot;output.data&quot;</span>);</div>
+<div class="line"><span class="lineno">  248</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_function" href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af">writeToFile</a>(&amp;file, <span class="keyword">false</span>);</div>
+<div class="line"><span class="lineno">  249</span>    file.close();</div>
+<div class="line"><span class="lineno">  250</span> </div>
+<div class="line"><span class="lineno">  251</span>    <span class="keywordflow">if</span> (structureInfo)</div>
+<div class="line"><span class="lineno">  252</span>    {</div>
+<div class="line"><span class="lineno">  253</span>        prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing detailed structure information to &quot;</span></div>
+<div class="line"><span class="lineno">  254</span>                          <span class="stringliteral">&quot;\&quot;structure.out\&quot;.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  255</span>        file.open(<span class="stringliteral">&quot;structure.out&quot;</span>);</div>
+<div class="line"><span class="lineno">  256</span>        vector&lt;string&gt; info = prediction.<a class="code hl_variable" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">structure</a>.<a class="code hl_function" href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef">info</a>();</div>
+<div class="line"><span class="lineno">  257</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(file, info);</div>
+<div class="line"><span class="lineno">  258</span>        file.close();</div>
+<div class="line"><span class="lineno">  259</span>    }</div>
+<div class="line"><span class="lineno">  260</span> </div>
+<div class="line"><span class="lineno">  261</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Finished.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  262</span>    prediction.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
+<div class="line"><span class="lineno">  263</span>                      <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  264</span>    <a class="code hl_variable" href="nnp-cutoff_8cpp.html#af6fd65a690619ab800f6ddc3ff64eebb">logFile</a>.close();</div>
+<div class="line"><span class="lineno">  265</span> </div>
+<div class="line"><span class="lineno">  266</span>    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">  267</span>}</div>
+<div class="ttc" id="aclassnnp_1_1ElementMap_html_acd54eb7c8fd1f9967604463ff11ffce1"><div class="ttname"><a href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1">nnp::ElementMap::atomicNumber</a></div><div class="ttdeci">std::size_t atomicNumber(std::size_t index) const</div><div class="ttdoc">Get atomic number from element index.</div><div class="ttdef"><b>Definition:</b> <a href="ElementMap_8h_source.html#l00145">ElementMap.h:145</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Log_html_a80b248cc27c7846814fb2915e198b71b"><div class="ttname"><a href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b">nnp::Log::registerStreamPointer</a></div><div class="ttdeci">void registerStreamPointer(std::ofstream *const &amp;streamPointer)</div><div class="ttdoc">Register new C++ ofstream pointer.</div><div class="ttdef"><b>Definition:</b> <a href="Log_8cpp_source.html#l00091">Log.cpp:91</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a12a8249ac3aab222922c42781c344779"><div class="ttname"><a href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">nnp::Mode::elementMap</a></div><div class="ttdeci">ElementMap elementMap</div><div class="ttdoc">Global element map, populated by setupElementMap().</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00508">Mode.h:508</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_aae5d8b1186dde3ffbf2545fca1d08923"><div class="ttname"><a href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a></div><div class="ttdeci">Log log</div><div class="ttdoc">Global log file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00510">Mode.h:510</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_af05a24414c9b595a8ccb95b05b5030de"><div class="ttname"><a href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de">nnp::Mode::getEnergyOffset</a></div><div class="ttdeci">double getEnergyOffset(Structure const &amp;structure) const</div><div class="ttdoc">Get atomic energy offset for given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01499">Mode.cpp:1499</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a07765f9f29bb8cd798c6d82721a8711d"><div class="ttname"><a href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">nnp::Mode::getNnpType</a></div><div class="ttdeci">NNPType getNnpType() const</div><div class="ttdoc">Getter for Mode::nnpType.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00668">Mode.h:668</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a12a8249ac3aab222922c42781c344779"><div class="ttname"><a href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">nnp::Mode::elementMap</a></div><div class="ttdeci">ElementMap elementMap</div><div class="ttdoc">Global element map, populated by setupElementMap().</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00591">Mode.h:591</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a23588ef86a99e8e3d7d818d3c515fd34"><div class="ttname"><a href="classnnp_1_1Mode.html#a23588ef86a99e8e3d7d818d3c515fd34">nnp::Mode::logEwaldCutoffs</a></div><div class="ttdeci">void logEwaldCutoffs()</div><div class="ttdoc">Logs Ewald params whenever they change.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l02149">Mode.cpp:2149</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_aae5d8b1186dde3ffbf2545fca1d08923"><div class="ttname"><a href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a></div><div class="ttdeci">Log log</div><div class="ttdoc">Global log file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00593">Mode.h:593</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_af05a24414c9b595a8ccb95b05b5030de"><div class="ttname"><a href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de">nnp::Mode::getEnergyOffset</a></div><div class="ttdeci">double getEnergyOffset(Structure const &amp;structure) const</div><div class="ttdoc">Get atomic energy offset for given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l02056">Mode.cpp:2056</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Prediction_html"><div class="ttname"><a href="classnnp_1_1Prediction.html">nnp::Prediction</a></div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8h_source.html#l00027">Prediction.h:28</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Prediction_html_a217f052c181f847506b5d2382c02246c"><div class="ttname"><a href="classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c">nnp::Prediction::readStructureFromFile</a></div><div class="ttdeci">void readStructureFromFile(std::string const &amp;fileName=&quot;input.data&quot;)</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8cpp_source.html#l00044">Prediction.cpp:44</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Prediction_html_a217f052c181f847506b5d2382c02246c"><div class="ttname"><a href="classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c">nnp::Prediction::readStructureFromFile</a></div><div class="ttdeci">void readStructureFromFile(std::string const &amp;fileName=&quot;input.data&quot;)</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8cpp_source.html#l00048">Prediction.cpp:48</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Prediction_html_ad0af09884f56c4fe8bd4d003fea6987e"><div class="ttname"><a href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">nnp::Prediction::structure</a></div><div class="ttdeci">Structure structure</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8h_source.html#l00039">Prediction.h:39</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Prediction_html_ae3aa29d34a5d2cb6659e2038623dc93a"><div class="ttname"><a href="classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a">nnp::Prediction::setup</a></div><div class="ttdeci">void setup()</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8cpp_source.html#l00033">Prediction.cpp:33</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Prediction_html_af86efaec86e8002a84368c7282704858"><div class="ttname"><a href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858">nnp::Prediction::predict</a></div><div class="ttdeci">void predict()</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8cpp_source.html#l00061">Prediction.cpp:61</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Prediction_html_ae3aa29d34a5d2cb6659e2038623dc93a"><div class="ttname"><a href="classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a">nnp::Prediction::setup</a></div><div class="ttdeci">void setup()</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8cpp_source.html#l00034">Prediction.cpp:34</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Prediction_html_af86efaec86e8002a84368c7282704858"><div class="ttname"><a href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858">nnp::Prediction::predict</a></div><div class="ttdeci">void predict()</div><div class="ttdef"><b>Definition:</b> <a href="Prediction_8cpp_source.html#l00065">Prediction.cpp:65</a></div></div>
 <div class="ttc" id="anamespacennp_html_a398f0bcafb57e99ba1581c4b8f8a7f76"><div class="ttname"><a href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">nnp::strpr</a></div><div class="ttdeci">string strpr(const char *format,...)</div><div class="ttdoc">String version of printf function.</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00090">utility.cpp:90</a></div></div>
-<div class="ttc" id="anamespacennp_html_a5660082c7868a44a59e125c0cbe10d85"><div class="ttname"><a href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader</a></div><div class="ttdeci">vector&lt; string &gt; createFileHeader(vector&lt; string &gt; const &amp;title, vector&lt; size_t &gt; const &amp;colSize, vector&lt; string &gt; const &amp;colName, vector&lt; string &gt; const &amp;colInfo, char const &amp;commentChar)</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00104">utility.cpp:104</a></div></div>
-<div class="ttc" id="anamespacennp_html_aeed037cd4a793db2c1b490e6607c0866"><div class="ttname"><a href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile</a></div><div class="ttdeci">void appendLinesToFile(ofstream &amp;file, vector&lt; string &gt; const lines)</div><div class="ttdoc">Append multiple lines of strings to open file stream.</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00218">utility.cpp:218</a></div></div>
+<div class="ttc" id="anamespacennp_html_a5660082c7868a44a59e125c0cbe10d85"><div class="ttname"><a href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader</a></div><div class="ttdeci">vector&lt; string &gt; createFileHeader(vector&lt; string &gt; const &amp;title, vector&lt; size_t &gt; const &amp;colSize, vector&lt; string &gt; const &amp;colName, vector&lt; string &gt; const &amp;colInfo, char const &amp;commentChar)</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00111">utility.cpp:111</a></div></div>
+<div class="ttc" id="anamespacennp_html_aeed037cd4a793db2c1b490e6607c0866"><div class="ttname"><a href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile</a></div><div class="ttdeci">void appendLinesToFile(ofstream &amp;file, vector&lt; string &gt; const lines)</div><div class="ttdoc">Append multiple lines of strings to open file stream.</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00225">utility.cpp:225</a></div></div>
 <div class="ttc" id="annp-cutoff_8cpp_html_af6fd65a690619ab800f6ddc3ff64eebb"><div class="ttname"><a href="nnp-cutoff_8cpp.html#af6fd65a690619ab800f6ddc3ff64eebb">logFile</a></div><div class="ttdeci">ofstream logFile</div><div class="ttdef"><b>Definition:</b> <a href="nnp-cutoff_8cpp_source.html#l00029">nnp-cutoff.cpp:29</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html"><div class="ttname"><a href="structnnp_1_1Structure.html">nnp::Structure</a></div><div class="ttdoc">Storage for one atomic configuration.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00033">Structure.h:34</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_a4b24f7e1e265a975b92a5895b09b77af"><div class="ttname"><a href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af">nnp::Structure::writeToFile</a></div><div class="ttdeci">void writeToFile(std::string const fileName=&quot;output.data&quot;, bool const ref=true, bool const append=false) const</div><div class="ttdoc">Write configuration to file.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8cpp_source.html#l00659">Structure.cpp:659</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_aa9fd0fd0f8a23b6bf96247589feceeb5"><div class="ttname"><a href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">nnp::Structure::energy</a></div><div class="ttdeci">double energy</div><div class="ttdoc">Potential energy determined by neural network.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00076">Structure.h:76</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_aaee087b13af754a75198def4d12c8b61"><div class="ttname"><a href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">nnp::Structure::energyRef</a></div><div class="ttdeci">double energyRef</div><div class="ttdoc">Reference potential energy.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00078">Structure.h:78</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_ad2c737c945e42ec42fa852e4dbacaf90"><div class="ttname"><a href="structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90">nnp::Structure::numAtoms</a></div><div class="ttdeci">std::size_t numAtoms</div><div class="ttdoc">Total number of atoms present in this structure.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00068">Structure.h:68</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_ad47f8d1a1742f5430418fcd1b8919eb6"><div class="ttname"><a href="structnnp_1_1Structure.html#ad47f8d1a1742f5430418fcd1b8919eb6">nnp::Structure::numElements</a></div><div class="ttdeci">std::size_t numElements</div><div class="ttdoc">Global number of elements (all structures).</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00070">Structure.h:70</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_adee965dec483f9479378a2ed4acd5544"><div class="ttname"><a href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">nnp::Structure::atoms</a></div><div class="ttdeci">std::vector&lt; Atom &gt; atoms</div><div class="ttdoc">Vector of all atoms in this structure.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00096">Structure.h:96</a></div></div>
-<div class="ttc" id="astructnnp_1_1Structure_html_af6d63337cd7d1a4e0058cd818543caef"><div class="ttname"><a href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef">nnp::Structure::info</a></div><div class="ttdeci">std::vector&lt; std::string &gt; info() const</div><div class="ttdoc">Get structure information as a vector of strings.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8cpp_source.html#l00851">Structure.cpp:851</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html"><div class="ttname"><a href="structnnp_1_1Structure.html">nnp::Structure</a></div><div class="ttdoc">Storage for one atomic configuration.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00038">Structure.h:39</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_a4b24f7e1e265a975b92a5895b09b77af"><div class="ttname"><a href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af">nnp::Structure::writeToFile</a></div><div class="ttdeci">void writeToFile(std::string const fileName=&quot;output.data&quot;, bool const ref=true, bool const append=false) const</div><div class="ttdoc">Write configuration to file.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8cpp_source.html#l01449">Structure.cpp:1449</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_a50427699538016623ef2331c9eb67f01"><div class="ttname"><a href="structnnp_1_1Structure.html#a50427699538016623ef2331c9eb67f01">nnp::Structure::charge</a></div><div class="ttdeci">double charge</div><div class="ttdoc">Charge determined by neural network potential.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00096">Structure.h:96</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_a5af7b5cd0a2154c2e34a3b8a73a51ca6"><div class="ttname"><a href="structnnp_1_1Structure.html#a5af7b5cd0a2154c2e34a3b8a73a51ca6">nnp::Structure::index</a></div><div class="ttdeci">std::size_t index</div><div class="ttdoc">Index number of this structure.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00073">Structure.h:73</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_a65839bc1a3213a6d77e064b5edade786"><div class="ttname"><a href="structnnp_1_1Structure.html#a65839bc1a3213a6d77e064b5edade786">nnp::Structure::chargeRef</a></div><div class="ttdeci">double chargeRef</div><div class="ttdoc">Reference charge.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00098">Structure.h:98</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_aa8d5c1fa9994b603c38e25250da743df"><div class="ttname"><a href="structnnp_1_1Structure.html#aa8d5c1fa9994b603c38e25250da743df">nnp::Structure::energyElec</a></div><div class="ttdeci">double energyElec</div><div class="ttdoc">Electrostatics part of the potential energy predicted by NNP.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00091">Structure.h:91</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_aa9fd0fd0f8a23b6bf96247589feceeb5"><div class="ttname"><a href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">nnp::Structure::energy</a></div><div class="ttdeci">double energy</div><div class="ttdoc">Potential energy determined by neural network.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00083">Structure.h:83</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_aaee087b13af754a75198def4d12c8b61"><div class="ttname"><a href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">nnp::Structure::energyRef</a></div><div class="ttdeci">double energyRef</div><div class="ttdoc">Reference potential energy.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00085">Structure.h:85</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_ad2c737c945e42ec42fa852e4dbacaf90"><div class="ttname"><a href="structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90">nnp::Structure::numAtoms</a></div><div class="ttdeci">std::size_t numAtoms</div><div class="ttdoc">Total number of atoms present in this structure.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00075">Structure.h:75</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_ad47f8d1a1742f5430418fcd1b8919eb6"><div class="ttname"><a href="structnnp_1_1Structure.html#ad47f8d1a1742f5430418fcd1b8919eb6">nnp::Structure::numElements</a></div><div class="ttdeci">std::size_t numElements</div><div class="ttdoc">Global number of elements (all structures).</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00077">Structure.h:77</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_adee965dec483f9479378a2ed4acd5544"><div class="ttname"><a href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">nnp::Structure::atoms</a></div><div class="ttdeci">std::vector&lt; Atom &gt; atoms</div><div class="ttdoc">Vector of all atoms in this structure.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8h_source.html#l00122">Structure.h:122</a></div></div>
+<div class="ttc" id="astructnnp_1_1Structure_html_af6d63337cd7d1a4e0058cd818543caef"><div class="ttname"><a href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef">nnp::Structure::info</a></div><div class="ttdeci">std::vector&lt; std::string &gt; info() const</div><div class="ttdoc">Get structure information as a vector of strings.</div><div class="ttdef"><b>Definition:</b> <a href="Structure_8cpp_source.html#l01641">Structure.cpp:1641</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile()</a>, <a class="el" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">nnp::Structure::atoms</a>, <a class="el" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader()</a>, <a class="el" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">nnp::Mode::elementMap</a>, <a class="el" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">nnp::Structure::energy</a>, <a class="el" href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">nnp::Structure::energyRef</a>, <a class="el" href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de">nnp::Mode::getEnergyOffset()</a>, <a class="el" href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef">nnp::Structure::info()</a>, <a class="el" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a>, <a class="el" href="nnp-cutoff_8cpp.html#af6fd65a690619ab800f6ddc3ff64eebb">logFile</a>, <a class="el" href="structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90">nnp::Structure::numAtoms</a>, <a class="el" href="structnnp_1_1Structure.html#ad47f8d1a1742f5430418fcd1b8919eb6">nnp::Structure::numElements</a>, <a class="el" href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858">nnp::Prediction::predict()</a>, <a class="el" href="classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c">nnp::Prediction::readStructureFromFile()</a>, <a class="el" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b">nnp::Log::registerStreamPointer()</a>, <a class="el" href="classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a">nnp::Prediction::setup()</a>, <a class="el" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">nnp::strpr()</a>, <a class="el" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">nnp::Prediction::structure</a>, and <a class="el" href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af">nnp::Structure::writeToFile()</a>.</p>
+<p class="reference">References <a class="el" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile()</a>, <a class="el" href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1">nnp::ElementMap::atomicNumber()</a>, <a class="el" href="structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544">nnp::Structure::atoms</a>, <a class="el" href="structnnp_1_1Structure.html#a50427699538016623ef2331c9eb67f01">nnp::Structure::charge</a>, <a class="el" href="structnnp_1_1Structure.html#a65839bc1a3213a6d77e064b5edade786">nnp::Structure::chargeRef</a>, <a class="el" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader()</a>, <a class="el" href="classnnp_1_1Mode.html#a12a8249ac3aab222922c42781c344779">nnp::Mode::elementMap</a>, <a class="el" href="structnnp_1_1Structure.html#aa9fd0fd0f8a23b6bf96247589feceeb5">nnp::Structure::energy</a>, <a class="el" href="structnnp_1_1Structure.html#aa8d5c1fa9994b603c38e25250da743df">nnp::Structure::energyElec</a>, <a class="el" href="structnnp_1_1Structure.html#aaee087b13af754a75198def4d12c8b61">nnp::Structure::energyRef</a>, <a class="el" href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de">nnp::Mode::getEnergyOffset()</a>, <a class="el" href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">nnp::Mode::getNnpType()</a>, <a class="el" href="structnnp_1_1Structure.html#a5af7b5cd0a2154c2e34a3b8a73a51ca6">nnp::Structure::index</a>, <a class="el" href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef">nnp::Structure::info()</a>, <a class="el" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a>, <a class="el" href="classnnp_1_1Mode.html#a23588ef86a99e8e3d7d818d3c515fd34">nnp::Mode::logEwaldCutoffs()</a>, <a class="el" href="nnp-cutoff_8cpp.html#af6fd65a690619ab800f6ddc3ff64eebb">logFile</a>, <a class="el" href="structnnp_1_1Structure.html#ad2c737c945e42ec42fa852e4dbacaf90">nnp::Structure::numAtoms</a>, <a class="el" href="structnnp_1_1Structure.html#ad47f8d1a1742f5430418fcd1b8919eb6">nnp::Structure::numElements</a>, <a class="el" href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858">nnp::Prediction::predict()</a>, <a class="el" href="classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c">nnp::Prediction::readStructureFromFile()</a>, <a class="el" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b">nnp::Log::registerStreamPointer()</a>, <a class="el" href="classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a">nnp::Prediction::setup()</a>, <a class="el" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">nnp::strpr()</a>, <a class="el" href="classnnp_1_1Prediction.html#ad0af09884f56c4fe8bd4d003fea6987e">nnp::Prediction::structure</a>, and <a class="el" href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af">nnp::Structure::writeToFile()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="nnp-predict_8cpp_a0ddf1224851353fc92bfbff6f499fa97_cgraph.png" border="0" usemap="#annp-predict_8cpp_a0ddf1224851353fc92bfbff6f499fa97_cgraph" alt=""/></div>
 <map name="annp-predict_8cpp_a0ddf1224851353fc92bfbff6f499fa97_cgraph" id="annp-predict_8cpp_a0ddf1224851353fc92bfbff6f499fa97_cgraph">
-<area shape="rect" title=" " alt="" coords="5,233,60,260"/>
-<area shape="rect" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="129,5,302,32"/>
-<area shape="rect" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="133,56,298,83"/>
-<area shape="rect" href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de" title="Get atomic energy offset for given structure." alt="" coords="114,107,317,133"/>
-<area shape="rect" href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef" title="Get structure information as a vector of strings." alt="" coords="142,157,289,184"/>
-<area shape="rect" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="371,183,455,209"/>
-<area shape="rect" href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="129,259,301,285"/>
-<area shape="rect" href="classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title=" " alt="" coords="108,310,323,351"/>
-<area shape="rect" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="124,375,307,417"/>
-<area shape="rect" href="classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="134,441,297,468"/>
-<area shape="rect" href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af" title="Write configuration to file." alt="" coords="120,516,311,543"/>
+<area shape="rect" title=" " alt="" coords="5,333,60,360"/>
+<area shape="rect" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="142,5,315,32"/>
+<area shape="rect" href="classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="108,80,349,107"/>
+<area shape="rect" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="146,131,311,157"/>
+<area shape="rect" href="classnnp_1_1Mode.html#af05a24414c9b595a8ccb95b05b5030de" title="Get atomic energy offset for given structure." alt="" coords="127,181,330,208"/>
+<area shape="rect" href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d" title="Getter for Mode::nnpType." alt="" coords="141,232,316,259"/>
+<area shape="rect" href="structnnp_1_1Structure.html#af6d63337cd7d1a4e0058cd818543caef" title="Get structure information as a vector of strings." alt="" coords="155,283,302,309"/>
+<area shape="rect" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="397,308,481,335"/>
+<area shape="rect" href="classnnp_1_1Mode.html#a23588ef86a99e8e3d7d818d3c515fd34" title="Logs Ewald params whenever they change." alt="" coords="127,384,330,411"/>
+<area shape="rect" href="classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="143,435,315,461"/>
+<area shape="rect" href="classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title=" " alt="" coords="121,486,336,527"/>
+<area shape="rect" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="137,551,320,593"/>
+<area shape="rect" href="classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="147,617,310,644"/>
+<area shape="rect" href="structnnp_1_1Structure.html#a4b24f7e1e265a975b92a5895b09b77af" title="Write configuration to file." alt="" coords="133,692,324,719"/>
 </map>
 </div>
 
@@ -410,7 +454,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d75c23162a2652451dce46d2e7e8aead.html">application</a></li><li class="navelem"><a class="el" href="nnp-predict_8cpp.html">nnp-predict.cpp</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:35 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:48 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

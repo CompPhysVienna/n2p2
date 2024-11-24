@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;e51667a&#34; documentation</title>
+  <title>NNP configuration: keywords &mdash; n2p2 - A neural network potential package &#34;61daa0d&#34; documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a20672d4"></script>
+      <script src="../_static/documentation_options.js?v=76d34e72"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -66,6 +66,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#scale-min-short"><code class="docutils literal notranslate"><span class="pre">scale_min_short</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#scale-max-short"><code class="docutils literal notranslate"><span class="pre">scale_max_short</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#symfunction-short"><code class="docutils literal notranslate"><span class="pre">symfunction_short</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ewald-truncation-error-method"><code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ewald-prec"><code class="docutils literal notranslate"><span class="pre">ewald_prec</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#training-specific-keywords">Training-specific keywords</a><ul>
@@ -432,7 +434,7 @@ scaling. See <code class="xref cpp cpp-enumerator docutils literal notranslate">
 </dd>
 </dl>
 <p>Defines a symmetry function for a specific element. The first argument is the
-element symbol, the second sets the the type. The remaining parameters depend on
+element symbol, the second sets the type. The remaining parameters depend on
 the symmetry function type, follow the links in the right column of the table
 and look for the detailed description of the class.</p>
 <table class="docutils align-default">
@@ -477,6 +479,96 @@ and look for the detailed description of the class.</p>
 </tr>
 </tbody>
 </table>
+</section>
+<hr class="docutils" />
+<section id="ewald-truncation-error-method">
+<h3><code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span></code><a class="headerlink" href="#ewald-truncation-error-method" title="Link to this heading"></a></h3>
+<p>In 4G the Ewald summation is used if periodic boundary conditions are applied.
+Both the reciprocal and the real space sum need to be truncated. For this, two
+different schemes are available. This defines the behaviour of <code class="docutils literal notranslate"><span class="pre">ewald_prec</span></code>.</p>
+<dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span> <span class="pre">&lt;mode&gt;</span></code></p>
+</dd>
+<dt><strong>Examples</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span> <span class="pre">1</span></code></p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>: <em>default</em>, <strong>Method by Jackson &amp; Catlow</strong></p>
+<blockquote>
+<div><p>This method is based on the idea to truncate all terms that are smaller in
+magnitude than a certain threshold <a class="footnote-reference brackets" href="#id9" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. It is the method used in <em>RuNNer</em>.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>: <strong>Method by Kolafa &amp; Perram</strong></p>
+<blockquote>
+<div><p>Statistical assumptions are made of the material to incorporate cancelling
+effects of the energy contributions <a class="footnote-reference brackets" href="#id10" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>. It is the recommended method.</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="ewald-prec">
+<h3><code class="docutils literal notranslate"><span class="pre">ewald_prec</span></code><a class="headerlink" href="#ewald-prec" title="Link to this heading"></a></h3>
+<p>Depending on the mode in <code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span></code> this keyword has
+different meanings. The parameter <code class="docutils literal notranslate"><span class="pre">&lt;threshold&gt;</span></code> determines the cutoff radii in
+real and reciprocal space. For both methods a smaller threshold leads to
+increased radii and thus to a degrade in performance. Also the memory footprint
+can become quite noticeable for very small values.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If n2p2 crashes in 4G mode because it needs more memory than available on
+the machine, it may be related to the <code class="docutils literal notranslate"><span class="pre">&lt;threshold&gt;</span></code> parameter. This can
+be tested by increasing its value considerably.</p>
+</div>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span> <span class="pre">0</span></code></p>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ewald_prec</span> <span class="pre">&lt;threshold&gt;</span></code></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;threshold&gt;</span></code> is a dimensionless parameter that controls the accuracy of
+the Ewald summation. Typical values are in the range of <code class="docutils literal notranslate"><span class="pre">1.e-2</span></code> to
+<code class="docutils literal notranslate"><span class="pre">1.e-7</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">ewald_truncation_error_method</span> <span class="pre">1</span></code></p>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ewald_prec</span> <span class="pre">&lt;threshold&gt;</span> <span class="pre">&lt;max</span> <span class="pre">charge&gt;</span> <span class="pre">&lt;&lt;real</span> <span class="pre">space</span> <span class="pre">cutoff&gt;&gt;</span></code></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;threshold&gt;</span></code> loosely corresponds to the standard deviation of the
+electrostatic force error one would like to achieve and has to be given in
+the same units as the forces in the training data. However, the methods
+tends to overestimate the actual error, so one may test the accuracy for
+different values. Choosing values that are orders of magnitude smaller than
+the RMSE of the short-range force errors does not make sense.
+<code class="docutils literal notranslate"><span class="pre">&lt;max</span> <span class="pre">charge&gt;</span></code> should be the maximum charge (in magnitude) that appears during
+training. This does not have to be very precise but should be given in the
+same units as in the training data. <a class="reference internal" href="../tools/nnp-norm.html#nnp-norm"><span class="std std-ref">nnp-norm</span></a> outputs this quantity.
+The default is <code class="docutils literal notranslate"><span class="pre">1.</span></code>.</p>
+<p>It is important to note that this method has two different modes.
+<code class="docutils literal notranslate"><span class="pre">&lt;&lt;real</span> <span class="pre">space</span> <span class="pre">cutoff&gt;&gt;</span></code> is an optional parameter. It fixes the real space
+cutoff in the Ewald summation and adjusts the Ewald parameter and the
+reciprocal space cutoff accordingly such that the specified <code class="docutils literal notranslate"><span class="pre">&lt;threshold&gt;</span></code>
+is still satisfied. If <code class="docutils literal notranslate"><span class="pre">&lt;&lt;real</span> <span class="pre">space</span> <span class="pre">cutoff&gt;&gt;</span></code> is chosen unreasonably
+small, the truncation error estimate may not be reliable anymore and
+a warning is given. This mode is useful when n2p2 is used in combination
+with other programs like LAMMPS, since they often expect a fixed cutoff
+during the simulation. If <code class="docutils literal notranslate"><span class="pre">&lt;&lt;real</span> <span class="pre">space</span> <span class="pre">cutoff&gt;&gt;</span></code> is not specified, an
+optimal combination of the real and reciprocal space cutoff is computed.
+However, “optimal” refers to the computational effort inside n2p2. If used
+in combination with other programs like LAMMPS, it will not be optimal in
+general. Also note that the optimal cutoffs may change during the
+simulation since they depend on factors like simulation cell volume, number
+of atoms etc. In general we recommend the optimal choice of the cutoffs
+only if n2p2 is used as a standalone tool. If it is used in the interface
+mode, a good choice is to set <code class="docutils literal notranslate"><span class="pre">&lt;&lt;real</span> <span class="pre">space</span> <span class="pre">cutoff&gt;&gt;</span></code> to the symmetry
+function cutoff. This choice may also decrease the memory footprint.</p>
+</div></blockquote>
+</li>
+</ul>
 </section>
 </section>
 <section id="training-specific-keywords">
@@ -526,7 +618,7 @@ is fulfilled or a the number of trial choices (keyword
 <code class="docutils literal notranslate"><span class="pre">rmse_threshold_trials</span></code>) is exceeded. If even in the latter case no
 candidate above the threshold is found, the candidate with the highest error
 so far is used. This selection scheme is a variation of the adaptive process
-described by Blank and Brown <a class="footnote-reference brackets" href="#id5" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> and is described here <a class="footnote-reference brackets" href="#id6" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+described by Blank and Brown <a class="footnote-reference brackets" href="#id7" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> and is described here <a class="footnote-reference brackets" href="#id8" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 </li>
 </ul>
 </section>
@@ -554,7 +646,7 @@ are written.</p>
 <hr class="docutils" />
 </section>
 <section id="normalize-data-set">
-<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span></code><a class="headerlink" href="#normalize-data-set" title="Link to this heading"></a></h3>
+<span id="id6"></span><h3><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span></code><a class="headerlink" href="#normalize-data-set" title="Link to this heading"></a></h3>
 <dl>
 <dt><strong>Usage</strong>:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">normalize_data_set</span> <span class="pre">&lt;string&gt;</span></code></p>
 </dd>
@@ -621,17 +713,29 @@ mode.</p>
 </li>
 </ul>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id5" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">1</a><span class="fn-bracket">]</span></span>
 <p>Blank, T. B.; Brown, S. D. Adaptive, Global, Extended Kalman Filters for
 Training Feedforward Neural Networks. J. Chemom. 1994, 8 (6), 391–407.
 <a class="reference external" href="https://doi.org/10.1002/cem.1180080605">https://doi.org/10.1002/cem.1180080605</a></p>
 </aside>
-<aside class="footnote brackets" id="id6" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">2</a><span class="fn-bracket">]</span></span>
 <p>Singraber, A.; Morawietz, T.; Behler, J.; Dellago, C. Parallel
 Multistream Training of High-Dimensional Neural Network Potentials. J. Chem.
 Theory Comput. 2019, 15 (5), 3075–3092. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b01092">https://doi.org/10.1021/acs.jctc.8b01092</a></p>
+</aside>
+<aside class="footnote brackets" id="id9" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">3</a><span class="fn-bracket">]</span></span>
+<p>Jackson, R. A.; Catlow, C. R. A. Computer Simulation Studies of Zeolite
+Structure. Molecular Simulation 1988, 1 (4), 207–224.
+<a class="reference external" href="https://doi.org/10.1080/08927028808080944">https://doi.org/10.1080/08927028808080944</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id10" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">4</a><span class="fn-bracket">]</span></span>
+<p>Kolafa, J.; Perram, J. W. Cutoff Errors in the Ewald Summation Formulae
+for Point Charge Systems. Molecular Simulation 1992, 9 (5), 351–368.
+<a class="reference external" href="https://doi.org/10.1080/08927029208049126">https://doi.org/10.1080/08927029208049126</a>.</p>
 </aside>
 </aside>
 </section>

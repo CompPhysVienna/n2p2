@@ -1,4 +1,0 @@
-<map id="nnp::Settings::sanityCheck" name="nnp::Settings::sanityCheck">
-<area shape="rect" id="node1" title="Check if all keywords are in known&#45;keywords database and for duplicates." alt="" coords="239,5,433,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#ad7407f37b4c9058643d987423fdfef6c" title="Parse lines and create contents map." alt="" coords="5,5,191,32"/>
-</map>

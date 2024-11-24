@@ -1,0 +1,4 @@
+<map id="nnp::Structure::calculateMaxCutoffRadiusOverall" name="nnp::Structure::calculateMaxCutoffRadiusOverall">
+<area shape="rect" id="node1" title="Calculate maximal cut&#45;off if cut&#45;off of screening and real part Ewald summation are also considered." alt="" coords="5,5,185,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1EwaldSetup.html#a8949052d94e44b945a7deae8ad711db4" title="Compute eta, rCut and kCut." alt="" coords="233,5,431,47"/>
+</map>

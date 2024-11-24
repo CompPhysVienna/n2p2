@@ -1,5 +1,5 @@
 <map id="nnp::ElementMap::atomicNumber" name="nnp::ElementMap::atomicNumber">
-<area shape="rect" id="node1" title="Get atomic number from element index." alt="" coords="295,601,536,627"/>
+<area shape="rect" id="node1" title="Get atomic number from element index." alt="" coords="295,634,536,661"/>
 <area shape="rect" id="node2" href="$classnnp_1_1SymFncCompAngnWeighted.html#a3c9d6b36a81535e4c773bb4540866647" title="Calculate symmetry function for one atom." alt="" coords="7,5,245,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1SymFncCompAngwWeighted.html#a9a5d796ce3e198813673bfa50f942dfa" title="Calculate symmetry function for one atom." alt="" coords="5,71,247,112"/>
 <area shape="rect" id="node4" href="$classnnp_1_1SymFncCompRadWeighted.html#adf7ac0b19a5c4a37798839f570e18c07" title="Calculate symmetry function for one atom." alt="" coords="11,136,241,177"/>
@@ -13,10 +13,11 @@
 <area shape="rect" id="node12" href="$classnnp_1_1ElementMap.html#abbaa1f40d96f9b6da0a8ac9563b7cb95" title="Check if arguments are sorted according to atomic number." alt="" coords="25,659,227,700"/>
 <area shape="rect" id="node13" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="42,724,210,765"/>
 <area shape="rect" id="node14" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="99,790,153,817"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="18,841,234,867"/>
-<area shape="rect" id="node16" href="$classnnp_1_1ElementMap.html#a9750ed20860b5677722572f6a3fe36bf" title="Get element symbol from atomic number." alt="" coords="13,892,239,933"/>
-<area shape="rect" id="node17" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="23,957,229,999"/>
-<area shape="rect" id="node18" href="$classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671" title="Write symmetry function legacy file (&quot;function.data&quot;)." alt="" coords="19,1023,233,1064"/>
-<area shape="rect" id="node19" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="19,1088,233,1129"/>
-<area shape="rect" id="node20" href="$classnnp_1_1Training.html#ad50f7e1c48f3f558653f831aae83a38c" title="Write updater information to file." alt="" coords="27,1153,225,1195"/>
+<area shape="rect" id="node15" href="$classLAMMPS__NS_1_1PairHDNNPExternal.html#a70609e0f2ee4740e959d9b4462f3283d" title=" " alt="" coords="7,841,245,883"/>
+<area shape="rect" id="node16" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="18,907,234,934"/>
+<area shape="rect" id="node17" href="$classnnp_1_1ElementMap.html#a9750ed20860b5677722572f6a3fe36bf" title="Get element symbol from atomic number." alt="" coords="13,959,239,1000"/>
+<area shape="rect" id="node18" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="23,1024,229,1065"/>
+<area shape="rect" id="node19" href="$classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671" title="Write symmetry function legacy file (&quot;function.data&quot;)." alt="" coords="19,1089,233,1131"/>
+<area shape="rect" id="node20" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="19,1155,233,1196"/>
+<area shape="rect" id="node21" href="$classnnp_1_1Training.html#ad50f7e1c48f3f558653f831aae83a38c" title="Write updater information to file." alt="" coords="27,1220,225,1261"/>
 </map>

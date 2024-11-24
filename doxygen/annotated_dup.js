@@ -1,9 +1,16 @@
 var annotated_dup =
 [
     [ "LAMMPS_NS", "namespaceLAMMPS__NS.html", [
-      [ "PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", "classLAMMPS__NS_1_1PairHDNNP" ]
+      [ "PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", "classLAMMPS__NS_1_1PairHDNNP" ],
+      [ "PairHDNNPDevelop", "classLAMMPS__NS_1_1PairHDNNPDevelop.html", "classLAMMPS__NS_1_1PairHDNNPDevelop" ],
+      [ "PairHDNNPExternal", "classLAMMPS__NS_1_1PairHDNNPExternal.html", "classLAMMPS__NS_1_1PairHDNNPExternal" ]
     ] ],
     [ "nnp", "namespacennp.html", [
+      [ "settings", "namespacennp_1_1settings.html", [
+        [ "ISettings", "classnnp_1_1settings_1_1ISettings.html", "classnnp_1_1settings_1_1ISettings" ],
+        [ "Key", "classnnp_1_1settings_1_1Key.html", "classnnp_1_1settings_1_1Key" ],
+        [ "Settings", "classnnp_1_1settings_1_1Settings.html", "classnnp_1_1settings_1_1Settings" ]
+      ] ],
       [ "Atom", "structnnp_1_1Atom.html", "structnnp_1_1Atom" ],
       [ "CompactFunction", "classnnp_1_1CompactFunction.html", "classnnp_1_1CompactFunction" ],
       [ "CoreFunction", "classnnp_1_1CoreFunction.html", "classnnp_1_1CoreFunction" ],
@@ -12,15 +19,26 @@ var annotated_dup =
       [ "Element", "classnnp_1_1Element.html", "classnnp_1_1Element" ],
       [ "ElementCabana", "classnnp_1_1ElementCabana.html", "classnnp_1_1ElementCabana" ],
       [ "ElementMap", "classnnp_1_1ElementMap.html", "classnnp_1_1ElementMap" ],
+      [ "ErfcBuf", "structnnp_1_1ErfcBuf.html", "structnnp_1_1ErfcBuf" ],
+      [ "EwaldGlobalSettings", "structnnp_1_1EwaldGlobalSettings.html", "structnnp_1_1EwaldGlobalSettings" ],
+      [ "EwaldParameters", "structnnp_1_1EwaldParameters.html", "structnnp_1_1EwaldParameters" ],
+      [ "EwaldSetup", "classnnp_1_1EwaldSetup.html", "classnnp_1_1EwaldSetup" ],
+      [ "EwaldStructureData", "classnnp_1_1EwaldStructureData.html", "classnnp_1_1EwaldStructureData" ],
+      [ "EwaldTruncJackson", "classnnp_1_1EwaldTruncJackson.html", "classnnp_1_1EwaldTruncJackson" ],
+      [ "EwaldTruncKolafaFixR", "classnnp_1_1EwaldTruncKolafaFixR.html", "classnnp_1_1EwaldTruncKolafaFixR" ],
+      [ "EwaldTruncKolafaOptEta", "classnnp_1_1EwaldTruncKolafaOptEta.html", "classnnp_1_1EwaldTruncKolafaOptEta" ],
       [ "GradientDescent", "classnnp_1_1GradientDescent.html", "classnnp_1_1GradientDescent" ],
+      [ "IEwaldTrunc", "classnnp_1_1IEwaldTrunc.html", "classnnp_1_1IEwaldTrunc" ],
       [ "InterfaceLammps", "classnnp_1_1InterfaceLammps.html", "classnnp_1_1InterfaceLammps" ],
       [ "KalmanFilter", "classnnp_1_1KalmanFilter.html", "classnnp_1_1KalmanFilter" ],
+      [ "KspaceGrid", "classnnp_1_1KspaceGrid.html", "classnnp_1_1KspaceGrid" ],
+      [ "Kvector", "classnnp_1_1Kvector.html", "classnnp_1_1Kvector" ],
       [ "Log", "classnnp_1_1Log.html", "classnnp_1_1Log" ],
       [ "Mode", "classnnp_1_1Mode.html", "classnnp_1_1Mode" ],
       [ "ModeCabana", "classnnp_1_1ModeCabana.html", "classnnp_1_1ModeCabana" ],
       [ "NeuralNetwork", "classnnp_1_1NeuralNetwork.html", "classnnp_1_1NeuralNetwork" ],
       [ "Prediction", "classnnp_1_1Prediction.html", "classnnp_1_1Prediction" ],
-      [ "Settings", "classnnp_1_1Settings.html", "classnnp_1_1Settings" ],
+      [ "ScreeningFunction", "classnnp_1_1ScreeningFunction.html", "classnnp_1_1ScreeningFunction" ],
       [ "SetupAnalysis", "classnnp_1_1SetupAnalysis.html", "classnnp_1_1SetupAnalysis" ],
       [ "Stopwatch", "classnnp_1_1Stopwatch.html", "classnnp_1_1Stopwatch" ],
       [ "Structure", "structnnp_1_1Structure.html", "structnnp_1_1Structure" ],

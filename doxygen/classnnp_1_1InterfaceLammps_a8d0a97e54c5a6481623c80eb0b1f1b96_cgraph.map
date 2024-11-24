@@ -1,0 +1,5 @@
+<map id="nnp::InterfaceLammps::setBoxVectors" name="nnp::InterfaceLammps::setBoxVectors">
+<area shape="rect" id="node1" title="Set box vectors of structure stored in LAMMPS (nnp/develop only)." alt="" coords="5,39,173,80"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a7d4ec60f305ae52787eb7dc0995eaec3" title="Calculate inverse box." alt="" coords="221,5,401,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a10f626682421d3690d8f1cb9ceba006f" title="Calculate volume from box vectors." alt="" coords="221,71,401,112"/>
+</map>

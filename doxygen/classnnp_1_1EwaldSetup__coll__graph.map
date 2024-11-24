@@ -1,0 +1,7 @@
+<map id="nnp::EwaldSetup" name="nnp::EwaldSetup">
+<area shape="rect" id="node1" title="Setup data for Ewald summation." alt="" coords="328,81,459,108"/>
+<area shape="rect" id="node2" href="$structnnp_1_1EwaldParameters.html" title=" " alt="" coords="16,5,183,32"/>
+<area shape="rect" id="node3" title=" " alt="" coords="24,56,175,83"/>
+<area shape="rect" id="node4" href="$structnnp_1_1EwaldGlobalSettings.html" title=" " alt="" coords="5,107,193,133"/>
+<area shape="rect" id="node5" title=" " alt="" coords="20,158,179,199"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="nnp::ScreeningFunction::f" name="nnp::ScreeningFunction::f">
+<area shape="rect" id="node1" title="Screening function ." alt="" coords="276,46,463,73"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ac91c699d5b568d865f43ab30fe42f250" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="5,5,228,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="27,71,207,112"/>
+</map>

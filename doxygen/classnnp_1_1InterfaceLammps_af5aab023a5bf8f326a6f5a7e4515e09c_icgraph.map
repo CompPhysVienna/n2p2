@@ -1,4 +1,5 @@
 <map id="nnp::InterfaceLammps::addNeighbor" name="nnp::InterfaceLammps::addNeighbor">
-<area shape="rect" id="node1" title="Add one neighbor to atom (int64_t version, &#45;DLAMMPS_BIGBIG)." alt="" coords="237,5,405,47"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a6b82b9bc322304eb775dcf68b909ce6c" title=" " alt="" coords="5,5,189,47"/>
+<area shape="rect" id="node1" title="Add one neighbor to atom (int64_t version, &#45;DLAMMPS_BIGBIG)." alt="" coords="292,39,460,80"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a6b82b9bc322304eb775dcf68b909ce6c" title=" " alt="" coords="33,5,217,47"/>
+<area shape="rect" id="node3" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a773a4f7a612e123c428fba7948afea2f" title=" " alt="" coords="5,71,244,112"/>
 </map>

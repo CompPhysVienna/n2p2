@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['modificationscheme_0',['ModificationScheme',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1',1,'nnp::NeuralNetwork']]]
+  ['kalmantype_0',['KalmanType',['../classnnp_1_1KalmanFilter.html#a8ef6e31fa3d3e6a0261ec2006e6c963a',1,'nnp::KalmanFilter']]]
 ];

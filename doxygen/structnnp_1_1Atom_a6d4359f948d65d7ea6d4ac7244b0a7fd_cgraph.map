@@ -1,0 +1,4 @@
+<map id="nnp::Atom::free" name="nnp::Atom::free">
+<area shape="rect" id="node1" title="Free vectors related to symmetry functions, opposite of allocate()." alt="" coords="5,13,128,39"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="176,5,391,47"/>
+</map>

@@ -29,7 +29,9 @@ var NAVTREE =
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
-        [ "Functions", "namespacemembers_func.html", null ]
+        [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ]
       ] ]
     ] ],
     [ "Classes", "annotated.html", [
@@ -62,19 +64,22 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Atom_8cpp.html",
-"classLAMMPS__NS_1_1PairHDNNP.html#a2aa4271e700abf521d402ff68f4771c8",
-"classnnp_1_1CutoffFunction.html#afc4ce48d3fe6450efb47ed3e2c1de239",
+"SymGrpExpAngw_8h_source.html",
+"classnnp_1_1CoreFunction.html#ad4f7226d932ed3fa59a24007d2d40ed6",
+"classnnp_1_1Element.html#ab478f310ab026e1c57b12dd1096eb905",
 "classnnp_1_1GradientDescent.html",
-"classnnp_1_1Mode.html",
-"classnnp_1_1ModeCabana.html#acaf7de3d7a75f960af6a66c3e9ab6acb",
-"classnnp_1_1Stopwatch.html#a871cf3f2ff7db21964e0e442d16b42c8",
-"classnnp_1_1SymFncBaseCompAngWeighted.html#ac4b47154f303510e7abfb00883e02d50",
-"classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56",
-"classnnp_1_1SymGrpBaseCompAngWeighted.html#af463977ae7c8508cd5888bfdc672fd65",
-"classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc",
-"classnnp_1_1Training.html#af4986e0d008729499003bdf5d2ff59e6",
-"structnnp_1_1Atom.html#a0bf88225ec524eba847df097ba649247",
-"structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c"
+"classnnp_1_1KalmanFilter.html#afd60320bc82cb87db51c925133ef7f22",
+"classnnp_1_1ModeCabana.html#a10684dbb7f8fe9a644d5a493933d9c9e",
+"classnnp_1_1NeuralNetwork.html#ad88ef411d3514a71f20a880f0ba81336",
+"classnnp_1_1SymFncBaseComp.html#a0a6494f56f637a6b27b8e0edc74d268e",
+"classnnp_1_1SymFncCompRad.html#ac0bad5a796a0ee996e995ec735af96f9",
+"classnnp_1_1SymGrp.html#a9827e7da1cc74cc60d3df83bb6f437d2",
+"classnnp_1_1SymGrpCompRadWeighted.html#a14291e2a4f87deb18117e8c8905e4735",
+"classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98",
+"functions_func_s.html",
+"structnnp_1_1Atom.html#a8b6403674a98b82e02508193fa86f196",
+"structnnp_1_1Structure.html#a6c2903270f6db9ebf27d59dab9bd2914",
+"structnnp_1_1Vec3D.html#acb8ab5515d194a43e10c2fa43636dffc"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -9,7 +9,22 @@ var hierarchy =
       [ "nnp::ElementCabana", "classnnp_1_1ElementCabana.html", null ]
     ] ],
     [ "nnp::ElementMap", "classnnp_1_1ElementMap.html", null ],
-    [ "nnp::Settings::Key", "structnnp_1_1Settings_1_1Key.html", null ],
+    [ "nnp::ErfcBuf", "structnnp_1_1ErfcBuf.html", null ],
+    [ "nnp::EwaldGlobalSettings", "structnnp_1_1EwaldGlobalSettings.html", null ],
+    [ "nnp::EwaldParameters", "structnnp_1_1EwaldParameters.html", null ],
+    [ "nnp::EwaldSetup", "classnnp_1_1EwaldSetup.html", null ],
+    [ "nnp::EwaldStructureData", "classnnp_1_1EwaldStructureData.html", null ],
+    [ "nnp::IEwaldTrunc", "classnnp_1_1IEwaldTrunc.html", [
+      [ "nnp::EwaldTruncJackson", "classnnp_1_1EwaldTruncJackson.html", null ],
+      [ "nnp::EwaldTruncKolafaFixR", "classnnp_1_1EwaldTruncKolafaFixR.html", null ],
+      [ "nnp::EwaldTruncKolafaOptEta", "classnnp_1_1EwaldTruncKolafaOptEta.html", null ]
+    ] ],
+    [ "nnp::settings::ISettings", "classnnp_1_1settings_1_1ISettings.html", [
+      [ "nnp::settings::Settings", "classnnp_1_1settings_1_1Settings.html", null ]
+    ] ],
+    [ "nnp::settings::Key", "classnnp_1_1settings_1_1Key.html", null ],
+    [ "nnp::KspaceGrid", "classnnp_1_1KspaceGrid.html", null ],
+    [ "nnp::Kvector", "classnnp_1_1Kvector.html", null ],
     [ "nnp::NeuralNetwork::Layer", "structnnp_1_1NeuralNetwork_1_1Layer.html", null ],
     [ "nnp::Log", "classnnp_1_1Log.html", null ],
     [ "std::map< K, T >", null, [
@@ -27,14 +42,19 @@ var hierarchy =
     [ "nnp::Atom::Neighbor", "structnnp_1_1Atom_1_1Neighbor.html", null ],
     [ "nnp::NeuralNetwork", "classnnp_1_1NeuralNetwork.html", null ],
     [ "nnp::NeuralNetwork::Neuron", "structnnp_1_1NeuralNetwork_1_1Neuron.html", null ],
+    [ "nnp::Mode::NNSetup", "structnnp_1_1Mode_1_1NNSetup.html", null ],
     [ "Pair", "classPair.html", [
-      [ "LAMMPS_NS::PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", null ]
+      [ "LAMMPS_NS::PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", [
+        [ "LAMMPS_NS::PairHDNNPDevelop", "classLAMMPS__NS_1_1PairHDNNPDevelop.html", null ]
+      ] ],
+      [ "LAMMPS_NS::PairHDNNPExternal", "classLAMMPS__NS_1_1PairHDNNPExternal.html", null ]
     ] ],
     [ "nnp::Training::Property", "structnnp_1_1Training_1_1Property.html", null ],
-    [ "nnp::Settings", "classnnp_1_1Settings.html", null ],
+    [ "nnp::ScreeningFunction", "classnnp_1_1ScreeningFunction.html", null ],
     [ "nnp::Element::SFCacheList", "structnnp_1_1Element_1_1SFCacheList.html", null ],
     [ "nnp::Stopwatch", "classnnp_1_1Stopwatch.html", null ],
     [ "nnp::Structure", "structnnp_1_1Structure.html", null ],
+    [ "nnp::Training::SubCandidate", "structnnp_1_1Training_1_1SubCandidate.html", null ],
     [ "nnp::SymFnc", "classnnp_1_1SymFnc.html", [
       [ "nnp::SymFncBaseComp", "classnnp_1_1SymFncBaseComp.html", [
         [ "nnp::SymFncBaseCompAng", "classnnp_1_1SymFncBaseCompAng.html", [
@@ -82,6 +102,7 @@ var hierarchy =
         [ "nnp::SymGrpExpRadWeighted", "classnnp_1_1SymGrpExpRadWeighted.html", null ]
       ] ]
     ] ],
+    [ "nnp::Mode::NNSetup::Topology", "structnnp_1_1Mode_1_1NNSetup_1_1Topology.html", null ],
     [ "nnp::Training::UpdateCandidate", "structnnp_1_1Training_1_1UpdateCandidate.html", null ],
     [ "nnp::Updater", "classnnp_1_1Updater.html", [
       [ "nnp::GradientDescent", "classnnp_1_1GradientDescent.html", null ],

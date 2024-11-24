@@ -1,0 +1,6 @@
+<map id="nnp::Structure::calculateScreeningEnergy" name="nnp::Structure::calculateScreeningEnergy">
+<area shape="rect" id="node1" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="5,57,185,98"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ScreeningFunction.html#aa48557f8e5995c10026f714d490e2bf0" title="Screening function ." alt="" coords="247,5,434,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1ScreeningFunction.html#a39a14618e686220bf57a679b68e1739a" title="Getter for outer." alt="" coords="254,57,427,98"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="233,122,448,163"/>
+</map>

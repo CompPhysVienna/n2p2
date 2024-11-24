@@ -1,4 +1,5 @@
 <map id="nnp::Structure::calculateVolume" name="nnp::Structure::calculateVolume">
-<area shape="rect" id="node1" title="Calculate volume from box vectors." alt="" coords="236,5,416,47"/>
+<area shape="rect" id="node1" title="Calculate volume from box vectors." alt="" coords="236,39,416,80"/>
 <area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines." alt="" coords="5,5,188,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a8d0a97e54c5a6481623c80eb0b1f1b96" title="Set box vectors of structure stored in LAMMPS (nnp/develop only)." alt="" coords="13,71,181,112"/>
 </map>

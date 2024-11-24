@@ -1,0 +1,8 @@
+<map id="nnp::Structure::calculateElectrostaticEnergy" name="nnp::Structure::calculateElectrostaticEnergy">
+<area shape="rect" id="node1" title="Compute electrostatic energy with global charge equilibration." alt="" coords="5,115,185,156"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="233,5,413,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="461,35,676,76"/>
+<area shape="rect" id="node4" href="$structnnp_1_1ErfcBuf.html#a6b7e36dd4d912a38ed561be3c2c8cfb7" title="Either returns already stored value erfc(x) or calculates it if not yet stored." alt="" coords="256,122,391,149"/>
+<area shape="rect" id="node5" href="$structnnp_1_1ErfcBuf.html#a90f60368ebcda5bdfbb17ff6b92b7717" title="Resizes and resets the storage array to fit the current structure." alt="" coords="253,173,394,199"/>
+<area shape="rect" id="node6" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="237,223,409,250"/>
+</map>

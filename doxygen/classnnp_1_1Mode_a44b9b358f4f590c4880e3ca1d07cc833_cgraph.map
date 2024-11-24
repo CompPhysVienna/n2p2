@@ -1,0 +1,14 @@
+<map id="nnp::Mode::setupGeneric" name="nnp::Mode::setupGeneric">
+<area shape="rect" id="node1" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="5,259,189,285"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#ae72c03926dc7ea9b8f43770fb5861ccf" title="Set up cutoff function for all symmetry functions." alt="" coords="267,5,440,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ae192f235fdb4aaa382899b29da600848" title="Setup matrix storing all symmetry function cut&#45;offs for each element." alt="" coords="246,56,461,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a5518489591ce8c418b3ef00e17aa347f" title="Set up electrostatics related stuff (hardness, screening, ...)." alt="" coords="242,107,465,133"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="245,157,461,184"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances." alt="" coords="256,208,451,235"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#a3488a7fb2b0ccf17a9b2af514590f57c" title="Set up neural networks for all elements." alt="" coords="237,259,469,285"/>
+<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#a0d84a9ab4ad3b589c5f5bb89f2b2fa5b" title="Set up normalization." alt="" coords="240,309,467,336"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="252,361,455,402"/>
+<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#a6f0184f87845a572cf4c3db0958a97d9" title="Set up symmetry function groups." alt="" coords="252,426,455,467"/>
+<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#af1d1548ef2d6a9bbfdc519b76b904700" title="Extract required memory dimensions for symmetry function derivatives." alt="" coords="252,491,455,533"/>
+<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions." alt="" coords="252,557,455,598"/>
+</map>

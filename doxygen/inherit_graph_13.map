@@ -1,3 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classnnp_1_1Settings.html" title="Reads and analyzes settings file and stores parameters." alt="" coords="5,5,112,32"/>
+<area shape="rect" id="node1" href="$classnnp_1_1IEwaldTrunc.html" title=" " alt="" coords="5,56,136,83"/>
+<area shape="rect" id="node2" href="$classnnp_1_1EwaldTruncJackson.html" title=" " alt="" coords="201,5,379,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1EwaldTruncKolafaFixR.html" title=" " alt="" coords="192,56,388,83"/>
+<area shape="rect" id="node4" href="$classnnp_1_1EwaldTruncKolafaOptEta.html" title=" " alt="" coords="184,107,396,133"/>
 </map>

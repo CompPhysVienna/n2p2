@@ -1,4 +1,4 @@
 <map id="nnp::Mode::convertToPhysicalUnits" name="nnp::Mode::convertToPhysicalUnits">
 <area shape="rect" id="node1" title="Convert one structure to physical units." alt="" coords="5,5,220,47"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a041778a6c0a2f6d436852e2325c65d20" title="Switch to physical units, shift energy and change energy and length unit." alt="" coords="268,5,456,47"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a1858d3c06446ad91b0876f8ca30b2686" title="Switch to physical units, shift energy and change energy, length and charge unit." alt="" coords="268,5,456,47"/>
 </map>

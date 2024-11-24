@@ -4,5 +4,5 @@
 <area shape="rect" id="node3" href="$classnnp_1_1Mode.html#aa8ddf0701dbcd60868955ca556892bc5" title="Remove atomic energy offsets from reference energy." alt="" coords="268,80,500,107"/>
 <area shape="rect" id="node4" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="307,131,461,157"/>
 <area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="273,181,495,208"/>
-<area shape="rect" id="node6" href="$structnnp_1_1Structure.html#acd39fe39b2b0e86e676c7bd52dc2b835" title="Normalize structure, shift energy and change energy and length unit." alt="" coords="279,233,489,274"/>
+<area shape="rect" id="node6" href="$structnnp_1_1Structure.html#abd33241d3bdecf5f1a7eee012118cea3" title="Normalize structure, shift energy and change energy, length and charge unit." alt="" coords="279,233,489,274"/>
 </map>

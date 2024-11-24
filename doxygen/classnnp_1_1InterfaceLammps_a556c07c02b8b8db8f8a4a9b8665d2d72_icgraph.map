@@ -1,0 +1,4 @@
+<map id="nnp::InterfaceLammps::setLocalAtomPositions" name="nnp::InterfaceLammps::setLocalAtomPositions">
+<area shape="rect" id="node1" title="Set absolute atom positions from LAMMPS (nnp/develop only)." alt="" coords="292,5,471,47"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a9f919fc12ad3bfd827bdbabe883cf8bc" title=" " alt="" coords="5,5,244,47"/>
+</map>

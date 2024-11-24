@@ -1,19 +1,26 @@
 <map id="nnp::Training::update" name="nnp::Training::update">
-<area shape="rect" id="node1" title="Perform one update." alt="" coords="5,443,164,470"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a94e6d295200728de7780f6796b86593f" title="Write energy update data to training log file." alt="" coords="231,5,419,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="223,173,426,215"/>
-<area shape="rect" id="node4" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="485,67,637,108"/>
-<area shape="rect" id="node5" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="485,133,637,175"/>
-<area shape="rect" id="node6" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="485,201,637,243"/>
-<area shape="rect" id="node7" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="485,272,637,313"/>
-<area shape="rect" id="node8" href="$classnnp_1_1NeuralNetwork.html#aa38d991173328eb5c977dacf39347dca" title="Calculate derivative of output neuron with respect to connections." alt="" coords="249,341,401,383"/>
-<area shape="rect" id="node9" href="$classnnp_1_1NeuralNetwork.html#a4526b9a7e947a38b861098d0826a6161" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="249,407,401,448"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="223,473,426,499"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="225,523,424,550"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="212,575,437,616"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="212,640,437,681"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Training.html#a80d3c7681f0727847d717ab7a333abbf" title="Collect derivative of symmetry functions with repect to one atom&#39;s coordinate." alt="" coords="223,706,427,733"/>
-<area shape="rect" id="node15" href="$structnnp_1_1Structure.html#a9a0f3518c376324d41786e29a7b5300d" title="Free symmetry function memory for all atoms, see free() in Atom class." alt="" coords="230,757,419,783"/>
-<area shape="rect" id="node16" href="$classnnp_1_1KalmanFilter.html#aa75026a60054469cc7fb3a211e501f2f" title="Set observation vector size." alt="" coords="251,808,399,849"/>
-<area shape="rect" id="node17" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="232,874,417,901"/>
+<area shape="rect" id="node1" title="Perform one update." alt="" coords="5,654,164,681"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a94e6d295200728de7780f6796b86593f" title="Write energy update data to training log file." alt="" coords="239,5,427,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="231,224,434,265"/>
+<area shape="rect" id="node4" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="511,65,663,107"/>
+<area shape="rect" id="node5" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="511,131,663,172"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a7607132302e2b0f3e1a9dec67cd24062" title="Apply normalization to given property." alt="" coords="501,198,672,225"/>
+<area shape="rect" id="node7" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="511,252,663,293"/>
+<area shape="rect" id="node8" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="511,323,663,364"/>
+<area shape="rect" id="node9" href="$classnnp_1_1Training.html#ab04baa25ad186e9a82a4a4fa7f3bdca4" title="Calculate vector of charge errors in one structure." alt="" coords="247,392,419,433"/>
+<area shape="rect" id="node10" href="$classnnp_1_1NeuralNetwork.html#aa38d991173328eb5c977dacf39347dca" title="Calculate derivative of output neuron with respect to connections." alt="" coords="257,457,409,499"/>
+<area shape="rect" id="node11" href="$classnnp_1_1NeuralNetwork.html#a4526b9a7e947a38b861098d0826a6161" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="257,523,409,564"/>
+<area shape="rect" id="node12" href="$structnnp_1_1Structure.html#a4cd07a8b746a55aea0f0b6181a9f645f" title="Calculates derivative of the charges with respect to electronegativities." alt="" coords="243,588,423,629"/>
+<area shape="rect" id="node13" href="$structnnp_1_1Structure.html#a7204a6979274b69a358f73af50187d85" title="Calculates derivative of the charges with respect to atomic hardness." alt="" coords="227,654,439,681"/>
+<area shape="rect" id="node14" href="$structnnp_1_1Structure.html#a8f0706e5971387076a3257b149534679" title="Calculates derivative of the charges with respect to the atom&#39;s position." alt="" coords="226,705,439,731"/>
+<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="231,755,434,782"/>
+<area shape="rect" id="node16" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="233,806,432,833"/>
+<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="220,857,445,899"/>
+<area shape="rect" id="node18" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="220,923,445,964"/>
+<area shape="rect" id="node19" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="221,989,445,1015"/>
+<area shape="rect" id="node20" href="$structnnp_1_1Structure.html#aa595df3985c11f039308dcca5fae828c" title="Clear A&#45;matrix, dAdrQ and optionally dQdr." alt="" coords="212,1039,453,1066"/>
+<area shape="rect" id="node21" href="$classnnp_1_1Training.html#a80d3c7681f0727847d717ab7a333abbf" title="Collect derivative of symmetry functions with respect to one atom&#39;s coordinate." alt="" coords="231,1090,435,1117"/>
+<area shape="rect" id="node22" href="$structnnp_1_1Structure.html#a0c1cbaed161ba008d03a654d5ea04c6a" title="Free symmetry function memory for all atoms, see free() in Atom class." alt="" coords="238,1141,427,1167"/>
+<area shape="rect" id="node23" href="$classnnp_1_1KalmanFilter.html#aa75026a60054469cc7fb3a211e501f2f" title="Set observation vector size." alt="" coords="259,1192,407,1233"/>
+<area shape="rect" id="node24" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="240,1258,425,1285"/>
 </map>

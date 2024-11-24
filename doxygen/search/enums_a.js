@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['updatertype_0',['UpdaterType',['../classnnp_1_1Training.html#a639e7546c166a0b5530ad707e08f626e',1,'nnp::Training']]],
-  ['updatestrategy_1',['UpdateStrategy',['../classnnp_1_1Training.html#ad641fa6c3bd89c5c3efd964c9a47429a',1,'nnp::Training']]]
+  ['type_0',['Type',['../classnnp_1_1CoreFunction.html#ac0dbc4de27e067c87ea2cef5ac067cdf',1,'nnp::CoreFunction']]]
 ];

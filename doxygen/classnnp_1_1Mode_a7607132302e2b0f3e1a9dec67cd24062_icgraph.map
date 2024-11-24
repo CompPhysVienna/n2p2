@@ -1,0 +1,6 @@
+<map id="nnp::Mode::normalized" name="nnp::Mode::normalized">
+<area shape="rect" id="node1" title="Apply normalization to given property." alt="" coords="483,71,653,98"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="222,5,425,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,42,164,69"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a5518489591ce8c418b3ef00e17aa347f" title="Set up electrostatics related stuff (hardness, screening, ...)." alt="" coords="212,122,435,149"/>
+</map>

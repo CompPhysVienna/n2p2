@@ -1,4 +1,4 @@
 <map id="nnp::NeuralNetwork::modifyConnections" name="nnp::NeuralNetwork::modifyConnections">
 <area shape="rect" id="node1" title="Change connections according to a given modification scheme." alt="" coords="236,5,391,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a111011beb9eb1fb43550139a615b2b39" title="Randomly initialize specificy neural network weights." alt="" coords="5,5,188,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a4d15c6af81c325b25baff79d6a678451" title="Randomly initialize specificy neural network weights." alt="" coords="5,5,188,47"/>
 </map>

@@ -1,0 +1,9 @@
+<map id="nnp::Mode::calculateForces" name="nnp::Mode::calculateForces">
+<area shape="rect" id="node1" title="Calculate forces for all atoms in given structure." alt="" coords="5,148,204,175"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a13d0265e748da4aa1a7050ac5cc14ebd" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="252,5,452,32"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="500,23,715,65"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#a3237e0cda2706b6930880c9c7f4885c4" title="Calculate lambda_elec vector which is needed for the electrostatic force calculation in 4G NN." alt="" coords="262,107,442,149"/>
+<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a9373df62476af32ec7c479bbc3fcb063" title="Calculate lambda_total vector which is needed for the total force calculation in 4G NN." alt="" coords="262,173,442,214"/>
+<area shape="rect" id="node6" href="$structnnp_1_1Atom.html#a19fbfacf9f6d57126b2fa096dc56819e" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="262,238,442,279"/>
+<area shape="rect" id="node7" href="$structnnp_1_1Atom.html#a2ec0b16b02a8bc10072b97f22932f1d5" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="261,303,443,345"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="nnp::settings::Settings::keywordCheck" name="nnp::settings::Settings::keywordCheck">
+<area shape="rect" id="node1" title="Check for keyword and alternatives, throw exception if not present." alt="" coords="220,39,387,80"/>
+<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#abe28e4e40135fa996a04c00494a403d8" title="Get value for given keyword." alt="" coords="5,5,172,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1settings_1_1Settings.html#a8b0d951c5548f17e64598900b5aca088" title="Get all keyword&#45;value pairs for given keyword." alt="" coords="5,71,172,112"/>
+</map>

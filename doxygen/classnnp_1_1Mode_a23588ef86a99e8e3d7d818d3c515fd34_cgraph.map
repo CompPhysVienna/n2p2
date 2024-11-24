@@ -1,0 +1,4 @@
+<map id="nnp::Mode::logEwaldCutoffs" name="nnp::Mode::logEwaldCutoffs">
+<area shape="rect" id="node1" title="Logs Ewald params whenever they change." alt="" coords="5,13,208,39"/>
+<area shape="rect" id="node2" href="$classnnp_1_1EwaldSetup.html#ac8101235172f7fade130d4939353256e" title="Use after Ewald summation!" alt="" coords="256,5,453,47"/>
+</map>

@@ -3,8 +3,8 @@
 <area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
 <area shape="rect" id="node4" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="55,122,210,149"/>
-<area shape="rect" id="node5" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,173,160,199"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="47,223,219,250"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="41,173,224,199"/>
+<area shape="rect" id="node6" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,223,160,250"/>
 <area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="49,275,217,316"/>
 <area shape="rect" id="node8" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,341,212,367"/>
 </map>

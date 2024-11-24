@@ -1,0 +1,5 @@
+<map id="nnp::settings::Settings::getSettingsLines" name="nnp::settings::Settings::getSettingsLines">
+<area shape="rect" id="node1" title="Get complete settings file." alt="" coords="308,23,475,65"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,5,260,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a6ac0b02c0a91917b17cd6e2fb96afb18" title="Copy settings file but comment out lines provided." alt="" coords="7,56,259,83"/>
+</map>

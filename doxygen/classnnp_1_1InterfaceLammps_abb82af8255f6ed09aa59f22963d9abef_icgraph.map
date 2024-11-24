@@ -1,0 +1,4 @@
+<map id="nnp::InterfaceLammps::setGlobalStructureStatus" name="nnp::InterfaceLammps::setGlobalStructureStatus">
+<area shape="rect" id="node1" title="Specify whether n2p2 knows about global structure or only local structure." alt="" coords="292,5,484,47"/>
+<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a3a1dcfc0cb871ea6927fdc143d5c3205" title=" " alt="" coords="5,5,244,47"/>
+</map>

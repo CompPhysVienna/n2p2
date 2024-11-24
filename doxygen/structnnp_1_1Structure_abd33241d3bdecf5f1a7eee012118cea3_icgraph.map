@@ -1,0 +1,6 @@
+<map id="nnp::Structure::toNormalizedUnits" name="nnp::Structure::toNormalizedUnits">
+<area shape="rect" id="node1" title="Normalize structure, shift energy and change energy, length and charge unit." alt="" coords="289,71,499,112"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a8353f189a07813687e6cda9dff5ef55a" title="Convert one structure to normalized units." alt="" coords="5,5,241,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title=" " alt="" coords="16,71,231,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#aa8a640fa62a611f50d151856eef337e3" title="Write current structure to file in units used in training data." alt="" coords="39,136,207,177"/>
+</map>

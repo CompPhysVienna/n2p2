@@ -1,4 +1,0 @@
-<map id="nnp::Settings::readFile" name="nnp::Settings::readFile">
-<area shape="rect" id="node1" title="Read file once and save all lines in lines vector." alt="" coords="220,5,387,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#a75b72141bb978f048344f4e0093f208c" title="Load a file with settings." alt="" coords="5,5,172,32"/>
-</map>

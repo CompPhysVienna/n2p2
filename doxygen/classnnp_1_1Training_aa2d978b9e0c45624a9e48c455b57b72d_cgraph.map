@@ -1,6 +1,6 @@
 <map id="nnp::Training::dPdcN" name="nnp::Training::dPdcN">
 <area shape="rect" id="node1" title="Compute numeric derivatives of property with respect to weights." alt="" coords="5,173,160,199"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="208,5,411,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="208,5,411,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="208,71,411,98"/>
 <area shape="rect" id="node4" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="210,122,409,149"/>
 <area shape="rect" id="node5" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="237,247,381,274"/>

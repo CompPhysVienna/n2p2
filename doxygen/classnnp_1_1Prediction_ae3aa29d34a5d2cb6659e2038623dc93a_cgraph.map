@@ -1,9 +1,9 @@
 <map id="nnp::Prediction::setup" name="nnp::Prediction::setup">
-<area shape="rect" id="node1" title=" " alt="" coords="5,136,168,163"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,148,168,175"/>
 <area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="255,5,409,32"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="231,56,433,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="240,107,424,133"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a7d40ea3edb704b1bc685d67c5e9b7eac" title="Set up neural network weights from files." alt="" coords="216,158,448,199"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="231,223,433,265"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="231,289,433,330"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="240,107,424,133"/>
+<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a5e5f584b6f8be7caaac02efb432c74a3" title="Set up neural network weights from files with given name format." alt="" coords="216,182,448,223"/>
+<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="231,247,433,289"/>
+<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="231,313,433,354"/>
 </map>

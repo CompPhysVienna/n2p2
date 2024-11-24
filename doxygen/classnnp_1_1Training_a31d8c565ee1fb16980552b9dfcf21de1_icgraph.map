@@ -1,0 +1,4 @@
+<map id="nnp::Training::writeHardness" name="nnp::Training::writeHardness">
+<area shape="rect" id="node1" title="Write hardness to files (one file for each element)." alt="" coords="260,13,467,39"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a820508a2e2a5045e1052cab8fd5b9b04" title="Write hardness to files during training loop." alt="" coords="5,5,212,47"/>
+</map>

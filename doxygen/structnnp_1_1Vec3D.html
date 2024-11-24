@@ -123,6 +123,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8018bcc4ebaed539e840f12293ffc8bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Vec3D.html#a8018bcc4ebaed539e840f12293ffc8bb">Vec3D</a> (<a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> const &amp;source)</td></tr>
 <tr class="memdesc:a8018bcc4ebaed539e840f12293ffc8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="structnnp_1_1Vec3D.html#a8018bcc4ebaed539e840f12293ffc8bb">More...</a><br /></td></tr>
 <tr class="separator:a8018bcc4ebaed539e840f12293ffc8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ad617db189ecfba716fd5fae55e20fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Vec3D.html#a7ad617db189ecfba716fd5fae55e20fc">Vec3D</a> (<a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> &amp;&amp;source)</td></tr>
+<tr class="memdesc:a7ad617db189ecfba716fd5fae55e20fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor.  <a href="structnnp_1_1Vec3D.html#a7ad617db189ecfba716fd5fae55e20fc">More...</a><br /></td></tr>
+<tr class="separator:a7ad617db189ecfba716fd5fae55e20fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e0d3c869417589e508e1f9ee33e9161"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Vec3D.html#a8e0d3c869417589e508e1f9ee33e9161">operator=</a> (<a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> const &amp;rhs)</td></tr>
 <tr class="memdesc:a8e0d3c869417589e508e1f9ee33e9161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload = operator.  <a href="structnnp_1_1Vec3D.html#a8e0d3c869417589e508e1f9ee33e9161">More...</a><br /></td></tr>
 <tr class="separator:a8e0d3c869417589e508e1f9ee33e9161"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,6 +144,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab1944872f3dd1ed1fef024158a63b4cf"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Vec3D.html#ab1944872f3dd1ed1fef024158a63b4cf">operator*</a> (<a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> const &amp;v) const</td></tr>
 <tr class="memdesc:ab1944872f3dd1ed1fef024158a63b4cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload * operator to implement scalar product.  <a href="structnnp_1_1Vec3D.html#ab1944872f3dd1ed1fef024158a63b4cf">More...</a><br /></td></tr>
 <tr class="separator:ab1944872f3dd1ed1fef024158a63b4cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6c7195928546090c9788a88df5e1fc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Vec3D.html#ad6c7195928546090c9788a88df5e1fc0">operator*=</a> (<a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> const (&amp;A)[3])</td></tr>
+<tr class="memdesc:ad6c7195928546090c9788a88df5e1fc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload * operator to implement (left) multiplication with a matrix defined as <a class="el" href="structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space.">Vec3D</a> A[3].  <a href="structnnp_1_1Vec3D.html#ad6c7195928546090c9788a88df5e1fc0">More...</a><br /></td></tr>
+<tr class="separator:ad6c7195928546090c9788a88df5e1fc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5b9aba261f200fdcb4e0a02f5763242"><td class="memItemLeft" align="right" valign="top">double &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnnp_1_1Vec3D.html#ab5b9aba261f200fdcb4e0a02f5763242">operator[]</a> (std::size_t const index)</td></tr>
 <tr class="memdesc:ab5b9aba261f200fdcb4e0a02f5763242"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload [] operator to return coordinate by index.  <a href="structnnp_1_1Vec3D.html#ab5b9aba261f200fdcb4e0a02f5763242">More...</a><br /></td></tr>
 <tr class="separator:ab5b9aba261f200fdcb4e0a02f5763242"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,10 +184,10 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Vector in 3 dimensional real space. </p>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00028">28</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00029">29</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5701bd8f2791ad4451d88f79fcadcdf8" name="a5701bd8f2791ad4451d88f79fcadcdf8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5701bd8f2791ad4451d88f79fcadcdf8">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5701bd8f2791ad4451d88f79fcadcdf8">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -205,20 +211,20 @@ Public Attributes</h2></td></tr>
 
 <p>Constructor, initializes to zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00152">152</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  153</span>{</div>
-<div class="line"><span class="lineno">  154</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = 0.0;</div>
-<div class="line"><span class="lineno">  155</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = 0.0;</div>
-<div class="line"><span class="lineno">  156</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = 0.0;</div>
-<div class="line"><span class="lineno">  157</span>}</div>
-<div class="ttc" id="astructnnp_1_1Vec3D_html_a4edaddb021629424003223c131f44d6d"><div class="ttname"><a href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">nnp::Vec3D::r</a></div><div class="ttdeci">double r[3]</div><div class="ttdoc">cartesian coordinates.</div><div class="ttdef"><b>Definition:</b> <a href="Vec3D_8h_source.html#l00031">Vec3D.h:31</a></div></div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00168">168</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  169</span>{</div>
+<div class="line"><span class="lineno">  170</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = 0.0;</div>
+<div class="line"><span class="lineno">  171</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = 0.0;</div>
+<div class="line"><span class="lineno">  172</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = 0.0;</div>
+<div class="line"><span class="lineno">  173</span>}</div>
+<div class="ttc" id="astructnnp_1_1Vec3D_html_a4edaddb021629424003223c131f44d6d"><div class="ttname"><a href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">nnp::Vec3D::r</a></div><div class="ttdeci">double r[3]</div><div class="ttdoc">cartesian coordinates.</div><div class="ttdef"><b>Definition:</b> <a href="Vec3D_8h_source.html#l00032">Vec3D.h:32</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
 </div>
 </div>
 <a id="ae3353099b87aeacc143c4faca2d6d7ff" name="ae3353099b87aeacc143c4faca2d6d7ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3353099b87aeacc143c4faca2d6d7ff">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3353099b87aeacc143c4faca2d6d7ff">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -259,19 +265,19 @@ Public Attributes</h2></td></tr>
 
 <p>Constructor, with initialization of coordinates. </p>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00159">159</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  160</span>{</div>
-<div class="line"><span class="lineno">  161</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = x;</div>
-<div class="line"><span class="lineno">  162</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = y;</div>
-<div class="line"><span class="lineno">  163</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = z;</div>
-<div class="line"><span class="lineno">  164</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00175">175</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  176</span>{</div>
+<div class="line"><span class="lineno">  177</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = x;</div>
+<div class="line"><span class="lineno">  178</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = y;</div>
+<div class="line"><span class="lineno">  179</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = z;</div>
+<div class="line"><span class="lineno">  180</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
 </div>
 </div>
 <a id="a8018bcc4ebaed539e840f12293ffc8bb" name="a8018bcc4ebaed539e840f12293ffc8bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8018bcc4ebaed539e840f12293ffc8bb">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8018bcc4ebaed539e840f12293ffc8bb">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,12 +302,49 @@ Public Attributes</h2></td></tr>
 
 <p>Copy constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00166">166</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  167</span>{</div>
-<div class="line"><span class="lineno">  168</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = source.r[0];</div>
-<div class="line"><span class="lineno">  169</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = source.r[1];</div>
-<div class="line"><span class="lineno">  170</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = source.r[2];</div>
-<div class="line"><span class="lineno">  171</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00182">182</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  183</span>{</div>
+<div class="line"><span class="lineno">  184</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = source.r[0];</div>
+<div class="line"><span class="lineno">  185</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = source.r[1];</div>
+<div class="line"><span class="lineno">  186</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = source.r[2];</div>
+<div class="line"><span class="lineno">  187</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
+
+</div>
+</div>
+<a id="a7ad617db189ecfba716fd5fae55e20fc" name="a7ad617db189ecfba716fd5fae55e20fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ad617db189ecfba716fd5fae55e20fc">&#9670;&nbsp;</a></span>Vec3D() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nnp::Vec3D::Vec3D </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Move constructor. </p>
+
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00189">189</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  190</span>{</div>
+<div class="line"><span class="lineno">  191</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = std::move(source.r[0]);</div>
+<div class="line"><span class="lineno">  192</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = std::move(source.r[1]);</div>
+<div class="line"><span class="lineno">  193</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = std::move(source.r[2]);</div>
+<div class="line"><span class="lineno">  194</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -335,14 +378,14 @@ Public Attributes</h2></td></tr>
 <p>Overload = operator. </p>
 <dl class="section return"><dt>Returns</dt><dd>Vector with copied data. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00173">173</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  174</span>{</div>
-<div class="line"><span class="lineno">  175</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = rhs.r[0];</div>
-<div class="line"><span class="lineno">  176</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = rhs.r[1];</div>
-<div class="line"><span class="lineno">  177</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = rhs.r[2];</div>
-<div class="line"><span class="lineno">  178</span> </div>
-<div class="line"><span class="lineno">  179</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">  180</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00196">196</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  197</span>{</div>
+<div class="line"><span class="lineno">  198</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] = rhs.r[0];</div>
+<div class="line"><span class="lineno">  199</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] = rhs.r[1];</div>
+<div class="line"><span class="lineno">  200</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] = rhs.r[2];</div>
+<div class="line"><span class="lineno">  201</span> </div>
+<div class="line"><span class="lineno">  202</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  203</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -375,14 +418,14 @@ Public Attributes</h2></td></tr>
 <p>Overload += operator to implement in-place vector addition. </p>
 <dl class="section return"><dt>Returns</dt><dd>Replace original vector with sum of two vectors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00182">182</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  183</span>{</div>
-<div class="line"><span class="lineno">  184</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] += rhs.r[0];</div>
-<div class="line"><span class="lineno">  185</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] += rhs.r[1];</div>
-<div class="line"><span class="lineno">  186</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] += rhs.r[2];</div>
-<div class="line"><span class="lineno">  187</span> </div>
-<div class="line"><span class="lineno">  188</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">  189</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00205">205</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  206</span>{</div>
+<div class="line"><span class="lineno">  207</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] += rhs.r[0];</div>
+<div class="line"><span class="lineno">  208</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] += rhs.r[1];</div>
+<div class="line"><span class="lineno">  209</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] += rhs.r[2];</div>
+<div class="line"><span class="lineno">  210</span> </div>
+<div class="line"><span class="lineno">  211</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  212</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -415,21 +458,21 @@ Public Attributes</h2></td></tr>
 <p>Overload -= operator to implement in-place vector subtraction. </p>
 <dl class="section return"><dt>Returns</dt><dd>Replace original vector with original minus given. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00191">191</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  192</span>{</div>
-<div class="line"><span class="lineno">  193</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] -= rhs.r[0];</div>
-<div class="line"><span class="lineno">  194</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] -= rhs.r[1];</div>
-<div class="line"><span class="lineno">  195</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] -= rhs.r[2];</div>
-<div class="line"><span class="lineno">  196</span> </div>
-<div class="line"><span class="lineno">  197</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">  198</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00214">214</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  215</span>{</div>
+<div class="line"><span class="lineno">  216</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] -= rhs.r[0];</div>
+<div class="line"><span class="lineno">  217</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] -= rhs.r[1];</div>
+<div class="line"><span class="lineno">  218</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] -= rhs.r[2];</div>
+<div class="line"><span class="lineno">  219</span> </div>
+<div class="line"><span class="lineno">  220</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  221</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
 </div>
 </div>
 <a id="ad9b3960c253b92efdd96565c38a50d1b" name="ad9b3960c253b92efdd96565c38a50d1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9b3960c253b92efdd96565c38a50d1b">&#9670;&nbsp;</a></span>operator*=()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9b3960c253b92efdd96565c38a50d1b">&#9670;&nbsp;</a></span>operator*=() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -455,14 +498,14 @@ Public Attributes</h2></td></tr>
 <p>Overload *= operator to implement multiplication with scalar. </p>
 <dl class="section return"><dt>Returns</dt><dd>Original vector multiplied with scalar. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00200">200</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  201</span>{</div>
-<div class="line"><span class="lineno">  202</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] *= a;</div>
-<div class="line"><span class="lineno">  203</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] *= a;</div>
-<div class="line"><span class="lineno">  204</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] *= a;</div>
-<div class="line"><span class="lineno">  205</span> </div>
-<div class="line"><span class="lineno">  206</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">  207</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00223">223</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  224</span>{</div>
+<div class="line"><span class="lineno">  225</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] *= a;</div>
+<div class="line"><span class="lineno">  226</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] *= a;</div>
+<div class="line"><span class="lineno">  227</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] *= a;</div>
+<div class="line"><span class="lineno">  228</span> </div>
+<div class="line"><span class="lineno">  229</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  230</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -495,12 +538,12 @@ Public Attributes</h2></td></tr>
 <p>Overload /= operator to implement division by scalar. </p>
 <dl class="section return"><dt>Returns</dt><dd>Original vector divided by scalar. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00209">209</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  210</span>{</div>
-<div class="line"><span class="lineno">  211</span>    *<span class="keyword">this</span> *= 1.0 / a;</div>
-<div class="line"><span class="lineno">  212</span> </div>
-<div class="line"><span class="lineno">  213</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">  214</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00246">246</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  247</span>{</div>
+<div class="line"><span class="lineno">  248</span>    *<span class="keyword">this</span> *= 1.0 / a;</div>
+<div class="line"><span class="lineno">  249</span> </div>
+<div class="line"><span class="lineno">  250</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  251</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -531,10 +574,57 @@ Public Attributes</h2></td></tr>
 <p>Overload * operator to implement scalar product. </p>
 <dl class="section return"><dt>Returns</dt><dd>Scalar product of two vectors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00216">216</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  217</span>{</div>
-<div class="line"><span class="lineno">  218</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * v.r[0] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * v.r[1] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * v.r[2];</div>
-<div class="line"><span class="lineno">  219</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00253">253</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  254</span>{</div>
+<div class="line"><span class="lineno">  255</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * v.r[0] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * v.r[1] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * v.r[2];</div>
+<div class="line"><span class="lineno">  256</span>}</div>
+</div><!-- fragment -->
+<p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
+
+</div>
+</div>
+<a id="ad6c7195928546090c9788a88df5e1fc0" name="ad6c7195928546090c9788a88df5e1fc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6c7195928546090c9788a88df5e1fc0">&#9670;&nbsp;</a></span>operator*=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> &amp; nnp::Vec3D::operator*= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a> const (&amp;)&#160;</td>
+          <td class="paramname"><em>A</em>[3]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Overload * operator to implement (left) multiplication with a matrix defined as <a class="el" href="structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space.">Vec3D</a> A[3]. </p>
+<p >By convention A[i][j] gives the element of j-th row and i-th column.</p>
+<dl class="section return"><dt>Returns</dt><dd>Original vector multiplied with a matrix. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00232">232</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  233</span>{</div>
+<div class="line"><span class="lineno">  234</span>    <a class="code hl_function" href="structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8">Vec3D</a> w;</div>
+<div class="line"><span class="lineno">  235</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i=0; i&lt;3; ++i)</div>
+<div class="line"><span class="lineno">  236</span>    {</div>
+<div class="line"><span class="lineno">  237</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j=0; j&lt;3; ++j)</div>
+<div class="line"><span class="lineno">  238</span>        {</div>
+<div class="line"><span class="lineno">  239</span>            w.r[i] += A[j][i] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[j];</div>
+<div class="line"><span class="lineno">  240</span>        }</div>
+<div class="line"><span class="lineno">  241</span>    }</div>
+<div class="line"><span class="lineno">  242</span>    *<span class="keyword">this</span> = w;</div>
+<div class="line"><span class="lineno">  243</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  244</span>}</div>
+<div class="ttc" id="astructnnp_1_1Vec3D_html_a5701bd8f2791ad4451d88f79fcadcdf8"><div class="ttname"><a href="structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8">nnp::Vec3D::Vec3D</a></div><div class="ttdeci">Vec3D()</div><div class="ttdoc">Constructor, initializes to zero.</div><div class="ttdef"><b>Definition:</b> <a href="Vec3D_8h_source.html#l00168">Vec3D.h:168</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -567,15 +657,15 @@ Public Attributes</h2></td></tr>
 <p>Overload [] operator to return coordinate by index. </p>
 <dl class="section return"><dt>Returns</dt><dd>x,y or z when index is 0, 1 or 2, respectively. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00222">222</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  223</span>{</div>
-<div class="line"><span class="lineno">  224</span>    <span class="keywordflow">if</span> (index &lt; 3) <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[index];</div>
-<div class="line"><span class="lineno">  225</span>    <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno">  226</span>    {</div>
-<div class="line"><span class="lineno">  227</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;ERROR: 3D vector has only three&quot;</span></div>
-<div class="line"><span class="lineno">  228</span>                                 <span class="stringliteral">&quot; components.\n&quot;</span>);</div>
-<div class="line"><span class="lineno">  229</span>    }</div>
-<div class="line"><span class="lineno">  230</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00260">260</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  261</span>{</div>
+<div class="line"><span class="lineno">  262</span>    <span class="keywordflow">if</span> (index &lt; 3) <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[index];</div>
+<div class="line"><span class="lineno">  263</span>    <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  264</span>    {</div>
+<div class="line"><span class="lineno">  265</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;ERROR: 3D vector has only three&quot;</span></div>
+<div class="line"><span class="lineno">  266</span>                                 <span class="stringliteral">&quot; components.\n&quot;</span>);</div>
+<div class="line"><span class="lineno">  267</span>    }</div>
+<div class="line"><span class="lineno">  268</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -608,15 +698,15 @@ Public Attributes</h2></td></tr>
 <p>Overload [] operator to return coordinate by index (const version). </p>
 <dl class="section return"><dt>Returns</dt><dd>x,y or z when index is 0, 1 or 2, respectively. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00233">233</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  234</span>{</div>
-<div class="line"><span class="lineno">  235</span>    <span class="keywordflow">if</span> (index &lt; 3) <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[index];</div>
-<div class="line"><span class="lineno">  236</span>    <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno">  237</span>    {</div>
-<div class="line"><span class="lineno">  238</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;ERROR: 3D vector has only three&quot;</span></div>
-<div class="line"><span class="lineno">  239</span>                                 <span class="stringliteral">&quot; components.\n&quot;</span>);</div>
-<div class="line"><span class="lineno">  240</span>    }</div>
-<div class="line"><span class="lineno">  241</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00271">271</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  272</span>{</div>
+<div class="line"><span class="lineno">  273</span>    <span class="keywordflow">if</span> (index &lt; 3) <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[index];</div>
+<div class="line"><span class="lineno">  274</span>    <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">  275</span>    {</div>
+<div class="line"><span class="lineno">  276</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;ERROR: 3D vector has only three&quot;</span></div>
+<div class="line"><span class="lineno">  277</span>                                 <span class="stringliteral">&quot; components.\n&quot;</span>);</div>
+<div class="line"><span class="lineno">  278</span>    }</div>
+<div class="line"><span class="lineno">  279</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -649,13 +739,13 @@ Public Attributes</h2></td></tr>
 <p>Compare if vectors are equal. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>True</code> if all components are equal, <code>false</code> else. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00243">243</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  244</span>{</div>
-<div class="line"><span class="lineno">  245</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] != rhs.r[0]) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">  246</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] != rhs.r[1]) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">  247</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] != rhs.r[2]) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">  248</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><span class="lineno">  249</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00281">281</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  282</span>{</div>
+<div class="line"><span class="lineno">  283</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] != rhs.r[0]) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  284</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] != rhs.r[1]) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  285</span>    <span class="keywordflow">if</span> (<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] != rhs.r[2]) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">  286</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">  287</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -688,10 +778,10 @@ Public Attributes</h2></td></tr>
 <p>Compare if vectors are not equal. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>False</code> if all components are equal, <code>false</code> else. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00251">251</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  252</span>{</div>
-<div class="line"><span class="lineno">  253</span>    <span class="keywordflow">return</span> !(*<span class="keyword">this</span> == rhs);</div>
-<div class="line"><span class="lineno">  254</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00289">289</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  290</span>{</div>
+<div class="line"><span class="lineno">  291</span>    <span class="keywordflow">return</span> !(*<span class="keyword">this</span> == rhs);</div>
+<div class="line"><span class="lineno">  292</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -721,21 +811,21 @@ Public Attributes</h2></td></tr>
 <p>Calculate norm of vector. </p>
 <dl class="section return"><dt>Returns</dt><dd>Norm of vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00256">256</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  257</span>{</div>
-<div class="line"><span class="lineno">  258</span>    <span class="keywordflow">return</span> sqrt(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2]);</div>
-<div class="line"><span class="lineno">  259</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00294">294</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  295</span>{</div>
+<div class="line"><span class="lineno">  296</span>    <span class="keywordflow">return</span> sqrt(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2]);</div>
+<div class="line"><span class="lineno">  297</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c">nnp::Structure::calculateNeighborList()</a>, <a class="el" href="nnp-dist_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main()</a>, and <a class="el" href="structnnp_1_1Vec3D.html#a6a59afd117951d8bc98391da9d894741">normalize()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483">nnp::Structure::calculateNeighborList()</a>, <a class="el" href="nnp-dist_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main()</a>, and <a class="el" href="structnnp_1_1Vec3D.html#a6a59afd117951d8bc98391da9d894741">normalize()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="structnnp_1_1Vec3D_aeb7a761001a28045ccb6cfb175f5d399_icgraph.png" border="0" usemap="#astructnnp_1_1Vec3D_aeb7a761001a28045ccb6cfb175f5d399_icgraph" alt=""/></div>
 <map name="astructnnp_1_1Vec3D_aeb7a761001a28045ccb6cfb175f5d399_icgraph" id="astructnnp_1_1Vec3D_aeb7a761001a28045ccb6cfb175f5d399_icgraph">
 <area shape="rect" title="Calculate norm of vector." alt="" coords="336,71,473,98"/>
-<area shape="rect" href="structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c" title="Calculate neighbor list for all atoms." alt="" coords="108,5,288,47"/>
+<area shape="rect" href="structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="108,5,288,47"/>
 <area shape="rect" href="nnp-dist_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,42,60,69"/>
 <area shape="rect" href="structnnp_1_1Vec3D.html#a6a59afd117951d8bc98391da9d894741" title="Normalize vector, norm equals 1.0 afterwards." alt="" coords="114,122,282,149"/>
 </map>
@@ -769,25 +859,26 @@ Here is the caller graph for this function:</div>
 <p>Calculate square of norm of vector. </p>
 <dl class="section return"><dt>Returns</dt><dd>Square of norm of vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00261">261</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  262</span>{</div>
-<div class="line"><span class="lineno">  263</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2];</div>
-<div class="line"><span class="lineno">  264</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00299">299</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  300</span>{</div>
+<div class="line"><span class="lineno">  301</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] + <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2];</div>
+<div class="line"><span class="lineno">  302</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="classnnp_1_1SymFncCompAngn.html#a179ecded12c7ce9e26126e7896341929">nnp::SymFncCompAngn::calculate()</a>, <a class="el" href="classnnp_1_1SymFncCompAngnWeighted.html#a3c9d6b36a81535e4c773bb4540866647">nnp::SymFncCompAngnWeighted::calculate()</a>, <a class="el" href="classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9">nnp::SymFncExpAngn::calculate()</a>, <a class="el" href="classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56">nnp::SymFncExpAngnWeighted::calculate()</a>, and <a class="el" href="structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c">nnp::Structure::calculateNeighborList()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1SymFncCompAngn.html#a179ecded12c7ce9e26126e7896341929">nnp::SymFncCompAngn::calculate()</a>, <a class="el" href="classnnp_1_1SymFncCompAngnWeighted.html#a3c9d6b36a81535e4c773bb4540866647">nnp::SymFncCompAngnWeighted::calculate()</a>, <a class="el" href="classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9">nnp::SymFncExpAngn::calculate()</a>, <a class="el" href="classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56">nnp::SymFncExpAngnWeighted::calculate()</a>, <a class="el" href="structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483">nnp::Structure::calculateNeighborList()</a>, and <a class="el" href="classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f">nnp::KspaceGrid::setup()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="structnnp_1_1Vec3D_a4dd2e5fef207b1bd2021142bf678f251_icgraph.png" border="0" usemap="#astructnnp_1_1Vec3D_a4dd2e5fef207b1bd2021142bf678f251_icgraph" alt=""/></div>
 <map name="astructnnp_1_1Vec3D_a4dd2e5fef207b1bd2021142bf678f251_icgraph" id="astructnnp_1_1Vec3D_a4dd2e5fef207b1bd2021142bf678f251_icgraph">
-<area shape="rect" title="Calculate square of norm of vector." alt="" coords="292,143,437,170"/>
+<area shape="rect" title="Calculate square of norm of vector." alt="" coords="292,177,437,203"/>
 <area shape="rect" href="classnnp_1_1SymFncCompAngn.html#a179ecded12c7ce9e26126e7896341929" title="Calculate symmetry function for one atom." alt="" coords="36,5,213,47"/>
 <area shape="rect" href="classnnp_1_1SymFncCompAngnWeighted.html#a3c9d6b36a81535e4c773bb4540866647" title="Calculate symmetry function for one atom." alt="" coords="5,71,244,112"/>
 <area shape="rect" href="classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="43,136,206,177"/>
 <area shape="rect" href="classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56" title="Calculate symmetry function for one atom." alt="" coords="13,201,237,243"/>
-<area shape="rect" href="structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c" title="Calculate neighbor list for all atoms." alt="" coords="35,267,215,308"/>
+<area shape="rect" href="structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="35,267,215,308"/>
+<area shape="rect" href="classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="39,333,211,359"/>
 </map>
 </div>
 
@@ -819,10 +910,10 @@ Here is the caller graph for this function:</div>
 <p>Calculate l1 norm of vector (taxicab metric). </p>
 <dl class="section return"><dt>Returns</dt><dd>L1-norm of vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00266">266</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  267</span>{</div>
-<div class="line"><span class="lineno">  268</span>    <span class="keywordflow">return</span> fabs(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0]) + fabs(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1]) + fabs(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2]);</div>
-<div class="line"><span class="lineno">  269</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00304">304</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  305</span>{</div>
+<div class="line"><span class="lineno">  306</span>    <span class="keywordflow">return</span> fabs(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0]) + fabs(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1]) + fabs(<a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2]);</div>
+<div class="line"><span class="lineno">  307</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
@@ -853,20 +944,20 @@ Here is the caller graph for this function:</div>
 
 <p>Normalize vector, norm equals 1.0 afterwards. </p>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00271">271</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  272</span>{</div>
-<div class="line"><span class="lineno">  273</span>    <span class="keywordtype">double</span> n = <a class="code hl_function" href="structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399">norm</a>();</div>
-<div class="line"><span class="lineno">  274</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] /= n;</div>
-<div class="line"><span class="lineno">  275</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] /= n;</div>
-<div class="line"><span class="lineno">  276</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] /= n;</div>
-<div class="line"><span class="lineno">  277</span> </div>
-<div class="line"><span class="lineno">  278</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><span class="lineno">  279</span>}</div>
-<div class="ttc" id="astructnnp_1_1Vec3D_html_aeb7a761001a28045ccb6cfb175f5d399"><div class="ttname"><a href="structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399">nnp::Vec3D::norm</a></div><div class="ttdeci">double norm() const</div><div class="ttdoc">Calculate norm of vector.</div><div class="ttdef"><b>Definition:</b> <a href="Vec3D_8h_source.html#l00256">Vec3D.h:256</a></div></div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00309">309</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  310</span>{</div>
+<div class="line"><span class="lineno">  311</span>    <span class="keywordtype">double</span> n = <a class="code hl_function" href="structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399">norm</a>();</div>
+<div class="line"><span class="lineno">  312</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] /= n;</div>
+<div class="line"><span class="lineno">  313</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] /= n;</div>
+<div class="line"><span class="lineno">  314</span>    <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] /= n;</div>
+<div class="line"><span class="lineno">  315</span> </div>
+<div class="line"><span class="lineno">  316</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><span class="lineno">  317</span>}</div>
+<div class="ttc" id="astructnnp_1_1Vec3D_html_aeb7a761001a28045ccb6cfb175f5d399"><div class="ttname"><a href="structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399">nnp::Vec3D::norm</a></div><div class="ttdeci">double norm() const</div><div class="ttdoc">Calculate norm of vector.</div><div class="ttdef"><b>Definition:</b> <a href="Vec3D_8h_source.html#l00294">Vec3D.h:294</a></div></div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399">norm()</a>, and <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a">nnp::Structure::calculatePbcCopies()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2">nnp::KspaceGrid::calculatePbcCopies()</a>, <a class="el" href="structnnp_1_1Structure.html#a924f2222a9df39041690d23f2d5963fd">nnp::Structure::calculatePbcCopies()</a>, and <a class="el" href="structnnp_1_1Structure.html#a4a593b477540ad63365bfa292d0f54f1">nnp::Structure::canMinimumImageConventionBeApplied()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -881,8 +972,10 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="structnnp_1_1Vec3D_a6a59afd117951d8bc98391da9d894741_icgraph.png" border="0" usemap="#astructnnp_1_1Vec3D_a6a59afd117951d8bc98391da9d894741_icgraph" alt=""/></div>
 <map name="astructnnp_1_1Vec3D_a6a59afd117951d8bc98391da9d894741_icgraph" id="astructnnp_1_1Vec3D_a6a59afd117951d8bc98391da9d894741_icgraph">
-<area shape="rect" title="Normalize vector, norm equals 1.0 afterwards." alt="" coords="233,13,401,39"/>
-<area shape="rect" href="structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a" title="Calculate required PBC copies." alt="" coords="5,5,185,47"/>
+<area shape="rect" title="Normalize vector, norm equals 1.0 afterwards." alt="" coords="260,78,428,105"/>
+<area shape="rect" href="classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2" title="Compute box copies in each direction." alt="" coords="11,5,206,47"/>
+<area shape="rect" href="structnnp_1_1Structure.html#a924f2222a9df39041690d23f2d5963fd" title="Calculate required PBC copies." alt="" coords="19,71,199,112"/>
+<area shape="rect" href="structnnp_1_1Structure.html#a4a593b477540ad63365bfa292d0f54f1" title="Check if cut&#45;off radius is small enough to apply minimum image convention." alt="" coords="5,136,212,177"/>
 </map>
 </div>
 
@@ -915,28 +1008,30 @@ Here is the caller graph for this function:</div>
 <p>Cross product, argument vector is second in product. </p>
 <dl class="section return"><dt>Returns</dt><dd>Cross product of two vectors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00281">281</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  282</span>{</div>
-<div class="line"><span class="lineno">  283</span>    <a class="code hl_function" href="structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8">Vec3D</a> w;</div>
-<div class="line"><span class="lineno">  284</span> </div>
-<div class="line"><span class="lineno">  285</span>    w.r[0] = <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * v.r[2] - <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * v.r[1];</div>
-<div class="line"><span class="lineno">  286</span>    w.r[1] = <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * v.r[0] - <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * v.r[2];</div>
-<div class="line"><span class="lineno">  287</span>    w.r[2] = <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * v.r[1] - <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * v.r[0];</div>
-<div class="line"><span class="lineno">  288</span> </div>
-<div class="line"><span class="lineno">  289</span>    <span class="keywordflow">return</span> w;</div>
-<div class="line"><span class="lineno">  290</span>}</div>
-<div class="ttc" id="astructnnp_1_1Vec3D_html_a5701bd8f2791ad4451d88f79fcadcdf8"><div class="ttname"><a href="structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8">nnp::Vec3D::Vec3D</a></div><div class="ttdeci">Vec3D()</div><div class="ttdoc">Constructor, initializes to zero.</div><div class="ttdef"><b>Definition:</b> <a href="Vec3D_8h_source.html#l00152">Vec3D.h:152</a></div></div>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00319">319</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  320</span>{</div>
+<div class="line"><span class="lineno">  321</span>    <a class="code hl_function" href="structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8">Vec3D</a> w;</div>
+<div class="line"><span class="lineno">  322</span> </div>
+<div class="line"><span class="lineno">  323</span>    w.r[0] = <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * v.r[2] - <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * v.r[1];</div>
+<div class="line"><span class="lineno">  324</span>    w.r[1] = <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[2] * v.r[0] - <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * v.r[2];</div>
+<div class="line"><span class="lineno">  325</span>    w.r[2] = <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[0] * v.r[1] - <a class="code hl_variable" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>[1] * v.r[0];</div>
+<div class="line"><span class="lineno">  326</span> </div>
+<div class="line"><span class="lineno">  327</span>    <span class="keywordflow">return</span> w;</div>
+<div class="line"><span class="lineno">  328</span>}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="structnnp_1_1Vec3D.html#a4edaddb021629424003223c131f44d6d">r</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a">nnp::Structure::calculatePbcCopies()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2">nnp::KspaceGrid::calculatePbcCopies()</a>, <a class="el" href="structnnp_1_1Structure.html#a924f2222a9df39041690d23f2d5963fd">nnp::Structure::calculatePbcCopies()</a>, <a class="el" href="structnnp_1_1Structure.html#a4a593b477540ad63365bfa292d0f54f1">nnp::Structure::canMinimumImageConventionBeApplied()</a>, and <a class="el" href="classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f">nnp::KspaceGrid::setup()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="structnnp_1_1Vec3D_acb8ab5515d194a43e10c2fa43636dffc_icgraph.png" border="0" usemap="#astructnnp_1_1Vec3D_acb8ab5515d194a43e10c2fa43636dffc_icgraph" alt=""/></div>
 <map name="astructnnp_1_1Vec3D_acb8ab5515d194a43e10c2fa43636dffc_icgraph" id="astructnnp_1_1Vec3D_acb8ab5515d194a43e10c2fa43636dffc_icgraph">
-<area shape="rect" title="Cross product, argument vector is second in product." alt="" coords="233,13,371,39"/>
-<area shape="rect" href="structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a" title="Calculate required PBC copies." alt="" coords="5,5,185,47"/>
+<area shape="rect" title="Cross product, argument vector is second in product." alt="" coords="480,101,617,127"/>
+<area shape="rect" href="classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2" title="Compute box copies in each direction." alt="" coords="231,5,426,47"/>
+<area shape="rect" href="classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="5,42,177,69"/>
+<area shape="rect" href="structnnp_1_1Structure.html#a924f2222a9df39041690d23f2d5963fd" title="Calculate required PBC copies." alt="" coords="239,123,419,164"/>
+<area shape="rect" href="structnnp_1_1Structure.html#a4a593b477540ad63365bfa292d0f54f1" title="Check if cut&#45;off radius is small enough to apply minimum image convention." alt="" coords="225,188,432,229"/>
 </map>
 </div>
 
@@ -957,7 +1052,7 @@ Here is the caller graph for this function:</div>
 
 <p>cartesian coordinates. </p>
 
-<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00031">31</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Vec3D_8h_source.html#l00032">32</a> of file <a class="el" href="Vec3D_8h_source.html">Vec3D.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="classnnp_1_1SymGrpCompAngn.html#a3548f7b56c3c027197ea6747afadd500">nnp::SymGrpCompAngn::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpCompAngnWeighted.html#a5411f861d5937d2176b181537014f1d3">nnp::SymGrpCompAngnWeighted::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpCompAngw.html#a1ee3b26f3d1cec01971936d7a6d355a9">nnp::SymGrpCompAngw::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpCompAngwWeighted.html#a382cea07822d2c2eee5c935205f9ffc8">nnp::SymGrpCompAngwWeighted::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpCompRad.html#adfa9085a82afad386b39b76459a256a8">nnp::SymGrpCompRad::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpCompRadWeighted.html#a2cff92eee2f14324c707b5f8b0cf9e99">nnp::SymGrpCompRadWeighted::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpExpAngn.html#ae6982bf8d7ca656a9d5c935a2a4fc615">nnp::SymGrpExpAngn::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpExpAngnWeighted.html#a8e4d5f8a3188e05d17d15e6cc5b73561">nnp::SymGrpExpAngnWeighted::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380">nnp::SymGrpExpAngw::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpExpRad.html#aa113645db82879d83ea1e3723fb1cce9">nnp::SymGrpExpRad::calculate()</a>, <a class="el" href="classnnp_1_1SymGrpExpRadWeighted.html#a0310c08f6c11c2fb39a9794dbb34da5d">nnp::SymGrpExpRadWeighted::calculate()</a>, <a class="el" href="structnnp_1_1Vec3D.html#acb8ab5515d194a43e10c2fa43636dffc">cross()</a>, <a class="el" href="structnnp_1_1Vec3D.html#a9420cd9675d53cfe9ab5b7846dfb531c">l1norm()</a>, <a class="el" href="structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399">norm()</a>, <a class="el" href="structnnp_1_1Vec3D.html#a4dd2e5fef207b1bd2021142bf678f251">norm2()</a>, <a class="el" href="structnnp_1_1Vec3D.html#a6a59afd117951d8bc98391da9d894741">normalize()</a>, <a class="el" href="structnnp_1_1Vec3D.html#ab1944872f3dd1ed1fef024158a63b4cf">operator*()</a>, <a class="el" href="structnnp_1_1Vec3D.html#ad9b3960c253b92efdd96565c38a50d1b">operator*=()</a>, <a class="el" href="structnnp_1_1Vec3D.html#ab6ff873dd05098900ecdb73bc0dbfa2f">operator+=()</a>, <a class="el" href="structnnp_1_1Vec3D.html#a2e045bf13fb22898bb550ad532b82cbe">operator-=()</a>, <a class="el" href="structnnp_1_1Vec3D.html#a8e0d3c869417589e508e1f9ee33e9161">operator=()</a>, <a class="el" href="structnnp_1_1Vec3D.html#a025aaf3c2fdf740665a7562662647ed3">operator==()</a>, <a class="el" href="structnnp_1_1Vec3D.html#ab5b9aba261f200fdcb4e0a02f5763242">operator[]()</a>, <a class="el" href="classnnp_1_1Dataset.html#a57630554119a518ecb32d5e1f327256f">nnp::Dataset::recvStructure()</a>, <a class="el" href="classnnp_1_1Dataset.html#ac032639db8f6f1230f759afd3775c200">nnp::Dataset::sendStructure()</a>, and <a class="el" href="structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8">Vec3D()</a>.</p>
 
@@ -972,7 +1067,7 @@ Here is the caller graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacennp.html">nnp</a></li><li class="navelem"><a class="el" href="structnnp_1_1Vec3D.html">Vec3D</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:36 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:49 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

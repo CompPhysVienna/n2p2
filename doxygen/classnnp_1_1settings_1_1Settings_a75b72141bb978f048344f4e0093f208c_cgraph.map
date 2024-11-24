@@ -1,0 +1,5 @@
+<map id="nnp::settings::Settings::loadFile" name="nnp::settings::Settings::loadFile">
+<area shape="rect" id="node1" title="Load a file with settings." alt="" coords="5,39,172,80"/>
+<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#ad7407f37b4c9058643d987423fdfef6c" title="Parse lines and create contents map." alt="" coords="220,5,387,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1settings_1_1Settings.html#adb0042e7d1b48ef2888966b4eaefb751" title="Read file once and save all lines in lines vector." alt="" coords="220,71,387,112"/>
+</map>

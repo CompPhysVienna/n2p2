@@ -1,7 +1,20 @@
 var searchData=
 [
-  ['element_0',['Element',['../classnnp_1_1Element.html#aafffebdc953f794bd0a66945317201bc',1,'nnp::Element::Element()'],['../classnnp_1_1Element.html#a60d791ff133121dc955a490c2c77e5d7',1,'nnp::Element::Element(std::size_t const index, ElementMap const &amp;elementMap)']]],
-  ['elementcabana_1',['ElementCabana',['../classnnp_1_1ElementCabana.html#a88ce125e66d92bdb5d71c8fe55f984cd',1,'nnp::ElementCabana']]],
-  ['exists_2',['exists',['../structnnp_1_1Training_1_1PropertyMap.html#ab7019078f140f578655ebb1f8599e6d4',1,'nnp::Training::PropertyMap']]],
-  ['extractewbuffer_3',['extractEWBuffer',['../classnnp_1_1InterfaceLammps.html#a0ef9d95aeeb71882068bda355ebbd8cf',1,'nnp::InterfaceLammps']]]
+  ['dataset_0',['Dataset',['../classnnp_1_1Dataset.html#a2ef0a4a688a218d55ef061c6df659a4a',1,'nnp::Dataset']]],
+  ['datasetnormalization_1',['dataSetNormalization',['../classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0',1,'nnp::Training']]],
+  ['deregisterelements_2',['deregisterElements',['../classnnp_1_1ElementMap.html#aaa677937994a75bb40286d29c5aeec62',1,'nnp::ElementMap']]],
+  ['df_3',['df',['../classnnp_1_1CompactFunction.html#abc04e0919825b387b5eaefcd8bcb0af2',1,'nnp::CompactFunction::df()'],['../classnnp_1_1CoreFunction.html#a63fb2e38de8404723afbef5bf0feab03',1,'nnp::CoreFunction::df()'],['../classnnp_1_1CutoffFunction.html#af200145e23feafde412abf4a043d58c3',1,'nnp::CutoffFunction::df()'],['../classnnp_1_1ScreeningFunction.html#a5d5cfc1ced326fd61eef519dfc6b1e79',1,'nnp::ScreeningFunction::df()']]],
+  ['dfcore_4',['dfCORE',['../classnnp_1_1CutoffFunction.html#a8e8c2ddb1b8a07c6b74d6ae69de6c353',1,'nnp::CutoffFunction']]],
+  ['dfcos_5',['dfCOS',['../classnnp_1_1CoreFunction.html#a7bf77eb2124501023e7cdaf019082386',1,'nnp::CoreFunction::dfCOS()'],['../classnnp_1_1CutoffFunction.html#a74174c1695b9eac6109268755c5b3b64',1,'nnp::CutoffFunction::dfCOS()']]],
+  ['dfexp_6',['dfEXP',['../classnnp_1_1CoreFunction.html#a3a14d9474a275935541f3eff0ef4cb41',1,'nnp::CoreFunction']]],
+  ['dfhard_7',['dfHARD',['../classnnp_1_1CutoffFunction.html#ad55f96ed2a7519f501793d783ab5e6de',1,'nnp::CutoffFunction']]],
+  ['dfpoly1_8',['dfPOLY1',['../classnnp_1_1CoreFunction.html#a9e2b55dcfdb33598b3f0d52b520acfe4',1,'nnp::CoreFunction']]],
+  ['dfpoly2_9',['dfPOLY2',['../classnnp_1_1CoreFunction.html#a078376859cfb59a9bc35a2437cc624d7',1,'nnp::CoreFunction']]],
+  ['dfpoly3_10',['dfPOLY3',['../classnnp_1_1CoreFunction.html#a55c143393975d09b5c95e6abedb9fafb',1,'nnp::CoreFunction']]],
+  ['dfpoly4_11',['dfPOLY4',['../classnnp_1_1CoreFunction.html#a207c37a70f6488118cbd62742ac594d1',1,'nnp::CoreFunction']]],
+  ['dftanh_12',['dfTANH',['../classnnp_1_1CutoffFunction.html#a869aa192f06a8ad30d34c234c74be09d',1,'nnp::CutoffFunction']]],
+  ['dftanhu_13',['dfTANHU',['../classnnp_1_1CutoffFunction.html#a9b8e50892ac89fcb6ebcf7eef846025a',1,'nnp::CutoffFunction']]],
+  ['distributestructures_14',['distributeStructures',['../classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd',1,'nnp::Dataset']]],
+  ['dpdc_15',['dPdc',['../classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697',1,'nnp::Training']]],
+  ['dpdcn_16',['dPdcN',['../classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d',1,'nnp::Training']]]
 ];

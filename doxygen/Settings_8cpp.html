@@ -118,18 +118,18 @@ Include dependency graph for Settings.cpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5652421ea467d175d30e0d05dccb7902"><td class="memItemLeft" align="right" valign="top">map&lt; string, shared_ptr&lt; <a class="el" href="structnnp_1_1Settings_1_1Key.html">Settings::Key</a> &gt; &gt; const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Settings_8cpp.html#a5652421ea467d175d30e0d05dccb7902">createKnownKeywordsMap</a> ()</td></tr>
-<tr class="separator:a5652421ea467d175d30e0d05dccb7902"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae18f0170badcf86dec9ca3a7bcabb97"><td class="memItemLeft" align="right" valign="top">map&lt; string, shared_ptr&lt; <a class="el" href="classnnp_1_1settings_1_1Key.html">settings::Key</a> &gt; &gt; const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Settings_8cpp.html#aae18f0170badcf86dec9ca3a7bcabb97">createKnownKeywordsMap</a> ()</td></tr>
+<tr class="separator:aae18f0170badcf86dec9ca3a7bcabb97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a5652421ea467d175d30e0d05dccb7902" name="a5652421ea467d175d30e0d05dccb7902"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5652421ea467d175d30e0d05dccb7902">&#9670;&nbsp;</a></span>createKnownKeywordsMap()</h2>
+<a id="aae18f0170badcf86dec9ca3a7bcabb97" name="aae18f0170badcf86dec9ca3a7bcabb97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae18f0170badcf86dec9ca3a7bcabb97">&#9670;&nbsp;</a></span>createKnownKeywordsMap()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">map&lt; string, shared_ptr&lt; <a class="el" href="structnnp_1_1Settings_1_1Key.html">Settings::Key</a> &gt; &gt; const createKnownKeywordsMap </td>
+          <td class="memname">map&lt; string, shared_ptr&lt; <a class="el" href="classnnp_1_1settings_1_1Key.html">settings::Key</a> &gt; &gt; const createKnownKeywordsMap </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -137,141 +137,157 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Settings_8cpp_source.html#l00026">26</a> of file <a class="el" href="Settings_8cpp_source.html">Settings.cpp</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   27</span>{</div>
-<div class="line"><span class="lineno">   28</span>    <span class="comment">// Main keyword names and descriptions.</span></div>
-<div class="line"><span class="lineno">   29</span>    map&lt;string, string&gt; m;</div>
-<div class="line"><span class="lineno">   30</span>    <span class="comment">// Alternative names.</span></div>
-<div class="line"><span class="lineno">   31</span>    map&lt;string, vector&lt;string&gt;&gt; a;</div>
-<div class="line"><span class="lineno">   32</span>    <span class="comment">// Complete keyword map to return.</span></div>
-<div class="line"><span class="lineno">   33</span>    map&lt;string, shared_ptr&lt;Settings::Key&gt;&gt; r;</div>
-<div class="line"><span class="lineno">   34</span> </div>
-<div class="line"><span class="lineno">   35</span>    <span class="comment">// Required for prediction.</span></div>
-<div class="line"><span class="lineno">   36</span>    m[<span class="stringliteral">&quot;number_of_elements&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   37</span>    m[<span class="stringliteral">&quot;elements&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   38</span>    m[<span class="stringliteral">&quot;atom_energy&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   39</span>    m[<span class="stringliteral">&quot;cutoff_type&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   40</span>    m[<span class="stringliteral">&quot;symfunction_short&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   41</span>    m[<span class="stringliteral">&quot;scale_symmetry_functions&quot;</span>      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   42</span>    m[<span class="stringliteral">&quot;scale_min_short&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   43</span>    m[<span class="stringliteral">&quot;scale_max_short&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   44</span>    m[<span class="stringliteral">&quot;center_symmetry_functions&quot;</span>     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   45</span>    m[<span class="stringliteral">&quot;scale_symmetry_functions_sigma&quot;</span>] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   46</span>    m[<span class="stringliteral">&quot;global_hidden_layers_short&quot;</span>    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   47</span>    m[<span class="stringliteral">&quot;global_nodes_short&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   48</span>    m[<span class="stringliteral">&quot;global_activation_short&quot;</span>       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   49</span>    m[<span class="stringliteral">&quot;element_nodes_short&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   50</span>    m[<span class="stringliteral">&quot;normalize_nodes&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   51</span>    m[<span class="stringliteral">&quot;mean_energy&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   52</span>    m[<span class="stringliteral">&quot;conv_length&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   53</span>    m[<span class="stringliteral">&quot;conv_energy&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   54</span>    m[<span class="stringliteral">&quot;nnp_type&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   55</span> </div>
-<div class="line"><span class="lineno">   56</span>    <span class="comment">// Training keywords.</span></div>
-<div class="line"><span class="lineno">   57</span>    m[<span class="stringliteral">&quot;random_seed&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   58</span>    m[<span class="stringliteral">&quot;test_fraction&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   59</span>    m[<span class="stringliteral">&quot;epochs&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   60</span>    m[<span class="stringliteral">&quot;normalize_data_set&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   61</span>    m[<span class="stringliteral">&quot;use_short_forces&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   62</span>    m[<span class="stringliteral">&quot;rmse_threshold&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   63</span>    m[<span class="stringliteral">&quot;rmse_threshold_energy&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   64</span>    m[<span class="stringliteral">&quot;rmse_threshold_force&quot;</span>          ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   65</span>    m[<span class="stringliteral">&quot;rmse_threshold_charge&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   66</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   67</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials_energy&quot;</span>  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   68</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials_force&quot;</span>   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   69</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials_charge&quot;</span>  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   70</span>    m[<span class="stringliteral">&quot;energy_fraction&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   71</span>    m[<span class="stringliteral">&quot;force_fraction&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   72</span>    m[<span class="stringliteral">&quot;force_energy_ratio&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   73</span>    m[<span class="stringliteral">&quot;charge_fraction&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   74</span>    m[<span class="stringliteral">&quot;use_old_weights_short&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   75</span>    m[<span class="stringliteral">&quot;use_old_weights_charge&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   76</span>    m[<span class="stringliteral">&quot;weights_min&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   77</span>    m[<span class="stringliteral">&quot;weights_max&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   78</span>    m[<span class="stringliteral">&quot;nguyen_widrow_weights_short&quot;</span>   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   79</span>    m[<span class="stringliteral">&quot;nguyen_widrow_weights_charge&quot;</span>  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   80</span>    m[<span class="stringliteral">&quot;precondition_weights&quot;</span>          ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   81</span>    m[<span class="stringliteral">&quot;main_error_metric&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   82</span>    m[<span class="stringliteral">&quot;write_trainpoints&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   83</span>    m[<span class="stringliteral">&quot;write_trainforces&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   84</span>    m[<span class="stringliteral">&quot;write_traincharges&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   85</span>    m[<span class="stringliteral">&quot;write_weights_epoch&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   86</span>    m[<span class="stringliteral">&quot;write_neuronstats&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   87</span>    m[<span class="stringliteral">&quot;write_trainlog&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   88</span>    m[<span class="stringliteral">&quot;repeated_energy_update&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   89</span>    m[<span class="stringliteral">&quot;updater_type&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   90</span>    m[<span class="stringliteral">&quot;parallel_mode&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   91</span>    m[<span class="stringliteral">&quot;jacobian_mode&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   92</span>    m[<span class="stringliteral">&quot;update_strategy&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   93</span>    m[<span class="stringliteral">&quot;selection_mode&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   94</span>    m[<span class="stringliteral">&quot;selection_mode_energy&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   95</span>    m[<span class="stringliteral">&quot;selection_mode_force&quot;</span>          ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   96</span>    m[<span class="stringliteral">&quot;selection_mode_charge&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   97</span>    m[<span class="stringliteral">&quot;task_batch_size_energy&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   98</span>    m[<span class="stringliteral">&quot;task_batch_size_force&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">   99</span>    m[<span class="stringliteral">&quot;task_batch_size_charge&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  100</span>    m[<span class="stringliteral">&quot;gradient_type&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  101</span>    m[<span class="stringliteral">&quot;gradient_eta&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  102</span>    m[<span class="stringliteral">&quot;gradient_adam_eta&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  103</span>    m[<span class="stringliteral">&quot;gradient_adam_beta1&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  104</span>    m[<span class="stringliteral">&quot;gradient_adam_beta2&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  105</span>    m[<span class="stringliteral">&quot;gradient_adam_epsilon&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  106</span>    m[<span class="stringliteral">&quot;kalman_type&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  107</span>    m[<span class="stringliteral">&quot;kalman_epsilon&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  108</span>    m[<span class="stringliteral">&quot;kalman_eta&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  109</span>    m[<span class="stringliteral">&quot;kalman_etatau&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  110</span>    m[<span class="stringliteral">&quot;kalman_etamax&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  111</span>    m[<span class="stringliteral">&quot;kalman_q0&quot;</span>                     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  112</span>    m[<span class="stringliteral">&quot;kalman_qtau&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  113</span>    m[<span class="stringliteral">&quot;kalman_qmin&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  114</span>    m[<span class="stringliteral">&quot;kalman_lambda_short&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  115</span>    m[<span class="stringliteral">&quot;kalman_nue_short&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  116</span>    m[<span class="stringliteral">&quot;memorize_symfunc_results&quot;</span>      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  117</span>    m[<span class="stringliteral">&quot;force_weight&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><span class="lineno">  118</span> </div>
-<div class="line"><span class="lineno">  119</span>    <span class="comment">// Alternative keyword names.</span></div>
-<div class="line"><span class="lineno">  120</span>    a[<span class="stringliteral">&quot;nnp_type&quot;</span>]              = {<span class="stringliteral">&quot;nn_type&quot;</span>};</div>
-<div class="line"><span class="lineno">  121</span>    a[<span class="stringliteral">&quot;rmse_threshold_energy&quot;</span>] = {<span class="stringliteral">&quot;short_energy_error_threshold&quot;</span>};</div>
-<div class="line"><span class="lineno">  122</span>    a[<span class="stringliteral">&quot;rmse_threshold_force&quot;</span> ] = {<span class="stringliteral">&quot;short_force_error_threshold&quot;</span>};</div>
-<div class="line"><span class="lineno">  123</span>    a[<span class="stringliteral">&quot;energy_fraction&quot;</span>      ] = {<span class="stringliteral">&quot;short_energy_fraction&quot;</span>};</div>
-<div class="line"><span class="lineno">  124</span>    a[<span class="stringliteral">&quot;force_fraction&quot;</span>       ] = {<span class="stringliteral">&quot;short_force_fraction&quot;</span>};</div>
-<div class="line"><span class="lineno">  125</span> </div>
-<div class="line"><span class="lineno">  126</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> im : m)</div>
-<div class="line"><span class="lineno">  127</span>    {</div>
-<div class="line"><span class="lineno">  128</span>        <span class="comment">// Check if keyword was already inserted.</span></div>
-<div class="line"><span class="lineno">  129</span>        <span class="keywordflow">if</span> (r.find(im.first) != r.end())</div>
-<div class="line"><span class="lineno">  130</span>        {</div>
-<div class="line"><span class="lineno">  131</span>            <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Multiple definition of keyword.\n&quot;</span>);</div>
-<div class="line"><span class="lineno">  132</span>        }</div>
-<div class="line"><span class="lineno">  133</span>        <span class="comment">// Insert new shared pointer to a Key object.</span></div>
-<div class="line"><span class="lineno">  134</span>        r[im.first] = make_shared&lt;Settings::Key&gt;();</div>
-<div class="line"><span class="lineno">  135</span>        <span class="comment">// Add main keyword as first entry in alternatives list.</span></div>
-<div class="line"><span class="lineno">  136</span>        r.at(im.first)-&gt;words.push_back(im.first);</div>
-<div class="line"><span class="lineno">  137</span>        <span class="comment">// Add description text.</span></div>
-<div class="line"><span class="lineno">  138</span>        r.at(im.first)-&gt;description = im.second;</div>
-<div class="line"><span class="lineno">  139</span>        <span class="comment">// Check if alternative keywords exist.</span></div>
-<div class="line"><span class="lineno">  140</span>        <span class="keywordflow">if</span> (a.find(im.first) != a.end())</div>
-<div class="line"><span class="lineno">  141</span>        {</div>
-<div class="line"><span class="lineno">  142</span>            <span class="comment">// Loop over all alternative keywords.</span></div>
-<div class="line"><span class="lineno">  143</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span> alt : a.at(im.first))</div>
-<div class="line"><span class="lineno">  144</span>            {</div>
-<div class="line"><span class="lineno">  145</span>                <span class="comment">// Check if alternative keyword is already inserted.</span></div>
-<div class="line"><span class="lineno">  146</span>                <span class="keywordflow">if</span> (r.find(alt) != r.end())</div>
-<div class="line"><span class="lineno">  147</span>                {</div>
-<div class="line"><span class="lineno">  148</span>                    <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Multiple definition of &quot;</span></div>
-<div class="line"><span class="lineno">  149</span>                                        <span class="stringliteral">&quot;alternative keyword.\n&quot;</span>);</div>
-<div class="line"><span class="lineno">  150</span>                }</div>
-<div class="line"><span class="lineno">  151</span>                <span class="comment">// Set map entry, i.e. shared pointer, to Key object.</span></div>
-<div class="line"><span class="lineno">  152</span>                r[alt] = r.at(im.first);</div>
-<div class="line"><span class="lineno">  153</span>                <span class="comment">// Add alternative keyword to list.</span></div>
-<div class="line"><span class="lineno">  154</span>                r[alt]-&gt;words.push_back(alt);</div>
-<div class="line"><span class="lineno">  155</span>            }</div>
-<div class="line"><span class="lineno">  156</span>        }</div>
-<div class="line"><span class="lineno">  157</span>    }</div>
-<div class="line"><span class="lineno">  158</span> </div>
-<div class="line"><span class="lineno">  159</span>    <span class="keywordflow">return</span> r;</div>
-<div class="line"><span class="lineno">  160</span>}</div>
+<p class="definition">Definition at line <a class="el" href="Settings_8cpp_source.html#l00027">27</a> of file <a class="el" href="Settings_8cpp_source.html">Settings.cpp</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   28</span>{</div>
+<div class="line"><span class="lineno">   29</span>    <span class="comment">// Main keyword names and descriptions.</span></div>
+<div class="line"><span class="lineno">   30</span>    map&lt;string, string&gt; m;</div>
+<div class="line"><span class="lineno">   31</span>    <span class="comment">// Alternative names.</span></div>
+<div class="line"><span class="lineno">   32</span>    map&lt;string, vector&lt;string&gt;&gt; a;</div>
+<div class="line"><span class="lineno">   33</span>    <span class="comment">// Complete keyword map to return.</span></div>
+<div class="line"><span class="lineno">   34</span>    map&lt;string, shared_ptr&lt;settings::Key&gt;&gt; r;</div>
+<div class="line"><span class="lineno">   35</span> </div>
+<div class="line"><span class="lineno">   36</span>    <span class="comment">// Required for prediction.</span></div>
+<div class="line"><span class="lineno">   37</span>    m[<span class="stringliteral">&quot;number_of_elements&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   38</span>    m[<span class="stringliteral">&quot;elements&quot;</span>                           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   39</span>    m[<span class="stringliteral">&quot;atom_energy&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   40</span>    m[<span class="stringliteral">&quot;cutoff_type&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   41</span>    m[<span class="stringliteral">&quot;symfunction_short&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   42</span>    m[<span class="stringliteral">&quot;scale_symmetry_functions&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   43</span>    m[<span class="stringliteral">&quot;scale_min_short&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   44</span>    m[<span class="stringliteral">&quot;scale_max_short&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   45</span>    m[<span class="stringliteral">&quot;center_symmetry_functions&quot;</span>          ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   46</span>    m[<span class="stringliteral">&quot;scale_symmetry_functions_sigma&quot;</span>     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   47</span>    m[<span class="stringliteral">&quot;global_hidden_layers_short&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   48</span>    m[<span class="stringliteral">&quot;global_hidden_layers_electrostatic&quot;</span> ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   49</span>    m[<span class="stringliteral">&quot;global_nodes_short&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   50</span>    m[<span class="stringliteral">&quot;global_nodes_electrostatic&quot;</span>         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   51</span>    m[<span class="stringliteral">&quot;global_activation_short&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   52</span>    m[<span class="stringliteral">&quot;global_activation_electrostatic&quot;</span>    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   53</span>    m[<span class="stringliteral">&quot;element_hidden_layers_short&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   54</span>    m[<span class="stringliteral">&quot;element_hidden_layers_electrostatic&quot;</span>] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   55</span>    m[<span class="stringliteral">&quot;element_nodes_short&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   56</span>    m[<span class="stringliteral">&quot;element_nodes_electrostatic&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   57</span>    m[<span class="stringliteral">&quot;element_activation_short&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   58</span>    m[<span class="stringliteral">&quot;element_activation_electrostatic&quot;</span>   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   59</span>    m[<span class="stringliteral">&quot;normalize_nodes&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   60</span>    m[<span class="stringliteral">&quot;mean_energy&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   61</span>    m[<span class="stringliteral">&quot;conv_length&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   62</span>    m[<span class="stringliteral">&quot;conv_energy&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   63</span>    m[<span class="stringliteral">&quot;conv_charge&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   64</span>    m[<span class="stringliteral">&quot;nnp_type&quot;</span>                           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   65</span>    m[<span class="stringliteral">&quot;fixed_gausswidth&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   66</span>    m[<span class="stringliteral">&quot;ewald_truncation_error_method&quot;</span>      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   67</span>    m[<span class="stringliteral">&quot;ewald_prec&quot;</span>                         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   68</span>    m[<span class="stringliteral">&quot;screen_electrostatics&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   69</span>    m[<span class="stringliteral">&quot;four_pi_epsilon&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   70</span> </div>
+<div class="line"><span class="lineno">   71</span>    <span class="comment">// Training keywords.</span></div>
+<div class="line"><span class="lineno">   72</span>    m[<span class="stringliteral">&quot;random_seed&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   73</span>    m[<span class="stringliteral">&quot;test_fraction&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   74</span>    m[<span class="stringliteral">&quot;epochs&quot;</span>                             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   75</span>    m[<span class="stringliteral">&quot;normalize_data_set&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   76</span>    m[<span class="stringliteral">&quot;use_short_forces&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   77</span>    m[<span class="stringliteral">&quot;rmse_threshold&quot;</span>                     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   78</span>    m[<span class="stringliteral">&quot;rmse_threshold_energy&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   79</span>    m[<span class="stringliteral">&quot;rmse_threshold_force&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   80</span>    m[<span class="stringliteral">&quot;rmse_threshold_charge&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   81</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   82</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials_energy&quot;</span>       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   83</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials_force&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   84</span>    m[<span class="stringliteral">&quot;rmse_threshold_trials_charge&quot;</span>       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   85</span>    m[<span class="stringliteral">&quot;energy_fraction&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   86</span>    m[<span class="stringliteral">&quot;force_fraction&quot;</span>                     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   87</span>    m[<span class="stringliteral">&quot;force_energy_ratio&quot;</span>            ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   88</span>    m[<span class="stringliteral">&quot;charge_fraction&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   89</span>    m[<span class="stringliteral">&quot;use_old_weights_short&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   90</span>    m[<span class="stringliteral">&quot;use_old_weights_charge&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   91</span>    m[<span class="stringliteral">&quot;weights_min&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   92</span>    m[<span class="stringliteral">&quot;weights_max&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   93</span>    m[<span class="stringliteral">&quot;initial_hardness&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   94</span>    m[<span class="stringliteral">&quot;nguyen_widrow_weights_short&quot;</span>        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   95</span>    m[<span class="stringliteral">&quot;nguyen_widrow_weights_charge&quot;</span>       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   96</span>    m[<span class="stringliteral">&quot;precondition_weights&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   97</span>    m[<span class="stringliteral">&quot;main_error_metric&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   98</span>    m[<span class="stringliteral">&quot;write_trainpoints&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   99</span>    m[<span class="stringliteral">&quot;write_trainforces&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  100</span>    m[<span class="stringliteral">&quot;write_traincharges&quot;</span>                 ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  101</span>    m[<span class="stringliteral">&quot;write_weights_epoch&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  102</span>    m[<span class="stringliteral">&quot;write_neuronstats&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  103</span>    m[<span class="stringliteral">&quot;write_trainlog&quot;</span>                     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  104</span>    m[<span class="stringliteral">&quot;repeated_energy_update&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  105</span>    m[<span class="stringliteral">&quot;updater_type&quot;</span>                       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  106</span>    m[<span class="stringliteral">&quot;parallel_mode&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  107</span>    m[<span class="stringliteral">&quot;jacobian_mode&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  108</span>    m[<span class="stringliteral">&quot;update_strategy&quot;</span>                    ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  109</span>    m[<span class="stringliteral">&quot;selection_mode&quot;</span>                     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  110</span>    m[<span class="stringliteral">&quot;selection_mode_energy&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  111</span>    m[<span class="stringliteral">&quot;selection_mode_force&quot;</span>               ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  112</span>    m[<span class="stringliteral">&quot;selection_mode_charge&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  113</span>    m[<span class="stringliteral">&quot;task_batch_size_energy&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  114</span>    m[<span class="stringliteral">&quot;task_batch_size_force&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  115</span>    m[<span class="stringliteral">&quot;task_batch_size_charge&quot;</span>             ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  116</span>    m[<span class="stringliteral">&quot;gradient_type&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  117</span>    m[<span class="stringliteral">&quot;gradient_eta&quot;</span>                       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  118</span>    m[<span class="stringliteral">&quot;gradient_adam_eta&quot;</span>                  ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  119</span>    m[<span class="stringliteral">&quot;gradient_adam_beta1&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  120</span>    m[<span class="stringliteral">&quot;gradient_adam_beta2&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  121</span>    m[<span class="stringliteral">&quot;gradient_adam_epsilon&quot;</span>              ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  122</span>    m[<span class="stringliteral">&quot;kalman_type&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  123</span>    m[<span class="stringliteral">&quot;kalman_epsilon&quot;</span>                     ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  124</span>    m[<span class="stringliteral">&quot;kalman_eta&quot;</span>                         ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  125</span>    m[<span class="stringliteral">&quot;kalman_etatau&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  126</span>    m[<span class="stringliteral">&quot;kalman_etamax&quot;</span>                      ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  127</span>    m[<span class="stringliteral">&quot;kalman_q0&quot;</span>                          ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  128</span>    m[<span class="stringliteral">&quot;kalman_qtau&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  129</span>    m[<span class="stringliteral">&quot;kalman_qmin&quot;</span>                        ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  130</span>    m[<span class="stringliteral">&quot;kalman_lambda_short&quot;</span>                ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  131</span>    m[<span class="stringliteral">&quot;kalman_nue_short&quot;</span>                   ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  132</span>    m[<span class="stringliteral">&quot;memorize_symfunc_results&quot;</span>           ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  133</span>    m[<span class="stringliteral">&quot;force_weight&quot;</span>                       ] = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">  134</span> </div>
+<div class="line"><span class="lineno">  135</span>    <span class="comment">// Alternative keyword names.</span></div>
+<div class="line"><span class="lineno">  136</span>    a[<span class="stringliteral">&quot;nnp_type&quot;</span>             ] = {<span class="stringliteral">&quot;nnp_generation&quot;</span>, <span class="stringliteral">&quot;nnp_type_gen&quot;</span>, <span class="stringliteral">&quot;nnp_gen&quot;</span>};</div>
+<div class="line"><span class="lineno">  137</span>    a[<span class="stringliteral">&quot;rmse_threshold_energy&quot;</span>] = {<span class="stringliteral">&quot;short_energy_error_threshold&quot;</span>};</div>
+<div class="line"><span class="lineno">  138</span>    a[<span class="stringliteral">&quot;rmse_threshold_force&quot;</span> ] = {<span class="stringliteral">&quot;short_force_error_threshold&quot;</span>};</div>
+<div class="line"><span class="lineno">  139</span>    a[<span class="stringliteral">&quot;energy_fraction&quot;</span>      ] = {<span class="stringliteral">&quot;short_energy_fraction&quot;</span>};</div>
+<div class="line"><span class="lineno">  140</span>    a[<span class="stringliteral">&quot;force_fraction&quot;</span>       ] = {<span class="stringliteral">&quot;short_force_fraction&quot;</span>};</div>
+<div class="line"><span class="lineno">  141</span>    a[<span class="stringliteral">&quot;symfunction_short&quot;</span>    ] = {<span class="stringliteral">&quot;symfunction&quot;</span>};</div>
+<div class="line"><span class="lineno">  142</span> </div>
+<div class="line"><span class="lineno">  143</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> im : m)</div>
+<div class="line"><span class="lineno">  144</span>    {</div>
+<div class="line"><span class="lineno">  145</span>        <span class="comment">// Check if keyword was already inserted.</span></div>
+<div class="line"><span class="lineno">  146</span>        <span class="keywordflow">if</span> (r.find(im.first) != r.end())</div>
+<div class="line"><span class="lineno">  147</span>        {</div>
+<div class="line"><span class="lineno">  148</span>            <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Multiple definition of keyword.\n&quot;</span>);</div>
+<div class="line"><span class="lineno">  149</span>        }</div>
+<div class="line"><span class="lineno">  150</span>        <span class="comment">// Insert new shared pointer to a Key object.</span></div>
+<div class="line"><span class="lineno">  151</span>        r[im.first] = make_shared&lt;settings::Key&gt;();</div>
+<div class="line"><span class="lineno">  152</span>        <span class="comment">// Add main keyword as first entry in alternatives list.</span></div>
+<div class="line"><span class="lineno">  153</span>        r.at(im.first)-&gt;addAlternative(im.first);</div>
+<div class="line"><span class="lineno">  154</span>        <span class="comment">// Add description text.</span></div>
+<div class="line"><span class="lineno">  155</span>        r.at(im.first)-&gt;setDescription(im.second);</div>
+<div class="line"><span class="lineno">  156</span>        <span class="comment">// Check if alternative keywords exist.</span></div>
+<div class="line"><span class="lineno">  157</span>        <span class="keywordflow">if</span> (a.find(im.first) != a.end())</div>
+<div class="line"><span class="lineno">  158</span>        {</div>
+<div class="line"><span class="lineno">  159</span>            <span class="comment">// Loop over all alternative keywords.</span></div>
+<div class="line"><span class="lineno">  160</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span> alt : a.at(im.first))</div>
+<div class="line"><span class="lineno">  161</span>            {</div>
+<div class="line"><span class="lineno">  162</span>                <span class="comment">// Check if alternative keyword is already inserted.</span></div>
+<div class="line"><span class="lineno">  163</span>                <span class="keywordflow">if</span> (r.find(alt) != r.end())</div>
+<div class="line"><span class="lineno">  164</span>                {</div>
+<div class="line"><span class="lineno">  165</span>                    <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Multiple definition of &quot;</span></div>
+<div class="line"><span class="lineno">  166</span>                                        <span class="stringliteral">&quot;alternative keyword.\n&quot;</span>);</div>
+<div class="line"><span class="lineno">  167</span>                }</div>
+<div class="line"><span class="lineno">  168</span>                <span class="comment">// Set map entry, i.e. shared pointer, to Key object.</span></div>
+<div class="line"><span class="lineno">  169</span>                r[alt] = r.at(im.first);</div>
+<div class="line"><span class="lineno">  170</span>                <span class="comment">// Add alternative keyword to list.</span></div>
+<div class="line"><span class="lineno">  171</span>                r[alt]-&gt;addAlternative(alt);</div>
+<div class="line"><span class="lineno">  172</span>            }</div>
+<div class="line"><span class="lineno">  173</span>        }</div>
+<div class="line"><span class="lineno">  174</span>    }</div>
+<div class="line"><span class="lineno">  175</span> </div>
+<div class="line"><span class="lineno">  176</span>    <span class="keywordflow">return</span> r;</div>
+<div class="line"><span class="lineno">  177</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -281,7 +297,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_881441af78b1e0875bdddb157c69d9c1.html">libnnp</a></li><li class="navelem"><a class="el" href="Settings_8cpp.html">Settings.cpp</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:35 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:48 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

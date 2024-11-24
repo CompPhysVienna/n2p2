@@ -1,4 +1,12 @@
 var searchData=
 [
-  ['vec3d_0',['Vec3D',['../structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8',1,'nnp::Vec3D::Vec3D()'],['../structnnp_1_1Vec3D.html#ae3353099b87aeacc143c4faca2d6d7ff',1,'nnp::Vec3D::Vec3D(double x, double y, double z)'],['../structnnp_1_1Vec3D.html#a8018bcc4ebaed539e840f12293ffc8bb',1,'nnp::Vec3D::Vec3D(Vec3D const &amp;source)']]]
+  ['unorderedmapcontainskey_0',['unorderedMapContainsKey',['../namespacennp.html#af9d46b3e368bb974df1d4c89a0e9b064',1,'nnp']]],
+  ['unscale_1',['unscale',['../classnnp_1_1SymFnc.html#ab51a2ffbfcb479e8a09a73bb31551501',1,'nnp::SymFnc::unscale()'],['../classnnp_1_1ElementCabana.html#ad4b133ffd2f13e5163a9d51c888ebbeb',1,'nnp::ElementCabana::unscale()']]],
+  ['update_2',['update',['../classnnp_1_1GradientDescent.html#af70ae5d1478a4d09c3c0fcf714a942e0',1,'nnp::GradientDescent::update()'],['../classnnp_1_1KalmanFilter.html#a0683a07b11f424b766636dee9ef65582',1,'nnp::KalmanFilter::update()'],['../classnnp_1_1KalmanFilter.html#afd60320bc82cb87db51c925133ef7f22',1,'nnp::KalmanFilter::update(std::size_t const sizeObservation)'],['../classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d',1,'nnp::Training::update()'],['../classnnp_1_1Updater.html#ae0727a8da45cb1439bf0f3d2318c4084',1,'nnp::Updater::update()']]],
+  ['updateerror_3',['updateError',['../structnnp_1_1Atom.html#a961d26bfcf8ca8a5bbdefff543754425',1,'nnp::Atom::updateError()'],['../structnnp_1_1Structure.html#add58b9575e3ae19f82991a445aec6b97',1,'nnp::Structure::updateError()']]],
+  ['updateneighborlistcutoff_4',['updateNeighborlistCutoff',['../classLAMMPS__NS_1_1PairHDNNPDevelop.html#a2a8bb11df8a6500dab61df1688d32b74',1,'LAMMPS_NS::PairHDNNPDevelop']]],
+  ['updater_5',['Updater',['../classnnp_1_1Updater.html#a125abe1065797290fda5ef71205217fd',1,'nnp::Updater']]],
+  ['updatesymmetryfunctionstatistics_6',['updateSymmetryFunctionStatistics',['../classnnp_1_1Element.html#a6dc921df037ff55fa8e20a834b1bf486',1,'nnp::Element']]],
+  ['updatetime_7',['updateTime',['../classnnp_1_1Stopwatch.html#a2a82d088939f4f37d3c27c793dca4933',1,'nnp::Stopwatch']]],
+  ['usenormalization_8',['useNormalization',['../classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451',1,'nnp::Mode']]]
 ];

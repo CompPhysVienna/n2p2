@@ -3,6 +3,7 @@ var classnnp_1_1NeuralNetwork =
     [ "Layer", "structnnp_1_1NeuralNetwork_1_1Layer.html", "structnnp_1_1NeuralNetwork_1_1Layer" ],
     [ "Neuron", "structnnp_1_1NeuralNetwork_1_1Neuron.html", "structnnp_1_1NeuralNetwork_1_1Neuron" ],
     [ "ActivationFunction", "classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbed", [
+      [ "AF_UNSET", "classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda6da7e88084e905ca63568ffa102500a6", null ],
       [ "AF_IDENTITY", "classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda5b0c59d80a0e661ef1f0bfc3df1f5a04", null ],
       [ "AF_TANH", "classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda1569427fccd98a9f3e8ec25d334b982b", null ],
       [ "AF_LOGISTIC", "classnnp_1_1NeuralNetwork.html#a032b3b525f06cd70953aec8e6aeedbeda5915a5141aaee3c8fd8ea61da99b3b41", null ],

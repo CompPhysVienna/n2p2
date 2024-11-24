@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['l1norm_0',['l1norm',['../structnnp_1_1Vec3D.html#a9420cd9675d53cfe9ab5b7846dfb531c',1,'nnp::Vec3D']]],
-  ['loadfile_1',['loadFile',['../classnnp_1_1Settings.html#a75b72141bb978f048344f4e0093f208c',1,'nnp::Settings']]],
-  ['loadsettingsfile_2',['loadSettingsFile',['../classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b',1,'nnp::Mode']]],
-  ['log_3',['Log',['../classnnp_1_1Log.html#af6071a60aa52b6c1b511f99b4bc1b8fe',1,'nnp::Log']]],
-  ['loop_4',['loop',['../classnnp_1_1Stopwatch.html#aa8550767f22f4d2f3db21dbe5807dda7',1,'nnp::Stopwatch::loop()'],['../classnnp_1_1Training.html#a84e2af12e3007a2f9955630cd27a0167',1,'nnp::Training::loop()']]]
+  ['kalmanfilter_0',['KalmanFilter',['../classnnp_1_1KalmanFilter.html#aa47e8c7850e6f9f2b61bed8854841e4a',1,'nnp::KalmanFilter']]],
+  ['keywordcheck_1',['keywordCheck',['../classnnp_1_1settings_1_1Settings.html#a1280877fa41a9f921be4b163f72f691d',1,'nnp::settings::Settings']]],
+  ['keywordexists_2',['keywordExists',['../classnnp_1_1settings_1_1ISettings.html#ad1940c53ccfcb158efce92ffa73e3f42',1,'nnp::settings::ISettings::keywordExists()'],['../classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b',1,'nnp::settings::Settings::keywordExists(Key const &amp;key, bool const exact=false) const override'],['../classnnp_1_1settings_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc',1,'nnp::settings::Settings::keywordExists(std::string const &amp;keyword, bool exact=false) const']]],
+  ['kspacegrid_3',['KspaceGrid',['../classnnp_1_1KspaceGrid.html#a7077c2035c19f5596f7aa11ada61eb64',1,'nnp::KspaceGrid']]],
+  ['kvector_4',['Kvector',['../classnnp_1_1Kvector.html#a67d85f4f575db3d6ebfc844bf204ac9e',1,'nnp::Kvector::Kvector()'],['../classnnp_1_1Kvector.html#af1b5f264615e19c7629670230a0043f5',1,'nnp::Kvector::Kvector(Vec3D v)']]]
 ];

@@ -1,0 +1,4 @@
+<map id="nnp::Structure::calculateElectrostaticEnergy" name="nnp::Structure::calculateElectrostaticEnergy">
+<area shape="rect" id="node1" title="Compute electrostatic energy with global charge equilibration." alt="" coords="277,5,457,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="5,13,229,39"/>
+</map>

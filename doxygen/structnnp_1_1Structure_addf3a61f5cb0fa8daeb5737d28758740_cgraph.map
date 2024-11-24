@@ -1,0 +1,6 @@
+<map id="nnp::Structure::calculateDAdrQ" name="nnp::Structure::calculateDAdrQ">
+<area shape="rect" id="node1" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="5,57,185,98"/>
+<area shape="rect" id="node2" href="$structnnp_1_1ErfcBuf.html#a6b7e36dd4d912a38ed561be3c2c8cfb7" title="Either returns already stored value erfc(x) or calculates it if not yet stored." alt="" coords="273,5,408,32"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="233,57,448,98"/>
+<area shape="rect" id="node4" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="255,123,427,149"/>
+</map>

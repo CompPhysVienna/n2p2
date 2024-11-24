@@ -1,0 +1,4 @@
+<map id="nnp::Structure::setupNeighborCutoffMap" name="nnp::Structure::setupNeighborCutoffMap">
+<area shape="rect" id="node1" title="Set up a neighbor cut&#45;off map which gives the index (value) of the last needed neighbor corresponding..." alt="" coords="5,5,221,47"/>
+<area shape="rect" id="node2" href="$namespacennp.html#a431f556c745c1ee81a32e80d0def6c0a" title="Test if vector contains specified value." alt="" coords="269,13,421,39"/>
+</map>

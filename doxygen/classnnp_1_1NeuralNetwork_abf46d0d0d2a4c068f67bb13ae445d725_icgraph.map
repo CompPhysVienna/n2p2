@@ -1,6 +1,6 @@
 <map id="nnp::NeuralNetwork::calculateDEdG" name="nnp::NeuralNetwork::calculateDEdG">
 <area shape="rect" id="node1" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="463,64,615,105"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="212,5,415,47"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="212,5,415,47"/>
 <area shape="rect" id="node3" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,42,164,69"/>
 <area shape="rect" id="node4" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="241,146,385,173"/>
 </map>

@@ -195,298 +195,300 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   66</span>    training.<a class="code hl_function" href="classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17">initialize</a>();</div>
 <div class="line"><span class="lineno">   67</span>    training.<a class="code hl_function" href="classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b">loadSettingsFile</a>();</div>
 <div class="line"><span class="lineno">   68</span>    training.<a class="code hl_function" href="classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a">setStage</a>(stage);</div>
-<div class="line"><span class="lineno">   69</span>    training.<a class="code hl_function" href="classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2">setupGeneric</a>();</div>
+<div class="line"><span class="lineno">   69</span>    training.<a class="code hl_function" href="classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833">setupGeneric</a>();</div>
 <div class="line"><span class="lineno">   70</span>    training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b">setupSymmetryFunctionScaling</a>();</div>
 <div class="line"><span class="lineno">   71</span>    training.<a class="code hl_function" href="classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153">setupSymmetryFunctionStatistics</a>(<span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
 <div class="line"><span class="lineno">   72</span> </div>
 <div class="line"><span class="lineno">   73</span>    <span class="keyword">auto</span> nnpType = training.<a class="code hl_function" href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">getNnpType</a>();</div>
-<div class="line"><span class="lineno">   74</span>    <span class="keywordflow">if</span> (nnpType == Training::NNPType::SHORT_CHARGE_NN &amp;&amp; stage == 1)</div>
-<div class="line"><span class="lineno">   75</span>    {</div>
-<div class="line"><span class="lineno">   76</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Normalization of charges not yet &quot;</span></div>
-<div class="line"><span class="lineno">   77</span>                            <span class="stringliteral">&quot;implemented\n.&quot;</span>);</div>
-<div class="line"><span class="lineno">   78</span>    }</div>
-<div class="line"><span class="lineno">   79</span> </div>
-<div class="line"><span class="lineno">   80</span>    <span class="keywordflow">if</span> (training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;mean_energy&quot;</span>) ||</div>
-<div class="line"><span class="lineno">   81</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;conv_energy&quot;</span>) ||</div>
-<div class="line"><span class="lineno">   82</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;conv_length&quot;</span>))</div>
-<div class="line"><span class="lineno">   83</span>    {</div>
-<div class="line"><span class="lineno">   84</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Normalization keywords found in settings, &quot;</span></div>
-<div class="line"><span class="lineno">   85</span>                            <span class="stringliteral">&quot;please remove them first.\n&quot;</span>);</div>
-<div class="line"><span class="lineno">   86</span>    }</div>
-<div class="line"><span class="lineno">   87</span> </div>
-<div class="line"><span class="lineno">   88</span>    <span class="keywordflow">if</span> (!training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;use_short_forces&quot;</span>))</div>
-<div class="line"><span class="lineno">   89</span>    {</div>
-<div class="line"><span class="lineno">   90</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Normalization is only possible if forces &quot;</span></div>
-<div class="line"><span class="lineno">   91</span>                            <span class="stringliteral">&quot;are used (keyword \&quot;use_short_forces\&quot;).\n&quot;</span>);</div>
-<div class="line"><span class="lineno">   92</span>    }</div>
-<div class="line"><span class="lineno">   93</span> </div>
-<div class="line"><span class="lineno">   94</span>    <span class="comment">// Need RNG for initial random weights.</span></div>
-<div class="line"><span class="lineno">   95</span>    training.<a class="code hl_function" href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632">setupRandomNumberGenerator</a>();</div>
-<div class="line"><span class="lineno">   96</span> </div>
-<div class="line"><span class="lineno">   97</span>    <span class="comment">// Distribute structures to MPI processes.</span></div>
-<div class="line"><span class="lineno">   98</span>    training.<a class="code hl_function" href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">distributeStructures</a>(<span class="keyword">false</span>);</div>
-<div class="line"><span class="lineno">   99</span> </div>
-<div class="line"><span class="lineno">  100</span>    <span class="comment">// Initialize weights and biases for neural networks.</span></div>
-<div class="line"><span class="lineno">  101</span>    training.<a class="code hl_function" href="classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043">initializeWeights</a>();</div>
-<div class="line"><span class="lineno">  102</span> </div>
-<div class="line"><span class="lineno">  103</span>    training.<a class="code hl_function" href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">writeWeights</a>(<span class="stringliteral">&quot;short&quot;</span>, <span class="stringliteral">&quot;weights.%03zu.norm&quot;</span>);</div>
-<div class="line"><span class="lineno">  104</span>    <span class="keywordflow">if</span> (nnpType == Training::NNPType::SHORT_CHARGE_NN &amp;&amp; stage == 2)</div>
-<div class="line"><span class="lineno">  105</span>    {</div>
-<div class="line"><span class="lineno">  106</span>        training.<a class="code hl_function" href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">writeWeights</a>(<span class="stringliteral">&quot;charge&quot;</span>, <span class="stringliteral">&quot;weightse.%03zu.norm&quot;</span>);</div>
-<div class="line"><span class="lineno">  107</span>    }</div>
-<div class="line"><span class="lineno">  108</span> </div>
-<div class="line"><span class="lineno">  109</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  110</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** DATA SET NORMALIZATION **************&quot;</span></div>
-<div class="line"><span class="lineno">  111</span>                    <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  112</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  113</span> </div>
-<div class="line"><span class="lineno">  114</span>    ofstream fileEvsV;</div>
-<div class="line"><span class="lineno">  115</span>    fileEvsV.open(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;evsv.dat.%04d&quot;</span>, myRank).c_str());</div>
-<div class="line"><span class="lineno">  116</span>    <span class="keywordflow">if</span> (myRank == 0)</div>
-<div class="line"><span class="lineno">  117</span>    {</div>
-<div class="line"><span class="lineno">  118</span>        <span class="comment">// File header.</span></div>
-<div class="line"><span class="lineno">  119</span>        vector&lt;string&gt; title;</div>
-<div class="line"><span class="lineno">  120</span>        vector&lt;string&gt; colName;</div>
-<div class="line"><span class="lineno">  121</span>        vector&lt;string&gt; colInfo;</div>
-<div class="line"><span class="lineno">  122</span>        vector&lt;size_t&gt; colSize;</div>
-<div class="line"><span class="lineno">  123</span>        title.push_back(<span class="stringliteral">&quot;Energy vs. volume comparison.&quot;</span>);</div>
-<div class="line"><span class="lineno">  124</span>        colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  125</span>        colName.push_back(<span class="stringliteral">&quot;V_atom&quot;</span>);</div>
-<div class="line"><span class="lineno">  126</span>        colInfo.push_back(<span class="stringliteral">&quot;Volume per atom.&quot;</span>);</div>
-<div class="line"><span class="lineno">  127</span>        colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  128</span>        colName.push_back(<span class="stringliteral">&quot;Eref_atom&quot;</span>);</div>
-<div class="line"><span class="lineno">  129</span>        colInfo.push_back(<span class="stringliteral">&quot;Reference energy per atom.&quot;</span>);</div>
-<div class="line"><span class="lineno">  130</span>        colSize.push_back(10);</div>
-<div class="line"><span class="lineno">  131</span>        colName.push_back(<span class="stringliteral">&quot;N&quot;</span>);</div>
-<div class="line"><span class="lineno">  132</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of atoms.&quot;</span>);</div>
-<div class="line"><span class="lineno">  133</span>        colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  134</span>        colName.push_back(<span class="stringliteral">&quot;V&quot;</span>);</div>
-<div class="line"><span class="lineno">  135</span>        colInfo.push_back(<span class="stringliteral">&quot;Volume of structure.&quot;</span>);</div>
-<div class="line"><span class="lineno">  136</span>        colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  137</span>        colName.push_back(<span class="stringliteral">&quot;Eref&quot;</span>);</div>
-<div class="line"><span class="lineno">  138</span>        colInfo.push_back(<span class="stringliteral">&quot;Reference energy of structure.&quot;</span>);</div>
-<div class="line"><span class="lineno">  139</span>        colSize.push_back(16);</div>
-<div class="line"><span class="lineno">  140</span>        colName.push_back(<span class="stringliteral">&quot;Eref_offset&quot;</span>);</div>
-<div class="line"><span class="lineno">  141</span>        colInfo.push_back(<span class="stringliteral">&quot;Reference energy of structure (including offset).&quot;</span>);</div>
-<div class="line"><span class="lineno">  142</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(fileEvsV,</div>
-<div class="line"><span class="lineno">  143</span>                          <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
-<div class="line"><span class="lineno">  144</span>    }</div>
-<div class="line"><span class="lineno">  145</span> </div>
-<div class="line"><span class="lineno">  146</span>    <span class="keywordtype">size_t</span> numAtomsTotal         = 0;</div>
-<div class="line"><span class="lineno">  147</span>    <span class="keywordtype">size_t</span> numStructures         = 0;</div>
-<div class="line"><span class="lineno">  148</span>    <span class="keywordtype">double</span> meanEnergyPerAtomRef  = 0.0;</div>
-<div class="line"><span class="lineno">  149</span>    <span class="keywordtype">double</span> meanEnergyPerAtomNnp  = 0.0;</div>
-<div class="line"><span class="lineno">  150</span>    <span class="keywordtype">double</span> sigmaEnergyPerAtomRef = 0.0;</div>
-<div class="line"><span class="lineno">  151</span>    <span class="keywordtype">double</span> sigmaEnergyPerAtomNnp = 0.0;</div>
-<div class="line"><span class="lineno">  152</span>    <span class="keywordtype">double</span> meanForceRef          = 0.0;</div>
-<div class="line"><span class="lineno">  153</span>    <span class="keywordtype">double</span> meanForceNnp          = 0.0;</div>
-<div class="line"><span class="lineno">  154</span>    <span class="keywordtype">double</span> sigmaForceRef         = 0.0;</div>
-<div class="line"><span class="lineno">  155</span>    <span class="keywordtype">double</span> sigmaForceNnp         = 0.0;</div>
-<div class="line"><span class="lineno">  156</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Computing initial prediction for all structures...\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  157</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; s : training.<a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>)</div>
-<div class="line"><span class="lineno">  158</span>    {</div>
-<div class="line"><span class="lineno">  159</span>        <span class="comment">// File output for evsv.dat.</span></div>
-<div class="line"><span class="lineno">  160</span>        fileEvsV &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%16.8E %16.8E %10zu %16.8E %16.8E %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  161</span>                          s.volume / s.numAtoms,</div>
-<div class="line"><span class="lineno">  162</span>                          s.energyRef / s.numAtoms,</div>
-<div class="line"><span class="lineno">  163</span>                          s.numAtoms,</div>
-<div class="line"><span class="lineno">  164</span>                          s.volume,</div>
-<div class="line"><span class="lineno">  165</span>                          s.energyRef,</div>
-<div class="line"><span class="lineno">  166</span>                          training.<a class="code hl_function" href="classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01">getEnergyWithOffset</a>(s, <span class="keyword">true</span>));</div>
-<div class="line"><span class="lineno">  167</span>        s.calculateNeighborList(training.<a class="code hl_function" href="classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9">getMaxCutoffRadius</a>());</div>
-<div class="line"><span class="lineno">  168</span><span class="preprocessor">#ifdef N2P2_NO_SF_GROUPS</span></div>
-<div class="line"><span class="lineno">  169</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736">calculateSymmetryFunctions</a>(s, <span class="keyword">true</span>);</div>
-<div class="line"><span class="lineno">  170</span><span class="preprocessor">#else</span></div>
-<div class="line"><span class="lineno">  171</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955">calculateSymmetryFunctionGroups</a>(s, <span class="keyword">true</span>);</div>
-<div class="line"><span class="lineno">  172</span><span class="preprocessor">#endif</span></div>
-<div class="line"><span class="lineno">  173</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7">calculateAtomicNeuralNetworks</a>(s, <span class="keyword">true</span>);</div>
-<div class="line"><span class="lineno">  174</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308">calculateEnergy</a>(s);</div>
-<div class="line"><span class="lineno">  175</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1">calculateForces</a>(s);</div>
-<div class="line"><span class="lineno">  176</span>        s.clearNeighborList();</div>
-<div class="line"><span class="lineno">  177</span> </div>
-<div class="line"><span class="lineno">  178</span>        numStructures++;</div>
-<div class="line"><span class="lineno">  179</span>        numAtomsTotal += s.numAtoms;</div>
-<div class="line"><span class="lineno">  180</span>        meanEnergyPerAtomRef += s.energyRef / s.numAtoms;</div>
-<div class="line"><span class="lineno">  181</span>        meanEnergyPerAtomNnp += s.energy    / s.numAtoms;</div>
-<div class="line"><span class="lineno">  182</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; a : s.atoms)</div>
-<div class="line"><span class="lineno">  183</span>        {</div>
-<div class="line"><span class="lineno">  184</span>            meanForceRef += a.fRef[0] + a.fRef[1] + a.fRef[2];</div>
-<div class="line"><span class="lineno">  185</span>            meanForceNnp += a.f   [0] + a.f   [1] + a.f   [2];</div>
-<div class="line"><span class="lineno">  186</span>        }</div>
-<div class="line"><span class="lineno">  187</span>    }</div>
-<div class="line"><span class="lineno">  188</span> </div>
-<div class="line"><span class="lineno">  189</span>    fileEvsV.flush();</div>
-<div class="line"><span class="lineno">  190</span>    fileEvsV.close();</div>
-<div class="line"><span class="lineno">  191</span>    MPI_Barrier(MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  192</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing energy/atom vs. volume/atom data &quot;</span></div>
-<div class="line"><span class="lineno">  193</span>                 &lt;&lt; <span class="stringliteral">&quot;to \&quot;evsv.dat\&quot;.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  194</span>    <span class="keywordflow">if</span> (myRank == 0) training.<a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(<span class="stringliteral">&quot;evsv.dat&quot;</span>);</div>
-<div class="line"><span class="lineno">  195</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;numStructures       , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  196</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;numAtomsTotal       , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  197</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  198</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  199</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  200</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  201</span>    meanEnergyPerAtomRef /= numStructures;</div>
-<div class="line"><span class="lineno">  202</span>    meanEnergyPerAtomNnp /= numStructures;</div>
-<div class="line"><span class="lineno">  203</span>    meanForceRef /= 3 * numAtomsTotal;</div>
-<div class="line"><span class="lineno">  204</span>    meanForceNnp /= 3 * numAtomsTotal;</div>
-<div class="line"><span class="lineno">  205</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; s : training.<a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>)</div>
-<div class="line"><span class="lineno">  206</span>    {</div>
-<div class="line"><span class="lineno">  207</span>        <span class="keywordtype">double</span> ediffRef = s.energyRef / s.numAtoms - meanEnergyPerAtomRef;</div>
-<div class="line"><span class="lineno">  208</span>        <span class="keywordtype">double</span> ediffNnp = s.energy    / s.numAtoms - meanEnergyPerAtomNnp;</div>
-<div class="line"><span class="lineno">  209</span>        sigmaEnergyPerAtomRef += ediffRef * ediffRef;</div>
-<div class="line"><span class="lineno">  210</span>        sigmaEnergyPerAtomNnp += ediffNnp * ediffNnp;</div>
-<div class="line"><span class="lineno">  211</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; a : s.atoms)</div>
-<div class="line"><span class="lineno">  212</span>        {</div>
-<div class="line"><span class="lineno">  213</span>            <span class="keywordtype">double</span> fdiffRef = a.fRef[0] - meanForceRef;</div>
-<div class="line"><span class="lineno">  214</span>            <span class="keywordtype">double</span> fdiffNnp = a.f   [0] - meanForceNnp;</div>
-<div class="line"><span class="lineno">  215</span>            sigmaForceRef += fdiffRef * fdiffRef;</div>
-<div class="line"><span class="lineno">  216</span>            sigmaForceNnp += fdiffNnp * fdiffNnp;</div>
-<div class="line"><span class="lineno">  217</span>            fdiffRef = a.fRef[1] - meanForceRef;</div>
-<div class="line"><span class="lineno">  218</span>            fdiffNnp = a.f   [1] - meanForceNnp;</div>
-<div class="line"><span class="lineno">  219</span>            sigmaForceRef += fdiffRef * fdiffRef;</div>
-<div class="line"><span class="lineno">  220</span>            sigmaForceNnp += fdiffNnp * fdiffNnp;</div>
-<div class="line"><span class="lineno">  221</span>            fdiffRef = a.fRef[2] - meanForceRef;</div>
-<div class="line"><span class="lineno">  222</span>            fdiffNnp = a.f   [2] - meanForceNnp;</div>
-<div class="line"><span class="lineno">  223</span>            sigmaForceRef += fdiffRef * fdiffRef;</div>
-<div class="line"><span class="lineno">  224</span>            sigmaForceNnp += fdiffNnp * fdiffNnp;</div>
-<div class="line"><span class="lineno">  225</span>        }</div>
-<div class="line"><span class="lineno">  226</span>    }</div>
-<div class="line"><span class="lineno">  227</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  228</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  229</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  230</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
-<div class="line"><span class="lineno">  231</span>    sigmaEnergyPerAtomRef = sqrt(sigmaEnergyPerAtomRef / (numStructures - 1));</div>
-<div class="line"><span class="lineno">  232</span>    sigmaEnergyPerAtomNnp = sqrt(sigmaEnergyPerAtomNnp / (numStructures - 1));</div>
-<div class="line"><span class="lineno">  233</span>    sigmaForceRef = sqrt(sigmaForceRef / (3 * numAtomsTotal - 1));</div>
-<div class="line"><span class="lineno">  234</span>    sigmaForceNnp = sqrt(sigmaForceNnp / (3 * numAtomsTotal - 1));</div>
-<div class="line"><span class="lineno">  235</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  236</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Total number of structures : %zu\n&quot;</span>, numStructures);</div>
-<div class="line"><span class="lineno">  237</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Total number of atoms      : %zu\n&quot;</span>, numAtomsTotal);</div>
-<div class="line"><span class="lineno">  238</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  239</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Reference data statistics:\n&quot;</span>;</div>
+<div class="line"><span class="lineno">   74</span>    <span class="keywordflow">if</span> ( (nnpType == Training::NNPType::HDNNP_4G ||</div>
+<div class="line"><span class="lineno">   75</span>          nnpType == Training::NNPType::HDNNP_Q) &amp;&amp; stage == 1)</div>
+<div class="line"><span class="lineno">   76</span>    {</div>
+<div class="line"><span class="lineno">   77</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Normalization of charges not yet &quot;</span></div>
+<div class="line"><span class="lineno">   78</span>                            <span class="stringliteral">&quot;implemented\n.&quot;</span>);</div>
+<div class="line"><span class="lineno">   79</span>    }</div>
+<div class="line"><span class="lineno">   80</span> </div>
+<div class="line"><span class="lineno">   81</span>    <span class="keywordflow">if</span> (training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;mean_energy&quot;</span>) ||</div>
+<div class="line"><span class="lineno">   82</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;conv_energy&quot;</span>) ||</div>
+<div class="line"><span class="lineno">   83</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;conv_length&quot;</span>))</div>
+<div class="line"><span class="lineno">   84</span>    {</div>
+<div class="line"><span class="lineno">   85</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Normalization keywords found in settings, &quot;</span></div>
+<div class="line"><span class="lineno">   86</span>                            <span class="stringliteral">&quot;please remove them first.\n&quot;</span>);</div>
+<div class="line"><span class="lineno">   87</span>    }</div>
+<div class="line"><span class="lineno">   88</span> </div>
+<div class="line"><span class="lineno">   89</span>    <span class="keywordflow">if</span> (!training.<a class="code hl_function" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">settingsKeywordExists</a>(<span class="stringliteral">&quot;use_short_forces&quot;</span>))</div>
+<div class="line"><span class="lineno">   90</span>    {</div>
+<div class="line"><span class="lineno">   91</span>        <span class="keywordflow">throw</span> runtime_error(<span class="stringliteral">&quot;ERROR: Normalization is only possible if forces &quot;</span></div>
+<div class="line"><span class="lineno">   92</span>                            <span class="stringliteral">&quot;are used (keyword \&quot;use_short_forces\&quot;).\n&quot;</span>);</div>
+<div class="line"><span class="lineno">   93</span>    }</div>
+<div class="line"><span class="lineno">   94</span> </div>
+<div class="line"><span class="lineno">   95</span>    <span class="comment">// Need RNG for initial random weights.</span></div>
+<div class="line"><span class="lineno">   96</span>    training.<a class="code hl_function" href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632">setupRandomNumberGenerator</a>();</div>
+<div class="line"><span class="lineno">   97</span> </div>
+<div class="line"><span class="lineno">   98</span>    <span class="comment">// Distribute structures to MPI processes.</span></div>
+<div class="line"><span class="lineno">   99</span>    training.<a class="code hl_function" href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">distributeStructures</a>(<span class="keyword">false</span>);</div>
+<div class="line"><span class="lineno">  100</span> </div>
+<div class="line"><span class="lineno">  101</span>    <span class="comment">// Initialize weights and biases for neural networks.</span></div>
+<div class="line"><span class="lineno">  102</span>    training.<a class="code hl_function" href="classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043">initializeWeights</a>();</div>
+<div class="line"><span class="lineno">  103</span> </div>
+<div class="line"><span class="lineno">  104</span>    training.<a class="code hl_function" href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">writeWeights</a>(<span class="stringliteral">&quot;short&quot;</span>, <span class="stringliteral">&quot;weights.%03zu.norm&quot;</span>);</div>
+<div class="line"><span class="lineno">  105</span>    <span class="keywordflow">if</span> ( (nnpType == Training::NNPType::HDNNP_4G ||</div>
+<div class="line"><span class="lineno">  106</span>          nnpType == Training::NNPType::HDNNP_Q) &amp;&amp; stage == 2)</div>
+<div class="line"><span class="lineno">  107</span>    {</div>
+<div class="line"><span class="lineno">  108</span>        training.<a class="code hl_function" href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">writeWeights</a>(<span class="stringliteral">&quot;charge&quot;</span>, <span class="stringliteral">&quot;weightse.%03zu.norm&quot;</span>);</div>
+<div class="line"><span class="lineno">  109</span>    }</div>
+<div class="line"><span class="lineno">  110</span> </div>
+<div class="line"><span class="lineno">  111</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  112</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*** DATA SET NORMALIZATION **************&quot;</span></div>
+<div class="line"><span class="lineno">  113</span>                    <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  114</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  115</span> </div>
+<div class="line"><span class="lineno">  116</span>    ofstream fileEvsV;</div>
+<div class="line"><span class="lineno">  117</span>    fileEvsV.open(<a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;evsv.dat.%04d&quot;</span>, myRank).c_str());</div>
+<div class="line"><span class="lineno">  118</span>    <span class="keywordflow">if</span> (myRank == 0)</div>
+<div class="line"><span class="lineno">  119</span>    {</div>
+<div class="line"><span class="lineno">  120</span>        <span class="comment">// File header.</span></div>
+<div class="line"><span class="lineno">  121</span>        vector&lt;string&gt; title;</div>
+<div class="line"><span class="lineno">  122</span>        vector&lt;string&gt; colName;</div>
+<div class="line"><span class="lineno">  123</span>        vector&lt;string&gt; colInfo;</div>
+<div class="line"><span class="lineno">  124</span>        vector&lt;size_t&gt; colSize;</div>
+<div class="line"><span class="lineno">  125</span>        title.push_back(<span class="stringliteral">&quot;Energy vs. volume comparison.&quot;</span>);</div>
+<div class="line"><span class="lineno">  126</span>        colSize.push_back(16);</div>
+<div class="line"><span class="lineno">  127</span>        colName.push_back(<span class="stringliteral">&quot;V_atom&quot;</span>);</div>
+<div class="line"><span class="lineno">  128</span>        colInfo.push_back(<span class="stringliteral">&quot;Volume per atom.&quot;</span>);</div>
+<div class="line"><span class="lineno">  129</span>        colSize.push_back(16);</div>
+<div class="line"><span class="lineno">  130</span>        colName.push_back(<span class="stringliteral">&quot;Eref_atom&quot;</span>);</div>
+<div class="line"><span class="lineno">  131</span>        colInfo.push_back(<span class="stringliteral">&quot;Reference energy per atom.&quot;</span>);</div>
+<div class="line"><span class="lineno">  132</span>        colSize.push_back(10);</div>
+<div class="line"><span class="lineno">  133</span>        colName.push_back(<span class="stringliteral">&quot;N&quot;</span>);</div>
+<div class="line"><span class="lineno">  134</span>        colInfo.push_back(<span class="stringliteral">&quot;Number of atoms.&quot;</span>);</div>
+<div class="line"><span class="lineno">  135</span>        colSize.push_back(16);</div>
+<div class="line"><span class="lineno">  136</span>        colName.push_back(<span class="stringliteral">&quot;V&quot;</span>);</div>
+<div class="line"><span class="lineno">  137</span>        colInfo.push_back(<span class="stringliteral">&quot;Volume of structure.&quot;</span>);</div>
+<div class="line"><span class="lineno">  138</span>        colSize.push_back(16);</div>
+<div class="line"><span class="lineno">  139</span>        colName.push_back(<span class="stringliteral">&quot;Eref&quot;</span>);</div>
+<div class="line"><span class="lineno">  140</span>        colInfo.push_back(<span class="stringliteral">&quot;Reference energy of structure.&quot;</span>);</div>
+<div class="line"><span class="lineno">  141</span>        colSize.push_back(16);</div>
+<div class="line"><span class="lineno">  142</span>        colName.push_back(<span class="stringliteral">&quot;Eref_offset&quot;</span>);</div>
+<div class="line"><span class="lineno">  143</span>        colInfo.push_back(<span class="stringliteral">&quot;Reference energy of structure (including offset).&quot;</span>);</div>
+<div class="line"><span class="lineno">  144</span>        <a class="code hl_function" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">appendLinesToFile</a>(fileEvsV,</div>
+<div class="line"><span class="lineno">  145</span>                          <a class="code hl_function" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">createFileHeader</a>(title, colSize, colName, colInfo));</div>
+<div class="line"><span class="lineno">  146</span>    }</div>
+<div class="line"><span class="lineno">  147</span> </div>
+<div class="line"><span class="lineno">  148</span>    <span class="keywordtype">size_t</span> numAtomsTotal         = 0;</div>
+<div class="line"><span class="lineno">  149</span>    <span class="keywordtype">size_t</span> numStructures         = 0;</div>
+<div class="line"><span class="lineno">  150</span>    <span class="keywordtype">double</span> meanEnergyPerAtomRef  = 0.0;</div>
+<div class="line"><span class="lineno">  151</span>    <span class="keywordtype">double</span> meanEnergyPerAtomNnp  = 0.0;</div>
+<div class="line"><span class="lineno">  152</span>    <span class="keywordtype">double</span> sigmaEnergyPerAtomRef = 0.0;</div>
+<div class="line"><span class="lineno">  153</span>    <span class="keywordtype">double</span> sigmaEnergyPerAtomNnp = 0.0;</div>
+<div class="line"><span class="lineno">  154</span>    <span class="keywordtype">double</span> meanForceRef          = 0.0;</div>
+<div class="line"><span class="lineno">  155</span>    <span class="keywordtype">double</span> meanForceNnp          = 0.0;</div>
+<div class="line"><span class="lineno">  156</span>    <span class="keywordtype">double</span> sigmaForceRef         = 0.0;</div>
+<div class="line"><span class="lineno">  157</span>    <span class="keywordtype">double</span> sigmaForceNnp         = 0.0;</div>
+<div class="line"><span class="lineno">  158</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Computing initial prediction for all structures...\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  159</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; s : training.<a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>)</div>
+<div class="line"><span class="lineno">  160</span>    {</div>
+<div class="line"><span class="lineno">  161</span>        <span class="comment">// File output for evsv.dat.</span></div>
+<div class="line"><span class="lineno">  162</span>        fileEvsV &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;%16.8E %16.8E %10zu %16.8E %16.8E %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  163</span>                          s.volume / s.numAtoms,</div>
+<div class="line"><span class="lineno">  164</span>                          s.energyRef / s.numAtoms,</div>
+<div class="line"><span class="lineno">  165</span>                          s.numAtoms,</div>
+<div class="line"><span class="lineno">  166</span>                          s.volume,</div>
+<div class="line"><span class="lineno">  167</span>                          s.energyRef,</div>
+<div class="line"><span class="lineno">  168</span>                          training.<a class="code hl_function" href="classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01">getEnergyWithOffset</a>(s, <span class="keyword">true</span>));</div>
+<div class="line"><span class="lineno">  169</span>        s.calculateNeighborList(training.<a class="code hl_function" href="classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9">getMaxCutoffRadius</a>());</div>
+<div class="line"><span class="lineno">  170</span><span class="preprocessor">#ifdef N2P2_NO_SF_GROUPS</span></div>
+<div class="line"><span class="lineno">  171</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736">calculateSymmetryFunctions</a>(s, <span class="keyword">true</span>);</div>
+<div class="line"><span class="lineno">  172</span><span class="preprocessor">#else</span></div>
+<div class="line"><span class="lineno">  173</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955">calculateSymmetryFunctionGroups</a>(s, <span class="keyword">true</span>);</div>
+<div class="line"><span class="lineno">  174</span><span class="preprocessor">#endif</span></div>
+<div class="line"><span class="lineno">  175</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04">calculateAtomicNeuralNetworks</a>(s, <span class="keyword">true</span>);</div>
+<div class="line"><span class="lineno">  176</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308">calculateEnergy</a>(s);</div>
+<div class="line"><span class="lineno">  177</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1">calculateForces</a>(s);</div>
+<div class="line"><span class="lineno">  178</span>        s.clearNeighborList();</div>
+<div class="line"><span class="lineno">  179</span> </div>
+<div class="line"><span class="lineno">  180</span>        numStructures++;</div>
+<div class="line"><span class="lineno">  181</span>        numAtomsTotal += s.numAtoms;</div>
+<div class="line"><span class="lineno">  182</span>        meanEnergyPerAtomRef += s.energyRef / s.numAtoms;</div>
+<div class="line"><span class="lineno">  183</span>        meanEnergyPerAtomNnp += s.energy    / s.numAtoms;</div>
+<div class="line"><span class="lineno">  184</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; a : s.atoms)</div>
+<div class="line"><span class="lineno">  185</span>        {</div>
+<div class="line"><span class="lineno">  186</span>            meanForceRef += a.fRef[0] + a.fRef[1] + a.fRef[2];</div>
+<div class="line"><span class="lineno">  187</span>            meanForceNnp += a.f   [0] + a.f   [1] + a.f   [2];</div>
+<div class="line"><span class="lineno">  188</span>        }</div>
+<div class="line"><span class="lineno">  189</span>    }</div>
+<div class="line"><span class="lineno">  190</span> </div>
+<div class="line"><span class="lineno">  191</span>    fileEvsV.flush();</div>
+<div class="line"><span class="lineno">  192</span>    fileEvsV.close();</div>
+<div class="line"><span class="lineno">  193</span>    MPI_Barrier(MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  194</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing energy/atom vs. volume/atom data &quot;</span></div>
+<div class="line"><span class="lineno">  195</span>                 &lt;&lt; <span class="stringliteral">&quot;to \&quot;evsv.dat\&quot;.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  196</span>    <span class="keywordflow">if</span> (myRank == 0) training.<a class="code hl_function" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">combineFiles</a>(<span class="stringliteral">&quot;evsv.dat&quot;</span>);</div>
+<div class="line"><span class="lineno">  197</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;numStructures       , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  198</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;numAtomsTotal       , 1, <a class="code hl_define" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  199</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  200</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  201</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  202</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;meanForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  203</span>    meanEnergyPerAtomRef /= numStructures;</div>
+<div class="line"><span class="lineno">  204</span>    meanEnergyPerAtomNnp /= numStructures;</div>
+<div class="line"><span class="lineno">  205</span>    meanForceRef /= 3 * numAtomsTotal;</div>
+<div class="line"><span class="lineno">  206</span>    meanForceNnp /= 3 * numAtomsTotal;</div>
+<div class="line"><span class="lineno">  207</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; s : training.<a class="code hl_variable" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">structures</a>)</div>
+<div class="line"><span class="lineno">  208</span>    {</div>
+<div class="line"><span class="lineno">  209</span>        <span class="keywordtype">double</span> ediffRef = s.energyRef / s.numAtoms - meanEnergyPerAtomRef;</div>
+<div class="line"><span class="lineno">  210</span>        <span class="keywordtype">double</span> ediffNnp = s.energy    / s.numAtoms - meanEnergyPerAtomNnp;</div>
+<div class="line"><span class="lineno">  211</span>        sigmaEnergyPerAtomRef += ediffRef * ediffRef;</div>
+<div class="line"><span class="lineno">  212</span>        sigmaEnergyPerAtomNnp += ediffNnp * ediffNnp;</div>
+<div class="line"><span class="lineno">  213</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; a : s.atoms)</div>
+<div class="line"><span class="lineno">  214</span>        {</div>
+<div class="line"><span class="lineno">  215</span>            <span class="keywordtype">double</span> fdiffRef = a.fRef[0] - meanForceRef;</div>
+<div class="line"><span class="lineno">  216</span>            <span class="keywordtype">double</span> fdiffNnp = a.f   [0] - meanForceNnp;</div>
+<div class="line"><span class="lineno">  217</span>            sigmaForceRef += fdiffRef * fdiffRef;</div>
+<div class="line"><span class="lineno">  218</span>            sigmaForceNnp += fdiffNnp * fdiffNnp;</div>
+<div class="line"><span class="lineno">  219</span>            fdiffRef = a.fRef[1] - meanForceRef;</div>
+<div class="line"><span class="lineno">  220</span>            fdiffNnp = a.f   [1] - meanForceNnp;</div>
+<div class="line"><span class="lineno">  221</span>            sigmaForceRef += fdiffRef * fdiffRef;</div>
+<div class="line"><span class="lineno">  222</span>            sigmaForceNnp += fdiffNnp * fdiffNnp;</div>
+<div class="line"><span class="lineno">  223</span>            fdiffRef = a.fRef[2] - meanForceRef;</div>
+<div class="line"><span class="lineno">  224</span>            fdiffNnp = a.f   [2] - meanForceNnp;</div>
+<div class="line"><span class="lineno">  225</span>            sigmaForceRef += fdiffRef * fdiffRef;</div>
+<div class="line"><span class="lineno">  226</span>            sigmaForceNnp += fdiffNnp * fdiffNnp;</div>
+<div class="line"><span class="lineno">  227</span>        }</div>
+<div class="line"><span class="lineno">  228</span>    }</div>
+<div class="line"><span class="lineno">  229</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaEnergyPerAtomRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  230</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaEnergyPerAtomNnp, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  231</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaForceRef        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  232</span>    MPI_Allreduce(MPI_IN_PLACE, &amp;sigmaForceNnp        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);</div>
+<div class="line"><span class="lineno">  233</span>    sigmaEnergyPerAtomRef = sqrt(sigmaEnergyPerAtomRef / (numStructures - 1));</div>
+<div class="line"><span class="lineno">  234</span>    sigmaEnergyPerAtomNnp = sqrt(sigmaEnergyPerAtomNnp / (numStructures - 1));</div>
+<div class="line"><span class="lineno">  235</span>    sigmaForceRef = sqrt(sigmaForceRef / (3 * numAtomsTotal - 1));</div>
+<div class="line"><span class="lineno">  236</span>    sigmaForceNnp = sqrt(sigmaForceNnp / (3 * numAtomsTotal - 1));</div>
+<div class="line"><span class="lineno">  237</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  238</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Total number of structures : %zu\n&quot;</span>, numStructures);</div>
+<div class="line"><span class="lineno">  239</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Total number of atoms      : %zu\n&quot;</span>, numAtomsTotal);</div>
 <div class="line"><span class="lineno">  240</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  241</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma energy per atom : %16.8E +/- %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  242</span>                         meanEnergyPerAtomRef,</div>
-<div class="line"><span class="lineno">  243</span>                         sigmaEnergyPerAtomRef);</div>
-<div class="line"><span class="lineno">  244</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma force           : %16.8E +/- %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  245</span>                         meanForceRef,</div>
-<div class="line"><span class="lineno">  246</span>                         sigmaForceRef);</div>
-<div class="line"><span class="lineno">  247</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  248</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Initial NNP prediction statistics:\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  241</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Reference data statistics:\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  242</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  243</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma energy per atom : %16.8E +/- %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  244</span>                         meanEnergyPerAtomRef,</div>
+<div class="line"><span class="lineno">  245</span>                         sigmaEnergyPerAtomRef);</div>
+<div class="line"><span class="lineno">  246</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma force           : %16.8E +/- %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  247</span>                         meanForceRef,</div>
+<div class="line"><span class="lineno">  248</span>                         sigmaForceRef);</div>
 <div class="line"><span class="lineno">  249</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  250</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma energy per atom : %16.8E +/- %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  251</span>                         meanEnergyPerAtomNnp,</div>
-<div class="line"><span class="lineno">  252</span>                         sigmaEnergyPerAtomNnp);</div>
-<div class="line"><span class="lineno">  253</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma force           : %16.8E +/- %16.8E\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  254</span>                         meanForceNnp,</div>
-<div class="line"><span class="lineno">  255</span>                         sigmaForceNnp);</div>
-<div class="line"><span class="lineno">  256</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  257</span>    <span class="keywordtype">double</span> convEnergy = sigmaForceNnp / sigmaForceRef;</div>
-<div class="line"><span class="lineno">  258</span>    <span class="keywordtype">double</span> convLength = sigmaForceNnp;</div>
-<div class="line"><span class="lineno">  259</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Conversion factor energy   : %24.16E\n&quot;</span>, convEnergy);</div>
-<div class="line"><span class="lineno">  260</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Conversion factor length   : %24.16E\n&quot;</span>, convLength);</div>
-<div class="line"><span class="lineno">  261</span> </div>
-<div class="line"><span class="lineno">  262</span>    <span class="comment">//ofstream fileCfg;</span></div>
-<div class="line"><span class="lineno">  263</span>    <span class="comment">//fileCfg.open(strpr(&quot;output.data.%04d&quot;, myRank).c_str());</span></div>
-<div class="line"><span class="lineno">  264</span>    <span class="comment">//for (vector&lt;Structure&gt;::iterator it = training.structures.begin();</span></div>
-<div class="line"><span class="lineno">  265</span>    <span class="comment">//     it != training.structures.end(); ++it)</span></div>
-<div class="line"><span class="lineno">  266</span>    <span class="comment">//{</span></div>
-<div class="line"><span class="lineno">  267</span>    <span class="comment">//    it-&gt;energyRef = (it-&gt;energyRef - meanEnergyPerAtom * it-&gt;numAtoms)</span></div>
-<div class="line"><span class="lineno">  268</span>    <span class="comment">//                  * convEnergy;</span></div>
-<div class="line"><span class="lineno">  269</span>    <span class="comment">//    it-&gt;box[0] *= convLength;</span></div>
-<div class="line"><span class="lineno">  270</span>    <span class="comment">//    it-&gt;box[1] *= convLength;</span></div>
-<div class="line"><span class="lineno">  271</span>    <span class="comment">//    it-&gt;box[2] *= convLength;</span></div>
-<div class="line"><span class="lineno">  272</span>    <span class="comment">//    for (vector&lt;Atom&gt;::iterator it2 = it-&gt;atoms.begin();</span></div>
-<div class="line"><span class="lineno">  273</span>    <span class="comment">//         it2 != it-&gt;atoms.end(); ++it2)</span></div>
-<div class="line"><span class="lineno">  274</span>    <span class="comment">//    {</span></div>
-<div class="line"><span class="lineno">  275</span>    <span class="comment">//        it2-&gt;r *= convLength;</span></div>
-<div class="line"><span class="lineno">  276</span>    <span class="comment">//        it2-&gt;fRef *= convEnergy / convLength;</span></div>
-<div class="line"><span class="lineno">  277</span>    <span class="comment">//    }</span></div>
-<div class="line"><span class="lineno">  278</span>    <span class="comment">//    it-&gt;writeToFile(&amp;fileCfg);</span></div>
-<div class="line"><span class="lineno">  279</span>    <span class="comment">//}</span></div>
-<div class="line"><span class="lineno">  280</span>    <span class="comment">//fileCfg.flush();</span></div>
-<div class="line"><span class="lineno">  281</span>    <span class="comment">//fileCfg.close();</span></div>
-<div class="line"><span class="lineno">  282</span>    <span class="comment">//MPI_Barrier(MPI_COMM_WORLD);</span></div>
-<div class="line"><span class="lineno">  283</span>    <span class="comment">//training.log &lt;&lt; &quot;\n&quot;;</span></div>
-<div class="line"><span class="lineno">  284</span>    <span class="comment">//training.log &lt;&lt; &quot;Writing converted data file to \&quot;output.data\&quot;.\n&quot;;</span></div>
-<div class="line"><span class="lineno">  285</span>    <span class="comment">//training.log &lt;&lt; &quot;WARNING: This data set is provided for debugging &quot;</span></div>
-<div class="line"><span class="lineno">  286</span>    <span class="comment">//               &quot;purposes only and is NOT intended for training.\n&quot;;</span></div>
-<div class="line"><span class="lineno">  287</span>    <span class="comment">//if (myRank == 0) training.combineFiles(&quot;output.data&quot;);</span></div>
-<div class="line"><span class="lineno">  288</span> </div>
-<div class="line"><span class="lineno">  289</span>    <span class="keywordflow">if</span> (myRank == 0)</div>
-<div class="line"><span class="lineno">  290</span>    {</div>
-<div class="line"><span class="lineno">  291</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  292</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing backup of original settings file to &quot;</span></div>
-<div class="line"><span class="lineno">  293</span>                       <span class="stringliteral">&quot;\&quot;input.nn.bak\&quot;.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  294</span>        ofstream fileSettings;</div>
-<div class="line"><span class="lineno">  295</span>        fileSettings.open(<span class="stringliteral">&quot;input.nn.bak&quot;</span>);</div>
-<div class="line"><span class="lineno">  296</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">writeSettingsFile</a>(&amp;fileSettings);</div>
-<div class="line"><span class="lineno">  297</span>        fileSettings.close();</div>
-<div class="line"><span class="lineno">  298</span> </div>
-<div class="line"><span class="lineno">  299</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  300</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing extended settings file to \&quot;input.nn\&quot;.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  301</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Use this settings file for normalized training.\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  302</span>        fileSettings.open(<span class="stringliteral">&quot;input.nn&quot;</span>);</div>
-<div class="line"><span class="lineno">  303</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;#########################################&quot;</span></div>
-<div class="line"><span class="lineno">  304</span>                        <span class="stringliteral">&quot;######################################\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  305</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;# DATA SET NORMALIZATION\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  306</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;#########################################&quot;</span></div>
-<div class="line"><span class="lineno">  307</span>                        <span class="stringliteral">&quot;######################################\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  308</span>        fileSettings &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;mean_energy %24.16E # nnp-norm2\n&quot;</span>,</div>
-<div class="line"><span class="lineno">  309</span>                              meanEnergyPerAtomRef);</div>
-<div class="line"><span class="lineno">  310</span>        fileSettings &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;conv_energy %24.16E # nnp-norm2\n&quot;</span>, convEnergy);</div>
-<div class="line"><span class="lineno">  311</span>        fileSettings &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;conv_length %24.16E # nnp-norm2\n&quot;</span>, convLength);</div>
-<div class="line"><span class="lineno">  312</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;#########################################&quot;</span></div>
-<div class="line"><span class="lineno">  313</span>                        <span class="stringliteral">&quot;######################################\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  314</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  315</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">writeSettingsFile</a>(&amp;fileSettings);</div>
-<div class="line"><span class="lineno">  316</span>        fileSettings.close();</div>
-<div class="line"><span class="lineno">  317</span>    }</div>
-<div class="line"><span class="lineno">  318</span> </div>
-<div class="line"><span class="lineno">  319</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
-<div class="line"><span class="lineno">  320</span>                    <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
-<div class="line"><span class="lineno">  321</span> </div>
-<div class="line"><span class="lineno">  322</span>    myLog.close();</div>
+<div class="line"><span class="lineno">  250</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Initial NNP prediction statistics:\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  251</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  252</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma energy per atom : %16.8E +/- %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  253</span>                         meanEnergyPerAtomNnp,</div>
+<div class="line"><span class="lineno">  254</span>                         sigmaEnergyPerAtomNnp);</div>
+<div class="line"><span class="lineno">  255</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Mean/sigma force           : %16.8E +/- %16.8E\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  256</span>                         meanForceNnp,</div>
+<div class="line"><span class="lineno">  257</span>                         sigmaForceNnp);</div>
+<div class="line"><span class="lineno">  258</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;----------------------------------\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  259</span>    <span class="keywordtype">double</span> convEnergy = sigmaForceNnp / sigmaForceRef;</div>
+<div class="line"><span class="lineno">  260</span>    <span class="keywordtype">double</span> convLength = sigmaForceNnp;</div>
+<div class="line"><span class="lineno">  261</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Conversion factor energy   : %24.16E\n&quot;</span>, convEnergy);</div>
+<div class="line"><span class="lineno">  262</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;Conversion factor length   : %24.16E\n&quot;</span>, convLength);</div>
+<div class="line"><span class="lineno">  263</span> </div>
+<div class="line"><span class="lineno">  264</span>    <span class="comment">//ofstream fileCfg;</span></div>
+<div class="line"><span class="lineno">  265</span>    <span class="comment">//fileCfg.open(strpr(&quot;output.data.%04d&quot;, myRank).c_str());</span></div>
+<div class="line"><span class="lineno">  266</span>    <span class="comment">//for (vector&lt;Structure&gt;::iterator it = training.structures.begin();</span></div>
+<div class="line"><span class="lineno">  267</span>    <span class="comment">//     it != training.structures.end(); ++it)</span></div>
+<div class="line"><span class="lineno">  268</span>    <span class="comment">//{</span></div>
+<div class="line"><span class="lineno">  269</span>    <span class="comment">//    it-&gt;energyRef = (it-&gt;energyRef - meanEnergyPerAtom * it-&gt;numAtoms)</span></div>
+<div class="line"><span class="lineno">  270</span>    <span class="comment">//                  * convEnergy;</span></div>
+<div class="line"><span class="lineno">  271</span>    <span class="comment">//    it-&gt;box[0] *= convLength;</span></div>
+<div class="line"><span class="lineno">  272</span>    <span class="comment">//    it-&gt;box[1] *= convLength;</span></div>
+<div class="line"><span class="lineno">  273</span>    <span class="comment">//    it-&gt;box[2] *= convLength;</span></div>
+<div class="line"><span class="lineno">  274</span>    <span class="comment">//    for (vector&lt;Atom&gt;::iterator it2 = it-&gt;atoms.begin();</span></div>
+<div class="line"><span class="lineno">  275</span>    <span class="comment">//         it2 != it-&gt;atoms.end(); ++it2)</span></div>
+<div class="line"><span class="lineno">  276</span>    <span class="comment">//    {</span></div>
+<div class="line"><span class="lineno">  277</span>    <span class="comment">//        it2-&gt;r *= convLength;</span></div>
+<div class="line"><span class="lineno">  278</span>    <span class="comment">//        it2-&gt;fRef *= convEnergy / convLength;</span></div>
+<div class="line"><span class="lineno">  279</span>    <span class="comment">//    }</span></div>
+<div class="line"><span class="lineno">  280</span>    <span class="comment">//    it-&gt;writeToFile(&amp;fileCfg);</span></div>
+<div class="line"><span class="lineno">  281</span>    <span class="comment">//}</span></div>
+<div class="line"><span class="lineno">  282</span>    <span class="comment">//fileCfg.flush();</span></div>
+<div class="line"><span class="lineno">  283</span>    <span class="comment">//fileCfg.close();</span></div>
+<div class="line"><span class="lineno">  284</span>    <span class="comment">//MPI_Barrier(MPI_COMM_WORLD);</span></div>
+<div class="line"><span class="lineno">  285</span>    <span class="comment">//training.log &lt;&lt; &quot;\n&quot;;</span></div>
+<div class="line"><span class="lineno">  286</span>    <span class="comment">//training.log &lt;&lt; &quot;Writing converted data file to \&quot;output.data\&quot;.\n&quot;;</span></div>
+<div class="line"><span class="lineno">  287</span>    <span class="comment">//training.log &lt;&lt; &quot;WARNING: This data set is provided for debugging &quot;</span></div>
+<div class="line"><span class="lineno">  288</span>    <span class="comment">//               &quot;purposes only and is NOT intended for training.\n&quot;;</span></div>
+<div class="line"><span class="lineno">  289</span>    <span class="comment">//if (myRank == 0) training.combineFiles(&quot;output.data&quot;);</span></div>
+<div class="line"><span class="lineno">  290</span> </div>
+<div class="line"><span class="lineno">  291</span>    <span class="keywordflow">if</span> (myRank == 0)</div>
+<div class="line"><span class="lineno">  292</span>    {</div>
+<div class="line"><span class="lineno">  293</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  294</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing backup of original settings file to &quot;</span></div>
+<div class="line"><span class="lineno">  295</span>                       <span class="stringliteral">&quot;\&quot;input.nn.bak\&quot;.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  296</span>        ofstream fileSettings;</div>
+<div class="line"><span class="lineno">  297</span>        fileSettings.open(<span class="stringliteral">&quot;input.nn.bak&quot;</span>);</div>
+<div class="line"><span class="lineno">  298</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">writeSettingsFile</a>(&amp;fileSettings);</div>
+<div class="line"><span class="lineno">  299</span>        fileSettings.close();</div>
+<div class="line"><span class="lineno">  300</span> </div>
+<div class="line"><span class="lineno">  301</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  302</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Writing extended settings file to \&quot;input.nn\&quot;.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  303</span>        training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;Use this settings file for normalized training.\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  304</span>        fileSettings.open(<span class="stringliteral">&quot;input.nn&quot;</span>);</div>
+<div class="line"><span class="lineno">  305</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;#########################################&quot;</span></div>
+<div class="line"><span class="lineno">  306</span>                        <span class="stringliteral">&quot;######################################\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  307</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;# DATA SET NORMALIZATION\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  308</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;#########################################&quot;</span></div>
+<div class="line"><span class="lineno">  309</span>                        <span class="stringliteral">&quot;######################################\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  310</span>        fileSettings &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;mean_energy %24.16E # nnp-norm2\n&quot;</span>,</div>
+<div class="line"><span class="lineno">  311</span>                              meanEnergyPerAtomRef);</div>
+<div class="line"><span class="lineno">  312</span>        fileSettings &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;conv_energy %24.16E # nnp-norm2\n&quot;</span>, convEnergy);</div>
+<div class="line"><span class="lineno">  313</span>        fileSettings &lt;&lt; <a class="code hl_function" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">strpr</a>(<span class="stringliteral">&quot;conv_length %24.16E # nnp-norm2\n&quot;</span>, convLength);</div>
+<div class="line"><span class="lineno">  314</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;#########################################&quot;</span></div>
+<div class="line"><span class="lineno">  315</span>                        <span class="stringliteral">&quot;######################################\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  316</span>        fileSettings &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><span class="lineno">  317</span>        training.<a class="code hl_function" href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">writeSettingsFile</a>(&amp;fileSettings);</div>
+<div class="line"><span class="lineno">  318</span>        fileSettings.close();</div>
+<div class="line"><span class="lineno">  319</span>    }</div>
+<div class="line"><span class="lineno">  320</span> </div>
+<div class="line"><span class="lineno">  321</span>    training.<a class="code hl_variable" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">log</a> &lt;&lt; <span class="stringliteral">&quot;*****************************************&quot;</span></div>
+<div class="line"><span class="lineno">  322</span>                    <span class="stringliteral">&quot;**************************************\n&quot;</span>;</div>
 <div class="line"><span class="lineno">  323</span> </div>
-<div class="line"><span class="lineno">  324</span>    MPI_Finalize();</div>
+<div class="line"><span class="lineno">  324</span>    myLog.close();</div>
 <div class="line"><span class="lineno">  325</span> </div>
-<div class="line"><span class="lineno">  326</span>    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><span class="lineno">  327</span>}</div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_a1ecb649e652e2c6acb83102340f48afd"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">nnp::Dataset::distributeStructures</a></div><div class="ttdeci">int distributeStructures(bool randomize, bool excludeRank0=false, std::string const &amp;fileName=&quot;input.data&quot;)</div><div class="ttdoc">Read data file and distribute structures among processors.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00722">Dataset.cpp:722</a></div></div>
+<div class="line"><span class="lineno">  326</span>    MPI_Finalize();</div>
+<div class="line"><span class="lineno">  327</span> </div>
+<div class="line"><span class="lineno">  328</span>    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><span class="lineno">  329</span>}</div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_a1ecb649e652e2c6acb83102340f48afd"><div class="ttname"><a href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">nnp::Dataset::distributeStructures</a></div><div class="ttdeci">int distributeStructures(bool randomize, bool excludeRank0=false, std::string const &amp;fileName=&quot;input.data&quot;)</div><div class="ttdoc">Read data file and distribute structures among processors.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00724">Dataset.cpp:724</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_a93a93358a8303c618562487729450455"><div class="ttname"><a href="classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455">nnp::Dataset::setupMPI</a></div><div class="ttdeci">void setupMPI()</div><div class="ttdoc">Initialize MPI with MPI_COMM_WORLD.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00052">Dataset.cpp:52</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_aa0ab32abb821e98058c7df794ca8103d"><div class="ttname"><a href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">nnp::Dataset::structures</a></div><div class="ttdeci">std::vector&lt; Structure &gt; structures</div><div class="ttdoc">All structures in this dataset.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8h_source.html#l00195">Dataset.h:195</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Dataset_html_abd84c06c5a83789ebe6a3ef8075af632"><div class="ttname"><a href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632">nnp::Dataset::setupRandomNumberGenerator</a></div><div class="ttdeci">void setupRandomNumberGenerator()</div><div class="ttdoc">Initialize random number generator.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l00110">Dataset.cpp:110</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Dataset_html_acb7687f6863a18f901b4b13bdd88d225"><div class="ttname"><a href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">nnp::Dataset::combineFiles</a></div><div class="ttdeci">void combineFiles(std::string filePrefix) const</div><div class="ttdoc">Combine individual MPI proc files to one.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01742">Dataset.cpp:1742</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Dataset_html_acb7687f6863a18f901b4b13bdd88d225"><div class="ttname"><a href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">nnp::Dataset::combineFiles</a></div><div class="ttdeci">void combineFiles(std::string filePrefix) const</div><div class="ttdoc">Combine individual MPI proc files to one.</div><div class="ttdef"><b>Definition:</b> <a href="Dataset_8cpp_source.html#l01744">Dataset.cpp:1744</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Log_html_a80b248cc27c7846814fb2915e198b71b"><div class="ttname"><a href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b">nnp::Log::registerStreamPointer</a></div><div class="ttdeci">void registerStreamPointer(std::ofstream *const &amp;streamPointer)</div><div class="ttdoc">Register new C++ ofstream pointer.</div><div class="ttdef"><b>Definition:</b> <a href="Log_8cpp_source.html#l00091">Log.cpp:91</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Log_html_ae0645e02c1bfbda124a3d1a7b13f4df7"><div class="ttname"><a href="classnnp_1_1Log.html#ae0645e02c1bfbda124a3d1a7b13f4df7">nnp::Log::writeToStdout</a></div><div class="ttdeci">bool writeToStdout</div><div class="ttdoc">Turn on/off output to stdout.</div><div class="ttdef"><b>Definition:</b> <a href="Log_8h_source.html#l00085">Log.h:85</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a07765f9f29bb8cd798c6d82721a8711d"><div class="ttname"><a href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">nnp::Mode::getNnpType</a></div><div class="ttdeci">NNPType getNnpType() const</div><div class="ttdoc">Getter for Mode::nnpType.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00543">Mode.h:543</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a19a68b9d8750ddc0b440b1828ecf9f17"><div class="ttname"><a href="classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17">nnp::Mode::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdoc">Write welcome message with version information.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00050">Mode.cpp:50</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a73f1fcdcbb76828f6aca2d322bfeb2a9"><div class="ttname"><a href="classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9">nnp::Mode::getMaxCutoffRadius</a></div><div class="ttdeci">double getMaxCutoffRadius() const</div><div class="ttdoc">Getter for Mode::maxCutoffRadius.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00563">Mode.h:563</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a778e3d7087b98c31effaa4129d23c6d7"><div class="ttname"><a href="classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7">nnp::Mode::calculateAtomicNeuralNetworks</a></div><div class="ttdeci">void calculateAtomicNeuralNetworks(Structure &amp;structure, bool const derivatives)</div><div class="ttdoc">Calculate a single atomic neural network for a given atom and nn type.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01310">Mode.cpp:1310</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a88fb8800851f3d440fcf393cbc073308"><div class="ttname"><a href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308">nnp::Mode::calculateEnergy</a></div><div class="ttdeci">void calculateEnergy(Structure &amp;structure) const</div><div class="ttdoc">Calculate potential energy for a given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01366">Mode.cpp:1366</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_a8aec6fb4708b93b93a9cfa0e8045f955"><div class="ttname"><a href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955">nnp::Mode::calculateSymmetryFunctionGroups</a></div><div class="ttdeci">void calculateSymmetryFunctionGroups(Structure &amp;structure, bool const derivatives)</div><div class="ttdoc">Calculate all symmetry function groups for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01230">Mode.cpp:1230</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_aa26222b7b9dc3fd141f6e775690b5d2b"><div class="ttname"><a href="classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b">nnp::Mode::setupSymmetryFunctionScaling</a></div><div class="ttdeci">virtual void setupSymmetryFunctionScaling(std::string const &amp;fileName=&quot;scaling.data&quot;)</div><div class="ttdoc">Set up symmetry function scaling from file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00532">Mode.cpp:532</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_aa9606884fa146912a6b4ab6d26df9275"><div class="ttname"><a href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">nnp::Mode::settingsKeywordExists</a></div><div class="ttdeci">bool settingsKeywordExists(std::string const &amp;keyword) const</div><div class="ttdoc">Check if keyword was found in settings file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01622">Mode.cpp:1622</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_aae5d8b1186dde3ffbf2545fca1d08923"><div class="ttname"><a href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a></div><div class="ttdeci">Log log</div><div class="ttdoc">Global log file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00510">Mode.h:510</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_ab86800b032be86f1321d3f6683c75b01"><div class="ttname"><a href="classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01">nnp::Mode::getEnergyWithOffset</a></div><div class="ttdeci">double getEnergyWithOffset(Structure const &amp;structure, bool ref=true) const</div><div class="ttdoc">Add atomic energy offsets and return energy.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01512">Mode.cpp:1512</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_abbb133ac96714931b66435ce7a9315c2"><div class="ttname"><a href="classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2">nnp::Mode::setupGeneric</a></div><div class="ttdeci">void setupGeneric(bool skipNormalize=false)</div><div class="ttdoc">Combine multiple setup routines and provide a basic NNP setup.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00197">Mode.cpp:197</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_add11e3c30eb86aba38d8239d1e5d8736"><div class="ttname"><a href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736">nnp::Mode::calculateSymmetryFunctions</a></div><div class="ttdeci">void calculateSymmetryFunctions(Structure &amp;structure, bool const derivatives)</div><div class="ttdoc">Calculate all symmetry functions for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01150">Mode.cpp:1150</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_ae2fddd6f29bb63ef67b9619544d81ab1"><div class="ttname"><a href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1">nnp::Mode::calculateForces</a></div><div class="ttdeci">void calculateForces(Structure &amp;structure) const</div><div class="ttdoc">Calculate forces for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01392">Mode.cpp:1392</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_ae4b348e9b5e2ef89cb30c760bdb55153"><div class="ttname"><a href="classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153">nnp::Mode::setupSymmetryFunctionStatistics</a></div><div class="ttdeci">void setupSymmetryFunctionStatistics(bool collectStatistics, bool collectExtrapolationWarnings, bool writeExtrapolationWarnings, bool stopOnExtrapolationWarnings)</div><div class="ttdoc">Set up symmetry function statistics collection.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00923">Mode.cpp:923</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_ae8ca16789e7794309cf9931e58eb882b"><div class="ttname"><a href="classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b">nnp::Mode::loadSettingsFile</a></div><div class="ttdeci">void loadSettingsFile(std::string const &amp;fileName=&quot;input.nn&quot;)</div><div class="ttdoc">Open settings file and load all keywords into memory.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00156">Mode.cpp:156</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Mode_html_af2d61853475185baae3fa3a7d358557a"><div class="ttname"><a href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">nnp::Mode::writeSettingsFile</a></div><div class="ttdeci">void writeSettingsFile(std::ofstream *const &amp;file) const</div><div class="ttdoc">Write complete settings file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01650">Mode.cpp:1650</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a07765f9f29bb8cd798c6d82721a8711d"><div class="ttname"><a href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">nnp::Mode::getNnpType</a></div><div class="ttdeci">NNPType getNnpType() const</div><div class="ttdoc">Getter for Mode::nnpType.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00668">Mode.h:668</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a19a68b9d8750ddc0b440b1828ecf9f17"><div class="ttname"><a href="classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17">nnp::Mode::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdoc">Write welcome message with version information.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00055">Mode.cpp:55</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a44b9b358f4f590c4880e3ca1d07cc833"><div class="ttname"><a href="classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833">nnp::Mode::setupGeneric</a></div><div class="ttdeci">void setupGeneric(std::string const &amp;nnpDir=&quot;&quot;, bool skipNormalize=false, bool initialHardness=false)</div><div class="ttdoc">Combine multiple setup routines and provide a basic NNP setup.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00212">Mode.cpp:212</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a67f3cb929c9dbad689889941d35f7b04"><div class="ttname"><a href="classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04">nnp::Mode::calculateAtomicNeuralNetworks</a></div><div class="ttdeci">void calculateAtomicNeuralNetworks(Structure &amp;structure, bool const derivatives, std::string id=&quot;&quot;)</div><div class="ttdoc">Calculate atomic neural networks for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01642">Mode.cpp:1642</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a73f1fcdcbb76828f6aca2d322bfeb2a9"><div class="ttname"><a href="classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9">nnp::Mode::getMaxCutoffRadius</a></div><div class="ttdeci">double getMaxCutoffRadius() const</div><div class="ttdoc">Getter for Mode::maxCutoffRadius.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00693">Mode.h:693</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a88fb8800851f3d440fcf393cbc073308"><div class="ttname"><a href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308">nnp::Mode::calculateEnergy</a></div><div class="ttdeci">void calculateEnergy(Structure &amp;structure) const</div><div class="ttdoc">Calculate potential energy for a given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01803">Mode.cpp:1803</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_a8aec6fb4708b93b93a9cfa0e8045f955"><div class="ttname"><a href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955">nnp::Mode::calculateSymmetryFunctionGroups</a></div><div class="ttdeci">void calculateSymmetryFunctionGroups(Structure &amp;structure, bool const derivatives)</div><div class="ttdoc">Calculate all symmetry function groups for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01561">Mode.cpp:1561</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_aa26222b7b9dc3fd141f6e775690b5d2b"><div class="ttname"><a href="classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b">nnp::Mode::setupSymmetryFunctionScaling</a></div><div class="ttdeci">virtual void setupSymmetryFunctionScaling(std::string const &amp;fileName=&quot;scaling.data&quot;)</div><div class="ttdoc">Set up symmetry function scaling from file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00712">Mode.cpp:712</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_aa9606884fa146912a6b4ab6d26df9275"><div class="ttname"><a href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">nnp::Mode::settingsKeywordExists</a></div><div class="ttdeci">bool settingsKeywordExists(std::string const &amp;keyword) const</div><div class="ttdoc">Check if keyword was found in settings file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l02193">Mode.cpp:2193</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_aae5d8b1186dde3ffbf2545fca1d08923"><div class="ttname"><a href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a></div><div class="ttdeci">Log log</div><div class="ttdoc">Global log file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8h_source.html#l00593">Mode.h:593</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_ab86800b032be86f1321d3f6683c75b01"><div class="ttname"><a href="classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01">nnp::Mode::getEnergyWithOffset</a></div><div class="ttdeci">double getEnergyWithOffset(Structure const &amp;structure, bool ref=true) const</div><div class="ttdoc">Add atomic energy offsets and return energy.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l02069">Mode.cpp:2069</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_add11e3c30eb86aba38d8239d1e5d8736"><div class="ttname"><a href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736">nnp::Mode::calculateSymmetryFunctions</a></div><div class="ttdeci">void calculateSymmetryFunctions(Structure &amp;structure, bool const derivatives)</div><div class="ttdoc">Calculate all symmetry functions for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01480">Mode.cpp:1480</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_ae2fddd6f29bb63ef67b9619544d81ab1"><div class="ttname"><a href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1">nnp::Mode::calculateForces</a></div><div class="ttdeci">void calculateForces(Structure &amp;structure) const</div><div class="ttdoc">Calculate forces for all atoms in given structure.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01849">Mode.cpp:1849</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_ae4b348e9b5e2ef89cb30c760bdb55153"><div class="ttname"><a href="classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153">nnp::Mode::setupSymmetryFunctionStatistics</a></div><div class="ttdeci">void setupSymmetryFunctionStatistics(bool collectStatistics, bool collectExtrapolationWarnings, bool writeExtrapolationWarnings, bool stopOnExtrapolationWarnings)</div><div class="ttdoc">Set up symmetry function statistics collection.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l01103">Mode.cpp:1103</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_ae8ca16789e7794309cf9931e58eb882b"><div class="ttname"><a href="classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b">nnp::Mode::loadSettingsFile</a></div><div class="ttdeci">void loadSettingsFile(std::string const &amp;fileName=&quot;input.nn&quot;)</div><div class="ttdoc">Open settings file and load all keywords into memory.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l00161">Mode.cpp:161</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Mode_html_af2d61853475185baae3fa3a7d358557a"><div class="ttname"><a href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">nnp::Mode::writeSettingsFile</a></div><div class="ttdeci">void writeSettingsFile(std::ofstream *const &amp;file) const</div><div class="ttdoc">Write complete settings file.</div><div class="ttdef"><b>Definition:</b> <a href="Mode_8cpp_source.html#l02221">Mode.cpp:2221</a></div></div>
 <div class="ttc" id="aclassnnp_1_1Training_html"><div class="ttname"><a href="classnnp_1_1Training.html">nnp::Training</a></div><div class="ttdoc">Training methods.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8h_source.html#l00035">Training.h:36</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Training_html_ab3025fc3780b67e91e063fd490640043"><div class="ttname"><a href="classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043">nnp::Training::initializeWeights</a></div><div class="ttdeci">void initializeWeights()</div><div class="ttdoc">Initialize weights for all elements.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8cpp_source.html#l00259">Training.cpp:259</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Training_html_af600a10225c7035afa59ce709bc105a7"><div class="ttname"><a href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">nnp::Training::writeWeights</a></div><div class="ttdeci">void writeWeights(std::string const &amp;nnName, std::string const &amp;fileNameFormat) const</div><div class="ttdoc">Write weights to files (one file for each element).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8cpp_source.html#l01559">Training.cpp:1559</a></div></div>
-<div class="ttc" id="aclassnnp_1_1Training_html_afbdd4d56bb0290e139382bdfba070c2a"><div class="ttname"><a href="classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a">nnp::Training::setStage</a></div><div class="ttdeci">void setStage(std::size_t stage)</div><div class="ttdoc">Set training stage (if multiple stages are needed for NNP type).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8cpp_source.html#l00361">Training.cpp:361</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Training_html_ab3025fc3780b67e91e063fd490640043"><div class="ttname"><a href="classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043">nnp::Training::initializeWeights</a></div><div class="ttdeci">void initializeWeights()</div><div class="ttdoc">Initialize weights for all elements.</div><div class="ttdef"><b>Definition:</b> <a href="Training_8cpp_source.html#l00292">Training.cpp:292</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Training_html_af600a10225c7035afa59ce709bc105a7"><div class="ttname"><a href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">nnp::Training::writeWeights</a></div><div class="ttdeci">void writeWeights(std::string const &amp;nnName, std::string const &amp;fileNameFormat) const</div><div class="ttdoc">Write weights to files (one file for each element).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8cpp_source.html#l01662">Training.cpp:1662</a></div></div>
+<div class="ttc" id="aclassnnp_1_1Training_html_afbdd4d56bb0290e139382bdfba070c2a"><div class="ttname"><a href="classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a">nnp::Training::setStage</a></div><div class="ttdeci">void setStage(std::size_t stage)</div><div class="ttdoc">Set training stage (if multiple stages are needed for NNP type).</div><div class="ttdef"><b>Definition:</b> <a href="Training_8cpp_source.html#l00379">Training.cpp:379</a></div></div>
 <div class="ttc" id="ampi-extra_8h_html_aaae430420e25984e327a89b068e1582b"><div class="ttname"><a href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a></div><div class="ttdeci">#define MPI_SIZE_T</div><div class="ttdef"><b>Definition:</b> <a href="mpi-extra_8h_source.html#l00022">mpi-extra.h:22</a></div></div>
 <div class="ttc" id="anamespacennp_html_a398f0bcafb57e99ba1581c4b8f8a7f76"><div class="ttname"><a href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">nnp::strpr</a></div><div class="ttdeci">string strpr(const char *format,...)</div><div class="ttdoc">String version of printf function.</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00090">utility.cpp:90</a></div></div>
-<div class="ttc" id="anamespacennp_html_a5660082c7868a44a59e125c0cbe10d85"><div class="ttname"><a href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader</a></div><div class="ttdeci">vector&lt; string &gt; createFileHeader(vector&lt; string &gt; const &amp;title, vector&lt; size_t &gt; const &amp;colSize, vector&lt; string &gt; const &amp;colName, vector&lt; string &gt; const &amp;colInfo, char const &amp;commentChar)</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00104">utility.cpp:104</a></div></div>
-<div class="ttc" id="anamespacennp_html_aeed037cd4a793db2c1b490e6607c0866"><div class="ttname"><a href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile</a></div><div class="ttdeci">void appendLinesToFile(ofstream &amp;file, vector&lt; string &gt; const lines)</div><div class="ttdoc">Append multiple lines of strings to open file stream.</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00218">utility.cpp:218</a></div></div>
+<div class="ttc" id="anamespacennp_html_a5660082c7868a44a59e125c0cbe10d85"><div class="ttname"><a href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader</a></div><div class="ttdeci">vector&lt; string &gt; createFileHeader(vector&lt; string &gt; const &amp;title, vector&lt; size_t &gt; const &amp;colSize, vector&lt; string &gt; const &amp;colName, vector&lt; string &gt; const &amp;colInfo, char const &amp;commentChar)</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00111">utility.cpp:111</a></div></div>
+<div class="ttc" id="anamespacennp_html_aeed037cd4a793db2c1b490e6607c0866"><div class="ttname"><a href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile</a></div><div class="ttdeci">void appendLinesToFile(ofstream &amp;file, vector&lt; string &gt; const lines)</div><div class="ttdoc">Append multiple lines of strings to open file stream.</div><div class="ttdef"><b>Definition:</b> <a href="utility_8cpp_source.html#l00225">utility.cpp:225</a></div></div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile()</a>, <a class="el" href="classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7">nnp::Mode::calculateAtomicNeuralNetworks()</a>, <a class="el" href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308">nnp::Mode::calculateEnergy()</a>, <a class="el" href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1">nnp::Mode::calculateForces()</a>, <a class="el" href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955">nnp::Mode::calculateSymmetryFunctionGroups()</a>, <a class="el" href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736">nnp::Mode::calculateSymmetryFunctions()</a>, <a class="el" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">nnp::Dataset::combineFiles()</a>, <a class="el" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader()</a>, <a class="el" href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">nnp::Dataset::distributeStructures()</a>, <a class="el" href="classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01">nnp::Mode::getEnergyWithOffset()</a>, <a class="el" href="classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9">nnp::Mode::getMaxCutoffRadius()</a>, <a class="el" href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">nnp::Mode::getNnpType()</a>, <a class="el" href="classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17">nnp::Mode::initialize()</a>, <a class="el" href="classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043">nnp::Training::initializeWeights()</a>, <a class="el" href="classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b">nnp::Mode::loadSettingsFile()</a>, <a class="el" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a>, <a class="el" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, <a class="el" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b">nnp::Log::registerStreamPointer()</a>, <a class="el" href="classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a">nnp::Training::setStage()</a>, <a class="el" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">nnp::Mode::settingsKeywordExists()</a>, <a class="el" href="classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2">nnp::Mode::setupGeneric()</a>, <a class="el" href="classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455">nnp::Dataset::setupMPI()</a>, <a class="el" href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632">nnp::Dataset::setupRandomNumberGenerator()</a>, <a class="el" href="classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b">nnp::Mode::setupSymmetryFunctionScaling()</a>, <a class="el" href="classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153">nnp::Mode::setupSymmetryFunctionStatistics()</a>, <a class="el" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">nnp::strpr()</a>, <a class="el" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">nnp::Dataset::structures</a>, <a class="el" href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">nnp::Mode::writeSettingsFile()</a>, <a class="el" href="classnnp_1_1Log.html#ae0645e02c1bfbda124a3d1a7b13f4df7">nnp::Log::writeToStdout</a>, and <a class="el" href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">nnp::Training::writeWeights()</a>.</p>
+<p class="reference">References <a class="el" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866">nnp::appendLinesToFile()</a>, <a class="el" href="classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04">nnp::Mode::calculateAtomicNeuralNetworks()</a>, <a class="el" href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308">nnp::Mode::calculateEnergy()</a>, <a class="el" href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1">nnp::Mode::calculateForces()</a>, <a class="el" href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955">nnp::Mode::calculateSymmetryFunctionGroups()</a>, <a class="el" href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736">nnp::Mode::calculateSymmetryFunctions()</a>, <a class="el" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225">nnp::Dataset::combineFiles()</a>, <a class="el" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85">nnp::createFileHeader()</a>, <a class="el" href="classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd">nnp::Dataset::distributeStructures()</a>, <a class="el" href="classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01">nnp::Mode::getEnergyWithOffset()</a>, <a class="el" href="classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9">nnp::Mode::getMaxCutoffRadius()</a>, <a class="el" href="classnnp_1_1Mode.html#a07765f9f29bb8cd798c6d82721a8711d">nnp::Mode::getNnpType()</a>, <a class="el" href="classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17">nnp::Mode::initialize()</a>, <a class="el" href="classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043">nnp::Training::initializeWeights()</a>, <a class="el" href="classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b">nnp::Mode::loadSettingsFile()</a>, <a class="el" href="classnnp_1_1Mode.html#aae5d8b1186dde3ffbf2545fca1d08923">nnp::Mode::log</a>, <a class="el" href="mpi-extra_8h.html#aaae430420e25984e327a89b068e1582b">MPI_SIZE_T</a>, <a class="el" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b">nnp::Log::registerStreamPointer()</a>, <a class="el" href="classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a">nnp::Training::setStage()</a>, <a class="el" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275">nnp::Mode::settingsKeywordExists()</a>, <a class="el" href="classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833">nnp::Mode::setupGeneric()</a>, <a class="el" href="classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455">nnp::Dataset::setupMPI()</a>, <a class="el" href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632">nnp::Dataset::setupRandomNumberGenerator()</a>, <a class="el" href="classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b">nnp::Mode::setupSymmetryFunctionScaling()</a>, <a class="el" href="classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153">nnp::Mode::setupSymmetryFunctionStatistics()</a>, <a class="el" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76">nnp::strpr()</a>, <a class="el" href="classnnp_1_1Dataset.html#aa0ab32abb821e98058c7df794ca8103d">nnp::Dataset::structures</a>, <a class="el" href="classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a">nnp::Mode::writeSettingsFile()</a>, <a class="el" href="classnnp_1_1Log.html#ae0645e02c1bfbda124a3d1a7b13f4df7">nnp::Log::writeToStdout</a>, and <a class="el" href="classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7">nnp::Training::writeWeights()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -494,11 +496,11 @@ Here is the call graph for this function:</div>
 <map name="annp-norm2_8cpp_a0ddf1224851353fc92bfbff6f499fa97_cgraph" id="annp-norm2_8cpp_a0ddf1224851353fc92bfbff6f499fa97_cgraph">
 <area shape="rect" title=" " alt="" coords="5,717,60,744"/>
 <area shape="rect" href="namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="137,5,310,32"/>
-<area shape="rect" href="classnnp_1_1Mode.html#a778e3d7087b98c31effaa4129d23c6d7" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="122,57,325,98"/>
+<area shape="rect" href="classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="122,57,325,98"/>
 <area shape="rect" href="classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="122,123,325,149"/>
 <area shape="rect" href="classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="124,173,323,200"/>
 <area shape="rect" href="classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="111,225,336,266"/>
-<area shape="rect" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="387,689,471,716"/>
+<area shape="rect" href="namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="387,860,471,887"/>
 <area shape="rect" href="classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="111,342,336,383"/>
 <area shape="rect" href="classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one." alt="" coords="124,408,323,435"/>
 <area shape="rect" href="namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="141,459,306,485"/>
@@ -512,7 +514,7 @@ Here is the call graph for this function:</div>
 <area shape="rect" href="classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="132,911,315,953"/>
 <area shape="rect" href="classnnp_1_1Training.html#afbdd4d56bb0290e139382bdfba070c2a" title="Set training stage (if multiple stages are needed for NNP type)." alt="" coords="138,977,309,1004"/>
 <area shape="rect" href="classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file." alt="" coords="120,1029,327,1070"/>
-<area shape="rect" href="classnnp_1_1Mode.html#abbb133ac96714931b66435ce7a9315c2" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="131,1095,315,1121"/>
+<area shape="rect" href="classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="131,1095,315,1121"/>
 <area shape="rect" href="classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455" title="Initialize MPI with MPI_COMM_WORLD." alt="" coords="137,1169,310,1196"/>
 <area shape="rect" href="classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632" title="Initialize random number generator." alt="" coords="122,1221,325,1262"/>
 <area shape="rect" href="classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="122,1286,325,1327"/>
@@ -530,7 +532,7 @@ Here is the call graph for this function:</div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d75c23162a2652451dce46d2e7e8aead.html">application</a></li><li class="navelem"><a class="el" href="nnp-norm2_8cpp.html">nnp-norm2.cpp</a></li>
-    <li class="footer">Generated on Fri Nov 22 2024 23:49:35 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
+    <li class="footer">Generated on Sun Nov 24 2024 23:31:48 for n2p2 - A neural network potential package by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4 </li>
   </ul>
 </div>
 </body>

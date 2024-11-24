@@ -1,0 +1,4 @@
+<map id="nnp::Atom::calculateDChidr" name="nnp::Atom::calculateDChidr">
+<area shape="rect" id="node1" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="5,13,205,39"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="253,5,468,47"/>
+</map>

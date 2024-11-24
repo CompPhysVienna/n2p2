@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['pm_5ftrain_5fall_0',['PM_TRAIN_ALL',['../classnnp_1_1Training.html#a6671e3eb01b86af1162273218df0e5edad85fdfc89ea5507f703ce3f2eadee4e0',1,'nnp::Training']]],
-  ['pm_5ftrain_5frk0_1',['PM_TRAIN_RK0',['../classnnp_1_1Training.html#a6671e3eb01b86af1162273218df0e5eda5f4e6432710423b4b73303c03cd7dddb',1,'nnp::Training']]],
-  ['poly1_2',['POLY1',['../classnnp_1_1CoreFunction.html#ac0dbc4de27e067c87ea2cef5ac067cdfac95d41c930756d1c7c8630de81e53388',1,'nnp::CoreFunction']]],
-  ['poly2_3',['POLY2',['../classnnp_1_1CoreFunction.html#ac0dbc4de27e067c87ea2cef5ac067cdfaaf04e237242767ad09b3ed7125b44bf9',1,'nnp::CoreFunction']]],
-  ['poly3_4',['POLY3',['../classnnp_1_1CoreFunction.html#ac0dbc4de27e067c87ea2cef5ac067cdfae1b601534c2c991b69548e15c54fbf46',1,'nnp::CoreFunction']]],
-  ['poly4_5',['POLY4',['../classnnp_1_1CoreFunction.html#ac0dbc4de27e067c87ea2cef5ac067cdfa4d4c239e0a70b1026a7204d164684ec7',1,'nnp::CoreFunction']]]
+  ['ms_5ffanin_0',['MS_FANIN',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1aa284452e4756a63d3fe791ea6739ab08',1,'nnp::NeuralNetwork']]],
+  ['ms_5fglorotbengio_1',['MS_GLOROTBENGIO',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1ab96a1476ad0c41c52f782708a82d7949',1,'nnp::NeuralNetwork']]],
+  ['ms_5fnguyenwidrow_2',['MS_NGUYENWIDROW',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1ade647e2d9f5c0d6f8f20d95df165c827',1,'nnp::NeuralNetwork']]],
+  ['ms_5fpreconditionoutput_3',['MS_PRECONDITIONOUTPUT',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1a9c1def9ad2311fe4774afdc8790406ce',1,'nnp::NeuralNetwork']]],
+  ['ms_5fzerobias_4',['MS_ZEROBIAS',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1a66ae2f43aca0c9fbc5285c4b81e79bfa',1,'nnp::NeuralNetwork']]],
+  ['ms_5fzerooutputweights_5',['MS_ZEROOUTPUTWEIGHTS',['../classnnp_1_1NeuralNetwork.html#a87219d930829f343d65e5c59bc0220b1a327dc589d3a961565fb0754bad7b80f3',1,'nnp::NeuralNetwork']]]
 ];

@@ -12,6 +12,8 @@ var structnnp_1_1Training_1_1Property =
     [ "writeCompEvery", "structnnp_1_1Training_1_1Property.html#a882e48ff8c1cf29bd18a9916519f27a5", null ],
     [ "writeCompAlways", "structnnp_1_1Training_1_1Property.html#a28f0cd4b60f5955b1aa862c37567cb0f", null ],
     [ "posUpdateCandidates", "structnnp_1_1Training_1_1Property.html#afe1cf7a3763961006e72dc75f56ad864", null ],
+    [ "numGroupedSubCand", "structnnp_1_1Training_1_1Property.html#a9de3e8040d6dfd4645a7a819defc264d", null ],
+    [ "countGroupedSubCand", "structnnp_1_1Training_1_1Property.html#a01f62d24b17dd0581eed047d248b4067", null ],
     [ "rmseThresholdTrials", "structnnp_1_1Training_1_1Property.html#af77b515f04b843319a50af7ee0d38297", null ],
     [ "countUpdates", "structnnp_1_1Training_1_1Property.html#a83476357f0f604bcbe7134fc5d85046e", null ],
     [ "numUpdates", "structnnp_1_1Training_1_1Property.html#a4617cc6dde93700e2a722b856ef5af91", null ],

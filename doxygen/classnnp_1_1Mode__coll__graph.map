@@ -1,15 +1,21 @@
 <map id="nnp::Mode" name="nnp::Mode">
-<area shape="rect" id="node1" title="Base class for all NNP applications." alt="" coords="577,368,668,395"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="245,5,381,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Log.html" title="Logging class for library output." alt="" coords="274,148,351,175"/>
-<area shape="rect" id="node4" title=" " alt="" coords="13,112,64,139"/>
-<area shape="rect" id="node5" title=" " alt="" coords="273,199,353,225"/>
-<area shape="rect" id="node6" title=" " alt="" coords="9,281,69,308"/>
-<area shape="rect" id="node7" title=" " alt="" coords="219,312,406,339"/>
-<area shape="rect" id="node8" title=" " alt="" coords="230,484,395,511"/>
-<area shape="rect" id="node9" title=" " alt="" coords="5,447,72,473"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Settings.html" title="Reads and analyzes settings file and stores parameters." alt="" coords="259,535,366,561"/>
-<area shape="rect" id="node11" title=" " alt="" coords="263,585,362,612"/>
-<area shape="rect" id="node12" title=" " alt="" coords="267,636,358,663"/>
-<area shape="rect" id="node13" title=" " alt="" coords="209,687,416,713"/>
+<area shape="rect" id="node1" title="Base class for all NNP applications." alt="" coords="1280,523,1371,549"/>
+<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="965,5,1101,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Log.html" title="Logging class for library output." alt="" coords="994,167,1071,193"/>
+<area shape="rect" id="node4" title=" " alt="" coords="640,97,691,124"/>
+<area shape="rect" id="node5" title=" " alt="" coords="572,227,759,253"/>
+<area shape="rect" id="node12" href="$classnnp_1_1settings_1_1Settings.html" title="Reads and analyzes settings file and stores parameters." alt="" coords="949,219,1116,245"/>
+<area shape="rect" id="node6" title=" " alt="" coords="993,332,1073,359"/>
+<area shape="rect" id="node7" title=" " alt="" coords="635,408,695,435"/>
+<area shape="rect" id="node8" title=" " alt="" coords="939,445,1126,472"/>
+<area shape="rect" id="node19" href="$structnnp_1_1ErfcBuf.html" title="Helper class to store previously calculated values of erfc() that are needed during the charge equili..." alt="" coords="982,496,1083,523"/>
+<area shape="rect" id="node9" title=" " alt="" coords="185,525,351,552"/>
+<area shape="rect" id="node18" title=" " alt="" coords="578,459,753,501"/>
+<area shape="rect" id="node10" title=" " alt="" coords="5,665,72,692"/>
+<area shape="rect" id="node15" href="$classnnp_1_1ScreeningFunction.html" title="A screening functions for use with electrostatics." alt="" coords="375,728,548,755"/>
+<area shape="rect" id="node11" href="$classnnp_1_1EwaldSetup.html" title="Setup data for Ewald summation." alt="" coords="967,767,1098,793"/>
+<area shape="rect" id="node13" title=" " alt="" coords="983,817,1082,844"/>
+<area shape="rect" id="node14" title=" " alt="" coords="987,868,1078,895"/>
+<area shape="rect" id="node16" title=" " alt="" coords="929,919,1136,945"/>
+<area shape="rect" id="node17" title=" " alt="" coords="945,970,1120,1011"/>
 </map>

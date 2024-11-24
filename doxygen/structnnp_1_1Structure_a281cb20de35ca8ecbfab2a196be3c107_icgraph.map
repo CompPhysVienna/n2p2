@@ -1,0 +1,5 @@
+<map id="nnp::Structure::setupNeighborCutoffMap" name="nnp::Structure::setupNeighborCutoffMap">
+<area shape="rect" id="node1" title="Set up a neighbor cut&#45;off map which gives the index (value) of the last needed neighbor corresponding..." alt="" coords="233,39,449,80"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a16cce5a0b0a379f4432c2cacb1d83931" title="Calculate neighbor list for all atoms and setup neighbor cut&#45;off map." alt="" coords="5,5,185,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ad0bfcbe0f61990f71705942c8e847627" title="Sorts neighbor list and creates cutoff map if necessary." alt="" coords="11,71,179,112"/>
+</map>

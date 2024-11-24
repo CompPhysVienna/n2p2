@@ -1,0 +1,5 @@
+<map id="nnp::Structure::calculateForceLambdaTotal" name="nnp::Structure::calculateForceLambdaTotal">
+<area shape="rect" id="node1" title="Calculate lambda_total vector which is needed for the total force calculation in 4G NN." alt="" coords="252,27,432,69"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="5,5,204,32"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a69139b2e95478a30532b1171c284ce4c" title="Calculate forces and add to LAMMPS atomic force arrays." alt="" coords="21,57,189,98"/>
+</map>

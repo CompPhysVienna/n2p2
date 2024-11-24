@@ -1,4 +1,6 @@
 <map id="nnp::Vec3D::normalize" name="nnp::Vec3D::normalize">
-<area shape="rect" id="node1" title="Normalize vector, norm equals 1.0 afterwards." alt="" coords="233,13,401,39"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a88970ff745896183b1029fb5719ff28a" title="Calculate required PBC copies." alt="" coords="5,5,185,47"/>
+<area shape="rect" id="node1" title="Normalize vector, norm equals 1.0 afterwards." alt="" coords="260,78,428,105"/>
+<area shape="rect" id="node2" href="$classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2" title="Compute box copies in each direction." alt="" coords="11,5,206,47"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a924f2222a9df39041690d23f2d5963fd" title="Calculate required PBC copies." alt="" coords="19,71,199,112"/>
+<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#a4a593b477540ad63365bfa292d0f54f1" title="Check if cut&#45;off radius is small enough to apply minimum image convention." alt="" coords="5,136,212,177"/>
 </map>

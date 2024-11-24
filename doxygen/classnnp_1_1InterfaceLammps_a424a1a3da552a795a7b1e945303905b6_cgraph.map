@@ -1,0 +1,6 @@
+<map id="nnp::InterfaceLammps::getMaxCutoffRadiusOverall" name="nnp::InterfaceLammps::getMaxCutoffRadiusOverall">
+<area shape="rect" id="node1" title="Get largest cutoff including structure specific cutoff and screening cutoff." alt="" coords="5,71,215,112"/>
+<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#a46770abdefe49a0ab488049caa99905c" title="Calculate maximal cut&#45;off if cut&#45;off of screening and real part Ewald summation are also considered." alt="" coords="263,5,443,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ae6baf0f4691b0eb4a57feaaa6f3f10bb" title="Get largest cutoff of symmetry functions." alt="" coords="269,71,437,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1ScreeningFunction.html#a39a14618e686220bf57a679b68e1739a" title="Getter for outer." alt="" coords="266,136,439,177"/>
+</map>

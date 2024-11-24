@@ -1,4 +1,0 @@
-<map id="nnp::Settings::keywordCheck" name="nnp::Settings::keywordCheck">
-<area shape="rect" id="node1" title="Check for keyword and alternatives, throw exception if not present." alt="" coords="5,5,216,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Settings.html#a71a38f012f2a014d17de2091a6ea76cc" title="Check if keyword is present in settings file." alt="" coords="264,5,473,32"/>
-</map>

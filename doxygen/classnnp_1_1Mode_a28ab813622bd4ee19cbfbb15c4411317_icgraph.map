@@ -1,0 +1,6 @@
+<map id="nnp::Mode::readNeuralNetworkWeights" name="nnp::Mode::readNeuralNetworkWeights">
+<area shape="rect" id="node1" title="Read in weights for a specific type of neural network." alt="" coords="285,71,511,112"/>
+<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043" title="Initialize weights for all elements." alt="" coords="37,5,206,47"/>
+<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ae1c9e69f1b28f7111440a3024d39daf0" title="Set up neural network weights from files with given name format." alt="" coords="5,71,237,112"/>
+<area shape="rect" id="node4" href="$classnnp_1_1Training.html#aa9276d0625000a8dea949e7242d3d90b" title="Set up numeric weight derivatives check." alt="" coords="19,136,223,177"/>
+</map>

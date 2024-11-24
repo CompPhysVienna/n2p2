@@ -1,7 +1,7 @@
 <map id="main" name="main">
 <area shape="rect" id="node1" title=" " alt="" coords="5,277,60,304"/>
 <area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="133,5,306,32"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#ade6c70cf70dbbd3db3aa59497ca09f9c" title="Calculate neighbor list for all atoms." alt="" coords="129,57,309,98"/>
+<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="129,57,309,98"/>
 <area shape="rect" id="node4" href="$structnnp_1_1Vec3D.html#aeb7a761001a28045ccb6cfb175f5d399" title="Calculate norm of vector." alt="" coords="379,93,516,120"/>
 <area shape="rect" id="node5" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="137,173,302,200"/>
 <area shape="rect" id="node6" href="$structnnp_1_1Structure.html#aaa794cf49a53d8e5db578ac303b700fd" title="Read configuration from file." alt="" coords="116,248,323,275"/>
