@@ -64,7 +64,8 @@ int main(int argc, char* argv[])
 
     if (dataset.settingsKeywordExists("mean_energy") ||
         dataset.settingsKeywordExists("conv_energy") ||
-        dataset.settingsKeywordExists("conv_length"))
+        dataset.settingsKeywordExists("conv_length") ||
+        dataset.settingsKeywordExists("conv_charge"))
     {
         throw runtime_error("ERROR: Normalization keywords found in settings, "
                             "please remove them first.\n");
@@ -106,6 +107,7 @@ int main(int argc, char* argv[])
     double sigmaEnergyPerAtom = 0.0;
     double meanForce = 0.0;
     double sigmaForce = 0.0;
+    double maxAbsCharge = 0.0;
     for (vector<Structure>::const_iterator it = dataset.structures.begin();
          it != dataset.structures.end(); ++it)
     {
@@ -123,6 +125,9 @@ int main(int argc, char* argv[])
              it2 != it->atoms.end(); ++it2)
         {
             meanForce += it2->fRef[0] + it2->fRef[1] + it2->fRef[2];
+            double absChargeRef = abs(it2->chargeRef);
+            if (abs(it2->chargeRef) > maxAbsCharge)
+                maxAbsCharge = absChargeRef;
         }
     }
     fileEvsV.flush();
@@ -135,6 +140,7 @@ int main(int argc, char* argv[])
     MPI_Allreduce(MPI_IN_PLACE, &numAtomsTotal    , 1, MPI_SIZE_T, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(MPI_IN_PLACE, &meanEnergyPerAtom, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     MPI_Allreduce(MPI_IN_PLACE, &meanForce        , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &maxAbsCharge     , 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
     meanEnergyPerAtom /= numStructures;
     meanForce /= 3 * numAtomsTotal;
     for (vector<Structure>::const_iterator it = dataset.structures.begin();
@@ -168,8 +174,12 @@ int main(int argc, char* argv[])
                          sigmaForce);
     double convEnergy = 1.0 / sigmaEnergyPerAtom;
     double convLength = sigmaForce / sigmaEnergyPerAtom;
+    double convCharge = 1.0;
+    if (maxAbsCharge > 0)
+        convCharge = 1.0 / maxAbsCharge;
     dataset.log << strpr("Conversion factor energy  : %24.16E\n", convEnergy);
     dataset.log << strpr("Conversion factor length  : %24.16E\n", convLength);
+    dataset.log << strpr("Conversion factor charge  : %24.16E\n", convCharge);
 
     ofstream fileCfg;
     fileCfg.open(strpr("output.data.%04d", myRank).c_str());
@@ -178,6 +188,7 @@ int main(int argc, char* argv[])
     {
         it->energyRef = (it->energyRef - meanEnergyPerAtom * it->numAtoms)
                       * convEnergy;
+        it->chargeRef *= convCharge;
         it->box[0] *= convLength;
         it->box[1] *= convLength;
         it->box[2] *= convLength;
@@ -186,6 +197,7 @@ int main(int argc, char* argv[])
         {
             it2->r *= convLength;
             it2->fRef *= convEnergy / convLength;
+            it2->chargeRef *= convCharge;
         }
         it->writeToFile(&fileCfg);
     }
@@ -223,6 +235,8 @@ int main(int argc, char* argv[])
                               convEnergy);
         fileSettings << strpr("conv_length %24.16E # nnp-norm\n",
                               convLength);
+        fileSettings << strpr("conv_charge %24.16E\n # nnp-norm\n",
+                              convCharge);
         fileSettings << "#########################################"
                         "######################################\n";
         fileSettings << "\n";

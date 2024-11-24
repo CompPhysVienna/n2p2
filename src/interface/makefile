@@ -48,13 +48,13 @@ lammps-hdnnp:
 	ln -s $(PROJECT_DIR)/../../../lib/ lammps-hdnnp/lib/hdnnp/liblink
 	ln -s $(PROJECT_DIR)/../../../lib/Makefile.lammps-extra lammps-hdnnp/lib/hdnnp/Makefile.lammps
 	cp -r ./LAMMPS/src/ML-HDNNP/* lammps-hdnnp/src/ML-HDNNP/
-	@sed -i.bak "s/^CC .*$$/CC      =       $(PROJECT_MPICC)/" lammps-hdnnp/src/MAKE/Makefile.mpi
-	@sed -i.bak "s/^CCFLAGS .*$$/CCFLAGS =       $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI)/" lammps-hdnnp/src/MAKE/Makefile.mpi
-	@sed -i.bak "s/^LINK .*$$/LINK =          $(PROJECT_MPICC)/" lammps-hdnnp/src/MAKE/Makefile.mpi
-	@sed -i.bak "s/^LINKFLAGS .*$$/LINKFLAGS =     $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI)/" lammps-hdnnp/src/MAKE/Makefile.mpi
+	@sed -i.bak "s;^CC .*$$;CC      =       $(PROJECT_MPICC);" lammps-hdnnp/src/MAKE/Makefile.mpi
+	@sed -i.bak "s;^CCFLAGS .*$$;CCFLAGS =       $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI) -I$(PROJECT_EIGEN);" lammps-hdnnp/src/MAKE/Makefile.mpi
+	@sed -i.bak "s;^LINK .*$$;LINK =          $(PROJECT_MPICC);" lammps-hdnnp/src/MAKE/Makefile.mpi
+	@sed -i.bak "s;^LINKFLAGS .*$$;LINKFLAGS =     $(PROJECT_CFLAGS) $(PROJECT_CFLAGS_MPI) $(PROJECT_LDFLAGS_BLAS);" lammps-hdnnp/src/MAKE/Makefile.mpi
 	if [ "$(MODE)" = "test" ]; then \
-		sed -i.bak "/^CCFLAGS =/   s/$$/ $(LAMMPS_DEBUG) $(PROJECT_TEST)/" lammps-hdnnp/src/MAKE/Makefile.mpi; \
-		sed -i.bak "/^LINKFLAGS =/ s/$$/ $(LAMMPS_DEBUG) $(PROJECT_TEST)/" lammps-hdnnp/src/MAKE/Makefile.mpi; \
+		sed -i.bak "/^CCFLAGS =/   s;$$; $(LAMMPS_DEBUG) $(PROJECT_TEST);" lammps-hdnnp/src/MAKE/Makefile.mpi; \
+		sed -i.bak "/^LINKFLAGS =/ s;$$; $(LAMMPS_DEBUG) $(PROJECT_TEST);" lammps-hdnnp/src/MAKE/Makefile.mpi; \
 	fi
 	@rm lammps-hdnnp/src/MAKE/Makefile.mpi.bak
 	cd lammps-hdnnp/src/ && $(MAKE) yes-ml-hdnnp && $(MAKE) yes-molecule && $(MAKE) mpi

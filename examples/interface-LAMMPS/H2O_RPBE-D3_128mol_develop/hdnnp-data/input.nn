@@ -1,0 +1,207 @@
+###############################################################################
+# DATA SET NORMALIZATION
+###############################################################################
+# This section was automatically added by nnp-norm.
+mean_energy  -2.3367692947173474E-01
+conv_energy   2.4265748255367663E+02
+conv_length   5.7816872518854572E+00
+###############################################################################
+
+################################################################
+### This is the input file for n2p2 (modified by me)
+#################################################################
+#
+### It contains only a subset of all keywords
+
+################################################################################
+### general keywords
+################################################################################
+
+nnp_generation 4
+use_short_forces
+
+number_of_elements 2
+elements H O
+
+#initial_hardness        H        10.0
+#initial_hardness        O        10.0
+
+fixed_gausswidth  H 0.585815056466
+fixed_gausswidth  O 1.379499971678
+
+screen_electrostatics 4.8 8.0
+
+random_seed 12346
+
+#remove_atom_energies
+atom_energy     H    -0.458907306351869
+atom_energy     O    -74.94518524
+
+ewald_truncation_error_method 1                 # 0 RuNNer method (default),
+                                                # 1 method optimized for n2p2 (recommended)
+#ewald_prec 1.e-2
+ewald_prec 1.e-5 0.36                            # method 0 requires one
+                                                # dimensionless parameter which controls
+                                                # the electrostatic energy
+                                                # error,
+                                                # method 1 requires two
+                                                # arguments: first the precision
+                                                # of the electrostatic forces in
+                                                # the same unit as the training
+                                                # data, second an estimate for
+                                                # the maximum expected charge.
+
+################################################################################
+### NN structure of the short-range NN
+################################################################################
+global_hidden_layers_short 2
+global_nodes_short 15 15
+global_activation_short t t l
+
+################################################################################
+### NN structure of the electrostatic NN
+################################################################################
+global_hidden_layers_electrostatic 2
+global_nodes_electrostatic 15 15
+global_activation_electrostatic t t l
+
+###############################################################################
+# ADDITIONAL SETTINGS FOR TRAINING (General)
+###############################################################################
+# These keywords are solely used for training with nnp-train.
+epochs                          20              # Number of training epochs.
+updater_type                    1               # Weight update method
+                                                # (0 = Gradient Descent,
+                                                # 1 = Kalman filter).
+parallel_mode                   1               # Training parallelization used
+                                                # (0 = Parallel (rank 0 update), 1 = Parallel (all update)).
+jacobian_mode                   1               # Jacobian computation mode (0 = Summation to single gradient, 1 = Per-task summed gradient, 2 = Full Jacobian).
+update_strategy                 0               # Update strategy (0 = Combined, 1 = Per-element).
+selection_mode                  0               # Update candidate selection mode (0 = Random, 1 = Sort, 2 = Threshold).
+memorize_symfunc_results                        # Keep symmetry function results in memory.
+rmse_threshold_trials           3               # Maximum number of RMSE threshold trials.
+main_error_metric               RMSEpa          # Main error metric for screen output (RMSEpa/RMSE/MAEpa/MAE).
+test_fraction                   0.1             # Fraction of structures kept for testing.
+weights_min                     -1.0            # Minimum value for initial random weights.
+weights_max                     1.0             # Maximum value for initial random weights.
+#precondition_weights                           # Precondition weights with initial energies.
+write_weights_epoch             2               # Write weights every this many epochs.
+scale_symmetry_functions
+center_symmetry_functions
+#write_neuronstats               1              # Write neuron statistics every this many epochs.
+#write_trainlog                                 # Write training log file.
+
+
+################################################################################
+# ADDITIONAL SETTINGS FOR TRAINING (charges, stage 1)
+################################################################################
+task_batch_size_charge          1
+#nguyen_widrow_weights_charge                   # Initialize neural network weights according to Nguyen-Widrow scheme.
+charge_fraction                 1.000
+write_traincharges              4               # Write charge comparison. Can produce large files.
+#use_old_weights_charge                         # Restart fitting with old weight parameters.
+
+################################################################################
+# ADDITIONAL SETTINGS FOR TRAINING (short-range, stage 2)
+################################################################################
+task_batch_size_energy          1               # Number of energy update candidates prepared per task for each update (0 = Entire training set).
+task_batch_size_force           1               # Number of force update candidates prepared per task for each update (0 = Entire training set).
+force_weight                    10.0            # Weight of force updates relative to energy updates.
+short_energy_fraction           1.000           # Fraction of energy updates per epoch.
+short_force_fraction            0.025           # Fraction of force updates per epoch.
+#short_energy_error_threshold    0.80           # RMSE threshold for energy update candidates.
+#short_force_error_threshold     0.80           # RMSE threshold for force update candidates.
+#use_old_weights_short                          # Restart fitting with old weight parameters.
+#repeated_energy_update
+#nguyen_widrow_weights_short                    # Initialize neural network weights according to Nguyen-Widrow scheme.
+write_trainpoints               5               # Write energy comparison every this many epochs.
+write_trainforces               5               # Write force comparison every this many epochs.
+
+############################
+# KALMAN FILTER (STANDARD) #
+############################
+# These two parameters are only used if "updater_type" is "1".
+#kalman_lambda_short 0.98000
+#kalman_nue_short 0.99870
+
+kalman_type                     0              # Kalman filter type (0 = Standard, 1 = Fading memory).
+kalman_epsilon                  1.0E-2         # General Kalman filter parameter epsilon, covariance matrix initialization (sigmoidal: 0.01, linear: 0.001).
+kalman_q0                       0.01           # General Kalman filter parameter q0, initial process noise ("large").
+kalman_qtau                     2.302 #2.302          # General Kalman filter parameter qtau (2.302 => 1 order of magnitude per epoch).
+kalman_qmin                     1.0E-6         # General Kalman filter parameter qmin, final process noise (typ. 1.0E-6).
+kalman_eta                      0.01          # Standard Kalman filter parameter eta (0.001-1.0).
+kalman_etatau                   1.609          # Standard Kalman filter parameter etatau (2.302 => 1 order of magnitude per epoch).
+kalman_etamax                   0.1            # Standard Kalman filter parameter etamax (1.0+).
+
+
+################################################################################
+### symmetry function definitions (all modes):
+################################################################################
+cutoff_type 2
+
+# radial H H
+symfunction H 2 H 0.001 0.0 8.00
+symfunction H 2 H 0.01  0.0 8.00
+symfunction H 2 H 0.03  0.0 8.00
+symfunction H 2 H 0.06  0.0 8.00
+symfunction H 2 H 0.15  1.9 8.00
+symfunction H 2 H 0.30  1.9 8.00
+symfunction H 2 H 0.60  1.9 8.00
+symfunction H 2 H 1.50  1.9 8.00
+
+# radial H O / O H
+symfunction H 2 O 0.001 0.0 8.00
+symfunction H 2 O 0.01  0.0 8.00
+symfunction H 2 O 0.03  0.0 8.00
+symfunction H 2 O 0.06  0.0 8.00
+symfunction H 2 O 0.15  0.9 8.00
+symfunction H 2 O 0.30  0.9 8.00
+symfunction H 2 O 0.60  0.9 8.00
+symfunction H 2 O 1.50  0.9 8.00
+
+symfunction O 2 H 0.001 0.0 8.00
+symfunction O 2 H 0.01  0.0 8.00
+symfunction O 2 H 0.03  0.0 8.00
+symfunction O 2 H 0.06  0.0 8.00
+symfunction O 2 H 0.15  0.9 8.00
+symfunction O 2 H 0.30  0.9 8.00
+symfunction O 2 H 0.60  0.9 8.00
+symfunction O 2 H 1.50  0.9 8.00
+
+# radial O O
+symfunction O 2 O 0.001 0.0 8.00
+symfunction O 2 O 0.01  0.0 8.00
+symfunction O 2 O 0.03  0.0 8.00
+symfunction O 2 O 0.06  0.0 8.00
+symfunction O 2 O 0.15  4.0 8.00
+symfunction O 2 O 0.30  4.0 8.00
+symfunction O 2 O 0.60  4.0 8.00
+symfunction O 2 O 1.50  4.0 8.00
+
+# angular
+symfunction H 3 O H 0.2  1.0 1.0  8.00000
+
+symfunction O 3 H H 0.07  1.0 1.0  8.00000
+symfunction H 3 O H 0.07  1.0 1.0  8.00000
+symfunction O 3 H H 0.07 -1.0 1.0  8.00000
+symfunction H 3 O H 0.07 -1.0 1.0  8.00000
+
+symfunction O 3 H H 0.03  1.0 1.0  8.00000
+symfunction H 3 O H 0.03  1.0 1.0  8.00000
+symfunction O 3 H H 0.03 -1.0 1.0  8.00000
+symfunction H 3 O H 0.03 -1.0 1.0  8.00000
+
+symfunction O 3 H H 0.01  1.0 4.0  8.00000
+symfunction H 3 O H 0.01  1.0 4.0  8.00000
+symfunction O 3 H H 0.01 -1.0 4.0  8.00000
+symfunction H 3 O H 0.01 -1.0 4.0  8.00000
+
+symfunction O 3 O H 0.03  1.0 1.0   8.00000
+symfunction O 3 O H 0.03 -1.0 1.0   8.00000
+symfunction O 3 O H 0.001  1.0 4.0  8.00000
+symfunction O 3 O H 0.001 -1.0 4.0  8.00000
+
+symfunction H 3 O O 0.03  1.0 1.0   8.00000
+symfunction H 3 O O 0.03 -1.0 1.0   8.00000
+symfunction H 3 O O 0.001  1.0 4.0  8.00000
+symfunction H 3 O O 0.001 -1.0 4.0  8.00000

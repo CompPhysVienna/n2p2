@@ -18,13 +18,18 @@
 #define STRUCTURE_H
 
 #include "Atom.h"
+#include "Element.h"
 #include "ElementMap.h"
+#include "ErfcBuf.h"
+#include "EwaldSetup.h"
+#include "ScreeningFunction.h"
 #include "Vec3D.h"
-#include <cstddef> // std::size_t
-#include <fstream> // std::ofstream
-#include <map>     // std::map
-#include <string>  // std::string
-#include <vector>  // std::vector
+#include <Eigen/Core> // MatrixXd, VectorXd
+#include <cstddef>    // std::size_t
+#include <fstream>    // std::ofstream
+#include <map>        // std::map
+#include <string>     // std::string
+#include <vector>     // std::vector
 
 namespace nnp
 {
@@ -58,6 +63,8 @@ struct Structure
     bool                     isTriclinic;
     /// If the neighbor list has been calculated.
     bool                     hasNeighborList;
+    /// If the neighbor list has been sorted by distance.
+    bool                     NeighborListIsSorted;
     /// If symmetry function values are saved for each atom.
     bool                     hasSymmetryFunctions;
     /// If symmetry function derivatives are saved for each atom.
@@ -70,18 +77,33 @@ struct Structure
     std::size_t              numElements;
     /// Number of elements present in this structure.
     std::size_t              numElementsPresent;
-    /// Number of PBC images necessary in each direction.
+    /// Number of PBC images necessary in each direction for max cut-off.
     int                      pbc[3];
     /// Potential energy determined by neural network.
     double                   energy;
     /// Reference potential energy.
     double                   energyRef;
+    // TODO: MPI_Pack
+    /// Short-range part of the potential energy predicted by NNP.
+    double                   energyShort;
+    // TODO: MPI_Pack
+    /// Electrostatics part of the potential energy predicted by NNP.
+    double                   energyElec;
+    /// If all charges of this structure have been calculated (and stay the
+    /// same, e.g. for stage 2).
+    bool                     hasCharges;
     /// Charge determined by neural network potential.
     double                   charge;
     /// Reference charge.
     double                   chargeRef;
     /// Simulation box volume.
     double                   volume;
+    /// Maximum cut-off radius with respect to symmetry functions, screening
+    /// function and Ewald summation.
+    double                   maxCutoffRadiusOverall;
+    // TODO: MPI_Pack
+    /// Lagrange multiplier used for charge equilibration.
+    double                   lambda;
     /// Sample type (training or test set).
     SampleType               sampleType;
     /// Structure comment.
@@ -90,6 +112,10 @@ struct Structure
     Vec3D                    box[3];
     /// Inverse simulation box vectors.
     Vec3D                    invbox[3];
+    /// Global charge equilibration matrix A'.
+    Eigen::MatrixXd          A;
+    /// If A matrix of this structure is currently stored.
+    bool                     hasAMatrix;
     /// Number of atoms of each element in this structure.
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
@@ -140,19 +166,59 @@ struct Structure
      */
     void                     readFromLines(std::vector<
                                            std::string> const& lines);
+    /** Calculate maximal cut-off if cut-off of screening and real part Ewald
+     * summation are also considered.
+     *
+     * @param[in] ewaldSetup Settings of Ewald summation.
+     * @param[in] rcutScreen Cut-off for Screening of the electrostatic
+     *                         interaction.
+     * @param[in] maxCutoffRadius maximal cut-off of symmetry functions.
+     */
+    void                   calculateMaxCutoffRadiusOverall(
+                                            EwaldSetup& ewaldSetup,
+                                            double      rcutScreen,
+                                            double      maxCutoffRadius);
     /** Calculate neighbor list for all atoms.
      *
      * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
      *                         than the cutoff radius.
+     * @param[in] sortByDistance Sort neighborlist from nearest to farthest neighbor.
+     *
      */
-    void                     calculateNeighborList(double cutoffRadius);
+    void                     calculateNeighborList(
+                                                    double  cutoffRadius,
+                                                    bool    sortByDistance = false);
+    /** Calculate neighbor list for all atoms and setup neighbor cut-off map.
+     *
+     * @param[in] cutoffRadius Atoms are neighbors if there distance is smaller
+     *                         than the cutoff radius.
+     * @param[in] cutoffs Vector of all needed cutoffs (needed for cut-off map
+     *                         construction).
+     * @return Maximum of {maxCutoffRadius, rcutScreen, rCut}.
+     */
+    void                     calculateNeighborList(
+                                                   double  cutoffRadius,
+                                                   std::vector<
+                                                   std::vector<double>>& cutoffs);
+    /** Sort all neighbor lists of this structure with respect to the distance.
+     */
+    void                     sortNeighborList();
+    /** Set up a neighbor cut-off map which gives the index (value) of the last needed
+     *  neighbor corresponding to a specific cut-off (key).
+     * @param[in] cutoffs Vector of all needed symmetry function cutoffs. Note
+     *                          that a local copy gets extended with
+     *                          maxCutoffRadiusOverall.
+     */
+    void                     setupNeighborCutoffMap(std::vector<
+                                                    std::vector<double>> cutoffs);
     /** Calculate required PBC copies.
      *
      * @param[in] cutoffRadius Cutoff radius for neighbor list.
+     * @param[in] pbc Array for storing the result.
      *
      * Called by #calculateNeighborList().
      */
-    void                     calculatePbcCopies(double cutoffRadius);
+    void                     calculatePbcCopies(double cutoffRadius, int (&pbc)[3]);
     /** Calculate inverse box.
      *
      * Simulation box looks like this:
@@ -194,9 +260,128 @@ struct Structure
      * @f]
      */
     void                     calculateInverseBox();
+    /** Check if cut-off radius is small enough to apply minimum image
+    * convention.
+    *
+    * @param[in] cutoffRadius cut-off radius for which condition should be
+    * checked.
+    */
+    bool                     canMinimumImageConventionBeApplied(double cutoffRadius);
+    /** Calculate distance between two atoms in the minimum image convention.
+     *
+     * @param[in] dr Distance vector between two atoms of the same box.
+     *
+     */
+    Vec3D                    applyMinimumImageConvention(Vec3D const& dr);
     /** Calculate volume from box vectors.
      */
     void                     calculateVolume();
+    /** Compute electrostatic energy with global charge equilibration.
+     *
+     * @param[in] ewaldSetup Settings of Ewald summation.
+     * @param[in] hardness Vector containing the hardness of all elements.
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
+     *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
+     * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+     *                  Value depends on unit system (e.g. normalization).
+     * @param[in] erfcBuf helper object to avoid repeated calculation of erfc().
+     */
+    double                   calculateElectrostaticEnergy(
+                                            EwaldSetup&              ewaldSetup,
+                                            Eigen::VectorXd          hardness,
+                                            Eigen::MatrixXd          gammaSqrt2,
+                                            Eigen::VectorXd          sigmaSqrtPi,
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps,
+                                            ErfcBuf&                 erfcBuf);
+    /** Calculate screening energy which needs to be added (!) to the
+     * electrostatic energy in order to remove contributions in the short range
+     * domain.
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij}
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
+     *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
+     *
+     * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+                            Value depends on unit system (e.g. normalization).
+     */
+    double                   calculateScreeningEnergy(  
+                                            Eigen::MatrixXd          gammaSqrt2,
+                                            Eigen::VectorXd          sigmaSqrtPi,
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps);
+    /** Calculates derivative of A-matrix with respect to the atoms positions and
+     * contract it with Q. 
+     * @param[in] ewaldSetup Settings of Ewald summation.
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+                            Value depends on unit system (e.g. normalization).
+     * @param[in] erfcBuf helper object to avoid repeated calculation of erfc().
+     */
+    void                     calculateDAdrQ(
+                                        EwaldSetup&     ewaldSetup,
+                                        Eigen::MatrixXd gammaSqrt2,
+                                        double const    fourPiEps,
+                                        ErfcBuf&        erfcBuf);
+    /** Calculates derivative of the charges with respect to electronegativities.
+     *  @param[in] dQdChi vector to store the result. dQdChi[i](j) represents the
+     *  derivative for the i-th electronegativity and the j-th charge.
+     */
+    void                     calculateDQdChi(std::vector<Eigen::VectorXd> &dQdChi);
+    /** Calculates derivative of the charges with respect to atomic hardness.
+     *  @param[in] dQdJ vector to store the result. dQdJ[i](j) represents the
+     *  derivative for the i-th hardness and the j-th charge.
+     */
+    void                     calculateDQdJ(std::vector<Eigen::VectorXd> &dQdJ);
+    /** Calculates derivative of the charges with respect to the atom's
+     * position.
+     * @param[in] atomIndices Vector containing indices of atoms for which the
+     *                      derivative should be calculated.
+     * @param[in] compIndices Vector containing indices of vector components
+     *                        for which the derivative should be calculated.
+     * @param[in] maxCutoffRadius Max. cutoff radius of symmetry functions.
+     * @param[in] elements Vector containing all elements (needed for symmetry
+     *                     function table).
+     */
+    void                    calculateDQdr(
+                                std::vector<size_t> const&  atomsIndices,
+                                std::vector<size_t> const&  compIndices,
+                                double const                maxCutoffRadius,
+                                std::vector<Element> const& elements);
+     /** Calculates partial derivatives of electrostatic Energy with respect
+     * to atom's coordinates and charges.
+     * @param[in] hardness Vector containing the hardness of all elements.
+     * @param[in] gammaSqrt2 Matrix combining gamma with prefactor.
+     *                  @f$ \text{gammaSqrt2}_{ij} = \sqrt{2} \gamma_{ij} 
+     *                          = \sqrt{2} \sqrt{(\sigma_i^2 + \sigma_j^2)} @f$
+     * @param[in] sigmaSqrtPi Vector combining sigma with prefactor,
+     *                  @f$ \text{sigmaSqrtPi}_i = \sqrt{\pi} \sigma_i @f$
+     * @param[in] fs Screening function.
+     * @param[in] fourPiEps @f$ \text{fourPiEps} = 4 \pi \varepsilon_0 @f$.
+                            Value depends on unit system (e.g. normalization).
+     */
+    void                     calculateElectrostaticEnergyDerivatives(
+                                        Eigen::VectorXd          hardness,
+                                        Eigen::MatrixXd          gammaSqrt2,
+                                        Eigen::VectorXd          sigmaSqrtPi,
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps);
+    /** Calculate lambda_total vector which is needed for the total force
+     *  calculation in 4G NN.
+     */
+    Eigen::VectorXd const calculateForceLambdaTotal() const;
+    /** Calculate lambda_elec vector which is needed for the electrostatic
+     *  force calculation in 4G NN.
+     */
+    Eigen::VectorXd const calculateForceLambdaElec() const;
     /** Translate all atoms back into box if outside.
      */
     void                     remap();
@@ -205,24 +390,30 @@ struct Structure
      * @param[in,out] atom Atom to be remapped.
      */
     void                     remap(Atom& atom);
-    /** Normalize structure, shift energy and change energy and length unit.
+    /** Normalize structure, shift energy and change energy, length and charge
+     *  unit.
      *
      * @param[in] meanEnergy Mean energy per atom (in old units).
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toNormalizedUnits(double meanEnergy,
                                                double convEnergy,
-                                               double convLength);
-    /** Switch to physical units, shift energy and change energy and length unit.
+                                               double convLength,
+                                               double convCharge);
+    /** Switch to physical units, shift energy and change energy, length and
+     *  charge unit.
      *
      * @param[in] meanEnergy Mean energy per atom (in old units).
      * @param[in] convEnergy Multiplicative energy unit conversion factor.
      * @param[in] convLength Multiplicative length unit conversion factor.
+     * @param[in] convCharge Multiplicative charge unit conversion factor.
      */
     void                     toPhysicalUnits(double meanEnergy,
                                              double convEnergy,
-                                             double convLength);
+                                             double convLength,
+                                             double convCharge);
     /** Find maximum number of neighbors.
      *
      * @return Maximum numbor of neighbors of all atoms in this structure.
@@ -231,14 +422,20 @@ struct Structure
     /** Free symmetry function memory for all atoms, see free() in Atom class.
      *
      * @param[in] all See description in Atom.
+     * @param[in] maxCutoffRadius Maximum cutoff radius of symmetry functions.
      */
-    void                     freeAtoms(bool all);
+    void                     freeAtoms(bool         all,
+                                       double const maxCutoffRadius = 0.0);
     /** Reset everything but #elementMap.
      */
     void                     reset();
     /** Clear neighbor list of all atoms.
      */
     void                     clearNeighborList();
+    /** Clear A-matrix, dAdrQ and optionally dQdr
+     * @param[in] clearDqdr Specify if dQdr should also be cleared.
+     */
+    void                     clearElectrostatics(bool clearDQdr = false);
     /** Update property error metrics with this structure.
      *
      * @param[in] property One of "energy", "force" or "charge".

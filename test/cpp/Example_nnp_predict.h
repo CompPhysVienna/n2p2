@@ -64,6 +64,15 @@ void BoostDataContainer<Example_nnp_predict>::setup()
     e->createdFiles.push_back("nnforces.out");
     e->createdFiles.push_back("output.data");
 
+    examples.push_back(Example_nnp_predict("H2O_RPBE-D3_4G"));
+    e = &(examples.back());
+    e->args = "0 ";
+    e->energy = -9.8016327504792771E+03;
+    e->createdFiles.push_back("energy.out");
+    e->createdFiles.push_back("nnatoms.out");
+    e->createdFiles.push_back("nnforces.out");
+    e->createdFiles.push_back("output.data");
+
     return;
 }
 

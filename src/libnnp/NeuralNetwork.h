@@ -31,6 +31,8 @@ public:
     /// List of available activation function types.
     enum ActivationFunction
     {
+        /// Unset activation function.
+        AF_UNSET,
         /// @f$f_a(x) = x@f$
         AF_IDENTITY,
         /// @f$f_a(x) = \tanh(x)@f$
@@ -277,8 +279,9 @@ public:
      * neuron!
      *
      * In the context of the neural network potentials this function is used to
-     * calculate derivatives of forces with respect to connections. The force
-     * component @f$\gamma@f$ (where @f$\gamma@f$ is one of @f$x,y,z@f$)  of
+     * calculate derivatives of forces (or force contributions) with respect to
+     * connections. The force component
+     * @f$\gamma@f$ (where @f$\gamma@f$ is one of @f$x,y,z@f$)  of
      * particle @f$l@f$ is
      * @f[
      *   F_{l, \gamma} = - \frac{\partial}{\partial x_{l, \gamma}} \sum_i^{N}
@@ -489,6 +492,14 @@ private:
      */
     void   propagateLayer(Layer& layer, Layer& layerPrev);
 };
+
+/** Convert string to activation function.
+ *
+ * @param[in] letter String representing activation function.
+ *
+ * @return Activation corresponding to string.
+ */
+NeuralNetwork::ActivationFunction activationFromString(std::string c);
 
 }
 

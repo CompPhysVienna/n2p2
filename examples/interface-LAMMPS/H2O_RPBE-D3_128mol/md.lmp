@@ -1,0 +1,48 @@
+###############################################################################
+# MD simulation for NN water
+###############################################################################
+
+###############################################################################
+# VARIABLES
+###############################################################################
+clear
+# Configuration files
+variable cfgFile         string "iceIh_128.data"
+# Timesteps
+variable numSteps        equal  5
+variable dt              equal  0.0005
+# NN
+variable hdnnpCutoff     equal  6.36
+variable hdnnpDir        string "hdnnp-data"
+# Masses
+variable mass_H          equal  1.00794
+variable mass_O          equal  15.9994
+
+###############################################################################
+# GENERAL SETUP
+###############################################################################
+units metal
+boundary p p p
+atom_style atomic
+read_data ${cfgFile}
+mass 1 ${mass_H}
+mass 2 ${mass_O}
+timestep ${dt}
+thermo 1
+
+###############################################################################
+# NN
+###############################################################################
+pair_style hdnnp ${hdnnpCutoff} dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254
+pair_coeff * * H O
+
+###############################################################################
+# INTEGRATOR
+###############################################################################
+fix INT all nve
+dump 1 all atom 1 traj.dump
+
+###############################################################################
+# SIMULATION
+###############################################################################
+run ${numSteps}

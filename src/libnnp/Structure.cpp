@@ -14,23 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include "Kspace.h"
 #include "Structure.h"
+#include "Vec3D.h"
 #include "utility.h"
-#include <algorithm> // std::max
-#include <cmath>     // fabs
-#include <cstdlib>   // atof
-#include <limits>    // std::numeric_limits
-#include <stdexcept> // std::runtime_error
-#include <string>    // std::getline
+#include <Eigen/Dense> // MatrixXd, VectorXd
+#include <algorithm>   // std::max
+#include <cmath>       // fabs, erf
+#include <cstdlib>     // atof
+#include <limits>      // std::numeric_limits
+#include <stdexcept>   // std::runtime_error
+#include <string>      // std::getline
 #include <iostream>
 
 using namespace std;
 using namespace nnp;
+using namespace Eigen;
+
 
 Structure::Structure() :
     isPeriodic                    (false     ),
     isTriclinic                   (false     ),
     hasNeighborList               (false     ),
+    NeighborListIsSorted          (false     ),
     hasSymmetryFunctions          (false     ),
     hasSymmetryFunctionDerivatives(false     ),
     index                         (0         ),
@@ -39,11 +45,16 @@ Structure::Structure() :
     numElementsPresent            (0         ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
+    energyShort                   (0.0       ),
+    energyElec                    (0.0       ),
+    hasCharges                    (false     ),
     charge                        (0.0       ),
     chargeRef                     (0.0       ),
     volume                        (0.0       ),
+    maxCutoffRadiusOverall        (0.0       ),
     sampleType                    (ST_UNKNOWN),
-    comment                       (""        )
+    comment                       (""        ),
+    hasAMatrix                    (false     )
 {
     for (size_t i = 0; i < 3; i++)
     {
@@ -227,6 +238,15 @@ void Structure::readFromLines(vector<string> const& lines)
             {
                 throw runtime_error("ERROR: Strange number of box vectors.\n");
             }
+            if (isPeriodic &&
+                abs(chargeRef) > 10*std::numeric_limits<double>::epsilon())
+            {
+                throw runtime_error("ERROR: In structure with index "
+                                    + to_string(index)
+                                    + "; if PBCs are applied, the\n"
+                                    "simulation cell has to be neutrally "
+                                    "charged.\n");
+            }
             break;
         }
         else
@@ -250,20 +270,38 @@ void Structure::readFromLines(vector<string> const& lines)
     return;
 }
 
-void Structure::calculateNeighborList(double cutoffRadius)
+void Structure::calculateMaxCutoffRadiusOverall(
+                                            EwaldSetup& ewaldSetup,
+                                            double rcutScreen,
+                                            double maxCutoffRadius)
 {
+    maxCutoffRadiusOverall = max(rcutScreen, maxCutoffRadius);
     if (isPeriodic)
     {
-        calculatePbcCopies(cutoffRadius);
+        ewaldSetup.calculateParameters(volume, numAtoms);
+        maxCutoffRadiusOverall = max(maxCutoffRadiusOverall,
+                                     ewaldSetup.params.rCut);
+    }
+}
+
+void Structure::calculateNeighborList(
+                                        double      cutoffRadius,
+                                        bool        sortByDistance)
+{
+    cutoffRadius = max( cutoffRadius, maxCutoffRadiusOverall );
+    //cout << "CUTOFF: " << cutoffRadius << "\n";
+
+    if (isPeriodic)
+    {
+        calculatePbcCopies(cutoffRadius, pbc);
 
         // Use square of cutoffRadius (faster).
         cutoffRadius *= cutoffRadius;
 
-        size_t i = 0;
 #ifdef _OPENMP
-        #pragma omp parallel for private(i)
+        #pragma omp parallel for
 #endif
-        for (i = 0; i < numAtoms; i++)
+        for (size_t i = 0; i < numAtoms; i++)
         {
             // Count atom i as unique neighbor.
             atoms[i].neighborsUnique.push_back(i);
@@ -321,11 +359,10 @@ void Structure::calculateNeighborList(double cutoffRadius)
         // Use square of cutoffRadius (faster).
         cutoffRadius *= cutoffRadius;
 
-        size_t i = 0;
 #ifdef _OPENMP
-        #pragma omp parallel for private(i)
+        #pragma omp parallel for
 #endif
-        for (i = 0; i < numAtoms; i++)
+        for (size_t i = 0; i < numAtoms; i++)
         {
             // Count atom i as unique neighbor.
             atoms[i].neighborsUnique.push_back(i);
@@ -356,7 +393,81 @@ void Structure::calculateNeighborList(double cutoffRadius)
 
     hasNeighborList = true;
 
+    if (sortByDistance) sortNeighborList();
+
     return;
+}
+
+void Structure::calculateNeighborList(double                cutoffRadius,
+                                      std::vector<
+                                      std::vector<double>>& cutoffs)
+{
+    calculateNeighborList(cutoffRadius, true);
+    setupNeighborCutoffMap(cutoffs);
+}
+
+void Structure::sortNeighborList()
+{
+#ifdef _OPENMP
+        #pragma omp parallel for
+#endif
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        sort(atoms[i].neighbors.begin(), atoms[i].neighbors.end());
+        //TODO: maybe sort neighborsUnique too?
+        atoms[i].NeighborListIsSorted = true;
+    }
+    NeighborListIsSorted = true;
+}
+
+void Structure::setupNeighborCutoffMap(vector<
+                                       vector<double>> cutoffs)
+{
+    if ( !NeighborListIsSorted )
+        throw runtime_error("NeighborCutoffs map needs a sorted neighbor list");
+
+    for ( auto& elementCutoffs : cutoffs )
+    {
+        if ( maxCutoffRadiusOverall > 0 &&
+             !vectorContains(elementCutoffs, maxCutoffRadiusOverall))
+        {
+            elementCutoffs.push_back(maxCutoffRadiusOverall);
+        }
+
+        if ( !is_sorted(elementCutoffs.begin(), elementCutoffs.end()) )
+        {
+            sort(elementCutoffs.begin(), elementCutoffs.end());
+        }
+    }
+
+    // Loop over all atoms in this structure and create its neighborCutoffs map
+    for( auto& a : atoms )
+    {
+        size_t const eIndex = a.element;
+        vector<double> const& elementCutoffs = cutoffs.at(eIndex);
+        size_t in = 0;
+        size_t ic = 0;
+
+        while( in < a.numNeighbors && ic < elementCutoffs.size() )
+        {
+            Atom::Neighbor const& n = a.neighbors[in];
+            // If neighbor distance is higher than current "desired cutoff"
+            // then add neighbor cutoff.
+            // Attention: a step in the neighbor list could jump over multiple
+            // params -> don't increment neighbor index
+            if( n.d > elementCutoffs[ic] )
+            {
+                a.neighborCutoffs.emplace( elementCutoffs.at(ic), in );
+                ++ic;
+            }
+            else if ( in == a.numNeighbors - 1 )
+            {
+                a.neighborCutoffs.emplace( elementCutoffs.at(ic), a.numNeighbors );
+                ++ic;
+            }
+            else ++in;
+        }
+    }
 }
 
 size_t Structure::getMaxNumNeighbors() const
@@ -372,7 +483,7 @@ size_t Structure::getMaxNumNeighbors() const
     return maxNumNeighbors;
 }
 
-void Structure::calculatePbcCopies(double cutoffRadius)
+void Structure::calculatePbcCopies(double cutoffRadius, int (&pbc)[3])
 {
     Vec3D axb;
     Vec3D axc;
@@ -433,11 +544,671 @@ void Structure::calculateInverseBox()
     return;
 }
 
+// TODO: Not needed anymore, should we keep it?
+bool Structure::canMinimumImageConventionBeApplied(double cutoffRadius)
+{
+    Vec3D axb;
+    Vec3D axc;
+    Vec3D bxc;
+
+    axb = box[0].cross(box[1]).normalize();
+    axc = box[0].cross(box[2]).normalize();
+    bxc = box[1].cross(box[2]).normalize();
+
+    double proj[3];
+    proj[0] = fabs(box[0] * bxc);
+    proj[1] = fabs(box[1] * axc);
+    proj[2] = fabs(box[2] * axb);
+
+    double minProj = *min_element(proj, proj+3);
+    return (cutoffRadius < minProj / 2.0);
+}
+
+Vec3D Structure::applyMinimumImageConvention(Vec3D const& dr)
+{
+    Vec3D ds = invbox * dr;
+    Vec3D dsNINT;
+
+    for (size_t i=0; i<3; ++i)
+    {
+        dsNINT[i] = round(ds[i]);
+    }
+    Vec3D drMin = box * (ds - dsNINT);
+
+    return drMin;
+}
+
 void Structure::calculateVolume()
 {
     volume = fabs(box[0] * (box[1].cross(box[2])));
 
     return;
+}
+
+double Structure::calculateElectrostaticEnergy(
+                                            EwaldSetup&              ewaldSetup,
+                                            VectorXd                 hardness,
+                                            MatrixXd                 gammaSqrt2,
+                                            VectorXd                 sigmaSqrtPi,
+                                            ScreeningFunction const& fs,
+                                            double const             fourPiEps,
+                                            ErfcBuf&                 erfcBuf)
+{
+    A.resize(numAtoms + 1, numAtoms + 1);
+    A.setZero();
+    VectorXd b(numAtoms + 1);
+    VectorXd hardnessJ(numAtoms);
+    VectorXd Q;
+    erfcBuf.reset(atoms, 2);
+
+#ifdef _OPENMP
+#pragma omp parallel
+    {
+#endif
+    if (isPeriodic)
+    {
+#ifdef _OPENMP
+#pragma omp single
+        {
+#endif
+        if (!NeighborListIsSorted)
+        {
+            throw runtime_error("ERROR: Neighbor list needs to "
+                                "be sorted for Ewald summation!\n");
+        }
+
+        // Should always happen already before neighborlist construction.
+        //ewaldSetup.calculateParameters(volume, numAtoms);
+#ifdef _OPENMP
+        }
+#endif
+        KspaceGrid grid;
+        grid.setup(box, ewaldSetup);
+        double const rcutReal = ewaldSetup.params.rCut;
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.params.eta;
+
+#ifdef _OPENMP
+        #pragma omp for schedule(dynamic)
+#endif
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const &ai = atoms.at(i);
+            size_t const ei = ai.element;
+
+            // diagonal including self interaction
+            A(i, i) += hardness(ei)
+                       + (1.0 / sigmaSqrtPi(ei) - 2 / (sqrt2eta * sqrt(M_PI)))
+                         / fourPiEps;
+
+            hardnessJ(i) = hardness(ei);
+            b(i) = -ai.chi;
+
+            // real part
+            size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutReal);
+            for (size_t k = 0; k < numNeighbors; ++k)
+            {
+                auto const &n = ai.neighbors[k];
+                size_t j = n.tag;
+                if (j < i) continue;
+
+                double const rij = n.d;
+                size_t const ej = n.element;
+
+                double erfcSqrt2Eta = erfcBuf.getf(i, k, 0, rij / sqrt2eta);
+                double erfcGammaSqrt2 =
+                            erfcBuf.getf(i, k, 1, rij / gammaSqrt2(ei, ej));
+
+                A(i, j) += (erfcSqrt2Eta - erfcGammaSqrt2) / (rij * fourPiEps);
+            }
+
+            // reciprocal part
+            //for (size_t j = i + 1; j < numAtoms; ++j)
+            for (size_t j = i; j < numAtoms; ++j)
+            {
+                Atom const &aj = atoms.at(j);
+                for (auto const &gv: grid.kvectors)
+                {
+                    // Multiply by 2 because our grid is only a half-sphere
+                    // Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    Vec3D const dr = ai.r - aj.r;
+                    A(i, j) += 2 * gv.coeff * cos(gv.k * dr) / fourPiEps;
+                    //A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
+                }
+                A(j, i) = A(i, j);
+            }
+        }
+    }
+    else
+    {
+#ifdef _OPENMP
+#pragma omp for schedule(dynamic)
+#endif
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom const &ai = atoms.at(i);
+            size_t const ei = ai.element;
+
+            A(i, i) = hardness(ei)
+                      + 1.0 / (sigmaSqrtPi(ei) * fourPiEps);
+            hardnessJ(i) = hardness(ei);
+            b(i) = -ai.chi;
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom const &aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const rij = (ai.r - aj.r).norm();
+
+                A(i, j) = erf(rij / gammaSqrt2(ei, ej)) / (rij * fourPiEps);
+                A(j, i) = A(i, j);
+
+            }
+        }
+    }
+#ifdef _OPENMP
+#pragma omp single
+    {
+#endif
+    A.col(numAtoms).setOnes();
+    A.row(numAtoms).setOnes();
+    A(numAtoms, numAtoms) = 0.0;
+    hasAMatrix = true;
+    b(numAtoms) = chargeRef;
+#ifdef _OPENMP
+    }
+#endif
+    //TODO: sometimes only recalculation of A matrix is needed, because
+    //      Qs are stored.
+    Q = A.colPivHouseholderQr().solve(b);
+#ifdef _OPENMP
+    #pragma omp for nowait
+#endif
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        atoms.at(i).charge = Q(i);
+    }
+#ifdef _OPENMP
+    } // end of parallel region
+#endif
+
+    lambda = Q(numAtoms);
+    hasCharges = true;
+    double error = (A * Q - b).norm() / b.norm();
+
+    // We need matrix E not A, which only differ by the hardness terms along the diagonal
+    energyElec = 0.5 * Q.head(numAtoms).transpose()
+               * (A.topLeftCorner(numAtoms, numAtoms) -
+                MatrixXd(hardnessJ.asDiagonal())) * Q.head(numAtoms);
+    energyElec += calculateScreeningEnergy(gammaSqrt2, sigmaSqrtPi, fs, fourPiEps);
+
+    return error;
+}
+
+double Structure::calculateScreeningEnergy(
+                                        MatrixXd                 gammaSqrt2,
+                                        VectorXd                 sigmaSqrtPi,
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps)
+
+{
+    double energyScreen = 0;
+    double const rcutScreen = fs.getOuter();
+
+#ifdef _OPENMP
+    #pragma omp parallel
+    {
+        double localEnergyScreen = 0;
+#endif
+        if (isPeriodic)
+        {
+#ifdef _OPENMP
+            #pragma omp for schedule(dynamic)
+#endif
+            for (size_t i = 0; i < numAtoms; ++i)
+            {
+                Atom const& ai = atoms.at(i);
+                size_t const ei = ai.element;
+                double const Qi = ai.charge;
+#ifdef _OPENMP
+                localEnergyScreen +=  -Qi * Qi
+                                   / (2 * sigmaSqrtPi(ei) * fourPiEps);
+#else
+                energyScreen +=  -Qi * Qi
+                              / (2 * sigmaSqrtPi(ei) * fourPiEps);
+#endif
+
+                size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutScreen);
+                for (size_t k = 0; k < numNeighbors; ++k)
+                {
+                    auto const& n = ai.neighbors[k];
+                    size_t const j = n.tag;
+                    if (j < i) continue;
+                    double const rij = n.d;
+                    size_t const ej = n.element;
+                    //TODO: Maybe add charge to neighbor class?
+                    double const Qj = atoms.at(j).charge;
+#ifdef _OPENMP
+                    localEnergyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej))
+                                    * (fs.f(rij) - 1) / (rij * fourPiEps);
+#else
+                    energyScreen += Qi * Qj * erf(rij / gammaSqrt2(ei, ej))
+                                    * (fs.f(rij) - 1) / (rij * fourPiEps);
+#endif
+
+               }
+            }
+        }
+        else
+        {
+#ifdef _OPENMP
+            #pragma omp for schedule(dynamic)
+#endif
+            for (size_t i = 0; i < numAtoms; ++i)
+            {
+                Atom const& ai = atoms.at(i);
+                size_t const ei = ai.element;
+                double const Qi = ai.charge;
+#ifdef _OPENMP
+                localEnergyScreen +=  -Qi * Qi
+                                   / (2 * sigmaSqrtPi(ei) * fourPiEps);
+#else
+                energyScreen +=  -Qi * Qi
+                              / (2 * sigmaSqrtPi(ei) * fourPiEps);
+#endif
+
+                for (size_t j = i + 1; j < numAtoms; ++j)
+                {
+                    Atom const& aj = atoms.at(j);
+                    double const Qj = aj.charge;
+                    double const rij = (ai.r - aj.r).norm();
+                    if ( rij < rcutScreen )
+                    {
+#ifdef _OPENMP
+                        localEnergyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+#else
+                        energyScreen += Qi * Qj * A(i, j) * (fs.f(rij) - 1);
+#endif
+                    }
+                }
+            }
+        }
+#ifdef _OPENMP
+        #pragma omp atomic
+        energyScreen += localEnergyScreen;
+    }
+#endif
+    //cout << "energyScreen = " << energyScreen << endl;
+    return energyScreen;
+}
+
+
+void Structure::calculateDAdrQ(
+                            EwaldSetup&  ewaldSetup,
+                            MatrixXd     gammaSqrt2,
+                            double const fourPiEps,
+                            ErfcBuf&     erfcBuf)
+{
+
+#ifdef _OPENMP
+    vector<Vec3D> dAdrQDiag(numAtoms);
+    #pragma omp parallel
+    {
+
+    #pragma omp declare reduction(vec_Vec3D_plus : std::vector<Vec3D> : \
+                  std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<Vec3D>())) \
+                  initializer(omp_priv = decltype(omp_orig)(omp_orig.size()))
+    #pragma omp for
+#endif
+    // TODO: This initialization loop could probably be avoid, maybe use
+    // default constructor?
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom &ai = atoms.at(i);
+        // dAdrQ(numAtoms+1,:) entries are zero
+        ai.dAdrQ.resize(numAtoms + 1);
+    }
+
+    if (isPeriodic)
+    {
+        // TODO: We need same Kspace grid as in calculateScreeningEnergy, should
+        // we cache it for reuse? Note that we can't calculate dAdrQ already in
+        // the loops of calculateElectrostaticEnergy because at this point we don't
+        // have the charges.
+
+        KspaceGrid grid;
+        grid.setup(box, ewaldSetup);
+        double rcutReal = ewaldSetup.params.rCut;
+        double const sqrt2eta = sqrt(2.0) * ewaldSetup.params.eta;
+
+#ifdef _OPENMP
+        // This way of parallelization slightly changes the result because of
+        // numerical errors.
+        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag) schedule(dynamic)
+#endif
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom &ai = atoms.at(i);
+            size_t const ei = ai.element;
+            double const Qi = ai.charge;
+
+            // real part
+            size_t const numNeighbors = ai.getStoredMinNumNeighbors(rcutReal);
+            for (size_t k = 0; k < numNeighbors; ++k)
+            {
+                auto const &n = ai.neighbors[k];
+                size_t j = n.tag;
+                //if (j < i) continue;
+                if (j <= i) continue;
+
+                double const rij = n.d;
+                Atom &aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const Qj = aj.charge;
+
+                double erfcSqrt2Eta = erfcBuf.getf(i, k, 0, rij / sqrt2eta);
+                double erfcGammaSqrt2 =
+                        erfcBuf.getf(i, k, 1, rij / gammaSqrt2(ei, ej));
+
+                Vec3D dAijdri;
+                dAijdri = n.dr / pow(rij, 2)
+                          * (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
+                          / sqrt2eta + exp(-pow(rij / gammaSqrt2(ei, ej), 2))
+                          / gammaSqrt2(ei, ej)) - 1 / rij
+                          * (erfcSqrt2Eta - erfcGammaSqrt2));
+                dAijdri /= fourPiEps;
+                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
+                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
+                ai.dAdrQ[i] += dAijdri * Qj;
+                ai.dAdrQ[j] += dAijdri * Qi;
+                aj.dAdrQ[i] -= dAijdri * Qj;
+#ifdef _OPENMP
+                dAdrQDiag[j] -= dAijdri * Qi;
+#else
+                aj.dAdrQ[j] -= dAijdri * Qi;
+#endif
+            }
+
+            // reciprocal part
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom &aj = atoms.at(j);
+                double const Qj = aj.charge;
+                Vec3D dAijdri;
+                for (auto const &gv: grid.kvectors)
+                {
+                    // Multiply by 2 because our grid is only a half-sphere
+                    //Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
+                    Vec3D const dr = ai.r - aj.r;
+                    dAijdri -= 2 * gv.coeff * sin(gv.k * dr) * gv.k;
+                }
+                dAijdri /= fourPiEps;
+
+                ai.dAdrQ[i] += dAijdri * Qj;
+                ai.dAdrQ[j] += dAijdri * Qi;
+                aj.dAdrQ[i] -= dAijdri * Qj;
+#ifdef _OPENMP
+                dAdrQDiag[j] -= dAijdri * Qi;
+#else
+                aj.dAdrQ[j] -= dAijdri * Qi;
+#endif
+            }
+        }
+
+    } else
+    {
+#ifdef _OPENMP
+        #pragma omp for reduction(vec_Vec3D_plus : dAdrQDiag) schedule(dynamic)
+#endif
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            Atom &ai = atoms.at(i);
+            size_t const ei = ai.element;
+            double const Qi = ai.charge;
+
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom &aj = atoms.at(j);
+                size_t const ej = aj.element;
+                double const Qj = aj.charge;
+
+                double rij = (ai.r - aj.r).norm();
+                Vec3D dAijdri;
+                dAijdri = (ai.r - aj.r) / pow(rij, 2)
+                          * (2 / (sqrt(M_PI) * gammaSqrt2(ei, ej))
+                             * exp(-pow(rij / gammaSqrt2(ei, ej), 2))
+                             - erf(rij / gammaSqrt2(ei, ej)) / rij);
+                dAijdri /= fourPiEps;
+                // Make use of symmetry: dA_{ij}/dr_i = dA_{ji}/dr_i
+                // = -dA_{ji}/dr_j = -dA_{ij}/dr_j
+                ai.dAdrQ[i] += dAijdri * Qj;
+                ai.dAdrQ[j] = dAijdri * Qi;
+                aj.dAdrQ[i] = -dAijdri * Qj;
+#ifdef _OPENMP
+                dAdrQDiag[j] -= dAijdri * Qi;
+#else
+                aj.dAdrQ[j] -= dAijdri * Qi;
+#endif
+            }
+        }
+    }
+#ifdef _OPENMP
+    #pragma omp for
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom& ai = atoms[i];
+        ai.dAdrQ[i] += dAdrQDiag[i];
+    }
+    }
+#endif
+    return;
+}
+
+void Structure::calculateDQdChi(vector<Eigen::VectorXd> &dQdChi)
+{
+    dQdChi.clear();
+    dQdChi.reserve(numAtoms);
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        // Including Lagrange multiplier equation.
+        VectorXd b(numAtoms+1);
+        b.setZero();
+        b(i) = -1.;
+        dQdChi.push_back(A.colPivHouseholderQr().solve(b).head(numAtoms));
+    }
+    return;
+}
+
+void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
+{
+    dQdJ.clear();
+    dQdJ.reserve(numElements);
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        // Including Lagrange multiplier equation.
+        VectorXd b(numAtoms+1);
+        b.setZero();
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            Atom const &aj = atoms.at(j);
+            if (i == aj.element) b(j) = -aj.charge;
+        }
+        dQdJ.push_back(A.colPivHouseholderQr().solve(b).head(numAtoms));
+    }
+    return;
+}
+
+void Structure::calculateDQdr(  vector<size_t> const&   atomIndices,
+                                vector<size_t> const&   compIndices,
+                                double const            maxCutoffRadius,
+                                vector<Element> const&  elements)
+{
+    if (atomIndices.size() != compIndices.size())
+        throw runtime_error("ERROR: In calculation of dQ/dr both atom index and"
+                            " component index must be specified.");
+    for (size_t i = 0; i < atomIndices.size(); ++i)
+    {
+        Atom& a = atoms.at(atomIndices[i]);
+        if ( a.dAdrQ.size() == 0 )
+            throw runtime_error("ERROR: dAdrQ needs to be calculated before "
+                                "calculating dQdr");
+        a.dQdr.resize(numAtoms);
+
+        // b stores (-dChidr - dAdrQ), last element for charge conservation.
+        VectorXd b(numAtoms + 1);
+        b.setZero();
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            Atom const& aj = atoms.at(j);
+
+#ifndef N2P2_FULL_SFD_MEMORY
+            vector<vector<size_t> > const *const tableFull
+                    = &(elements.at(aj.element).getSymmetryFunctionTable());
+#else
+            vector<vector<size_t> > const *const tableFull = nullptr;
+#endif
+            b(j) -= aj.calculateDChidr(atomIndices[i],
+                                       maxCutoffRadius,
+                                       tableFull)[compIndices[i]];
+            b(j) -= a.dAdrQ.at(j)[compIndices[i]];
+        }
+        VectorXd dQdr = A.colPivHouseholderQr().solve(b).head(numAtoms);
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            a.dQdr.at(j)[compIndices[i]] = dQdr(j);
+        }
+    }
+    return;
+}
+
+
+void Structure::calculateElectrostaticEnergyDerivatives(
+                                        Eigen::VectorXd          hardness,
+                                        Eigen::MatrixXd          gammaSqrt2,
+                                        VectorXd                 sigmaSqrtPi,
+                                        ScreeningFunction const& fs,
+                                        double const             fourPiEps)
+{
+    // Reset in case structure is used again (e.g. during training)
+    for (Atom &ai : atoms)
+    {
+        ai.pEelecpr = Vec3D{};
+        ai.dEelecdQ = 0.0;
+    }
+
+    double rcutScreen = fs.getOuter();
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom& ai = atoms.at(i);
+        size_t const ei = ai.element;
+        double const Qi = ai.charge;
+
+        // TODO: This loop could be reduced by making use of symmetry, j>=i or
+        // so
+        for (size_t j = 0; j < numAtoms; ++j)
+        {
+            Atom& aj = atoms.at(j);
+            double const Qj = aj.charge;
+
+            ai.pEelecpr += 0.5 * Qj * ai.dAdrQ[j];
+
+            // Diagonal terms contain self-interaction --> screened
+            if (i != j) ai.dEelecdQ += Qj * A(i,j);
+            else if (isPeriodic)
+            {
+                ai.dEelecdQ += Qi * (A(i,i) - hardness(ei)
+                                - 1 / (sigmaSqrtPi(ei) * fourPiEps));
+            }
+        }
+
+        if (isPeriodic)
+        {
+            for (auto const& ajN : ai.neighbors)
+            {
+                size_t j = ajN.tag;
+                Atom& aj = atoms.at(j);
+                if (j < i) continue;
+                double const rij = ajN.d;
+                if (rij >= rcutScreen) break;
+
+                size_t const ej = aj.element;
+                double const Qj = atoms.at(j).charge;
+
+                double erfRij = erf(rij / gammaSqrt2(ei,ej));
+                double fsRij = fs.f(rij);
+
+                // corrections due to screening
+                Vec3D Tij = Qi * Qj * ajN.dr / pow(rij,2)
+                                * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
+                                * exp(- pow(rij / gammaSqrt2(ei,ej),2))
+                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij
+                                * (fsRij - 1) / rij);
+                Tij /= fourPiEps;
+                ai.pEelecpr += Tij;
+                aj.pEelecpr -= Tij;
+
+                double Sij = erfRij * (fsRij - 1) / rij;
+                Sij /= fourPiEps;
+                ai.dEelecdQ += Qj * Sij;
+                aj.dEelecdQ += Qi * Sij;
+            }
+        }
+        else
+        {
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
+                Atom& aj = atoms.at(j);
+                double const rij = (ai.r - aj.r).norm();
+                if (rij >= rcutScreen) continue;
+
+                size_t const ej = aj.element;
+                double const Qj = atoms.at(j).charge;
+
+                double erfRij = erf(rij / gammaSqrt2(ei,ej));
+                double fsRij = fs.f(rij);
+
+                // corrections due to screening
+                Vec3D Tij = Qi * Qj * (ai.r - aj.r) / pow(rij,2)
+                                * (2 / (sqrt(M_PI) * gammaSqrt2(ei,ej))
+                                * exp(- pow(rij / gammaSqrt2(ei,ej),2))
+                                * (fsRij - 1) + erfRij * fs.df(rij) - erfRij
+                                * (fsRij - 1) / rij);
+                Tij /= fourPiEps;
+                ai.pEelecpr += Tij;
+                aj.pEelecpr -= Tij;
+
+                double Sij = erfRij * (fsRij - 1) / rij;
+                Sij /= fourPiEps;
+                ai.dEelecdQ += Qj * Sij;
+                aj.dEelecdQ += Qi * Sij;
+            }
+        }
+    }
+   return;
+}
+
+VectorXd const Structure::calculateForceLambdaTotal() const
+{
+    VectorXd dEdQ(numAtoms+1);
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom const& ai = atoms.at(i);
+        dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
+    }
+    dEdQ(numAtoms) = 0;
+    VectorXd const lambdaTotal = A.colPivHouseholderQr().solve(-dEdQ);
+    return lambdaTotal;
+}
+
+VectorXd const Structure::calculateForceLambdaElec() const
+{
+    VectorXd dEelecdQ(numAtoms+1);
+    for (size_t i = 0; i < numAtoms; ++i)
+    {
+        Atom const& ai = atoms.at(i);
+        dEelecdQ(i) = ai.dEelecdQ;
+    }
+    dEelecdQ(numAtoms) = 0;
+    VectorXd const lambdaElec = A.colPivHouseholderQr().solve(-dEelecdQ);
+    return lambdaElec;
 }
 
 void Structure::remap()
@@ -446,7 +1217,6 @@ void Structure::remap()
     {
         remap((*it));
     }
-
     return;
 }
 
@@ -478,7 +1248,8 @@ void Structure::remap(Atom& atom)
 
 void Structure::toNormalizedUnits(double meanEnergy,
                                   double convEnergy,
-                                  double convLength)
+                                  double convLength,
+                                  double convCharge)
 {
     if (isPeriodic)
     {
@@ -492,11 +1263,13 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
     energyRef = (energyRef - numAtoms * meanEnergy) * convEnergy;
     energy = (energy - numAtoms * meanEnergy) * convEnergy;
+    chargeRef *= convCharge;
+    charge *= convCharge;
     volume *= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toNormalizedUnits(convEnergy, convLength);
+        it->toNormalizedUnits(convEnergy, convLength, convCharge);
     }
 
     return;
@@ -504,7 +1277,8 @@ void Structure::toNormalizedUnits(double meanEnergy,
 
 void Structure::toPhysicalUnits(double meanEnergy,
                                 double convEnergy,
-                                double convLength)
+                                double convLength,
+                                double convCharge)
 {
     if (isPeriodic)
     {
@@ -518,21 +1292,23 @@ void Structure::toPhysicalUnits(double meanEnergy,
 
     energyRef = energyRef / convEnergy + numAtoms * meanEnergy;
     energy = energy / convEnergy + numAtoms * meanEnergy;
+    chargeRef /= convCharge;
+    charge /= convCharge;
     volume /= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->toPhysicalUnits(convEnergy, convLength);
+        it->toPhysicalUnits(convEnergy, convLength, convCharge);
     }
 
     return;
 }
 
-void Structure::freeAtoms(bool all)
+void Structure::freeAtoms(bool all, double const maxCutoffRadius)
 {
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
     {
-        it->free(all);
+        it->free(all, maxCutoffRadius);
     }
     if (all) hasSymmetryFunctions = false;
     hasSymmetryFunctionDerivatives = false;
@@ -591,6 +1367,20 @@ void Structure::clearNeighborList()
     hasSymmetryFunctionDerivatives = false;
 
     return;
+}
+
+void Structure::clearElectrostatics(bool clearDQdr)
+{
+    A.resize(0,0);
+    hasAMatrix = false;
+    for (auto& a : atoms)
+    {
+        vector<Vec3D>().swap(a.dAdrQ);
+        if (clearDQdr)
+        {
+            vector<Vec3D>().swap(a.dQdr);
+        }
+    }
 }
 
 void Structure::updateError(string const&        property,

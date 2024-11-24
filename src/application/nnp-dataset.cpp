@@ -206,24 +206,10 @@ int main(int argc, char* argv[])
     for (vector<Structure>::iterator it = dataset.structures.begin();
          it != dataset.structures.end(); ++it)
     {
-        it->calculateNeighborList(dataset.getMaxCutoffRadius());
-#ifdef N2P2_NO_SF_GROUPS
-        dataset.calculateSymmetryFunctions((*it), useForces);
-#else
-        dataset.calculateSymmetryFunctionGroups((*it), useForces);
-#endif
-        // Manually allocate dEdG vectors.
-        for (vector<Atom>::iterator it2 = it->atoms.begin();
-             it2 != it->atoms.end(); ++it2)
-        {
-            size_t const& e = it2->element;
-            it2->dEdG.resize(numSymmetryFunctions.at(e), 0.0);
-        }
         // Set derivatives argument to true in any case to fill dEdG vectors
         // in atom storage.
-        dataset.calculateAtomicNeuralNetworks((*it), true);
-        dataset.calculateEnergy((*it));
-        if (useForces) dataset.calculateForces((*it));
+        dataset.evaluateNNP((*it), useForces, true);
+
         // Loop over atoms, collect sensitivity data and clear memory.
         for (vector<Atom>::iterator it2 = it->atoms.begin();
              it2 != it->atoms.end(); ++it2)
@@ -237,7 +223,7 @@ int main(int argc, char* argv[])
                 sensMean.at(e).at(i) += s * s;
                 sensMax.at(e).at(i) = max(sensMax.at(e).at(i), abs(s));
             }
-            // Clear unneccessary memory (neighbor list and others), energies
+            // Clear unnecessary memory (neighbor list and others), energies
             // and forces are still stored. Don't use these structures after
             // these operations unless you know what you do!
             it2->numNeighborsUnique = 0;
@@ -319,7 +305,8 @@ int main(int argc, char* argv[])
         {
             it->toPhysicalUnits(dataset.getMeanEnergy(),
                                 dataset.getConvEnergy(),
-                                dataset.getConvLength());
+                                dataset.getConvLength(),
+                                dataset.getConvCharge());
         }
         dataset.addEnergyOffset(*it, false);
         it->writeToFile(&fileOutputData, false);

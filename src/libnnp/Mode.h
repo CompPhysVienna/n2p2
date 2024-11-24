@@ -20,11 +20,15 @@
 #include "CutoffFunction.h"
 #include "Element.h"
 #include "ElementMap.h"
+#include "ErfcBuf.h"
+#include "EwaldSetup.h"
 #include "Log.h"
+#include "ScreeningFunction.h"
 #include "Settings.h"
 #include "Structure.h"
 #include "SymFnc.h"
 #include <cstddef> // std::size_t
+#include <map>     // std::map
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -84,10 +88,18 @@ class Mode
 public:
     enum class NNPType
     {
-        /// Short range NNP only.
-        SHORT_ONLY,
-        /// Short range NNP with additional charge NN (M. Bircher).
-        SHORT_CHARGE_NN
+        /// Short range NNP (2G-HDNNP).
+        HDNNP_2G = 2,
+        /// NNP with electrostatics and non-local charge transfer (4G-HDNNP).
+        HDNNP_4G = 4,
+        /** Short range NNP with charge NN, no electrostatics/Qeq (M. Bircher).
+         *
+         * This is a simplified version of a 4G-HDNNP. Two neural networks are
+         * used: the first one predicts atomic charges, which will be used for
+         * the second NN as additional input neuron. There is no electrostatic
+         * energy and no global charge equilibration as in 4G-HDNNP.
+         */
+        HDNNP_Q = 10
     };
 
     Mode();
@@ -102,12 +114,17 @@ public:
                                                                  = "input.nn");
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
+     * @param[in] nnpDir Optional directory where NNP files reside.
      * @param[in] skipNormalize Whether to skip normalization setup.
+     * @param[in] initialHardness Signalizes to use initial hardness in NN
+     *                  settings.
      *
      * Sets up elements, symmetry functions, symmetry function groups, neural
      * networks. No symmetry function scaling data is read, no weights are set.
      */
-    void                     setupGeneric(bool skipNormalize = false);
+    void                     setupGeneric(std::string const& nnpDir = "",
+                                          bool               skipNormalize = false,
+                                          bool               initialHardness = false);
     /** Set up normalization.
      *
      * @param[in] standalone Whether to write section header and footer.
@@ -205,6 +222,9 @@ public:
                                              bool collectExtrapolationWarnings,
                                              bool writeExtrapolationWarnings,
                                              bool stopOnExtrapolationWarnings);
+    /** Setup matrix storing all symmetry function cut-offs for each element.
+     */
+    void                     setupCutoffMatrix();
     /** Set up neural networks for all elements.
      *
      * Uses keywords `global_hidden_layers_short`, `global_nodes_short`,
@@ -213,23 +233,56 @@ public:
      * known.
      */
     virtual void             setupNeuralNetwork();
-    /** Set up neural network weights from files.
+    /** Set up neural network weights from files with given name format.
      *
-     * @param[in] fileNameFormatShort Format for weights file name. The string
-     *                                must contain one placeholder for the
-     *                                atomic number.
-     * @param[in] fileNameFormatCharge Format for charge NN weights file name.
-     *                                 The string must contain one placeholder
-     *                                 for the atomic number.
+     * @param[in] fileNameFormats Map of NN ids to format for weight file
+     *                            names. Must contain a placeholder "%zu" for
+     *                            the element atomic number. Map keys are
+     *                            "short", "elec". Map argument may be
+     *                            ommitted, then default name formats are used.
      *
      * Does not use any keywords. The weight files should contain one weight
      * per line, see NeuralNetwork::setConnections() for the correct order.
      */
     virtual void             setupNeuralNetworkWeights(
-                                std::string const& fileNameFormatShort
-                                                      = "weights.%03zu.data",
-                                std::string const& fileNameFormatCharge
-                                                      = "weightse.%03zu.data");
+                                 std::map<std::string,
+                                          std::string> fileNameFormats =
+                                 std::map<std::string,
+                                          std::string>());
+    /** Set up neural network weights from files with given name format.
+     *
+     * @param[in] directoryPrefix Directory prefix which is applied to all
+     *                            fileNameFormats.
+     * @param[in] fileNameFormats Map of NN ids to format for weight file
+     *                            names. Must contain a placeholder "%zu" for
+     *                            the element atomic number. Map keys are
+     *                            "short", "elec". Map argument may be
+     *                            ommitted, then default name formats are used.
+     *
+     * Does not use any keywords. The weight files should contain one weight
+     * per line, see NeuralNetwork::setConnections() for the correct order.
+     */
+    virtual void             setupNeuralNetworkWeights(
+                                 std::string           directoryPrefix,
+                                 std::map<std::string,
+                                          std::string> fileNameFormats =
+                                 std::map<std::string,
+                                          std::string>());
+    /** Set up electrostatics related stuff (hardness, screening, ...).
+     *
+     * @param[in] initialHardness Use initial hardness from keyword in settings
+     *                            file (useful for training).
+     * @param[in] directoryPrefix Directory prefix which is applied to
+     *                            fileNameFormat.
+     * @param[in] fileNameFormat Name format of file containing atomic
+     *                           hardness data.
+     */
+    virtual void             setupElectrostatics(bool initialHardness =
+                                                 false,
+                                                 std::string directoryPrefix =
+                                                 "",
+                                                 std::string fileNameFormat =
+                                                 "hardness.%03zu.data");
     /** Calculate all symmetry functions for all atoms in given structure.
      *
      * @param[in] structure Input structure.
@@ -259,18 +312,18 @@ public:
     void                     calculateSymmetryFunctionGroups(
                                                        Structure& structure,
                                                        bool const derivatives);
-    /** Calculate a single atomic neural network for a given atom and nn type.
-     *
-     * @param[in] nnId Neural network identifier, e.g. "short", "charge".
-     * @param[in] atom Input atom.
-     * @param[in] derivatives If `true` calculate also derivatives of neural
-     *                        networks with respect to input layer neurons
-     *                        (required for force calculation).
-     *
-     * The atomic energy and charge is stored in Atom::energy and Atom::charge,
-     * respectively. If derivatives are calculated the results are stored in
-     * Atom::dEdG or Atom::dQdG.
-     */
+    // /** Calculate a single atomic neural network for a given atom and nn type.
+    // *
+    // * @param[in] nnId Neural network identifier, e.g. "short", "charge".
+    // * @param[in] atom Input atom.
+    // * @param[in] derivatives If `true` calculate also derivatives of neural
+    // *                        networks with respect to input layer neurons
+    // *                        (required for force calculation).
+    // *
+    // * The atomic energy and charge is stored in Atom::energy and Atom::charge,
+    // * respectively. If derivatives are calculated the results are stored in
+    // * Atom::dEdG or Atom::dQdG.
+    // */
     //void                     calculateAtomicNeuralNetwork(
     //                                           std::string const& nnId,
     //                                           Atom&              atom,
@@ -281,13 +334,23 @@ public:
      * @param[in] derivatives If `true` calculate also derivatives of neural
      *                        networks with respect to input layer neurons
      *                        (required for force calculation).
-     *
-     * This internally calls calculateAtomicNeuralNetwork with appropriate
-     * neural network identifiers depending on the NNP type.
+     * @param[in] id Neural network ID to use. If empty, the first entry
+     *                        nnk.front() is used.
      */
     void                     calculateAtomicNeuralNetworks(
-                                                       Structure& structure,
-                                                       bool const derivatives);
+                                           Structure&  structure,
+                                           bool const  derivatives,
+                                           std::string id = "");
+    /** Perform global charge equilibration method.
+     *
+     * @param[in] structure Input structure.
+     * @param[in] derivativesElec Turn on/off calculation of dElecdQ and
+     *                          pElecpr (Typically needed for elecstrosttic
+     *                          forces).
+     */
+    void                     chargeEquilibration(
+                                                Structure& structure,
+                                                bool const derivativesElec);
     /** Calculate potential energy for a given structure.
      *
      * @param[in] structure Input structure.
@@ -312,6 +375,15 @@ public:
      * computation to atomic forces. Results are stored in Atom::f.
      */
     void                     calculateForces(Structure& structure) const;
+    /** Evaluate neural network potential (includes total energy, optionally
+     *  forces and in some cases charges.
+     *  @param[in] structure Input structure.
+     *  @param[in] useForces If true, calculate forces too.
+     *  @param[in] useDEdG If true, calculate dE/dG too.
+     */
+    void                     evaluateNNP(Structure& structure,
+                                         bool useForces = true,
+                                         bool useDEdG = true);
     /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.
@@ -350,7 +422,8 @@ public:
                                             bool             ref = true) const;
     /** Apply normalization to given property.
      *
-     * @param[in] property One of "energy", "force".
+     * @param[in] property One of "energy", "force", "charge", "hardness"
+     *                     "negativity".
      * @param[in] value Input property value in physical units.
      *
      * @return Property in normalized units.
@@ -369,7 +442,8 @@ public:
                                             bool             ref = true) const;
     /** Undo normalization for a given property.
      *
-     * @param[in] property One of "energy", "force".
+     * @param[in] property One of "energy", "force", "charge", "hardness",
+     *                     "negativity".
      * @param[in] value Input property value in normalized units.
      *
      * @return Property in physical units.
@@ -397,6 +471,10 @@ public:
      */
     void                     convertToPhysicalUnits(
                                                    Structure& structure) const;
+    /** Logs Ewald params whenever they change.
+     *
+     */
+    void                     logEwaldCutoffs();
     /** Count total number of extrapolation warnings encountered for all
      * elements and symmetry functions.
      *
@@ -408,7 +486,7 @@ public:
     void                     resetExtrapolationWarnings();
     /** Getter for Mode::nnpType.
      *
-     * @return Type of NNP that was set up.
+     * @return HDNNP type (2G, 4G,..) that was set up.
      */
     NNPType                  getNnpType() const;
     /** Getter for Mode::meanEnergy.
@@ -426,6 +504,11 @@ public:
      * @return Length unit conversion factor.
      */
     double                   getConvLength() const;
+    /** Getter for Mode::convCharge.
+     *
+     * @return Charge unit conversion factor.
+     */
+    double                   getConvCharge() const;
     /** Getter for Mode::maxCutoffRadius.
      *
      * @return Maximum cutoff radius of all symmetry functions.
@@ -510,10 +593,41 @@ public:
     Log        log;
 
 protected:
+    /// Setup data for one neural network.
+    struct NNSetup
+    {
+        struct Topology
+        {
+            /// Number of NN layers (including input and output layer).
+            int                                numLayers;
+            /// Number of neurons per layer.
+            std::vector<int>                   numNeuronsPerLayer;
+            /// Activation function type per layer.
+            std::vector<
+            NeuralNetwork::ActivationFunction> activationFunctionsPerLayer;
+
+            /// Constructor.
+            Topology() : numLayers(0) {};
+        };
+
+        /// NN identifier, e.g. "short", "charge",...
+        std::string           id;
+        /// Description string for log output, e.g. "electronegativity".
+        std::string           name;
+        /// Format for weight files.
+        std::string           weightFileFormat;
+        /// Suffix for keywords (NN topology related).
+        std::string           keywordSuffix;
+        /// Suffix for some other keywords (weight file loading related).
+        std::string           keywordSuffix2;
+        /// Per-element NN topology.
+        std::vector<Topology> topology;
+    };
+
+
     NNPType                    nnpType;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
-    bool                       useChargeNN;
     std::size_t                numElements;
     std::vector<std::size_t>   minNeighbors;
     std::vector<double>        minCutoffRadius;
@@ -522,17 +636,28 @@ protected:
     double                     meanEnergy;
     double                     convEnergy;
     double                     convLength;
-    Settings                   settings;
+    double                     convCharge;
+    double                     fourPiEps;
+    EwaldSetup                 ewaldSetup;
+    settings::Settings         settings;
     SymFnc::ScalingType        scalingType;
     CutoffFunction::CutoffType cutoffType;
+    ScreeningFunction          screeningFunction;
     std::vector<Element>       elements;
+    std::vector<std::string>   nnk;
+    std::map<
+    std::string, NNSetup>      nns;
+    /// Matrix storing all symmetry function cut-offs for all elements.
+    std::vector<
+    std::vector<double>>       cutoffs;
+    ErfcBuf                    erfcBuf;
 
     /** Read in weights for a specific type of neural network.
      *
-     * @param[in] type Actual network type to initialize ("short" or "charge").
+     * @param[in] id Actual network type to initialize ("short" or "elec").
      * @param[in] fileNameFormat Weights file name format.
      */
-    void readNeuralNetworkWeights(std::string const& type,
+    void readNeuralNetworkWeights(std::string const& id,
                                   std::string const& fileName);
 };
 
@@ -558,6 +683,11 @@ inline double Mode::getConvEnergy() const
 inline double Mode::getConvLength() const
 {
     return convLength;
+}
+
+inline double Mode::getConvCharge() const
+{
+    return convCharge;
 }
 
 inline double Mode::getMaxCutoffRadius() const

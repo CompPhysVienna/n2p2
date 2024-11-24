@@ -25,6 +25,7 @@ using namespace std;
 using namespace nnp;
 
 Atom::Atom() : hasNeighborList               (false),
+               NeighborListIsSorted          (false),
                hasSymmetryFunctions          (false),
                hasSymmetryFunctionDerivatives(false),
                useChargeNeuron               (false),
@@ -36,19 +37,23 @@ Atom::Atom() : hasNeighborList               (false),
                numNeighborsUnique            (0    ),
                numSymmetryFunctions          (0    ),
                energy                        (0.0  ),
+               dEelecdQ                      (0.0  ),
+               chi                           (0.0  ),
                charge                        (0.0  ),
                chargeRef                     (0.0  )
 {
 }
 
 #ifdef N2P2_FULL_SFD_MEMORY
-void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
+void Atom::collectDGdxia(size_t indexAtom,
+                         size_t indexComponent,
+                         double maxCutoffRadius)
 {
     for (size_t i = 0; i < dGdxia.size(); i++)
     {
         dGdxia[i] = 0.0;
     }
-    for (size_t i = 0; i < numNeighbors; i++)
+    for (size_t i = 0; i < getStoredMinNumNeighbors(maxCutoffRadius); i++)
     {
         if (neighbors[i].index == indexAtom)
         {
@@ -70,12 +75,16 @@ void Atom::collectDGdxia(size_t indexAtom, size_t indexComponent)
 }
 #endif
 
-void Atom::toNormalizedUnits(double convEnergy, double convLength)
+void Atom::toNormalizedUnits(double convEnergy,
+                             double convLength,
+                             double convCharge)
 {
     energy *= convEnergy;
     r *= convLength;
     f *= convEnergy / convLength;
     fRef *= convEnergy / convLength;
+    charge *= convCharge;
+    chargeRef *= convCharge;
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
@@ -87,7 +96,8 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
 #endif
         }
         // Take care of extra charge neuron.
-        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
+        if (useChargeNeuron)
+            dEdG.at(numSymmetryFunctions) *= convEnergy / convCharge;
     }
 
     if (hasNeighborList)
@@ -110,12 +120,16 @@ void Atom::toNormalizedUnits(double convEnergy, double convLength)
     return;
 }
 
-void Atom::toPhysicalUnits(double convEnergy, double convLength)
+void Atom::toPhysicalUnits(double convEnergy,
+                           double convLength,
+                           double convCharge)
 {
     energy /= convEnergy;
     r /= convLength;
     f /= convEnergy / convLength;
     fRef /= convEnergy / convLength;
+    charge /= convCharge;
+    chargeRef /= convCharge;
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
@@ -127,7 +141,8 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
 #endif
         }
         // Take care of extra charge neuron.
-        if (useChargeNeuron) dEdG.at(numSymmetryFunctions) *= convEnergy;
+        if (useChargeNeuron)
+            dEdG.at(numSymmetryFunctions) /= convEnergy / convCharge;
     }
 
     if (hasNeighborList)
@@ -150,7 +165,7 @@ void Atom::toPhysicalUnits(double convEnergy, double convLength)
     return;
 }
 
-void Atom::allocate(bool all)
+void Atom::allocate(bool all, double const maxCutoffRadius)
 {
     if (numSymmetryFunctions == 0)
     {
@@ -162,17 +177,22 @@ void Atom::allocate(bool all)
     G.clear();
     dEdG.clear();
     dQdG.clear();
+    dChidG.clear();
 #ifdef N2P2_FULL_SFD_MEMORY
     dGdxia.clear();
 #endif
     dGdr.clear();
-    for (vector<Neighbor>::iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+
+    // Don't need any allocation of neighbors outside the symmetry function
+    // cutoff.
+    size_t const numSymFuncNeighbors = getStoredMinNumNeighbors(maxCutoffRadius);
+    for (size_t i = 0; i < numSymFuncNeighbors; ++i)
     {
+        Neighbor& n = neighbors.at(i);
 #ifndef N2P2_NO_SF_CACHE
-        it->cache.clear();
+        n.cache.clear();
 #endif
-        it->dGdr.clear();
+        n.dGdr.clear();
     }
 
     // Reset status of symmetry functions and derivatives.
@@ -193,24 +213,25 @@ void Atom::allocate(bool all)
         if (useChargeNeuron) dEdG.resize(numSymmetryFunctions + 1, 0.0);
         else                 dEdG.resize(numSymmetryFunctions, 0.0);
         dQdG.resize(numSymmetryFunctions, 0.0);
+        dChidG.resize(numSymmetryFunctions,0.0);
 #ifdef N2P2_FULL_SFD_MEMORY
         dGdxia.resize(numSymmetryFunctions, 0.0);
 #endif
         dGdr.resize(numSymmetryFunctions);
     }
-    for (vector<Neighbor>::iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+    for (size_t i = 0; i < numSymFuncNeighbors; ++i)
     {
+        Neighbor& n = neighbors.at(i);
 #ifndef N2P2_NO_SF_CACHE
-        it->cache.resize(cacheSizePerElement.at(it->element),
+        n.cache.resize(cacheSizePerElement.at(n.element),
                          -numeric_limits<double>::max());
 #endif
         if (all)
         {
 #ifndef N2P2_FULL_SFD_MEMORY
-            it->dGdr.resize(numSymmetryFunctionDerivatives.at(it->element));
+            n.dGdr.resize(numSymmetryFunctionDerivatives.at(n.element));
 #else
-            it->dGdr.resize(numSymmetryFunctions);
+            n.dGdr.resize(numSymmetryFunctions);
 #endif
         }
     }
@@ -218,19 +239,21 @@ void Atom::allocate(bool all)
     return;
 }
 
-void Atom::free(bool all)
+void Atom::free(bool all, double const maxCutoffRadius)
 {
+    size_t const numSymFuncNeighbors = getStoredMinNumNeighbors(maxCutoffRadius);
     if (all)
     {
         G.clear();
         vector<double>(G).swap(G);
         hasSymmetryFunctions = false;
+
 #ifndef N2P2_NO_SF_CACHE
-        for (vector<Neighbor>::iterator it = neighbors.begin();
-             it != neighbors.end(); ++it)
+        for (size_t i = 0; i < numSymFuncNeighbors; ++i)
         {
-            it->cache.clear();
-            vector<double>(it->cache).swap(it->cache);
+            Neighbor& n = neighbors.at(i);
+            n.cache.clear();
+            vector<double>(n.cache).swap(n.cache);
         }
 #endif
     }
@@ -239,17 +262,20 @@ void Atom::free(bool all)
     vector<double>(dEdG).swap(dEdG);
     dQdG.clear();
     vector<double>(dQdG).swap(dQdG);
+    dChidG.clear();
+    vector<double>(dChidG).swap(dChidG);
 #ifdef N2P2_FULL_SFD_MEMORY
     dGdxia.clear();
     vector<double>(dGdxia).swap(dGdxia);
 #endif
     dGdr.clear();
     vector<Vec3D>(dGdr).swap(dGdr);
-    for (vector<Neighbor>::iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+
+    for (size_t i = 0; i < numSymFuncNeighbors; ++i)
     {
-        it->dGdr.clear();
-        vector<Vec3D>(it->dGdr).swap(it->dGdr);
+        Neighbor& n = neighbors.at(i);
+        n.dGdr.clear();
+        vector<Vec3D>(n.dGdr).swap(n.dGdr);
     }
     hasSymmetryFunctionDerivatives = false;
 
@@ -278,20 +304,44 @@ void Atom::clearNeighborList(size_t const numElements)
     return;
 }
 
-size_t Atom::getNumNeighbors(double cutoffRadius) const
+size_t Atom::calculateNumNeighbors(double const cutoffRadius) const
 {
-    size_t numNeighborsLocal = 0;
-
-    for (vector<Neighbor>::const_iterator it = neighbors.begin();
-         it != neighbors.end(); ++it)
+    // neighborCutoffs map is only constructed when the neighbor list is sorted.
+    if (unorderedMapContainsKey(neighborCutoffs, cutoffRadius))
+        return neighborCutoffs.at(cutoffRadius);
+    else
     {
-        if (it->d <= cutoffRadius)
-        {
-            numNeighborsLocal++;
-        }
-    }
+        size_t numNeighborsLocal = 0;
 
-    return numNeighborsLocal;
+        for (vector<Neighbor>::const_iterator it = neighbors.begin();
+             it != neighbors.end(); ++it)
+        {
+            if (it->d <= cutoffRadius)
+            {
+                numNeighborsLocal++;
+            }
+        }
+
+        return numNeighborsLocal;
+    }
+}
+
+size_t Atom::getStoredMinNumNeighbors(double const cutoffRadius) const
+{
+     // neighborCutoffs map is only constructed when the neighbor list is sorted.
+    if (unorderedMapContainsKey(neighborCutoffs, cutoffRadius))
+        return neighborCutoffs.at(cutoffRadius);
+    else
+    {
+        return numNeighbors;
+    }
+}
+
+bool Atom::isNeighbor(size_t index) const
+{
+    for (auto const& n : neighbors) if (n.index == index) return true;
+
+    return false;
 }
 
 void Atom::updateError(string const&        property,
@@ -316,6 +366,81 @@ void Atom::updateError(string const&        property,
     }
 
     return;
+}
+
+Vec3D Atom::calculateSelfForceShort() const
+{
+    Vec3D selfForce{};
+    for (size_t i = 0; i < numSymmetryFunctions; ++i)
+    {
+        selfForce -= dEdG.at(i) * dGdr.at(i);
+    }
+    return selfForce;
+}
+
+Vec3D Atom::calculatePairForceShort(Neighbor const&             neighbor,
+                                    vector<vector<size_t> >
+                                    const *const                tableFull) const
+{
+    Vec3D pairForce{};
+#ifndef NNP_FULL_SFD_MEMORY
+    if (!tableFull) throw runtime_error(
+                "ERROR: tableFull must not be null pointer");
+    vector<size_t> const& table = tableFull->at(neighbor.element);
+    for (size_t i = 0; i < neighbor.dGdr.size(); ++i)
+    {
+        pairForce -= dEdG.at(table.at(i)) * neighbor.dGdr.at(i);
+    }
+#else
+    for (size_t i = 0; i < numSymmetryFunctions; ++i)
+    {
+        pairForce -= dEdG.at(i) * neighbor.dGdr.at(i);
+    }
+#endif
+    return pairForce;
+}
+
+Vec3D Atom::calculateDChidr(size_t const atomIndexOfR,
+                            double const maxCutoffRadius,
+                            vector<vector<size_t> > const *const tableFull) const
+{
+#ifndef NNP_FULL_SFD_MEMORY
+    if (!tableFull) throw runtime_error(
+                "ERROR: tableFull must not be null pointer");
+#endif
+    Vec3D dChidr{};
+    // need to add this case because the loop over the neighbors
+    // does not include the contribution dChi_i/dr_i.
+    if (atomIndexOfR == index)
+    {
+        for (size_t k = 0; k < numSymmetryFunctions; ++k)
+        {
+            dChidr += dChidG.at(k) * dGdr.at(k);
+        }
+    }
+
+    size_t numNeighbors = getStoredMinNumNeighbors(maxCutoffRadius);
+    for (size_t m = 0; m < numNeighbors; ++m)
+    {
+        Atom::Neighbor const& n = neighbors.at(m);
+	// atomIndexOfR must not be larger than ~max(int64_t)/2.
+        if (n.tag == (int64_t)atomIndexOfR)
+        {
+#ifndef NNP_FULL_SFD_MEMORY
+            vector<size_t> const& table = tableFull->at(n.element);
+            for (size_t k = 0; k < n.dGdr.size(); ++k)
+            {
+                dChidr += dChidG.at(table.at(k)) * n.dGdr.at(k);
+            }
+#else
+            for (size_t k = 0; k < numSymmetryFunctions; ++k)
+            {
+                dChidr += dChidG.at(k) * n.dGdr.at(k);
+            }
+#endif
+        }
+    }
+    return dChidr;
 }
 
 vector<string> Atom::getForcesLines() const
@@ -361,6 +486,7 @@ vector<string> Atom::info() const
     v.push_back(strpr("numNeighborsUnique             : %d\n", numNeighborsUnique));
     v.push_back(strpr("numSymmetryFunctions           : %d\n", numSymmetryFunctions));
     v.push_back(strpr("energy                         : %16.8E\n", energy));
+    v.push_back(strpr("chi                            : %16.8E\n", chi));
     v.push_back(strpr("charge                         : %16.8E\n", charge));
     v.push_back(strpr("chargeRef                      : %16.8E\n", chargeRef));
     v.push_back(strpr("r                              : %16.8E %16.8E %16.8E\n", r[0], r[1], r[2]));
@@ -473,8 +599,11 @@ bool Atom::Neighbor::operator==(Atom::Neighbor const& rhs) const
 
 bool Atom::Neighbor::operator<(Atom::Neighbor const& rhs) const
 {
-    if      (element < rhs.element) return true;
-    else if (element > rhs.element) return false;
+    // sorting according to elements deactivated
+    // TODO: resolve this issue for nnp-sfclust
+    // TODO: this breaks pynnp CI tests in test_Neighbor.py
+    //if      (element < rhs.element) return true;
+    //else if (element > rhs.element) return false;
     if      (d       < rhs.d      ) return true;
     else if (d       > rhs.d      ) return false;
     return false;
