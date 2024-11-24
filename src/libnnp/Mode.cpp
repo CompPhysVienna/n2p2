@@ -68,7 +68,7 @@ void Mode::initialize()
     log << "------------------------------------------------------------\n";
     log << "Git branch              : " N2P2_GIT_BRANCH "\n";
     log << "Git revision            : " N2P2_GIT_REV "\n";
-    log << "Compile date/time : " __DATE__ " " __TIME__ "\n";
+    log << "Compile date/time       : " __DATE__ " " __TIME__ "\n";
     log << "------------------------------------------------------------\n";
     log << "\n";
     log << "Features/Flags:\n";

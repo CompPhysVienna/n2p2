@@ -176,7 +176,7 @@ define LAMMPS_NNP_WARNING
 #            \ \/\/ / _ \|   / .` || || .` | (_ |            #
 #             \_/\_/_/ \_\_|_\_|\_|___|_|\_|\___|            #
 #                                                            #
-# This is a development build of LAMMPS + n2p2!              #
+# WARNING: This is a development build of LAMMPS + n2p2!     #
 #                                                            #
 # n2p2's makefile feature to build an automatically patched  #
 # version of LAMMPS is designed for development purposes and #

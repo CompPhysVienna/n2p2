@@ -34,15 +34,11 @@ done
 
 # edit 2 Makefile.package files to include/exclude package info
 
-# Get path of EIGEN library specified in make file
-COMP=$(grep -Po '^COMP=\K([a-zA-Z]+)' ../../lib/nnp/src/makefile)
-EIGEN_PATH=$(grep -Po '^PROJECT_EIGEN=\K([\w/]+)' ../../lib/nnp/src/makefile.$COMP)
-
 if (test $1 = 1) then
 
   if (test -e ../Makefile.package) then
     sed -i -e 's/[^ \t]*hdnnp[^ \t]* //g' ../Makefile.package
-    sed -i -e 's|^PKG_INC =[ \t]*|&-I$EIGEN_PATH -I../../lib/hdnnp/includelink |' ../Makefile.package
+    sed -i -e 's|^PKG_INC =[ \t]*|&-I../../lib/hdnnp/includelink |' ../Makefile.package
     sed -i -e 's|^PKG_PATH =[ \t]*|&-L../../lib/hdnnp/liblink |' ../Makefile.package
     sed -i -e 's|^PKG_SYSINC =[ \t]*|&$(hdnnp_SYSINC) |' ../Makefile.package
     sed -i -e 's|^PKG_SYSLIB =[ \t]*|&$(hdnnp_SYSLIB) |' ../Makefile.package
