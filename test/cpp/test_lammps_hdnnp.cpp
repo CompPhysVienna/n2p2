@@ -1,6 +1,6 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE lammps-nnp
-#include "Example_lammps_nnp.h"
+#define BOOST_TEST_MODULE lammps-hdnnp
+#include "Example_lammps_hdnnp.h"
 #include "nnp_test.h"
 #include "utility.h"
 
@@ -14,11 +14,11 @@ using namespace nnp;
 
 double const accuracy = 10.0 * numeric_limits<double>::epsilon();
 
-BoostDataContainer<Example_lammps_nnp> container;
+BoostDataContainer<Example_lammps_hdnnp> container;
 
 NNP_TOOL_TEST_CASE()
 
-void nnpToolTestBody(Example_lammps_nnp const example)
+void nnpToolTestBody(Example_lammps_hdnnp const example)
 {
     bool timeStepFound = false;
     bool startReading = false;

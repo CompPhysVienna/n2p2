@@ -92,7 +92,7 @@ components are required:
 
 * :ref:`libnnp <libnnp>`
 * `libnnpif`
-* :ref:`lammps-nnp <if_lammps>` (for LAMMPS)
+* :ref:`lammps-hdnnp <if_lammps>` (for LAMMPS)
 
 Training a new neural network potential
 ---------------------------------------
@@ -180,7 +180,6 @@ list of keywords is provided :ref:`here <keywords>`.
    :caption: Interfaces
 
    interfaces/if_lammps
-   interfaces/pair_nnp
    interfaces/if_cabanamd
 
 .. toctree::

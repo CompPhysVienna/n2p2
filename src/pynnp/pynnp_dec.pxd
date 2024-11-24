@@ -116,7 +116,7 @@ cdef extern from "Vec3D.h" namespace "nnp":
         #double&       operator[](std::size_t const index);
         #double const& operator[](std::size_t const index) const;
         bool   eq        "operator=="(const Vec3D& rhs) except +
-        bool   ne        "operator!="(const Vec3D& rhs) except +;
+        bool   ne        "operator!="(const Vec3D& rhs) except +
         double norm() except +
         double norm2() except +
         Vec3D& normalize() except +

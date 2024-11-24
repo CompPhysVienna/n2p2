@@ -172,7 +172,7 @@ class Test___eq__():
         assert (v1 == ve) == (
                v1[0] == ve[0] and v1[1] == ve[1] and v1[2] == ve[2]), (
                "Wrong comparison.")
-        
+
 class Test___ne__():
     def test_wrong_type(self, v1):
         with pytest.raises(TypeError):
@@ -196,12 +196,12 @@ class Test_norm():
         from math import sqrt
         assert v1.norm() == pytest.approx(sqrt(v1x * v1x +
                                                v1y * v1y +
-                                               v1z * v1z)), "Norm incorrect." 
+                                               v1z * v1z)), "Norm incorrect."
 
 class Test_norm2():
     def test_correct_result(self, v1):
-        assert v1.norm2() == pytest.approx(v1x * v1x + 
-                                           v1y * v1y + 
+        assert v1.norm2() == pytest.approx(v1x * v1x +
+                                           v1y * v1y +
                                            v1z * v1z), "Norm incorrect."
 
 class Test_normalize():

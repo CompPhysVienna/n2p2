@@ -1,5 +1,5 @@
 ###############################################################################
-# MD simulation for NN water
+# MD simulation for HDNNP water
 ###############################################################################
 
 ###############################################################################
@@ -12,8 +12,8 @@ variable cfgFile         string "h2o_8640_liquid_NpT_RPBE-D3.data"
 variable numSteps        equal  5
 variable dt              equal  0.0005
 # NN
-variable nnpCutoff       equal  6.36
-variable nnpDir          string "nnp-data"
+variable hdnnpCutoff     equal  6.36
+variable hdnnpDir        string "hdnnp-data"
 # Masses
 variable mass_H          equal  1.00794
 variable mass_O          equal  15.9994
@@ -31,10 +31,10 @@ timestep ${dt}
 thermo 1
 
 ###############################################################################
-# NN
+# HDNNP
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
-pair_coeff * * ${nnpCutoff}
+pair_style hdnnp ${hdnnpCutoff} dir ${hdnnpDir} showew no showewsum 5 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254
+pair_coeff * * H O
 
 ###############################################################################
 # INTEGRATOR

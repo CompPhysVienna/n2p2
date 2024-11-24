@@ -68,7 +68,7 @@ MAKEFLAGS:=$(MAKEFLAGS_ORIGINAL)
 	libnnp \
 	libnnptrain \
 	libnnpif \
-	lammps-nnp \
+	lammps-hdnnp \
 	pynnp \
 	clean-doc \
 	clean-doc-sphinx \
@@ -77,7 +77,7 @@ MAKEFLAGS:=$(MAKEFLAGS_ORIGINAL)
 	clean-libnnp \
 	clean-libnnptrain \
 	clean-libnnpif \
-	clean-lammps-nnp \
+	clean-lammps-hdnnp \
 	clean-pynnp \
 	install \
 	uninstall
@@ -91,7 +91,7 @@ clean: clean-libnnp \
        clean-libnnptrain \
        clean-libnnpif \
        clean-app \
-       clean-lammps-nnp \
+       clean-lammps-hdnnp \
        clean-pynnp
 
 clean-all: clean \
@@ -166,16 +166,39 @@ $(APP_LIBNNPTRAIN): libnnptrain
 $(CLEAN_APP):
 	cd application && $(MAKE) $@
 
-##############
-# lammps-nnp #
-##############
-lammps-nnp: libnnpif
-	cd libnnpif && $(MAKE) lammps-mf-internal
-	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
+################
+# lammps-hdnnp #
+################
+define LAMMPS_NNP_WARNING
+##############################################################
+#           __      ___   ___ _  _ ___ _  _  ___             #
+#           \ \    / /_\ | _ \ \| |_ _| \| |/ __|            #
+#            \ \/\/ / _ \|   / .` || || .` | (_ |            #
+#             \_/\_/_/ \_\_|_\_|\_|___|_|\_|\___|            #
+#                                                            #
+# This is a development build of LAMMPS + n2p2!              #
+#                                                            #
+# n2p2's makefile feature to build an automatically patched  #
+# version of LAMMPS is designed for development purposes and #
+# not guarantueed to work. The recommended way to build and  #
+# link LAMMPS with n2p2 is based on the build system of      #
+# LAMMPS and described here:                                 #
+#                                                            #
+# https://docs.lammps.org/Build_extras.html#ml-hdnnp         #
+#                                                            #
+##############################################################
+endef
 
-clean-lammps-nnp:
+export LAMMPS_NNP_WARNING
+lammps-hdnnp: libnnpif
+	@echo "$$LAMMPS_NNP_WARNING"
+	cd libnnpif && $(MAKE) lammps-mf
+	cd interface && $(MAKE) $@ COMP=$(COMP) MODE=$(MODE)
+	@echo "$$LAMMPS_NNP_WARNING"
+
+clean-lammps-hdnnp:
 	#cd interface && $(MAKE) $@
-	cd interface && $(MAKE) clean-lammps-nnp-keep-file
+	cd interface && $(MAKE) clean-lammps-hdnnp-keep-file
 
 #########
 # pynnp #
