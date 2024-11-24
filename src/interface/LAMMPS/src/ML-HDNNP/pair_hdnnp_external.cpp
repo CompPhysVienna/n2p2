@@ -1,15 +1,25 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <mpi.h>
 #include <cstdlib>
 #include <fstream>
 #include <string.h>
 #include <vector>
-#include "pair_nnp_external.h"
+#include "pair_hdnnp_external.h"
 #include "atom.h"
 #include "comm.h"
 #include "domain.h"
@@ -25,7 +35,7 @@ using namespace std;
 
 /* ---------------------------------------------------------------------- */
 
-PairNNPExternal::PairNNPExternal(LAMMPS *lmp) : Pair(lmp)
+PairHDNNPExternal::PairHDNNPExternal(LAMMPS *lmp) : Pair(lmp)
 {
 }
 
@@ -33,13 +43,13 @@ PairNNPExternal::PairNNPExternal(LAMMPS *lmp) : Pair(lmp)
    check if allocated, since class can be destructed when incomplete
 ------------------------------------------------------------------------- */
 
-PairNNPExternal::~PairNNPExternal()
+PairHDNNPExternal::~PairHDNNPExternal()
 {
 }
 
 /* ---------------------------------------------------------------------- */
 
-void PairNNPExternal::compute(int eflag, int vflag)
+void PairHDNNPExternal::compute(int eflag, int vflag)
 {
   if(eflag || vflag) ev_setup(eflag,vflag);
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
@@ -136,7 +146,7 @@ void PairNNPExternal::compute(int eflag, int vflag)
    global settings
 ------------------------------------------------------------------------- */
 
-void PairNNPExternal::settings(int narg, char **arg)
+void PairHDNNPExternal::settings(int narg, char **arg)
 {
   int iarg = 0;
 
@@ -155,9 +165,9 @@ void PairNNPExternal::settings(int narg, char **arg)
   structure.setElementMap(em);
 
   // default settings
-  len = strlen("nnp/") + 1;
+  len = strlen("hdnnp/") + 1;
   directory = new char[len];
-  strcpy(directory,"nnp/");
+  strcpy(directory,"hdnnp/");
   len = strlen("nnp-predict 0") + 1;
   command = new char[len];
   strcpy(command,"nnp-predict 0");
@@ -202,8 +212,8 @@ void PairNNPExternal::settings(int narg, char **arg)
   {
       fprintf(f, "*****************************************"
                  "**************************************\n");
-      fprintf(f, "pair_style nnp/external settings:\n");
-      fprintf(f, "---------------------------------\n");
+      fprintf(f, "pair_style hdnnp/external settings:\n");
+      fprintf(f, "-----------------------------------\n");
       fprintf(f, "elements = %s\n", elements);
       fprintf(f, "dir      = %s\n", directory);
       fprintf(f, "command  = %s\n", command);
@@ -211,7 +221,7 @@ void PairNNPExternal::settings(int narg, char **arg)
       fprintf(f, "cfenergy = %16.8E\n", cfenergy);
       fprintf(f, "*****************************************"
                  "**************************************\n");
-      fprintf(f, "CAUTION: Explicit element mapping is not available for nnp/external,\n");
+      fprintf(f, "CAUTION: Explicit element mapping is not available for hdnnp/external,\n");
       fprintf(f, "         please carefully check whether this map between LAMMPS\n");
       fprintf(f, "         atom types and element strings is correct:\n");
       fprintf(f, "---------------------------\n");
@@ -232,7 +242,7 @@ void PairNNPExternal::settings(int narg, char **arg)
    set coeffs for one or more type pairs
 ------------------------------------------------------------------------- */
 
-void PairNNPExternal::coeff(int narg, char **arg)
+void PairHDNNPExternal::coeff(int narg, char **arg)
 {
   if (!allocated) allocate();
 
@@ -260,7 +270,7 @@ void PairNNPExternal::coeff(int narg, char **arg)
    init specific to this pair style
 ------------------------------------------------------------------------- */
 
-void PairNNPExternal::init_style()
+void PairHDNNPExternal::init_style()
 {
   if (comm->nprocs > 1)
   {
@@ -272,53 +282,17 @@ void PairNNPExternal::init_style()
    init for one type pair i,j and corresponding j,i
 ------------------------------------------------------------------------- */
 
-double PairNNPExternal::init_one(int i, int j)
+double PairHDNNPExternal::init_one(int i, int j)
 {
   // TODO: Check how this actually works for different cutoffs.
   return maxCutoffRadius;
 }
 
 /* ----------------------------------------------------------------------
-   proc 0 writes to restart file
-------------------------------------------------------------------------- */
-
-void PairNNPExternal::write_restart(FILE *fp)
-{
-    return;
-}
-
-/* ----------------------------------------------------------------------
-   proc 0 reads from restart file, bcasts
-------------------------------------------------------------------------- */
-
-void PairNNPExternal::read_restart(FILE *fp)
-{
-    return;
-}
-
-/* ----------------------------------------------------------------------
-   proc 0 writes to restart file
-------------------------------------------------------------------------- */
-
-void PairNNPExternal::write_restart_settings(FILE *fp)
-{
-    return;
-}
-
-/* ----------------------------------------------------------------------
-   proc 0 reads from restart file, bcasts
-------------------------------------------------------------------------- */
-
-void PairNNPExternal::read_restart_settings(FILE *fp)
-{
-    return;
-}
-
-/* ----------------------------------------------------------------------
    allocate all arrays
 ------------------------------------------------------------------------- */
 
-void PairNNPExternal::allocate()
+void PairHDNNPExternal::allocate()
 {
   allocated = 1;
   int n = atom->ntypes;

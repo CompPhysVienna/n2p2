@@ -1,12 +1,22 @@
-// Copyright 2018 Andreas Singraber (University of Vienna)
+// n2p2 - A neural network potential package
+// Copyright (C) 2018 Andreas Singraber (University of Vienna)
 //
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <mpi.h>
 #include <string.h>
-#include "pair_nnp_develop.h"
+#include "pair_hdnnp_develop.h"
 #include "atom.h"
 #include "domain.h"
 #include "comm.h"
@@ -23,40 +33,42 @@
 //TODO:  remove later
 #include <iostream>
 
+#include "InterfaceLammps.h"    // n2p2 interface header
+
 using namespace LAMMPS_NS;
 using namespace std;
 
 
 /* ---------------------------------------------------------------------- */
 
-PairNNPDevelop::PairNNPDevelop(LAMMPS *lmp) : PairNNP(lmp) {}
+PairHDNNPDevelop::PairHDNNPDevelop(LAMMPS *lmp) : PairHDNNP(lmp) {}
 
 /* ---------------------------------------------------------------------- */
 
-void PairNNPDevelop::compute(int eflag, int vflag)
+void PairHDNNPDevelop::compute(int eflag, int vflag)
 {
   if(eflag || vflag) ev_setup(eflag,vflag);
   else evflag = vflag_fdotr = eflag_global = eflag_atom = 0;
 
   // Set number of local atoms and add index and element.
-  interface.setLocalAtoms(atom->nlocal, atom->type);
+  interface->setLocalAtoms(atom->nlocal, atom->type);
   // Transfer tags separately. Interface::setLocalTags is overloaded internally
   // to work with both -DLAMMPS_SMALLBIG (tagint = int) and -DLAMMPS_BIGBIG
   // (tagint = int64_t)
-  interface.setLocalTags(atom->tag);
+  interface->setLocalTags(atom->tag);
 
 
   // Also set absolute atom positions.
-  interface.setLocalAtomPositions(atom->x);
+  interface->setLocalAtomPositions(atom->x);
 
   // Set Box vectors if system is periodic in all 3 dims.
   if(domain->nonperiodic == 0)
   {
-      interface.setBoxVectors(domain->boxlo,
-                              domain->boxhi,
-                              domain->xy,
-                              domain->xz,
-                              domain->yz);
+      interface->setBoxVectors(domain->boxlo,
+                               domain->boxhi,
+                               domain->xy,
+                               domain->xz,
+                               domain->yz);
   }
 
   updateNeighborlistCutoff();
@@ -66,7 +78,7 @@ void PairNNPDevelop::compute(int eflag, int vflag)
   transferNeighborList(maxCutoffRadiusNeighborList);
 
   // Compute symmetry functions, atomic neural networks and add up energy.
-  interface.process();
+  interface->process();
 
   // Do all stuff related to extrapolation warnings.
   if(showew == true || showewsum > 0 || maxew >= 0) {
@@ -74,19 +86,19 @@ void PairNNPDevelop::compute(int eflag, int vflag)
   }
 
   // Calculate forces of local and ghost atoms.
-  interface.getForces(atom->f);
+  interface->getForces(atom->f);
 
   // Transfer charges LAMMPS. Does nothing if nnpType != 4G.
-  interface.getCharges(atom->q);
+  interface->getCharges(atom->q);
 
   // Add energy contribution to total energy.
   if (eflag_global)
-     ev_tally(0,0,atom->nlocal,1,interface.getEnergy(),0.0,0.0,0.0,0.0,0.0);
+     ev_tally(0,0,atom->nlocal,1,interface->getEnergy(),0.0,0.0,0.0,0.0,0.0);
 
   // Add atomic energy if requested (CAUTION: no physical meaning!).
   if (eflag_atom)
     for (int i = 0; i < atom->nlocal; ++i)
-      eatom[i] = interface.getAtomicEnergy(i);
+      eatom[i] = interface->getAtomicEnergy(i);
 
   // If virial needed calculate via F dot r.
   if (vflag_fdotr) virial_fdotr_compute();
@@ -98,7 +110,7 @@ void PairNNPDevelop::compute(int eflag, int vflag)
    init specific to this pair style
 ------------------------------------------------------------------------- */
 
-void PairNNPDevelop::init_style()
+void PairHDNNPDevelop::init_style()
 {
   if (comm->nprocs > 1) {
     throw runtime_error("ERROR: Pair style \"nnp/develop\" can only be used "
@@ -117,25 +129,55 @@ void PairNNPDevelop::init_style()
   if (atom->map_style == Atom::MAP_NONE)
       throw runtime_error("ERROR: pair style requires atom map yes");
 
-  PairNNP::init_style();
+  PairHDNNP::init_style();
 
 
   maxCutoffRadiusNeighborList = maxCutoffRadius;
 
-  interface.setGlobalStructureStatus(true);
+  interface->setGlobalStructureStatus(true);
 }
 
 
-double PairNNPDevelop::init_one(int i, int j)
+double PairHDNNPDevelop::init_one(int i, int j)
 {
     //cutsq[i][j] = cutsq[j][i] = pow(maxCutoffRadiusNeighborList,2);
     return maxCutoffRadiusNeighborList;
 }
 
 
-void PairNNPDevelop::updateNeighborlistCutoff()
+void PairHDNNPDevelop::transferNeighborList(double const cutoffRadius)
 {
-    double maxCutoffRadiusOverall = interface.getMaxCutoffRadiusOverall();
+  // Transfer neighbor list to NNP.
+  double rc2 = cutoffRadius * cutoffRadius;
+  interface->allocateNeighborlists(list->numneigh);
+#ifdef _OPENMP
+  #pragma omp parallel for
+#endif
+  for (int ii = 0; ii < list->inum; ++ii) {
+    int i = list->ilist[ii];
+    for (int jj = 0; jj < list->numneigh[i]; ++jj) {
+      int j = list->firstneigh[i][jj];
+      j &= NEIGHMASK;
+      double dx = atom->x[i][0] - atom->x[j][0];
+      double dy = atom->x[i][1] - atom->x[j][1];
+      double dz = atom->x[i][2] - atom->x[j][2];
+      double d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 <= rc2) {
+        if (!interface->getGlobalStructureStatus())
+          // atom->tag[j] will be implicitly converted to int64_t internally.
+          interface->addNeighbor(i,j,atom->tag[j],atom->type[j],dx,dy,dz,d2);
+        else
+          interface->addNeighbor(i,j,atom->map(atom->tag[j]),atom->type[j],dx,dy,dz,d2);
+      }
+    }
+  }
+  interface->finalizeNeighborList();
+}
+
+
+void PairHDNNPDevelop::updateNeighborlistCutoff()
+{
+    double maxCutoffRadiusOverall = interface->getMaxCutoffRadiusOverall();
     if(maxCutoffRadiusOverall > maxCutoffRadiusNeighborList)
     {
         // TODO: Increase slightly to compensate for rounding errors?

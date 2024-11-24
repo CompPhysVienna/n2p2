@@ -12,8 +12,8 @@ variable cfgFile         string "iceIh_128.data"
 variable numSteps        equal  10
 variable dt              equal  0.0005
 # NN
-variable nnpCutoff       equal  14.22
-variable nnpDir          string "nnp-data"
+variable hdnnpCutoff     equal  14.22
+variable hdnnpDir        string "hdnnp-data"
 # Masses
 variable mass_H          equal  1.00794
 variable mass_O          equal  15.9994
@@ -23,7 +23,7 @@ variable mass_O          equal  15.9994
 ###############################################################################
 units metal
 
-# Needed for nnp/develop
+# Needed for hdnnp/develop
 atom_modify map yes
 
 boundary p p p
@@ -37,8 +37,10 @@ thermo 1
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp/develop dir ${nnpDir} showew no showewsum 10 resetew no maxew 1000 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
-pair_coeff * * ${nnpCutoff}
+#pair_style hdnnp/develop dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 1000 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
+#pair_coeff * * ${hdnnpCutoff}
+pair_style hdnnp/develop ${hdnnpCutoff} dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 1000 cflength 1.8897261328 cfenergy 0.0367493254
+pair_coeff * * H O
 
 ###############################################################################
 # INTEGRATOR

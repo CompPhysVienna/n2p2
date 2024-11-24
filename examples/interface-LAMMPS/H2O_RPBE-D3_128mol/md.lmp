@@ -12,8 +12,8 @@ variable cfgFile         string "iceIh_128.data"
 variable numSteps        equal  5
 variable dt              equal  0.0005
 # NN
-variable nnpCutoff       equal  6.36
-variable nnpDir          string "nnp-data"
+variable hdnnpCutoff     equal  6.36
+variable hdnnpDir        string "hdnnp-data"
 # Masses
 variable mass_H          equal  1.00794
 variable mass_O          equal  15.9994
@@ -33,8 +33,8 @@ thermo 1
 ###############################################################################
 # NN
 ###############################################################################
-pair_style nnp dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254 emap "1:H,2:O"
-pair_coeff * * ${nnpCutoff}
+pair_style hdnnp ${hdnnpCutoff} dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 100 cflength 1.8897261328 cfenergy 0.0367493254
+pair_coeff * * H O
 
 ###############################################################################
 # INTEGRATOR
