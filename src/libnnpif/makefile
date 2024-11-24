@@ -31,8 +31,9 @@ include $(PROJECT_DIR)/src/makefile.$(COMP)
 # makefile or command line. Provide a space-separated list of the following
 # available options:
 #    * LAMMPS
+#    * Kokkos
 #    * CabanaMD
-INTERFACES=LAMMPS CabanaMD
+INTERFACES=LAMMPS Kokkos CabanaMD
 
 
 ###############################################################################
@@ -71,6 +72,12 @@ INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_EIGEN)
 
 $(info The following interfaces were selected: $(INTERFACES))
 IF=LAMMPS
+ifneq ($(filter $(IF),$(INTERFACES)),)
+SRC:=$(SRC) $(wildcard $(IF)/*.cpp)
+HEADERS:=$(HEADERS) $(wildcard $(IF)/*.h)
+endif
+
+IF=Kokkos
 ifneq ($(filter $(IF),$(INTERFACES)),)
 SRC:=$(SRC) $(wildcard $(IF)/*.cpp)
 HEADERS:=$(HEADERS) $(wildcard $(IF)/*.h)
