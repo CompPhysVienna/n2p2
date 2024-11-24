@@ -3,6 +3,14 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+Version 3.0.0 - 2024-1?-??
+--------------------------
+
+New features
+^^^^^^^^^^^^
+
+* 4G-HDNNPs training/prediction in n2p2.
+
 Version 2.3.0 - 2024-11-23
 --------------------------
 
