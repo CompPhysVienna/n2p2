@@ -35,8 +35,9 @@ INSTALL_LIB=$(HOME)/local/lib
 # Select which interfaces should be compiled into libnnpif. Provide a
 # space-separated list of the following available options:
 #    * LAMMPS
+#    * Kokkos
 #    * CabanaMD
-INTERFACES=LAMMPS CabanaMD
+INTERFACES=LAMMPS Kokkos CabanaMD
 
 
 ###############################################################################

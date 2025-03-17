@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef ELEMENT_CABANA_H
-#define ELEMENT_CABANA_H
+#ifndef ELEMENT_KOKKOS_H
+#define ELEMENT_KOKKOS_H
 
-#include "typesCabana.h"
+#include "typesKokkos.h"
 
 #include "CutoffFunction.h"
 #include "Element.h"
@@ -31,16 +31,16 @@
 namespace nnp
 {
 
-/// Derived Cabana class for element-specific data.
-class ElementCabana : public Element
+/// Derived Kokkos class for element-specific data.
+class ElementKokkos : public Element
 {
   public:
     /** Constructor using index.
      */
-    ElementCabana( std::size_t const index );
+    ElementKokkos( std::size_t const index );
     /** Destructor.
      */
-    ~ElementCabana();
+    ~ElementKokkos();
 
     /** Add one symmetry function.
      *
@@ -275,7 +275,7 @@ class ElementCabana : public Element
 
 template <class h_t_int>
 inline std::size_t
-ElementCabana::numSymmetryFunctions( int attype,
+ElementKokkos::numSymmetryFunctions( int attype,
                                      h_t_int h_numSFperElem ) const
 {
     return h_numSFperElem( attype );
@@ -283,7 +283,7 @@ ElementCabana::numSymmetryFunctions( int attype,
 
 template <class t_SFscaling>
 inline void
-ElementCabana::setScalingType( ScalingType scalingType,
+ElementKokkos::setScalingType( ScalingType scalingType,
                                std::string statisticsLine, double Smin,
                                double Smax, t_SFscaling SFscaling,
                                int attype, int k ) const
@@ -324,7 +324,7 @@ ElementCabana::setScalingType( ScalingType scalingType,
 
 template <class t_SFscaling>
 inline std::string
-ElementCabana::scalingLine( ScalingType scalingType,
+ElementKokkos::scalingLine( ScalingType scalingType,
                             t_SFscaling SFscaling, int attype,
                             int k ) const
 {
@@ -337,7 +337,7 @@ ElementCabana::scalingLine( ScalingType scalingType,
 }
 
 template <class t_SFscaling>
-inline double ElementCabana::unscale( int attype, double value, int k,
+inline double ElementKokkos::unscale( int attype, double value, int k,
                                       t_SFscaling SFscaling )
 {
     double scalingType = SFscaling( attype, k, 7 );
@@ -377,6 +377,6 @@ inline double ElementCabana::unscale( int attype, double value, int k,
 
 }
 
-#include "ElementCabana_impl.h"
+#include "ElementKokkos_impl.h"
 
 #endif

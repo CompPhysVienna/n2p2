@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef TYPESCABANAMD_H
-#define TYPESCABANAMD_H
+#ifndef TYPESKOKKOS_H
+#define TYPESKOKKOS_H
 
 constexpr double CFLENGTH = 1.889726;
 constexpr double CFENERGY = 0.036749;
