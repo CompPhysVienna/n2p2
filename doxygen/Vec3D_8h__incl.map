@@ -1,7 +1,11 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Vec3D.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Vec3D.h">
-<area shape="rect" id="node1" title=" " alt="" coords="81,5,264,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,76,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="100,95,160,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="184,95,247,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="271,95,357,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="81,5,264,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,76,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,48,74,88,71,84,140,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="100,93,160,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="165,47,145,83,140,80,160,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="184,93,247,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="185,44,205,80,200,83,181,47"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="271,93,357,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="208,43,282,84,280,89,205,48"/>
 </map>

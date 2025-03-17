@@ -1,5 +1,9 @@
 <map id="nnp::ElementMap::index" name="nnp::ElementMap::index">
-<area shape="rect" id="node1" title="Get index of given element." alt="" coords="5,31,185,57"/>
-<area shape="rect" id="node2" href="$namespacennp.html#afc0d5668585a522b32ab02c84f2a4229" title="Safely access map entry." alt="" coords="473,5,583,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="233,31,425,57"/>
+<area shape="rect" id="Node000001" title="Get index of given element." alt="" coords="5,31,185,56"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#afc0d5668585a522b32ab02c84f2a4229" title="Safely access map entry." alt="" coords="473,5,583,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,28,233,15,353,10,460,12,460,17,353,15,234,21,153,33"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="233,31,425,56"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="185,49,220,50,220,55,185,55"/>
+<area shape="poly" id="edge3_Node000003_Node000001" title=" " alt="" coords="233,37,199,37,199,32,233,32"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="425,28,459,24,460,29,426,34"/>
 </map>

@@ -1,36 +1,69 @@
 <map id="nnp::SymFnc::getEc" name="nnp::SymFnc::getEc">
-<area shape="rect" id="node1" title="Get private ec member variable." alt="" coords="295,1058,445,1085"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpCompAngn.html#a8ba9c475f50370a47fe5d7f80fb288ac" title="Potentially add a member to group." alt="" coords="37,5,215,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymGrpCompAngnWeighted.html#a1f2e51b0c0225c6f22f5979934f9c7dc" title="Potentially add a member to group." alt="" coords="7,71,245,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymGrpCompAngw.html#aa00a4cedd5afe04583c1dd3be486f8a0" title="Potentially add a member to group." alt="" coords="36,136,216,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymGrpCompAngwWeighted.html#a1447839e861104a3247b5c2d1d6ac073" title="Potentially add a member to group." alt="" coords="5,201,247,243"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymGrpCompRad.html#ac44307bc48f0064786fc782acd77f0af" title="Potentially add a member to group." alt="" coords="41,267,211,308"/>
-<area shape="rect" id="node7" href="$classnnp_1_1SymGrpCompRadWeighted.html#adbe3188765278a864b35f047ff4b6dc2" title="Potentially add a member to group." alt="" coords="11,332,241,373"/>
-<area shape="rect" id="node8" href="$classnnp_1_1SymGrpExpAngn.html#ae5ebd4ecdc09dca9d888ab2b89c4668c" title="Potentially add a member to group." alt="" coords="45,397,207,439"/>
-<area shape="rect" id="node9" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a24a52f66d32ba815893333bb1865e5ef" title="Potentially add a member to group." alt="" coords="14,463,238,504"/>
-<area shape="rect" id="node10" href="$classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc" title="Potentially add a member to group." alt="" coords="43,528,209,569"/>
-<area shape="rect" id="node11" href="$classnnp_1_1SymGrpExpRad.html#a36be577c2784b23fc4c91704d432d55b" title="Potentially add a member to group." alt="" coords="45,593,207,635"/>
-<area shape="rect" id="node12" href="$classnnp_1_1SymGrpExpRadWeighted.html#a5923a736320ca5a7476521e86b6225bf" title="Potentially add a member to group." alt="" coords="18,659,234,700"/>
-<area shape="rect" id="node13" href="$classnnp_1_1SymFncCompAngn.html#ac0e40d5924eb60ee1dbbf252f0e4594d" title="Overload &lt; operator." alt="" coords="37,724,215,765"/>
-<area shape="rect" id="node14" href="$classnnp_1_1SymFncCompAngnWeighted.html#ae133dbc9c4033a73167380d0329855e4" title="Overload &lt; operator." alt="" coords="7,789,245,831"/>
-<area shape="rect" id="node15" href="$classnnp_1_1SymFncCompAngw.html#a5027a3faac873ccb08fd9f6f5ba8711d" title="Overload &lt; operator." alt="" coords="36,855,216,896"/>
-<area shape="rect" id="node16" href="$classnnp_1_1SymFncCompAngwWeighted.html#a2fb20b7f1dc11da3543f84fbad9cd476" title="Overload &lt; operator." alt="" coords="5,920,247,961"/>
-<area shape="rect" id="node17" href="$classnnp_1_1SymFncCompRad.html#a74911060c771644420f04a250b936b46" title="Overload &lt; operator." alt="" coords="41,985,211,1027"/>
-<area shape="rect" id="node18" href="$classnnp_1_1SymFncCompRadWeighted.html#ab961b3eea76bed27f9456a3b6903bf8d" title="Overload &lt; operator." alt="" coords="11,1051,241,1092"/>
-<area shape="rect" id="node19" href="$classnnp_1_1SymFncExpAngn.html#a957d4ce66022698ae23b96ed485bc620" title="Overload &lt; operator." alt="" coords="45,1116,207,1157"/>
-<area shape="rect" id="node20" href="$classnnp_1_1SymFncExpAngnWeighted.html#aae725aeed077e97be8596b953d8cf822" title="Overload &lt; operator." alt="" coords="14,1181,238,1223"/>
-<area shape="rect" id="node21" href="$classnnp_1_1SymFncExpAngw.html#abcdc6f2591f27217b8bce330215b6d36" title="Overload &lt; operator." alt="" coords="43,1247,209,1288"/>
-<area shape="rect" id="node22" href="$classnnp_1_1SymFncExpRad.html#a606ffd9eb27e5602ef94d70efb0c8607" title="Overload &lt; operator." alt="" coords="45,1312,207,1353"/>
-<area shape="rect" id="node23" href="$classnnp_1_1SymFncExpRadWeighted.html#a5ad9a781588ea262a3d1f3a34ab2e5c3" title="Overload &lt; operator." alt="" coords="18,1377,234,1419"/>
-<area shape="rect" id="node24" href="$classnnp_1_1SymFncCompAngn.html#ae9baba5ef1233e372e12939fa23dc6d9" title="Overload == operator." alt="" coords="37,1443,215,1484"/>
-<area shape="rect" id="node25" href="$classnnp_1_1SymFncCompAngnWeighted.html#ab252b932496c165133bb7e6d11b85bbc" title="Overload == operator." alt="" coords="7,1508,245,1549"/>
-<area shape="rect" id="node26" href="$classnnp_1_1SymFncCompAngw.html#a8c31566e44efd91bea5168b8a7990623" title="Overload == operator." alt="" coords="36,1573,216,1615"/>
-<area shape="rect" id="node27" href="$classnnp_1_1SymFncCompAngwWeighted.html#ac225a0ed3f75e5dbcf442545f80e8e68" title="Overload == operator." alt="" coords="5,1639,247,1680"/>
-<area shape="rect" id="node28" href="$classnnp_1_1SymFncCompRad.html#ac0bad5a796a0ee996e995ec735af96f9" title="Overload == operator." alt="" coords="41,1704,211,1745"/>
-<area shape="rect" id="node29" href="$classnnp_1_1SymFncCompRadWeighted.html#aaba04e9512473deb60cff4b6b5cfa45e" title="Overload == operator." alt="" coords="11,1769,241,1811"/>
-<area shape="rect" id="node30" href="$classnnp_1_1SymFncExpAngn.html#a3e6070e0713c693eaaddc6a4a94b1cfd" title="Overload == operator." alt="" coords="45,1835,207,1876"/>
-<area shape="rect" id="node31" href="$classnnp_1_1SymFncExpAngnWeighted.html#a887f6c8f59d34e55da02003ac7f2268e" title="Overload == operator." alt="" coords="14,1900,238,1941"/>
-<area shape="rect" id="node32" href="$classnnp_1_1SymFncExpAngw.html#a9dc30416c344ff8b45285cb3f69fb3ba" title="Overload == operator." alt="" coords="43,1965,209,2007"/>
-<area shape="rect" id="node33" href="$classnnp_1_1SymFncExpRad.html#aa6fe62d538135d5b679aab15c75638d4" title="Overload == operator." alt="" coords="45,2031,207,2072"/>
-<area shape="rect" id="node34" href="$classnnp_1_1SymFncExpRadWeighted.html#a805d5d80552fb100be6f7eb66b111876" title="Overload == operator." alt="" coords="18,2096,234,2137"/>
+<area shape="rect" id="Node000001" title="Get private ec member variable." alt="" coords="295,1037,445,1062"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpCompAngn.html#a8ba9c475f50370a47fe5d7f80fb288ac" title="Potentially add a member to group." alt="" coords="37,5,215,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="364,1023,351,819,326,512,309,357,289,219,268,115,256,80,245,59,231,47,214,38,216,33,234,43,249,56,261,78,273,114,294,218,314,356,331,512,356,819,370,1023"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymGrpCompAngnWeighted.html#a1f2e51b0c0225c6f22f5979934f9c7dc" title="Potentially add a member to group." alt="" coords="7,69,245,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="366,1023,365,844,360,714,351,573,337,432,315,302,301,245,285,195,266,154,245,123,232,112,235,108,249,120,270,152,289,193,306,244,320,301,342,431,357,573,366,714,370,844,372,1023"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymGrpCompAngw.html#aa00a4cedd5afe04583c1dd3be486f8a0" title="Potentially add a member to group." alt="" coords="36,133,216,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="366,1023,363,855,357,734,348,603,333,473,311,353,282,254,264,216,245,187,231,175,215,167,218,162,234,171,249,184,269,213,287,252,316,351,338,472,353,603,363,734,368,854,371,1023"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymGrpCompAngwWeighted.html#a1447839e861104a3247b5c2d1d6ac073" title="Potentially add a member to group." alt="" coords="5,197,247,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="366,1023,361,866,344,634,328,514,307,403,280,312,263,277,245,251,231,240,235,236,249,248,268,275,285,310,313,402,334,513,349,634,366,866,371,1023"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1SymGrpCompRad.html#ac44307bc48f0064786fc782acd77f0af" title="Potentially add a member to group." alt="" coords="41,261,211,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="365,1023,359,877,340,664,324,554,304,454,277,371,262,339,245,315,229,302,210,293,212,288,232,298,249,312,266,336,282,369,309,452,330,553,345,664,364,877,371,1023"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1SymGrpCompRadWeighted.html#adbe3188765278a864b35f047ff4b6dc2" title="Potentially add a member to group." alt="" coords="11,325,241,365"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="365,1023,356,888,336,695,320,595,300,504,275,429,260,401,245,379,231,367,234,363,249,376,265,398,280,427,305,503,325,594,341,694,362,888,370,1023"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1SymGrpExpAngn.html#ae5ebd4ecdc09dca9d888ab2b89c4668c" title="Potentially add a member to group." alt="" coords="45,389,207,429"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="364,1023,354,900,332,725,316,636,296,555,272,488,259,462,245,443,227,430,207,420,209,415,230,425,249,439,264,460,277,486,301,553,321,635,337,724,359,899,370,1022"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a24a52f66d32ba815893333bb1865e5ef" title="Potentially add a member to group." alt="" coords="14,453,238,493"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="364,1023,351,912,328,757,312,677,292,605,270,547,245,507,231,496,234,492,249,504,275,544,298,604,317,676,333,756,357,911,369,1023"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1SymGrpExpAngw.html#ad287d833c186a17900ea4da320ecabfc" title="Potentially add a member to group." alt="" coords="43,517,209,557"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="363,1023,349,923,324,787,307,719,289,656,268,605,245,571,228,559,209,550,211,545,231,554,249,568,272,603,294,654,312,717,329,786,354,922,368,1022"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1SymGrpExpRad.html#a36be577c2784b23fc4c91704d432d55b" title="Potentially add a member to group." alt="" coords="45,581,207,621"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="367,1023,363,947,347,843,332,787,311,731,282,680,245,635,227,622,207,613,209,608,230,618,248,631,286,677,316,729,337,785,353,842,369,947,372,1023"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1SymGrpExpRadWeighted.html#a5923a736320ca5a7476521e86b6225bf" title="Potentially add a member to group." alt="" coords="18,645,234,685"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="365,1023,358,958,339,870,324,824,303,778,277,736,245,699,229,688,232,683,248,695,282,733,308,776,329,822,344,869,363,957,370,1023"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1SymFncCompAngn.html#ac0e40d5924eb60ee1dbbf252f0e4594d" title="Overload &lt; operator." alt="" coords="37,709,215,749"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="363,1023,352,969,331,898,315,861,296,825,273,792,245,763,213,745,216,740,248,759,277,789,301,823,320,859,336,896,357,967,368,1022"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1SymFncCompAngnWeighted.html#ae133dbc9c4033a73167380d0329855e4" title="Overload &lt; operator." alt="" coords="7,773,245,813"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="359,1024,345,981,322,927,289,873,268,849,245,827,227,816,229,811,248,823,272,845,293,870,326,925,350,979,364,1022"/>
+<area shape="rect" id="Node000015" href="$classnnp_1_1SymFncCompAngw.html#a5027a3faac873ccb08fd9f6f5ba8711d" title="Overload &lt; operator." alt="" coords="36,837,216,877"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="354,1026,312,958,281,922,245,892,215,876,217,872,248,887,285,918,316,955,359,1023"/>
+<area shape="rect" id="Node000016" href="$classnnp_1_1SymFncCompAngwWeighted.html#a2fb20b7f1dc11da3543f84fbad9cd476" title="Overload &lt; operator." alt="" coords="5,901,247,941"/>
+<area shape="poly" id="edge15_Node000001_Node000016" title=" " alt="" coords="344,1028,300,991,245,956,217,944,219,939,248,951,303,987,347,1024"/>
+<area shape="rect" id="Node000017" href="$classnnp_1_1SymFncCompRad.html#a74911060c771644420f04a250b936b46" title="Overload &lt; operator." alt="" coords="41,965,211,1005"/>
+<area shape="poly" id="edge16_Node000001_Node000017" title=" " alt="" coords="307,1036,202,1008,204,1003,308,1030"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1SymFncCompRadWeighted.html#ab961b3eea76bed27f9456a3b6903bf8d" title="Overload &lt; operator." alt="" coords="11,1029,241,1069"/>
+<area shape="poly" id="edge17_Node000001_Node000018" title=" " alt="" coords="281,1052,241,1052,241,1047,281,1047"/>
+<area shape="rect" id="Node000019" href="$classnnp_1_1SymFncExpAngn.html#a957d4ce66022698ae23b96ed485bc620" title="Overload &lt; operator." alt="" coords="45,1093,207,1133"/>
+<area shape="poly" id="edge18_Node000001_Node000019" title=" " alt="" coords="308,1068,204,1096,202,1091,307,1063"/>
+<area shape="rect" id="Node000020" href="$classnnp_1_1SymFncExpAngnWeighted.html#aae725aeed077e97be8596b953d8cf822" title="Overload &lt; operator." alt="" coords="14,1157,238,1197"/>
+<area shape="poly" id="edge19_Node000001_Node000020" title=" " alt="" coords="347,1074,303,1112,248,1148,219,1160,217,1155,245,1143,300,1108,344,1070"/>
+<area shape="rect" id="Node000021" href="$classnnp_1_1SymFncExpAngw.html#abcdc6f2591f27217b8bce330215b6d36" title="Overload &lt; operator." alt="" coords="43,1221,209,1261"/>
+<area shape="poly" id="edge20_Node000001_Node000021" title=" " alt="" coords="359,1076,316,1144,285,1180,248,1212,211,1229,208,1225,245,1207,281,1177,312,1141,354,1073"/>
+<area shape="rect" id="Node000022" href="$classnnp_1_1SymFncExpRad.html#a606ffd9eb27e5602ef94d70efb0c8607" title="Overload &lt; operator." alt="" coords="45,1285,207,1325"/>
+<area shape="poly" id="edge21_Node000001_Node000022" title=" " alt="" coords="364,1076,350,1120,326,1174,293,1229,272,1254,248,1275,229,1287,208,1296,206,1291,227,1283,245,1271,268,1250,289,1226,322,1171,345,1118,359,1075"/>
+<area shape="rect" id="Node000023" href="$classnnp_1_1SymFncExpRadWeighted.html#a5ad9a781588ea262a3d1f3a34ab2e5c3" title="Overload &lt; operator." alt="" coords="18,1349,234,1389"/>
+<area shape="poly" id="edge22_Node000001_Node000023" title=" " alt="" coords="368,1076,357,1131,336,1202,320,1240,301,1276,277,1310,248,1339,231,1351,228,1347,245,1335,273,1306,296,1273,315,1237,331,1201,352,1130,363,1075"/>
+<area shape="rect" id="Node000024" href="$classnnp_1_1SymFncCompAngn.html#ae9baba5ef1233e372e12939fa23dc6d9" title="Overload == operator." alt="" coords="37,1413,215,1453"/>
+<area shape="poly" id="edge23_Node000001_Node000024" title=" " alt="" coords="370,1076,363,1142,344,1230,329,1277,308,1323,282,1366,248,1403,216,1423,213,1418,245,1399,277,1363,303,1320,324,1275,339,1229,358,1141,365,1075"/>
+<area shape="rect" id="Node000025" href="$classnnp_1_1SymFncCompAngnWeighted.html#ab252b932496c165133bb7e6d11b85bbc" title="Overload == operator." alt="" coords="7,1477,245,1517"/>
+<area shape="poly" id="edge24_Node000001_Node000025" title=" " alt="" coords="372,1076,369,1152,353,1257,337,1314,316,1370,286,1422,249,1467,233,1479,230,1475,245,1463,282,1419,311,1367,332,1312,347,1256,363,1151,367,1075"/>
+<area shape="rect" id="Node000026" href="$classnnp_1_1SymFncCompAngw.html#a8c31566e44efd91bea5168b8a7990623" title="Overload == operator." alt="" coords="36,1541,216,1581"/>
+<area shape="poly" id="edge25_Node000001_Node000026" title=" " alt="" coords="368,1076,354,1176,329,1313,312,1382,294,1444,272,1496,249,1531,218,1551,215,1547,245,1527,268,1493,289,1443,307,1380,324,1311,349,1175,363,1076"/>
+<area shape="rect" id="Node000027" href="$classnnp_1_1SymFncCompAngwWeighted.html#ac225a0ed3f75e5dbcf442545f80e8e68" title="Overload == operator." alt="" coords="5,1605,247,1645"/>
+<area shape="poly" id="edge26_Node000001_Node000027" title=" " alt="" coords="369,1076,357,1188,333,1343,317,1422,298,1495,275,1554,249,1595,234,1607,231,1603,245,1592,270,1552,292,1493,312,1421,328,1342,351,1187,364,1075"/>
+<area shape="rect" id="Node000028" href="$classnnp_1_1SymFncCompRad.html#ac0bad5a796a0ee996e995ec735af96f9" title="Overload == operator." alt="" coords="41,1669,211,1709"/>
+<area shape="poly" id="edge27_Node000001_Node000028" title=" " alt="" coords="370,1076,359,1200,337,1374,321,1464,301,1546,277,1613,264,1639,249,1659,232,1673,212,1682,210,1677,229,1668,245,1655,259,1636,272,1611,296,1544,316,1463,332,1373,354,1199,364,1076"/>
+<area shape="rect" id="Node000029" href="$classnnp_1_1SymFncCompRadWeighted.html#aaba04e9512473deb60cff4b6b5cfa45e" title="Overload == operator." alt="" coords="11,1733,241,1773"/>
+<area shape="poly" id="edge28_Node000001_Node000029" title=" " alt="" coords="370,1076,362,1211,341,1405,325,1505,305,1596,280,1671,265,1701,249,1723,234,1735,231,1731,245,1720,260,1698,275,1669,300,1595,320,1504,336,1404,356,1210,365,1076"/>
+<area shape="rect" id="Node000030" href="$classnnp_1_1SymFncExpAngn.html#a3e6070e0713c693eaaddc6a4a94b1cfd" title="Overload == operator." alt="" coords="45,1797,207,1837"/>
+<area shape="poly" id="edge29_Node000001_Node000030" title=" " alt="" coords="371,1076,364,1222,345,1435,330,1545,309,1646,282,1730,266,1762,249,1787,230,1802,209,1812,206,1807,227,1797,245,1784,262,1760,277,1728,304,1645,324,1544,340,1434,359,1221,365,1076"/>
+<area shape="rect" id="Node000031" href="$classnnp_1_1SymFncExpAngnWeighted.html#a887f6c8f59d34e55da02003ac7f2268e" title="Overload == operator." alt="" coords="14,1861,238,1901"/>
+<area shape="poly" id="edge30_Node000001_Node000031" title=" " alt="" coords="371,1076,366,1232,349,1465,334,1586,313,1697,285,1788,268,1824,249,1851,235,1863,231,1859,245,1848,263,1821,280,1786,307,1695,328,1585,344,1465,361,1232,366,1075"/>
+<area shape="rect" id="Node000032" href="$classnnp_1_1SymFncExpAngw.html#a9dc30416c344ff8b45285cb3f69fb3ba" title="Overload == operator." alt="" coords="43,1925,209,1965"/>
+<area shape="poly" id="edge31_Node000001_Node000032" title=" " alt="" coords="371,1076,368,1244,363,1365,353,1496,338,1627,316,1747,287,1847,269,1886,249,1915,231,1930,211,1939,208,1934,228,1925,245,1912,264,1883,282,1845,311,1746,333,1626,348,1495,357,1365,363,1244,366,1076"/>
+<area shape="rect" id="Node000033" href="$classnnp_1_1SymFncExpRad.html#aa6fe62d538135d5b679aab15c75638d4" title="Overload == operator." alt="" coords="45,1989,207,2029"/>
+<area shape="poly" id="edge32_Node000001_Node000033" title=" " alt="" coords="372,1076,370,1255,366,1384,357,1526,342,1667,320,1798,306,1855,289,1905,270,1947,249,1979,230,1994,209,2004,207,1999,228,1990,245,1976,266,1944,285,1903,301,1853,315,1796,337,1667,351,1525,360,1384,365,1255,366,1076"/>
+<area shape="rect" id="Node000034" href="$classnnp_1_1SymFncExpRadWeighted.html#a805d5d80552fb100be6f7eb66b111876" title="Overload == operator." alt="" coords="18,2053,234,2093"/>
+<area shape="poly" id="edge33_Node000001_Node000034" title=" " alt="" coords="370,1076,356,1280,331,1587,314,1743,294,1880,273,1985,261,2021,249,2043,235,2055,232,2051,245,2040,256,2019,268,1984,289,1879,309,1742,326,1586,351,1279,364,1076"/>
 </map>

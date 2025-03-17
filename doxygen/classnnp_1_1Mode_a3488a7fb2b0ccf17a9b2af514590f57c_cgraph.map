@@ -1,11 +1,13 @@
 <map id="nnp::Mode::setupNeuralNetwork" name="nnp::Mode::setupNeuralNetwork">
-<area shape="rect" id="node1" title="Set up neural networks for all elements." alt="" coords="5,233,237,260"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a9d5d806450840488b8da414b84aff1e2" title="Convert string to activation function." alt="" coords="285,5,476,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Element.html#aa1813b575aa3fa99f500a7cccbf90633" title="Get symbol." alt="" coords="287,56,474,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1settings_1_1Settings.html#a8b0d951c5548f17e64598900b5aca088" title="Get all keyword&#45;value pairs for given keyword." alt="" coords="297,107,464,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="297,197,464,238"/>
-<area shape="rect" id="node6" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="331,263,430,289"/>
-<area shape="rect" id="node7" href="$classnnp_1_1ElementMap.html#a94031b84fe2b38bbdb62ba700d5481a4" title="Get element map size." alt="" coords="295,313,466,340"/>
-<area shape="rect" id="node8" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="339,364,422,391"/>
-<area shape="rect" id="node9" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="339,415,423,441"/>
+<area shape="rect" id="Node000001" title="Set up neural networks for all elements." alt="" coords="5,104,237,129"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#a9d5d806450840488b8da414b84aff1e2" title="Convert string to activation function." alt="" coords="285,5,476,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="146,101,208,71,284,39,309,32,311,37,286,45,210,76,148,106"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Element.html#aa1813b575aa3fa99f500a7cccbf90633" title="Get symbol." alt="" coords="287,55,474,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="188,101,299,80,300,85,189,107"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="331,104,430,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="237,114,317,114,317,119,237,119"/>
+<area shape="rect" id="Node000006" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="339,153,422,179"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="189,127,326,153,325,158,188,132"/>
+<area shape="rect" id="Node000007" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="339,203,423,228"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="149,127,210,156,286,187,326,200,325,205,284,193,208,161,146,132"/>
 </map>

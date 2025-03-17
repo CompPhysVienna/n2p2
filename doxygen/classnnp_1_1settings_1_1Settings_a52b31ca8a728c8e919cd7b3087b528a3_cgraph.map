@@ -1,4 +1,5 @@
 <map id="nnp::settings::Settings::getValue" name="nnp::settings::Settings::getValue">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Key.html#a00b0b7b8ff43f5c7f33bb67d7db7e9e6" title=" " alt="" coords="220,5,359,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,172,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1settings_1_1Key.html#a00b0b7b8ff43f5c7f33bb67d7db7e9e6" title=" " alt="" coords="220,5,359,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,23,206,23,206,28,172,28"/>
 </map>

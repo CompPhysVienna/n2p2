@@ -1,6 +1,9 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldTruncJackson.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldTruncJackson.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="79,5,358,47"/>
-<area shape="rect" id="node2" href="$EwaldTruncJackson_8h.html" title=" " alt="" coords="5,95,163,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="187,95,250,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="274,95,361,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="79,5,358,45"/>
+<area shape="rect" id="Node000002" href="$EwaldTruncJackson_8h.html" title=" " alt="" coords="5,93,163,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,48,117,89,114,84,185,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="187,93,250,119"/>
+<area shape="poly" id="edge2_Node000001_Node000005" title=" " alt="" coords="221,46,221,79,216,79,216,46"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="274,93,361,119"/>
+<area shape="poly" id="edge3_Node000001_Node000006" title=" " alt="" coords="244,43,293,82,290,87,241,48"/>
 </map>

@@ -1,8 +1,14 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Element.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Element.h">
-<area shape="rect" id="node1" title=" " alt="" coords="293,5,488,47"/>
-<area shape="rect" id="node2" href="$Element_8cpp.html" title=" " alt="" coords="5,102,216,143"/>
-<area shape="rect" id="node3" href="$Mode_8h.html" title=" " alt="" coords="231,199,412,240"/>
-<area shape="rect" id="node4" href="$Structure_8h.html" title=" " alt="" coords="291,102,491,143"/>
-<area shape="rect" id="node5" href="$ElementCabana_8h.html" title=" " alt="" coords="515,95,725,151"/>
-<area shape="rect" id="node6" href="$InterfaceLammps_8cpp.html" title=" " alt="" coords="749,95,944,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="293,5,488,45"/>
+<area shape="rect" id="Node000002" href="$Element_8cpp.html" title=" " alt="" coords="5,101,216,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="322,52,168,103,166,98,320,47"/>
+<area shape="rect" id="Node000003" href="$Mode_8h.html" title=" " alt="" coords="231,196,412,236"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="325,54,300,72,281,95,275,120,280,147,293,173,307,194,303,197,288,175,275,149,269,120,276,92,296,68,322,50"/>
+<area shape="rect" id="Node000036" href="$Structure_8h.html" title=" " alt="" coords="291,101,491,141"/>
+<area shape="poly" id="edge3_Node000001_Node000036" title=" " alt="" coords="393,59,393,101,388,101,388,59"/>
+<area shape="rect" id="Node000042" href="$ElementCabana_8h.html" title=" " alt="" coords="515,93,725,148"/>
+<area shape="poly" id="edge5_Node000001_Node000042" title=" " alt="" coords="451,48,556,91,554,96,449,53"/>
+<area shape="rect" id="Node000022" href="$InterfaceLammps_8cpp.html" title=" " alt="" coords="749,93,944,148"/>
+<area shape="poly" id="edge6_Node000001_Node000022" title=" " alt="" coords="502,44,738,91,750,93,748,98,737,96,501,49"/>
+<area shape="poly" id="edge4_Node000036_Node000003" title=" " alt="" coords="371,153,337,198,333,194,366,150"/>
 </map>

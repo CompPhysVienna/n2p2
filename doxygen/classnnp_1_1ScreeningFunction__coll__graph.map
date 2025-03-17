@@ -1,5 +1,8 @@
 <map id="nnp::ScreeningFunction" name="nnp::ScreeningFunction">
-<area shape="rect" id="node1" title="A screening functions for use with electrostatics." alt="" coords="5,260,179,287"/>
-<area shape="rect" id="node2" title=" " alt="" coords="59,5,125,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1CoreFunction.html" title=" " alt="" coords="132,162,271,189"/>
+<area shape="rect" id="Node000001" title="A screening functions for use with electrostatics." alt="" coords="5,259,179,284"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="59,5,125,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,45,86,113,85,196,93,258,87,259,80,196,80,113,86,44"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1CoreFunction.html" title=" " alt="" coords="132,161,271,187"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="110,41,195,159,191,163,106,44"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="179,198,107,260,104,256,176,194"/>
 </map>

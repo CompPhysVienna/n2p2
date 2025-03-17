@@ -1,7 +1,9 @@
 <map id="nnp::EwaldSetup::logEwaldCutoffs" name="nnp::EwaldSetup::logEwaldCutoffs">
-<area shape="rect" id="node1" title="Use after Ewald summation!" alt="" coords="5,100,203,141"/>
-<area shape="rect" id="node2" href="$classnnp_1_1EwaldSetup.html#ad7b381f1ea2e1ccb8ded68b457450e06" title=" " alt="" coords="251,5,457,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1EwaldSetup.html#abe686fd50a4f523e228a15a87bddc57d" title=" " alt="" coords="253,71,455,112"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="312,137,396,163"/>
-<area shape="rect" id="node5" href="$structnnp_1_1EwaldParameters.html#a359d3712d7223131afeb3062c9c3ba6d" title=" " alt="" coords="271,188,437,229"/>
+<area shape="rect" id="Node000001" title="Use after Ewald summation!" alt="" coords="5,69,203,109"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1EwaldSetup.html#ad7b381f1ea2e1ccb8ded68b457450e06" title=" " alt="" coords="251,5,457,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,67,262,46,263,51,184,72"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1EwaldSetup.html#abe686fd50a4f523e228a15a87bddc57d" title=" " alt="" coords="253,69,455,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="203,87,240,87,240,92,203,92"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="312,134,396,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="192,107,299,131,298,137,191,112"/>
 </map>

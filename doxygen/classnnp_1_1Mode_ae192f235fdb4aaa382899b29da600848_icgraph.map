@@ -1,4 +1,5 @@
 <map id="nnp::Mode::setupCutoffMatrix" name="nnp::Mode::setupCutoffMatrix">
-<area shape="rect" id="node1" title="Setup matrix storing all symmetry function cut&#45;offs for each element." alt="" coords="237,5,452,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="5,5,189,32"/>
+<area shape="rect" id="Node000001" title="Setup matrix storing all symmetry function cut&#45;offs for each element." alt="" coords="237,5,452,31"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="5,5,189,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="224,21,189,21,189,15,224,15"/>
 </map>

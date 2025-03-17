@@ -1,4 +1,5 @@
 <map id="nnp::Training::PropertyMap" name="nnp::Training::PropertyMap">
-<area shape="rect" id="node1" title="Map of all training properties." alt="" coords="5,80,201,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="36,5,171,32"/>
+<area shape="rect" id="Node000001" title="Map of all training properties." alt="" coords="5,79,201,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="36,5,171,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="106,44,106,79,101,79,101,44"/>
 </map>

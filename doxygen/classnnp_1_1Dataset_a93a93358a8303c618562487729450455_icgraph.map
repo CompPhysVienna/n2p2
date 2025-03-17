@@ -1,4 +1,6 @@
 <map id="nnp::Dataset::setupMPI" name="nnp::Dataset::setupMPI">
-<area shape="rect" id="node1" title="Initialize MPI with MPI_COMM_WORLD." alt="" coords="108,29,281,56"/>
-<area shape="rect" id="node2" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,29,60,56"/>
+<area shape="rect" id="Node000001" title="Initialize MPI with MPI_COMM_WORLD." alt="" coords="108,29,281,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="223,19,214,11,195,8,178,10,169,15,167,20,172,28,168,31,162,21,165,11,176,5,195,3,217,6,226,15"/>
+<area shape="rect" id="Node000002" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,29,60,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,45,60,45,60,39,94,39"/>
 </map>

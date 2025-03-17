@@ -1,7 +1,11 @@
 <map id="nnp::CoreFunction" name="nnp::CoreFunction">
-<area shape="rect" id="node1" title=" " alt="" coords="88,153,227,180"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,72,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="97,5,149,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="173,5,224,32"/>
-<area shape="rect" id="node5" title=" " alt="" coords="286,5,325,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="88,152,227,177"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,72,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="45,43,58,85,69,107,83,126,100,140,120,150,117,154,97,144,79,130,64,110,53,87,40,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="97,5,149,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,45,123,85,132,127,147,150,143,153,127,129,118,85,117,45"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="173,5,224,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="194,45,163,153,158,151,189,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="286,5,325,31"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="308,45,300,88,291,110,277,130,254,147,228,157,226,152,251,142,273,126,286,108,295,86,302,44"/>
 </map>

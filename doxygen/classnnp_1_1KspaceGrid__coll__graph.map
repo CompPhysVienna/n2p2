@@ -1,7 +1,14 @@
 <map id="nnp::KspaceGrid" name="nnp::KspaceGrid">
-<area shape="rect" id="node1" title=" " alt="" coords="131,231,259,257"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,72,32"/>
-<area shape="rect" id="node4" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="91,118,186,145"/>
-<area shape="rect" id="node3" title=" " alt="" coords="210,118,249,145"/>
-<area shape="rect" id="node5" title=" " alt="" coords="273,118,476,145"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="231,229,359,255"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,117,119,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,156,56,182,59,193,65,203,91,218,133,228,231,237,231,242,132,234,89,223,61,207,54,195,51,182,52,156"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="162,5,229,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,44,182,71,177,102,179,135,188,165,203,186,223,203,265,227,263,232,220,207,199,190,184,168,173,136,172,102,177,70,184,43"/>
+<area shape="rect" id="Node000005" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="248,117,343,143"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="217,39,287,115,283,119,213,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="367,117,405,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="375,157,340,207,313,231,310,227,336,204,371,154"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="298,157,298,229,293,229,293,157"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="430,117,633,143"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="495,151,321,232,319,227,493,146"/>
 </map>

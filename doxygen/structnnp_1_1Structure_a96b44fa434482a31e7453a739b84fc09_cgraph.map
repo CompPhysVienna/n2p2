@@ -1,4 +1,5 @@
 <map id="nnp::Structure::getEnergyLine" name="nnp::Structure::getEnergyLine">
-<area shape="rect" id="node1" title="Get reference and NN energy." alt="" coords="5,5,220,32"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="268,5,352,32"/>
+<area shape="rect" id="Node000001" title="Get reference and NN energy." alt="" coords="5,5,220,31"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="268,5,352,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="220,15,254,15,254,21,220,21"/>
 </map>

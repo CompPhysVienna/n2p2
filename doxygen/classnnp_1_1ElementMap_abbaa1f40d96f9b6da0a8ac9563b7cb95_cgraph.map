@@ -1,4 +1,6 @@
 <map id="nnp::ElementMap::compareAtomicNumber" name="nnp::ElementMap::compareAtomicNumber">
-<area shape="rect" id="node1" title="Check if arguments are sorted according to atomic number." alt="" coords="5,22,207,63"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="255,29,496,56"/>
+<area shape="rect" id="Node000001" title="Check if arguments are sorted according to atomic number." alt="" coords="5,22,207,62"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="255,29,496,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,39,241,39,241,45,207,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="332,31,322,21,327,11,345,5,375,3,414,7,424,12,428,18,424,20,421,16,412,12,375,8,346,10,331,15,328,20,336,27"/>
 </map>

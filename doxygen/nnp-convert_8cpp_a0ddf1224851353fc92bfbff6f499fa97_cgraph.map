@@ -1,11 +1,22 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,237,60,264"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#aaa794cf49a53d8e5db578ac303b700fd" title="Read configuration from file." alt="" coords="116,29,323,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#a17d6d160054a064199a8757eb62b3350" title="Extract all elements and store in element map." alt="" coords="122,81,317,122"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="128,146,311,187"/>
-<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="142,212,297,239"/>
-<area shape="rect" id="node6" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="108,263,331,289"/>
-<area shape="rect" id="node7" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="379,384,463,411"/>
-<area shape="rect" id="node8" href="$structnnp_1_1Structure.html#a7eaa3ccba6309f828c2444ee627d7ee5" title="Write configuration to POSCAR file." alt="" coords="124,389,315,430"/>
-<area shape="rect" id="node9" href="$structnnp_1_1Structure.html#a8285382c3e2d908c8073a1fac315176b" title="Write configuration to xyz file." alt="" coords="112,455,327,481"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,233,60,259"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#aaa794cf49a53d8e5db578ac303b700fd" title="Read configuration from file." alt="" coords="116,29,323,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="33,233,38,199,51,154,73,106,88,84,106,65,114,59,117,64,110,69,92,88,77,109,56,156,44,200,38,234"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1ElementMap.html#a17d6d160054a064199a8757eb62b3350" title="Extract all elements and store in element map." alt="" coords="122,79,317,119"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="36,232,61,182,81,154,106,129,115,123,118,128,110,133,85,157,66,185,41,234"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="128,143,311,183"/>
+<area shape="poly" id="edge4_Node000001_Node000012" title=" " alt="" coords="48,231,75,212,107,193,124,186,126,191,109,198,78,216,51,235"/>
+<area shape="rect" id="Node000013" href="$structnnp_1_1Structure.html#abf6bf40715b7ffd70707baf5e95746ce" title="Reset everything but elementMap." alt="" coords="142,208,297,233"/>
+<area shape="poly" id="edge5_Node000001_Node000013" title=" " alt="" coords="60,240,128,230,129,236,61,245"/>
+<area shape="rect" id="Node000014" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="108,257,331,283"/>
+<area shape="poly" id="edge6_Node000001_Node000014" title=" " alt="" coords="61,247,108,253,107,258,60,252"/>
+<area shape="rect" id="Node000015" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="379,377,463,403"/>
+<area shape="poly" id="edge7_Node000001_Node000015" title=" " alt="" coords="52,257,78,275,109,292,169,311,219,319,269,326,332,343,386,368,384,373,330,349,268,332,218,325,168,317,107,296,75,279,49,261"/>
+<area shape="rect" id="Node000016" href="$structnnp_1_1Structure.html#a7eaa3ccba6309f828c2444ee627d7ee5" title="Write configuration to POSCAR file." alt="" coords="124,382,315,422"/>
+<area shape="poly" id="edge8_Node000001_Node000016" title=" " alt="" coords="44,257,71,295,110,337,163,373,160,377,106,341,67,299,40,260"/>
+<area shape="rect" id="Node000017" href="$structnnp_1_1Structure.html#a8285382c3e2d908c8073a1fac315176b" title="Write configuration to xyz file." alt="" coords="112,447,327,472"/>
+<area shape="poly" id="edge10_Node000001_Node000017" title=" " alt="" coords="38,258,43,293,55,341,76,390,91,413,110,432,117,438,114,442,106,436,87,416,72,393,50,342,38,294,32,259"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="188,31,182,21,185,11,198,5,219,3,245,6,256,15,252,19,243,11,219,8,200,10,189,15,187,20,193,28"/>
+<area shape="poly" id="edge9_Node000016_Node000016" title=" " alt="" coords="184,382,182,372,188,363,200,357,219,355,241,358,253,366,251,370,240,363,219,361,202,363,191,367,187,373,189,381"/>
+<area shape="poly" id="edge11_Node000017_Node000015" title=" " alt="" coords="287,444,330,431,384,407,386,412,332,437,288,449"/>
 </map>

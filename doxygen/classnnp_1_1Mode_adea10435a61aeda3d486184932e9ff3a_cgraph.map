@@ -1,13 +1,21 @@
 <map id="nnp::Mode::evaluateNNP" name="nnp::Mode::evaluateNNP">
-<area shape="rect" id="node1" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="5,265,188,291"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="247,5,450,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ac71da5d31be39935bdc3c7202ba23a2e" title="Calculate total charge for a given structure." alt="" coords="247,71,450,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="247,122,450,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="249,173,448,199"/>
-<area shape="rect" id="node6" href="$structnnp_1_1Structure.html#a46770abdefe49a0ab488049caa99905c" title="Calculate maximal cut&#45;off if cut&#45;off of screening and real part Ewald summation are also considered." alt="" coords="259,224,439,265"/>
-<area shape="rect" id="node7" href="$structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="259,289,439,331"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="236,355,461,396"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="236,420,461,461"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="237,486,461,513"/>
-<area shape="rect" id="node11" href="$classnnp_1_1ScreeningFunction.html#a39a14618e686220bf57a679b68e1739a" title="Getter for outer." alt="" coords="262,537,435,579"/>
+<area shape="rect" id="Node000001" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="5,226,188,251"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="247,5,450,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,225,120,191,149,145,187,97,234,55,244,49,247,54,238,59,191,100,153,148,124,193,106,227"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Mode.html#ac71da5d31be39935bdc3c7202ba23a2e" title="Calculate total charge for a given structure." alt="" coords="247,70,450,95"/>
+<area shape="poly" id="edge2_Node000001_Node000009" title=" " alt="" coords="105,224,156,166,193,132,235,104,250,98,252,102,237,109,196,137,160,169,109,227"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="247,119,450,145"/>
+<area shape="poly" id="edge3_Node000001_Node000010" title=" " alt="" coords="114,223,166,189,235,154,258,146,260,151,237,158,169,193,117,228"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="249,169,448,194"/>
+<area shape="poly" id="edge4_Node000001_Node000011" title=" " alt="" coords="152,223,235,204,278,194,279,200,237,209,154,228"/>
+<area shape="rect" id="Node000019" href="$structnnp_1_1Structure.html#a46770abdefe49a0ab488049caa99905c" title="Calculate maximal cut&#45;off if cut&#45;off of screening and real part Ewald summation are also considered." alt="" coords="259,219,439,259"/>
+<area shape="poly" id="edge5_Node000001_Node000019" title=" " alt="" coords="188,236,245,236,245,241,188,241"/>
+<area shape="rect" id="Node000021" href="$structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="259,283,439,323"/>
+<area shape="poly" id="edge6_Node000001_Node000021" title=" " alt="" coords="149,249,257,277,255,282,147,254"/>
+<area shape="rect" id="Node000026" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="236,347,461,387"/>
+<area shape="poly" id="edge7_Node000001_Node000026" title=" " alt="" coords="114,249,167,290,237,332,254,340,252,344,235,337,164,294,111,253"/>
+<area shape="rect" id="Node000036" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="236,411,461,451"/>
+<area shape="poly" id="edge8_Node000001_Node000036" title=" " alt="" coords="108,250,156,320,194,361,238,396,248,403,245,407,234,401,190,365,152,323,103,253"/>
+<area shape="rect" id="Node000038" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="237,475,461,501"/>
+<area shape="poly" id="edge9_Node000001_Node000038" title=" " alt="" coords="105,251,120,292,147,350,186,410,210,437,238,461,249,467,246,472,234,465,206,441,182,413,142,352,115,294,100,253"/>
 </map>

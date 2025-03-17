@@ -1,9 +1,18 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnptrain/KalmanFilter.h" name="/home/runner/work/n2p2/n2p2/src/libnnptrain/KalmanFilter.h">
-<area shape="rect" id="node1" title=" " alt="" coords="131,5,312,61"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,109,64,136"/>
-<area shape="rect" id="node3" href="$Updater_8h.html" title=" " alt="" coords="139,109,224,136"/>
-<area shape="rect" id="node4" title=" " alt="" coords="83,184,154,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="188,184,247,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="275,184,338,211"/>
-<area shape="rect" id="node7" title=" " alt="" coords="350,109,442,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="131,5,312,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,108,64,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,62,73,105,71,100,163,58"/>
+<area shape="rect" id="Node000003" href="$Updater_8h.html" title=" " alt="" coords="139,108,224,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="212,61,195,97,190,94,207,59"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="83,181,154,207"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="175,62,149,83,129,109,120,138,119,167,113,167,115,137,124,107,145,79,172,58"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="188,181,247,207"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="232,60,239,95,239,134,229,169,224,168,233,133,233,95,227,61"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="275,181,338,207"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="238,59,296,168,292,171,233,61"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="350,108,442,133"/>
+<area shape="poly" id="edge6_Node000001_Node000010" title=" " alt="" coords="276,58,362,100,359,104,274,62"/>
+<area shape="poly" id="edge3_Node000003_Node000006" title=" " alt="" coords="173,135,140,173,136,169,169,132"/>
+<area shape="poly" id="edge4_Node000003_Node000008" title=" " alt="" coords="190,132,208,168,203,170,185,135"/>
+<area shape="poly" id="edge5_Node000003_Node000009" title=" " alt="" coords="203,131,276,172,273,177,200,136"/>
 </map>

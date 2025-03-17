@@ -1,7 +1,14 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnptrain/GradientDescent.h" name="/home/runner/work/n2p2/n2p2/src/libnnptrain/GradientDescent.h">
-<area shape="rect" id="node1" title=" " alt="" coords="53,5,234,61"/>
-<area shape="rect" id="node2" href="$Updater_8h.html" title=" " alt="" coords="61,109,146,136"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,184,76,211"/>
-<area shape="rect" id="node4" title=" " alt="" coords="110,184,169,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="197,184,260,211"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="53,5,234,60"/>
+<area shape="rect" id="Node000002" href="$Updater_8h.html" title=" " alt="" coords="61,108,146,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="134,61,117,97,112,94,129,59"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,181,76,207"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="97,62,71,83,51,109,42,138,41,167,35,167,37,137,46,107,67,79,94,58"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="110,181,169,207"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="154,60,161,95,161,134,151,169,146,168,155,133,155,95,149,61"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="197,181,260,207"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="160,59,218,168,214,171,155,61"/>
+<area shape="poly" id="edge2_Node000002_Node000005" title=" " alt="" coords="95,135,62,173,58,169,91,132"/>
+<area shape="poly" id="edge3_Node000002_Node000007" title=" " alt="" coords="112,132,130,168,125,170,107,135"/>
+<area shape="poly" id="edge4_Node000002_Node000008" title=" " alt="" coords="125,131,198,172,195,177,122,136"/>
 </map>

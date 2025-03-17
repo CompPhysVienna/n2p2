@@ -1,6 +1,9 @@
 <map id="nnp::Structure::calculateElectrostaticEnergyDerivatives" name="nnp::Structure::calculateElectrostaticEnergyDerivatives">
-<area shape="rect" id="node1" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="5,49,228,90"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ScreeningFunction.html#a5d5cfc1ced326fd61eef519dfc6b1e79" title="Derivative of screening function ." alt="" coords="276,5,471,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ScreeningFunction.html#aa48557f8e5995c10026f714d490e2bf0" title="Screening function ." alt="" coords="280,56,467,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1ScreeningFunction.html#a39a14618e686220bf57a679b68e1739a" title="Getter for outer." alt="" coords="287,107,460,149"/>
+<area shape="rect" id="Node000001" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="5,47,228,87"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ScreeningFunction.html#a5d5cfc1ced326fd61eef519dfc6b1e79" title="Derivative of screening function ." alt="" coords="276,5,471,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,45,293,31,294,36,222,50"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1ScreeningFunction.html#aa48557f8e5995c10026f714d490e2bf0" title="Screening function ." alt="" coords="280,55,467,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="228,65,266,65,266,70,228,70"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1ScreeningFunction.html#a39a14618e686220bf57a679b68e1739a" title="Getter for outer." alt="" coords="287,105,460,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="207,85,274,100,273,105,206,90"/>
 </map>

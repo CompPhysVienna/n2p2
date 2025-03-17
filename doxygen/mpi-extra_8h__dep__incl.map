@@ -1,13 +1,23 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/mpi&#45;extra.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/mpi&#45;extra.h">
-<area shape="rect" id="node1" title=" " alt="" coords="917,5,1123,47"/>
-<area shape="rect" id="node2" href="$nnp-atomenv_8cpp.html" title=" " alt="" coords="5,95,187,151"/>
-<area shape="rect" id="node3" href="$nnp-checkdw_8cpp.html" title=" " alt="" coords="211,95,392,151"/>
-<area shape="rect" id="node4" href="$nnp-checkf_8cpp.html" title=" " alt="" coords="416,95,597,151"/>
-<area shape="rect" id="node5" href="$nnp-dataset_8cpp.html" title=" " alt="" coords="621,95,803,151"/>
-<area shape="rect" id="node6" href="$nnp-norm_8cpp.html" title=" " alt="" coords="827,95,1008,151"/>
-<area shape="rect" id="node7" href="$nnp-norm2_8cpp.html" title=" " alt="" coords="1032,95,1213,151"/>
-<area shape="rect" id="node8" href="$nnp-scaling_8cpp.html" title=" " alt="" coords="1237,95,1419,151"/>
-<area shape="rect" id="node9" href="$InterfaceLammps_8cpp.html" title=" " alt="" coords="1443,95,1637,151"/>
-<area shape="rect" id="node10" href="$Dataset_8cpp.html" title=" " alt="" coords="1661,95,1843,151"/>
-<area shape="rect" id="node11" href="$Training_8cpp.html" title=" " alt="" coords="1867,95,2048,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="917,5,1123,45"/>
+<area shape="rect" id="Node000002" href="$nnp-atomenv_8cpp.html" title=" " alt="" coords="5,93,187,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="903,33,761,39,585,51,392,69,199,96,188,98,187,93,198,91,391,64,584,46,761,34,903,27"/>
+<area shape="rect" id="Node000003" href="$nnp-checkdw_8cpp.html" title=" " alt="" coords="211,93,392,148"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="904,37,672,58,538,75,404,96,393,98,392,93,404,91,537,70,671,53,903,32"/>
+<area shape="rect" id="Node000004" href="$nnp-checkf_8cpp.html" title=" " alt="" coords="416,93,597,148"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="904,45,763,68,610,96,598,98,597,93,609,91,762,62,903,40"/>
+<area shape="rect" id="Node000005" href="$nnp-dataset_8cpp.html" title=" " alt="" coords="621,93,803,148"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="945,52,800,96,798,91,944,47"/>
+<area shape="rect" id="Node000006" href="$nnp-norm_8cpp.html" title=" " alt="" coords="827,93,1008,148"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="991,56,948,95,944,91,988,52"/>
+<area shape="rect" id="Node000007" href="$nnp-norm2_8cpp.html" title=" " alt="" coords="1032,93,1213,148"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1052,52,1096,91,1092,95,1049,56"/>
+<area shape="rect" id="Node000008" href="$nnp-scaling_8cpp.html" title=" " alt="" coords="1237,93,1419,148"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1096,47,1242,91,1240,96,1095,52"/>
+<area shape="rect" id="Node000009" href="$InterfaceLammps_8cpp.html" title=" " alt="" coords="1443,93,1637,148"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1137,41,1278,63,1431,91,1443,93,1442,98,1430,96,1277,68,1136,46"/>
+<area shape="rect" id="Node000010" href="$Dataset_8cpp.html" title=" " alt="" coords="1661,93,1843,148"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1137,31,1374,53,1513,69,1650,91,1661,93,1660,98,1649,96,1512,75,1374,58,1136,37"/>
+<area shape="rect" id="Node000011" href="$Training_8cpp.html" title=" " alt="" coords="1867,93,2048,148"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1137,27,1282,34,1461,45,1658,64,1855,91,1867,93,1866,98,1854,96,1658,69,1461,51,1281,39,1137,32"/>
 </map>

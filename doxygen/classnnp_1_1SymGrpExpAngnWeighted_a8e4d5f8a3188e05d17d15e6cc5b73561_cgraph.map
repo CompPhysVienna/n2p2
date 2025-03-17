@@ -1,6 +1,5 @@
 <map id="nnp::SymGrpExpAngnWeighted::calculate" name="nnp::SymGrpExpAngnWeighted::calculate">
-<area shape="rect" id="node1" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,73,229,114"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="277,29,519,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1CutoffFunction.html#a4c75abd984936445883a48c64080c015" title="Calculate cutoff function &#160;and derivative ." alt="" coords="311,80,485,107"/>
-<area shape="rect" id="node4" href="$namespacennp.html#ada65ef67cb7629b84a020f617a216273" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="345,131,451,157"/>
+<area shape="rect" id="Node000001" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,5,229,45"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#ada65ef67cb7629b84a020f617a216273" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="277,13,383,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,23,264,23,264,28,230,28"/>
 </map>

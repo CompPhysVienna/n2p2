@@ -1,5 +1,7 @@
 <map id="nnp::Element::getIndex" name="nnp::Element::getIndex">
-<area shape="rect" id="node1" title="Get index." alt="" coords="279,46,452,73"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="5,5,231,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="5,71,231,112"/>
+<area shape="rect" id="Node000001" title="Get index." alt="" coords="279,45,452,70"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="5,5,231,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="265,47,231,43,231,37,265,42"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="5,69,231,109"/>
+<area shape="poly" id="edge2_Node000001_Node000018" title=" " alt="" coords="265,73,231,77,231,72,265,68"/>
 </map>

@@ -1,9 +1,15 @@
 <map id="nnp::Mode::calculateForces" name="nnp::Mode::calculateForces">
-<area shape="rect" id="node1" title="Calculate forces for all atoms in given structure." alt="" coords="308,147,507,174"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="55,122,210,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="41,173,224,199"/>
-<area shape="rect" id="node6" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,223,160,250"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,274,212,301"/>
+<area shape="rect" id="Node000001" title="Calculate forces for all atoms in given structure." alt="" coords="308,145,507,170"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="379,138,326,98,259,60,218,45,220,40,261,55,329,94,383,134"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,70,260,95"/>
+<area shape="poly" id="edge2_Node000001_Node000006" title=" " alt="" coords="360,142,259,109,210,98,211,93,261,104,361,137"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="55,119,210,145"/>
+<area shape="poly" id="edge3_Node000001_Node000007" title=" " alt="" coords="294,150,210,142,211,136,295,144"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="41,169,224,194"/>
+<area shape="poly" id="edge4_Node000001_Node000009" title=" " alt="" coords="294,170,225,176,224,171,294,165"/>
+<area shape="rect" id="Node000013" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,218,160,243"/>
+<area shape="poly" id="edge5_Node000001_Node000013" title=" " alt="" coords="359,177,261,208,161,229,160,224,259,203,357,172"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,267,212,293"/>
+<area shape="poly" id="edge6_Node000001_Node000014" title=" " alt="" coords="382,181,329,220,261,257,213,272,211,267,259,252,326,216,379,177"/>
 </map>

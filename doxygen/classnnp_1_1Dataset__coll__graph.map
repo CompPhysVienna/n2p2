@@ -1,10 +1,18 @@
 <map id="nnp::Dataset" name="nnp::Dataset">
-<area shape="rect" id="node1" title="Collect and process large data sets." alt="" coords="447,199,552,225"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="138,95,229,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,5,65,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="253,95,465,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="489,95,528,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="552,95,639,121"/>
-<area shape="rect" id="node7" title=" " alt="" coords="663,95,759,121"/>
-<area shape="rect" id="node8" title=" " alt="" coords="783,95,863,121"/>
+<area shape="rect" id="Node000001" title="Collect and process large data sets." alt="" coords="447,196,552,221"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="138,93,229,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="233,120,387,169,463,193,462,198,385,175,231,125"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="5,5,65,31"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="27,45,18,82,20,101,28,117,56,138,99,156,153,171,214,182,341,196,447,203,446,208,341,202,213,187,152,176,97,161,53,143,24,120,15,102,13,82,21,44"/>
+<area shape="poly" id="edge2_Node000002_Node000007" title=" " alt="" coords="68,35,165,91,162,95,66,40"/>
+<area shape="rect" id="Node000078" title=" " alt="" coords="253,93,465,119"/>
+<area shape="poly" id="edge3_Node000001_Node000078" title=" " alt="" coords="380,128,400,149,425,170,470,194,467,198,422,174,397,153,376,131"/>
+<area shape="rect" id="Node000032" title=" " alt="" coords="489,93,528,119"/>
+<area shape="poly" id="edge4_Node000001_Node000032" title=" " alt="" coords="505,133,503,143,502,196,496,196,498,142,500,132"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="552,93,639,119"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="591,133,582,154,568,174,551,188,532,198,529,194,548,183,564,170,577,151,586,131"/>
+<area shape="rect" id="Node000089" title=" " alt="" coords="663,93,759,119"/>
+<area shape="poly" id="edge7_Node000001_Node000089" title=" " alt="" coords="699,132,680,154,655,174,604,196,553,206,552,201,602,190,653,170,676,151,695,129"/>
+<area shape="rect" id="Node000090" title=" " alt="" coords="783,93,863,119"/>
+<area shape="poly" id="edge8_Node000001_Node000090" title=" " alt="" coords="803,131,773,154,736,174,689,190,640,200,553,209,552,204,640,195,688,185,734,170,770,150,799,126"/>
 </map>

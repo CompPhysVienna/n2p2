@@ -1,5 +1,7 @@
 <map id="nnp::SymFnc::setScalingType" name="nnp::SymFnc::setScalingType">
-<area shape="rect" id="node1" title="Set symmetry function scaling type." alt="" coords="5,31,216,57"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="264,5,363,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="272,56,355,83"/>
+<area shape="rect" id="Node000001" title="Set symmetry function scaling type." alt="" coords="5,31,216,56"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="264,5,363,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,28,250,23,251,28,213,33"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="272,55,355,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="216,53,258,58,258,64,216,58"/>
 </map>

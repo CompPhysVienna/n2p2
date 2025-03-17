@@ -1,7 +1,11 @@
 <map id="nnp::Element::numSymmetryFunctions" name="nnp::Element::numSymmetryFunctions">
-<area shape="rect" id="node1" title="Get number of symmetry functions." alt="" coords="280,104,493,145"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="6,5,231,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="6,71,231,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="17,136,220,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="5,201,232,243"/>
+<area shape="rect" id="Node000001" title="Get number of symmetry functions." alt="" coords="280,101,493,141"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="6,5,231,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="328,98,231,60,194,48,196,43,233,55,330,93"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="6,69,231,109"/>
+<area shape="poly" id="edge2_Node000001_Node000018" title=" " alt="" coords="266,110,231,105,232,100,267,104"/>
+<area shape="rect" id="Node000019" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="17,133,220,173"/>
+<area shape="poly" id="edge3_Node000001_Node000019" title=" " alt="" coords="267,138,220,144,220,139,266,133"/>
+<area shape="rect" id="Node000023" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="5,197,232,237"/>
+<area shape="poly" id="edge4_Node000001_Node000023" title=" " alt="" coords="330,149,233,188,196,200,194,195,231,183,328,144"/>
 </map>

@@ -1,5 +1,8 @@
 <map id="nnp::Structure::remap" name="nnp::Structure::remap">
-<area shape="rect" id="node1" title="Translate all atoms back into box if outside." alt="" coords="272,46,435,73"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4" title="Prepare numeric force check for a single structure." alt="" coords="5,5,224,47"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines." alt="" coords="23,71,206,112"/>
+<area shape="rect" id="Node000001" title="Translate all atoms back into box if outside." alt="" coords="272,45,435,70"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="396,36,385,27,353,23,328,25,314,30,312,36,319,43,315,46,306,36,311,26,327,20,353,18,387,22,399,31"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Dataset.html#aa932aedf7af8cf3daea1cae02c3602c4" title="Prepare numeric force check for a single structure." alt="" coords="5,5,224,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="258,47,224,43,225,37,258,42"/>
+<area shape="rect" id="Node000004" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines." alt="" coords="23,69,206,109"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="258,73,207,80,206,74,258,67"/>
 </map>

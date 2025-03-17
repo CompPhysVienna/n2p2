@@ -1,10 +1,17 @@
 <map id="nnp::Dataset::combineFiles" name="nnp::Dataset::combineFiles">
-<area shape="rect" id="node1" title="Combine individual MPI proc files to one." alt="" coords="308,181,507,207"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
-<area shape="rect" id="node4" href="$nnp-checkdw_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,122,160,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df" title="Write atomic environment file." alt="" coords="37,173,229,215"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="30,239,235,280"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="30,304,235,345"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Training.html#af4cbb8263eeb79634e06fc62dc4b359d" title="Write training and test set to separate files (train.data and test.data, same format as input...." alt="" coords="45,369,220,411"/>
+<area shape="rect" id="Node000001" title="Combine individual MPI proc files to one." alt="" coords="308,177,507,202"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="385,168,332,113,297,84,259,60,218,43,220,38,261,55,300,80,335,109,389,165"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,70,260,95"/>
+<area shape="poly" id="edge2_Node000001_Node000006" title=" " alt="" coords="376,171,323,139,259,109,220,98,222,93,261,104,325,134,378,167"/>
+<area shape="rect" id="Node000007" href="$nnp-checkdw_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,119,160,145"/>
+<area shape="poly" id="edge3_Node000001_Node000007" title=" " alt="" coords="336,176,259,160,160,140,161,134,261,155,337,171"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df" title="Write atomic environment file." alt="" coords="37,169,229,209"/>
+<area shape="poly" id="edge4_Node000001_Node000008" title=" " alt="" coords="294,192,229,192,229,187,294,187"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="30,233,235,273"/>
+<area shape="poly" id="edge5_Node000001_Node000010" title=" " alt="" coords="339,208,220,236,219,231,338,203"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="30,297,235,337"/>
+<area shape="poly" id="edge6_Node000001_Node000011" title=" " alt="" coords="381,213,328,251,261,288,229,300,227,295,259,283,325,246,378,208"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1Training.html#af4cbb8263eeb79634e06fc62dc4b359d" title="Write training and test set to separate files (train.data and test.data, same format as input...." alt="" coords="45,361,220,401"/>
+<area shape="poly" id="edge7_Node000001_Node000012" title=" " alt="" coords="393,215,340,283,303,320,261,352,221,369,219,364,259,347,300,316,336,280,389,212"/>
 </map>

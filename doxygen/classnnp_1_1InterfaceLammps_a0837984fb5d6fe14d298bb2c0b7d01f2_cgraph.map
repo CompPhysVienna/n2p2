@@ -1,12 +1,15 @@
 <map id="nnp::InterfaceLammps::process" name="nnp::InterfaceLammps::process">
-<area shape="rect" id="node1" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="5,225,173,266"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674" title="Add atomic energy offsets to reference energy." alt="" coords="231,5,437,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="233,57,435,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#ac71da5d31be39935bdc3c7202ba23a2e" title="Calculate total charge for a given structure." alt="" coords="233,123,435,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="233,173,435,200"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="221,225,447,266"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="221,290,447,331"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="222,356,446,383"/>
-<area shape="rect" id="node9" href="$classnnp_1_1EwaldSetup.html#ac8101235172f7fade130d4939353256e" title="Use after Ewald summation!" alt="" coords="235,407,433,449"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#a02d558483ab82d340ee587febcfddd8f" title="Undo normalization for a given energy of structure." alt="" coords="235,473,433,500"/>
+<area shape="rect" id="Node000001" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="5,142,173,182"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674" title="Add atomic energy offsets to reference energy." alt="" coords="231,5,437,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,140,153,90,185,63,220,41,239,33,241,37,223,46,188,68,157,94,109,144"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="233,55,435,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="134,140,220,105,244,97,246,102,222,110,136,144"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="233,120,435,145"/>
+<area shape="poly" id="edge3_Node000001_Node000010" title=" " alt="" coords="173,149,219,144,219,149,174,155"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="221,170,447,210"/>
+<area shape="poly" id="edge4_Node000001_Node000011" title=" " alt="" coords="174,169,208,173,207,178,173,174"/>
+<area shape="rect" id="Node000023" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="221,234,447,274"/>
+<area shape="poly" id="edge5_Node000001_Node000023" title=" " alt="" coords="132,180,222,220,245,227,243,232,220,224,130,185"/>
+<area shape="rect" id="Node000025" href="$classnnp_1_1Mode.html#a02d558483ab82d340ee587febcfddd8f" title="Undo normalization for a given energy of structure." alt="" coords="235,299,433,324"/>
+<area shape="poly" id="edge6_Node000001_Node000025" title=" " alt="" coords="108,180,155,233,187,260,223,284,240,292,238,297,220,288,184,265,152,237,104,184"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="nnp::ElementCabana::scalingLine" name="nnp::ElementCabana::scalingLine">
-<area shape="rect" id="node1" title="Print scaling for one symmetry function." alt="" coords="279,5,436,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementCabana.html#adfa695852e27a15699bb22a975b6459c" title=" " alt="" coords="5,5,231,47"/>
+<area shape="rect" id="Node000001" title="Print scaling for one symmetry function." alt="" coords="279,5,436,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementCabana.html#adfa695852e27a15699bb22a975b6459c" title=" " alt="" coords="5,5,231,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="265,28,231,28,231,23,265,23"/>
 </map>

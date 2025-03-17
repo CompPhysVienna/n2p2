@@ -1,6 +1,5 @@
 <map id="nnp::Structure::reset" name="nnp::Structure::reset">
-<area shape="rect" id="node1" title="Reset everything but elementMap." alt="" coords="292,71,447,98"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNPExternal.html#a9d3a8ccc255cf1d510255851e60b8236" title=" " alt="" coords="5,5,244,47"/>
-<area shape="rect" id="node3" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="97,71,152,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Prediction.html#a217f052c181f847506b5d2382c02246c" title=" " alt="" coords="17,123,232,164"/>
+<area shape="rect" id="Node000001" title="Reset everything but elementMap." alt="" coords="108,5,263,31"/>
+<area shape="rect" id="Node000002" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,60,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,21,60,21,60,15,94,15"/>
 </map>

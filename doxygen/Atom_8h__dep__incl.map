@@ -1,39 +1,77 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Atom.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Atom.h">
-<area shape="rect" id="node1" title=" " alt="" coords="4256,5,4437,47"/>
-<area shape="rect" id="node2" href="$nnp-predict_8cpp.html" title=" " alt="" coords="317,303,499,359"/>
-<area shape="rect" id="node3" href="$pair__hdnnp__external_8cpp.html" title=" " alt="" coords="42,95,246,165"/>
-<area shape="rect" id="node4" href="$Atom_8cpp.html" title=" " alt="" coords="270,109,461,151"/>
-<area shape="rect" id="node5" href="$Element_8cpp.html" title=" " alt="" coords="485,109,696,151"/>
-<area shape="rect" id="node6" href="$ErfcBuf_8h.html" title=" " alt="" coords="720,109,907,151"/>
-<area shape="rect" id="node7" href="$Structure_8h.html" title=" " alt="" coords="713,213,913,255"/>
-<area shape="rect" id="node8" href="$SymFncBaseCompAng_8cpp.html" title=" " alt="" coords="981,102,1232,158"/>
-<area shape="rect" id="node9" href="$SymFncBaseCompAngWeighted_8cpp.html" title=" " alt="" coords="1256,102,1507,158"/>
-<area shape="rect" id="node10" href="$SymFncBaseExpAng_8cpp.html" title=" " alt="" coords="1531,102,1768,158"/>
-<area shape="rect" id="node11" href="$SymFncCompAngn_8cpp.html" title=" " alt="" coords="1793,109,2071,151"/>
-<area shape="rect" id="node12" href="$SymFncCompAngnWeighted_8cpp.html" title=" " alt="" coords="2095,102,2347,158"/>
-<area shape="rect" id="node13" href="$SymFncCompAngw_8cpp.html" title=" " alt="" coords="2371,109,2653,151"/>
-<area shape="rect" id="node14" href="$SymFncCompAngwWeighted_8cpp.html" title=" " alt="" coords="2677,102,2931,158"/>
-<area shape="rect" id="node15" href="$SymFncCompRad_8cpp.html" title=" " alt="" coords="2955,109,3226,151"/>
-<area shape="rect" id="node16" href="$SymFncCompRadWeighted_8cpp.html" title=" " alt="" coords="3250,102,3494,158"/>
-<area shape="rect" id="node17" href="$SymFncExpAngn_8cpp.html" title=" " alt="" coords="3518,109,3783,151"/>
-<area shape="rect" id="node18" href="$SymFncExpAngnWeighted_8cpp.html" title=" " alt="" coords="3807,102,4046,158"/>
-<area shape="rect" id="node19" href="$SymFncExpAngw_8cpp.html" title=" " alt="" coords="4071,109,4337,151"/>
-<area shape="rect" id="node20" href="$SymFncExpRad_8cpp.html" title=" " alt="" coords="4362,109,4619,151"/>
-<area shape="rect" id="node21" href="$SymFncExpRadWeighted_8cpp.html" title=" " alt="" coords="4643,102,4874,158"/>
-<area shape="rect" id="node22" href="$SymGrpBaseCompAng_8cpp.html" title=" " alt="" coords="4899,102,5149,158"/>
-<area shape="rect" id="node23" href="$SymGrpBaseCompAngWeighted_8cpp.html" title=" " alt="" coords="5173,102,5424,158"/>
-<area shape="rect" id="node24" href="$SymGrpBaseExpAng_8cpp.html" title=" " alt="" coords="5448,102,5685,158"/>
-<area shape="rect" id="node25" href="$SymGrpCompAngn_8cpp.html" title=" " alt="" coords="5710,109,5989,151"/>
-<area shape="rect" id="node26" href="$SymGrpCompAngnWeighted_8cpp.html" title=" " alt="" coords="6013,102,6265,158"/>
-<area shape="rect" id="node27" href="$SymGrpCompAngw_8cpp.html" title=" " alt="" coords="6289,109,6570,151"/>
-<area shape="rect" id="node28" href="$SymGrpCompAngwWeighted_8cpp.html" title=" " alt="" coords="6594,102,6849,158"/>
-<area shape="rect" id="node29" href="$SymGrpCompRad_8cpp.html" title=" " alt="" coords="6873,109,7143,151"/>
-<area shape="rect" id="node30" href="$SymGrpCompRadWeighted_8cpp.html" title=" " alt="" coords="7167,102,7411,158"/>
-<area shape="rect" id="node31" href="$SymGrpExpAngn_8cpp.html" title=" " alt="" coords="7435,109,7701,151"/>
-<area shape="rect" id="node32" href="$SymGrpExpAngnWeighted_8cpp.html" title=" " alt="" coords="7725,102,7963,158"/>
-<area shape="rect" id="node33" href="$SymGrpExpAngw_8cpp.html" title=" " alt="" coords="7988,109,8255,151"/>
-<area shape="rect" id="node34" href="$SymGrpExpRad_8cpp.html" title=" " alt="" coords="8279,109,8537,151"/>
-<area shape="rect" id="node35" href="$SymGrpExpRadWeighted_8cpp.html" title=" " alt="" coords="8561,102,8791,158"/>
-<area shape="rect" id="node36" href="$InterfaceLammps_8cpp.html" title=" " alt="" coords="8816,102,9011,158"/>
-<area shape="rect" id="node37" href="$Training_8h.html" title=" " alt="" coords="9035,102,9216,158"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="4256,5,4437,45"/>
+<area shape="rect" id="Node000002" href="$nnp-predict_8cpp.html" title=" " alt="" coords="317,299,499,353"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="4242,30,3313,37,1904,50,611,70,194,82,76,89,31,96,17,114,9,131,9,148,14,164,25,179,40,194,83,223,138,248,199,270,318,303,316,308,197,275,136,253,81,227,37,199,21,183,9,166,4,148,4,130,12,111,28,91,75,84,194,77,611,65,1904,45,3313,31,4242,25"/>
+<area shape="rect" id="Node000003" href="$pair__hdnnp__external_8cpp.html" title=" " alt="" coords="42,93,246,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="4242,29,3424,31,2177,40,1538,48,966,60,520,75,362,85,258,96,247,98,246,93,257,91,362,80,520,70,966,54,1538,43,2177,34,3424,26,4242,24"/>
+<area shape="rect" id="Node000004" href="$Atom_8cpp.html" title=" " alt="" coords="270,108,461,148"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="4242,29,3462,31,2283,40,1680,48,1141,60,721,76,572,85,474,96,416,110,415,105,473,91,572,80,721,70,1141,55,1680,43,2283,35,3462,26,4242,24"/>
+<area shape="rect" id="Node000005" href="$Element_8cpp.html" title=" " alt="" coords="485,108,696,148"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="4242,30,3505,33,2400,44,1836,52,1332,64,939,78,800,87,708,96,646,111,645,105,707,91,800,81,939,73,1332,58,1836,47,2400,38,3505,28,4242,24"/>
+<area shape="rect" id="Node000006" href="$ErfcBuf_8h.html" title=" " alt="" coords="720,108,907,148"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="4242,30,3544,34,2508,44,1980,53,1509,64,1142,78,1012,87,926,96,866,111,865,105,925,91,1011,81,1141,73,1509,59,1980,47,2508,39,3544,28,4242,24"/>
+<area shape="rect" id="Node000040" href="$Structure_8h.html" title=" " alt="" coords="713,211,913,251"/>
+<area shape="poly" id="edge8_Node000001_Node000040" title=" " alt="" coords="4242,30,3504,37,2423,50,1433,70,1108,82,1012,89,970,96,953,110,944,126,936,145,920,165,886,191,852,213,849,208,883,187,917,161,931,142,939,124,949,106,968,91,1012,84,1108,77,1433,65,2423,45,3504,32,4242,25"/>
+<area shape="rect" id="Node000045" href="$SymFncBaseCompAng_8cpp.html" title=" " alt="" coords="981,101,1232,155"/>
+<area shape="poly" id="edge9_Node000001_Node000045" title=" " alt="" coords="4242,30,3603,37,2667,50,1769,70,1439,82,1244,96,1203,103,1202,98,1244,91,1439,77,1769,64,2667,45,3603,32,4242,25"/>
+<area shape="rect" id="Node000046" href="$SymFncBaseCompAngWeighted_8cpp.html" title=" " alt="" coords="1256,101,1507,155"/>
+<area shape="poly" id="edge10_Node000001_Node000046" title=" " alt="" coords="4242,29,3705,29,2917,35,2501,43,2110,55,1773,73,1519,96,1478,103,1477,98,1518,91,1773,67,2110,50,2501,38,2917,30,3705,23,4242,23"/>
+<area shape="rect" id="Node000047" href="$SymFncBaseExpAng_8cpp.html" title=" " alt="" coords="1531,101,1768,155"/>
+<area shape="poly" id="edge11_Node000001_Node000047" title=" " alt="" coords="4242,29,3749,30,3037,37,2663,45,2312,57,2010,74,1782,96,1742,103,1741,98,1781,91,2009,69,2312,52,2663,40,3037,32,3749,24,4242,24"/>
+<area shape="rect" id="Node000048" href="$SymFncCompAngn_8cpp.html" title=" " alt="" coords="1793,108,2071,148"/>
+<area shape="poly" id="edge12_Node000001_Node000048" title=" " alt="" coords="4242,30,3801,34,3177,44,2546,64,2283,78,2084,96,2005,111,2004,105,2084,91,2283,73,2546,59,3177,39,3801,28,4241,24"/>
+<area shape="rect" id="Node000049" href="$SymFncCompAngnWeighted_8cpp.html" title=" " alt="" coords="2095,101,2347,155"/>
+<area shape="poly" id="edge13_Node000001_Node000049" title=" " alt="" coords="4242,30,3850,35,3306,45,2760,65,2532,79,2360,96,2319,103,2318,98,2359,91,2532,74,2759,60,3306,40,3850,29,4242,25"/>
+<area shape="rect" id="Node000050" href="$SymFncCompAngw_8cpp.html" title=" " alt="" coords="2371,108,2653,148"/>
+<area shape="poly" id="edge14_Node000001_Node000050" title=" " alt="" coords="4242,31,3904,38,3449,51,2997,70,2808,82,2666,96,2586,111,2585,105,2665,91,2808,77,2996,65,3449,46,3904,33,4242,26"/>
+<area shape="rect" id="Node000051" href="$SymFncCompAngwWeighted_8cpp.html" title=" " alt="" coords="2677,101,2931,155"/>
+<area shape="poly" id="edge15_Node000001_Node000051" title=" " alt="" coords="4243,32,3582,53,3213,72,3060,83,2944,96,2904,103,2903,98,2943,91,3060,78,3213,67,3582,48,4242,26"/>
+<area shape="rect" id="Node000052" href="$SymFncCompRad_8cpp.html" title=" " alt="" coords="2955,108,3226,148"/>
+<area shape="poly" id="edge16_Node000001_Node000052" title=" " alt="" coords="4242,30,4053,34,3804,44,3522,64,3379,78,3239,96,3163,111,3162,105,3238,91,3378,73,3522,59,3803,39,4053,29,4242,25"/>
+<area shape="rect" id="Node000053" href="$SymFncCompRadWeighted_8cpp.html" title=" " alt="" coords="3250,101,3494,155"/>
+<area shape="poly" id="edge17_Node000001_Node000053" title=" " alt="" coords="4242,32,4097,38,3913,50,3710,69,3507,96,3469,103,3468,98,3506,91,3710,63,3913,45,4097,33,4242,27"/>
+<area shape="rect" id="Node000054" href="$SymFncExpAngn_8cpp.html" title=" " alt="" coords="3518,108,3783,148"/>
+<area shape="poly" id="edge18_Node000001_Node000054" title=" " alt="" coords="4242,39,4035,61,3796,96,3726,111,3725,105,3795,91,4035,56,4242,33"/>
+<area shape="rect" id="Node000055" href="$SymFncExpAngnWeighted_8cpp.html" title=" " alt="" coords="3807,101,4046,155"/>
+<area shape="poly" id="edge19_Node000001_Node000055" title=" " alt="" coords="4251,51,4059,96,4029,103,4028,98,4058,91,4250,46"/>
+<area shape="rect" id="Node000056" href="$SymFncExpAngw_8cpp.html" title=" " alt="" coords="4071,108,4337,148"/>
+<area shape="poly" id="edge20_Node000001_Node000056" title=" " alt="" coords="4310,55,4232,110,4229,106,4307,51"/>
+<area shape="rect" id="Node000057" href="$SymFncExpRad_8cpp.html" title=" " alt="" coords="4362,108,4619,148"/>
+<area shape="poly" id="edge21_Node000001_Node000057" title=" " alt="" coords="4386,51,4465,106,4462,110,4383,55"/>
+<area shape="rect" id="Node000058" href="$SymFncExpRadWeighted_8cpp.html" title=" " alt="" coords="4643,101,4874,155"/>
+<area shape="poly" id="edge22_Node000001_Node000058" title=" " alt="" coords="4443,46,4632,91,4661,98,4660,103,4631,96,4442,51"/>
+<area shape="rect" id="Node000059" href="$SymGrpBaseCompAng_8cpp.html" title=" " alt="" coords="4899,101,5149,155"/>
+<area shape="poly" id="edge23_Node000001_Node000059" title=" " alt="" coords="4451,33,4653,56,4887,91,4923,98,4922,103,4886,96,4653,61,4450,39"/>
+<area shape="rect" id="Node000060" href="$SymGrpBaseCompAngWeighted_8cpp.html" title=" " alt="" coords="5173,101,5424,155"/>
+<area shape="poly" id="edge24_Node000001_Node000060" title=" " alt="" coords="4451,27,4770,46,4966,64,5162,91,5200,98,5199,103,5161,96,4965,70,4770,51,4451,33"/>
+<area shape="rect" id="Node000061" href="$SymGrpBaseExpAng_8cpp.html" title=" " alt="" coords="5448,101,5685,155"/>
+<area shape="poly" id="edge25_Node000001_Node000061" title=" " alt="" coords="4451,24,4637,27,4882,37,5158,57,5299,72,5436,91,5474,98,5473,103,5435,96,5298,77,5158,62,4882,42,4637,32,4451,29"/>
+<area shape="rect" id="Node000062" href="$SymGrpCompAngn_8cpp.html" title=" " alt="" coords="5710,108,5989,148"/>
+<area shape="poly" id="edge26_Node000001_Node000062" title=" " alt="" coords="4451,23,4677,25,4986,34,5340,54,5521,70,5698,91,5776,105,5775,111,5697,96,5520,75,5340,59,4986,39,4677,30,4451,29"/>
+<area shape="rect" id="Node000063" href="$SymGrpCompAngnWeighted_8cpp.html" title=" " alt="" coords="6013,101,6265,155"/>
+<area shape="poly" id="edge27_Node000001_Node000063" title=" " alt="" coords="4451,26,4783,32,5231,44,5676,63,5861,76,6002,91,6042,98,6041,103,6001,96,5861,81,5676,69,5231,49,4783,37,4451,31"/>
+<area shape="rect" id="Node000064" href="$SymGrpCompAngw_8cpp.html" title=" " alt="" coords="6289,108,6570,148"/>
+<area shape="poly" id="edge28_Node000001_Node000064" title=" " alt="" coords="4451,25,4833,31,5361,43,5890,62,6110,75,6278,91,6357,105,6356,111,6277,96,6110,80,5890,67,5361,48,4833,36,4451,30"/>
+<area shape="rect" id="Node000065" href="$SymGrpCompAngwWeighted_8cpp.html" title=" " alt="" coords="6594,101,6849,155"/>
+<area shape="poly" id="edge29_Node000001_Node000065" title=" " alt="" coords="4451,24,4887,27,5503,37,5825,45,6126,57,6386,72,6583,91,6624,98,6623,103,6582,96,6386,77,6126,62,5825,51,5503,42,4887,33,4451,30"/>
+<area shape="rect" id="Node000066" href="$SymGrpCompRad_8cpp.html" title=" " alt="" coords="6873,108,7143,148"/>
+<area shape="poly" id="edge30_Node000001_Node000066" title=" " alt="" coords="4451,24,4935,26,5632,35,5998,43,6341,55,6638,71,6862,91,6939,105,6938,111,6861,96,6637,76,6341,60,5998,49,5632,40,4935,32,4451,29"/>
+<area shape="rect" id="Node000067" href="$SymGrpCompRadWeighted_8cpp.html" title=" " alt="" coords="7167,101,7411,155"/>
+<area shape="poly" id="edge31_Node000001_Node000067" title=" " alt="" coords="4451,25,5881,46,6686,66,6981,78,7156,91,7197,98,7196,103,7156,96,6981,83,6686,71,5880,51,4451,30"/>
+<area shape="rect" id="Node000068" href="$SymGrpExpAngn_8cpp.html" title=" " alt="" coords="7435,108,7701,148"/>
+<area shape="poly" id="edge32_Node000001_Node000068" title=" " alt="" coords="4451,25,6014,46,6904,65,7231,77,7424,91,7501,105,7500,111,7424,96,7231,83,6904,71,6014,51,4451,30"/>
+<area shape="rect" id="Node000069" href="$SymGrpExpAngnWeighted_8cpp.html" title=" " alt="" coords="7725,101,7963,155"/>
+<area shape="poly" id="edge33_Node000001_Node000069" title=" " alt="" coords="4451,25,5139,30,6158,42,7139,62,7500,75,7714,91,7753,98,7753,103,7713,96,7500,80,7139,67,6158,48,5139,35,4451,30"/>
+<area shape="rect" id="Node000070" href="$SymGrpExpAngw_8cpp.html" title=" " alt="" coords="7988,108,8255,148"/>
+<area shape="poly" id="edge34_Node000001_Node000070" title=" " alt="" coords="4451,25,5187,30,6289,43,7353,62,7745,75,7976,91,8053,105,8052,111,7976,96,7745,81,7353,68,6288,48,5187,36,4451,30"/>
+<area shape="rect" id="Node000071" href="$SymGrpExpRad_8cpp.html" title=" " alt="" coords="8279,108,8537,148"/>
+<area shape="poly" id="edge35_Node000001_Node000071" title=" " alt="" coords="4451,24,5239,29,6432,40,7589,60,8015,74,8166,82,8267,91,8342,105,8341,111,8266,96,8166,87,8015,79,7589,66,6432,46,5239,34,4451,30"/>
+<area shape="rect" id="Node000072" href="$SymGrpExpRadWeighted_8cpp.html" title=" " alt="" coords="8561,101,8791,155"/>
+<area shape="poly" id="edge36_Node000001_Node000072" title=" " alt="" coords="4451,24,5289,27,6572,36,7230,45,7819,56,8279,71,8441,81,8550,91,8588,98,8587,103,8549,96,8441,86,8278,77,7819,62,7230,50,6572,42,5289,32,4451,29"/>
+<area shape="rect" id="Node000026" href="$InterfaceLammps_8cpp.html" title=" " alt="" coords="8816,101,9011,155"/>
+<area shape="poly" id="edge37_Node000001_Node000026" title=" " alt="" coords="4451,24,5334,24,6698,31,7398,39,8026,51,8516,68,8689,78,8804,91,8838,98,8837,103,8803,96,8689,84,8516,73,8026,56,7398,44,6697,36,5334,29,4451,29"/>
+<area shape="rect" id="Node000035" href="$Training_8h.html" title=" " alt="" coords="9035,101,9216,155"/>
+<area shape="poly" id="edge38_Node000001_Node000035" title=" " alt="" coords="4451,25,5415,31,6900,45,8304,65,8787,77,8940,84,9023,91,9055,98,9053,103,9022,96,8940,89,8787,82,8304,70,6900,50,5415,37,4451,30"/>
+<area shape="poly" id="edge6_Node000006_Node000040" title=" " alt="" coords="816,162,816,211,811,211,811,162"/>
+<area shape="poly" id="edge7_Node000040_Node000002" title=" " alt="" coords="718,256,499,307,498,301,717,251"/>
 </map>

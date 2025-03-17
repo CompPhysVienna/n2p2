@@ -1,8 +1,15 @@
 <map id="nnp::SymGrpBaseCutoff" name="nnp::SymGrpBaseCutoff">
-<area shape="rect" id="node1" title=" " alt="" coords="230,333,407,360"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrp.html" title=" " alt="" coords="113,243,220,269"/>
-<area shape="rect" id="node3" title=" " alt="" coords="133,5,200,32"/>
-<area shape="rect" id="node5" href="$classnnp_1_1CutoffFunction.html" title=" " alt="" coords="245,243,393,269"/>
-<area shape="rect" id="node4" title=" " alt="" coords="417,243,503,269"/>
-<area shape="rect" id="node6" title=" " alt="" coords="528,243,619,269"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="230,332,407,357"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrp.html" title=" " alt="" coords="113,242,220,267"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,272,300,330,298,334,197,276"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="133,5,200,31"/>
+<area shape="poly" id="edge3_Node000001_Node000009" title=" " alt="" coords="142,41,91,84,64,112,39,142,20,174,10,207,10,238,25,268,37,279,56,289,107,307,169,321,230,331,229,336,168,326,106,312,54,294,34,283,21,271,5,239,5,206,15,172,35,139,60,108,87,80,138,37"/>
+<area shape="poly" id="edge2_Node000002_Node000009" title=" " alt="" coords="169,45,169,242,164,242,164,45"/>
+<area shape="rect" id="Node000017" href="$classnnp_1_1CutoffFunction.html" title=" " alt="" coords="245,242,393,267"/>
+<area shape="poly" id="edge6_Node000017_Node000009" title=" " alt="" coords="214,28,235,38,254,53,272,76,287,102,306,156,317,206,321,242,316,242,312,207,301,157,282,104,268,79,250,57,233,43,212,33"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="417,242,503,267"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="432,277,339,334,336,330,429,272"/>
+<area shape="poly" id="edge5_Node000001_Node000017" title=" " alt="" coords="321,281,321,332,316,332,316,281"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="528,242,619,267"/>
+<area shape="poly" id="edge7_Node000001_Node000024" title=" " alt="" coords="541,276,461,311,375,335,373,329,459,305,539,271"/>
 </map>

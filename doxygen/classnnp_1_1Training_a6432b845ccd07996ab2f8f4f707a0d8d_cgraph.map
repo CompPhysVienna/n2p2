@@ -1,26 +1,54 @@
 <map id="nnp::Training::update" name="nnp::Training::update">
-<area shape="rect" id="node1" title="Perform one update." alt="" coords="5,654,164,681"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a94e6d295200728de7780f6796b86593f" title="Write energy update data to training log file." alt="" coords="239,5,427,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="231,224,434,265"/>
-<area shape="rect" id="node4" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="511,65,663,107"/>
-<area shape="rect" id="node5" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="511,131,663,172"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a7607132302e2b0f3e1a9dec67cd24062" title="Apply normalization to given property." alt="" coords="501,198,672,225"/>
-<area shape="rect" id="node7" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="511,252,663,293"/>
-<area shape="rect" id="node8" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="511,323,663,364"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Training.html#ab04baa25ad186e9a82a4a4fa7f3bdca4" title="Calculate vector of charge errors in one structure." alt="" coords="247,392,419,433"/>
-<area shape="rect" id="node10" href="$classnnp_1_1NeuralNetwork.html#aa38d991173328eb5c977dacf39347dca" title="Calculate derivative of output neuron with respect to connections." alt="" coords="257,457,409,499"/>
-<area shape="rect" id="node11" href="$classnnp_1_1NeuralNetwork.html#a4526b9a7e947a38b861098d0826a6161" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="257,523,409,564"/>
-<area shape="rect" id="node12" href="$structnnp_1_1Structure.html#a4cd07a8b746a55aea0f0b6181a9f645f" title="Calculates derivative of the charges with respect to electronegativities." alt="" coords="243,588,423,629"/>
-<area shape="rect" id="node13" href="$structnnp_1_1Structure.html#a7204a6979274b69a358f73af50187d85" title="Calculates derivative of the charges with respect to atomic hardness." alt="" coords="227,654,439,681"/>
-<area shape="rect" id="node14" href="$structnnp_1_1Structure.html#a8f0706e5971387076a3257b149534679" title="Calculates derivative of the charges with respect to the atom&#39;s position." alt="" coords="226,705,439,731"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="231,755,434,782"/>
-<area shape="rect" id="node16" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="233,806,432,833"/>
-<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="220,857,445,899"/>
-<area shape="rect" id="node18" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="220,923,445,964"/>
-<area shape="rect" id="node19" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="221,989,445,1015"/>
-<area shape="rect" id="node20" href="$structnnp_1_1Structure.html#aa595df3985c11f039308dcca5fae828c" title="Clear A&#45;matrix, dAdrQ and optionally dQdr." alt="" coords="212,1039,453,1066"/>
-<area shape="rect" id="node21" href="$classnnp_1_1Training.html#a80d3c7681f0727847d717ab7a333abbf" title="Collect derivative of symmetry functions with respect to one atom&#39;s coordinate." alt="" coords="231,1090,435,1117"/>
-<area shape="rect" id="node22" href="$structnnp_1_1Structure.html#a0c1cbaed161ba008d03a654d5ea04c6a" title="Free symmetry function memory for all atoms, see free() in Atom class." alt="" coords="238,1141,427,1167"/>
-<area shape="rect" id="node23" href="$classnnp_1_1KalmanFilter.html#aa75026a60054469cc7fb3a211e501f2f" title="Set observation vector size." alt="" coords="259,1192,407,1233"/>
-<area shape="rect" id="node24" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="240,1258,425,1285"/>
+<area shape="rect" id="Node000001" title="Perform one update." alt="" coords="5,643,164,669"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a94e6d295200728de7780f6796b86593f" title="Write energy update data to training log file." alt="" coords="239,5,427,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,643,95,532,119,358,136,266,156,181,181,111,195,83,210,62,225,49,229,53,214,66,200,86,186,113,162,182,141,267,124,359,100,533,90,644"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="231,221,434,261"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="84,643,89,579,107,481,123,427,145,373,173,323,210,278,225,266,228,270,214,282,178,326,149,376,128,429,112,483,94,580,89,643"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="511,64,663,104"/>
+<area shape="poly" id="edge10_Node000001_Node000005" title=" " alt="" coords="84,643,95,540,119,383,136,301,156,225,181,164,195,141,210,123,242,101,276,84,313,72,352,64,428,60,497,65,497,70,428,65,352,70,315,77,278,89,244,105,214,127,199,144,186,166,162,227,141,302,124,384,101,541,90,643"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="511,129,663,169"/>
+<area shape="poly" id="edge23_Node000001_Node000006" title=" " alt="" coords="85,643,96,548,121,403,138,328,158,259,182,204,196,183,210,167,242,146,277,131,315,121,353,116,429,116,498,125,497,130,429,121,353,121,316,126,279,136,245,151,214,171,200,186,187,206,163,261,143,329,126,404,102,548,90,643"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1Mode.html#a7607132302e2b0f3e1a9dec67cd24062" title="Apply normalization to given property." alt="" coords="501,195,672,221"/>
+<area shape="poly" id="edge24_Node000001_Node000007" title=" " alt="" coords="85,643,98,554,123,421,140,353,160,290,184,240,197,221,210,207,249,184,291,170,335,163,381,162,466,171,536,189,535,194,465,177,380,167,336,168,292,175,251,189,214,211,201,224,188,242,165,292,145,354,128,422,103,555,90,644"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="511,248,663,288"/>
+<area shape="poly" id="edge25_Node000001_Node000008" title=" " alt="" coords="84,643,90,584,109,498,125,451,147,405,175,362,210,326,231,314,260,303,334,287,417,276,497,270,497,275,418,281,335,292,262,308,234,318,214,330,179,365,151,407,130,453,114,499,96,585,89,643"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="511,317,663,357"/>
+<area shape="poly" id="edge26_Node000001_Node000010" title=" " alt="" coords="85,643,93,591,114,516,130,476,151,437,178,402,210,373,243,353,279,338,316,327,355,321,430,316,497,320,497,325,430,322,355,326,318,332,281,343,246,357,214,377,182,406,156,440,135,479,119,518,98,592,90,644"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1Training.html#ab04baa25ad186e9a82a4a4fa7f3bdca4" title="Calculate vector of charge errors in one structure." alt="" coords="247,387,419,427"/>
+<area shape="poly" id="edge8_Node000001_Node000011" title=" " alt="" coords="87,642,101,602,125,546,162,487,184,460,210,437,233,423,235,428,214,441,188,464,166,490,130,549,106,604,92,644"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1NeuralNetwork.html#aa38d991173328eb5c977dacf39347dca" title="Calculate derivative of output neuron with respect to connections." alt="" coords="257,451,409,491"/>
+<area shape="poly" id="edge9_Node000001_Node000012" title=" " alt="" coords="91,642,135,574,169,534,211,500,242,485,245,490,213,505,173,538,139,577,95,644"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1NeuralNetwork.html#a4526b9a7e947a38b861098d0826a6161" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="257,515,409,555"/>
+<area shape="poly" id="edge11_Node000001_Node000013" title=" " alt="" coords="99,641,147,603,211,564,242,552,244,557,213,569,150,608,102,645"/>
+<area shape="rect" id="Node000017" href="$structnnp_1_1Structure.html#a4cd07a8b746a55aea0f0b6181a9f645f" title="Calculates derivative of the charges with respect to electronegativities." alt="" coords="243,579,423,619"/>
+<area shape="poly" id="edge12_Node000001_Node000017" title=" " alt="" coords="140,641,232,619,233,624,141,646"/>
+<area shape="rect" id="Node000018" href="$structnnp_1_1Structure.html#a7204a6979274b69a358f73af50187d85" title="Calculates derivative of the charges with respect to atomic hardness." alt="" coords="227,643,439,669"/>
+<area shape="poly" id="edge13_Node000001_Node000018" title=" " alt="" coords="164,653,213,653,213,659,164,659"/>
+<area shape="rect" id="Node000019" href="$structnnp_1_1Structure.html#a8f0706e5971387076a3257b149534679" title="Calculates derivative of the charges with respect to the atom&#39;s position." alt="" coords="226,693,439,718"/>
+<area shape="poly" id="edge14_Node000001_Node000019" title=" " alt="" coords="150,666,255,687,254,693,149,671"/>
+<area shape="rect" id="Node000023" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="231,742,434,767"/>
+<area shape="poly" id="edge15_Node000001_Node000023" title=" " alt="" coords="105,667,152,698,213,728,237,736,235,741,211,733,150,702,102,671"/>
+<area shape="rect" id="Node000024" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="233,791,432,817"/>
+<area shape="poly" id="edge16_Node000001_Node000024" title=" " alt="" coords="97,667,143,722,176,752,213,778,228,784,226,789,211,782,172,757,139,725,93,671"/>
+<area shape="rect" id="Node000029" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="220,841,445,881"/>
+<area shape="poly" id="edge17_Node000001_Node000029" title=" " alt="" coords="94,668,110,700,136,743,171,789,214,827,223,833,220,837,210,831,167,792,131,746,105,703,89,670"/>
+<area shape="rect" id="Node000038" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="220,905,445,945"/>
+<area shape="poly" id="edge18_Node000001_Node000038" title=" " alt="" coords="92,668,104,712,128,772,164,836,187,866,214,891,220,896,217,900,210,895,183,869,159,839,123,774,99,713,86,670"/>
+<area shape="rect" id="Node000040" href="$classnnp_1_1Mode.html#ad119af59a9a556634735cda828f77f03" title="Perform global charge equilibration method." alt="" coords="221,970,445,995"/>
+<area shape="poly" id="edge19_Node000001_Node000040" title=" " alt="" coords="90,668,98,722,118,800,134,843,155,884,182,923,214,955,221,961,218,965,210,959,177,926,151,887,130,845,113,802,93,723,85,669"/>
+<area shape="rect" id="Node000055" href="$structnnp_1_1Structure.html#aa595df3985c11f039308dcca5fae828c" title="Clear A&#45;matrix, dAdrQ and optionally dQdr." alt="" coords="212,1019,453,1045"/>
+<area shape="poly" id="edge20_Node000001_Node000055" title=" " alt="" coords="89,668,94,730,112,822,128,872,149,921,178,967,214,1006,219,1010,215,1014,210,1010,173,970,145,924,123,874,107,823,89,731,84,669"/>
+<area shape="rect" id="Node000056" href="$classnnp_1_1Training.html#a80d3c7681f0727847d717ab7a333abbf" title="Collect derivative of symmetry functions with respect to one atom&#39;s coordinate." alt="" coords="231,1069,435,1094"/>
+<area shape="poly" id="edge21_Node000001_Node000056" title=" " alt="" coords="88,669,91,738,96,787,106,843,121,900,144,957,174,1010,214,1055,220,1060,217,1065,210,1059,170,1013,139,960,116,902,101,844,91,788,86,738,83,669"/>
+<area shape="rect" id="Node000057" href="$structnnp_1_1Structure.html#a0c1cbaed161ba008d03a654d5ea04c6a" title="Free symmetry function memory for all atoms, see free() in Atom class." alt="" coords="238,1118,427,1143"/>
+<area shape="poly" id="edge22_Node000001_Node000057" title=" " alt="" coords="90,668,104,756,131,888,148,957,168,1020,190,1071,214,1105,227,1114,224,1119,210,1109,185,1074,163,1022,143,959,125,890,99,757,85,669"/>
+<area shape="rect" id="Node000058" href="$classnnp_1_1KalmanFilter.html#aa75026a60054469cc7fb3a211e501f2f" title="Set observation vector size." alt="" coords="259,1168,407,1208"/>
+<area shape="poly" id="edge27_Node000001_Node000058" title=" " alt="" coords="90,669,103,765,129,911,146,988,166,1058,189,1116,214,1154,229,1166,247,1175,245,1180,226,1171,210,1158,184,1118,161,1060,141,989,123,912,98,765,85,669"/>
+<area shape="rect" id="Node000059" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="240,1233,425,1258"/>
+<area shape="poly" id="edge28_Node000001_Node000059" title=" " alt="" coords="90,668,100,775,124,942,141,1029,161,1109,186,1175,199,1200,214,1218,229,1230,226,1234,210,1222,195,1203,181,1177,156,1111,135,1030,118,943,95,776,84,669"/>
+<area shape="poly" id="edge3_Node000004_Node000005" title=" " alt="" coords="355,219,419,169,500,115,515,107,518,112,503,120,422,173,359,223"/>
+<area shape="poly" id="edge4_Node000004_Node000006" title=" " alt="" coords="388,219,517,172,519,177,390,224"/>
+<area shape="poly" id="edge5_Node000004_Node000007" title=" " alt="" coords="434,225,487,218,488,224,434,231"/>
+<area shape="poly" id="edge6_Node000004_Node000008" title=" " alt="" coords="434,249,497,256,496,261,434,255"/>
+<area shape="poly" id="edge7_Node000004_Node000010" title=" " alt="" coords="388,259,521,310,519,315,386,264"/>
 </map>

@@ -1,6 +1,9 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/NeuralNetwork.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/NeuralNetwork.h">
-<area shape="rect" id="node1" title=" " alt="" coords="13,5,252,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,79,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="103,95,162,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="187,95,249,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="13,5,252,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,79,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,48,68,86,64,82,109,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="103,93,162,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="135,46,135,79,130,79,130,46"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="187,93,249,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="155,44,197,82,193,86,152,48"/>
 </map>

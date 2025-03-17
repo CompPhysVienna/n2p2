@@ -1,10 +1,17 @@
 <map id="nnp::SymGrpCompAngn::addMember" name="nnp::SymGrpCompAngn::addMember">
-<area shape="rect" id="node1" title="Potentially add a member to group." alt="" coords="5,181,183,222"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#a3ff42003c9f5e197ecd3f5005dd3b599" title="Get private convLength member variable." alt="" coords="231,5,443,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAng.html#aae5daab0bed14b1912b58b4cf141cccd" title="Get private e1 member variable." alt="" coords="236,57,437,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAng.html#a1347f6a8d6d96e8238d6e382606fa61e" title="Get private e2 member variable." alt="" coords="236,122,437,163"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymFnc.html#ad1221eb4df13aaf027a9fbcd3ef7cab9" title="Get private ec member variable." alt="" coords="261,188,412,215"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymFnc.html#a758216a0dbb9de282899fb72e4af59e2" title="Get private rc member variable." alt="" coords="261,239,412,265"/>
-<area shape="rect" id="node7" href="$classnnp_1_1SymFncBaseComp.html#a4b943d39ba115d9502ad1c310e941743" title="Get private rl member variable." alt="" coords="249,290,425,331"/>
-<area shape="rect" id="node8" href="$classnnp_1_1SymFnc.html#a873397b41da174d3770dcb19248bf90d" title="Get private type member variable." alt="" coords="254,356,419,383"/>
+<area shape="rect" id="Node000001" title="Potentially add a member to group." alt="" coords="5,177,183,217"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFnc.html#a3ff42003c9f5e197ecd3f5005dd3b599" title="Get private convLength member variable." alt="" coords="231,5,443,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,175,154,108,189,72,229,41,245,33,247,38,232,46,192,76,158,112,110,178"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseCompAng.html#aae5daab0bed14b1912b58b4cf141cccd" title="Get private e1 member variable." alt="" coords="236,55,437,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="119,174,169,139,229,105,246,98,248,103,232,110,172,144,122,179"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFncBaseCompAng.html#a1347f6a8d6d96e8238d6e382606fa61e" title="Get private e2 member variable." alt="" coords="236,119,437,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="179,174,237,160,239,165,180,179"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymFnc.html#ad1221eb4df13aaf027a9fbcd3ef7cab9" title="Get private ec member variable." alt="" coords="261,184,412,209"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="183,194,248,194,248,199,183,199"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1SymFnc.html#a758216a0dbb9de282899fb72e4af59e2" title="Get private rc member variable." alt="" coords="261,233,412,259"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="184,212,261,228,260,233,182,217"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1SymFncBaseComp.html#a4b943d39ba115d9502ad1c310e941743" title="Get private rl member variable." alt="" coords="249,283,425,323"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="130,215,177,241,232,268,254,276,252,281,230,272,175,246,127,219"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1SymFnc.html#a873397b41da174d3770dcb19248bf90d" title="Get private type member variable." alt="" coords="254,348,419,373"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="111,215,160,275,194,306,232,333,248,341,246,346,229,338,191,310,156,278,107,219"/>
 </map>

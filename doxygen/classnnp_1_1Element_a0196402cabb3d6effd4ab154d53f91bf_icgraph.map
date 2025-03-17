@@ -1,4 +1,5 @@
 <map id="nnp::Element::calculateSymmetryFunctions" name="nnp::Element::calculateSymmetryFunctions">
-<area shape="rect" id="node1" title="Calculate symmetry functions." alt="" coords="279,5,521,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="5,5,231,47"/>
+<area shape="rect" id="Node000001" title="Calculate symmetry functions." alt="" coords="279,5,521,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="5,5,231,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="265,28,231,28,231,23,265,23"/>
 </map>

@@ -1,0 +1,9 @@
+<map id="/home/runner/work/n2p2/n2p2/src/interface/LAMMPS/src/ML&#45;HDNNP/kspace_hdnnp.h" name="/home/runner/work/n2p2/n2p2/src/interface/LAMMPS/src/ML&#45;HDNNP/kspace_hdnnp.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="252,5,483,60"/>
+<area shape="rect" id="Node000002" href="$fix__hdnnp_8cpp.html" title=" " alt="" coords="5,108,220,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="289,67,180,110,178,105,287,62"/>
+<area shape="rect" id="Node000003" href="$kspace__hdnnp_8cpp.html" title=" " alt="" coords="245,108,490,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="370,74,370,108,365,108,365,74"/>
+<area shape="rect" id="Node000004" href="$pair__hdnnp__4g_8cpp.html" title=" " alt="" coords="515,108,761,163"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="452,62,568,105,567,110,450,67"/>
+</map>

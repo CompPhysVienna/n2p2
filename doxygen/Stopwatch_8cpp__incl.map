@@ -1,5 +1,7 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Stopwatch.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/Stopwatch.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,229,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="33,95,95,121"/>
-<area shape="rect" id="node3" href="$Stopwatch_8h.html" title=" " alt="" coords="119,95,222,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,229,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="33,93,95,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,47,82,83,78,80,102,44"/>
+<area shape="rect" id="Node000003" href="$Stopwatch_8h.html" title=" " alt="" coords="119,93,222,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,44,157,80,153,83,128,47"/>
 </map>

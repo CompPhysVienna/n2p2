@@ -1,5 +1,7 @@
 <map id="nnp::SymFncStatistics::Container::reset" name="nnp::SymFncStatistics::Container::reset">
-<area shape="rect" id="node1" title="Reset all values." alt="" coords="5,39,172,80"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncStatistics.html#a70f4c0f9cef912c8d77f3fa9d5493c0a" title="Reset extrapolation warnings for all symmetry functions at once." alt="" coords="220,5,431,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncStatistics.html#ad9942b202d558d254e0804b81aff7915" title="Reset statistics for all symmetry functions at once." alt="" coords="242,71,409,112"/>
+<area shape="rect" id="Node000001" title="Reset all values." alt="" coords="5,37,172,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncStatistics.html#a70f4c0f9cef912c8d77f3fa9d5493c0a" title="Reset extrapolation warnings for all symmetry functions at once." alt="" coords="220,5,431,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,43,206,39,207,44,173,49"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncStatistics.html#ad9942b202d558d254e0804b81aff7915" title="Reset statistics for all symmetry functions at once." alt="" coords="242,69,409,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,66,229,74,228,79,172,71"/>
 </map>

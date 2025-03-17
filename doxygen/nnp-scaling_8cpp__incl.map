@@ -1,12 +1,29 @@
 <map id="/home/runner/work/n2p2/n2p2/src/application/nnp&#45;scaling.cpp" name="/home/runner/work/n2p2/n2p2/src/application/nnp&#45;scaling.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="261,5,443,61"/>
-<area shape="rect" id="node2" href="$Dataset_8h.html" title=" " alt="" coords="229,109,315,136"/>
-<area shape="rect" id="node3" title=" " alt="" coords="112,184,171,211"/>
-<area shape="rect" id="node4" title=" " alt="" coords="225,184,298,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="323,184,381,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="406,184,469,211"/>
-<area shape="rect" id="node7" href="$mpi-extra_8h.html" title=" " alt="" coords="5,109,104,136"/>
-<area shape="rect" id="node8" href="$utility_8h.html" title=" " alt="" coords="390,109,461,136"/>
-<area shape="rect" id="node9" title=" " alt="" coords="537,109,602,136"/>
-<area shape="rect" id="node10" title=" " alt="" coords="627,109,707,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="261,5,443,60"/>
+<area shape="rect" id="Node000002" href="$Dataset_8h.html" title=" " alt="" coords="229,108,315,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="330,62,294,99,290,96,326,58"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="112,181,171,207"/>
+<area shape="poly" id="edge12_Node000001_Node000003" title=" " alt="" coords="288,62,248,84,210,110,180,140,158,171,153,168,176,137,206,106,245,79,286,58"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="225,181,298,207"/>
+<area shape="poly" id="edge15_Node000001_Node000015" title=" " alt="" coords="274,62,243,82,220,109,216,124,219,140,240,170,235,173,214,142,210,124,215,107,240,78,271,58"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="323,181,381,207"/>
+<area shape="poly" id="edge16_Node000001_Node000008" title=" " alt="" coords="355,60,355,168,349,168,349,60"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="406,181,469,207"/>
+<area shape="poly" id="edge17_Node000001_Node000009" title=" " alt="" coords="422,58,452,79,476,107,480,124,477,141,460,172,456,169,472,139,475,124,471,109,449,82,419,62"/>
+<area shape="rect" id="Node000040" href="$mpi-extra_8h.html" title=" " alt="" coords="5,108,104,133"/>
+<area shape="poly" id="edge6_Node000001_Node000040" title=" " alt="" coords="262,63,108,107,107,102,260,58"/>
+<area shape="rect" id="Node000042" href="$utility_8h.html" title=" " alt="" coords="390,108,461,133"/>
+<area shape="poly" id="edge8_Node000001_Node000042" title=" " alt="" coords="376,58,408,96,404,99,372,62"/>
+<area shape="rect" id="Node000045" title=" " alt="" coords="537,108,602,133"/>
+<area shape="poly" id="edge13_Node000001_Node000045" title=" " alt="" coords="419,58,529,101,527,105,417,63"/>
+<area shape="rect" id="Node000046" title=" " alt="" coords="627,108,707,133"/>
+<area shape="poly" id="edge14_Node000001_Node000046" title=" " alt="" coords="444,56,614,102,613,107,442,61"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="252,136,176,177,173,172,250,131"/>
+<area shape="poly" id="edge3_Node000002_Node000015" title=" " alt="" coords="273,134,268,168,262,167,268,133"/>
+<area shape="poly" id="edge4_Node000002_Node000008" title=" " alt="" coords="287,131,331,170,327,174,283,135"/>
+<area shape="poly" id="edge5_Node000002_Node000009" title=" " alt="" coords="300,131,399,173,397,178,298,136"/>
+<area shape="poly" id="edge7_Node000040_Node000003" title=" " alt="" coords="70,131,118,170,115,175,67,135"/>
+<area shape="poly" id="edge9_Node000042_Node000015" title=" " alt="" coords="400,136,302,178,299,173,398,131"/>
+<area shape="poly" id="edge10_Node000042_Node000008" title=" " alt="" coords="415,136,376,174,372,170,411,132"/>
+<area shape="poly" id="edge11_Node000042_Node000009" title=" " alt="" coords="430,133,436,167,430,168,425,134"/>
 </map>

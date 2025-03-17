@@ -1,9 +1,15 @@
 <map id="nnp::EwaldTruncKolafaOptEta::calculateParameters" name="nnp::EwaldTruncKolafaOptEta::calculateParameters">
-<area shape="rect" id="node1" title=" " alt="" coords="5,169,196,211"/>
-<area shape="rect" id="node2" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a06c936c4ea6bfbd3b4524ef329deb4a6" title=" " alt="" coords="244,5,435,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a06b0d40d9bcaabb81f1a942322065c2d" title=" " alt="" coords="244,71,435,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a9e5e4cd05cdc4aa900d3dc42a053db4a" title=" " alt="" coords="244,136,435,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a293db2ed75e301aa1a0d9b0087313d37" title=" " alt="" coords="244,201,435,243"/>
-<area shape="rect" id="node6" href="$classnnp_1_1EwaldStructureData.html#a4c6acd5e63a80510a9e25745d813753e" title=" " alt="" coords="248,267,431,308"/>
-<area shape="rect" id="node7" href="$classnnp_1_1EwaldStructureData.html#a0a539a58e9b536357a8e13b8adb71a4d" title=" " alt="" coords="248,332,431,373"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,165,196,205"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a06c936c4ea6bfbd3b4524ef329deb4a6" title=" " alt="" coords="244,5,435,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,163,170,110,205,81,243,55,255,49,257,53,245,60,208,85,174,114,121,167"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a06b0d40d9bcaabb81f1a942322065c2d" title=" " alt="" coords="244,69,435,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="143,163,243,119,262,112,264,117,245,124,145,168"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a9e5e4cd05cdc4aa900d3dc42a053db4a" title=" " alt="" coords="244,133,435,173"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="196,170,230,165,231,171,197,175"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1EwaldTruncKolafaOptEta.html#a293db2ed75e301aa1a0d9b0087313d37" title=" " alt="" coords="244,197,435,237"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="197,195,231,200,230,205,196,201"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1EwaldStructureData.html#a4c6acd5e63a80510a9e25745d813753e" title=" " alt="" coords="248,261,431,301"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="145,203,245,247,264,254,262,259,243,252,143,208"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1EwaldStructureData.html#a0a539a58e9b536357a8e13b8adb71a4d" title=" " alt="" coords="248,325,431,365"/>
+<area shape="poly" id="edge6_Node000001_Node000008" title=" " alt="" coords="121,204,174,257,208,286,245,311,257,317,255,322,243,316,205,290,170,261,117,207"/>
 </map>

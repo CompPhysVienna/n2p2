@@ -1,6 +1,11 @@
 <map id="nnp::Structure::readFromFile" name="nnp::Structure::readFromFile">
-<area shape="rect" id="node1" title="Read configuration from file." alt="" coords="5,32,212,59"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines." alt="" coords="260,25,443,66"/>
-<area shape="rect" id="node3" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="491,5,589,32"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="499,60,581,87"/>
+<area shape="rect" id="Node000001" title="Read configuration from file." alt="" coords="5,32,212,57"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#ae3f4816f60d52e90cf213479ef443b32" title="Read configuration from lines." alt="" coords="260,25,443,65"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,42,246,42,246,47,212,47"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="491,5,589,31"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="157,29,206,18,260,10,351,6,443,10,477,11,477,17,443,15,351,11,260,15,207,24,158,35"/>
+<area shape="rect" id="Node000008" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="499,59,581,84"/>
+<area shape="poly" id="edge5_Node000001_Node000008" title=" " alt="" coords="158,55,207,66,260,74,351,78,443,74,485,72,485,77,443,79,351,83,260,79,206,71,157,60"/>
+<area shape="poly" id="edge2_Node000002_Node000005" title=" " alt="" coords="443,29,477,24,478,29,443,34"/>
+<area shape="poly" id="edge3_Node000002_Node000008" title=" " alt="" coords="443,55,485,61,485,66,443,60"/>
 </map>

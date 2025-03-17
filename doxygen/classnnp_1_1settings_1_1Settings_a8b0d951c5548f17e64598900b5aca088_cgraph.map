@@ -1,4 +1,5 @@
 <map id="nnp::settings::Settings::getValues" name="nnp::settings::Settings::getValues">
-<area shape="rect" id="node1" title="Get all keyword&#45;value pairs for given keyword." alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#a1280877fa41a9f921be4b163f72f691d" title="Check for keyword and alternatives, throw exception if not present." alt="" coords="220,5,387,47"/>
+<area shape="rect" id="Node000001" title="Get all keyword&#45;value pairs for given keyword." alt="" coords="5,5,172,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1settings_1_1Settings.html#a1280877fa41a9f921be4b163f72f691d" title="Check for keyword and alternatives, throw exception if not present." alt="" coords="220,5,387,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="173,23,206,23,206,28,173,28"/>
 </map>

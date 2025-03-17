@@ -1,4 +1,5 @@
 <map id="nnp::Atom::getStoredMinNumNeighbors" name="nnp::Atom::getStoredMinNumNeighbors">
-<area shape="rect" id="node1" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="5,5,220,47"/>
-<area shape="rect" id="node2" href="$namespacennp.html#af9d46b3e368bb974df1d4c89a0e9b064" title="Test if unordered map contains specified key." alt="" coords="268,13,497,39"/>
+<area shape="rect" id="Node000001" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="5,5,220,45"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#af9d46b3e368bb974df1d4c89a0e9b064" title="Test if unordered map contains specified key." alt="" coords="268,13,497,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="220,23,254,23,254,28,220,28"/>
 </map>

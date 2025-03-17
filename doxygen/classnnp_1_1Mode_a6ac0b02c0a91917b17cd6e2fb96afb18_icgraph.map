@@ -1,4 +1,5 @@
 <map id="nnp::Mode::writePrunedSettingsFile" name="nnp::Mode::writePrunedSettingsFile">
-<area shape="rect" id="node1" title="Copy settings file but comment out lines provided." alt="" coords="108,5,360,32"/>
-<area shape="rect" id="node2" href="$nnp-prune_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,60,32"/>
+<area shape="rect" id="Node000001" title="Copy settings file but comment out lines provided." alt="" coords="108,5,360,31"/>
+<area shape="rect" id="Node000002" href="$nnp-prune_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,60,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,21,60,21,60,15,94,15"/>
 </map>

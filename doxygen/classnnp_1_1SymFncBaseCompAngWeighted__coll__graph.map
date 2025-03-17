@@ -1,6 +1,12 @@
 <map id="nnp::SymFncBaseCompAngWeighted" name="nnp::SymFncBaseCompAngWeighted">
-<area shape="rect" id="node1" title="Intermediate symmetry function class for weighted angular compact SFs." alt="" coords="10,363,273,389"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseComp.html" title="Symmetry function base class for SFs with compact support." alt="" coords="53,287,229,313"/>
-<area shape="rect" id="node3" title=" " alt="" coords="116,5,183,32"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CompactFunction.html" title="A general function with compact support." alt="" coords="187,153,354,180"/>
+<area shape="rect" id="Node000001" title="Intermediate symmetry function class for weighted angular compact SFs." alt="" coords="10,359,273,384"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseComp.html" title="Symmetry function base class for SFs with compact support." alt="" coords="53,284,229,309"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="144,324,144,358,139,358,139,324"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="116,5,183,31"/>
+<area shape="poly" id="edge5_Node000001_Node000010" title=" " alt="" coords="128,42,100,71,68,109,38,153,16,202,9,233,11,259,22,283,43,307,79,336,116,356,114,361,76,341,39,311,18,286,6,260,3,233,11,200,33,151,64,106,96,67,124,38"/>
+<area shape="poly" id="edge2_Node000002_Node000010" title=" " alt="" coords="151,45,144,284,139,284,146,44"/>
+<area shape="rect" id="Node000019" href="$classnnp_1_1CompactFunction.html" title="A general function with compact support." alt="" coords="187,152,354,177"/>
+<area shape="poly" id="edge4_Node000019_Node000010" title=" " alt="" coords="170,40,263,150,259,154,166,43"/>
+<area shape="poly" id="edge6_Node000001_Node000019" title=" " alt="" coords="274,191,269,249,260,281,243,311,228,327,210,341,174,361,171,356,207,337,224,323,239,308,255,279,264,248,269,191"/>
+<area shape="poly" id="edge3_Node000002_Node000019" title=" " alt="" coords="251,189,155,286,151,282,248,185"/>
 </map>

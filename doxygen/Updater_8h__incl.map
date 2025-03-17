@@ -1,8 +1,13 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnptrain/Updater.h" name="/home/runner/work/n2p2/n2p2/src/libnnptrain/Updater.h">
-<area shape="rect" id="node1" title=" " alt="" coords="162,5,343,61"/>
-<area shape="rect" id="node2" href="$Stopwatch_8h.html" title=" " alt="" coords="5,109,108,136"/>
-<area shape="rect" id="node3" title=" " alt="" coords="132,109,203,136"/>
-<area shape="rect" id="node4" title=" " alt="" coords="227,109,278,136"/>
-<area shape="rect" id="node5" title=" " alt="" coords="302,109,361,136"/>
-<area shape="rect" id="node6" title=" " alt="" coords="385,109,448,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="162,5,343,60"/>
+<area shape="rect" id="Node000002" href="$Stopwatch_8h.html" title=" " alt="" coords="5,108,108,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,63,96,105,94,100,192,58"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="132,108,203,133"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="228,62,191,100,187,96,225,58"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="227,108,278,133"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="255,60,255,94,250,94,250,60"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="302,108,361,133"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="279,58,313,96,309,99,275,62"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="385,108,448,133"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="304,58,384,99,381,104,302,62"/>
 </map>

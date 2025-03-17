@@ -1,4 +1,5 @@
 <map id="nnp::KspaceGrid::calculatePbcCopies" name="nnp::KspaceGrid::calculatePbcCopies">
-<area shape="rect" id="node1" title="Compute box copies in each direction." alt="" coords="225,5,420,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="5,13,177,39"/>
+<area shape="rect" id="Node000001" title="Compute box copies in each direction." alt="" coords="225,5,420,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="5,13,177,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="212,28,178,28,178,23,212,23"/>
 </map>

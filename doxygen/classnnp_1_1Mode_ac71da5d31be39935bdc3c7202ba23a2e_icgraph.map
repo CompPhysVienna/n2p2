@@ -1,5 +1,7 @@
 <map id="nnp::Mode::calculateCharge" name="nnp::Mode::calculateCharge">
-<area shape="rect" id="node1" title="Calculate total charge for a given structure." alt="" coords="236,35,439,61"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="5,5,188,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="13,57,181,98"/>
+<area shape="rect" id="Node000001" title="Calculate total charge for a given structure." alt="" coords="236,35,439,60"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="5,5,188,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="222,36,188,32,189,26,223,31"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1InterfaceLammps.html#a306752869b85863001446cac952a9040" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions (developme..." alt="" coords="13,55,181,95"/>
+<area shape="poly" id="edge2_Node000001_Node000006" title=" " alt="" coords="223,63,181,68,181,63,222,58"/>
 </map>

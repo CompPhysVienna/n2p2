@@ -1,3 +1,4 @@
 <map id="nnp::Mode::setupNeuralNetworkWeights" name="nnp::Mode::setupNeuralNetworkWeights">
-<area shape="rect" id="node1" title="Set up neural network weights from files with given name format." alt="" coords="5,29,237,71"/>
+<area shape="rect" id="Node000001" title="Set up neural network weights from files with given name format." alt="" coords="5,29,237,69"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="78,30,75,20,82,10,98,5,121,3,148,6,163,13,161,18,147,11,121,8,99,10,86,15,81,21,83,28"/>
 </map>

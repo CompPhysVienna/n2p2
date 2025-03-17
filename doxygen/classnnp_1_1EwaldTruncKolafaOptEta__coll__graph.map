@@ -1,7 +1,11 @@
 <map id="nnp::EwaldTruncKolafaOptEta" name="nnp::EwaldTruncKolafaOptEta">
-<area shape="rect" id="node1" title=" " alt="" coords="179,168,391,195"/>
-<area shape="rect" id="node2" href="$classnnp_1_1IEwaldTrunc.html" title=" " alt="" coords="5,5,136,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="160,5,211,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="352,5,419,32"/>
-<area shape="rect" id="node5" title=" " alt="" coords="447,5,507,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="179,167,391,192"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1IEwaldTrunc.html" title=" " alt="" coords="5,5,136,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,41,119,92,143,118,169,140,195,154,223,164,222,169,193,159,167,145,139,122,115,95,81,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="160,5,211,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="181,44,175,93,178,118,189,141,203,155,220,164,218,169,199,159,184,144,173,120,170,93,175,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="352,5,419,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="388,45,381,94,372,120,358,144,342,159,324,169,321,164,339,154,354,141,367,118,376,92,383,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="447,5,507,31"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="481,45,476,95,466,122,450,145,421,159,378,169,377,164,419,154,446,141,462,119,471,94,476,44"/>
 </map>

@@ -1,7 +1,12 @@
 <map id="nnp::CutoffFunction" name="nnp::CutoffFunction">
-<area shape="rect" id="node1" title=" " alt="" coords="213,377,361,404"/>
-<area shape="rect" id="node2" title=" " alt="" coords="14,5,81,32"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CoreFunction.html" title=" " alt="" coords="119,221,258,247"/>
-<area shape="rect" id="node3" title=" " alt="" coords="282,221,373,247"/>
-<area shape="rect" id="node5" title=" " alt="" coords="404,221,443,247"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="213,376,361,401"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="14,5,81,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="40,44,23,98,10,168,8,206,12,244,22,279,40,312,67,331,111,348,217,373,216,378,110,353,64,336,36,315,17,281,7,245,3,206,5,168,18,96,35,43"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1CoreFunction.html" title=" " alt="" coords="119,220,258,245"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="65,40,183,218,179,221,60,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="282,220,373,245"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="324,259,293,376,288,375,318,258"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="203,256,228,301,260,350,279,374,275,378,256,354,224,303,199,259"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="404,220,443,245"/>
+<area shape="poly" id="edge5_Node000001_Node000008" title=" " alt="" coords="422,259,408,307,396,332,379,354,359,368,338,378,335,374,357,364,375,350,391,329,403,305,417,258"/>
 </map>

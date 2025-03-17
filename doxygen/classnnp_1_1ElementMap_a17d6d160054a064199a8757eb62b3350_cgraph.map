@@ -1,6 +1,9 @@
 <map id="nnp::ElementMap::registerElements" name="nnp::ElementMap::registerElements">
-<area shape="rect" id="node1" title="Extract all elements and store in element map." alt="" coords="5,64,200,105"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#abbaa1f40d96f9b6da0a8ac9563b7cb95" title="Check if arguments are sorted according to atomic number." alt="" coords="248,5,449,47"/>
-<area shape="rect" id="node3" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="299,71,398,98"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="307,122,390,149"/>
+<area shape="rect" id="Node000001" title="Extract all elements and store in element map." alt="" coords="5,63,200,103"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementMap.html#abbaa1f40d96f9b6da0a8ac9563b7cb95" title="Check if arguments are sorted according to atomic number." alt="" coords="248,5,449,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,60,248,46,249,51,190,65"/>
+<area shape="rect" id="Node000007" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="299,70,398,95"/>
+<area shape="poly" id="edge2_Node000001_Node000007" title=" " alt="" coords="200,80,286,80,286,85,200,85"/>
+<area shape="rect" id="Node000009" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="307,119,390,145"/>
+<area shape="poly" id="edge3_Node000001_Node000009" title=" " alt="" coords="201,100,294,119,293,124,200,105"/>
 </map>

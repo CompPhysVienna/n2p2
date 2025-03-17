@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['t_5fbias_0',['t_bias',['../classnnp_1_1ModeCabana.html#a61888894e2e24e6d0581f04271e4c5ab',1,'nnp::ModeCabana']]],
-  ['t_5fsf_1',['t_SF',['../classnnp_1_1ModeCabana.html#a357c7522a5b1cde8f73b7de6ea1dc9bf',1,'nnp::ModeCabana']]],
-  ['t_5fsfgmemberlist_2',['t_SFGmemberlist',['../classnnp_1_1ModeCabana.html#a8295dc5376d0a6213297dd31886068d2',1,'nnp::ModeCabana']]],
-  ['t_5fsfscaling_3',['t_SFscaling',['../classnnp_1_1ModeCabana.html#ab34dd47e61c5d479979b8cd10353a25e',1,'nnp::ModeCabana']]],
-  ['t_5fweights_4',['t_weights',['../classnnp_1_1ModeCabana.html#a8a2fefae64eef87be87417051fa89b16',1,'nnp::ModeCabana']]]
+  ['printformat_0',['PrintFormat',['../classnnp_1_1SymFnc.html#a2d6ff8cdebfb319bb53c7dbb313e577f',1,'nnp::SymFnc::PrintFormat'],['../classnnp_1_1SymGrp.html#a86c4d7b2d9782a6c340ad5f840f38f15',1,'nnp::SymGrp::PrintFormat']]],
+  ['printorder_1',['PrintOrder',['../classnnp_1_1SymFnc.html#aa0e2e4f49989530441b7b53a5f9ccfaa',1,'nnp::SymFnc::PrintOrder'],['../classnnp_1_1SymGrp.html#aac3d5ec54e94d9e36ebbe5e7b51d812e',1,'nnp::SymGrp::PrintOrder']]]
 ];

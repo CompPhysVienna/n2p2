@@ -1,9 +1,16 @@
 <map id="nnp::Prediction::setup" name="nnp::Prediction::setup">
-<area shape="rect" id="node1" title=" " alt="" coords="5,148,168,175"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="255,5,409,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="231,56,433,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="240,107,424,133"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a5e5f584b6f8be7caaac02efb432c74a3" title="Set up neural network weights from files with given name format." alt="" coords="216,182,448,223"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="231,247,433,289"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="231,313,433,354"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,145,168,171"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="255,5,409,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,143,143,92,177,64,215,40,240,29,242,34,217,44,180,68,147,96,100,147"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="231,55,433,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="107,143,155,116,215,89,241,81,243,86,217,94,158,120,110,147"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="240,104,424,129"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="162,143,242,129,243,134,163,148"/>
+<area shape="rect" id="Node000034" href="$classnnp_1_1Mode.html#a5e5f584b6f8be7caaac02efb432c74a3" title="Set up neural network weights from files with given name format." alt="" coords="216,178,448,218"/>
+<area shape="poly" id="edge4_Node000001_Node000034" title=" " alt="" coords="166,168,203,174,202,179,165,173"/>
+<area shape="rect" id="Node000035" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="231,242,433,282"/>
+<area shape="poly" id="edge6_Node000001_Node000035" title=" " alt="" coords="109,168,157,198,217,228,237,235,235,240,215,232,154,202,106,173"/>
+<area shape="rect" id="Node000036" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="231,306,433,346"/>
+<area shape="poly" id="edge7_Node000001_Node000036" title=" " alt="" coords="99,169,145,229,179,263,217,292,229,298,227,303,215,296,175,267,141,232,94,173"/>
+<area shape="poly" id="edge5_Node000034_Node000034" title=" " alt="" coords="286,178,284,168,291,159,307,153,332,151,361,154,376,161,374,166,359,159,332,157,308,159,294,163,289,169,291,177"/>
 </map>

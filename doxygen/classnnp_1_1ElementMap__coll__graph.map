@@ -1,6 +1,11 @@
 <map id="nnp::ElementMap" name="nnp::ElementMap">
-<area shape="rect" id="node1" title="Contains element map." alt="" coords="499,43,635,69"/>
-<area shape="rect" id="node2" title=" " alt="" coords="205,35,368,77"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,43,92,69"/>
-<area shape="rect" id="node4" title=" " alt="" coords="213,101,361,142"/>
+<area shape="rect" id="Node000001" title="Contains element map." alt="" coords="499,43,635,69"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="205,36,368,76"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="382,53,498,53,498,59,382,59"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,43,92,69"/>
+<area shape="poly" id="edge5_Node000001_Node000003" title=" " alt="" coords="101,37,115,33,160,25,205,21,281,17,341,17,400,22,475,33,513,41,512,46,474,39,399,27,340,22,281,22,206,27,161,30,117,39,102,42"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="106,53,205,53,205,59,106,59"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="213,100,361,140"/>
+<area shape="poly" id="edge4_Node000006_Node000003" title=" " alt="" coords="105,70,117,73,213,99,212,104,115,79,103,75"/>
+<area shape="poly" id="edge3_Node000001_Node000006" title=" " alt="" coords="374,97,509,66,511,71,375,103"/>
 </map>

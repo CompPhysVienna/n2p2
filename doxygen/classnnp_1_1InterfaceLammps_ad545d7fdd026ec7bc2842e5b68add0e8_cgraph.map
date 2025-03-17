@@ -1,0 +1,13 @@
+<map id="nnp::InterfaceLammps::getForcesDevelop" name="nnp::InterfaceLammps::getForcesDevelop">
+<area shape="rect" id="Node000001" title="Calculate forces and add to LAMMPS atomic force arrays (development version for &quot;hdnnp/develop&quot; pair ..." alt="" coords="5,133,173,173"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1InterfaceLammps.html#a2edade718126500176cabbba6933effa" title="Add a Vec3D vector to a 3D array in place." alt="" coords="245,5,413,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,131,160,93,220,55,236,48,238,53,223,60,163,97,115,135"/>
+<area shape="rect" id="Node000003" href="$structnnp_1_1Structure.html#a9373df62476af32ec7c479bbc3fcb063" title="Calculate lambda_total vector which is needed for the total force calculation in 4G NN." alt="" coords="239,69,419,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="164,131,240,110,241,115,166,136"/>
+<area shape="rect" id="Node000004" href="$structnnp_1_1Atom.html#a19fbfacf9f6d57126b2fa096dc56819e" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="239,133,419,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="173,151,225,151,225,156,173,156"/>
+<area shape="rect" id="Node000005" href="$structnnp_1_1Atom.html#a2ec0b16b02a8bc10072b97f22932f1d5" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="238,197,419,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="166,171,241,191,240,196,164,176"/>
+<area shape="rect" id="Node000006" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="221,261,436,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="115,172,163,210,223,247,238,254,236,259,220,252,160,214,112,176"/>
+</map>

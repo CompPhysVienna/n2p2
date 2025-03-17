@@ -1,5 +1,8 @@
 <map id="nnp::CompactFunction" name="nnp::CompactFunction">
-<area shape="rect" id="node1" title="A general function with compact support." alt="" coords="5,289,172,316"/>
-<area shape="rect" id="node2" title=" " alt="" coords="55,5,122,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1CoreFunction.html" title=" " alt="" coords="137,177,275,203"/>
+<area shape="rect" id="Node000001" title="A general function with compact support." alt="" coords="5,288,172,313"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="55,5,122,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="88,44,82,125,82,225,89,288,84,288,77,225,77,125,83,44"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1CoreFunction.html" title=" " alt="" coords="137,176,275,201"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="107,41,200,174,196,177,102,44"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="185,213,103,290,99,286,181,209"/>
 </map>

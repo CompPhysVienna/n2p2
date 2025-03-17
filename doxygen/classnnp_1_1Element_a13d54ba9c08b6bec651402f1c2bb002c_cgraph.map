@@ -1,4 +1,5 @@
 <map id="nnp::Element::~Element" name="nnp::Element::~Element">
-<area shape="rect" id="node1" title="Destructor." alt="" coords="5,13,187,39"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Element.html#ad07867af7ea1dbca87122e26b52b5a3b" title="Clear all symmetry functions and groups." alt="" coords="235,5,451,47"/>
+<area shape="rect" id="Node000001" title="Destructor." alt="" coords="5,13,187,38"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Element.html#ad07867af7ea1dbca87122e26b52b5a3b" title="Clear all symmetry functions and groups." alt="" coords="235,5,451,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="187,23,221,23,221,28,187,28"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="nnp::ElementCabana::setScalingType" name="nnp::ElementCabana::setScalingType">
-<area shape="rect" id="node1" title="Symmetry function statistics." alt="" coords="5,23,163,65"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="211,5,309,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="219,56,301,83"/>
+<area shape="rect" id="Node000001" title="Symmetry function statistics." alt="" coords="5,23,163,63"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="211,5,309,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,29,197,24,198,30,163,35"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="219,55,301,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="163,51,205,57,205,63,163,57"/>
 </map>

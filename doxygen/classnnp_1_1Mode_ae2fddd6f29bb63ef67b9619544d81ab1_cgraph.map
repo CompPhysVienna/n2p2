@@ -1,9 +1,16 @@
 <map id="nnp::Mode::calculateForces" name="nnp::Mode::calculateForces">
-<area shape="rect" id="node1" title="Calculate forces for all atoms in given structure." alt="" coords="5,148,204,175"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a13d0265e748da4aa1a7050ac5cc14ebd" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="252,5,452,32"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="500,23,715,65"/>
-<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#a3237e0cda2706b6930880c9c7f4885c4" title="Calculate lambda_elec vector which is needed for the electrostatic force calculation in 4G NN." alt="" coords="262,107,442,149"/>
-<area shape="rect" id="node5" href="$structnnp_1_1Structure.html#a9373df62476af32ec7c479bbc3fcb063" title="Calculate lambda_total vector which is needed for the total force calculation in 4G NN." alt="" coords="262,173,442,214"/>
-<area shape="rect" id="node6" href="$structnnp_1_1Atom.html#a19fbfacf9f6d57126b2fa096dc56819e" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="262,238,442,279"/>
-<area shape="rect" id="node7" href="$structnnp_1_1Atom.html#a2ec0b16b02a8bc10072b97f22932f1d5" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="261,303,443,345"/>
+<area shape="rect" id="Node000001" title="Calculate forces for all atoms in given structure." alt="" coords="5,145,204,171"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Atom.html#a13d0265e748da4aa1a7050ac5cc14ebd" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="252,5,452,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,143,174,97,211,71,251,48,287,33,289,37,253,52,214,76,177,102,122,147"/>
+<area shape="rect" id="Node000003" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="500,23,715,63"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="128,143,183,116,251,91,371,65,486,50,487,55,372,70,253,97,186,121,131,148"/>
+<area shape="rect" id="Node000005" href="$structnnp_1_1Structure.html#a3237e0cda2706b6930880c9c7f4885c4" title="Calculate lambda_elec vector which is needed for the electrostatic force calculation in 4G NN." alt="" coords="262,106,442,146"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="203,143,248,137,248,142,203,148"/>
+<area shape="rect" id="Node000006" href="$structnnp_1_1Structure.html#a9373df62476af32ec7c479bbc3fcb063" title="Calculate lambda_total vector which is needed for the total force calculation in 4G NN." alt="" coords="262,170,442,210"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="203,168,248,174,248,179,203,173"/>
+<area shape="rect" id="Node000007" href="$structnnp_1_1Atom.html#a19fbfacf9f6d57126b2fa096dc56819e" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="262,234,442,274"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="134,168,253,220,274,227,272,232,251,224,132,173"/>
+<area shape="rect" id="Node000008" href="$structnnp_1_1Atom.html#a2ec0b16b02a8bc10072b97f22932f1d5" title="Calculate force resulting from gradient of this atom&#39;s (short&#45;ranged) energy contribution with respec..." alt="" coords="261,298,443,338"/>
+<area shape="poly" id="edge6_Node000001_Node000008" title=" " alt="" coords="119,169,174,224,212,256,253,284,266,290,263,295,251,288,208,260,170,228,115,173"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="452,25,487,29,486,34,452,31"/>
 </map>

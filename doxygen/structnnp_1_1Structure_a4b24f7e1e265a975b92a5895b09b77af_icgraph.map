@@ -1,6 +1,6 @@
 <map id="nnp::Structure::writeToFile" name="nnp::Structure::writeToFile">
-<area shape="rect" id="node1" title="Write configuration to file." alt="" coords="292,71,483,98"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNPExternal.html#a9d3a8ccc255cf1d510255851e60b8236" title=" " alt="" coords="5,5,244,47"/>
-<area shape="rect" id="node3" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="97,71,152,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1InterfaceLammps.html#aa8a640fa62a611f50d151856eef337e3" title="Write current structure to file in units used in training data." alt="" coords="41,123,209,164"/>
+<area shape="rect" id="Node000001" title="Write configuration to file." alt="" coords="108,29,299,55"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="233,19,224,11,203,8,185,10,176,15,174,20,179,28,175,31,169,21,172,11,184,5,203,3,227,6,237,15"/>
+<area shape="rect" id="Node000002" href="$nnp-comp2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,29,60,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,45,60,45,60,39,94,39"/>
 </map>

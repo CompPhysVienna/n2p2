@@ -1,5 +1,7 @@
 <map id="nnp::SymGrpCompAngwWeighted" name="nnp::SymGrpCompAngwWeighted">
-<area shape="rect" id="node1" title="Weighted wide angular symmetry function with compact support (type 25)" alt="" coords="149,109,391,136"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseCompAngWeighted.html" title=" " alt="" coords="5,13,268,39"/>
-<area shape="rect" id="node3" title=" " alt="" coords="292,5,515,47"/>
+<area shape="rect" id="Node000001" title="Weighted wide angular symmetry function with compact support (type 25)" alt="" coords="149,108,391,133"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseCompAngWeighted.html" title=" " alt="" coords="5,13,268,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="166,43,255,106,252,110,162,48"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="292,5,515,45"/>
+<area shape="poly" id="edge2_Node000001_Node000022" title=" " alt="" coords="367,55,288,110,285,106,364,51"/>
 </map>

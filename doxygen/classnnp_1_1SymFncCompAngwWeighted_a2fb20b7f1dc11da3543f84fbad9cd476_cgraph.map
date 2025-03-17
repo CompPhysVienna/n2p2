@@ -1,6 +1,11 @@
 <map id="nnp::SymFncCompAngwWeighted::operator&lt;" name="nnp::SymFncCompAngwWeighted::operator&lt;">
-<area shape="rect" id="node1" title="Overload &lt; operator." alt="" coords="5,57,247,98"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#ad1221eb4df13aaf027a9fbcd3ef7cab9" title="Get private ec member variable." alt="" coords="307,5,458,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseComp.html#a0a6494f56f637a6b27b8e0edc74d268e" title="Get private subtype member variable." alt="" coords="295,57,471,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFnc.html#a873397b41da174d3770dcb19248bf90d" title="Get private type member variable." alt="" coords="300,123,465,149"/>
+<area shape="rect" id="Node000001" title="Overload &lt; operator." alt="" coords="5,85,247,125"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFnc.html#ad1221eb4df13aaf027a9fbcd3ef7cab9" title="Get private ec member variable." alt="" coords="340,5,491,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="176,82,294,41,332,31,333,36,295,46,177,87"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseComp.html#a0a6494f56f637a6b27b8e0edc74d268e" title="Get private subtype member variable." alt="" coords="327,55,503,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="247,90,313,83,313,88,247,95"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFnc.html#a873397b41da174d3770dcb19248bf90d" title="Get private type member variable." alt="" coords="333,120,498,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="247,114,319,121,319,126,247,119"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymFncCompAngwWeighted.html#a65bb47110c9d14301c844c7b8c1f2bbd" title="Constructor, sets type = 25." alt="" coords="295,170,536,210"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="191,122,295,154,328,164,327,169,294,159,190,127"/>
 </map>

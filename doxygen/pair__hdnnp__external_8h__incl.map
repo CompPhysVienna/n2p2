@@ -1,6 +1,10 @@
 <map id="/home/runner/work/n2p2/n2p2/src/interface/LAMMPS/src/ML&#45;HDNNP/pair_hdnnp_external.h" name="/home/runner/work/n2p2/n2p2/src/interface/LAMMPS/src/ML&#45;HDNNP/pair_hdnnp_external.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,209,76"/>
-<area shape="rect" id="node2" title=" " alt="" coords="11,124,70,151"/>
-<area shape="rect" id="node3" href="$ElementMap_8h.html" title=" " alt="" coords="91,199,207,225"/>
-<area shape="rect" id="node4" href="$Structure_8h.html" title=" " alt="" coords="145,124,238,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,209,75"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="11,123,70,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,76,59,113,55,110,81,73"/>
+<area shape="rect" id="Node000003" href="$ElementMap_8h.html" title=" " alt="" coords="91,196,207,221"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="118,74,135,147,144,182,139,184,130,149,112,76"/>
+<area shape="rect" id="Node000008" href="$Structure_8h.html" title=" " alt="" coords="145,123,238,148"/>
+<area shape="poly" id="edge3_Node000001_Node000008" title=" " alt="" coords="140,73,174,110,170,114,136,77"/>
+<area shape="poly" id="edge4_Node000008_Node000003" title=" " alt="" coords="187,150,165,186,160,183,182,147"/>
 </map>

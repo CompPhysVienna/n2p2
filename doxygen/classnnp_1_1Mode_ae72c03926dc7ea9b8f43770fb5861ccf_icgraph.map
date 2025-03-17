@@ -1,5 +1,7 @@
 <map id="nnp::Mode::setupCutoff" name="nnp::Mode::setupCutoff">
-<area shape="rect" id="node1" title="Set up cutoff function for all symmetry functions." alt="" coords="237,31,411,57"/>
-<area shape="rect" id="node2" href="$nnp-symfunc_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="70,5,125,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="5,56,189,83"/>
+<area shape="rect" id="Node000001" title="Set up cutoff function for all symmetry functions." alt="" coords="237,31,411,56"/>
+<area shape="rect" id="Node000002" href="$nnp-symfunc_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="70,5,125,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,35,125,24,125,18,223,29"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="5,55,189,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="223,57,190,60,189,55,223,51"/>
 </map>

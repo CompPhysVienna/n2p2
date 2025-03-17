@@ -1,6 +1,10 @@
 <map id="nnp::Prediction" name="nnp::Prediction">
-<area shape="rect" id="node1" title=" " alt="" coords="85,216,203,243"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="5,111,96,137"/>
-<area shape="rect" id="node3" title=" " alt="" coords="122,5,209,32"/>
-<area shape="rect" id="node4" href="$structnnp_1_1Structure.html" title="Storage for one atomic configuration." alt="" coords="342,111,455,137"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="85,215,203,240"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html" title="Base class for all NNP applications." alt="" coords="5,110,96,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="72,144,135,213,131,216,69,147"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="122,5,209,31"/>
+<area shape="poly" id="edge2_Node000001_Node000005" title=" " alt="" coords="165,45,160,94,148,215,142,214,155,93,160,44"/>
+<area shape="rect" id="Node000078" href="$structnnp_1_1Structure.html" title="Storage for one atomic configuration." alt="" coords="342,110,455,135"/>
+<area shape="poly" id="edge4_Node000078_Node000005" title=" " alt="" coords="205,34,374,107,371,112,203,39"/>
+<area shape="poly" id="edge3_Node000001_Node000078" title=" " alt="" coords="358,143,174,217,172,212,356,138"/>
 </map>

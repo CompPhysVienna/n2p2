@@ -1,6 +1,7 @@
 <map id="nnp::SymFncExpAngw::calculate" name="nnp::SymFncExpAngw::calculate">
-<area shape="rect" id="node1" title="Calculate symmetry function for one atom." alt="" coords="5,49,172,90"/>
-<area shape="rect" id="node2" href="$classnnp_1_1CutoffFunction.html#a4c75abd984936445883a48c64080c015" title="Calculate cutoff function &#160;and derivative ." alt="" coords="220,5,395,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#ada65ef67cb7629b84a020f617a216273" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="255,56,360,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="233,107,381,133"/>
+<area shape="rect" id="Node000001" title="Calculate symmetry function for one atom." alt="" coords="5,23,172,63"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#ada65ef67cb7629b84a020f617a216273" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="241,5,347,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,30,227,24,228,29,173,36"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="220,55,368,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,50,206,54,206,60,172,56"/>
 </map>

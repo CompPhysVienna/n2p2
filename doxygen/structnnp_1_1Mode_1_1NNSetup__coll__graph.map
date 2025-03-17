@@ -1,5 +1,7 @@
 <map id="nnp::Mode::NNSetup" name="nnp::Mode::NNSetup">
-<area shape="rect" id="node1" title="Setup data for one neural network." alt="" coords="49,168,203,195"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,13,92,39"/>
-<area shape="rect" id="node3" title=" " alt="" coords="116,5,291,47"/>
+<area shape="rect" id="Node000001" title="Setup data for one neural network." alt="" coords="49,167,203,192"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,92,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="48,51,48,96,53,120,63,141,76,155,92,164,89,169,72,159,58,144,48,121,42,97,42,51"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="116,5,291,45"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="204,59,195,101,176,144,164,158,149,169,146,164,160,154,172,141,190,100,198,58"/>
 </map>

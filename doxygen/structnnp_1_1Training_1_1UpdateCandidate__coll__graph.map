@@ -1,6 +1,9 @@
 <map id="nnp::Training::UpdateCandidate" name="nnp::Training::UpdateCandidate">
-<area shape="rect" id="node1" title="Contains location of one update candidate (energy or force)." alt="" coords="78,124,305,151"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,13,65,39"/>
-<area shape="rect" id="node3" title=" " alt="" coords="158,13,225,39"/>
-<area shape="rect" id="node4" title=" " alt="" coords="249,5,438,47"/>
+<area shape="rect" id="Node000001" title="Contains location of one update candidate (energy or force)." alt="" coords="78,123,305,148"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,65,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="41,51,48,75,63,97,82,110,104,120,102,125,79,115,59,101,43,78,36,52"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="158,13,225,38"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="194,52,194,122,189,122,189,52"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="249,5,438,45"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="307,55,209,125,206,120,304,51"/>
 </map>

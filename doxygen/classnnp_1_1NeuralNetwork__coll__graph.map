@@ -1,6 +1,10 @@
 <map id="nnp::NeuralNetwork" name="nnp::NeuralNetwork">
-<area shape="rect" id="node1" title="This class implements a feed&#45;forward neural network." alt="" coords="99,319,251,345"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,155,56,181"/>
-<area shape="rect" id="node3" title=" " alt="" coords="221,5,259,32"/>
-<area shape="rect" id="node4" href="$structnnp_1_1NeuralNetwork_1_1Layer.html" title="One neural network layer." alt="" coords="317,147,469,189"/>
+<area shape="rect" id="Node000001" title="This class implements a feed&#45;forward neural network." alt="" coords="99,317,251,343"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,154,56,179"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="25,193,21,216,19,243,23,269,34,292,43,299,58,305,99,316,98,321,57,310,41,303,30,295,18,270,14,243,15,216,20,192"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="221,5,259,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="224,43,205,74,189,109,177,169,173,229,176,317,171,317,167,229,172,168,184,107,200,71,220,41"/>
+<area shape="rect" id="Node000004" href="$structnnp_1_1NeuralNetwork_1_1Layer.html" title="One neural network layer." alt="" coords="317,147,469,187"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="264,38,375,144,371,148,260,42"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="358,197,192,319,189,315,355,193"/>
 </map>

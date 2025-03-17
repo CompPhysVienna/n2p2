@@ -1,5 +1,7 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnptrain/GradientDescent.h" name="/home/runner/work/n2p2/n2p2/src/libnnptrain/GradientDescent.h">
-<area shape="rect" id="node1" title=" " alt="" coords="108,5,289,61"/>
-<area shape="rect" id="node2" href="$GradientDescent_8cpp.html" title=" " alt="" coords="5,109,187,165"/>
-<area shape="rect" id="node3" href="$Training_8cpp.html" title=" " alt="" coords="211,109,392,165"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="108,5,289,60"/>
+<area shape="rect" id="Node000002" href="$GradientDescent_8cpp.html" title=" " alt="" coords="5,108,187,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="164,72,125,110,121,106,160,68"/>
+<area shape="rect" id="Node000003" href="$Training_8cpp.html" title=" " alt="" coords="211,108,392,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="237,68,276,106,273,110,233,72"/>
 </map>

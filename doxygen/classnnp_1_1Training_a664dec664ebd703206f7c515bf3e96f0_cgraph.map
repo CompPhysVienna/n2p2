@@ -1,26 +1,56 @@
 <map id="nnp::Training::dataSetNormalization" name="nnp::Training::dataSetNormalization">
-<area shape="rect" id="node1" title="Apply normalization based on initial weights prediction." alt="" coords="5,647,260,673"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="335,5,508,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="320,57,523,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="320,123,523,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="322,173,521,200"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="309,574,534,615"/>
-<area shape="rect" id="node7" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="624,552,708,579"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="309,639,534,681"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one." alt="" coords="322,224,521,251"/>
-<area shape="rect" id="node10" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="339,1055,504,1081"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01" title="Add atomic energy offsets and return energy." alt="" coords="324,1106,519,1147"/>
-<area shape="rect" id="node12" href="$classnnp_1_1settings_1_1Settings.html#abe55e2b7294788622da5e888799732ff" title="Get complete settings file." alt="" coords="338,1171,505,1213"/>
-<area shape="rect" id="node13" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="583,763,749,805"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Mode.html#a0d84a9ab4ad3b589c5f5bb89f2b2fa5b" title="Set up normalization." alt="" coords="308,771,535,797"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="320,822,523,863"/>
-<area shape="rect" id="node16" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="625,895,707,921"/>
-<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#a6f0184f87845a572cf4c3db0958a97d9" title="Set up symmetry function groups." alt="" coords="320,275,523,317"/>
-<area shape="rect" id="node18" href="$classnnp_1_1Mode.html#af1d1548ef2d6a9bbfdc519b76b904700" title="Extract required memory dimensions for symmetry function derivatives." alt="" coords="320,341,523,382"/>
-<area shape="rect" id="node19" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions." alt="" coords="320,887,523,929"/>
-<area shape="rect" id="node20" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="320,705,523,746"/>
-<area shape="rect" id="node21" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="320,406,523,447"/>
-<area shape="rect" id="node22" href="$classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a" title="Write complete settings file." alt="" coords="318,1237,525,1264"/>
-<area shape="rect" id="node23" href="$classnnp_1_1settings_1_1Settings.html#a6aaa131c802c7cdd0645a41ee12807b5" title="Write complete settings file." alt="" coords="583,1255,749,1297"/>
-<area shape="rect" id="node24" href="$classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7" title="Write weights to files (one file for each element)." alt="" coords="322,472,521,499"/>
+<area shape="rect" id="Node000001" title="Apply normalization based on initial weights prediction." alt="" coords="5,537,260,563"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="335,5,508,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,537,137,452,146,389,160,318,182,243,213,170,253,101,278,70,306,41,320,31,324,36,310,45,282,73,258,104,217,172,187,245,165,319,151,390,143,453,137,537"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="320,55,523,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,537,142,462,153,408,170,346,192,282,221,218,259,158,306,105,312,101,315,105,310,109,264,161,226,220,197,284,175,348,159,409,148,463,138,538"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="320,120,523,145"/>
+<area shape="poly" id="edge3_Node000001_Node000010" title=" " alt="" coords="133,537,145,469,173,365,196,308,225,251,262,199,306,155,313,150,316,154,310,159,266,203,230,254,201,310,179,367,150,470,138,538"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="322,169,521,195"/>
+<area shape="poly" id="edge4_Node000001_Node000011" title=" " alt="" coords="134,536,150,477,182,390,205,342,234,294,267,250,306,212,330,198,333,202,310,216,271,254,238,297,210,344,187,392,155,479,139,538"/>
+<area shape="rect" id="Node000019" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="309,270,534,310"/>
+<area shape="poly" id="edge5_Node000001_Node000019" title=" " alt="" coords="138,536,160,494,197,435,246,373,275,345,306,320,316,314,319,318,310,324,278,349,250,377,201,438,165,496,143,538"/>
+<area shape="rect" id="Node000027" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="583,537,667,563"/>
+<area shape="poly" id="edge30_Node000001_Node000027" title=" " alt="" coords="134,536,150,481,182,402,206,360,234,320,267,284,307,256,368,226,396,218,424,214,451,216,478,223,507,236,536,256,553,275,567,303,592,378,610,459,622,523,617,524,605,460,587,379,562,305,548,278,533,260,504,241,477,228,450,221,424,220,397,223,370,231,309,260,271,288,238,323,210,363,187,404,155,483,140,538"/>
+<area shape="rect" id="Node000029" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="309,334,534,374"/>
+<area shape="poly" id="edge7_Node000001_Node000029" title=" " alt="" coords="142,535,206,464,253,421,307,384,319,377,322,382,309,388,257,425,210,468,146,539"/>
+<area shape="rect" id="Node000031" href="$classnnp_1_1Dataset.html#acb7687f6863a18f901b4b13bdd88d225" title="Combine individual MPI proc files to one." alt="" coords="322,399,521,424"/>
+<area shape="poly" id="edge9_Node000001_Node000031" title=" " alt="" coords="148,535,214,485,259,457,307,433,328,425,330,430,309,438,262,462,217,490,151,539"/>
+<area shape="rect" id="Node000032" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="339,984,504,1009"/>
+<area shape="poly" id="edge11_Node000001_Node000032" title=" " alt="" coords="138,562,150,633,178,741,200,800,229,860,265,915,310,963,330,976,328,981,306,967,261,918,225,862,195,803,173,742,144,634,133,563"/>
+<area shape="rect" id="Node000033" href="$classnnp_1_1Mode.html#ab86800b032be86f1321d3f6683c75b01" title="Add atomic energy offsets and return energy." alt="" coords="324,1034,519,1074"/>
+<area shape="poly" id="edge12_Node000001_Node000033" title=" " alt="" coords="137,563,146,641,156,699,171,764,193,833,223,901,261,965,310,1020,314,1024,311,1028,306,1024,257,968,218,904,188,835,166,766,151,700,140,642,132,563"/>
+<area shape="rect" id="Node000034" href="$classnnp_1_1Mode.html#a0d84a9ab4ad3b589c5f5bb89f2b2fa5b" title="Set up normalization." alt="" coords="308,448,535,473"/>
+<area shape="poly" id="edge13_Node000001_Node000034" title=" " alt="" coords="164,535,229,510,307,483,343,474,344,479,309,489,231,515,166,540"/>
+<area shape="rect" id="Node000035" href="$classnnp_1_1Mode.html#a357dcaa8cac497e973ab9048f0aa00c2" title="Set up symmetry function cache." alt="" coords="320,805,523,845"/>
+<area shape="poly" id="edge15_Node000001_Node000035" title=" " alt="" coords="142,562,163,606,199,668,248,734,277,764,310,791,318,796,315,801,306,795,274,768,244,737,194,671,158,608,137,564"/>
+<area shape="rect" id="Node000042" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="583,876,666,901"/>
+<area shape="poly" id="edge29_Node000001_Node000042" title=" " alt="" coords="138,563,149,630,160,677,176,730,199,784,228,835,264,881,309,918,343,934,379,943,417,945,455,942,526,926,584,904,586,909,528,931,455,947,417,950,378,948,341,939,307,923,261,885,223,838,194,786,171,732,155,679,144,631,133,563"/>
+<area shape="rect" id="Node000043" href="$classnnp_1_1Mode.html#a6f0184f87845a572cf4c3db0958a97d9" title="Set up symmetry function groups." alt="" coords="320,498,523,538"/>
+<area shape="poly" id="edge18_Node000001_Node000043" title=" " alt="" coords="247,535,306,528,307,533,248,540"/>
+<area shape="rect" id="Node000044" href="$classnnp_1_1Mode.html#af1d1548ef2d6a9bbfdc519b76b904700" title="Extract required memory dimensions for symmetry function derivatives." alt="" coords="320,562,523,602"/>
+<area shape="poly" id="edge20_Node000001_Node000044" title=" " alt="" coords="248,560,307,567,306,572,247,565"/>
+<area shape="rect" id="Node000047" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions." alt="" coords="320,869,523,909"/>
+<area shape="poly" id="edge22_Node000001_Node000047" title=" " alt="" coords="140,562,157,616,191,695,214,738,241,781,273,820,310,855,317,860,314,864,306,859,269,824,237,784,209,741,186,698,152,618,135,564"/>
+<area shape="rect" id="Node000050" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="320,626,523,666"/>
+<area shape="poly" id="edge25_Node000001_Node000050" title=" " alt="" coords="167,560,309,611,335,620,333,625,307,617,166,565"/>
+<area shape="rect" id="Node000051" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="320,690,523,730"/>
+<area shape="poly" id="edge27_Node000001_Node000051" title=" " alt="" coords="149,561,215,616,261,648,309,676,325,683,323,687,307,680,258,652,212,620,146,565"/>
+<area shape="rect" id="Node000052" href="$classnnp_1_1Mode.html#af2d61853475185baae3fa3a7d358557a" title="Write complete settings file." alt="" coords="318,1099,525,1124"/>
+<area shape="poly" id="edge31_Node000001_Node000052" title=" " alt="" coords="137,563,141,651,148,718,162,792,183,871,214,949,256,1022,281,1054,310,1084,317,1090,314,1094,306,1088,277,1058,251,1025,209,951,178,873,157,794,143,718,135,652,131,563"/>
+<area shape="rect" id="Node000053" href="$classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7" title="Write weights to files (one file for each element)." alt="" coords="322,755,521,780"/>
+<area shape="poly" id="edge32_Node000001_Node000053" title=" " alt="" coords="144,561,167,597,204,646,253,697,280,720,309,740,325,747,322,752,307,744,277,724,249,701,200,649,163,600,139,564"/>
+<area shape="poly" id="edge6_Node000019_Node000027" title=" " alt="" coords="519,308,536,320,557,343,575,368,600,424,616,479,623,523,618,524,610,480,595,426,570,371,553,346,533,324,516,312"/>
+<area shape="poly" id="edge8_Node000029_Node000027" title=" " alt="" coords="518,372,536,384,567,416,590,454,608,491,619,523,614,525,603,493,586,456,563,419,533,388,515,376"/>
+<area shape="poly" id="edge10_Node000031_Node000027" title=" " alt="" coords="512,422,536,433,561,453,583,477,613,524,609,527,578,480,558,457,533,438,510,426"/>
+<area shape="poly" id="edge14_Node000034_Node000027" title=" " alt="" coords="499,471,536,484,571,504,600,526,597,530,568,508,534,488,497,476"/>
+<area shape="poly" id="edge17_Node000035_Node000027" title=" " alt="" coords="517,802,533,791,554,767,572,740,597,680,612,622,619,576,624,577,617,623,602,682,577,742,558,770,536,795,520,807"/>
+<area shape="poly" id="edge16_Node000035_Node000042" title=" " alt="" coords="497,842,535,854,578,869,576,874,534,859,495,847"/>
+<area shape="poly" id="edge19_Node000043_Node000027" title=" " alt="" coords="523,531,569,539,568,544,523,537"/>
+<area shape="poly" id="edge21_Node000044_Node000027" title=" " alt="" coords="523,563,568,556,569,561,523,569"/>
+<area shape="poly" id="edge24_Node000047_Node000027" title=" " alt="" coords="518,866,533,855,559,823,579,787,595,748,606,709,618,634,621,577,626,577,623,635,611,710,600,750,584,789,563,826,537,859,521,871"/>
+<area shape="poly" id="edge23_Node000047_Node000042" title=" " alt="" coords="523,886,569,886,569,891,523,891"/>
+<area shape="poly" id="edge26_Node000050_Node000027" title=" " alt="" coords="504,623,533,612,567,592,596,570,600,574,570,596,536,616,506,628"/>
+<area shape="poly" id="edge28_Node000051_Node000027" title=" " alt="" coords="513,688,533,676,559,653,580,626,610,574,615,576,585,629,563,657,536,680,515,692"/>
+<area shape="poly" id="edge33_Node000053_Node000027" title=" " alt="" coords="512,752,533,740,567,703,591,658,607,613,616,576,621,577,612,615,596,660,571,706,536,744,515,757"/>
 </map>

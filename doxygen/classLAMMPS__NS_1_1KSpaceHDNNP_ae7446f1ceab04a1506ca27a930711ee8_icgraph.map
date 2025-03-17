@@ -1,0 +1,8 @@
+<map id="LAMMPS_NS::KSpaceHDNNP::newton_raphson_f" name="LAMMPS_NS::KSpaceHDNNP::newton_raphson_f">
+<area shape="rect" id="Node000001" title=" " alt="" coords="517,5,725,45"/>
+<area shape="rect" id="Node000002" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a1040da14c628e72c29395828dd02cc0f" title=" " alt="" coords="5,5,213,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="503,25,469,24,261,24,214,25,214,20,261,19,469,19,504,19"/>
+<area shape="rect" id="Node000004" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a85824e1b338921eb282d080a37622547" title=" " alt="" coords="261,33,469,73"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="504,41,470,45,469,39,504,36"/>
+<area shape="poly" id="edge3_Node000004_Node000002" title=" " alt="" coords="248,43,213,39,214,34,248,38"/>
+</map>

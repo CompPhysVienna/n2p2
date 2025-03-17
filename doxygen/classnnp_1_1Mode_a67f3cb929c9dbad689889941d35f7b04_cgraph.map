@@ -1,8 +1,13 @@
 <map id="nnp::Mode::calculateAtomicNeuralNetworks" name="nnp::Mode::calculateAtomicNeuralNetworks">
-<area shape="rect" id="node1" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="5,129,208,171"/>
-<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="265,5,417,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="265,71,417,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a7607132302e2b0f3e1a9dec67cd24062" title="Apply normalization to given property." alt="" coords="256,137,427,163"/>
-<area shape="rect" id="node5" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="265,188,417,229"/>
-<area shape="rect" id="node6" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="265,253,417,295"/>
+<area shape="rect" id="Node000001" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="5,127,208,167"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1NeuralNetwork.html#abf46d0d0d2a4c068f67bb13ae445d725" title="Calculate derivative of output neuron with respect to input neurons." alt="" coords="265,5,417,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,124,190,90,255,55,269,48,272,53,257,60,193,95,139,129"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1NeuralNetwork.html#ad7e18949cd215e5427440fce7a1437d7" title="Get neural network output layer node values." alt="" coords="265,69,417,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,124,251,109,252,114,190,129"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1Mode.html#a7607132302e2b0f3e1a9dec67cd24062" title="Apply normalization to given property." alt="" coords="256,134,427,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="208,144,242,144,242,149,208,149"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1NeuralNetwork.html#a9d2a2d332c23876935e3a3272f40f5c2" title="Propagate input information through all layers." alt="" coords="265,184,417,224"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="190,164,252,180,251,185,189,169"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1NeuralNetwork.html#a0ddcfb0243cca5956075a75c90431c37" title="Set neural network input layer node values." alt="" coords="265,248,417,288"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="139,165,193,199,257,234,272,240,269,245,255,238,190,203,136,169"/>
 </map>

@@ -1,4 +1,7 @@
 <map id="nnp::SymGrpCompAngn::sortMembers" name="nnp::SymGrpCompAngn::sortMembers">
-<area shape="rect" id="node1" title="Sort member symmetry functions." alt="" coords="5,5,183,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrp.html#ac741d482732aee3c578f9c89382111b0" title="Get private index member variable." alt="" coords="231,13,401,39"/>
+<area shape="rect" id="Node000001" title="Sort member symmetry functions." alt="" coords="5,23,183,63"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#ac861b7fcd089a4cbaea63589dd8ac69e" title="Compare pointer targets." alt="" coords="231,5,435,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="183,31,217,28,217,33,183,37"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymGrp.html#ac741d482732aee3c578f9c89382111b0" title="Get private index member variable." alt="" coords="247,55,418,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,50,234,55,233,60,183,55"/>
 </map>

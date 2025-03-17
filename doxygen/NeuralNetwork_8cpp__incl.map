@@ -1,10 +1,19 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/NeuralNetwork.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/NeuralNetwork.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="195,5,449,47"/>
-<area shape="rect" id="node2" href="$NeuralNetwork_8h.html" title=" " alt="" coords="5,95,137,121"/>
-<area shape="rect" id="node3" href="$utility_8h.html" title=" " alt="" coords="213,95,284,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="169,169,230,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="266,169,351,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="360,95,423,121"/>
-<area shape="rect" id="node7" title=" " alt="" coords="447,95,512,121"/>
-<area shape="rect" id="node8" title=" " alt="" coords="537,95,595,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="195,5,449,45"/>
+<area shape="rect" id="Node000002" href="$NeuralNetwork_8h.html" title=" " alt="" coords="5,93,137,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="263,48,122,92,120,87,261,43"/>
+<area shape="rect" id="Node000006" href="$utility_8h.html" title=" " alt="" coords="213,93,284,119"/>
+<area shape="poly" id="edge2_Node000001_Node000006" title=" " alt="" coords="306,47,271,85,267,81,302,44"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="169,167,230,192"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="263,48,230,67,204,95,196,124,197,153,191,153,190,123,200,92,227,63,261,43"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="266,167,351,192"/>
+<area shape="poly" id="edge5_Node000001_Node000012" title=" " alt="" coords="323,46,314,153,308,153,318,46"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="360,93,423,119"/>
+<area shape="poly" id="edge6_Node000001_Node000013" title=" " alt="" coords="341,44,374,81,370,84,337,47"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="447,93,512,119"/>
+<area shape="poly" id="edge8_Node000001_Node000014" title=" " alt="" coords="361,43,445,85,443,89,359,48"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="537,93,595,119"/>
+<area shape="poly" id="edge9_Node000001_Node000015" title=" " alt="" coords="381,43,524,88,522,93,380,48"/>
+<area shape="poly" id="edge3_Node000006_Node000007" title=" " alt="" coords="243,121,217,157,213,154,238,117"/>
+<area shape="poly" id="edge4_Node000006_Node000012" title=" " alt="" coords="261,117,292,154,288,158,257,121"/>
 </map>

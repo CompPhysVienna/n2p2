@@ -1,6 +1,7 @@
 <map id="nnp::SymFncExpRad::calculate" name="nnp::SymFncExpRad::calculate">
-<area shape="rect" id="node1" title="Calculate symmetry function for one atom." alt="" coords="5,57,168,98"/>
-<area shape="rect" id="node2" href="$classnnp_1_1CutoffFunction.html#a4c75abd984936445883a48c64080c015" title="Calculate cutoff function &#160;and derivative ." alt="" coords="236,5,411,32"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="216,57,431,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="249,123,397,149"/>
+<area shape="rect" id="Node000001" title="Calculate symmetry function for one atom." alt="" coords="5,35,168,75"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="216,5,431,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,42,202,38,203,43,169,47"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFnc.html#ac2e60337a3b4f55b1a6f1ab13c84791b" title="Apply symmetry function scaling and/or centering." alt="" coords="249,70,397,95"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="169,62,236,70,235,75,168,67"/>
 </map>

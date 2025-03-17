@@ -1,5 +1,10 @@
 <map id="nnp::ElementMap::atomicNumber" name="nnp::ElementMap::atomicNumber">
-<area shape="rect" id="node1" title="Get atomic number from element index." alt="" coords="5,31,247,57"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#a179aafd2be2abe3c8be36fe97b2be2d8" title="Get index of given element." alt="" coords="295,5,475,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="523,5,715,32"/>
+<area shape="rect" id="Node000001" title="Get atomic number from element index." alt="" coords="5,31,247,56"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="84,32,75,22,80,12,97,6,126,4,163,8,173,13,177,18,172,21,169,17,161,13,126,9,98,11,83,16,80,22,88,29"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementMap.html#a179aafd2be2abe3c8be36fe97b2be2d8" title="Get index of given element." alt="" coords="295,5,475,31"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="246,29,281,25,281,31,247,34"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1ElementMap.html#ad76595c737610610fdf0cd34b91d0a3e" title="Get element symbol for given element index." alt="" coords="523,5,715,31"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="247,45,358,45,474,39,542,30,542,36,475,45,358,50,247,50"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="475,24,509,24,509,30,475,29"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="523,12,488,12,488,6,523,6"/>
 </map>

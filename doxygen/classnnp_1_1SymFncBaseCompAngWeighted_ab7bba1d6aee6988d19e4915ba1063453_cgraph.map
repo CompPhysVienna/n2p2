@@ -1,6 +1,12 @@
 <map id="nnp::SymFncBaseCompAngWeighted::parameterInfo" name="nnp::SymFncBaseCompAngWeighted::parameterInfo">
-<area shape="rect" id="node1" title="Get description with parameter names and values." alt="" coords="5,49,268,90"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a1589c883b03419579131181b3337f531" title=" " alt="" coords="543,29,621,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseComp.html#a38b94de91fd2d2963f62e7a1425ff0a2" title="Get description with parameter names and values." alt="" coords="316,49,492,90"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="540,84,624,111"/>
+<area shape="rect" id="Node000001" title="Get description with parameter names and values." alt="" coords="5,49,268,89"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#a1589c883b03419579131181b3337f531" title=" " alt="" coords="543,29,621,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="231,46,316,34,404,31,492,34,529,36,528,41,492,39,404,36,316,39,232,51"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseComp.html#a38b94de91fd2d2963f62e7a1425ff0a2" title="Get description with parameter names and values." alt="" coords="316,49,492,89"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="268,66,302,66,302,71,268,71"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="540,83,624,108"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="232,86,316,98,404,101,492,98,526,96,526,102,492,103,404,107,316,103,231,91"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="553,31,547,21,550,11,562,5,582,3,606,6,616,15,613,19,604,11,582,8,563,10,554,15,552,20,557,28"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="492,53,529,47,529,53,493,58"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="493,79,527,84,526,90,492,85"/>
 </map>

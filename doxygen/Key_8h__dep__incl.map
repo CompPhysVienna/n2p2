@@ -1,5 +1,8 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Key.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Key.h">
-<area shape="rect" id="node1" title=" " alt="" coords="82,5,263,47"/>
-<area shape="rect" id="node2" href="$ISettings_8h.html" title=" " alt="" coords="5,95,204,136"/>
-<area shape="rect" id="node3" href="$Settings_8h.html" title=" " alt="" coords="75,184,270,225"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="82,5,263,45"/>
+<area shape="rect" id="Node000002" href="$ISettings_8h.html" title=" " alt="" coords="5,93,204,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="151,58,122,95,118,91,147,55"/>
+<area shape="rect" id="Node000003" href="$Settings_8h.html" title=" " alt="" coords="75,181,270,221"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="199,55,218,92,222,113,218,134,206,160,191,183,187,180,202,158,213,133,216,113,213,94,195,58"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="130,143,160,179,156,183,126,146"/>
 </map>

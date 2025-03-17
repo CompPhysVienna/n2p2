@@ -1,5 +1,7 @@
 <map id="nnp::settings::Key" name="nnp::settings::Key">
-<area shape="rect" id="node1" title="Keyword properties." alt="" coords="5,184,144,211"/>
-<area shape="rect" id="node2" title=" " alt="" coords="31,5,118,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="155,95,341,121"/>
+<area shape="rect" id="Node000001" title="Keyword properties." alt="" coords="59,93,198,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,92,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="71,39,119,91,116,95,67,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="117,5,303,31"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="199,44,179,71,149,95,146,91,175,67,195,41"/>
 </map>

@@ -1,6 +1,7 @@
 <map id="nnp::SymGrpCompRadWeighted::calculate" name="nnp::SymGrpCompRadWeighted::calculate">
-<area shape="rect" id="node1" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,73,236,114"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="284,29,525,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFnc.html#ab49c13cb70df1afc2db994b407a767eb" title="Getter for cacheIndices." alt="" coords="294,80,515,107"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncCompRadWeighted.html#a72191a52eb9714d74944704d4aeafe02" title=" " alt="" coords="289,131,520,173"/>
+<area shape="rect" id="Node000001" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,27,236,67"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFnc.html#ab49c13cb70df1afc2db994b407a767eb" title="Getter for cacheIndices." alt="" coords="289,5,510,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,33,275,28,275,34,237,38"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncCompRadWeighted.html#a72191a52eb9714d74944704d4aeafe02" title=" " alt="" coords="284,55,515,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="237,56,271,60,270,65,236,62"/>
 </map>

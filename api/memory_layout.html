@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory layout &mdash; n2p2 - A neural network potential package &#34;61daa0d&#34; documentation</title>
+  <title>Memory layout &mdash; n2p2 - A neural network potential package &#34;29b9c9f&#34; documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=76d34e72"></script>
+      <script src="../_static/documentation_options.js?v=0f467aac"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -86,55 +86,55 @@
 <li class="toctree-l1"><a class="reference internal" href="symmetry_function_scaling.html">Symmetry function scaling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Memory layout</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuration-storage">Configuration storage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp4AtomE"><code class="docutils literal notranslate"><span class="pre">Atom</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom5indexE"><code class="docutils literal notranslate"><span class="pre">Atom::index</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom7elementE"><code class="docutils literal notranslate"><span class="pre">Atom::element</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom6energyE"><code class="docutils literal notranslate"><span class="pre">Atom::energy</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom6chargeE"><code class="docutils literal notranslate"><span class="pre">Atom::charge</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1rE"><code class="docutils literal notranslate"><span class="pre">Atom::r</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1fE"><code class="docutils literal notranslate"><span class="pre">Atom::f</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4fRefE"><code class="docutils literal notranslate"><span class="pre">Atom::fRef</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1GE"><code class="docutils literal notranslate"><span class="pre">Atom::G</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4dEdGE"><code class="docutils literal notranslate"><span class="pre">Atom::dEdG</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4dGdrE"><code class="docutils literal notranslate"><span class="pre">Atom::dGdr</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom9neighborsE"><code class="docutils literal notranslate"><span class="pre">Atom::neighbors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp4AtomE"><code class="docutils literal notranslate"><span class="pre">nnp::Atom</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom5indexE"><code class="docutils literal notranslate"><span class="pre">index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom7elementE"><code class="docutils literal notranslate"><span class="pre">element</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom6energyE"><code class="docutils literal notranslate"><span class="pre">energy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom6chargeE"><code class="docutils literal notranslate"><span class="pre">charge</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1rE"><code class="docutils literal notranslate"><span class="pre">r</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1fE"><code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4fRefE"><code class="docutils literal notranslate"><span class="pre">fRef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom1GE"><code class="docutils literal notranslate"><span class="pre">G</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4dEdGE"><code class="docutils literal notranslate"><span class="pre">dEdG</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom4dGdrE"><code class="docutils literal notranslate"><span class="pre">dGdr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom9neighborsE"><code class="docutils literal notranslate"><span class="pre">neighbors</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp4Atom8NeighborE"><code class="docutils literal notranslate"><span class="pre">Neighbor</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor5indexE"><code class="docutils literal notranslate"><span class="pre">Neighbor::index</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor7elementE"><code class="docutils literal notranslate"><span class="pre">Neighbor::element</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor1dE"><code class="docutils literal notranslate"><span class="pre">Neighbor::d</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor2drE"><code class="docutils literal notranslate"><span class="pre">Neighbor::dr</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor4dGdrE"><code class="docutils literal notranslate"><span class="pre">Neighbor::dGdr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp4Atom8NeighborE"><code class="docutils literal notranslate"><span class="pre">nnp::Atom::Neighbor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor5indexE"><code class="docutils literal notranslate"><span class="pre">index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor7elementE"><code class="docutils literal notranslate"><span class="pre">element</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor1dE"><code class="docutils literal notranslate"><span class="pre">d</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor2drE"><code class="docutils literal notranslate"><span class="pre">dr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp4Atom8Neighbor4dGdrE"><code class="docutils literal notranslate"><span class="pre">dGdr</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp9StructureE"><code class="docutils literal notranslate"><span class="pre">Structure</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure5indexE"><code class="docutils literal notranslate"><span class="pre">Structure::index</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure6energyE"><code class="docutils literal notranslate"><span class="pre">Structure::energy</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure9energyRefE"><code class="docutils literal notranslate"><span class="pre">Structure::energyRef</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure9chargeRefE"><code class="docutils literal notranslate"><span class="pre">Structure::chargeRef</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure3boxE"><code class="docutils literal notranslate"><span class="pre">Structure::box</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure5atomsE"><code class="docutils literal notranslate"><span class="pre">Structure::atoms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp9StructureE"><code class="docutils literal notranslate"><span class="pre">nnp::Structure</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure5indexE"><code class="docutils literal notranslate"><span class="pre">index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure6energyE"><code class="docutils literal notranslate"><span class="pre">energy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure9energyRefE"><code class="docutils literal notranslate"><span class="pre">energyRef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure9chargeRefE"><code class="docutils literal notranslate"><span class="pre">chargeRef</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure3boxE"><code class="docutils literal notranslate"><span class="pre">box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp9Structure5atomsE"><code class="docutils literal notranslate"><span class="pre">atoms</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp7DatasetE"><code class="docutils literal notranslate"><span class="pre">Dataset</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp7Dataset10structuresE"><code class="docutils literal notranslate"><span class="pre">Dataset::structures</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp7DatasetE"><code class="docutils literal notranslate"><span class="pre">nnp::Dataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp7Dataset10structuresE"><code class="docutils literal notranslate"><span class="pre">structures</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp10ElementMapE"><code class="docutils literal notranslate"><span class="pre">ElementMap</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp10ElementMapixEKNSt6size_tE"><code class="docutils literal notranslate"><span class="pre">ElementMap::operator[]()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp10ElementMapixEKNSt6stringE"><code class="docutils literal notranslate"><span class="pre">ElementMap::operator[]()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp10ElementMapE"><code class="docutils literal notranslate"><span class="pre">nnp::ElementMap</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp10ElementMapixEKNSt6size_tE"><code class="docutils literal notranslate"><span class="pre">operator[]()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp10ElementMapixEKNSt6stringE"><code class="docutils literal notranslate"><span class="pre">operator[]()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE"><code class="docutils literal notranslate"><span class="pre">Vec3D</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D4normEv"><code class="docutils literal notranslate"><span class="pre">Vec3D::norm()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D5norm2Ev"><code class="docutils literal notranslate"><span class="pre">Vec3D::norm2()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp5Vec3D9normalizeEv"><code class="docutils literal notranslate"><span class="pre">Vec3D::normalize()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D5crossERK5Vec3D"><code class="docutils literal notranslate"><span class="pre">Vec3D::cross()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp5Vec3D1rE"><code class="docutils literal notranslate"><span class="pre">Vec3D::r</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp5Vec3DE"><code class="docutils literal notranslate"><span class="pre">nnp::Vec3D</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D4normEv"><code class="docutils literal notranslate"><span class="pre">norm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D5norm2Ev"><code class="docutils literal notranslate"><span class="pre">norm2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp5Vec3D9normalizeEv"><code class="docutils literal notranslate"><span class="pre">normalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK3nnp5Vec3D5crossERK5Vec3D"><code class="docutils literal notranslate"><span class="pre">cross()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp5Vec3D1rE"><code class="docutils literal notranslate"><span class="pre">r</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp5splitERKNSt6stringEc"><code class="docutils literal notranslate"><span class="pre">split()</span></code></a></li>

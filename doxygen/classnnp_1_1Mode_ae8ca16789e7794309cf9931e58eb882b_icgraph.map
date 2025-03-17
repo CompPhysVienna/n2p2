@@ -1,6 +1,9 @@
 <map id="nnp::Mode::loadSettingsFile" name="nnp::Mode::loadSettingsFile">
-<area shape="rect" id="node1" title="Open settings file and load all keywords into memory." alt="" coords="221,71,424,98"/>
-<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="5,5,173,47"/>
-<area shape="rect" id="node3" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="62,71,117,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="8,122,171,149"/>
+<area shape="rect" id="Node000001" title="Open settings file and load all keywords into memory." alt="" coords="221,70,424,95"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="5,5,173,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="256,69,171,48,172,43,258,64"/>
+<area shape="rect" id="Node000003" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="62,70,117,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="208,85,117,85,117,80,208,80"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="8,119,171,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="249,101,151,122,150,117,248,96"/>
 </map>

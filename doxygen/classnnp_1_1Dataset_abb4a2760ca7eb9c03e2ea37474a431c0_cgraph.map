@@ -1,8 +1,11 @@
 <map id="nnp::Dataset::writeSymmetryFunctionHistograms" name="nnp::Dataset::writeSymmetryFunctionHistograms">
-<area shape="rect" id="node1" title="Calculate and write symmetry function histograms." alt="" coords="5,123,220,165"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="302,5,475,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="268,80,509,107"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="306,131,471,157"/>
-<area shape="rect" id="node5" href="$namespacennp.html#afc0d5668585a522b32ab02c84f2a4229" title="Safely access map entry." alt="" coords="334,181,443,208"/>
-<area shape="rect" id="node6" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="347,232,431,259"/>
+<area shape="rect" id="Node000001" title="Calculate and write symmetry function histograms." alt="" coords="5,73,220,113"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="268,5,441,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,70,267,39,293,32,294,37,269,45,174,75"/>
+<area shape="rect" id="Node000003" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="272,55,437,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="220,79,258,75,259,80,220,84"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#afc0d5668585a522b32ab02c84f2a4229" title="Safely access map entry." alt="" coords="300,104,409,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="220,101,286,107,286,113,220,106"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="313,153,397,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="178,110,269,138,300,148,299,153,267,143,177,115"/>
 </map>

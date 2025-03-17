@@ -1,13 +1,25 @@
 <map id="nnp::SymFnc" name="nnp::SymFnc">
-<area shape="rect" id="node1" title="Symmetry function base class." alt="" coords="817,472,924,499"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,145,65,172"/>
-<area shape="rect" id="node7" title=" " alt="" coords="179,172,365,199"/>
-<area shape="rect" id="node3" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="525,300,661,327"/>
-<area shape="rect" id="node4" title=" " alt="" coords="559,441,626,468"/>
-<area shape="rect" id="node5" title=" " alt="" coords="543,492,642,519"/>
-<area shape="rect" id="node6" title=" " alt="" coords="510,543,675,569"/>
-<area shape="rect" id="node8" title=" " alt="" coords="505,234,680,275"/>
-<area shape="rect" id="node9" title=" " alt="" coords="543,593,642,620"/>
-<area shape="rect" id="node10" title=" " alt="" coords="525,644,660,671"/>
-<area shape="rect" id="node11" title=" " alt="" coords="528,695,657,721"/>
+<area shape="rect" id="Node000001" title="Symmetry function base class." alt="" coords="829,474,936,499"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,149,65,174"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="78,144,138,125,219,105,313,87,417,77,524,78,577,84,628,95,678,111,724,133,768,162,807,197,833,230,852,268,866,309,876,349,884,423,885,474,879,474,879,423,870,350,861,310,848,271,829,233,803,200,765,166,722,138,676,116,627,100,576,89,523,83,417,82,314,92,220,110,140,130,79,149"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="179,175,365,201"/>
+<area shape="poly" id="edge7_Node000011_Node000002" title=" " alt="" coords="79,165,90,167,179,177,178,182,89,172,79,171"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="531,301,667,326"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="681,301,745,306,777,316,807,331,824,346,839,364,861,404,875,443,882,473,877,474,870,444,856,406,835,367,821,350,804,336,775,321,744,312,680,306"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="565,445,632,470"/>
+<area shape="poly" id="edge3_Node000001_Node000008" title=" " alt="" coords="646,459,829,479,829,484,645,465"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="549,494,648,519"/>
+<area shape="poly" id="edge4_Node000001_Node000009" title=" " alt="" coords="662,509,731,510,805,505,843,497,844,502,806,511,731,516,662,514"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="516,543,681,569"/>
+<area shape="poly" id="edge5_Node000001_Node000010" title=" " alt="" coords="695,552,750,545,804,531,837,515,863,498,866,502,839,520,806,536,751,550,695,557"/>
+<area shape="poly" id="edge6_Node000001_Node000011" title=" " alt="" coords="379,180,495,179,620,184,679,190,732,200,776,213,807,230,833,257,852,289,866,324,876,360,884,427,885,474,879,474,879,427,871,361,861,326,848,291,829,260,804,234,773,217,731,205,678,196,620,189,495,185,379,186"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="511,236,686,276"/>
+<area shape="poly" id="edge9_Node000012_Node000011" title=" " alt="" coords="327,202,390,219,511,241,510,246,389,224,326,207"/>
+<area shape="poly" id="edge8_Node000001_Node000012" title=" " alt="" coords="700,247,756,257,783,268,807,283,828,304,845,329,868,383,879,435,883,473,878,474,874,436,862,385,840,332,824,308,804,287,780,273,754,262,699,253"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="549,593,648,618"/>
+<area shape="poly" id="edge10_Node000001_Node000013" title=" " alt="" coords="661,604,732,596,769,586,804,571,826,555,845,536,872,498,876,501,849,539,830,559,807,576,771,591,733,601,662,609"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="517,642,680,697"/>
+<area shape="poly" id="edge11_Node000001_Node000014" title=" " alt="" coords="693,661,751,647,778,635,804,619,831,591,852,557,875,498,880,500,857,560,836,594,807,623,781,640,753,652,694,666"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="505,721,692,746"/>
+<area shape="poly" id="edge12_Node000001_Node000015" title=" " alt="" coords="705,723,757,706,782,694,804,678,822,658,838,635,860,584,872,535,878,499,883,500,877,536,865,585,842,637,827,661,807,682,785,699,759,711,707,728"/>
 </map>

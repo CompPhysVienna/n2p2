@@ -1,5 +1,8 @@
 <map id="LAMMPS_NS::PairHDNNPDevelop" name="LAMMPS_NS::PairHDNNPDevelop">
-<area shape="rect" id="node1" title=" " alt="" coords="5,200,244,227"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html" title=" " alt="" coords="261,124,445,151"/>
-<area shape="rect" id="node3" title=" " alt="" coords="26,5,93,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,197,244,223"/>
+<area shape="rect" id="Node000002" href="$classLAMMPS__NS_1_1PairHDNNP.html" title=" " alt="" coords="261,123,445,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="304,155,161,200,160,195,302,150"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="26,5,93,31"/>
+<area shape="poly" id="edge3_Node000001_Node000007" title=" " alt="" coords="53,44,44,94,45,121,52,147,62,162,75,175,103,195,100,199,71,179,58,165,48,149,40,122,39,93,48,43"/>
+<area shape="poly" id="edge2_Node000002_Node000007" title=" " alt="" coords="102,33,325,120,323,125,100,38"/>
 </map>

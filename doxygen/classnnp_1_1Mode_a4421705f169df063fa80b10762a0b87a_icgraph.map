@@ -1,0 +1,5 @@
+<map id="nnp::Mode::getEwaldPrecision" name="nnp::Mode::getEwaldPrecision">
+<area shape="rect" id="Node000001" title="Getter for Mode::ewaldSetup.precision." alt="" coords="221,13,439,38"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1InterfaceLammps.html#ad31a11898da1166ef34d2dfb2b1086f7" title="Get Ewald precision parameter." alt="" coords="5,5,173,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="208,28,173,28,173,23,208,23"/>
+</map>

@@ -1,5 +1,7 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/SymGrpCompRadWeighted.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/SymGrpCompRadWeighted.h">
-<area shape="rect" id="node1" title=" " alt="" coords="114,5,358,61"/>
-<area shape="rect" id="node2" href="$Element_8cpp.html" title=" " alt="" coords="5,117,216,158"/>
-<area shape="rect" id="node3" href="$SymGrpCompRadWeighted_8cpp.html" title=" " alt="" coords="241,109,485,165"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="114,5,358,60"/>
+<area shape="rect" id="Node000002" href="$Element_8cpp.html" title=" " alt="" coords="5,115,216,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,71,136,117,133,113,191,67"/>
+<area shape="rect" id="Node000003" href="$SymGrpCompRadWeighted_8cpp.html" title=" " alt="" coords="241,108,485,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="282,67,331,106,328,110,279,71"/>
 </map>

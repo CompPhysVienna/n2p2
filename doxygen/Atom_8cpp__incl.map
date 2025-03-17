@@ -1,9 +1,16 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Atom.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/Atom.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="151,5,342,47"/>
-<area shape="rect" id="node2" href="$Atom_8h.html" title=" " alt="" coords="5,95,75,121"/>
-<area shape="rect" id="node3" href="$utility_8h.html" title=" " alt="" coords="99,95,170,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="127,169,214,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="245,95,328,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="353,95,415,121"/>
-<area shape="rect" id="node7" title=" " alt="" coords="440,95,499,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="151,5,342,45"/>
+<area shape="rect" id="Node000002" href="$Atom_8h.html" title=" " alt="" coords="5,93,75,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="198,48,84,91,82,86,196,43"/>
+<area shape="rect" id="Node000013" href="$utility_8h.html" title=" " alt="" coords="99,93,170,119"/>
+<area shape="poly" id="edge2_Node000001_Node000013" title=" " alt="" coords="221,48,164,87,161,83,218,43"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="127,167,214,192"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="239,47,185,155,180,153,235,45"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="245,93,328,119"/>
+<area shape="poly" id="edge4_Node000001_Node000018" title=" " alt="" coords="259,44,277,80,272,82,254,47"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="353,93,415,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="281,43,353,84,350,89,278,48"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="440,93,499,119"/>
+<area shape="poly" id="edge6_Node000001_Node000019" title=" " alt="" coords="301,43,428,87,426,92,299,48"/>
+<area shape="poly" id="edge3_Node000013_Node000007" title=" " alt="" coords="143,118,161,153,156,156,138,120"/>
 </map>

@@ -1,5 +1,8 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnpif/CabanaMD/typesCabana.h" name="/home/runner/work/n2p2/n2p2/src/libnnpif/CabanaMD/typesCabana.h">
-<area shape="rect" id="node1" title=" " alt="" coords="76,5,285,61"/>
-<area shape="rect" id="node2" href="$ElementCabana_8h.html" title=" " alt="" coords="5,109,215,165"/>
-<area shape="rect" id="node3" href="$ModeCabana_8h.html" title=" " alt="" coords="76,213,285,269"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="76,5,285,60"/>
+<area shape="rect" id="Node000002" href="$ElementCabana_8h.html" title=" " alt="" coords="5,108,215,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,73,131,109,126,106,152,70"/>
+<area shape="rect" id="Node000003" href="$ModeCabana_8h.html" title=" " alt="" coords="76,211,285,265"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="212,70,230,107,235,135,230,163,219,189,205,212,200,209,214,187,225,162,230,135,225,109,207,72"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="139,173,164,209,160,212,134,176"/>
 </map>

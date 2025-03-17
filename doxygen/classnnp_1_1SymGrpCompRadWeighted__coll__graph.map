@@ -1,6 +1,9 @@
 <map id="nnp::SymGrpCompRadWeighted" name="nnp::SymGrpCompRadWeighted">
-<area shape="rect" id="node1" title="Weighted radial symmetry function with compact support (type 23)" alt="" coords="331,64,561,91"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="23,5,199,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,57,216,98"/>
-<area shape="rect" id="node4" title=" " alt="" coords="28,124,193,151"/>
+<area shape="rect" id="Node000001" title="Weighted radial symmetry function with compact support (type 23)" alt="" coords="331,63,561,88"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="23,5,199,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,30,371,60,371,65,199,36"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="5,55,216,95"/>
+<area shape="poly" id="edge2_Node000001_Node000018" title=" " alt="" coords="230,73,330,73,330,78,230,78"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="28,123,193,148"/>
+<area shape="poly" id="edge3_Node000001_Node000012" title=" " alt="" coords="207,123,306,107,399,85,400,91,307,113,208,128"/>
 </map>

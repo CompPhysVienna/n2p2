@@ -1,9 +1,15 @@
 <map id="nnp::Mode::physical" name="nnp::Mode::physical">
-<area shape="rect" id="node1" title="Undo normalization for a given property." alt="" coords="276,147,428,174"/>
-<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a680dca82d8c1670ac2effe7ba7df60fc" title="Return energy contribution of one atom." alt="" coords="33,5,201,47"/>
-<area shape="rect" id="node3" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="89,71,144,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a86b54c7bf103e141f9870ee2bbb30c4f" title="Print preferred error metric and timing information on screen." alt="" coords="25,122,208,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a5518489591ce8c418b3ef00e17aa347f" title="Set up electrostatics related stuff (hardness, screening, ...)." alt="" coords="5,173,228,199"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Training.html#a31d8c565ee1fb16980552b9dfcf21de1" title="Write hardness to files (one file for each element)." alt="" coords="13,223,220,250"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file." alt="" coords="15,275,218,316"/>
+<area shape="rect" id="Node000001" title="Undo normalization for a given property." alt="" coords="276,145,428,170"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1InterfaceLammps.html#a680dca82d8c1670ac2effe7ba7df60fc" title="Return energy contribution of one atom." alt="" coords="33,5,201,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="327,137,283,98,227,60,199,48,202,43,229,55,286,93,331,133"/>
+<area shape="rect" id="Node000003" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="89,70,144,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="311,142,227,109,144,90,145,84,229,104,312,137"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1Training.html#a86b54c7bf103e141f9870ee2bbb30c4f" title="Print preferred error metric and timing information on screen." alt="" coords="25,119,208,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="262,150,208,144,208,139,263,145"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1Mode.html#a5518489591ce8c418b3ef00e17aa347f" title="Set up electrostatics related stuff (hardness, screening, ...)." alt="" coords="5,169,228,194"/>
+<area shape="poly" id="edge4_Node000001_Node000007" title=" " alt="" coords="263,169,229,173,228,167,262,164"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1Training.html#a31d8c565ee1fb16980552b9dfcf21de1" title="Write hardness to files (one file for each element)." alt="" coords="13,218,220,243"/>
+<area shape="poly" id="edge5_Node000001_Node000013" title=" " alt="" coords="310,178,229,208,181,220,180,215,227,203,308,173"/>
+<area shape="rect" id="Node000015" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file." alt="" coords="15,268,218,308"/>
+<area shape="poly" id="edge6_Node000001_Node000015" title=" " alt="" coords="329,182,285,220,229,257,199,270,196,265,227,252,282,216,326,178"/>
 </map>

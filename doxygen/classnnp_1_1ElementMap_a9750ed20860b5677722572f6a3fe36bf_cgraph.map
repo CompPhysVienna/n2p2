@@ -1,5 +1,8 @@
 <map id="nnp::ElementMap::symbolFromAtomicNumber" name="nnp::ElementMap::symbolFromAtomicNumber">
-<area shape="rect" id="node1" title="Get element symbol from atomic number." alt="" coords="5,47,231,89"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="279,29,520,56"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="357,80,441,107"/>
+<area shape="rect" id="Node000001" title="Get element symbol from atomic number." alt="" coords="5,47,231,87"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="279,29,520,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,55,265,51,265,57,231,60"/>
+<area shape="rect" id="Node000006" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="357,79,441,104"/>
+<area shape="poly" id="edge3_Node000001_Node000006" title=" " alt="" coords="231,74,344,84,343,89,230,80"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="354,31,344,21,350,11,368,5,399,3,440,7,451,12,454,18,449,21,447,16,439,12,399,8,369,10,353,15,350,20,358,27"/>
 </map>

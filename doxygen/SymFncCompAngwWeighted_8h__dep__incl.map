@@ -1,7 +1,13 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/SymFncCompAngwWeighted.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/SymFncCompAngwWeighted.h">
-<area shape="rect" id="node1" title=" " alt="" coords="167,5,422,61"/>
-<area shape="rect" id="node2" href="$Element_8cpp.html" title=" " alt="" coords="61,221,272,262"/>
-<area shape="rect" id="node3" href="$SymFncCompAngwWeighted_8cpp.html" title=" " alt="" coords="29,109,283,165"/>
-<area shape="rect" id="node4" href="$SymGrpCompAngwWeighted_8cpp.html" title=" " alt="" coords="390,213,645,269"/>
-<area shape="rect" id="node5" href="$SymGrpCompAngwWeighted_8h.html" title=" " alt="" coords="307,109,562,165"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="167,5,422,60"/>
+<area shape="rect" id="Node000002" href="$Element_8cpp.html" title=" " alt="" coords="61,218,272,258"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="155,58,70,80,38,94,18,110,10,123,8,135,11,147,18,161,32,179,50,194,92,215,89,220,47,198,29,183,14,164,6,149,3,135,5,121,14,106,35,89,68,75,153,52"/>
+<area shape="rect" id="Node000003" href="$SymFncCompAngwWeighted_8cpp.html" title=" " alt="" coords="28,108,283,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="249,70,194,110,191,106,246,66"/>
+<area shape="rect" id="Node000004" href="$SymGrpCompAngwWeighted_8cpp.html" title=" " alt="" coords="390,211,644,265"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="436,52,522,75,555,89,577,106,584,119,586,134,580,162,565,189,546,212,542,209,560,186,575,160,581,133,579,121,572,110,552,94,520,80,435,57"/>
+<area shape="rect" id="Node000005" href="$SymGrpCompAngwWeighted_8h.html" title=" " alt="" coords="307,108,562,163"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="343,66,399,106,396,110,340,70"/>
+<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="353,170,218,220,216,215,351,165"/>
+<area shape="poly" id="edge6_Node000005_Node000004" title=" " alt="" coords="467,172,498,209,494,212,463,175"/>
 </map>

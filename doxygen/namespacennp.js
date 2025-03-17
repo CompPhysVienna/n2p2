@@ -74,6 +74,11 @@ var namespacennp =
       [ "JACKSON_CATLOW", "namespacennp.html#a2114f19077189df6123879a0a8543ac3afbfd57106f2f6a6e40c938f8e2b4f204", null ],
       [ "KOLAFA_PERRAM", "namespacennp.html#a2114f19077189df6123879a0a8543ac3a7027aa65a457155382d8a256d844741c", null ]
     ] ],
+    [ "KSPACESolver", "namespacennp.html#aa6f27ff2149fc9a869095cf2386b1cdb", [
+      [ "EWALD_SUM", "namespacennp.html#aa6f27ff2149fc9a869095cf2386b1cdbaa3773838d922ff0f9cad9c1f16ea6a15", null ],
+      [ "PPPM", "namespacennp.html#aa6f27ff2149fc9a869095cf2386b1cdbad210501fcea6facb60dfcb93f89f21d9", null ],
+      [ "EWALD_SUM_LAMMPS", "namespacennp.html#aa6f27ff2149fc9a869095cf2386b1cdba5f1e17f93af45e75c94cb972c2d7f829", null ]
+    ] ],
     [ "activationFromString", "namespacennp.html#a9d5d806450840488b8da414b84aff1e2", null ],
     [ "split", "namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0", null ],
     [ "trim", "namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9", null ],

@@ -1,5 +1,9 @@
 <map id="nnp::Training::getConnectionOffsets" name="nnp::Training::getConnectionOffsets">
-<area shape="rect" id="node1" title="Get offsets of NN connections for each element." alt="" coords="400,47,607,89"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="208,29,352,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="5,55,160,81"/>
+<area shape="rect" id="Node000001" title="Get offsets of NN connections for each element." alt="" coords="400,47,607,87"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="208,29,352,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="386,57,352,53,352,47,386,51"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="5,55,160,80"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="386,70,160,70,160,65,386,65"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="315,19,305,11,280,8,259,10,248,15,246,20,252,28,247,31,241,21,244,11,258,5,280,3,307,6,318,15"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="195,56,161,60,160,55,194,50"/>
 </map>

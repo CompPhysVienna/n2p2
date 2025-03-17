@@ -1,5 +1,7 @@
 <map id="nnp::SymGrpCompAngn::calculate" name="nnp::SymGrpCompAngn::calculate">
-<area shape="rect" id="node1" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,39,183,80"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAng.html#aed0feb0dcc5b0cc007c7f29fcc9e2510" title=" " alt="" coords="231,5,432,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAng.html#add5cf0b0169d5127366dba164be1f2d6" title=" " alt="" coords="231,71,432,112"/>
+<area shape="rect" id="Node000001" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,37,183,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCompAng.html#aed0feb0dcc5b0cc007c7f29fcc9e2510" title=" " alt="" coords="231,5,432,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,43,217,38,217,43,183,48"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseCompAng.html#add5cf0b0169d5127366dba164be1f2d6" title=" " alt="" coords="231,69,432,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,67,217,71,217,77,182,72"/>
 </map>

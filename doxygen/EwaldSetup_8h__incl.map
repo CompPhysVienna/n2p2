@@ -1,8 +1,15 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldSetup.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldSetup.h">
-<area shape="rect" id="node1" title=" " alt="" coords="112,5,329,47"/>
-<area shape="rect" id="node2" href="$IEwaldTrunc_8h.html" title=" " alt="" coords="5,95,116,121"/>
-<area shape="rect" id="node3" href="$Log_8h.html" title=" " alt="" coords="192,95,249,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="149,169,207,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="244,169,307,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="325,95,402,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="112,5,329,45"/>
+<area shape="rect" id="Node000002" href="$IEwaldTrunc_8h.html" title=" " alt="" coords="5,93,116,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,48,98,90,95,85,181,43"/>
+<area shape="rect" id="Node000004" href="$Log_8h.html" title=" " alt="" coords="192,93,249,119"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="223,46,223,79,218,79,218,46"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="149,167,207,192"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="207,47,193,69,182,94,177,124,178,153,172,153,172,124,177,93,188,66,203,44"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="244,167,307,192"/>
+<area shape="poly" id="edge6_Node000001_Node000008" title=" " alt="" coords="237,44,252,66,265,92,273,123,277,152,271,153,267,124,259,94,247,69,233,47"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="325,93,402,119"/>
+<area shape="poly" id="edge7_Node000001_Node000009" title=" " alt="" coords="256,43,332,84,329,89,254,48"/>
+<area shape="poly" id="edge3_Node000004_Node000007" title=" " alt="" coords="216,120,194,156,190,154,211,118"/>
+<area shape="poly" id="edge4_Node000004_Node000008" title=" " alt="" coords="232,117,260,154,256,157,228,121"/>
 </map>

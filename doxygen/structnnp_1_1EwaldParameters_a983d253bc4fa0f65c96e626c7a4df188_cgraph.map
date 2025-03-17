@@ -1,4 +1,8 @@
 <map id="nnp::EwaldParameters::toNormalizedUnits" name="nnp::EwaldParameters::toNormalizedUnits">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node2" href="$structnnp_1_1EwaldParameters.html#a359d3712d7223131afeb3062c9c3ba6d" title=" " alt="" coords="220,5,387,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,172,45"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1EwaldParameters.html#a30f745d1b3b65ff7c79dfe7e9968997c" title=" " alt="" coords="435,5,601,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,20,220,19,387,19,421,19,421,25,387,24,220,24,172,25"/>
+<area shape="rect" id="Node000003" href="$structnnp_1_1EwaldParameters.html#a359d3712d7223131afeb3062c9c3ba6d" title=" " alt="" coords="220,33,387,73"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,34,206,38,206,43,172,39"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="387,40,420,35,421,41,388,45"/>
 </map>

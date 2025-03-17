@@ -1,9 +1,15 @@
 <map id="nnp::pow_int" name="nnp::pow_int">
-<area shape="rect" id="node1" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="277,177,383,203"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="36,5,199,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56" title="Calculate symmetry function for one atom." alt="" coords="5,71,229,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpAngw.html#a3572da00a28d21f1758134f6c25c19f6" title="Calculate symmetry function for one atom." alt="" coords="34,136,201,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymGrpExpAngn.html#ae6982bf8d7ca656a9d5c935a2a4fc615" title="Calculate all symmetry functions of this group for one atom." alt="" coords="36,201,199,243"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a8e4d5f8a3188e05d17d15e6cc5b73561" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,267,229,308"/>
-<area shape="rect" id="node7" href="$classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380" title="Calculate all symmetry functions of this group for one atom." alt="" coords="34,332,201,373"/>
+<area shape="rect" id="Node000001" title="Integer version of power function, &quot;fast exponentiation algorithm&quot;." alt="" coords="277,173,383,198"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="36,5,199,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="314,162,279,110,255,83,228,60,198,44,200,40,231,55,259,79,284,107,318,159"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncExpAngnWeighted.html#af72722f1031706d3699c6d9046d12c56" title="Calculate symmetry function for one atom." alt="" coords="5,69,229,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="300,167,266,144,228,124,198,112,200,107,230,119,269,140,303,162"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFncExpAngw.html#a3572da00a28d21f1758134f6c25c19f6" title="Calculate symmetry function for one atom." alt="" coords="34,133,201,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="264,178,201,169,201,163,264,173"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymGrpExpAngn.html#ae6982bf8d7ca656a9d5c935a2a4fc615" title="Calculate all symmetry functions of this group for one atom." alt="" coords="36,197,199,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="264,198,199,208,199,202,263,193"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1SymGrpExpAngnWeighted.html#a8e4d5f8a3188e05d17d15e6cc5b73561" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,261,229,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="303,208,269,231,230,252,200,264,198,259,228,247,266,226,300,204"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1SymGrpExpAngw.html#a3cf88211fbf1b5d307d87ba00d663380" title="Calculate all symmetry functions of this group for one atom." alt="" coords="34,325,201,365"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="318,211,284,264,259,292,231,316,202,330,200,326,228,311,255,288,279,261,314,208"/>
 </map>

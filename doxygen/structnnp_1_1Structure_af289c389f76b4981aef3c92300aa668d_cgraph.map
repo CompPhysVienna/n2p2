@@ -1,4 +1,6 @@
 <map id="nnp::Structure::clearNeighborList" name="nnp::Structure::clearNeighborList">
-<area shape="rect" id="node1" title="Clear neighbor list of all atoms." alt="" coords="5,29,240,56"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a53667a4b6cad924e3c15aeda65c2223d" title="Clear neighbor list." alt="" coords="288,29,499,56"/>
+<area shape="rect" id="Node000001" title="Clear neighbor list of all atoms." alt="" coords="5,29,240,55"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Atom.html#a53667a4b6cad924e3c15aeda65c2223d" title="Clear neighbor list." alt="" coords="288,29,499,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,39,274,39,274,45,240,45"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="350,31,340,21,345,11,363,5,393,3,432,7,442,12,446,18,442,20,439,16,430,12,393,8,364,10,349,15,346,20,354,27"/>
 </map>

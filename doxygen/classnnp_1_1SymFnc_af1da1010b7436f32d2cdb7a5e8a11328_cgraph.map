@@ -1,4 +1,5 @@
 <map id="nnp::SymFnc::scalingLine" name="nnp::SymFnc::scalingLine">
-<area shape="rect" id="node1" title="Get string with scaling information." alt="" coords="5,5,192,32"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="240,5,324,32"/>
+<area shape="rect" id="Node000001" title="Get string with scaling information." alt="" coords="5,5,192,31"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="240,5,324,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,15,226,15,226,21,192,21"/>
 </map>

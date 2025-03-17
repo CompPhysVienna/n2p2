@@ -1,5 +1,8 @@
 <map id="nnp::SymFncExpRadWeighted" name="nnp::SymFncExpRadWeighted">
-<area shape="rect" id="node1" title="Weighted radial symmetry function (type 12)" alt="" coords="5,173,221,200"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="121,96,298,123"/>
-<area shape="rect" id="node3" title=" " alt="" coords="59,5,125,32"/>
+<area shape="rect" id="Node000001" title="Weighted radial symmetry function (type 12)" alt="" coords="5,172,221,197"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="121,95,298,121"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,131,130,174,127,169,182,127"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="59,5,125,31"/>
+<area shape="poly" id="edge3_Node000001_Node000010" title=" " alt="" coords="88,45,83,82,85,122,95,149,108,171,103,173,90,151,80,123,77,82,83,44"/>
+<area shape="poly" id="edge2_Node000002_Node000010" title=" " alt="" coords="120,37,196,93,192,97,117,41"/>
 </map>

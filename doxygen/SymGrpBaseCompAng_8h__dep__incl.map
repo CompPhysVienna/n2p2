@@ -1,6 +1,9 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/SymGrpBaseCompAng.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/SymGrpBaseCompAng.h">
-<area shape="rect" id="node1" title=" " alt="" coords="268,5,556,47"/>
-<area shape="rect" id="node2" href="$SymGrpBaseCompAng_8cpp.html" title=" " alt="" coords="5,95,256,151"/>
-<area shape="rect" id="node3" href="$SymGrpCompAngn_8h.html" title=" " alt="" coords="280,102,544,143"/>
-<area shape="rect" id="node4" href="$SymGrpCompAngw_8h.html" title=" " alt="" coords="568,102,835,143"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="268,5,556,45"/>
+<area shape="rect" id="Node000002" href="$SymGrpBaseCompAng_8cpp.html" title=" " alt="" coords="5,93,256,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="343,52,211,96,209,91,341,47"/>
+<area shape="rect" id="Node000003" href="$SymGrpCompAngn_8h.html" title=" " alt="" coords="280,101,544,141"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="415,59,415,101,409,101,409,59"/>
+<area shape="rect" id="Node000006" href="$SymGrpCompAngw_8h.html" title=" " alt="" coords="568,101,835,141"/>
+<area shape="poly" id="edge3_Node000001_Node000006" title=" " alt="" coords="484,47,644,98,642,103,483,52"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="nnp::SymFncStatistics" name="nnp::SymFncStatistics">
-<area shape="rect" id="node1" title=" " alt="" coords="59,168,226,195"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,20,56,47"/>
-<area shape="rect" id="node3" title=" " alt="" coords="163,5,349,61"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="59,167,226,192"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,20,56,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="26,59,22,100,25,122,34,141,48,155,66,164,63,169,45,159,30,144,20,124,16,101,21,58"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="163,5,349,60"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="256,74,248,110,229,144,211,159,191,169,189,164,208,155,225,141,243,108,251,73"/>
 </map>

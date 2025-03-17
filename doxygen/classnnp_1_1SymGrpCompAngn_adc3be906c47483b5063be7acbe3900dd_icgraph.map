@@ -1,0 +1,7 @@
+<map id="nnp::SymGrpCompAngn::SymGrpCompAngn" name="nnp::SymGrpCompAngn::SymGrpCompAngn">
+<area shape="rect" id="Node000001" title="Constructor, sets type = 21." alt="" coords="231,37,408,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpCompAngn.html#ab6ff26b18d677577e5e442cc35f7d441" title="Overload &lt; operator." alt="" coords="5,5,183,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="217,45,182,41,183,35,218,40"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymGrpCompAngn.html#aa8b42af8ff5aa9bead289174cbd1ae56" title="Overload == operator." alt="" coords="5,69,183,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="218,74,183,79,182,74,217,69"/>
+</map>

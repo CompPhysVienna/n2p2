@@ -1,6 +1,10 @@
 <map id="nnp::Training::collectDGdxia" name="nnp::Training::collectDGdxia">
-<area shape="rect" id="node1" title="Collect derivative of symmetry functions with respect to one atom&#39;s coordinate." alt="" coords="225,95,429,122"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#abf466a175faf1511b305ed728042edb9" title="Calculate derivatives of force with respect to weights." alt="" coords="5,5,177,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="19,95,163,122"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="12,146,171,173"/>
+<area shape="rect" id="Node000001" title="Collect derivative of symmetry functions with respect to one atom&#39;s coordinate." alt="" coords="225,94,429,119"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#abf466a175faf1511b305ed728042edb9" title="Calculate derivatives of force with respect to weights." alt="" coords="5,5,177,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="276,92,149,48,151,43,277,87"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="19,94,163,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="211,109,164,109,164,104,211,104"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="12,143,171,169"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="253,125,154,146,152,141,252,120"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="134,85,122,76,91,73,66,75,53,80,50,85,57,92,53,96,45,86,49,76,65,70,91,67,124,71,137,81"/>
 </map>

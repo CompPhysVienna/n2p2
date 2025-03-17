@@ -1,6 +1,7 @@
 <map id="nnp::Prediction::predict" name="nnp::Prediction::predict">
-<area shape="rect" id="node1" title=" " alt="" coords="5,56,177,83"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674" title="Add atomic energy offsets to reference energy." alt="" coords="225,5,432,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="237,56,420,83"/>
-<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#a1858d3c06446ad91b0876f8ca30b2686" title="Switch to physical units, shift energy and change energy, length and charge unit." alt="" coords="235,107,423,149"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,177,56"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a17ba3ecbce972ff28d7a17bdade38674" title="Add atomic energy offsets to reference energy." alt="" coords="225,5,432,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="177,32,211,28,212,33,178,37"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="237,55,420,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="178,49,224,54,223,59,177,55"/>
 </map>

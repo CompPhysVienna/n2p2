@@ -1,17 +1,31 @@
 <map id="nnp::createFileHeader" name="nnp::createFileHeader">
-<area shape="rect" id="node1" title=" " alt="" coords="308,395,473,422"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
-<area shape="rect" id="node4" href="$nnp-checkdw_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,122,160,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="33,173,233,199"/>
-<area shape="rect" id="node6" href="$classnnp_1_1GradientDescent.html#a632f65b7ea63d685e4a2b8782be26c77" title="Header for status report file." alt="" coords="51,224,214,265"/>
-<area shape="rect" id="node7" href="$classnnp_1_1KalmanFilter.html#a76fd22632fbda4b77fb51d382cf0889b" title="Header for status report file." alt="" coords="60,289,205,331"/>
-<area shape="rect" id="node8" href="$classnnp_1_1NeuralNetwork.html#a38e5d3edf8eb6c1a28cfddeb674207e2" title="Write connections to file." alt="" coords="57,355,209,396"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file." alt="" coords="31,420,234,461"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="30,485,235,527"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Training.html#ac2e1f74df67860c5776bf811e5b6a518" title="Write neuron statistics collected since last invocation." alt="" coords="36,551,229,592"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="25,616,240,657"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8" title="Write symmetry function scaling values to file." alt="" coords="25,681,240,723"/>
-<area shape="rect" id="node14" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="19,747,246,788"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Training.html#a9920793c17beef42f87017464599f464" title="Write timing data for all clocks." alt="" coords="21,813,244,839"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="308,386,473,411"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="385,373,376,309,355,224,339,179,317,135,291,95,258,59,239,46,218,37,220,33,242,42,262,55,295,91,322,133,343,177,360,222,381,308,390,372"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,70,260,95"/>
+<area shape="poly" id="edge2_Node000001_Node000006" title=" " alt="" coords="383,373,372,316,349,244,333,207,313,170,288,137,258,109,240,98,243,93,262,105,292,134,317,167,338,204,354,242,377,315,388,372"/>
+<area shape="rect" id="Node000007" href="$nnp-checkdw_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,119,160,145"/>
+<area shape="poly" id="edge3_Node000001_Node000007" title=" " alt="" coords="381,373,367,326,342,267,307,207,284,181,258,158,235,145,209,138,160,133,160,128,210,133,237,140,262,154,288,177,311,204,347,265,372,324,386,372"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="33,169,233,194"/>
+<area shape="poly" id="edge4_Node000001_Node000008" title=" " alt="" coords="377,374,360,337,335,291,301,246,259,209,232,196,234,191,261,204,305,243,339,288,365,334,382,372"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1GradientDescent.html#a632f65b7ea63d685e4a2b8782be26c77" title="Header for status report file." alt="" coords="51,219,214,259"/>
+<area shape="poly" id="edge5_Node000001_Node000009" title=" " alt="" coords="370,377,323,324,293,296,259,273,213,255,215,250,261,268,296,292,327,320,374,373"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1KalmanFilter.html#a76fd22632fbda4b77fb51d382cf0889b" title="Header for status report file." alt="" coords="60,283,205,323"/>
+<area shape="poly" id="edge6_Node000001_Node000010" title=" " alt="" coords="354,382,309,359,259,337,205,321,206,315,261,332,312,354,356,377"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1NeuralNetwork.html#a38e5d3edf8eb6c1a28cfddeb674207e2" title="Write connections to file." alt="" coords="57,347,209,387"/>
+<area shape="poly" id="edge7_Node000001_Node000011" title=" " alt="" coords="294,389,209,379,209,373,295,384"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1Training.html#ae4ccff5ae694d46c03cae84aa7ae696d" title="Write current RMSEs and epoch information to file." alt="" coords="31,411,234,451"/>
+<area shape="poly" id="edge8_Node000001_Node000012" title=" " alt="" coords="295,413,235,421,234,415,294,408"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="30,475,235,515"/>
+<area shape="poly" id="edge9_Node000001_Node000013" title=" " alt="" coords="356,420,312,443,261,465,224,477,222,472,259,460,309,439,354,416"/>
+<area shape="rect" id="Node000015" href="$classnnp_1_1Training.html#ac2e1f74df67860c5776bf811e5b6a518" title="Write neuron statistics collected since last invocation." alt="" coords="36,539,229,579"/>
+<area shape="poly" id="edge10_Node000001_Node000015" title=" " alt="" coords="374,424,327,477,296,505,261,529,231,543,229,538,259,524,293,501,323,473,370,420"/>
+<area shape="rect" id="Node000017" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="25,603,240,643"/>
+<area shape="poly" id="edge11_Node000001_Node000017" title=" " alt="" coords="382,425,364,463,338,508,304,554,262,593,240,605,238,600,258,589,300,551,334,505,359,461,377,423"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1Dataset.html#a1623c2ddd9e673d12586e067ae536cc8" title="Write symmetry function scaling values to file." alt="" coords="25,667,240,707"/>
+<area shape="poly" id="edge12_Node000001_Node000018" title=" " alt="" coords="386,426,372,475,348,538,312,602,289,631,262,657,242,669,239,665,258,653,285,628,307,599,343,535,367,473,381,424"/>
+<area shape="rect" id="Node000020" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="19,731,246,771"/>
+<area shape="poly" id="edge13_Node000001_Node000020" title=" " alt="" coords="389,425,379,486,357,566,341,608,319,649,293,687,262,721,244,733,241,728,258,717,289,684,315,646,336,606,352,564,374,485,384,424"/>
+<area shape="rect" id="Node000022" href="$classnnp_1_1Training.html#a9920793c17beef42f87017464599f464" title="Write timing data for all clocks." alt="" coords="21,795,244,821"/>
+<area shape="poly" id="edge14_Node000001_Node000022" title=" " alt="" coords="392,425,386,497,367,595,351,647,328,697,299,744,262,785,243,797,240,793,258,781,295,741,323,695,346,645,362,593,380,497,386,425"/>
 </map>

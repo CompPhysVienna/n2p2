@@ -1,5 +1,7 @@
 <map id="nnp::settings::Settings::keywordCheck" name="nnp::settings::Settings::keywordCheck">
-<area shape="rect" id="node1" title="Check for keyword and alternatives, throw exception if not present." alt="" coords="220,39,387,80"/>
-<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#abe28e4e40135fa996a04c00494a403d8" title="Get value for given keyword." alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1settings_1_1Settings.html#a8b0d951c5548f17e64598900b5aca088" title="Get all keyword&#45;value pairs for given keyword." alt="" coords="5,71,172,112"/>
+<area shape="rect" id="Node000001" title="Check for keyword and alternatives, throw exception if not present." alt="" coords="220,37,387,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1settings_1_1Settings.html#abe28e4e40135fa996a04c00494a403d8" title="Get value for given keyword." alt="" coords="5,5,172,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,45,172,40,173,35,206,40"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1settings_1_1Settings.html#a8b0d951c5548f17e64598900b5aca088" title="Get all keyword&#45;value pairs for given keyword." alt="" coords="5,69,172,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="206,74,173,80,172,74,205,69"/>
 </map>

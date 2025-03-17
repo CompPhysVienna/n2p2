@@ -1,3 +1,35 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structnnp_1_1Training_1_1SubCandidate.html" title="Contains update candidate which is grouped with others to specific parent update candidate (e...." alt="" coords="5,5,208,32"/>
+<area shape="rect" id="Node000000" href="$classnnp_1_1SymGrp.html" title=" " alt="" coords="5,228,112,253"/>
+<area shape="rect" id="Node000001" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="161,153,337,179"/>
+<area shape="poly" id="edge30_Node000000_Node000001" title=" " alt="" coords="104,220,215,176,217,181,106,225"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1SymGrpBaseCutoff.html" title=" " alt="" coords="160,301,337,327"/>
+<area shape="poly" id="edge39_Node000000_Node000010" title=" " alt="" coords="106,256,215,299,213,304,104,261"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseCompAng.html" title=" " alt="" coords="416,55,617,80"/>
+<area shape="poly" id="edge31_Node000001_Node000002" title=" " alt="" coords="279,143,327,115,384,89,424,78,426,83,386,94,329,120,281,148"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymGrpBaseCompAngWeighted.html" title=" " alt="" coords="385,104,648,129"/>
+<area shape="poly" id="edge34_Node000001_Node000005" title=" " alt="" coords="331,148,385,138,446,127,447,132,386,143,332,153"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1SymGrpCompRad.html" title="Radial symmetry function with compact support (type 20)" alt="" coords="432,153,601,179"/>
+<area shape="poly" id="edge37_Node000001_Node000008" title=" " alt="" coords="350,163,432,163,432,169,350,169"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1SymGrpCompRadWeighted.html" title="Weighted radial symmetry function with compact support (type 23)" alt="" coords="401,203,632,228"/>
+<area shape="poly" id="edge38_Node000001_Node000009" title=" " alt="" coords="332,179,447,200,446,205,331,184"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymGrpCompAngn.html" title="Narrow angular symmetry function with compact support (type 21)" alt="" coords="728,5,905,31"/>
+<area shape="poly" id="edge32_Node000002_Node000003" title=" " alt="" coords="607,50,738,28,739,33,608,55"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymGrpCompAngw.html" title="Wide angular symmetry function with compact support (type 22)" alt="" coords="727,55,907,80"/>
+<area shape="poly" id="edge33_Node000002_Node000004" title=" " alt="" coords="631,65,727,65,727,70,631,70"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1SymGrpCompAngnWeighted.html" title="Weighted narrow angular symmetry function with compact support (type 24)" alt="" coords="697,104,936,129"/>
+<area shape="poly" id="edge35_Node000005_Node000006" title=" " alt="" coords="662,114,697,114,697,119,662,119"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1SymGrpCompAngwWeighted.html" title="Weighted wide angular symmetry function with compact support (type 25)" alt="" coords="696,153,937,179"/>
+<area shape="poly" id="edge36_Node000005_Node000007" title=" " alt="" coords="608,129,739,151,738,156,607,134"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1SymGrpBaseExpAng.html" title=" " alt="" coords="423,252,610,277"/>
+<area shape="poly" id="edge40_Node000010_Node000011" title=" " alt="" coords="331,296,385,286,446,275,447,280,386,291,332,301"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1SymGrpExpAngnWeighted.html" title="Weighted angular symmetry function group (type 13)" alt="" coords="405,301,629,327"/>
+<area shape="poly" id="edge43_Node000010_Node000014" title=" " alt="" coords="351,311,405,311,405,317,351,317"/>
+<area shape="rect" id="Node000015" href="$classnnp_1_1SymGrpExpRad.html" title="Radial symmetry function group (type 2)" alt="" coords="439,351,594,376"/>
+<area shape="poly" id="edge44_Node000010_Node000015" title=" " alt="" coords="332,327,447,348,446,353,331,332"/>
+<area shape="rect" id="Node000016" href="$classnnp_1_1SymGrpExpRadWeighted.html" title="Weighted radial symmetry function group (type 12)" alt="" coords="409,400,625,425"/>
+<area shape="poly" id="edge45_Node000010_Node000016" title=" " alt="" coords="281,332,329,360,386,386,426,397,424,402,384,391,327,365,279,337"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1SymGrpExpAngn.html" title="Angular symmetry function group (type 3)" alt="" coords="735,227,898,252"/>
+<area shape="poly" id="edge41_Node000011_Node000012" title=" " alt="" coords="623,253,735,243,736,249,624,258"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1SymGrpExpAngw.html" title="Angular symmetry function group (type 3)" alt="" coords="733,276,900,301"/>
+<area shape="poly" id="edge42_Node000011_Node000013" title=" " alt="" coords="624,271,734,279,733,285,623,276"/>
 </map>

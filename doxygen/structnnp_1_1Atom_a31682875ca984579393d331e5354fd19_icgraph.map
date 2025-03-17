@@ -1,14 +1,29 @@
 <map id="nnp::Atom::getStoredMinNumNeighbors" name="nnp::Atom::getStoredMinNumNeighbors">
-<area shape="rect" id="node1" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="500,318,715,359"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Atom.html#a835cebc6180ccfeae2e692cde894eeb3" title="Allocate vectors related to symmetry functions (G, dEdG)." alt="" coords="277,5,427,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="271,57,433,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpRad.html#aac57cbe2e03e4f91ce0fcec1d974599b" title="Calculate symmetry function for one atom." alt="" coords="271,122,433,163"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymGrpExpAngn.html#ae6982bf8d7ca656a9d5c935a2a4fc615" title="Calculate all symmetry functions of this group for one atom." alt="" coords="271,187,433,229"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SymGrpExpRad.html#aa113645db82879d83ea1e3723fb1cce9" title="Calculate all symmetry functions of this group for one atom." alt="" coords="271,253,433,294"/>
-<area shape="rect" id="node7" href="$structnnp_1_1Structure.html#addf3a61f5cb0fa8daeb5737d28758740" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="262,318,442,359"/>
-<area shape="rect" id="node8" href="$structnnp_1_1Atom.html#a13d0265e748da4aa1a7050ac5cc14ebd" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="252,384,452,411"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="5,419,204,445"/>
-<area shape="rect" id="node10" href="$structnnp_1_1Structure.html#a50ffe252cff725aa5bb952bb1d8cbf5a" title="Compute electrostatic energy with global charge equilibration." alt="" coords="15,495,195,537"/>
-<area shape="rect" id="node11" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="262,537,442,578"/>
-<area shape="rect" id="node12" href="$structnnp_1_1Atom.html#a6d4359f948d65d7ea6d4ac7244b0a7fd" title="Free vectors related to symmetry functions, opposite of allocate()." alt="" coords="291,603,413,629"/>
+<area shape="rect" id="Node000001" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="500,341,715,381"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Atom.html#a835cebc6180ccfeae2e692cde894eeb3" title="Allocate vectors related to symmetry functions (G, dEdG)." alt="" coords="277,5,427,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="597,328,581,266,552,190,533,150,510,112,482,76,450,45,426,31,428,27,454,41,486,73,514,109,538,148,557,188,586,265,602,326"/>
+<area shape="rect" id="Node000020" href="$classnnp_1_1SymFncExpAngn.html#a61bed86e8b2904b465a3cf72762cbaf9" title="Calculate symmetry function for one atom." alt="" coords="271,55,433,95"/>
+<area shape="poly" id="edge2_Node000001_Node000020" title=" " alt="" coords="592,329,572,280,542,221,501,161,477,134,450,109,432,98,434,93,454,105,481,130,505,158,546,218,577,278,597,327"/>
+<area shape="rect" id="Node000021" href="$classnnp_1_1SymFncExpRad.html#aac57cbe2e03e4f91ce0fcec1d974599b" title="Calculate symmetry function for one atom." alt="" coords="271,119,433,159"/>
+<area shape="poly" id="edge3_Node000001_Node000021" title=" " alt="" coords="586,330,531,251,494,210,450,174,429,162,432,157,454,169,497,206,535,248,590,327"/>
+<area shape="rect" id="Node000022" href="$classnnp_1_1SymGrpExpAngn.html#ae6982bf8d7ca656a9d5c935a2a4fc615" title="Calculate all symmetry functions of this group for one atom." alt="" coords="271,183,433,223"/>
+<area shape="poly" id="edge4_Node000001_Node000022" title=" " alt="" coords="575,333,520,285,486,260,451,238,425,226,427,221,453,233,489,255,523,280,579,329"/>
+<area shape="rect" id="Node000023" href="$classnnp_1_1SymGrpExpRad.html#aa113645db82879d83ea1e3723fb1cce9" title="Calculate all symmetry functions of this group for one atom." alt="" coords="271,247,433,287"/>
+<area shape="poly" id="edge5_Node000001_Node000023" title=" " alt="" coords="545,338,451,302,416,290,418,285,453,297,547,333"/>
+<area shape="rect" id="Node000024" href="$structnnp_1_1Structure.html#addf3a61f5cb0fa8daeb5737d28758740" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="262,311,442,351"/>
+<area shape="poly" id="edge6_Node000001_Node000024" title=" " alt="" coords="486,349,442,344,443,339,487,344"/>
+<area shape="rect" id="Node000026" href="$structnnp_1_1Atom.html#a13d0265e748da4aa1a7050ac5cc14ebd" title="Calculate dChi/dr of this atom&#39;s Chi with respect to the coordinates of the given atom." alt="" coords="252,376,452,401"/>
+<area shape="poly" id="edge7_Node000001_Node000026" title=" " alt="" coords="487,377,453,380,452,375,486,371"/>
+<area shape="rect" id="Node000028" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="5,411,204,436"/>
+<area shape="poly" id="edge10_Node000001_Node000028" title=" " alt="" coords="547,388,501,403,453,415,388,424,323,429,204,431,204,425,323,424,388,419,451,410,500,398,545,383"/>
+<area shape="rect" id="Node000032" href="$structnnp_1_1Structure.html#a50ffe252cff725aa5bb952bb1d8cbf5a" title="Compute electrostatic energy with global charge equilibration." alt="" coords="15,486,195,526"/>
+<area shape="poly" id="edge9_Node000001_Node000032" title=" " alt="" coords="559,389,509,414,453,437,387,456,319,473,195,496,195,491,318,468,385,451,451,431,507,409,557,385"/>
+<area shape="rect" id="Node000033" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="262,527,442,567"/>
+<area shape="poly" id="edge11_Node000001_Node000033" title=" " alt="" coords="583,393,527,452,491,483,453,511,417,530,414,525,451,506,488,479,523,448,579,389"/>
+<area shape="rect" id="Node000034" href="$structnnp_1_1Atom.html#a6d4359f948d65d7ea6d4ac7244b0a7fd" title="Free vectors related to symmetry functions, opposite of allocate()." alt="" coords="291,592,413,617"/>
+<area shape="poly" id="edge13_Node000001_Node000034" title=" " alt="" coords="594,395,573,438,542,488,502,539,453,582,415,599,413,594,451,577,498,535,537,485,568,435,590,392"/>
+<area shape="rect" id="Node000035" href="$classnnp_1_1InterfaceLammps.html#ad545d7fdd026ec7bc2842e5b68add0e8" title="Calculate forces and add to LAMMPS atomic force arrays (development version for &quot;hdnnp/develop&quot; pair ..." alt="" coords="268,642,436,682"/>
+<area shape="poly" id="edge14_Node000001_Node000035" title=" " alt="" coords="598,395,579,446,549,510,507,576,482,606,454,632,435,644,432,640,450,628,478,602,503,572,544,508,574,444,593,393"/>
+<area shape="poly" id="edge8_Node000026_Node000028" title=" " alt="" coords="248,406,196,413,195,408,247,401"/>
+<area shape="poly" id="edge12_Node000033_Node000032" title=" " alt="" coords="248,533,194,524,195,518,249,527"/>
 </map>

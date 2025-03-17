@@ -1,7 +1,14 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/SymFncBaseExpAng.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/SymFncBaseExpAng.h">
-<area shape="rect" id="node1" title=" " alt="" coords="43,5,318,47"/>
-<area shape="rect" id="node2" href="$SymFncBaseCutoff_8h.html" title=" " alt="" coords="45,95,202,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,169,76,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="114,169,173,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="237,169,300,196"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="43,5,318,45"/>
+<area shape="rect" id="Node000002" href="$SymFncBaseCutoff_8h.html" title=" " alt="" coords="45,93,202,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="169,47,142,84,138,80,165,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,167,76,192"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="98,48,63,67,47,79,35,95,29,108,28,123,33,153,28,154,23,124,24,107,30,92,44,76,60,62,96,43"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="114,167,173,192"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="198,44,217,79,221,100,216,120,200,143,179,161,175,157,196,140,212,118,215,99,212,81,194,47"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="237,167,300,192"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="200,44,236,92,263,153,258,155,232,95,196,47"/>
+<area shape="poly" id="edge2_Node000002_Node000005" title=" " alt="" coords="112,121,66,160,63,155,108,117"/>
+<area shape="poly" id="edge3_Node000002_Node000007" title=" " alt="" coords="129,118,139,153,134,154,124,120"/>
+<area shape="poly" id="edge4_Node000002_Node000008" title=" " alt="" coords="148,116,234,158,232,163,146,121"/>
 </map>

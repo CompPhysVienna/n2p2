@@ -1,5 +1,7 @@
 <map id="nnp::SymFncBaseExpAng::parameterLine" name="nnp::SymFncBaseExpAng::parameterLine">
-<area shape="rect" id="node1" title="Give symmetry function parameters in one line." alt="" coords="5,23,192,65"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFnc.html#af737dbf730d7fe7f6956b6ae8df34386" title="Generate format string for symmetry function parameter printing." alt="" coords="240,5,451,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="303,56,387,83"/>
+<area shape="rect" id="Node000001" title="Give symmetry function parameters in one line." alt="" coords="5,23,192,63"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFnc.html#af737dbf730d7fe7f6956b6ae8df34386" title="Generate format string for symmetry function parameter printing." alt="" coords="240,5,451,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,31,226,28,227,33,193,36"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="303,55,387,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="193,50,290,59,290,65,192,55"/>
 </map>

@@ -1,0 +1,8 @@
+<map id="LAMMPS_NS::KSpaceHDNNP::adjust_gewald" name="LAMMPS_NS::KSpaceHDNNP::adjust_gewald">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,35,213,75"/>
+<area shape="rect" id="Node000002" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a85824e1b338921eb282d080a37622547" title=" " alt="" coords="261,5,469,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="213,40,247,36,248,41,214,45"/>
+<area shape="rect" id="Node000003" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#ae7446f1ceab04a1506ca27a930711ee8" title=" " alt="" coords="517,35,725,75"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="214,54,261,55,469,55,504,54,504,60,469,60,261,60,214,59"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="470,35,504,39,503,44,469,40"/>
+</map>

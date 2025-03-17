@@ -1,6 +1,9 @@
 <map id="nnp::SymGrpBaseCompAng" name="nnp::SymGrpBaseCompAng">
-<area shape="rect" id="node1" title=" " alt="" coords="95,80,296,107"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymGrpCompAngn.html" title="Narrow angular symmetry function with compact support (type 21)" alt="" coords="5,155,183,181"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymGrpCompAngw.html" title="Wide angular symmetry function with compact support (type 22)" alt="" coords="207,155,387,181"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="107,5,283,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="95,79,296,104"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymGrpCompAngn.html" title="Narrow angular symmetry function with compact support (type 21)" alt="" coords="5,152,183,177"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="169,114,112,154,109,150,166,110"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymGrpCompAngw.html" title="Wide angular symmetry function with compact support (type 22)" alt="" coords="207,152,387,177"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="224,110,282,150,279,154,221,114"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="107,5,283,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="198,44,198,79,193,79,193,44"/>
 </map>

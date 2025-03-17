@@ -1,5 +1,7 @@
 <map id="nnp::Stopwatch::loop" name="nnp::Stopwatch::loop">
-<area shape="rect" id="node1" title="Stop and return loop time." alt="" coords="5,31,164,57"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Stopwatch.html#a871cf3f2ff7db21964e0e442d16b42c8" title="Return time elapsed in last loop interval (of a stopped watch)." alt="" coords="216,5,399,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Stopwatch.html#a4dac508324a5abc8ec649c07cc437bb8" title=" " alt="" coords="212,56,403,83"/>
+<area shape="rect" id="Node000001" title="Stop and return loop time." alt="" coords="5,31,164,56"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Stopwatch.html#a871cf3f2ff7db21964e0e442d16b42c8" title="Return time elapsed in last loop interval (of a stopped watch)." alt="" coords="216,5,399,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="164,32,202,27,203,33,164,37"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Stopwatch.html#a4dac508324a5abc8ec649c07cc437bb8" title=" " alt="" coords="212,55,403,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="164,49,199,53,198,58,164,55"/>
 </map>

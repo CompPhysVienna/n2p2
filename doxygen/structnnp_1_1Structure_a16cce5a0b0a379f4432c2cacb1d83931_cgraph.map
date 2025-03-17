@@ -1,5 +1,7 @@
 <map id="nnp::Structure::calculateNeighborList" name="nnp::Structure::calculateNeighborList">
-<area shape="rect" id="node1" title="Calculate neighbor list for all atoms and setup neighbor cut&#45;off map." alt="" coords="5,39,185,80"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="251,5,431,47"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a281cb20de35ca8ecbfab2a196be3c107" title="Set up a neighbor cut&#45;off map which gives the index (value) of the last needed neighbor corresponding..." alt="" coords="233,71,449,112"/>
+<area shape="rect" id="Node000001" title="Calculate neighbor list for all atoms and setup neighbor cut&#45;off map." alt="" coords="5,37,185,77"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#acd8b8ea17cc7579a3618a49623303483" title="Calculate neighbor list for all atoms." alt="" coords="251,5,431,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,43,237,36,238,41,186,48"/>
+<area shape="rect" id="Node000007" href="$structnnp_1_1Structure.html#a281cb20de35ca8ecbfab2a196be3c107" title="Set up a neighbor cut&#45;off map which gives the index (value) of the last needed neighbor corresponding..." alt="" coords="233,69,449,109"/>
+<area shape="poly" id="edge2_Node000001_Node000007" title=" " alt="" coords="186,66,220,71,219,76,185,72"/>
 </map>

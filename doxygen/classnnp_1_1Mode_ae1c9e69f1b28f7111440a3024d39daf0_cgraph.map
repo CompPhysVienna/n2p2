@@ -1,6 +1,10 @@
 <map id="nnp::Mode::setupNeuralNetworkWeights" name="nnp::Mode::setupNeuralNetworkWeights">
-<area shape="rect" id="node1" title="Set up neural network weights from files with given name format." alt="" coords="5,57,237,98"/>
-<area shape="rect" id="node2" href="$namespacennp.html#a2ef6196f4080273f88097014ce467d86" title="Capitalize first letter of word." alt="" coords="359,5,437,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a28ab813622bd4ee19cbfbb15c4411317" title="Read in weights for a specific type of neural network." alt="" coords="285,57,511,98"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="559,93,643,120"/>
+<area shape="rect" id="Node000001" title="Set up neural network weights from files with given name format." alt="" coords="5,55,237,95"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#a2ef6196f4080273f88097014ce467d86" title="Capitalize first letter of word." alt="" coords="359,5,437,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="218,53,345,26,346,31,219,58"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#a28ab813622bd4ee19cbfbb15c4411317" title="Read in weights for a specific type of neural network." alt="" coords="285,55,511,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="238,73,271,73,271,78,238,78"/>
+<area shape="rect" id="Node000009" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="559,92,643,117"/>
+<area shape="poly" id="edge4_Node000001_Node000009" title=" " alt="" coords="209,93,286,105,349,109,398,109,511,105,545,104,545,109,511,110,398,114,348,114,285,110,208,98"/>
+<area shape="poly" id="edge3_Node000003_Node000009" title=" " alt="" coords="511,89,546,94,545,99,511,94"/>
 </map>

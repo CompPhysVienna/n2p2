@@ -1,6 +1,9 @@
 <map id="nnp::Mode::chargeEquilibration" name="nnp::Mode::chargeEquilibration">
-<area shape="rect" id="node1" title="Perform global charge equilibration method." alt="" coords="5,78,229,105"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#addf3a61f5cb0fa8daeb5737d28758740" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="299,5,479,47"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a50ffe252cff725aa5bb952bb1d8cbf5a" title="Compute electrostatic energy with global charge equilibration." alt="" coords="299,71,479,112"/>
-<area shape="rect" id="node4" href="$structnnp_1_1Structure.html#ac91c699d5b568d865f43ab30fe42f250" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="277,136,500,177"/>
+<area shape="rect" id="Node000001" title="Perform global charge equilibration method." alt="" coords="5,77,229,102"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#addf3a61f5cb0fa8daeb5737d28758740" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="299,5,479,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,74,289,46,290,51,173,79"/>
+<area shape="rect" id="Node000011" href="$structnnp_1_1Structure.html#a50ffe252cff725aa5bb952bb1d8cbf5a" title="Compute electrostatic energy with global charge equilibration." alt="" coords="299,69,479,109"/>
+<area shape="poly" id="edge2_Node000001_Node000011" title=" " alt="" coords="229,87,285,87,285,92,229,92"/>
+<area shape="rect" id="Node000016" href="$structnnp_1_1Structure.html#ac91c699d5b568d865f43ab30fe42f250" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="277,133,500,173"/>
+<area shape="poly" id="edge3_Node000001_Node000016" title=" " alt="" coords="173,100,290,128,289,133,172,105"/>
 </map>

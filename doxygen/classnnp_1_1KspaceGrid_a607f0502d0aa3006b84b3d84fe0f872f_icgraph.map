@@ -1,5 +1,7 @@
 <map id="nnp::KspaceGrid::setup" name="nnp::KspaceGrid::setup">
-<area shape="rect" id="node1" title="Set up reciprocal box vectors and eta." alt="" coords="233,46,405,73"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#addf3a61f5cb0fa8daeb5737d28758740" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="5,5,185,47"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#a50ffe252cff725aa5bb952bb1d8cbf5a" title="Compute electrostatic energy with global charge equilibration." alt="" coords="5,71,185,112"/>
+<area shape="rect" id="Node000001" title="Set up reciprocal box vectors and eta." alt="" coords="233,45,405,70"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#addf3a61f5cb0fa8daeb5737d28758740" title="Calculates derivative of A&#45;matrix with respect to the atoms positions and contract it with Q." alt="" coords="5,5,185,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="219,46,185,41,186,36,220,40"/>
+<area shape="rect" id="Node000014" href="$structnnp_1_1Structure.html#a50ffe252cff725aa5bb952bb1d8cbf5a" title="Compute electrostatic energy with global charge equilibration." alt="" coords="5,69,185,109"/>
+<area shape="poly" id="edge2_Node000001_Node000014" title=" " alt="" coords="220,74,186,79,185,74,219,69"/>
 </map>

@@ -1,6 +1,9 @@
 <map id="nnp::NeuralNetwork::calculateDFdc" name="nnp::NeuralNetwork::calculateDFdc">
-<area shape="rect" id="node1" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="5,71,157,112"/>
-<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#a7619d39464dd49cbfedd1ec6d86fe71b" title="Calculate second derivative of output neuron with respect to input neuron and connections." alt="" coords="205,5,357,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1NeuralNetwork.html#a2ed910e1e6cd8ba8ffa9bb495ea96656" title="Calculate derivative of output neuron with respect to biases." alt="" coords="205,71,357,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1NeuralNetwork.html#acc168a80af0a840675f46ed31c7a6723" title="Calculate derivative of neuron values before activation function with respect to input neuron." alt="" coords="205,136,357,177"/>
+<area shape="rect" id="Node000001" title="Calculate &quot;second&quot; derivative of output with respect to connections." alt="" coords="5,69,157,109"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1NeuralNetwork.html#a7619d39464dd49cbfedd1ec6d86fe71b" title="Calculate second derivative of output neuron with respect to input neuron and connections." alt="" coords="205,5,357,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="144,67,205,47,206,52,145,72"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1NeuralNetwork.html#a2ed910e1e6cd8ba8ffa9bb495ea96656" title="Calculate derivative of output neuron with respect to biases." alt="" coords="205,69,357,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,87,191,87,191,92,158,92"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1NeuralNetwork.html#acc168a80af0a840675f46ed31c7a6723" title="Calculate derivative of neuron values before activation function with respect to input neuron." alt="" coords="205,133,357,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="145,107,206,127,205,132,144,112"/>
 </map>

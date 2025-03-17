@@ -1,5 +1,7 @@
 <map id="nnp::SymFncBaseCompAngWeighted::getCompactAngle" name="nnp::SymFncBaseCompAngWeighted::getCompactAngle">
-<area shape="rect" id="node1" title=" " alt="" coords="295,39,557,80"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpCompAngnWeighted.html#a5411f861d5937d2176b181537014f1d3" title="Calculate all symmetry functions of this group for one atom." alt="" coords="7,5,245,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymGrpCompAngwWeighted.html#a382cea07822d2c2eee5c935205f9ffc8" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,71,247,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="295,37,557,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpCompAngnWeighted.html#a5411f861d5937d2176b181537014f1d3" title="Calculate all symmetry functions of this group for one atom." alt="" coords="7,5,245,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="281,45,245,41,246,35,281,39"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymGrpCompAngwWeighted.html#a382cea07822d2c2eee5c935205f9ffc8" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,69,247,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="281,75,247,79,247,74,281,70"/>
 </map>

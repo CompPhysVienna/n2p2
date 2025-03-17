@@ -1,7 +1,13 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/ElementMap.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/ElementMap.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="76,5,315,47"/>
-<area shape="rect" id="node2" href="$ElementMap_8h.html" title=" " alt="" coords="5,95,121,121"/>
-<area shape="rect" id="node3" href="$utility_8h.html" title=" " alt="" coords="197,95,268,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="133,169,220,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="254,169,339,196"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="76,5,315,45"/>
+<area shape="rect" id="Node000002" href="$ElementMap_8h.html" title=" " alt="" coords="5,93,121,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="165,48,96,88,94,84,162,43"/>
+<area shape="rect" id="Node000007" href="$utility_8h.html" title=" " alt="" coords="197,93,268,119"/>
+<area shape="poly" id="edge2_Node000001_Node000007" title=" " alt="" coords="207,44,224,80,219,82,202,47"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="133,167,220,192"/>
+<area shape="poly" id="edge6_Node000001_Node000011" title=" " alt="" coords="195,46,189,94,182,153,177,153,183,93,190,46"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="254,167,339,192"/>
+<area shape="poly" id="edge5_Node000001_Node000013" title=" " alt="" coords="232,43,259,64,283,92,295,122,299,152,294,153,290,124,278,95,256,68,228,48"/>
+<area shape="poly" id="edge3_Node000007_Node000011" title=" " alt="" coords="226,121,196,157,192,154,221,117"/>
+<area shape="poly" id="edge4_Node000007_Node000013" title=" " alt="" coords="245,117,279,155,275,158,241,121"/>
 </map>

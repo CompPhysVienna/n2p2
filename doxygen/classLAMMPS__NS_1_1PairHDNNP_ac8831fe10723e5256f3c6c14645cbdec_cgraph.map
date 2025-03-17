@@ -1,4 +1,5 @@
 <map id="LAMMPS_NS::PairHDNNP::coeff" name="LAMMPS_NS::PairHDNNP::coeff">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,189,47"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a9d298c51f5dee773e901bf52c49f847a" title=" " alt="" coords="237,5,421,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,189,45"/>
+<area shape="rect" id="Node000002" href="$classLAMMPS__NS_1_1PairHDNNP.html#a9d298c51f5dee773e901bf52c49f847a" title=" " alt="" coords="237,5,421,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,23,223,23,223,28,190,28"/>
 </map>

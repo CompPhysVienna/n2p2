@@ -1,4 +1,5 @@
 <map id="nnp::Stopwatch::updateTime" name="nnp::Stopwatch::updateTime">
-<area shape="rect" id="node1" title=" " alt="" coords="244,5,452,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Stopwatch.html#a4dac508324a5abc8ec649c07cc437bb8" title=" " alt="" coords="5,5,196,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="244,5,452,31"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Stopwatch.html#a4dac508324a5abc8ec649c07cc437bb8" title=" " alt="" coords="5,5,196,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="231,21,196,21,196,15,231,15"/>
 </map>

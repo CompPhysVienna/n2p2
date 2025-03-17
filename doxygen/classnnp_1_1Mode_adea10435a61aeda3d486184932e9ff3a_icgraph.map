@@ -1,5 +1,7 @@
 <map id="nnp::Mode::evaluateNNP" name="nnp::Mode::evaluateNNP">
-<area shape="rect" id="node1" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="225,31,408,57"/>
-<area shape="rect" id="node2" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="64,5,119,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="5,56,177,83"/>
+<area shape="rect" id="Node000001" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="225,31,408,56"/>
+<area shape="rect" id="Node000002" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="64,5,119,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="211,34,118,24,119,18,211,29"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Prediction.html#af86efaec86e8002a84368c7282704858" title=" " alt="" coords="5,55,177,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="212,57,178,61,177,56,211,52"/>
 </map>

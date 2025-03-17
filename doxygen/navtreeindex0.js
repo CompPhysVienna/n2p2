@@ -39,9 +39,6 @@ var NAVTREEINDEX0 =
 "EwaldSetup_8cpp.html":[2,0,2,14],
 "EwaldSetup_8cpp_source.html":[2,0,2,14],
 "EwaldSetup_8h.html":[2,0,2,15],
-"EwaldSetup_8h.html#a2114f19077189df6123879a0a8543ac3":[2,0,2,15,1],
-"EwaldSetup_8h.html#a2114f19077189df6123879a0a8543ac3a7027aa65a457155382d8a256d844741c":[2,0,2,15,1,1],
-"EwaldSetup_8h.html#a2114f19077189df6123879a0a8543ac3afbfd57106f2f6a6e40c938f8e2b4f204":[2,0,2,15,1,0],
 "EwaldSetup_8h_source.html":[2,0,2,15],
 "EwaldTruncJackson_8cpp.html":[2,0,2,16],
 "EwaldTruncJackson_8cpp_source.html":[2,0,2,16],
@@ -52,7 +49,6 @@ var NAVTREEINDEX0 =
 "EwaldTruncKolafaFixR_8h.html":[2,0,2,19],
 "EwaldTruncKolafaFixR_8h_source.html":[2,0,2,19],
 "EwaldTruncKolafaOptEta_8cpp.html":[2,0,2,20],
-"EwaldTruncKolafaOptEta_8cpp.html#ae417f0f37d4302d86a60ebd30ed3b723":[2,0,2,20,0],
 "EwaldTruncKolafaOptEta_8cpp_source.html":[2,0,2,20],
 "EwaldTruncKolafaOptEta_8h.html":[2,0,2,21],
 "EwaldTruncKolafaOptEta_8h_source.html":[2,0,2,21],
@@ -95,7 +91,6 @@ var NAVTREEINDEX0 =
 "NeuralNetwork_8cpp.html#ae9e86c8b5c8422daa552e390225303ca":[2,0,2,32,0],
 "NeuralNetwork_8cpp_source.html":[2,0,2,32],
 "NeuralNetwork_8h.html":[2,0,2,33],
-"NeuralNetwork_8h.html#a9d5d806450840488b8da414b84aff1e2":[2,0,2,33,3],
 "NeuralNetwork_8h_source.html":[2,0,2,33],
 "Prediction_8cpp.html":[2,0,2,34],
 "Prediction_8cpp_source.html":[2,0,2,34],
@@ -249,5 +244,10 @@ var NAVTREEINDEX0 =
 "SymGrpExpAngn_8h_source.html":[2,0,2,107],
 "SymGrpExpAngw_8cpp.html":[2,0,2,110],
 "SymGrpExpAngw_8cpp_source.html":[2,0,2,110],
-"SymGrpExpAngw_8h.html":[2,0,2,111]
+"SymGrpExpAngw_8h.html":[2,0,2,111],
+"SymGrpExpAngw_8h_source.html":[2,0,2,111],
+"SymGrpExpRadWeighted_8cpp.html":[2,0,2,114],
+"SymGrpExpRadWeighted_8cpp_source.html":[2,0,2,114],
+"SymGrpExpRadWeighted_8h.html":[2,0,2,115],
+"SymGrpExpRadWeighted_8h_source.html":[2,0,2,115]
 };

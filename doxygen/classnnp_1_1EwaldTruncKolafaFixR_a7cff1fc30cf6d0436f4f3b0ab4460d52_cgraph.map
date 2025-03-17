@@ -1,8 +1,13 @@
 <map id="nnp::EwaldTruncKolafaFixR::calculateParameters" name="nnp::EwaldTruncKolafaFixR::calculateParameters">
-<area shape="rect" id="node1" title=" " alt="" coords="5,136,192,177"/>
-<area shape="rect" id="node2" href="$classnnp_1_1EwaldTruncKolafaFixR.html#a13081ed2bc8278765cac94a452141e6e" title=" " alt="" coords="240,5,427,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1EwaldTruncKolafaFixR.html#a19e45ebe78846e9bbfea719f10635391" title=" " alt="" coords="240,71,427,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1EwaldTruncKolafaFixR.html#a41323a3231e377e3424dbf2bc3549e17" title=" " alt="" coords="240,136,427,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1EwaldStructureData.html#a4c6acd5e63a80510a9e25745d813753e" title=" " alt="" coords="242,201,425,243"/>
-<area shape="rect" id="node6" href="$classnnp_1_1EwaldStructureData.html#a0a539a58e9b536357a8e13b8adb71a4d" title=" " alt="" coords="242,267,425,308"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,133,192,173"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1EwaldTruncKolafaFixR.html#a13081ed2bc8278765cac94a452141e6e" title=" " alt="" coords="240,5,427,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,131,175,93,239,55,254,48,256,53,241,60,178,98,127,135"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1EwaldTruncKolafaFixR.html#a19e45ebe78846e9bbfea719f10635391" title=" " alt="" coords="240,69,427,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="172,131,246,110,247,115,173,136"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1EwaldTruncKolafaFixR.html#a41323a3231e377e3424dbf2bc3549e17" title=" " alt="" coords="240,133,427,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="192,151,226,151,226,156,192,156"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1EwaldStructureData.html#a4c6acd5e63a80510a9e25745d813753e" title=" " alt="" coords="242,197,425,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="173,171,247,191,246,196,172,176"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1EwaldStructureData.html#a0a539a58e9b536357a8e13b8adb71a4d" title=" " alt="" coords="242,261,425,301"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="127,171,178,209,241,247,256,254,254,259,239,252,175,213,123,176"/>
 </map>

@@ -1,6 +1,10 @@
 <map id="nnp::settings::Settings::parseLines" name="nnp::settings::Settings::parseLines">
-<area shape="rect" id="node1" title="Parse lines and create contents map." alt="" coords="5,57,172,98"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="254,5,353,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1settings_1_1Settings.html#adfbd175cb43df4366af4f00069745c1f" title="Check if all keywords are in known&#45;keywords database and for duplicates." alt="" coords="220,57,387,98"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="435,93,519,120"/>
+<area shape="rect" id="Node000001" title="Parse lines and create contents map." alt="" coords="5,55,172,95"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="254,5,353,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="163,53,241,32,242,37,165,58"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1settings_1_1Settings.html#adfbd175cb43df4366af4f00069745c1f" title="Check if all keywords are in known&#45;keywords database and for duplicates." alt="" coords="220,55,387,95"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="173,73,206,73,206,78,173,78"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="435,92,519,117"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="159,93,220,105,267,109,303,108,387,105,421,104,421,109,387,110,303,114,267,114,220,110,158,98"/>
+<area shape="poly" id="edge3_Node000004_Node000005" title=" " alt="" coords="387,87,422,93,421,98,387,92"/>
 </map>

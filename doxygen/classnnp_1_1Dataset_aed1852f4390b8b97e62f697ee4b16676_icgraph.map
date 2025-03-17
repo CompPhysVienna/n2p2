@@ -1,5 +1,7 @@
 <map id="nnp::Dataset::getNumStructures" name="nnp::Dataset::getNumStructures">
-<area shape="rect" id="node1" title="Get number of structures in data file." alt="" coords="228,42,459,69"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors." alt="" coords="5,5,180,47"/>
-<area shape="rect" id="node3" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="65,71,120,98"/>
+<area shape="rect" id="Node000001" title="Get number of structures in data file." alt="" coords="228,42,459,67"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors." alt="" coords="5,5,180,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,43,180,38,181,33,222,38"/>
+<area shape="rect" id="Node000004" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="65,70,120,95"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="216,72,120,82,120,77,216,66"/>
 </map>

@@ -1,0 +1,5 @@
+<map id="nnp::Vec3D::operator*=" name="nnp::Vec3D::operator*=">
+<area shape="rect" id="Node000001" title="Overload * operator to implement (left) multiplication with a matrix defined as Vec3D A[3]." alt="" coords="5,5,181,31"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Vec3D.html#a5701bd8f2791ad4451d88f79fcadcdf8" title="Constructor, initializes to zero." alt="" coords="229,5,373,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,15,216,15,216,21,182,21"/>
+</map>

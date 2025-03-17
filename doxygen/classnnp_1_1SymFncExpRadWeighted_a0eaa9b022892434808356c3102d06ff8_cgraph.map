@@ -1,7 +1,7 @@
 <map id="nnp::SymFncExpRadWeighted::setParameters" name="nnp::SymFncExpRadWeighted::setParameters">
-<area shape="rect" id="node1" title="Set symmetry function parameters." alt="" coords="5,90,221,131"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="298,5,397,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1CutoffFunction.html#a6c7e681af3177f922e80f6896b210f26" title="Set parameter for polynomial cutoff function (CT_POLY)." alt="" coords="269,57,425,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CutoffFunction.html#afc4ce48d3fe6450efb47ed3e2c1de239" title="Set cutoff radius." alt="" coords="273,122,421,163"/>
-<area shape="rect" id="node5" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="306,188,389,215"/>
+<area shape="rect" id="Node000001" title="Set symmetry function parameters." alt="" coords="5,23,221,63"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="269,5,368,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,27,255,23,256,28,222,33"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="277,55,360,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="222,53,264,58,263,64,221,59"/>
 </map>

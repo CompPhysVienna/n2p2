@@ -2,10 +2,18 @@ var searchData=
 [
   ['g_0',['G',['../structnnp_1_1Atom.html#abc64f09e49aabb8112004f5af6983102',1,'nnp::Atom']]],
   ['gamma_1',['gamma',['../classnnp_1_1KalmanFilter.html#a8063c20c2e7500b2b12d3a6796fbe81e',1,'nnp::KalmanFilter']]],
-  ['globsett_2',['GlobSett',['../classnnp_1_1EwaldSetup.html#acec7e7b1867f6cf616a785ee0f387924',1,'nnp::EwaldSetup']]],
-  ['gmax_3',['Gmax',['../classnnp_1_1SymFnc.html#a6bb409d8c7ca0b071e740d821d20b56b',1,'nnp::SymFnc::Gmax()'],['../structnnp_1_1SymFncStatistics_1_1Container.html#ab75fe1443239635942456b39bb912285',1,'nnp::SymFncStatistics::Container::Gmax()']]],
-  ['gmean_4',['Gmean',['../classnnp_1_1SymFnc.html#a3f875d5e54e18a77165796536b83c9dd',1,'nnp::SymFnc']]],
-  ['gmin_5',['Gmin',['../classnnp_1_1SymFnc.html#ade0743d75d77f0dbd3364e74cd73db16',1,'nnp::SymFnc::Gmin()'],['../structnnp_1_1SymFncStatistics_1_1Container.html#ae6ea5245a63aec90f2bb983504a347cd',1,'nnp::SymFncStatistics::Container::Gmin()']]],
-  ['gradient_6',['gradient',['../classnnp_1_1GradientDescent.html#a98051f7000fef22ae56b2ae387eb020e',1,'nnp::GradientDescent']]],
-  ['gsigma_7',['Gsigma',['../classnnp_1_1SymFnc.html#ad582f6286705ef575e0c6f39eab7cced',1,'nnp::SymFnc']]]
+  ['gammasqrt2_2',['gammaSqrt2',['../classLAMMPS__NS_1_1PairHDNNP4G.html#ae685073d69d8b4fcf2d6c0b440817d17',1,'LAMMPS_NS::PairHDNNP4G']]],
+  ['gc_3',['gc',['../classLAMMPS__NS_1_1KSpaceHDNNP.html#a4d6f9929a6f549b167b374943033af93',1,'LAMMPS_NS::KSpaceHDNNP']]],
+  ['gc_5fbuf1_4',['gc_buf1',['../classLAMMPS__NS_1_1KSpaceHDNNP.html#a5ce80744815b13e1d8bcb49578d6f0d6',1,'LAMMPS_NS::KSpaceHDNNP']]],
+  ['gc_5fbuf2_5',['gc_buf2',['../classLAMMPS__NS_1_1KSpaceHDNNP.html#a2aca5171fa8a87e2ddd177fcd3cf9a2e',1,'LAMMPS_NS::KSpaceHDNNP']]],
+  ['gf_5fb_6',['gf_b',['../classLAMMPS__NS_1_1KSpaceHDNNP.html#ad4317a255cb7a4f8e365b79c60d20a4b',1,'LAMMPS_NS::KSpaceHDNNP']]],
+  ['globsett_7',['GlobSett',['../classnnp_1_1EwaldSetup.html#acec7e7b1867f6cf616a785ee0f387924',1,'nnp::EwaldSetup']]],
+  ['gmax_8',['Gmax',['../classnnp_1_1SymFnc.html#a6bb409d8c7ca0b071e740d821d20b56b',1,'nnp::SymFnc::Gmax'],['../structnnp_1_1SymFncStatistics_1_1Container.html#ab75fe1443239635942456b39bb912285',1,'nnp::SymFncStatistics::Container::Gmax']]],
+  ['gmean_9',['Gmean',['../classnnp_1_1SymFnc.html#a3f875d5e54e18a77165796536b83c9dd',1,'nnp::SymFnc']]],
+  ['gmin_10',['Gmin',['../classnnp_1_1SymFnc.html#ade0743d75d77f0dbd3364e74cd73db16',1,'nnp::SymFnc::Gmin'],['../structnnp_1_1SymFncStatistics_1_1Container.html#ae6ea5245a63aec90f2bb983504a347cd',1,'nnp::SymFncStatistics::Container::Gmin']]],
+  ['grad_5ftol_11',['grad_tol',['../classLAMMPS__NS_1_1PairHDNNP4G.html#a41cfb45d58abb19170a2212c9775b74f',1,'LAMMPS_NS::PairHDNNP4G']]],
+  ['gradient_12',['gradient',['../classnnp_1_1GradientDescent.html#a98051f7000fef22ae56b2ae387eb020e',1,'nnp::GradientDescent']]],
+  ['greensfn_13',['greensfn',['../classLAMMPS__NS_1_1KSpaceHDNNP.html#ae3b739b75802ceeed5d1e64b132be614',1,'LAMMPS_NS::KSpaceHDNNP']]],
+  ['gsigma_14',['Gsigma',['../classnnp_1_1SymFnc.html#ad582f6286705ef575e0c6f39eab7cced',1,'nnp::SymFnc']]],
+  ['gsqmx_15',['gsqmx',['../classLAMMPS__NS_1_1KSpaceHDNNP.html#ab4b46b0af2045284bc074e876302f740',1,'LAMMPS_NS::KSpaceHDNNP']]]
 ];

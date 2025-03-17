@@ -1,5 +1,7 @@
 <map id="nnp::Element::addSymmetryFunction" name="nnp::Element::addSymmetryFunction">
-<area shape="rect" id="node1" title="Add one symmetry function." alt="" coords="5,23,213,65"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="261,5,360,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="269,56,352,83"/>
+<area shape="rect" id="Node000001" title="Add one symmetry function." alt="" coords="5,23,213,63"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="261,5,360,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="213,28,247,23,248,28,214,33"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="269,55,352,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="214,53,256,58,255,63,213,58"/>
 </map>

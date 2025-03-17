@@ -1,7 +1,11 @@
 <map id="nnp::EwaldSetup" name="nnp::EwaldSetup">
-<area shape="rect" id="node1" title="Setup data for Ewald summation." alt="" coords="328,81,459,108"/>
-<area shape="rect" id="node2" href="$structnnp_1_1EwaldParameters.html" title=" " alt="" coords="16,5,183,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="24,56,175,83"/>
-<area shape="rect" id="node4" href="$structnnp_1_1EwaldGlobalSettings.html" title=" " alt="" coords="5,107,193,133"/>
-<area shape="rect" id="node5" title=" " alt="" coords="20,158,179,199"/>
+<area shape="rect" id="Node000001" title="Setup data for Ewald summation." alt="" coords="328,80,459,105"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1EwaldParameters.html" title=" " alt="" coords="16,5,183,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,31,305,55,364,77,363,82,303,61,196,36"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="24,55,175,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="189,72,328,84,328,90,188,78"/>
+<area shape="rect" id="Node000005" href="$structnnp_1_1EwaldGlobalSettings.html" title=" " alt="" coords="5,104,193,129"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="207,115,304,109,339,103,340,108,304,114,207,120"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="20,154,179,194"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="192,161,247,151,303,135,339,120,370,103,373,108,341,125,305,141,249,156,193,166"/>
 </map>

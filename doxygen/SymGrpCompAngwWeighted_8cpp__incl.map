@@ -1,12 +1,27 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/SymGrpCompAngwWeighted.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/SymGrpCompAngwWeighted.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="333,5,587,61"/>
-<area shape="rect" id="node2" href="$SymGrpCompAngwWeighted_8h.html" title=" " alt="" coords="79,109,300,136"/>
-<area shape="rect" id="node3" href="$SymFncCompAngwWeighted_8h.html" title=" " alt="" coords="5,184,227,211"/>
-<area shape="rect" id="node4" href="$Atom_8h.html" title=" " alt="" coords="425,109,495,136"/>
-<area shape="rect" id="node5" href="$Vec3D_8h.html" title=" " alt="" coords="397,184,472,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="354,259,417,285"/>
-<area shape="rect" id="node7" title=" " alt="" coords="489,259,575,285"/>
-<area shape="rect" id="node8" href="$SymFnc_8h.html" title=" " alt="" coords="570,109,657,136"/>
-<area shape="rect" id="node9" href="$utility_8h.html" title=" " alt="" coords="681,109,751,136"/>
-<area shape="rect" id="node10" title=" " alt="" coords="709,184,795,211"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="333,5,587,60"/>
+<area shape="rect" id="Node000002" href="$SymGrpCompAngwWeighted_8h.html" title=" " alt="" coords="79,108,300,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="378,63,239,106,237,101,377,58"/>
+<area shape="rect" id="Node000015" href="$SymFncCompAngwWeighted_8h.html" title=" " alt="" coords="5,181,227,207"/>
+<area shape="poly" id="edge8_Node000001_Node000015" title=" " alt="" coords="332,43,253,52,174,65,109,84,85,96,69,110,63,124,67,140,78,156,92,170,88,174,74,159,63,142,58,124,64,106,82,92,107,79,173,60,252,47,332,38"/>
+<area shape="rect" id="Node000021" href="$Atom_8h.html" title=" " alt="" coords="425,108,495,133"/>
+<area shape="poly" id="edge3_Node000001_Node000021" title=" " alt="" coords="463,60,463,94,457,94,457,60"/>
+<area shape="rect" id="Node000022" href="$Vec3D_8h.html" title=" " alt="" coords="397,181,472,207"/>
+<area shape="poly" id="edge9_Node000001_Node000022" title=" " alt="" coords="441,62,426,84,416,109,414,124,415,139,424,168,419,170,410,140,408,124,411,107,422,81,436,59"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="354,255,417,280"/>
+<area shape="poly" id="edge14_Node000001_Node000014" title=" " alt="" coords="440,61,409,109,395,144,388,182,386,241,381,241,383,181,390,143,404,107,436,59"/>
+<area shape="rect" id="Node000023" title=" " alt="" coords="489,255,575,280"/>
+<area shape="poly" id="edge15_Node000001_Node000023" title=" " alt="" coords="482,59,509,107,520,143,527,179,534,241,528,241,522,180,515,144,504,109,478,61"/>
+<area shape="rect" id="Node000018" href="$SymFnc_8h.html" title=" " alt="" coords="570,108,657,133"/>
+<area shape="poly" id="edge7_Node000001_Node000018" title=" " alt="" coords="508,58,582,99,580,104,506,62"/>
+<area shape="rect" id="Node000026" href="$utility_8h.html" title=" " alt="" coords="681,108,751,133"/>
+<area shape="poly" id="edge10_Node000001_Node000026" title=" " alt="" coords="539,58,670,101,668,106,537,63"/>
+<area shape="rect" id="Node000030" title=" " alt="" coords="709,181,795,207"/>
+<area shape="poly" id="edge13_Node000001_Node000030" title=" " alt="" coords="588,47,643,57,696,70,739,86,766,106,773,121,775,138,767,169,762,168,769,137,768,123,762,110,736,91,694,75,642,62,587,52"/>
+<area shape="poly" id="edge2_Node000002_Node000015" title=" " alt="" coords="179,136,140,174,136,170,175,132"/>
+<area shape="poly" id="edge4_Node000021_Node000022" title=" " alt="" coords="458,135,446,169,441,168,453,133"/>
+<area shape="poly" id="edge5_Node000022_Node000014" title=" " alt="" coords="429,209,403,245,399,242,424,205"/>
+<area shape="poly" id="edge6_Node000022_Node000023" title=" " alt="" coords="452,205,506,244,503,248,449,209"/>
+<area shape="poly" id="edge11_Node000026_Node000023" title=" " alt="" coords="703,136,559,248,556,244,699,132"/>
+<area shape="poly" id="edge12_Node000026_Node000030" title=" " alt="" coords="724,132,742,168,738,170,720,135"/>
 </map>

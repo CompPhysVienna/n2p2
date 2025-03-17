@@ -14,6 +14,9 @@ var hierarchy =
     [ "nnp::EwaldParameters", "structnnp_1_1EwaldParameters.html", null ],
     [ "nnp::EwaldSetup", "classnnp_1_1EwaldSetup.html", null ],
     [ "nnp::EwaldStructureData", "classnnp_1_1EwaldStructureData.html", null ],
+    [ "Fix", "classFix.html", [
+      [ "LAMMPS_NS::FixHDNNP", "classLAMMPS__NS_1_1FixHDNNP.html", null ]
+    ] ],
     [ "nnp::IEwaldTrunc", "classnnp_1_1IEwaldTrunc.html", [
       [ "nnp::EwaldTruncJackson", "classnnp_1_1EwaldTruncJackson.html", null ],
       [ "nnp::EwaldTruncKolafaFixR", "classnnp_1_1EwaldTruncKolafaFixR.html", null ],
@@ -23,6 +26,9 @@ var hierarchy =
       [ "nnp::settings::Settings", "classnnp_1_1settings_1_1Settings.html", null ]
     ] ],
     [ "nnp::settings::Key", "classnnp_1_1settings_1_1Key.html", null ],
+    [ "KSpace", "classKSpace.html", [
+      [ "LAMMPS_NS::KSpaceHDNNP", "classLAMMPS__NS_1_1KSpaceHDNNP.html", null ]
+    ] ],
     [ "nnp::KspaceGrid", "classnnp_1_1KspaceGrid.html", null ],
     [ "nnp::Kvector", "classnnp_1_1Kvector.html", null ],
     [ "nnp::NeuralNetwork::Layer", "structnnp_1_1NeuralNetwork_1_1Layer.html", null ],
@@ -47,6 +53,7 @@ var hierarchy =
       [ "LAMMPS_NS::PairHDNNP", "classLAMMPS__NS_1_1PairHDNNP.html", [
         [ "LAMMPS_NS::PairHDNNPDevelop", "classLAMMPS__NS_1_1PairHDNNPDevelop.html", null ]
       ] ],
+      [ "LAMMPS_NS::PairHDNNP4G", "classLAMMPS__NS_1_1PairHDNNP4G.html", null ],
       [ "LAMMPS_NS::PairHDNNPExternal", "classLAMMPS__NS_1_1PairHDNNPExternal.html", null ]
     ] ],
     [ "nnp::Training::Property", "structnnp_1_1Training_1_1Property.html", null ],

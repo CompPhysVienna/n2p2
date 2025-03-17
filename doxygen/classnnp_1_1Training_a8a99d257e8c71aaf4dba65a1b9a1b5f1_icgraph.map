@@ -1,4 +1,5 @@
 <map id="nnp::Training::setupFileOutput" name="nnp::Training::setupFileOutput">
-<area shape="rect" id="node1" title="Set file output intervals for properties and other quantities." alt="" coords="253,5,425,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="5,13,205,39"/>
+<area shape="rect" id="Node000001" title="Set file output intervals for properties and other quantities." alt="" coords="253,5,425,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a2b2b016d87bcea95f460b8a2ae93b451" title="General training settings and setup of weight update routine." alt="" coords="5,13,205,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,28,206,28,206,23,240,23"/>
 </map>

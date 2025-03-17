@@ -1,4 +1,5 @@
 <map id="nnp::Training" name="nnp::Training">
-<area shape="rect" id="node1" title="Training methods." alt="" coords="5,80,111,107"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html" title="Collect and process large data sets." alt="" coords="5,5,111,32"/>
+<area shape="rect" id="Node000001" title="Training methods." alt="" coords="5,79,111,104"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Dataset.html" title="Collect and process large data sets." alt="" coords="5,5,111,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,44,61,79,55,79,55,44"/>
 </map>

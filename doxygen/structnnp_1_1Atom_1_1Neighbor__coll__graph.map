@@ -1,9 +1,18 @@
 <map id="nnp::Atom::Neighbor" name="nnp::Atom::Neighbor">
-<area shape="rect" id="node1" title="Struct to store information on neighbor atoms." alt="" coords="147,300,303,327"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,196,65,223"/>
-<area shape="rect" id="node3" title=" " alt="" coords="90,196,157,223"/>
-<area shape="rect" id="node4" title=" " alt="" coords="277,5,343,32"/>
-<area shape="rect" id="node5" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="263,95,357,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="435,145,601,172"/>
-<area shape="rect" id="node7" title=" " alt="" coords="297,196,491,223"/>
+<area shape="rect" id="Node000001" title="Struct to store information on neighbor atoms." alt="" coords="147,295,303,320"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,192,65,217"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="45,229,55,251,70,269,107,288,147,299,146,304,105,293,67,273,50,253,40,232"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="90,192,157,217"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="131,229,139,250,152,269,169,282,188,292,186,297,166,287,148,272,135,253,126,231"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="277,5,343,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="289,42,269,66,252,94,235,151,228,209,227,294,221,294,222,208,230,150,248,92,265,63,285,39"/>
+<area shape="rect" id="Node000005" href="$structnnp_1_1Vec3D.html" title="Vector in 3 dimensional real space." alt="" coords="263,93,357,119"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="313,45,313,93,307,93,307,45"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="435,143,601,168"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="340,36,502,140,499,145,338,40"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="300,132,270,193,231,295,226,294,265,191,295,130"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="297,192,491,217"/>
+<area shape="poly" id="edge9_Node000007_Node000005" title=" " alt="" coords="329,128,360,166,384,190,380,194,356,170,325,132"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="520,182,515,201,505,219,485,239,461,256,409,281,355,297,303,305,302,300,353,292,407,276,459,252,481,235,501,216,510,199,515,181"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="364,227,245,297,243,292,361,222"/>
 </map>

@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Symmetry function types &mdash; n2p2 - A neural network potential package &#34;61daa0d&#34; documentation</title>
+  <title>Symmetry function types &mdash; n2p2 - A neural network potential package &#34;29b9c9f&#34; documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=76d34e72"></script>
+      <script src="../_static/documentation_options.js?v=0f467aac"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -84,34 +84,34 @@
 <li class="toctree-l1"><a class="reference internal" href="cutoff_functions.html">Cutoff functions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Symmetry function types</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#behler-and-parrinello-prl-2007">Behler and Parrinello PRL 2007</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp12SymFncExpRadE"><code class="docutils literal notranslate"><span class="pre">SymFncExpRad</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncExpAngnE"><code class="docutils literal notranslate"><span class="pre">SymFncExpAngn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp12SymFncExpRadE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncExpRad</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncExpAngnE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncExpAngn</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#behler-jcp-2011">Behler JCP 2011</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncExpAngwE"><code class="docutils literal notranslate"><span class="pre">SymFncExpAngw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncExpAngwE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncExpAngw</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gastegger-et-al-jcp-2018">Gastegger et al. JCP 2018</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp20SymFncExpRadWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncExpRadWeighted</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncExpAngnWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp20SymFncExpRadWeightedE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncExpRadWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncExpAngnWeighted</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#bircher-et-al-arxiv-2020">Bircher et al. arXiv 2020</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncCompRadE"><code class="docutils literal notranslate"><span class="pre">SymFncCompRad</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncCompAngnE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngn</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncCompAngwE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngw</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp21SymFncCompRadWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncCompRadWeighted</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngnWeighted</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE"><code class="docutils literal notranslate"><span class="pre">SymFncCompAngwWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp13SymFncCompRadE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncCompRad</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncCompAngnE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncCompAngn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncCompAngwE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncCompAngw</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp21SymFncCompRadWeightedE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncCompRadWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncCompAngnWeighted</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE"><code class="docutils literal notranslate"><span class="pre">nnp::SymFncCompAngwWeighted</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp14SymFncBaseComp18setCompactFunctionENSt6stringE"><code class="docutils literal notranslate"><span class="pre">setCompactFunction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4TypeE"><code class="docutils literal notranslate"><span class="pre">Type</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type3COSE"><code class="docutils literal notranslate"><span class="pre">Type::COS</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY1E"><code class="docutils literal notranslate"><span class="pre">Type::POLY1</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY2E"><code class="docutils literal notranslate"><span class="pre">Type::POLY2</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY3E"><code class="docutils literal notranslate"><span class="pre">Type::POLY3</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY4E"><code class="docutils literal notranslate"><span class="pre">Type::POLY4</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type3EXPE"><code class="docutils literal notranslate"><span class="pre">Type::EXP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type3COSE"><code class="docutils literal notranslate"><span class="pre">COS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY1E"><code class="docutils literal notranslate"><span class="pre">POLY1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY2E"><code class="docutils literal notranslate"><span class="pre">POLY2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY3E"><code class="docutils literal notranslate"><span class="pre">POLY3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type5POLY4E"><code class="docutils literal notranslate"><span class="pre">POLY4</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N3nnp12CoreFunction4Type3EXPE"><code class="docutils literal notranslate"><span class="pre">EXP</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -162,9 +162,8 @@
 <span id="_CPPv3N3nnp12SymFncExpRadE"></span><span id="_CPPv2N3nnp12SymFncExpRadE"></span><span id="nnp::SymFncExpRad"></span><span class="target" id="classnnp_1_1SymFncExpRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp12SymFncExpRadE" title="Link to this definition"></a><br /></dt>
 <dd><p>Radial symmetry function (type 2) </p>
 <p><div class="math notranslate nohighlight">
-\[
-G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
-        f_c(r_{ij}) 
+\[   G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
+           f_c(r_{ij}) 
 \]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
@@ -184,12 +183,11 @@ G^2_i = \sum_{j \neq i} \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
 <span id="_CPPv3N3nnp13SymFncExpAngnE"></span><span id="_CPPv2N3nnp13SymFncExpAngnE"></span><span id="nnp::SymFncExpAngn"></span><span class="target" id="classnnp_1_1SymFncExpAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngnE" title="Link to this definition"></a><br /></dt>
 <dd><p>Angular symmetry function (type 3) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
-        \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-        \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2
-        + (r_{jk}-r_s)^2 ) }
-        f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
+\[\begin{split}   G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+           \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2
+           + (r_{jk}-r_s)^2 ) }
+           f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
 \end{split}\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
 </pre></div>
@@ -215,11 +213,10 @@ G^3_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <span id="_CPPv3N3nnp13SymFncExpAngwE"></span><span id="_CPPv2N3nnp13SymFncExpAngwE"></span><span id="nnp::SymFncExpAngw"></span><span class="target" id="classnnp_1_1SymFncExpAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseExpAng</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncExpAngwE" title="Link to this definition"></a><br /></dt>
 <dd><p>Angular symmetry function (type 9) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
-        \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-        \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
-        f_c(r_{ij}) f_c(r_{ik}) 
+\[\begin{split}   G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+           \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+           \mathrm{e}^{-\eta( (r_{ij}-r_s)^2 + (r_{ik}-r_s)^2 ) }
+           f_c(r_{ij}) f_c(r_{ik}) 
 \end{split}\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="n">rshift</span><span class="o">&gt;&gt;</span>
 </pre></div>
@@ -245,10 +242,9 @@ G^9_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <span id="_CPPv3N3nnp20SymFncExpRadWeightedE"></span><span id="_CPPv2N3nnp20SymFncExpRadWeightedE"></span><span id="nnp::SymFncExpRadWeighted"></span><span class="target" id="classnnp_1_1SymFncExpRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp20SymFncExpRadWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted radial symmetry function (type 12) </p>
 <p><div class="math notranslate nohighlight">
-\[
-G^{12}_i = \sum_{j \neq i} Z_j \,
-           \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
-           f_c(r_{ij}) 
+\[   G^{12}_i = \sum_{j \neq i} Z_j \,
+              \mathrm{e}^{-\eta(r_{ij} - r_\mathrm{s})^2}
+              f_c(r_{ij}) 
 \]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
@@ -267,13 +263,12 @@ G^{12}_i = \sum_{j \neq i} Z_j \,
 <span id="_CPPv3N3nnp21SymFncExpAngnWeightedE"></span><span id="_CPPv2N3nnp21SymFncExpAngnWeightedE"></span><span id="nnp::SymFncExpAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncExpAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncExpAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCutoff</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncExpAngnWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted angular symmetry function (type 13) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
-           Z_j Z_k \,
-           \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
-           \mathrm{e}^{-\eta \left[
-           (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
-           f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
+\[\begin{split}   G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
+              Z_j Z_k \,
+              \left( 1 + \lambda \cos \theta_{ijk} \right)^\zeta
+              \mathrm{e}^{-\eta \left[
+              (r_{ij} - r_s)^2 + (r_{ik} - r_s)^2 + (r_{jk} - r_s)^2 \right] }
+              f_c(r_{ij}) f_c(r_{ik}) f_c(r_{jk}) 
 \end{split}\]</div>
  Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="o">&lt;</span><span class="n">eta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rshift</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lambda</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">zeta</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span>
 </pre></div>
@@ -297,9 +292,8 @@ G^{13}_i = 2^{1-\zeta} \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <span id="_CPPv3N3nnp13SymFncCompRadE"></span><span id="_CPPv2N3nnp13SymFncCompRadE"></span><span id="nnp::SymFncCompRad"></span><span class="target" id="classnnp_1_1SymFncCompRad"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRad</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp13SymFncCompRadE" title="Link to this definition"></a><br /></dt>
 <dd><p>Radial symmetry function with compact support (type 20) </p>
 <p><div class="math notranslate nohighlight">
-\[
-G^{20}_i = \sum_{\substack{j \neq i}}
-           C(r_{ij}, r_l, r_c),
+\[   G^{20}_i = \sum_{\substack{j \neq i}}
+              C(r_{ij}, r_l, r_c),
 \]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
@@ -321,12 +315,11 @@ G^{20}_i = \sum_{\substack{j \neq i}}
 <span id="_CPPv3N3nnp14SymFncCompAngnE"></span><span id="_CPPv2N3nnp14SymFncCompAngnE"></span><span id="nnp::SymFncCompAngn"></span><span class="target" id="classnnp_1_1SymFncCompAngn"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngn</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngnE" title="Link to this definition"></a><br /></dt>
 <dd><p>Narrow angular symmetry function with compact support (type 21) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
-           C(r_{ij}, r_l, r_c)
-           C(r_{ik}, r_l, r_c)
-           C(r_{jk}, r_l, r_c)
-           C(\theta_{ijk}, \theta_l, \theta_r),
+\[\begin{split}   G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(r_{jk}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
@@ -355,11 +348,10 @@ G^{21}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <span id="_CPPv3N3nnp14SymFncCompAngwE"></span><span id="_CPPv2N3nnp14SymFncCompAngwE"></span><span id="nnp::SymFncCompAngw"></span><span class="target" id="classnnp_1_1SymFncCompAngw"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngw</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAng</span></span><a class="headerlink" href="#_CPPv4N3nnp14SymFncCompAngwE" title="Link to this definition"></a><br /></dt>
 <dd><p>Wide angular symmetry function with compact support (type 22) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
-           C(r_{ij}, r_l, r_c)
-           C(r_{ik}, r_l, r_c)
-           C(\theta_{ijk}, \theta_l, \theta_r),
+\[\begin{split}   G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">22</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">neighbor2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
@@ -388,10 +380,9 @@ G^{22}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <span id="_CPPv3N3nnp21SymFncCompRadWeightedE"></span><span id="_CPPv2N3nnp21SymFncCompRadWeightedE"></span><span id="nnp::SymFncCompRadWeighted"></span><span class="target" id="classnnp_1_1SymFncCompRadWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompRadWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseComp</span></span><a class="headerlink" href="#_CPPv4N3nnp21SymFncCompRadWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted radial symmetry function with compact support (type 23) </p>
 <p><div class="math notranslate nohighlight">
-\[
-G^{23}_i = \sum_{\substack{j \neq i}}
-           Z_j
-           C(r_{ij}, r_l, r_c),
+\[   G^{23}_i = \sum_{\substack{j \neq i}}
+              Z_j
+              C(r_{ij}, r_l, r_c),
 \]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">23</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
@@ -412,13 +403,12 @@ G^{23}_i = \sum_{\substack{j \neq i}}
 <span id="_CPPv3N3nnp22SymFncCompAngnWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngnWeightedE"></span><span id="nnp::SymFncCompAngnWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngnWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngnWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngnWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted narrow angular symmetry function with compact support (type 24) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
-           Z_j Z_k
-           C(r_{ij}, r_l, r_c)
-           C(r_{ik}, r_l, r_c)
-           C(r_{jk}, r_l, r_c)
-           C(\theta_{ijk}, \theta_l, \theta_r),
+\[\begin{split}   G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+              Z_j Z_k
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(r_{jk}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>
@@ -445,12 +435,11 @@ G^{24}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
 <span id="_CPPv3N3nnp22SymFncCompAngwWeightedE"></span><span id="_CPPv2N3nnp22SymFncCompAngwWeightedE"></span><span id="nnp::SymFncCompAngwWeighted"></span><span class="target" id="classnnp_1_1SymFncCompAngwWeighted"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SymFncCompAngwWeighted</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">nnp</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">SymFncBaseCompAngWeighted</span></span><a class="headerlink" href="#_CPPv4N3nnp22SymFncCompAngwWeightedE" title="Link to this definition"></a><br /></dt>
 <dd><p>Weighted wide angular symmetry function with compact support (type 25) </p>
 <p><div class="math notranslate nohighlight">
-\[\begin{split}
-G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
-           Z_j Z_k
-           C(r_{ij}, r_l, r_c)
-           C(r_{ik}, r_l, r_c)
-           C(\theta_{ijk}, \theta_l, \theta_r),
+\[\begin{split}   G^{25}_i = \sum_{\substack{j,k\neq i \\ j &lt; k}}
+              Z_j Z_k
+              C(r_{ij}, r_l, r_c)
+              C(r_{ik}, r_l, r_c)
+              C(\theta_{ijk}, \theta_l, \theta_r),
 \end{split}\]</div>
  where <span class="math notranslate nohighlight">\(C(x, x_\text{low}, x_\text{high})\)</span> is a function with compact support <span class="math notranslate nohighlight">\(\left[x_\text{low}, x_\text{high}\right]\)</span>. <span class="math notranslate nohighlight">\(Z_j\)</span> is defined as the atomic number of the neighbor atom <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <p>Parameter string: <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">element</span><span class="o">-</span><span class="n">central</span><span class="o">&gt;</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rlow</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">rcutoff</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">left</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">right</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">subtype</span><span class="o">&gt;</span>

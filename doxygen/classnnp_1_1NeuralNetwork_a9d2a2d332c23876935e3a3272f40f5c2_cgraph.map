@@ -1,4 +1,5 @@
 <map id="nnp::NeuralNetwork::propagate" name="nnp::NeuralNetwork::propagate">
-<area shape="rect" id="node1" title="Propagate input information through all layers." alt="" coords="5,5,157,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1NeuralNetwork.html#a45b217aee588e3a9d443f497e4cc5bf4" title="Propagate information from one layer to the next." alt="" coords="205,5,357,47"/>
+<area shape="rect" id="Node000001" title="Propagate input information through all layers." alt="" coords="5,5,157,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1NeuralNetwork.html#a45b217aee588e3a9d443f497e4cc5bf4" title="Propagate information from one layer to the next." alt="" coords="205,5,357,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="158,23,191,23,191,28,158,28"/>
 </map>

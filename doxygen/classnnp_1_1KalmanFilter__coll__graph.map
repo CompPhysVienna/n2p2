@@ -1,11 +1,20 @@
 <map id="nnp::KalmanFilter" name="nnp::KalmanFilter">
-<area shape="rect" id="node1" title="Implementation of the Kalman filter method." alt="" coords="472,347,609,373"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Updater.html" title="Base class for different weight update methods." alt="" coords="222,85,329,112"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,55,65,81"/>
-<area shape="rect" id="node4" title=" " alt="" coords="224,136,327,163"/>
-<area shape="rect" id="node5" title=" " alt="" coords="242,319,309,345"/>
-<area shape="rect" id="node6" title=" " alt="" coords="179,369,372,396"/>
-<area shape="rect" id="node7" title=" " alt="" coords="192,421,359,462"/>
-<area shape="rect" id="node8" title=" " alt="" coords="191,486,359,527"/>
-<area shape="rect" id="node9" title=" " alt="" coords="235,560,316,587"/>
+<area shape="rect" id="Node000001" title="Implementation of the Kalman filter method." alt="" coords="472,346,609,371"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Updater.html" title="Base class for different weight update methods." alt="" coords="222,86,329,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="343,96,398,107,425,118,450,134,473,158,492,186,519,247,534,304,541,345,535,346,529,305,514,249,488,189,469,161,446,138,423,123,397,112,342,101"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,55,65,81"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="78,54,158,38,207,33,259,32,311,37,362,49,409,71,450,103,474,133,493,166,520,237,535,301,541,345,536,346,529,302,515,238,488,169,469,136,446,107,406,75,360,54,310,42,258,38,207,39,158,44,79,59"/>
+<area shape="poly" id="edge2_Node000002_Node000004" title=" " alt="" coords="80,71,222,89,221,95,79,76"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="224,135,327,161"/>
+<area shape="poly" id="edge3_Node000001_Node000011" title=" " alt="" coords="341,143,396,152,424,162,450,177,470,195,488,217,514,265,531,311,539,345,534,346,526,312,509,267,483,220,466,199,446,181,422,167,395,157,340,149"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="242,319,309,345"/>
+<area shape="poly" id="edge5_Node000001_Node000010" title=" " alt="" coords="323,334,472,349,471,354,322,339"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="179,369,372,394"/>
+<area shape="poly" id="edge6_Node000001_Node000012" title=" " alt="" coords="385,381,448,377,493,369,494,374,448,383,386,387"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="192,419,359,459"/>
+<area shape="poly" id="edge7_Node000001_Node000013" title=" " alt="" coords="372,421,447,401,484,386,516,369,519,374,486,391,449,407,373,427"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="191,483,359,523"/>
+<area shape="poly" id="edge8_Node000001_Node000014" title=" " alt="" coords="362,476,405,458,447,436,492,402,526,370,529,373,495,406,449,441,407,463,364,481"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="235,555,316,581"/>
+<area shape="poly" id="edge9_Node000001_Node000015" title=" " alt="" coords="329,559,389,542,419,529,446,511,479,477,504,438,533,371,538,373,509,440,483,481,450,515,422,534,391,547,330,564"/>
 </map>

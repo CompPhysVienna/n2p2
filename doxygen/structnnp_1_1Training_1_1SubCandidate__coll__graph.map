@@ -1,5 +1,7 @@
 <map id="nnp::Training::SubCandidate" name="nnp::Training::SubCandidate">
-<area shape="rect" id="node1" title="Contains update candidate which is grouped with others to specific parent update candidate (e...." alt="" coords="5,109,208,136"/>
-<area shape="rect" id="node2" title=" " alt="" coords="33,5,93,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="117,5,184,32"/>
+<area shape="rect" id="Node000001" title="Contains update candidate which is grouped with others to specific parent update candidate (e...." alt="" coords="5,108,208,133"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="33,5,93,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="76,42,104,107,99,109,71,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="117,5,184,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="142,45,114,109,109,107,138,42"/>
 </map>

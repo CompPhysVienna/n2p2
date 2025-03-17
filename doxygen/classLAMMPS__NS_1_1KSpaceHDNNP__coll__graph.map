@@ -1,0 +1,20 @@
+<map id="LAMMPS_NS::KSpaceHDNNP" name="LAMMPS_NS::KSpaceHDNNP">
+<area shape="rect" id="Node000001" title=" " alt="" coords="366,315,574,341"/>
+<area shape="rect" id="Node000003" href="$classLAMMPS__NS_1_1PairHDNNP4G.html" title=" " alt="" coords="159,479,362,504"/>
+<area shape="poly" id="edge3_Node000003_Node000001" title=" " alt="" coords="444,351,317,442,274,480,271,476,314,438,441,347"/>
+<area shape="rect" id="Node000002" href="$classKSpace.html" title=" " alt="" coords="320,5,391,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="370,42,375,54,433,207,469,314,464,316,428,209,370,56,365,44"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="374,473,410,453,433,426,449,395,466,340,471,341,454,397,437,429,413,457,376,477"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,5,44,31"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="26,45,26,83,33,130,49,176,62,196,78,214,100,225,131,231,208,232,288,230,322,232,348,237,383,254,414,274,460,313,457,317,411,279,380,258,346,243,321,237,288,236,208,237,130,236,98,230,75,218,58,200,44,178,28,131,21,84,20,45"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="22,45,13,122,14,169,23,215,48,279,76,324,112,365,161,414,203,450,243,476,240,481,200,454,158,418,108,368,72,327,43,281,18,217,9,170,8,122,17,44"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="217,5,283,31"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="256,44,269,147,282,215,296,226,311,229,328,231,348,238,411,277,458,313,455,317,408,281,346,242,327,236,310,234,293,231,277,217,264,147,250,45"/>
+<area shape="poly" id="edge5_Node000003_Node000008" title=" " alt="" coords="252,45,249,201,250,308,254,416,261,478,256,479,249,416,244,308,243,201,246,45"/>
+<area shape="rect" id="Node000100" title=" " alt="" coords="415,5,525,31"/>
+<area shape="poly" id="edge8_Node000001_Node000100" title=" " alt="" coords="473,44,473,315,467,315,467,44"/>
+<area shape="rect" id="Node000101" title=" " alt="" coords="549,5,665,31"/>
+<area shape="poly" id="edge9_Node000001_Node000101" title=" " alt="" coords="599,44,478,316,473,314,594,42"/>
+<area shape="rect" id="Node000102" title=" " alt="" coords="689,5,803,31"/>
+<area shape="poly" id="edge10_Node000001_Node000102" title=" " alt="" coords="740,45,705,126,678,174,644,218,608,251,568,279,498,317,495,313,565,274,605,247,640,214,673,171,700,124,735,42"/>
+</map>

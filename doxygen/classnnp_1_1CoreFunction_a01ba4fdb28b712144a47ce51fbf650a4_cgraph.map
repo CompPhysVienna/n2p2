@@ -1,4 +1,5 @@
 <map id="nnp::CoreFunction::setType" name="nnp::CoreFunction::setType">
-<area shape="rect" id="node1" title="Set function type." alt="" coords="5,5,152,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1CoreFunction.html#a928f5a2b5727f9dd2ed33ade7f72dade" title="Set function type." alt="" coords="200,5,347,47"/>
+<area shape="rect" id="Node000001" title="Set function type." alt="" coords="5,5,152,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1CoreFunction.html#a928f5a2b5727f9dd2ed33ade7f72dade" title="Set function type." alt="" coords="200,5,347,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,23,186,23,186,28,152,28"/>
 </map>

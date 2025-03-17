@@ -44,7 +44,8 @@ var NAVTREE =
         [ "Variables", "functions_vars.html", "functions_vars" ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
-        [ "Enumerator", "functions_eval.html", null ]
+        [ "Enumerator", "functions_eval.html", null ],
+        [ "Related Symbols", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -53,6 +54,7 @@ var NAVTREE =
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
         [ "Variables", "globals_vars.html", null ],
+        [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
@@ -64,23 +66,25 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Atom_8cpp.html",
-"SymGrpExpAngw_8h_source.html",
-"classnnp_1_1CoreFunction.html#ad4f7226d932ed3fa59a24007d2d40ed6",
-"classnnp_1_1Element.html#ab478f310ab026e1c57b12dd1096eb905",
-"classnnp_1_1GradientDescent.html",
-"classnnp_1_1KalmanFilter.html#afd60320bc82cb87db51c925133ef7f22",
-"classnnp_1_1ModeCabana.html#a10684dbb7f8fe9a644d5a493933d9c9e",
-"classnnp_1_1NeuralNetwork.html#ad88ef411d3514a71f20a880f0ba81336",
-"classnnp_1_1SymFncBaseComp.html#a0a6494f56f637a6b27b8e0edc74d268e",
-"classnnp_1_1SymFncCompRad.html#ac0bad5a796a0ee996e995ec735af96f9",
-"classnnp_1_1SymGrp.html#a9827e7da1cc74cc60d3df83bb6f437d2",
-"classnnp_1_1SymGrpCompRadWeighted.html#a14291e2a4f87deb18117e8c8905e4735",
-"classnnp_1_1Training.html#a79df98867453f340a4cea8a9e432be98",
-"functions_func_s.html",
-"structnnp_1_1Atom.html#a8b6403674a98b82e02508193fa86f196",
-"structnnp_1_1Structure.html#a6c2903270f6db9ebf27d59dab9bd2914",
-"structnnp_1_1Vec3D.html#acb8ab5515d194a43e10c2fa43636dffc"
+"SymGrpExpRad_8cpp.html",
+"classLAMMPS__NS_1_1KSpaceHDNNP.html#a5ae05cf43f96253f6ccbced5832d3f1a",
+"classLAMMPS__NS_1_1PairHDNNP.html#ac70798487946ec127bf86267b9ce0c10",
+"classnnp_1_1CompactFunction.html#a46932c40a4c0ee9394ec23115a383733",
+"classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671",
+"classnnp_1_1EwaldSetup.html#abe686fd50a4f523e228a15a87bddc57d",
+"classnnp_1_1InterfaceLammps.html#ab13d05c75565b694a19aca7265e3216b",
+"classnnp_1_1Mode.html#a373073bd1acb1c9ac293369bb892bdc4",
+"classnnp_1_1ModeCabana.html#ad16e78cd9b3bef6b869b8dcca3a7cccb",
+"classnnp_1_1SymFnc.html",
+"classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e",
+"classnnp_1_1SymFncExpAngw.html#a4fbd2c8fbfb66d2511c8dd6d5aa16cb8",
+"classnnp_1_1SymGrpBaseCutoff.html#a6fff348435aab68431cb5d56794a4b81",
+"classnnp_1_1SymGrpExpRad.html#a36be577c2784b23fc4c91704d432d55b",
+"classnnp_1_1Training.html#af600a10225c7035afa59ce709bc105a7",
+"namespacennp.html#a2114f19077189df6123879a0a8543ac3a7027aa65a457155382d8a256d844741c",
+"structnnp_1_1Atom_1_1Neighbor.html#ae02c5c3425292b8ea157ae9403176a67",
+"structnnp_1_1Structure.html#adee965dec483f9479378a2ed4acd5544"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';

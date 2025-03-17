@@ -1,5 +1,7 @@
 <map id="nnp::ScreeningFunction::f" name="nnp::ScreeningFunction::f">
-<area shape="rect" id="node1" title="Screening function ." alt="" coords="276,46,463,73"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ac91c699d5b568d865f43ab30fe42f250" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="5,5,228,47"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="27,71,207,112"/>
+<area shape="rect" id="Node000001" title="Screening function ." alt="" coords="276,45,463,70"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#ac91c699d5b568d865f43ab30fe42f250" title="Calculates partial derivatives of electrostatic Energy with respect to atom&#39;s coordinates and charges..." alt="" coords="5,5,228,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="262,46,228,42,228,37,263,41"/>
+<area shape="rect" id="Node000014" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="27,69,207,109"/>
+<area shape="poly" id="edge2_Node000001_Node000014" title=" " alt="" coords="263,73,207,81,207,75,262,68"/>
 </map>

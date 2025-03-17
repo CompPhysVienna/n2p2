@@ -1,5 +1,7 @@
 <map id="nnp::Mode::setupNormalization" name="nnp::Mode::setupNormalization">
-<area shape="rect" id="node1" title="Set up normalization." alt="" coords="308,31,535,57"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,5,260,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="41,56,225,83"/>
+<area shape="rect" id="Node000001" title="Set up normalization." alt="" coords="308,31,535,56"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,5,260,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="294,35,260,32,260,27,295,30"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="41,55,225,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="294,57,225,62,224,57,294,51"/>
 </map>

@@ -1,7 +1,9 @@
 <map id="nnp::SymFncCompRad::setParameters" name="nnp::SymFncCompRad::setParameters">
-<area shape="rect" id="node1" title="Set symmetry function parameters." alt="" coords="5,90,175,131"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="261,5,360,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseComp.html#af9759a78267835f7af4c79f64199e26e" title="Set radial compact function." alt="" coords="223,57,399,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CompactFunction.html#a65c304f6f85aec522949063e4068f54b" title="Set left and right boundary." alt="" coords="227,122,394,163"/>
-<area shape="rect" id="node5" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="269,188,352,215"/>
+<area shape="rect" id="Node000001" title="Set symmetry function parameters." alt="" coords="5,55,175,95"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="261,5,360,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,53,247,32,248,37,168,58"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFncBaseComp.html#af9759a78267835f7af4c79f64199e26e" title="Set radial compact function." alt="" coords="223,55,399,95"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="175,73,209,73,209,78,175,78"/>
+<area shape="rect" id="Node000006" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="269,120,352,145"/>
+<area shape="poly" id="edge3_Node000001_Node000006" title=" " alt="" coords="168,93,257,116,255,121,167,98"/>
 </map>

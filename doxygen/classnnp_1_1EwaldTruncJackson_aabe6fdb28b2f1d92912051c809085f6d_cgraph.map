@@ -1,7 +1,11 @@
 <map id="nnp::EwaldTruncJackson::calculateParameters" name="nnp::EwaldTruncJackson::calculateParameters">
-<area shape="rect" id="node1" title=" " alt="" coords="5,104,183,145"/>
-<area shape="rect" id="node2" href="$classnnp_1_1EwaldTruncJackson.html#a260ef3d4fa4f25311f2a265f57061c28" title=" " alt="" coords="233,5,411,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1EwaldTruncJackson.html#ada7cf2078394e629e6b6fc5d6ca89ff9" title=" " alt="" coords="233,71,411,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1EwaldTruncJackson.html#abfa1ef79a22bdc5d25827c242c3b6f21" title=" " alt="" coords="233,136,411,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1EwaldStructureData.html#a0a539a58e9b536357a8e13b8adb71a4d" title=" " alt="" coords="231,201,413,243"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,101,183,141"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1EwaldTruncJackson.html#a260ef3d4fa4f25311f2a265f57061c28" title=" " alt="" coords="233,5,411,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="134,99,230,55,248,48,250,53,232,60,136,104"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1EwaldTruncJackson.html#ada7cf2078394e629e6b6fc5d6ca89ff9" title=" " alt="" coords="233,69,411,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,106,220,101,220,106,183,112"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1EwaldTruncJackson.html#abfa1ef79a22bdc5d25827c242c3b6f21" title=" " alt="" coords="233,133,411,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="183,131,220,136,220,142,183,136"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1EwaldStructureData.html#a0a539a58e9b536357a8e13b8adb71a4d" title=" " alt="" coords="231,197,413,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="136,139,232,183,250,190,248,195,230,188,134,144"/>
 </map>

@@ -1,7 +1,11 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Log.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Log.h">
-<area shape="rect" id="node1" title=" " alt="" coords="83,5,264,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,67,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="91,95,165,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="189,95,248,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="273,95,335,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="83,5,264,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,67,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,48,70,89,67,84,139,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="91,93,165,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="165,47,144,83,139,80,160,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="189,93,248,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="187,44,207,80,203,83,182,47"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="273,93,335,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="206,43,274,84,272,88,204,48"/>
 </map>

@@ -1,4 +1,6 @@
 <map id="nnp::settings::Settings::keywordExists" name="nnp::settings::Settings::keywordExists">
-<area shape="rect" id="node1" title=" " alt="" coords="5,29,172,71"/>
-<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Key.html#a00b0b7b8ff43f5c7f33bb67d7db7e9e6" title=" " alt="" coords="220,29,359,71"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,29,172,69"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="51,30,49,20,55,11,68,5,89,3,112,6,125,13,122,18,110,11,89,8,70,10,58,15,54,21,56,28"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1settings_1_1Key.html#a00b0b7b8ff43f5c7f33bb67d7db7e9e6" title=" " alt="" coords="220,29,359,69"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,47,206,47,206,52,172,52"/>
 </map>

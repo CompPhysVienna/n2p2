@@ -1,26 +1,62 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,654,60,681"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="111,5,336,47"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="387,787,471,814"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="111,123,336,164"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Dataset.html#a1a204e7dc1bdf91a515b18a0ef06704c" title="Collect symmetry function statistics from all processors." alt="" coords="111,188,335,229"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors." alt="" coords="136,253,311,295"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9" title="Getter for Mode::maxCutoffRadius." alt="" coords="108,319,339,346"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#a2dbf87eaa9cc33fa740e03608acdf156" title="Getter for Mode::numElements." alt="" coords="118,370,329,397"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="146,421,301,447"/>
-<area shape="rect" id="node10" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="122,471,325,498"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="132,523,315,564"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file." alt="" coords="120,588,327,629"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="131,654,315,681"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455" title="Initialize MPI with MPI_COMM_WORLD." alt="" coords="137,729,310,755"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632" title="Initialize random number generator." alt="" coords="122,780,325,821"/>
-<area shape="rect" id="node16" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="122,845,325,887"/>
-<area shape="rect" id="node17" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="122,911,325,952"/>
-<area shape="rect" id="node18" href="$classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f" title="Sort all neighbor lists according to element and distance." alt="" coords="125,976,322,1017"/>
-<area shape="rect" id="node19" href="$classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a" title="Switch all structures to normalized units." alt="" coords="123,1041,324,1083"/>
-<area shape="rect" id="node20" href="$classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451" title="Check if normalization is enabled." alt="" coords="117,1107,330,1134"/>
-<area shape="rect" id="node21" href="$classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df" title="Write atomic environment file." alt="" coords="127,1159,319,1200"/>
-<area shape="rect" id="node22" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="121,1224,326,1265"/>
-<area shape="rect" id="node23" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="121,1289,326,1331"/>
-<area shape="rect" id="node24" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="116,1355,331,1396"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,639,60,665"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a8aec6fb4708b93b93a9cfa0e8045f955" title="Calculate all symmetry function groups for all atoms in given structure." alt="" coords="111,5,336,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="31,639,32,529,40,356,49,265,62,181,81,111,92,84,106,62,118,51,121,55,110,66,97,86,86,113,67,182,54,266,45,357,37,529,36,639"/>
+<area shape="rect" id="Node000012" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="387,770,471,795"/>
+<area shape="poly" id="edge26_Node000001_Node000012" title=" " alt="" coords="32,639,40,528,55,357,77,195,91,137,106,106,135,84,165,68,194,58,223,55,253,58,282,68,311,84,341,106,350,120,359,143,375,210,389,300,401,403,419,610,429,756,423,756,414,611,396,404,384,301,370,211,354,144,345,122,337,110,308,88,280,72,252,63,223,60,195,63,167,72,138,88,110,110,96,139,82,196,60,358,45,528,37,639"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1Mode.html#add11e3c30eb86aba38d8239d1e5d8736" title="Calculate all symmetry functions for all atoms in given structure." alt="" coords="111,120,336,160"/>
+<area shape="poly" id="edge3_Node000001_Node000014" title=" " alt="" coords="32,639,35,547,45,406,54,333,67,265,84,209,106,170,109,167,113,171,110,174,89,211,72,266,60,334,50,407,40,547,37,639"/>
+<area shape="rect" id="Node000016" href="$classnnp_1_1Dataset.html#a1a204e7dc1bdf91a515b18a0ef06704c" title="Collect symmetry function statistics from all processors." alt="" coords="111,184,335,224"/>
+<area shape="poly" id="edge5_Node000001_Node000016" title=" " alt="" coords="32,639,37,558,49,437,58,373,71,315,86,267,106,234,109,231,113,235,110,238,91,269,76,317,64,374,54,437,42,558,37,639"/>
+<area shape="rect" id="Node000017" href="$classnnp_1_1Dataset.html#a1ecb649e652e2c6acb83102340f48afd" title="Read data file and distribute structures among processors." alt="" coords="136,248,311,288"/>
+<area shape="poly" id="edge7_Node000001_Node000017" title=" " alt="" coords="32,639,39,569,53,467,74,366,89,326,106,298,122,285,125,289,110,302,94,328,80,367,58,468,44,570,38,640"/>
+<area shape="rect" id="Node000028" href="$classnnp_1_1Mode.html#a73f1fcdcbb76828f6aca2d322bfeb2a9" title="Getter for Mode::maxCutoffRadius." alt="" coords="108,313,339,338"/>
+<area shape="poly" id="edge9_Node000001_Node000028" title=" " alt="" coords="33,639,40,577,55,490,77,404,90,370,106,348,110,344,114,348,110,351,95,373,82,406,60,491,46,578,38,640"/>
+<area shape="rect" id="Node000029" href="$classnnp_1_1Mode.html#a2dbf87eaa9cc33fa740e03608acdf156" title="Getter for Mode::numElements." alt="" coords="118,362,329,387"/>
+<area shape="poly" id="edge10_Node000001_Node000029" title=" " alt="" coords="31,639,32,593,41,528,50,492,63,457,82,425,106,397,110,393,114,397,110,401,86,428,68,460,55,494,46,529,37,594,36,639"/>
+<area shape="rect" id="Node000030" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="146,411,301,437"/>
+<area shape="poly" id="edge11_Node000001_Node000030" title=" " alt="" coords="32,639,36,601,47,549,69,493,86,468,106,446,132,431,134,435,110,450,90,471,74,496,52,550,41,602,37,639"/>
+<area shape="rect" id="Node000031" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="122,461,325,486"/>
+<area shape="poly" id="edge12_Node000001_Node000031" title=" " alt="" coords="34,638,41,609,55,570,76,530,106,497,116,490,119,494,110,501,80,533,59,572,46,610,39,640"/>
+<area shape="rect" id="Node000032" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="132,511,315,551"/>
+<area shape="poly" id="edge14_Node000001_Node000032" title=" " alt="" coords="39,637,65,599,84,578,106,560,118,554,121,558,110,565,88,582,70,603,43,640"/>
+<area shape="rect" id="Node000033" href="$classnnp_1_1Mode.html#aa9606884fa146912a6b4ab6d26df9275" title="Check if keyword was found in settings file." alt="" coords="120,575,327,615"/>
+<area shape="poly" id="edge15_Node000001_Node000033" title=" " alt="" coords="59,640,107,624,134,616,136,621,109,629,61,645"/>
+<area shape="rect" id="Node000034" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="131,639,315,665"/>
+<area shape="poly" id="edge16_Node000001_Node000034" title=" " alt="" coords="60,649,118,649,118,655,60,655"/>
+<area shape="rect" id="Node000059" href="$classnnp_1_1Dataset.html#a93a93358a8303c618562487729450455" title="Initialize MPI with MPI_COMM_WORLD." alt="" coords="137,713,310,738"/>
+<area shape="poly" id="edge17_Node000001_Node000059" title=" " alt="" coords="61,660,177,705,175,710,59,665"/>
+<area shape="rect" id="Node000060" href="$classnnp_1_1Dataset.html#abd84c06c5a83789ebe6a3ef8075af632" title="Initialize random number generator." alt="" coords="122,763,325,803"/>
+<area shape="poly" id="edge19_Node000001_Node000060" title=" " alt="" coords="43,663,68,705,87,728,110,747,122,754,119,759,106,751,83,731,64,708,38,666"/>
+<area shape="rect" id="Node000061" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="122,827,325,867"/>
+<area shape="poly" id="edge21_Node000001_Node000061" title=" " alt="" coords="39,664,46,695,59,735,80,777,110,813,115,817,112,821,106,817,75,780,54,737,40,696,33,665"/>
+<area shape="rect" id="Node000062" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="122,891,325,931"/>
+<area shape="poly" id="edge23_Node000001_Node000062" title=" " alt="" coords="37,665,40,706,51,763,72,824,89,852,110,877,114,881,111,885,106,881,85,855,68,826,45,764,35,706,32,665"/>
+<area shape="rect" id="Node000063" href="$classnnp_1_1Dataset.html#a72dd2973c5732479df5d76389fd5466f" title="Sort all neighbor lists according to element and distance." alt="" coords="125,955,322,995"/>
+<area shape="poly" id="edge25_Node000001_Node000063" title=" " alt="" coords="38,664,62,807,83,888,96,920,110,941,115,946,111,950,106,944,91,922,78,890,57,808,33,665"/>
+<area shape="rect" id="Node000064" href="$classnnp_1_1Dataset.html#affe9632070e632592b6f3d78e4529d3a" title="Switch all structures to normalized units." alt="" coords="123,1019,324,1059"/>
+<area shape="poly" id="edge27_Node000001_Node000064" title=" " alt="" coords="38,665,44,735,58,838,79,939,94,978,110,1005,113,1008,109,1012,106,1008,89,981,74,940,52,838,39,736,32,665"/>
+<area shape="rect" id="Node000065" href="$classnnp_1_1Mode.html#a7c500a49ebbd16752c9dbe988f56f451" title="Check if normalization is enabled." alt="" coords="117,1083,330,1109"/>
+<area shape="poly" id="edge28_Node000001_Node000065" title=" " alt="" coords="37,665,41,747,53,869,63,932,75,990,91,1037,110,1069,115,1074,111,1077,106,1072,86,1040,70,992,57,933,48,870,36,747,32,665"/>
+<area shape="rect" id="Node000066" href="$classnnp_1_1Dataset.html#a7f59129925f9a0fa7fe2db87dd60e1df" title="Write atomic environment file." alt="" coords="127,1133,319,1173"/>
+<area shape="poly" id="edge29_Node000001_Node000066" title=" " alt="" coords="37,665,40,755,51,891,60,963,73,1028,90,1082,110,1118,118,1126,114,1129,106,1122,85,1084,68,1029,55,964,46,892,35,755,32,665"/>
+<area shape="rect" id="Node000068" href="$classnnp_1_1Dataset.html#abb8c5e57c2e0f32a99d0b48c825af848" title="Calculate and write neighbor histogram and per&#45;structure statistics." alt="" coords="121,1197,326,1237"/>
+<area shape="poly" id="edge31_Node000001_Node000068" title=" " alt="" coords="37,665,38,766,47,922,56,1004,69,1080,87,1142,98,1166,110,1184,113,1186,109,1190,106,1187,93,1168,82,1144,64,1081,51,1005,42,923,33,766,31,665"/>
+<area shape="rect" id="Node000071" href="$classnnp_1_1Dataset.html#a7fdf6f361d7e65d31fe1002d6a9aacfd" title="Write neighbor list file." alt="" coords="121,1261,326,1301"/>
+<area shape="poly" id="edge33_Node000001_Node000071" title=" " alt="" coords="36,665,36,776,43,952,52,1044,66,1130,85,1200,96,1227,110,1248,113,1250,109,1254,106,1251,92,1230,80,1202,60,1131,47,1045,38,952,31,776,31,665"/>
+<area shape="rect" id="Node000072" href="$classnnp_1_1Dataset.html#abb4a2760ca7eb9c03e2ea37474a431c0" title="Calculate and write symmetry function histograms." alt="" coords="116,1325,331,1365"/>
+<area shape="poly" id="edge35_Node000001_Node000072" title=" " alt="" coords="37,665,44,795,59,1002,81,1202,95,1274,102,1297,110,1312,113,1314,109,1318,106,1315,98,1300,90,1275,76,1203,54,1003,39,796,32,665"/>
+<area shape="poly" id="edge2_Node000002_Node000012" title=" " alt="" coords="318,43,341,62,357,87,371,119,393,201,409,300,419,407,429,614,430,756,425,756,424,614,414,407,403,300,388,202,365,121,352,90,337,66,314,47"/>
+<area shape="poly" id="edge4_Node000014_Node000012" title=" " alt="" coords="327,158,341,170,355,191,367,217,388,285,403,367,414,457,427,632,430,756,425,756,421,633,409,458,398,368,383,286,362,219,350,193,337,174,324,162"/>
+<area shape="poly" id="edge6_Node000016_Node000012" title=" " alt="" coords="326,222,341,234,365,276,384,336,399,409,411,488,424,644,429,756,424,756,419,645,405,489,394,410,379,337,360,278,337,238,323,226"/>
+<area shape="poly" id="edge8_Node000017_Node000012" title=" " alt="" coords="313,279,341,298,362,334,380,386,395,450,406,519,422,656,429,756,423,756,416,656,401,520,390,451,375,388,358,337,337,302,310,283"/>
+<area shape="poly" id="edge13_Node000031_Node000012" title=" " alt="" coords="322,484,340,497,366,526,386,559,402,595,413,632,426,701,430,756,425,756,421,702,408,633,397,597,382,561,362,529,337,501,319,488"/>
+<area shape="poly" id="edge18_Node000059_Node000059" title=" " alt="" coords="192,714,185,704,189,694,202,688,223,686,249,690,260,698,257,702,247,694,223,691,203,693,193,698,191,704,196,711"/>
+<area shape="poly" id="edge20_Node000060_Node000012" title=" " alt="" coords="325,780,373,780,373,785,325,785"/>
+<area shape="poly" id="edge22_Node000061_Node000012" title=" " alt="" coords="298,824,338,812,380,797,382,803,339,817,300,829"/>
+<area shape="poly" id="edge24_Node000062_Node000012" title=" " alt="" coords="313,888,337,876,378,842,409,805,413,809,382,846,340,881,316,893"/>
+<area shape="poly" id="edge30_Node000066_Node000012" title=" " alt="" coords="318,1132,337,1118,352,1095,367,1061,391,974,410,881,421,808,426,809,415,882,397,975,372,1063,357,1098,341,1122,321,1137"/>
+<area shape="poly" id="edge32_Node000068_Node000012" title=" " alt="" coords="323,1195,337,1184,355,1155,371,1114,396,1006,413,894,422,809,428,809,418,894,401,1007,376,1115,359,1158,341,1187,326,1199"/>
+<area shape="poly" id="edge34_Node000071_Node000012" title=" " alt="" coords="323,1259,337,1248,357,1214,374,1165,389,1104,400,1038,416,906,423,809,429,809,421,906,405,1038,394,1105,379,1166,362,1216,341,1251,326,1263"/>
+<area shape="poly" id="edge36_Node000072_Node000012" title=" " alt="" coords="323,1323,337,1312,359,1273,378,1215,393,1145,404,1068,418,917,424,809,429,809,424,918,410,1069,398,1146,383,1217,364,1275,341,1315,326,1327"/>
 </map>

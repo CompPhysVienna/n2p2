@@ -1,6 +1,9 @@
 <map id="nnp::ModeCabana::setupElementMap" name="nnp::ModeCabana::setupElementMap">
-<area shape="rect" id="node1" title="Set up the element map." alt="" coords="5,56,271,83"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="319,5,417,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="327,56,409,83"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="326,107,410,133"/>
+<area shape="rect" id="Node000001" title="Set up the element map." alt="" coords="5,55,271,80"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="319,5,417,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,52,305,29,306,34,198,57"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="327,55,409,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="271,65,313,65,313,70,271,70"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="326,104,410,129"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="198,77,313,102,312,108,197,83"/>
 </map>

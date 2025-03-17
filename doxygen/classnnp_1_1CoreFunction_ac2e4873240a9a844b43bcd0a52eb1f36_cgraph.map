@@ -1,0 +1,10 @@
+<map id="nnp::CoreFunction::CoreFunction" name="nnp::CoreFunction::CoreFunction">
+<area shape="rect" id="Node000001" title="Constructor, initializes to Type::POLY2." alt="" coords="5,69,152,109"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="42,70,40,60,46,51,59,45,79,43,102,46,114,53,111,57,100,51,79,48,60,50,49,55,45,61,47,68"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1CoreFunction.html#a078376859cfb59a9bc35a2437cc624d7" title=" " alt="" coords="200,5,347,45"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="139,67,198,47,200,52,141,72"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1CoreFunction.html#a9dba564dacf814089d960f295a245216" title=" " alt="" coords="200,69,347,109"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="152,87,186,87,186,92,152,92"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1CoreFunction.html#a9aa2b789dd32a24bfdc41a9a4f0a99e5" title=" " alt="" coords="200,133,347,173"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="141,107,200,126,198,131,139,112"/>
+</map>

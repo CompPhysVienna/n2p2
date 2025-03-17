@@ -1,18 +1,32 @@
 <map id="nnp::InterfaceLammps::initialize" name="nnp::InterfaceLammps::initialize">
-<area shape="rect" id="node1" title="Initialize the LAMMPS interface." alt="" coords="5,415,173,457"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="221,29,463,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#ae6baf0f4691b0eb4a57feaaa6f3f10bb" title="Get largest cutoff of symmetry functions." alt="" coords="258,81,426,122"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="265,147,419,173"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="241,481,443,508"/>
-<area shape="rect" id="node6" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="554,391,638,417"/>
-<area shape="rect" id="node7" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="293,248,391,275"/>
-<area shape="rect" id="node8" href="$namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9" title="Remove leading and trailing whitespaces from string." alt="" coords="555,223,637,249"/>
-<area shape="rect" id="node9" href="$structnnp_1_1Structure.html#a57c375126ca37e8d390d406091e7dd5a" title="Set element map of structure." alt="" coords="231,724,453,751"/>
-<area shape="rect" id="node10" href="$classnnp_1_1ElementMap.html#a94031b84fe2b38bbdb62ba700d5481a4" title="Get element map size." alt="" coords="511,699,681,725"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="250,532,434,559"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a5e5f584b6f8be7caaac02efb432c74a3" title="Set up neural network weights from files with given name format." alt="" coords="226,607,458,649"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="241,350,443,391"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="241,415,443,457"/>
-<area shape="rect" id="node15" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="301,775,383,801"/>
-<area shape="rect" id="node16" href="$classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395" title="Write extrapolation warnings to log." alt="" coords="237,826,447,867"/>
+<area shape="rect" id="Node000001" title="Initialize the LAMMPS interface." alt="" coords="5,289,173,329"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1InterfaceLammps.html#ae6baf0f4691b0eb4a57feaaa6f3f10bb" title="Get largest cutoff of symmetry functions." alt="" coords="253,5,421,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,288,107,241,131,178,168,112,192,82,220,55,239,43,242,47,223,59,196,85,173,115,136,180,112,242,98,290"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="260,70,415,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="95,288,112,248,138,198,174,147,195,124,220,104,245,92,248,96,223,109,199,128,178,151,142,201,116,250,100,290"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="236,221,439,246"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="148,287,221,263,275,247,276,252,222,268,149,292"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="501,369,585,394"/>
+<area shape="poly" id="edge15_Node000001_Node000005" title=" " alt="" coords="173,292,236,286,307,284,382,291,454,308,493,329,523,356,520,360,490,334,452,313,381,296,307,289,236,291,174,297"/>
+<area shape="rect" id="Node000006" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="288,119,387,145"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="101,288,148,225,182,191,220,162,246,149,273,140,275,145,248,154,223,166,185,195,152,229,105,291"/>
+<area shape="rect" id="Node000007" href="$namespacennp.html#a5e8f9d785a11615222f8ca579dae9ba9" title="Remove leading and trailing whitespaces from string." alt="" coords="503,145,584,170"/>
+<area shape="poly" id="edge16_Node000001_Node000007" title=" " alt="" coords="109,287,157,246,187,224,220,207,291,183,363,168,431,159,488,155,489,161,432,165,364,173,292,188,222,212,190,229,160,250,112,291"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="245,322,429,347"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="174,315,232,321,232,327,173,321"/>
+<area shape="rect" id="Node000035" href="$classnnp_1_1Mode.html#a5e5f584b6f8be7caaac02efb432c74a3" title="Set up neural network weights from files with given name format." alt="" coords="221,396,453,436"/>
+<area shape="poly" id="edge8_Node000001_Node000035" title=" " alt="" coords="138,327,278,388,276,393,136,332"/>
+<area shape="rect" id="Node000036" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="236,460,439,500"/>
+<area shape="poly" id="edge10_Node000001_Node000036" title=" " alt="" coords="106,328,153,387,186,419,223,446,234,452,232,457,220,450,183,423,149,390,102,331"/>
+<area shape="rect" id="Node000037" href="$classnnp_1_1Mode.html#ae4b348e9b5e2ef89cb30c760bdb55153" title="Set up symmetry function statistics collection." alt="" coords="236,524,439,564"/>
+<area shape="poly" id="edge12_Node000001_Node000037" title=" " alt="" coords="100,328,117,367,143,416,178,467,200,490,223,510,231,515,228,519,220,514,196,494,174,470,139,419,112,370,95,331"/>
+<area shape="rect" id="Node000010" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="296,589,379,614"/>
+<area shape="poly" id="edge14_Node000001_Node000010" title=" " alt="" coords="97,329,109,379,133,446,150,481,170,516,194,547,223,574,251,589,283,597,282,602,250,594,220,578,191,551,166,519,145,484,128,448,104,381,92,330"/>
+<area shape="rect" id="Node000038" href="$classnnp_1_1InterfaceLammps.html#a7f6455e00e75a9f50289fb46cedcf395" title="Write extrapolation warnings to log." alt="" coords="232,639,443,679"/>
+<area shape="poly" id="edge17_Node000001_Node000038" title=" " alt="" coords="96,329,106,387,128,467,144,510,165,552,192,591,223,625,228,629,225,633,220,629,187,594,161,555,139,512,122,469,100,389,90,330"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="413,244,455,263,480,284,501,308,532,355,527,358,497,311,476,288,452,268,410,248"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="387,135,489,148,489,153,387,141"/>
+<area shape="poly" id="edge9_Node000035_Node000035" title=" " alt="" coords="299,396,296,386,303,377,316,371,337,369,361,372,375,380,372,384,360,377,337,375,318,377,306,381,302,387,304,395"/>
+<area shape="poly" id="edge11_Node000036_Node000005" title=" " alt="" coords="424,457,452,446,487,425,516,401,520,405,490,429,455,450,426,462"/>
+<area shape="poly" id="edge13_Node000037_Node000005" title=" " alt="" coords="431,522,452,510,478,487,499,459,529,406,534,408,504,462,481,490,455,514,434,526"/>
 </map>

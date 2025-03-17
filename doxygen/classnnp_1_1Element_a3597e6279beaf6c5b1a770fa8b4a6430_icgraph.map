@@ -1,4 +1,5 @@
 <map id="nnp::Element::getAtomicEnergyOffset" name="nnp::Element::getAtomicEnergyOffset">
-<area shape="rect" id="node1" title="Get atomicEnergyOffset." alt="" coords="221,5,449,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1InterfaceLammps.html#a680dca82d8c1670ac2effe7ba7df60fc" title="Return energy contribution of one atom." alt="" coords="5,5,173,47"/>
+<area shape="rect" id="Node000001" title="Get atomicEnergyOffset." alt="" coords="221,5,449,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1InterfaceLammps.html#a680dca82d8c1670ac2effe7ba7df60fc" title="Return energy contribution of one atom." alt="" coords="5,5,173,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="208,28,174,28,174,23,208,23"/>
 </map>

@@ -1,6 +1,9 @@
 <map id="nnp::NeuralNetwork::Layer" name="nnp::NeuralNetwork::Layer">
-<area shape="rect" id="node1" title="One neural network layer." alt="" coords="129,124,281,165"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,13,44,39"/>
-<area shape="rect" id="node3" title=" " alt="" coords="133,13,276,39"/>
-<area shape="rect" id="node4" href="$structnnp_1_1NeuralNetwork_1_1Neuron.html" title="A single neuron." alt="" coords="301,5,453,47"/>
+<area shape="rect" id="Node000001" title="One neural network layer." alt="" coords="129,123,281,163"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,13,44,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="30,51,37,75,52,97,69,110,88,120,129,133,128,138,86,125,66,114,48,100,33,78,25,52"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="133,13,276,38"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="207,52,207,122,202,122,202,52"/>
+<area shape="rect" id="Node000004" href="$structnnp_1_1NeuralNetwork_1_1Neuron.html" title="A single neuron." alt="" coords="301,5,453,45"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="367,59,355,81,337,101,311,117,282,129,280,124,308,113,334,97,350,78,362,57"/>
 </map>

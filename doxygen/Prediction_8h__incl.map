@@ -1,6 +1,12 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Prediction.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Prediction.h">
-<area shape="rect" id="node1" title=" " alt="" coords="15,5,222,47"/>
-<area shape="rect" id="node2" href="$Mode_8h.html" title=" " alt="" coords="83,95,154,121"/>
-<area shape="rect" id="node3" href="$Structure_8h.html" title=" " alt="" coords="5,169,99,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="107,244,165,271"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="15,5,222,45"/>
+<area shape="rect" id="Node000002" href="$Mode_8h.html" title=" " alt="" coords="83,93,154,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,46,121,79,116,79,116,46"/>
+<area shape="rect" id="Node000035" href="$Structure_8h.html" title=" " alt="" coords="5,167,99,192"/>
+<area shape="poly" id="edge5_Node000001_Node000035" title=" " alt="" coords="104,47,87,69,73,94,63,125,57,154,52,153,58,123,68,92,83,66,100,44"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="107,240,165,265"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="139,44,155,66,168,93,173,129,170,167,161,201,150,228,145,227,156,199,164,166,168,130,163,94,150,69,134,47"/>
+<area shape="poly" id="edge2_Node000002_Node000035" title=" " alt="" coords="110,121,74,158,70,155,106,117"/>
+<area shape="poly" id="edge4_Node000002_Node000006" title=" " alt="" coords="123,119,136,226,130,227,117,119"/>
+<area shape="poly" id="edge3_Node000035_Node000006" title=" " alt="" coords="67,190,113,229,110,233,64,194"/>
 </map>

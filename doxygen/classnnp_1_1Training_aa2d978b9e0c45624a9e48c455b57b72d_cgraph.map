@@ -1,10 +1,20 @@
 <map id="nnp::Training::dPdcN" name="nnp::Training::dPdcN">
-<area shape="rect" id="node1" title="Compute numeric derivatives of property with respect to weights." alt="" coords="5,173,160,199"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="208,5,411,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="208,71,411,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="210,122,409,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="237,247,381,274"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Training.html#ad19f84cd6d5a49157b03501cce982602" title="Get offsets of NN connections for each element." alt="" coords="478,183,685,224"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Training.html#ad724e9e50935b9427f736362fcc4edd5" title="Get number of NN connections for each element." alt="" coords="459,265,704,307"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="217,349,402,375"/>
+<area shape="rect" id="Node000001" title="Compute numeric derivatives of property with respect to weights." alt="" coords="5,170,160,195"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a67f3cb929c9dbad689889941d35f7b04" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="208,5,411,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,168,137,114,170,82,207,55,218,49,220,54,209,60,173,86,141,117,95,171"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Mode.html#a88fb8800851f3d440fcf393cbc073308" title="Calculate potential energy for a given structure." alt="" coords="208,70,411,95"/>
+<area shape="poly" id="edge2_Node000001_Node000009" title=" " alt="" coords="100,168,147,136,207,104,228,97,230,102,209,109,149,141,103,172"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1Mode.html#ae2fddd6f29bb63ef67b9619544d81ab1" title="Calculate forces for all atoms in given structure." alt="" coords="210,119,409,145"/>
+<area shape="poly" id="edge3_Node000001_Node000010" title=" " alt="" coords="140,167,238,145,239,150,141,172"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="237,245,381,270"/>
+<area shape="poly" id="edge4_Node000001_Node000018" title=" " alt="" coords="123,193,258,238,256,243,122,198"/>
+<area shape="rect" id="Node000025" href="$classnnp_1_1Training.html#ad19f84cd6d5a49157b03501cce982602" title="Get offsets of NN connections for each element." alt="" coords="478,181,685,221"/>
+<area shape="poly" id="edge8_Node000001_Node000025" title=" " alt="" coords="161,183,464,194,464,200,160,188"/>
+<area shape="rect" id="Node000027" href="$classnnp_1_1Training.html#ad724e9e50935b9427f736362fcc4edd5" title="Get number of NN connections for each element." alt="" coords="459,263,704,303"/>
+<area shape="poly" id="edge9_Node000001_Node000027" title=" " alt="" coords="96,194,142,239,174,263,209,280,267,295,328,303,388,304,445,301,446,307,389,310,328,308,266,301,207,285,171,267,138,243,93,198"/>
+<area shape="rect" id="Node000028" href="$classnnp_1_1Training.html#a82549ec0800f63ffaf830b46f865cdbb" title="Set weights in neural network class." alt="" coords="217,346,402,371"/>
+<area shape="poly" id="edge10_Node000001_Node000028" title=" " alt="" coords="94,194,138,256,171,293,209,324,238,339,236,344,207,329,167,297,134,260,89,197"/>
+<area shape="poly" id="edge5_Node000018_Node000018" title=" " alt="" coords="272,246,264,236,269,226,284,220,309,218,341,222,353,231,350,235,339,227,309,223,285,225,272,230,270,236,276,243"/>
+<area shape="poly" id="edge6_Node000018_Node000025" title=" " alt="" coords="371,242,470,221,471,227,372,247"/>
+<area shape="poly" id="edge7_Node000018_Node000027" title=" " alt="" coords="382,261,445,267,444,273,381,267"/>
 </map>

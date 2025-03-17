@@ -1,8 +1,13 @@
 <map id="nnp::SymGrpCompRad" name="nnp::SymGrpCompRad">
-<area shape="rect" id="node1" title="Radial symmetry function with compact support (type 20)" alt="" coords="311,115,480,141"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="13,5,189,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="71,56,131,83"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,107,196,149"/>
-<area shape="rect" id="node5" title=" " alt="" coords="18,175,183,201"/>
-<area shape="rect" id="node6" title=" " alt="" coords="13,226,188,267"/>
+<area shape="rect" id="Node000001" title="Radial symmetry function with compact support (type 20)" alt="" coords="311,111,480,136"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="13,5,189,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,32,197,39,243,53,288,69,371,108,369,113,286,74,241,58,195,45,167,37"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="71,55,131,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="145,73,328,108,327,113,144,78"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="5,105,196,145"/>
+<area shape="poly" id="edge3_Node000001_Node000018" title=" " alt="" coords="210,122,310,121,310,126,210,127"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="18,171,183,196"/>
+<area shape="poly" id="edge4_Node000001_Node000012" title=" " alt="" coords="197,172,286,157,361,133,362,139,287,162,197,177"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="13,221,188,261"/>
+<area shape="poly" id="edge5_Node000001_Node000014" title=" " alt="" coords="201,217,286,189,336,161,376,134,379,138,339,166,288,194,202,222"/>
 </map>

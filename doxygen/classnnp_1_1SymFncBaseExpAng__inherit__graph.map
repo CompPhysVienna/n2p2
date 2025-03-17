@@ -1,6 +1,9 @@
 <map id="nnp::SymFncBaseExpAng" name="nnp::SymFncBaseExpAng">
-<area shape="rect" id="node1" title="Intermediate class for angular SFs based on cutoffs and exponentials." alt="" coords="88,80,275,107"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncExpAngn.html" title="Angular symmetry function (type 3)" alt="" coords="5,155,168,181"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncExpAngw.html" title="Angular symmetry function (type 9)" alt="" coords="193,155,359,181"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="93,5,270,32"/>
+<area shape="rect" id="Node000001" title="Intermediate class for angular SFs based on cutoffs and exponentials." alt="" coords="88,79,275,104"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFncExpAngn.html" title="Angular symmetry function (type 3)" alt="" coords="5,152,168,177"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="157,114,104,154,101,150,154,110"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymFncExpAngw.html" title="Angular symmetry function (type 9)" alt="" coords="193,152,359,177"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="209,110,262,150,259,154,206,114"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="93,5,270,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,44,184,79,179,79,179,44"/>
 </map>

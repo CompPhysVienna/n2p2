@@ -1,6 +1,9 @@
 <map id="nnp::ModeCabana::setupNeuralNetwork" name="nnp::ModeCabana::setupNeuralNetwork">
-<area shape="rect" id="node1" title="Set up neural networks for all elements." alt="" coords="5,49,232,90"/>
-<area shape="rect" id="node2" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="280,5,379,32"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="288,56,371,83"/>
-<area shape="rect" id="node4" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="287,107,371,133"/>
+<area shape="rect" id="Node000001" title="Set up neural networks for all elements." alt="" coords="5,47,232,87"/>
+<area shape="rect" id="Node000002" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="280,5,379,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="204,45,266,30,267,35,205,50"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="288,55,371,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="233,65,274,65,274,70,233,70"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="287,104,371,129"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="205,85,274,101,273,106,204,90"/>
 </map>

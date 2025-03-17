@@ -1,5 +1,7 @@
 <map id="nnp::SymGrpExpAngn" name="nnp::SymGrpExpAngn">
-<area shape="rect" id="node1" title="Angular symmetry function group (type 3)" alt="" coords="124,109,287,136"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseExpAng.html" title=" " alt="" coords="5,13,192,39"/>
-<area shape="rect" id="node3" title=" " alt="" coords="217,5,407,47"/>
+<area shape="rect" id="Node000001" title="Angular symmetry function group (type 3)" alt="" coords="124,108,287,133"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseExpAng.html" title=" " alt="" coords="5,13,192,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="124,45,194,106,190,110,120,49"/>
+<area shape="rect" id="Node000030" title=" " alt="" coords="217,5,407,45"/>
+<area shape="poly" id="edge2_Node000001_Node000030" title=" " alt="" coords="282,56,221,110,217,106,278,52"/>
 </map>

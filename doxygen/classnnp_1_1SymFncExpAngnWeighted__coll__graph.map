@@ -1,7 +1,12 @@
 <map id="nnp::SymFncExpAngnWeighted" name="nnp::SymFncExpAngnWeighted">
-<area shape="rect" id="node1" title="Weighted angular symmetry function (type 13)" alt="" coords="136,216,360,243"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="91,111,269,137"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,5,72,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="293,111,344,137"/>
-<area shape="rect" id="node5" title=" " alt="" coords="399,111,438,137"/>
+<area shape="rect" id="Node000001" title="Weighted angular symmetry function (type 13)" alt="" coords="136,215,360,240"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCutoff.html" title="Intermediate class for SFs based on cutoff functions." alt="" coords="91,110,269,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,145,243,213,238,216,193,148"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="5,5,72,31"/>
+<area shape="poly" id="edge5_Node000001_Node000010" title=" " alt="" coords="31,44,24,69,19,97,21,125,32,151,52,173,78,190,107,203,136,212,135,218,105,208,75,195,49,177,27,153,16,126,14,97,18,68,26,43"/>
+<area shape="poly" id="edge2_Node000002_Node000010" title=" " alt="" coords="67,37,166,108,162,112,64,41"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="293,110,344,135"/>
+<area shape="poly" id="edge3_Node000001_Node000022" title=" " alt="" coords="305,148,258,216,254,213,301,145"/>
+<area shape="rect" id="Node000026" title=" " alt="" coords="399,110,438,135"/>
+<area shape="poly" id="edge4_Node000001_Node000026" title=" " alt="" coords="415,150,405,172,388,193,366,207,341,217,339,212,363,202,385,189,400,170,410,148"/>
 </map>

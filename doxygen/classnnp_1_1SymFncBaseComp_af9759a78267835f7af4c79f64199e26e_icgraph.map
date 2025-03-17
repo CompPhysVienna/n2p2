@@ -1,7 +1,11 @@
 <map id="nnp::SymFncBaseComp::setCompactFunction" name="nnp::SymFncBaseComp::setCompactFunction">
-<area shape="rect" id="node1" title="Set radial compact function." alt="" coords="316,104,492,145"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters." alt="" coords="36,5,237,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters." alt="" coords="5,71,268,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncCompRad.html#aa2edce749c1570de8fa59ac27c7759b6" title="Set symmetry function parameters." alt="" coords="52,136,221,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymFncCompRadWeighted.html#a656990f2b9a29149d08ace3ec52a520a" title="Set symmetry function parameters." alt="" coords="21,201,252,243"/>
+<area shape="rect" id="Node000001" title="Set radial compact function." alt="" coords="316,101,492,141"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCompAng.html#aa6605f3b8d1facbd5c9b8f9a2c6c4be0" title="Set symmetry function parameters." alt="" coords="36,5,237,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="353,98,267,60,229,48,230,43,269,55,355,93"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ae3c914c530d94c207841d7da3066d70e" title="Set symmetry function parameters." alt="" coords="5,69,268,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="302,112,268,108,269,102,303,107"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFncCompRad.html#aa2edce749c1570de8fa59ac27c7759b6" title="Set symmetry function parameters." alt="" coords="52,133,221,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="303,136,222,146,221,141,302,131"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymFncCompRadWeighted.html#a656990f2b9a29149d08ace3ec52a520a" title="Set symmetry function parameters." alt="" coords="21,197,252,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="355,150,269,188,230,200,229,195,267,183,353,145"/>
 </map>

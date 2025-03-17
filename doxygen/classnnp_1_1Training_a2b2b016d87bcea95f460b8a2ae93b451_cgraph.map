@@ -1,18 +1,34 @@
 <map id="nnp::Training::setupTraining" name="nnp::Training::setupTraining">
-<area shape="rect" id="node1" title="General training settings and setup of weight update routine." alt="" coords="5,390,205,417"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7" title="Allocate error and Jacobian arrays for given property." alt="" coords="273,54,479,81"/>
-<area shape="rect" id="node3" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="603,142,687,169"/>
-<area shape="rect" id="node4" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="289,441,463,468"/>
-<area shape="rect" id="node5" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="293,492,459,518"/>
-<area shape="rect" id="node6" href="$structnnp_1_1Training_1_1PropertyMap.html#ab7019078f140f578655ebb1f8599e6d4" title="Check if property is present." alt="" coords="547,348,743,390"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Training.html#a9e7a7553f60ebf30dbdfb8efc64b32c0" title="Get weights from neural network class." alt="" coords="283,542,469,569"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Training.html#ab802ff670986203dab60c22f04b07f59" title="Initialize weights vector according to update strategy." alt="" coords="291,106,461,147"/>
-<area shape="rect" id="node9" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="561,266,728,307"/>
-<area shape="rect" id="node10" href="$classnnp_1_1GradientDescent.html#a26d7bd9f4c4d88d27a1046364b0f779a" title="Set parameters for Adam algorithm." alt="" coords="295,594,457,635"/>
-<area shape="rect" id="node11" href="$classnnp_1_1KalmanFilter.html#a5792beef75d223f3df178ce494c74ac6" title="Set parameters for fading memory Kalman filter." alt="" coords="270,659,482,700"/>
-<area shape="rect" id="node12" href="$classnnp_1_1GradientDescent.html#a0fc36f84c5f9d35f75be83b1e8d54b9d" title="Set parameters for fixed step gradient descent algorithm." alt="" coords="295,724,457,766"/>
-<area shape="rect" id="node13" href="$classnnp_1_1KalmanFilter.html#a0969a2748b485c3ca33c20c76fb4f5e2" title="Set parameters for standard Kalman filter." alt="" coords="289,790,463,831"/>
-<area shape="rect" id="node14" href="$classnnp_1_1Training.html#a8a99d257e8c71aaf4dba65a1b9a1b5f1" title="Set file output intervals for properties and other quantities." alt="" coords="290,223,462,264"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Training.html#a5362ed9fa8992ca8ec88ab5c6daab978" title="Set selection mode for specific training property." alt="" coords="253,172,499,198"/>
-<area shape="rect" id="node16" href="$classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78" title="Set up how often properties are updated." alt="" coords="264,340,488,366"/>
+<area shape="rect" id="Node000001" title="General training settings and setup of weight update routine." alt="" coords="5,327,205,352"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a33e73c163ea6a69fc0d87acd735fd9e7" title="Allocate error and Jacobian arrays for given property." alt="" coords="273,5,479,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,326,120,274,147,199,166,158,190,118,218,80,252,48,275,34,278,38,255,52,222,84,194,121,171,161,152,201,125,276,112,327"/>
+<area shape="rect" id="Node000003" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="547,423,631,448"/>
+<area shape="poly" id="edge18_Node000001_Node000003" title=" " alt="" coords="107,326,121,279,148,213,168,178,191,145,219,115,252,92,319,59,349,50,379,46,409,48,438,56,469,70,500,92,519,114,535,149,560,238,577,334,587,409,582,409,572,335,555,239,530,150,514,117,497,96,466,75,436,61,408,53,379,51,350,55,321,64,255,96,223,119,195,148,172,181,153,215,126,281,112,327"/>
+<area shape="rect" id="Node000004" href="$namespacennp.html#aeed037cd4a793db2c1b490e6607c0866" title="Append multiple lines of strings to open file stream." alt="" coords="289,107,463,132"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="110,325,128,288,159,237,200,185,225,161,252,141,275,130,277,135,255,146,228,165,204,189,163,241,133,290,115,327"/>
+<area shape="rect" id="Node000005" href="$namespacennp.html#a5660082c7868a44a59e125c0cbe10d85" title=" " alt="" coords="293,156,459,181"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="113,325,166,260,206,222,252,190,278,179,280,184,255,195,209,226,170,263,117,328"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Training.html#a9e7a7553f60ebf30dbdfb8efc64b32c0" title="Get weights from neural network class." alt="" coords="283,205,469,231"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="120,324,176,283,213,260,252,241,278,232,280,237,254,246,216,265,179,288,123,329"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Training.html#ab802ff670986203dab60c22f04b07f59" title="Initialize weights vector according to update strategy." alt="" coords="291,255,461,295"/>
+<area shape="poly" id="edge6_Node000001_Node000009" title=" " alt="" coords="160,324,277,296,278,301,161,329"/>
+<area shape="rect" id="Node000010" href="$classnnp_1_1GradientDescent.html#a26d7bd9f4c4d88d27a1046364b0f779a" title="Set parameters for Adam algorithm." alt="" coords="295,319,457,359"/>
+<area shape="poly" id="edge8_Node000001_Node000010" title=" " alt="" coords="206,337,281,337,281,342,206,342"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1KalmanFilter.html#a5792beef75d223f3df178ce494c74ac6" title="Set parameters for fading memory Kalman filter." alt="" coords="270,383,482,423"/>
+<area shape="poly" id="edge9_Node000001_Node000011" title=" " alt="" coords="161,350,278,378,277,383,160,355"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1GradientDescent.html#a0fc36f84c5f9d35f75be83b1e8d54b9d" title="Set parameters for fixed step gradient descent algorithm." alt="" coords="295,447,457,487"/>
+<area shape="poly" id="edge10_Node000001_Node000012" title=" " alt="" coords="124,350,180,391,216,413,254,433,282,444,280,449,252,438,213,418,177,395,121,354"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1KalmanFilter.html#a0969a2748b485c3ca33c20c76fb4f5e2" title="Set parameters for standard Kalman filter." alt="" coords="289,511,463,551"/>
+<area shape="poly" id="edge11_Node000001_Node000013" title=" " alt="" coords="117,351,169,421,209,462,255,497,277,508,275,513,252,502,205,466,165,424,113,354"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1Training.html#a8a99d257e8c71aaf4dba65a1b9a1b5f1" title="Set file output intervals for properties and other quantities." alt="" coords="290,575,462,615"/>
+<area shape="poly" id="edge12_Node000001_Node000014" title=" " alt="" coords="114,351,131,392,160,449,202,510,227,537,255,561,278,574,276,579,252,566,223,541,198,513,156,452,126,395,109,353"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1Training.html#a5362ed9fa8992ca8ec88ab5c6daab978" title="Set selection mode for specific training property." alt="" coords="253,640,499,665"/>
+<area shape="poly" id="edge14_Node000001_Node000018" title=" " alt="" coords="112,352,125,403,151,478,170,519,194,558,222,594,255,625,265,632,262,636,252,629,218,598,189,561,165,521,146,480,119,405,107,353"/>
+<area shape="rect" id="Node000019" href="$classnnp_1_1Training.html#afd6d1ab9f793927b8c1d5fa707922c78" title="Set up how often properties are updated." alt="" coords="264,689,488,715"/>
+<area shape="poly" id="edge16_Node000001_Node000019" title=" " alt="" coords="111,352,121,411,145,499,164,547,188,594,218,638,255,675,263,681,260,685,252,679,214,641,183,597,159,549,140,501,116,412,105,353"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="472,29,501,48,519,76,535,116,560,219,578,327,587,409,582,409,572,328,555,220,530,118,514,78,497,52,469,33"/>
+<area shape="poly" id="edge7_Node000009_Node000003" title=" " alt="" coords="462,287,500,305,527,329,549,356,579,409,574,412,544,359,523,332,497,310,460,291"/>
+<area shape="poly" id="edge13_Node000014_Node000003" title=" " alt="" coords="461,579,497,561,523,538,544,511,574,459,579,462,549,514,527,542,500,566,464,584"/>
+<area shape="poly" id="edge15_Node000018_Node000003" title=" " alt="" coords="476,638,497,625,515,608,531,588,555,543,571,498,580,461,586,462,576,500,560,545,535,591,519,612,500,629,479,642"/>
+<area shape="poly" id="edge17_Node000019_Node000003" title=" " alt="" coords="478,687,497,675,519,652,537,625,562,566,577,508,583,461,588,462,582,509,567,568,541,628,523,655,500,679,481,691"/>
 </map>

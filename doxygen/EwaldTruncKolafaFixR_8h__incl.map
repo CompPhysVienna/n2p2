@@ -1,5 +1,7 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldTruncKolafaFixR.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldTruncKolafaFixR.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,248,61"/>
-<area shape="rect" id="node2" href="$IEwaldTrunc_8h.html" title=" " alt="" coords="17,109,127,136"/>
-<area shape="rect" id="node3" title=" " alt="" coords="151,109,214,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,248,60"/>
+<area shape="rect" id="Node000002" href="$IEwaldTrunc_8h.html" title=" " alt="" coords="17,108,127,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,62,89,98,85,95,108,59"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="151,108,214,133"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="146,59,170,95,165,98,142,62"/>
 </map>

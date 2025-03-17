@@ -1,4 +1,6 @@
 <map id="nnp::Training::getNumConnections" name="nnp::Training::getNumConnections">
-<area shape="rect" id="node1" title="Get total number of NN connections." alt="" coords="197,29,443,56"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="5,29,149,56"/>
+<area shape="rect" id="Node000001" title="Get total number of NN connections." alt="" coords="197,29,443,55"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a59b8fac49977fbc5a5b41d9a58346697" title="Compute derivatives of property with respect to weights." alt="" coords="5,29,149,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,45,150,45,150,39,184,39"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="121,20,118,15,110,12,77,8,51,10,37,15,35,20,42,27,38,31,29,21,34,11,50,5,77,3,112,7,121,11,125,17"/>
 </map>

@@ -1,10 +1,19 @@
 <map id="nnp::Mode::calculateAtomicNeuralNetworks" name="nnp::Mode::calculateAtomicNeuralNetworks">
-<area shape="rect" id="node1" title="Calculate atomic neural networks for all atoms in given structure." alt="" coords="308,165,511,207"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,71,260,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="55,122,210,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="41,173,224,199"/>
-<area shape="rect" id="node6" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,223,160,250"/>
-<area shape="rect" id="node7" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="49,275,217,316"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,341,212,367"/>
+<area shape="rect" id="Node000001" title="Calculate a single atomic neural network for a given atom and nn type." alt="" coords="308,187,511,227"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#ae3051098a044a13927077b6a8e2a9061" title="Calculate error metrics for all structures." alt="" coords="47,5,219,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="384,177,331,117,296,86,259,60,218,43,220,38,261,55,300,82,335,113,388,174"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,70,260,95"/>
+<area shape="poly" id="edge2_Node000001_Node000006" title=" " alt="" coords="372,180,321,143,259,109,224,98,226,93,261,104,324,138,376,176"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1Training.html#aa2d978b9e0c45624a9e48c455b57b72d" title="Compute numeric derivatives of property with respect to weights." alt="" coords="55,119,210,145"/>
+<area shape="poly" id="edge3_Node000001_Node000007" title=" " alt="" coords="342,185,259,159,209,147,211,142,261,153,344,180"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Mode.html#adea10435a61aeda3d486184932e9ff3a" title="Evaluate neural network potential (includes total energy, optionally forces and in some cases charges..." alt="" coords="41,169,224,194"/>
+<area shape="poly" id="edge4_Node000001_Node000009" title=" " alt="" coords="294,199,224,192,225,187,295,193"/>
+<area shape="rect" id="Node000013" href="$nnp-checkf_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,218,160,243"/>
+<area shape="poly" id="edge5_Node000001_Node000013" title=" " alt="" coords="294,219,161,231,160,226,294,214"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="49,268,217,308"/>
+<area shape="poly" id="edge6_Node000001_Node000014" title=" " alt="" coords="337,234,261,257,213,271,212,265,259,252,335,228"/>
+<area shape="rect" id="Node000015" href="$classnnp_1_1InterfaceLammps.html#a306752869b85863001446cac952a9040" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions (developme..." alt="" coords="49,332,217,372"/>
+<area shape="poly" id="edge7_Node000001_Node000015" title=" " alt="" coords="379,238,326,282,261,322,218,339,216,334,259,318,323,277,376,234"/>
+<area shape="rect" id="Node000016" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="53,397,212,422"/>
+<area shape="poly" id="edge8_Node000001_Node000016" title=" " alt="" coords="393,240,371,275,341,315,304,354,261,386,238,397,213,405,212,400,236,392,259,382,301,350,337,311,366,272,388,237"/>
 </map>

@@ -1,8 +1,13 @@
 <map id="nnp::SymGrpBaseCompAng" name="nnp::SymGrpBaseCompAng">
-<area shape="rect" id="node1" title=" " alt="" coords="331,104,532,131"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="5,5,181,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="63,56,123,83"/>
-<area shape="rect" id="node4" title=" " alt="" coords="19,107,168,133"/>
-<area shape="rect" id="node5" title=" " alt="" coords="11,193,176,220"/>
-<area shape="rect" id="node6" title=" " alt="" coords="6,244,181,300"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="331,101,532,127"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseComp.html" title=" " alt="" coords="5,5,181,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="196,23,252,32,308,46,366,72,412,99,410,103,363,76,306,51,251,37,195,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="63,55,123,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="137,71,307,94,340,99,339,104,306,99,137,76"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="19,104,168,129"/>
+<area shape="poly" id="edge3_Node000001_Node000018" title=" " alt="" coords="182,113,330,112,331,117,182,119"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="11,191,176,216"/>
+<area shape="poly" id="edge4_Node000001_Node000012" title=" " alt="" coords="189,198,248,191,306,178,364,153,410,125,413,129,367,157,308,183,249,197,190,204"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="6,240,181,295"/>
+<area shape="poly" id="edge5_Node000001_Node000020" title=" " alt="" coords="194,252,250,238,305,217,340,196,371,171,417,125,421,129,375,175,343,200,308,222,252,244,195,258"/>
 </map>

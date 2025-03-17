@@ -1,6 +1,9 @@
 <map id="nnp::Stopwatch" name="nnp::Stopwatch">
-<area shape="rect" id="node1" title="Implements a simple stopwatch on different platforms." alt="" coords="49,124,172,151"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,61,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="85,5,136,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="177,5,244,32"/>
+<area shape="rect" id="Node000001" title="Implements a simple stopwatch on different platforms." alt="" coords="49,123,172,148"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,61,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="43,43,54,70,70,97,95,121,91,124,66,100,49,72,38,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="85,5,136,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="113,44,113,123,108,123,108,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="177,5,244,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="209,45,200,73,183,100,166,115,147,125,144,120,163,110,179,97,195,71,204,43"/>
 </map>

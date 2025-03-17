@@ -1,11 +1,19 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,199,60,225"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="144,5,299,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="120,56,323,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="130,107,313,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#ae72c03926dc7ea9b8f43770fb5861ccf" title="Set up cutoff function for all symmetry functions." alt="" coords="135,173,308,200"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="113,224,329,251"/>
-<area shape="rect" id="node7" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances." alt="" coords="124,275,319,301"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions." alt="" coords="120,326,323,367"/>
-<area shape="rect" id="node9" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="108,391,335,433"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,195,60,220"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="144,5,299,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="33,194,40,163,53,121,74,77,89,57,106,40,129,26,132,31,110,44,93,61,79,80,58,123,45,164,38,195"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="120,55,323,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="36,193,60,143,81,114,106,91,118,83,121,88,110,95,85,118,65,146,41,195"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="130,105,313,145"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="48,192,75,173,107,154,124,147,126,152,109,159,77,177,51,197"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Mode.html#ae72c03926dc7ea9b8f43770fb5861ccf" title="Set up cutoff function for all symmetry functions." alt="" coords="135,169,308,195"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="60,201,121,193,122,198,61,206"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1Mode.html#a259303c95ae2f64f2b192de1b2df51f5" title="Set up the element map." alt="" coords="113,219,329,244"/>
+<area shape="poly" id="edge5_Node000001_Node000008" title=" " alt="" coords="61,208,108,214,108,220,60,213"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Mode.html#afc4e43a8f905900eb4ea153d529053ec" title="Set up all Element instances." alt="" coords="124,268,319,293"/>
+<area shape="poly" id="edge6_Node000001_Node000009" title=" " alt="" coords="52,218,78,236,109,253,135,262,133,267,107,258,75,241,49,222"/>
+<area shape="rect" id="Node000012" href="$classnnp_1_1Mode.html#ad0080b25ea49cdd6ce085162751a379b" title="Set up all symmetry functions." alt="" coords="120,318,323,358"/>
+<area shape="poly" id="edge7_Node000001_Node000012" title=" " alt="" coords="43,219,68,260,87,283,110,303,122,310,119,314,106,307,83,287,64,263,38,222"/>
+<area shape="rect" id="Node000013" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="108,382,335,422"/>
+<area shape="poly" id="edge8_Node000001_Node000013" title=" " alt="" coords="39,219,46,250,59,290,80,332,110,368,116,373,113,377,106,372,75,335,54,292,40,251,33,221"/>
 </map>

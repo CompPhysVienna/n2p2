@@ -1,7 +1,11 @@
 <map id="nnp::SymFncBaseComp::parameterInfo" name="nnp::SymFncBaseComp::parameterInfo">
-<area shape="rect" id="node1" title="Get description with parameter names and values." alt="" coords="316,104,492,145"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAng.html#ab4d756b5e49cb68183357cf3352d5129" title="Get description with parameter names and values." alt="" coords="36,5,237,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ab7bba1d6aee6988d19e4915ba1063453" title="Get description with parameter names and values." alt="" coords="5,71,268,112"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncCompRad.html#a344ab496474f18912c033cf6bb1b0a66" title="Get description with parameter names and values." alt="" coords="52,136,221,177"/>
-<area shape="rect" id="node5" href="$classnnp_1_1SymFncCompRadWeighted.html#a53644bfba266444b7c20811923dd52c8" title="Get description with parameter names and values." alt="" coords="21,201,252,243"/>
+<area shape="rect" id="Node000001" title="Get description with parameter names and values." alt="" coords="316,101,492,141"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCompAng.html#ab4d756b5e49cb68183357cf3352d5129" title="Get description with parameter names and values." alt="" coords="36,5,237,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="353,98,267,60,229,48,230,43,269,55,355,93"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#ab7bba1d6aee6988d19e4915ba1063453" title="Get description with parameter names and values." alt="" coords="5,69,268,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="302,112,268,108,269,102,303,107"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1SymFncCompRad.html#a344ab496474f18912c033cf6bb1b0a66" title="Get description with parameter names and values." alt="" coords="52,133,221,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="303,136,222,146,221,141,302,131"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1SymFncCompRadWeighted.html#a53644bfba266444b7c20811923dd52c8" title="Get description with parameter names and values." alt="" coords="21,197,252,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="355,150,269,188,230,200,229,195,267,183,353,145"/>
 </map>

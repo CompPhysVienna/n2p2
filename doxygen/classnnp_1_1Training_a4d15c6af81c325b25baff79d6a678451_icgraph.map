@@ -1,4 +1,5 @@
 <map id="nnp::Training::randomizeNeuralNetworkWeights" name="nnp::Training::randomizeNeuralNetworkWeights">
-<area shape="rect" id="node1" title="Randomly initialize specificy neural network weights." alt="" coords="223,5,405,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043" title="Initialize weights for all elements." alt="" coords="5,5,175,47"/>
+<area shape="rect" id="Node000001" title="Randomly initialize specificy neural network weights." alt="" coords="223,5,405,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#ab3025fc3780b67e91e063fd490640043" title="Initialize weights for all elements." alt="" coords="5,5,175,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="209,28,175,28,175,23,209,23"/>
 </map>

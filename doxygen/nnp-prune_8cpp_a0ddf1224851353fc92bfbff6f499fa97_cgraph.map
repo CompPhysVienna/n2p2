@@ -1,17 +1,34 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,391,60,417"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="113,29,355,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Mode.html#a2dbf87eaa9cc33fa740e03608acdf156" title="Getter for Mode::numElements." alt="" coords="129,80,339,107"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Mode.html#aa4fc3399c130a3778a20a625fa2ee34c" title="Get number of symmetry functions per element." alt="" coords="125,131,343,173"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="157,197,311,224"/>
-<area shape="rect" id="node6" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="133,248,335,275"/>
-<area shape="rect" id="node7" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="408,299,492,325"/>
-<area shape="rect" id="node8" href="$classnnp_1_1Mode.html#a5b8ceb8be242844ec8b72987e0bf0c3e" title="Prune symmetry functions according to their range and write settings file." alt="" coords="133,350,335,391"/>
-<area shape="rect" id="node9" href="$classnnp_1_1Mode.html#ae922768942eef6c6e9000700595bc00d" title="Prune symmetry functions with sensitivity analysis data." alt="" coords="133,415,335,457"/>
-<area shape="rect" id="node10" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="185,481,283,508"/>
-<area shape="rect" id="node11" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="143,533,325,574"/>
-<area shape="rect" id="node12" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="142,599,326,625"/>
-<area shape="rect" id="node13" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="133,650,335,691"/>
-<area shape="rect" id="node14" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="193,716,275,743"/>
-<area shape="rect" id="node15" href="$classnnp_1_1Mode.html#a6ac0b02c0a91917b17cd6e2fb96afb18" title="Copy settings file but comment out lines provided." alt="" coords="108,767,360,793"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,383,60,408"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="113,29,355,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="32,382,39,316,53,220,75,126,89,89,106,64,110,61,113,65,110,68,94,92,80,128,58,221,44,317,38,383"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Mode.html#a2dbf87eaa9cc33fa740e03608acdf156" title="Getter for Mode::numElements." alt="" coords="129,79,339,104"/>
+<area shape="poly" id="edge3_Node000001_Node000006" title=" " alt="" coords="33,382,41,325,57,245,78,166,91,136,106,115,115,108,118,112,110,118,96,138,83,168,62,246,47,326,38,383"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1Mode.html#aa4fc3399c130a3778a20a625fa2ee34c" title="Get number of symmetry functions per element." alt="" coords="125,129,343,169"/>
+<area shape="poly" id="edge4_Node000001_Node000007" title=" " alt="" coords="32,382,36,343,47,288,69,229,85,202,106,179,111,175,115,179,110,183,90,206,73,232,52,289,41,344,37,383"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1Mode.html#a19a68b9d8750ddc0b440b1828ecf9f17" title="Write welcome message with version information." alt="" coords="157,193,311,219"/>
+<area shape="poly" id="edge5_Node000001_Node000008" title=" " alt="" coords="33,382,39,350,52,308,74,265,89,245,106,228,124,217,143,210,145,215,126,222,110,232,93,248,78,268,57,310,45,352,38,383"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1Mode.html#ae8ca16789e7794309cf9931e58eb882b" title="Open settings file and load all keywords into memory." alt="" coords="133,243,335,268"/>
+<area shape="poly" id="edge6_Node000001_Node000009" title=" " alt="" coords="37,381,62,334,82,308,106,285,135,270,137,275,110,290,86,311,66,337,42,384"/>
+<area shape="rect" id="Node000010" href="$namespacennp.html#a398f0bcafb57e99ba1581c4b8f8a7f76" title="String version of printf function." alt="" coords="408,293,492,319"/>
+<area shape="poly" id="edge16_Node000001_Node000010" title=" " alt="" coords="43,380,69,353,107,329,144,316,183,306,261,296,334,294,395,297,394,303,334,300,261,301,183,312,145,321,109,334,73,357,46,384"/>
+<area shape="rect" id="Node000011" href="$classnnp_1_1Mode.html#a5b8ceb8be242844ec8b72987e0bf0c3e" title="Prune symmetry functions according to their range and write settings file." alt="" coords="133,343,335,383"/>
+<area shape="poly" id="edge8_Node000001_Node000011" title=" " alt="" coords="60,388,118,379,119,384,61,394"/>
+<area shape="rect" id="Node000014" href="$classnnp_1_1Mode.html#ae922768942eef6c6e9000700595bc00d" title="Prune symmetry functions with sensitivity analysis data." alt="" coords="133,407,335,447"/>
+<area shape="poly" id="edge9_Node000001_Node000014" title=" " alt="" coords="61,397,119,406,118,412,60,402"/>
+<area shape="rect" id="Node000015" href="$namespacennp.html#aaa30280456ea59152f9e6c240f41ea93" title="Replace multiple whitespaces with fill." alt="" coords="185,472,283,497"/>
+<area shape="poly" id="edge10_Node000001_Node000015" title=" " alt="" coords="47,406,74,433,109,457,140,469,172,476,171,481,138,474,107,462,70,437,43,410"/>
+<area shape="rect" id="Node000017" href="$classnnp_1_1Log.html#a80b248cc27c7846814fb2915e198b71b" title="Register new C++ ofstream pointer." alt="" coords="143,522,325,562"/>
+<area shape="poly" id="edge11_Node000001_Node000017" title=" " alt="" coords="41,407,65,456,85,483,110,507,131,519,129,524,106,511,81,487,61,459,36,409"/>
+<area shape="rect" id="Node000018" href="$classnnp_1_1Mode.html#a44b9b358f4f590c4880e3ca1d07cc833" title="Combine multiple setup routines and provide a basic NNP setup." alt="" coords="142,587,326,612"/>
+<area shape="poly" id="edge12_Node000001_Node000018" title=" " alt="" coords="38,408,43,441,56,486,77,533,92,554,110,572,130,584,127,589,106,576,88,557,72,535,51,488,38,442,33,409"/>
+<area shape="rect" id="Node000045" href="$classnnp_1_1Mode.html#aa26222b7b9dc3fd141f6e775690b5d2b" title="Set up symmetry function scaling from file." alt="" coords="133,637,335,677"/>
+<area shape="poly" id="edge13_Node000001_Node000045" title=" " alt="" coords="37,408,40,450,50,507,72,569,89,597,110,621,122,631,119,635,106,625,84,600,67,571,45,508,35,450,31,409"/>
+<area shape="rect" id="Node000020" href="$namespacennp.html#a6ecc8126eac4f4c52283f9f776986aa0" title="Split string at each delimiter." alt="" coords="193,701,275,727"/>
+<area shape="poly" id="edge15_Node000001_Node000020" title=" " alt="" coords="38,408,46,467,61,552,82,634,95,666,110,687,125,698,142,705,179,713,178,718,140,710,122,702,106,691,91,668,77,636,56,553,41,468,33,408"/>
+<area shape="rect" id="Node000046" href="$classnnp_1_1Mode.html#a6ac0b02c0a91917b17cd6e2fb96afb18" title="Copy settings file but comment out lines provided." alt="" coords="108,751,360,776"/>
+<area shape="poly" id="edge17_Node000001_Node000046" title=" " alt="" coords="38,408,44,477,58,576,79,673,94,711,110,736,115,741,112,745,106,740,89,714,74,675,52,577,39,477,32,408"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="201,31,194,21,198,11,211,5,234,3,262,6,273,16,270,20,260,11,234,8,213,10,202,15,199,20,205,28"/>
+<area shape="poly" id="edge7_Node000009_Node000010" title=" " alt="" coords="290,266,395,291,394,296,289,271"/>
+<area shape="poly" id="edge14_Node000045_Node000010" title=" " alt="" coords="334,638,358,621,385,589,406,551,422,511,433,470,444,392,447,332,452,333,450,392,438,471,427,513,411,553,390,592,362,625,337,642"/>
 </map>

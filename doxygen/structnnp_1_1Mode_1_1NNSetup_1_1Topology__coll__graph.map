@@ -1,6 +1,10 @@
 <map id="nnp::Mode::NNSetup::Topology" name="nnp::Mode::NNSetup::Topology">
-<area shape="rect" id="node1" title=" " alt="" coords="97,199,252,240"/>
-<area shape="rect" id="node2" title=" " alt="" coords="6,5,44,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="105,102,244,129"/>
-<area shape="rect" id="node4" title=" " alt="" coords="268,95,472,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="97,196,251,236"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,44,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="17,44,8,88,10,111,18,132,34,153,55,169,102,194,100,198,52,174,30,156,13,135,5,112,3,87,12,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="105,101,243,126"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="56,36,157,98,154,103,53,40"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="177,140,177,196,171,196,171,140"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="268,93,472,133"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="354,147,326,174,290,193,252,205,251,200,288,188,323,170,350,143"/>
 </map>

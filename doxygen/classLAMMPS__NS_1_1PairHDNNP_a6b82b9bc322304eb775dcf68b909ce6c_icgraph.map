@@ -1,5 +1,7 @@
 <map id="LAMMPS_NS::PairHDNNP::transferNeighborList" name="LAMMPS_NS::PairHDNNP::transferNeighborList">
-<area shape="rect" id="node1" title=" " alt="" coords="292,39,476,80"/>
-<area shape="rect" id="node2" href="$classLAMMPS__NS_1_1PairHDNNP.html#a4e58bc34943d699e1f974b411c4037a4" title=" " alt="" coords="33,5,217,47"/>
-<area shape="rect" id="node3" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a9f919fc12ad3bfd827bdbabe883cf8bc" title=" " alt="" coords="5,71,244,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="292,37,476,77"/>
+<area shape="rect" id="Node000002" href="$classLAMMPS__NS_1_1PairHDNNP.html#a4e58bc34943d699e1f974b411c4037a4" title=" " alt="" coords="33,5,217,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="278,47,216,39,217,34,279,42"/>
+<area shape="rect" id="Node000003" href="$classLAMMPS__NS_1_1PairHDNNPDevelop.html#a9f919fc12ad3bfd827bdbabe883cf8bc" title=" " alt="" coords="5,69,244,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="279,73,244,77,244,72,278,68"/>
 </map>

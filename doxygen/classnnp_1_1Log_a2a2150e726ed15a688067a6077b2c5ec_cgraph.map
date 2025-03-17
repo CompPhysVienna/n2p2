@@ -1,4 +1,7 @@
 <map id="nnp::Log::operator&lt;&lt;" name="nnp::Log::operator&lt;&lt;">
-<area shape="rect" id="node1" title="Overload &lt;&lt; operator." alt="" coords="5,5,168,32"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Log.html#a2464273551fb753024b89a5cdd2e1256" title="Add string as new log entry." alt="" coords="216,5,383,32"/>
+<area shape="rect" id="Node000001" title="Overload &lt;&lt; operator." alt="" coords="5,31,168,56"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Log.html#a2464273551fb753024b89a5cdd2e1256" title="Add string as new log entry." alt="" coords="216,5,383,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,31,202,27,203,32,169,36"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1Log.html#af6071a60aa52b6c1b511f99b4bc1b8fe" title="Constructor." alt="" coords="245,55,353,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="169,50,232,57,231,62,168,55"/>
 </map>

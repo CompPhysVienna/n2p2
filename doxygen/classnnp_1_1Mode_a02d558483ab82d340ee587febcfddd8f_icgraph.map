@@ -1,6 +1,11 @@
 <map id="nnp::Mode::physicalEnergy" name="nnp::Mode::physicalEnergy">
-<area shape="rect" id="node1" title="Undo normalization for a given energy of structure." alt="" coords="268,64,465,91"/>
-<area shape="rect" id="node2" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="85,5,140,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="29,57,197,98"/>
-<area shape="rect" id="node4" href="$classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671" title="Write symmetry function legacy file (&quot;function.data&quot;)." alt="" coords="5,122,220,163"/>
+<area shape="rect" id="Node000001" title="Undo normalization for a given energy of structure." alt="" coords="268,95,465,120"/>
+<area shape="rect" id="Node000002" href="$nnp-dataset_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="85,5,140,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="327,91,276,68,219,46,139,25,141,20,221,41,278,63,329,86"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1InterfaceLammps.html#a0837984fb5d6fe14d298bb2c0b7d01f2" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions." alt="" coords="29,55,197,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="254,96,196,89,197,83,255,91"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1InterfaceLammps.html#a306752869b85863001446cac952a9040" title="Calculate symmetry functions, atomic neural networks and sum of local energy contributions (developme..." alt="" coords="29,119,197,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="255,124,197,131,196,126,254,119"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1Dataset.html#aa12823183030d6cff2e059e860d15671" title="Write symmetry function legacy file (&quot;function.data&quot;)." alt="" coords="5,183,220,223"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="328,128,221,174,186,186,184,181,219,169,325,124"/>
 </map>

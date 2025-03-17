@@ -1,5 +1,8 @@
 <map id="nnp::settings::Key::getMainKeyword" name="nnp::settings::Key::getMainKeyword">
-<area shape="rect" id="node1" title=" " alt="" coords="220,51,359,92"/>
-<area shape="rect" id="node2" href="$classnnp_1_1settings_1_1Settings.html#a52b31ca8a728c8e919cd7b3087b528a3" title=" " alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="5,95,172,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="220,49,359,89"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1settings_1_1Settings.html#a52b31ca8a728c8e919cd7b3087b528a3" title=" " alt="" coords="5,5,172,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="206,54,172,46,173,41,207,49"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1settings_1_1Settings.html#ac58bfa49650e0c50b78ba8157442323b" title=" " alt="" coords="5,93,172,133"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="207,90,173,98,172,92,206,85"/>
+<area shape="poly" id="edge3_Node000004_Node000004" title=" " alt="" coords="122,82,110,75,89,72,70,74,58,79,54,85,56,92,51,94,49,84,55,75,68,69,89,67,112,70,125,77"/>
 </map>

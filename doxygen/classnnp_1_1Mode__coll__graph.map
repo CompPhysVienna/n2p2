@@ -1,21 +1,51 @@
 <map id="nnp::Mode" name="nnp::Mode">
-<area shape="rect" id="node1" title="Base class for all NNP applications." alt="" coords="1280,523,1371,549"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="965,5,1101,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1Log.html" title="Logging class for library output." alt="" coords="994,167,1071,193"/>
-<area shape="rect" id="node4" title=" " alt="" coords="640,97,691,124"/>
-<area shape="rect" id="node5" title=" " alt="" coords="572,227,759,253"/>
-<area shape="rect" id="node12" href="$classnnp_1_1settings_1_1Settings.html" title="Reads and analyzes settings file and stores parameters." alt="" coords="949,219,1116,245"/>
-<area shape="rect" id="node6" title=" " alt="" coords="993,332,1073,359"/>
-<area shape="rect" id="node7" title=" " alt="" coords="635,408,695,435"/>
-<area shape="rect" id="node8" title=" " alt="" coords="939,445,1126,472"/>
-<area shape="rect" id="node19" href="$structnnp_1_1ErfcBuf.html" title="Helper class to store previously calculated values of erfc() that are needed during the charge equili..." alt="" coords="982,496,1083,523"/>
-<area shape="rect" id="node9" title=" " alt="" coords="185,525,351,552"/>
-<area shape="rect" id="node18" title=" " alt="" coords="578,459,753,501"/>
-<area shape="rect" id="node10" title=" " alt="" coords="5,665,72,692"/>
-<area shape="rect" id="node15" href="$classnnp_1_1ScreeningFunction.html" title="A screening functions for use with electrostatics." alt="" coords="375,728,548,755"/>
-<area shape="rect" id="node11" href="$classnnp_1_1EwaldSetup.html" title="Setup data for Ewald summation." alt="" coords="967,767,1098,793"/>
-<area shape="rect" id="node13" title=" " alt="" coords="983,817,1082,844"/>
-<area shape="rect" id="node14" title=" " alt="" coords="987,868,1078,895"/>
-<area shape="rect" id="node16" title=" " alt="" coords="929,919,1136,945"/>
-<area shape="rect" id="node17" title=" " alt="" coords="945,970,1120,1011"/>
+<area shape="rect" id="Node000001" title="Base class for all NNP applications." alt="" coords="1285,507,1376,532"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1ElementMap.html" title="Contains element map." alt="" coords="970,5,1106,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1120,12,1158,15,1196,24,1232,40,1263,64,1284,100,1301,153,1313,217,1321,286,1330,419,1332,507,1327,507,1325,419,1316,286,1307,217,1295,154,1280,102,1259,68,1230,45,1194,29,1157,21,1120,17"/>
+<area shape="rect" id="Node000008" href="$classnnp_1_1Log.html" title="Logging class for library output." alt="" coords="999,133,1077,159"/>
+<area shape="poly" id="edge2_Node000001_Node000008" title=" " alt="" coords="1090,138,1132,137,1178,143,1224,157,1245,169,1263,184,1280,209,1294,247,1314,342,1326,439,1331,506,1326,507,1321,440,1309,343,1289,248,1275,212,1259,188,1242,174,1222,162,1177,148,1132,143,1090,143"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="595,97,645,123"/>
+<area shape="poly" id="edge6_Node000001_Node000009" title=" " alt="" coords="659,102,792,87,973,76,1064,76,1147,83,1216,98,1243,109,1263,123,1283,152,1299,197,1311,252,1319,312,1329,428,1332,506,1326,507,1324,428,1314,312,1306,253,1294,198,1279,155,1259,127,1240,113,1214,103,1147,88,1064,82,973,81,793,93,659,107"/>
+<area shape="poly" id="edge3_Node000008_Node000009" title=" " alt="" coords="659,116,738,130,882,141,999,143,999,149,882,146,737,135,658,121"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="527,227,713,252"/>
+<area shape="poly" id="edge23_Node000001_Node000010" title=" " alt="" coords="696,252,1032,326,1187,363,1263,386,1290,415,1309,448,1329,506,1324,508,1304,450,1285,418,1260,391,1186,368,1030,331,695,257"/>
+<area shape="poly" id="edge4_Node000008_Node000010" title=" " alt="" coords="680,220,737,206,999,151,1000,156,738,211,682,226"/>
+<area shape="rect" id="Node000035" href="$classnnp_1_1settings_1_1Settings.html" title="Reads and analyzes settings file and stores parameters." alt="" coords="955,183,1121,208"/>
+<area shape="poly" id="edge17_Node000035_Node000010" title=" " alt="" coords="710,251,757,254,808,254,860,248,910,236,921,227,933,217,964,206,966,211,936,222,925,231,912,240,861,253,808,259,757,259,710,256"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="998,232,1078,257"/>
+<area shape="poly" id="edge5_Node000001_Node000019" title=" " alt="" coords="1092,243,1189,252,1233,262,1263,276,1286,302,1304,333,1317,366,1325,399,1333,462,1333,506,1327,506,1327,462,1320,400,1312,367,1299,335,1282,305,1260,280,1232,267,1188,258,1091,249"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="590,408,650,433"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="663,409,737,398,850,387,939,383,1028,384,1141,393,1205,394,1232,399,1263,414,1286,435,1305,460,1327,505,1322,508,1300,463,1282,439,1260,419,1230,404,1204,399,1141,398,1028,390,939,388,851,393,738,403,664,414"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="945,408,1131,433"/>
+<area shape="poly" id="edge9_Node000020_Node000006" title=" " alt="" coords="664,418,945,418,945,423,664,423"/>
+<area shape="rect" id="Node000076" href="$structnnp_1_1ErfcBuf.html" title="Helper class to store previously calculated values of erfc() that are needed during the charge equili..." alt="" coords="987,457,1089,483"/>
+<area shape="poly" id="edge29_Node000076_Node000006" title=" " alt="" coords="664,426,738,438,873,453,988,464,987,469,873,459,737,443,663,431"/>
+<area shape="poly" id="edge8_Node000001_Node000020" title=" " alt="" coords="1145,429,1204,443,1262,464,1294,483,1318,504,1315,508,1291,487,1260,468,1203,448,1144,435"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="185,620,351,645"/>
+<area shape="poly" id="edge10_Node000001_Node000021" title=" " alt="" coords="364,627,707,611,923,596,1141,575,1202,571,1228,568,1260,558,1288,545,1311,530,1314,535,1290,550,1262,563,1229,573,1203,577,1142,581,924,601,708,616,364,632"/>
+<area shape="rect" id="Node000075" title=" " alt="" coords="533,551,707,591"/>
+<area shape="poly" id="edge26_Node000075_Node000021" title=" " alt="" coords="354,615,374,611,532,584,533,589,375,617,355,620"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="5,819,72,844"/>
+<area shape="poly" id="edge12_Node000001_Node000022" title=" " alt="" coords="71,809,95,799,142,787,180,782,267,781,1039,781,1106,785,1159,790,1184,789,1208,783,1233,772,1260,752,1282,728,1299,699,1311,668,1319,636,1327,576,1327,533,1333,533,1332,576,1324,637,1316,670,1303,702,1286,731,1263,756,1236,776,1210,788,1185,794,1159,796,1105,791,1039,786,267,786,180,787,143,792,97,805,73,814"/>
+<area shape="poly" id="edge11_Node000021_Node000022" title=" " alt="" coords="56,806,94,763,177,693,246,643,249,647,180,697,98,767,60,809"/>
+<area shape="rect" id="Node000029" href="$classnnp_1_1KspaceGrid.html" title=" " alt="" coords="375,911,503,936"/>
+<area shape="poly" id="edge15_Node000029_Node000022" title=" " alt="" coords="64,851,97,873,169,897,243,911,314,919,374,921,374,927,314,924,243,917,167,902,95,878,61,856"/>
+<area shape="rect" id="Node000041" href="$classnnp_1_1ScreeningFunction.html" title="A screening functions for use with electrostatics." alt="" coords="737,987,911,1012"/>
+<area shape="poly" id="edge21_Node000041_Node000022" title=" " alt="" coords="57,854,79,884,108,918,145,949,186,972,259,994,334,1009,410,1018,485,1022,626,1020,738,1009,739,1015,626,1025,485,1028,410,1023,333,1014,257,999,184,976,142,953,105,921,75,887,53,857"/>
+<area shape="rect" id="Node000023" href="$classnnp_1_1EwaldSetup.html" title="Setup data for Ewald summation." alt="" coords="973,507,1103,532"/>
+<area shape="poly" id="edge13_Node000001_Node000023" title=" " alt="" coords="1117,517,1285,517,1285,522,1117,522"/>
+<area shape="poly" id="edge14_Node000001_Node000029" title=" " alt="" coords="517,932,696,953,805,962,918,967,1027,967,1125,958,1168,951,1205,940,1236,927,1259,911,1278,882,1293,839,1305,785,1314,725,1323,610,1326,532,1332,532,1329,610,1319,726,1310,786,1299,840,1283,885,1263,915,1239,932,1207,945,1169,956,1126,964,1027,972,918,973,805,967,695,958,516,937"/>
+<area shape="poly" id="edge16_Node000001_Node000035" title=" " alt="" coords="1136,198,1211,210,1242,219,1263,231,1278,252,1291,284,1311,365,1324,447,1331,506,1325,507,1319,448,1306,366,1286,285,1273,255,1260,235,1240,224,1210,215,1135,204"/>
+<area shape="rect" id="Node000039" title=" " alt="" coords="989,671,1087,696"/>
+<area shape="poly" id="edge18_Node000001_Node000039" title=" " alt="" coords="1101,692,1140,694,1182,691,1223,682,1260,664,1275,650,1288,634,1308,597,1319,560,1325,532,1330,533,1325,562,1313,599,1293,637,1279,654,1263,668,1224,687,1182,697,1140,699,1101,697"/>
+<area shape="rect" id="Node000040" title=" " alt="" coords="993,720,1083,745"/>
+<area shape="poly" id="edge19_Node000001_Node000040" title=" " alt="" coords="1097,742,1137,745,1180,744,1222,735,1260,715,1279,695,1295,672,1315,620,1324,569,1327,532,1332,532,1330,570,1320,621,1300,675,1284,699,1263,719,1224,740,1180,749,1136,751,1096,747"/>
+<area shape="poly" id="edge20_Node000001_Node000041" title=" " alt="" coords="882,1013,966,1029,1016,1033,1068,1034,1121,1029,1171,1017,1218,996,1259,966,1280,932,1296,882,1308,820,1317,751,1325,620,1327,532,1332,532,1330,620,1322,752,1314,820,1302,883,1285,935,1263,969,1221,1001,1173,1022,1122,1034,1068,1039,1016,1039,966,1034,881,1018"/>
+<area shape="rect" id="Node000045" title=" " alt="" coords="935,821,1141,847"/>
+<area shape="poly" id="edge22_Node000001_Node000045" title=" " alt="" coords="1111,846,1149,848,1188,845,1226,835,1260,815,1274,794,1287,763,1307,679,1320,593,1326,532,1331,533,1325,594,1312,680,1292,764,1279,797,1263,819,1228,840,1189,850,1149,853,1111,851"/>
+<area shape="rect" id="Node000068" title=" " alt="" coords="951,871,1125,911"/>
+<area shape="poly" id="edge24_Node000001_Node000068" title=" " alt="" coords="1139,904,1171,903,1203,898,1233,887,1259,869,1277,844,1291,806,1311,706,1322,603,1326,532,1331,532,1327,603,1316,706,1296,808,1281,847,1263,873,1236,892,1205,903,1172,909,1139,910"/>
+<area shape="poly" id="edge25_Node000001_Node000075" title=" " alt="" coords="721,571,916,570,1029,565,1141,555,1217,543,1285,528,1286,533,1218,548,1142,561,1029,570,916,576,721,577"/>
+<area shape="poly" id="edge28_Node000076_Node000075" title=" " alt="" coords="714,545,934,491,986,479,987,484,935,497,715,551"/>
+<area shape="poly" id="edge27_Node000001_Node000076" title=" " alt="" coords="1103,474,1179,484,1262,498,1287,504,1286,509,1261,503,1178,489,1102,479"/>
 </map>

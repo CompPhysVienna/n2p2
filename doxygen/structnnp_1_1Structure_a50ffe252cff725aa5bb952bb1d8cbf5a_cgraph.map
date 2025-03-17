@@ -1,8 +1,14 @@
 <map id="nnp::Structure::calculateElectrostaticEnergy" name="nnp::Structure::calculateElectrostaticEnergy">
-<area shape="rect" id="node1" title="Compute electrostatic energy with global charge equilibration." alt="" coords="5,115,185,156"/>
-<area shape="rect" id="node2" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="233,5,413,47"/>
-<area shape="rect" id="node3" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="461,35,676,76"/>
-<area shape="rect" id="node4" href="$structnnp_1_1ErfcBuf.html#a6b7e36dd4d912a38ed561be3c2c8cfb7" title="Either returns already stored value erfc(x) or calculates it if not yet stored." alt="" coords="256,122,391,149"/>
-<area shape="rect" id="node5" href="$structnnp_1_1ErfcBuf.html#a90f60368ebcda5bdfbb17ff6b92b7717" title="Resizes and resets the storage array to fit the current structure." alt="" coords="253,173,394,199"/>
-<area shape="rect" id="node6" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="237,223,409,250"/>
+<area shape="rect" id="Node000001" title="Compute electrostatic energy with global charge equilibration." alt="" coords="5,113,185,153"/>
+<area shape="rect" id="Node000002" href="$structnnp_1_1Structure.html#ae462f93091a1ab2767a5ca395ab0a6e2" title="Calculate screening energy which needs to be added (!) to the electrostatic energy in order to remove..." alt="" coords="233,5,413,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,111,232,62,260,49,263,54,234,66,136,116"/>
+<area shape="rect" id="Node000005" href="$structnnp_1_1Atom.html#a31682875ca984579393d331e5354fd19" title="Return needed number of neighbors for a given cutoff radius from neighborCutoffs map." alt="" coords="461,35,676,75"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="185,114,233,105,447,70,448,76,234,111,186,119"/>
+<area shape="rect" id="Node000007" href="$structnnp_1_1ErfcBuf.html#a6b7e36dd4d912a38ed561be3c2c8cfb7" title="Either returns already stored value erfc(x) or calculates it if not yet stored." alt="" coords="256,121,391,146"/>
+<area shape="poly" id="edge3_Node000001_Node000007" title=" " alt="" coords="186,131,242,131,242,136,186,136"/>
+<area shape="rect" id="Node000008" href="$structnnp_1_1ErfcBuf.html#a90f60368ebcda5bdfbb17ff6b92b7717" title="Resizes and resets the storage array to fit the current structure." alt="" coords="253,170,394,195"/>
+<area shape="poly" id="edge5_Node000001_Node000008" title=" " alt="" coords="186,150,251,164,250,170,185,155"/>
+<area shape="rect" id="Node000009" href="$classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f" title="Set up reciprocal box vectors and eta." alt="" coords="237,219,409,245"/>
+<area shape="poly" id="edge6_Node000001_Node000009" title=" " alt="" coords="131,151,179,178,234,204,258,213,257,218,232,209,176,183,128,156"/>
+<area shape="poly" id="edge2_Node000002_Node000005" title=" " alt="" coords="414,33,448,38,447,43,413,39"/>
 </map>

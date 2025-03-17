@@ -1,4 +1,5 @@
 <map id="nnp::SymFnc::calculateAngularPart" name="nnp::SymFnc::calculateAngularPart">
-<area shape="rect" id="node1" title="Calculate (partial) symmetry function value for one given angle." alt="" coords="280,13,528,39"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="5,5,232,47"/>
+<area shape="rect" id="Node000001" title="Calculate (partial) symmetry function value for one given angle." alt="" coords="280,13,528,38"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SetupAnalysis.html#a6b1ac29f3320bca87091dc80a528567f" title="Write radial and angular part of symmetry functions to file." alt="" coords="5,5,232,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="267,28,232,28,232,23,267,23"/>
 </map>

@@ -1,7 +1,11 @@
 <map id="nnp::Mode::setupSymmetryFunctionScaling" name="nnp::Mode::setupSymmetryFunctionScaling">
-<area shape="rect" id="node1" title="Set up symmetry function scaling from file." alt="" coords="308,86,511,127"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,5,260,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="49,57,217,98"/>
-<area shape="rect" id="node4" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,123,160,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="51,173,214,200"/>
+<area shape="rect" id="Node000001" title="Set up symmetry function scaling from file." alt="" coords="308,85,511,125"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a664dec664ebd703206f7c515bf3e96f0" title="Apply normalization based on initial weights prediction." alt="" coords="5,5,260,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="352,81,259,46,209,33,210,28,261,41,354,76"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1InterfaceLammps.html#a78629b5a9034f2b06a4cd54a082e7ef0" title="Initialize the LAMMPS interface." alt="" coords="49,55,217,95"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="294,95,216,87,217,82,295,90"/>
+<area shape="rect" id="Node000005" href="$nnp-atomenv_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="105,120,160,145"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="294,119,161,133,160,127,294,114"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Prediction.html#ae3aa29d34a5d2cb6659e2038623dc93a" title=" " alt="" coords="51,169,214,195"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="345,132,261,159,207,172,206,167,259,154,343,127"/>
 </map>

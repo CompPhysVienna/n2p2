@@ -1,10 +1,19 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldSetup.cpp" name="/home/runner/work/n2p2/n2p2/src/libnnp/EwaldSetup.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="371,5,603,47"/>
-<area shape="rect" id="node2" href="$EwaldSetup_8h.html" title=" " alt="" coords="5,95,116,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="69,169,146,196"/>
-<area shape="rect" id="node4" href="$EwaldTruncKolafaFixR_8h.html" title=" " alt="" coords="191,95,367,121"/>
-<area shape="rect" id="node5" href="$EwaldTruncKolafaOptEta_8h.html" title=" " alt="" coords="391,95,583,121"/>
-<area shape="rect" id="node6" href="$EwaldTruncJackson_8h.html" title=" " alt="" coords="607,95,765,121"/>
-<area shape="rect" id="node7" href="$utility_8h.html" title=" " alt="" coords="789,95,860,121"/>
-<area shape="rect" id="node8" title=" " alt="" coords="817,169,904,196"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="371,5,603,45"/>
+<area shape="rect" id="Node000002" href="$EwaldSetup_8h.html" title=" " alt="" coords="5,93,116,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="386,48,130,95,129,89,385,43"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="69,167,146,192"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="371,37,324,44,275,56,226,73,181,96,147,124,123,157,119,154,143,121,178,91,224,68,273,51,323,39,371,31"/>
+<area shape="rect" id="Node000011" href="$EwaldTruncKolafaFixR_8h.html" title=" " alt="" coords="191,93,367,119"/>
+<area shape="poly" id="edge3_Node000001_Node000011" title=" " alt="" coords="438,48,324,91,322,86,437,43"/>
+<area shape="rect" id="Node000013" href="$EwaldTruncKolafaOptEta_8h.html" title=" " alt="" coords="391,93,583,119"/>
+<area shape="poly" id="edge4_Node000001_Node000013" title=" " alt="" coords="490,46,490,79,485,79,485,46"/>
+<area shape="rect" id="Node000014" href="$EwaldTruncJackson_8h.html" title=" " alt="" coords="607,93,765,119"/>
+<area shape="poly" id="edge5_Node000001_Node000014" title=" " alt="" coords="536,43,645,86,643,91,534,48"/>
+<area shape="rect" id="Node000015" href="$utility_8h.html" title=" " alt="" coords="789,93,860,119"/>
+<area shape="poly" id="edge6_Node000001_Node000015" title=" " alt="" coords="570,43,777,91,775,96,568,48"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="817,167,904,192"/>
+<area shape="poly" id="edge8_Node000001_Node000018" title=" " alt="" coords="604,28,683,35,763,47,830,65,856,77,873,92,881,106,883,123,875,155,870,153,877,123,876,108,869,95,853,82,828,70,762,52,683,40,603,34"/>
+<area shape="poly" id="edge2_Node000002_Node000010" title=" " alt="" coords="71,118,94,154,90,157,66,120"/>
+<area shape="poly" id="edge7_Node000015_Node000018" title=" " alt="" coords="833,118,851,153,846,156,828,120"/>
 </map>

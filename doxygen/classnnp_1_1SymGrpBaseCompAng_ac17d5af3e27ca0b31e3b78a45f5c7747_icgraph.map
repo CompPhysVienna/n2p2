@@ -1,5 +1,7 @@
 <map id="nnp::SymGrpBaseCompAng::getMembers" name="nnp::SymGrpBaseCompAng::getMembers">
-<area shape="rect" id="node1" title="Get symmetry function members." alt="" coords="255,39,456,80"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseCompAng.html#aabc9958c10fa62ed7b891cea23e35536" title="Give symmetry function group parameters on multiple lines." alt="" coords="5,5,207,47"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymGrpBaseCompAng.html#a90682087f558cf8a8082fe3e906cea3c" title="Fill scalingFactors with values from member symmetry functions." alt="" coords="5,71,207,112"/>
+<area shape="rect" id="Node000001" title="Get symmetry function members." alt="" coords="255,37,456,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseCompAng.html#aabc9958c10fa62ed7b891cea23e35536" title="Give symmetry function group parameters on multiple lines." alt="" coords="5,5,207,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="241,45,207,41,207,36,241,40"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymGrpBaseCompAng.html#a90682087f558cf8a8082fe3e906cea3c" title="Fill scalingFactors with values from member symmetry functions." alt="" coords="5,69,207,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="241,75,207,79,207,74,241,69"/>
 </map>

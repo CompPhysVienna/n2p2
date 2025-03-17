@@ -1,8 +1,10 @@
 <map id="/home/runner/work/n2p2/n2p2/src/interface" name="/home/runner/work/n2p2/n2p2/src/interface">
-<area shape="rect" id="node2" href="dir_400035d1a155aafda4ae534e1c970fc3.html" title="LAMMPS" alt="" coords="50,27,129,75"/>
-<area shape="rect" id="node3" href="dir_12275bbc450fd595d5f24ba92a52834c.html" title="libnnpif" alt="" coords="5,123,77,171"/>
-<area shape="rect" id="edge1-headlabel" href="dir_000003_000006.html" title="2" alt="" coords="64,103,74,118"/>
-<area shape="rect" id="node4" href="dir_881441af78b1e0875bdddb157c69d9c1.html" title="libnnp" alt="" coords="101,123,173,171"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000003_000005.html" title="4" alt="" coords="120,95,129,110"/>
-<area shape="rect" id="clust1" href="dir_b31d54d5631803016a26f28213a41162.html" alt="" coords="39,16,244,85"/>
+<area shape="rect" id="node2" href="dir_400035d1a155aafda4ae534e1c970fc3.html" title="LAMMPS" alt="" coords="47,27,125,52"/>
+<area shape="rect" id="node3" href="dir_12275bbc450fd595d5f24ba92a52834c.html" title="libnnpif" alt="" coords="5,100,76,125"/>
+<area shape="poly" id="edge1" href="dir_000003_000006.html" alt="" coords="81,54,58,90,53,87,76,51"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000003_000006.html" title="5" alt="" coords="60,82,70,97"/>
+<area shape="rect" id="node4" href="dir_881441af78b1e0875bdddb157c69d9c1.html" title="libnnp" alt="" coords="100,100,163,125"/>
+<area shape="poly" id="edge2" href="dir_000003_000005.html" alt="" coords="96,51,119,87,114,90,91,54"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000003_000005.html" title="4" alt="" coords="117,73,126,87"/>
+<area shape="rect" id="clust1" href="dir_b31d54d5631803016a26f28213a41162.html" alt="" coords="35,16,241,63"/>
 </map>

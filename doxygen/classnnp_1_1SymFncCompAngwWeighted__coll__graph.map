@@ -1,4 +1,5 @@
 <map id="nnp::SymFncCompAngwWeighted" name="nnp::SymFncCompAngwWeighted">
-<area shape="rect" id="node1" title="Weighted wide angular symmetry function with compact support (type 25)" alt="" coords="16,80,257,107"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseCompAngWeighted.html" title="Intermediate symmetry function class for weighted angular compact SFs." alt="" coords="5,5,268,32"/>
+<area shape="rect" id="Node000001" title="Weighted wide angular symmetry function with compact support (type 25)" alt="" coords="16,79,257,104"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCompAngWeighted.html" title="Intermediate symmetry function class for weighted angular compact SFs." alt="" coords="5,5,268,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,44,139,79,134,79,134,44"/>
 </map>

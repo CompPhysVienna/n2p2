@@ -1,7 +1,14 @@
 <map id="nnp::SymFncBaseCompAng" name="nnp::SymFncBaseCompAng">
-<area shape="rect" id="node1" title="Intermediate symmetry function class for angular SFs with compact support." alt="" coords="137,391,338,417"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymFncBaseComp.html" title="Symmetry function base class for SFs with compact support." alt="" coords="48,287,224,313"/>
-<area shape="rect" id="node3" title=" " alt="" coords="109,5,176,32"/>
-<area shape="rect" id="node4" href="$classnnp_1_1CompactFunction.html" title="A general function with compact support." alt="" coords="181,153,347,180"/>
-<area shape="rect" id="node5" title=" " alt="" coords="317,287,377,313"/>
+<area shape="rect" id="Node000001" title="Intermediate symmetry function class for angular SFs with compact support." alt="" coords="137,387,338,412"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseComp.html" title="Symmetry function base class for SFs with compact support." alt="" coords="48,284,224,309"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="159,317,228,385,224,389,156,321"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="109,5,176,31"/>
+<area shape="poly" id="edge6_Node000001_Node000010" title=" " alt="" coords="120,42,81,80,41,133,24,163,13,194,8,227,12,259,22,285,37,307,57,327,80,343,131,368,181,384,179,389,129,373,77,348,54,331,33,311,17,287,7,261,3,227,8,193,20,161,36,130,77,77,116,38"/>
+<area shape="poly" id="edge2_Node000002_Node000010" title=" " alt="" coords="145,45,139,284,134,284,139,44"/>
+<area shape="rect" id="Node000019" href="$classnnp_1_1CompactFunction.html" title="A general function with compact support." alt="" coords="181,152,347,177"/>
+<area shape="poly" id="edge4_Node000019_Node000010" title=" " alt="" coords="163,40,256,150,252,154,159,43"/>
+<area shape="poly" id="edge7_Node000001_Node000019" title=" " alt="" coords="264,192,241,387,236,386,258,191"/>
+<area shape="poly" id="edge3_Node000002_Node000019" title=" " alt="" coords="245,189,149,286,146,282,241,185"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="317,284,377,309"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="332,322,292,365,259,389,256,384,289,361,328,318"/>
 </map>

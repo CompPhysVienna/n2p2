@@ -1,8 +1,13 @@
 <map id="nnp::Mode" name="nnp::Mode">
-<area shape="rect" id="node1" title="Base class for all NNP applications." alt="" coords="5,115,96,141"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Dataset.html" title="Collect and process large data sets." alt="" coords="175,5,281,32"/>
-<area shape="rect" id="node3" href="$classnnp_1_1InterfaceLammps.html" title=" " alt="" coords="144,56,312,83"/>
-<area shape="rect" id="node4" href="$classnnp_1_1ModeCabana.html" title="Derived Cabana main NNP class." alt="" coords="149,107,307,149"/>
-<area shape="rect" id="node5" href="$classnnp_1_1Prediction.html" title=" " alt="" coords="169,173,287,200"/>
-<area shape="rect" id="node6" href="$classnnp_1_1SetupAnalysis.html" title=" " alt="" coords="155,224,301,251"/>
+<area shape="rect" id="Node000001" title="Base class for all NNP applications." alt="" coords="5,112,96,137"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Dataset.html" title="Collect and process large data sets." alt="" coords="175,5,281,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,100,102,69,143,40,174,27,176,32,145,44,106,73,74,103"/>
+<area shape="rect" id="Node000004" href="$classnnp_1_1InterfaceLammps.html" title=" " alt="" coords="144,55,312,80"/>
+<area shape="poly" id="edge2_Node000001_Node000004" title=" " alt="" coords="100,105,143,90,183,78,185,83,145,95,101,110"/>
+<area shape="rect" id="Node000005" href="$classnnp_1_1ModeCabana.html" title="Derived Cabana main NNP class." alt="" coords="149,105,307,145"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="110,122,149,122,149,127,110,127"/>
+<area shape="rect" id="Node000006" href="$classnnp_1_1Prediction.html" title=" " alt="" coords="169,169,287,195"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="101,139,145,154,185,167,183,172,143,159,100,144"/>
+<area shape="rect" id="Node000007" href="$classnnp_1_1SetupAnalysis.html" title=" " alt="" coords="155,219,301,244"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="74,145,106,176,145,204,174,216,172,221,143,208,103,180,70,149"/>
 </map>

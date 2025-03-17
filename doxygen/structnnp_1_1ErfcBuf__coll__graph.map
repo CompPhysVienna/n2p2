@@ -1,5 +1,7 @@
 <map id="nnp::ErfcBuf" name="nnp::ErfcBuf">
-<area shape="rect" id="node1" title="Helper class to store previously calculated values of erfc() that are needed during the charge equili..." alt="" coords="113,109,214,136"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,180,47"/>
-<area shape="rect" id="node3" title=" " alt="" coords="204,13,264,39"/>
+<area shape="rect" id="Node000001" title="Helper class to store previously calculated values of erfc() that are needed during the charge equili..." alt="" coords="113,108,214,133"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,180,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,55,157,106,152,109,113,58"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="204,13,264,38"/>
+<area shape="poly" id="edge2_Node000001_Node000005" title=" " alt="" coords="219,51,174,109,170,106,215,47"/>
 </map>

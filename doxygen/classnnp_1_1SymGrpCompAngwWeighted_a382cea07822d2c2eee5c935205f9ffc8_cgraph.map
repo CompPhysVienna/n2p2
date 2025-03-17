@@ -1,6 +1,7 @@
 <map id="nnp::SymGrpCompAngwWeighted::calculate" name="nnp::SymGrpCompAngwWeighted::calculate">
-<area shape="rect" id="node1" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,81,247,122"/>
-<area shape="rect" id="node2" href="$classnnp_1_1ElementMap.html#acd54eb7c8fd1f9967604463ff11ffce1" title="Get atomic number from element index." alt="" coords="305,29,547,56"/>
-<area shape="rect" id="node3" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#aa1792a44100ce9180efaa1933a8f8dab" title=" " alt="" coords="295,81,557,122"/>
-<area shape="rect" id="node4" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#a5dfbc0c03a52a24abd7e22d355ba0da1" title=" " alt="" coords="295,146,557,187"/>
+<area shape="rect" id="Node000001" title="Calculate all symmetry functions of this group for one atom." alt="" coords="5,37,247,77"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#aa1792a44100ce9180efaa1933a8f8dab" title=" " alt="" coords="295,5,557,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="247,42,281,38,281,43,247,47"/>
+<area shape="rect" id="Node000003" href="$classnnp_1_1SymFncBaseCompAngWeighted.html#a5dfbc0c03a52a24abd7e22d355ba0da1" title=" " alt="" coords="295,69,557,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="247,68,281,71,281,77,247,73"/>
 </map>

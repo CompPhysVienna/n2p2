@@ -1,5 +1,8 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/ErfcBuf.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/ErfcBuf.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,192,47"/>
-<area shape="rect" id="node2" href="$Atom_8h.html" title=" " alt="" coords="28,95,97,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="67,169,130,196"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,192,45"/>
+<area shape="rect" id="Node000002" href="$Atom_8h.html" title=" " alt="" coords="28,93,97,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,47,76,82,71,79,88,44"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="67,167,130,192"/>
+<area shape="poly" id="edge3_Node000001_Node000012" title=" " alt="" coords="106,45,111,79,112,119,107,153,102,153,107,118,106,80,101,46"/>
+<area shape="poly" id="edge2_Node000002_Node000012" title=" " alt="" coords="71,118,89,153,84,156,66,120"/>
 </map>

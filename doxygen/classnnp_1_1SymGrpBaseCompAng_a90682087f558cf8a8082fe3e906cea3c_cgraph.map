@@ -1,4 +1,5 @@
 <map id="nnp::SymGrpBaseCompAng::setScalingFactors" name="nnp::SymGrpBaseCompAng::setScalingFactors">
-<area shape="rect" id="node1" title="Fill scalingFactors with values from member symmetry functions." alt="" coords="5,5,207,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1SymGrpBaseCompAng.html#ac17d5af3e27ca0b31e3b78a45f5c7747" title="Get symmetry function members." alt="" coords="255,5,456,47"/>
+<area shape="rect" id="Node000001" title="Fill scalingFactors with values from member symmetry functions." alt="" coords="5,5,207,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1SymGrpBaseCompAng.html#ac17d5af3e27ca0b31e3b78a45f5c7747" title="Get symmetry function members." alt="" coords="255,5,456,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,23,241,23,241,28,207,28"/>
 </map>

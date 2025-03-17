@@ -3,6 +3,7 @@ var classnnp_1_1KspaceGrid =
     [ "KspaceGrid", "classnnp_1_1KspaceGrid.html#a7077c2035c19f5596f7aa11ada61eb64", null ],
     [ "setup", "classnnp_1_1KspaceGrid.html#a607f0502d0aa3006b84b3d84fe0f872f", null ],
     [ "calculatePbcCopies", "classnnp_1_1KspaceGrid.html#a830e543a43f90bb46dd2a69d6b86ffd2", null ],
+    [ "kspaceSolver", "classnnp_1_1KspaceGrid.html#a96c2b901bc2ba4c6f8912f7635fc70a4", null ],
     [ "eta", "classnnp_1_1KspaceGrid.html#a7c69b809ca533171c4e4208372743869", null ],
     [ "kCut", "classnnp_1_1KspaceGrid.html#ad29c3486fb1871472e6b711d8bdc70aa", null ],
     [ "rCut", "classnnp_1_1KspaceGrid.html#a64cf10316e5cca208e2cadd6d1ea58bb", null ],

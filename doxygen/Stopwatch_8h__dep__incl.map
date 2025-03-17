@@ -1,7 +1,14 @@
 <map id="/home/runner/work/n2p2/n2p2/src/libnnp/Stopwatch.h" name="/home/runner/work/n2p2/n2p2/src/libnnp/Stopwatch.h">
-<area shape="rect" id="node1" title=" " alt="" coords="293,5,502,47"/>
-<area shape="rect" id="node2" href="$nnp-cutoff_8cpp.html" title=" " alt="" coords="5,95,187,151"/>
-<area shape="rect" id="node3" href="$Stopwatch_8cpp.html" title=" " alt="" coords="211,102,435,143"/>
-<area shape="rect" id="node4" href="$Training_8h.html" title=" " alt="" coords="445,199,627,255"/>
-<area shape="rect" id="node5" href="$Updater_8h.html" title=" " alt="" coords="509,95,691,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="463,5,673,45"/>
+<area shape="rect" id="Node000002" href="$nnp-cutoff_8cpp.html" title=" " alt="" coords="5,93,187,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="450,48,199,96,188,98,187,93,198,91,449,43"/>
+<area shape="rect" id="Node000003" href="$Prediction_8cpp.html" title=" " alt="" coords="211,101,432,141"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="507,53,372,103,370,98,505,48"/>
+<area shape="rect" id="Node000004" href="$Stopwatch_8cpp.html" title=" " alt="" coords="456,101,680,141"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="571,59,571,101,565,101,565,59"/>
+<area shape="rect" id="Node000005" href="$Training_8h.html" title=" " alt="" coords="691,196,872,251"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="629,49,662,68,694,91,718,116,739,144,770,194,766,197,734,147,714,120,690,95,659,72,626,54"/>
+<area shape="rect" id="Node000010" href="$Updater_8h.html" title=" " alt="" coords="755,93,936,148"/>
+<area shape="poly" id="edge5_Node000001_Node000010" title=" " alt="" coords="638,47,768,91,766,96,636,52"/>
+<area shape="poly" id="edge6_Node000010_Node000005" title=" " alt="" coords="823,161,800,197,796,194,819,158"/>
 </map>

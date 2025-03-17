@@ -5,6 +5,7 @@ var classnnp_1_1EwaldSetup =
     [ "getTruncMethod", "classnnp_1_1EwaldSetup.html#a5af026d5f78d0c54d9876006d675d361", null ],
     [ "getMaxCharge", "classnnp_1_1EwaldSetup.html#adaa71c77b1f21ddda01b931ff583b000", null ],
     [ "getPrecision", "classnnp_1_1EwaldSetup.html#a3749988f741ba2d3bebf3c4fdb658b81", null ],
+    [ "getMaxQSigma", "classnnp_1_1EwaldSetup.html#a28087ab7d01cd0bc9eefb7110e566f62", null ],
     [ "setMaxQSigma", "classnnp_1_1EwaldSetup.html#a45c1eb5ecffc075275f6dc49c22ae116", null ],
     [ "readFromArgs", "classnnp_1_1EwaldSetup.html#ae1c77a9bd64dc8936a88977f02213471", null ],
     [ "toNormalizedUnits", "classnnp_1_1EwaldSetup.html#a28e7b45be9299516677ef802e19fee07", null ],

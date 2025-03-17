@@ -1,0 +1,13 @@
+<map id="LAMMPS_NS::KSpaceHDNNP::setup" name="LAMMPS_NS::KSpaceHDNNP::setup">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,133,213,173"/>
+<area shape="rect" id="Node000002" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a6f2b9299c2fa267c438b93051a2e8eb2" title=" " alt="" coords="261,5,469,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,131,192,93,260,55,277,48,279,53,263,60,195,97,139,135"/>
+<area shape="rect" id="Node000003" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a1794773efe7038cc4d880e7eb97c0052" title=" " alt="" coords="261,69,469,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,131,271,110,273,115,191,136"/>
+<area shape="rect" id="Node000005" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a5217e20373e305c333d20a66b35cda21" title=" " alt="" coords="261,133,469,173"/>
+<area shape="poly" id="edge3_Node000001_Node000005" title=" " alt="" coords="213,151,248,151,248,156,213,156"/>
+<area shape="rect" id="Node000006" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#a25b53b8d56a7b8bc997f6180de535ddf" title=" " alt="" coords="261,197,469,237"/>
+<area shape="poly" id="edge4_Node000001_Node000006" title=" " alt="" coords="191,171,273,191,271,197,189,176"/>
+<area shape="rect" id="Node000007" href="$classLAMMPS__NS_1_1KSpaceHDNNP.html#ae45660658a43e4161e50a891cd250639" title=" " alt="" coords="261,261,469,301"/>
+<area shape="poly" id="edge5_Node000001_Node000007" title=" " alt="" coords="139,172,195,209,263,247,279,254,277,259,260,252,192,214,136,176"/>
+</map>

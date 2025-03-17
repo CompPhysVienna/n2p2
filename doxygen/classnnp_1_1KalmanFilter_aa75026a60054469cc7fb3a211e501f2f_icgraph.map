@@ -1,4 +1,5 @@
 <map id="nnp::KalmanFilter::setSizeObservation" name="nnp::KalmanFilter::setSizeObservation">
-<area shape="rect" id="node1" title="Set observation vector size." alt="" coords="212,5,360,47"/>
-<area shape="rect" id="node2" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,13,164,39"/>
+<area shape="rect" id="Node000001" title="Set observation vector size." alt="" coords="212,5,360,45"/>
+<area shape="rect" id="Node000002" href="$classnnp_1_1Training.html#a6432b845ccd07996ab2f8f4f707a0d8d" title="Perform one update." alt="" coords="5,13,164,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="198,28,164,28,164,23,198,23"/>
 </map>
