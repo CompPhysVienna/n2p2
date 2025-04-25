@@ -1,0 +1,1 @@
+target_compile_definitions(lammps PRIVATE ${N2P2_PROJECT_OPTIONS})

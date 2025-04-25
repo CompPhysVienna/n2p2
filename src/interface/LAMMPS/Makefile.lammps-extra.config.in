@@ -1,0 +1,5 @@
+# Settings that the LAMMPS build will import when this package library is used
+
+${LAMMPS_PACKAGE_NAME}_SYSINC = ${N2P2_PROJECT_OPTIONS}
+${LAMMPS_PACKAGE_NAME}_SYSLIB = -lnnpif -lnnp -lgsl -lgslcblas
+${LAMMPS_PACKAGE_NAME}_SYSPATH =
