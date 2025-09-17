@@ -3,3 +3,18 @@ compile_commands.json
 .clangd
 .idea/
 src/interface/stable_29Sep2021.tar.gz
+
+# Build artifacts
+bin/
+lib/
+include/
+src/interface/lammps-hdnnp/
+src/interface/*.tar.gz
+src/libnnp/*.a
+src/libnnp/*.so
+src/libnnptrain/*.a
+src/libnnptrain/*.so
+src/libnnpif/*.a
+src/libnnpif/*.so
+src/pynnp/*.so
+src/application/nnp-*
