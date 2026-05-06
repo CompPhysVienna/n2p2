@@ -466,6 +466,10 @@ double FixHDNNP::QEq_f(const gsl_vector *v)
             E_recip = kspacehdnnp->compute_pppm_eqeq(); // TODO: WIP
         }
         hdnnp->E_elec = E_real + E_self; // do not add E_recip, it is already global
+        
+        // Store reciprocal energy here so it can be reused in PairHDNNP4G
+        hdnnp->E_recip_global = E_recip; 
+
         E_qeq_loc += hdnnp->E_elec;
     }else
     {
@@ -496,6 +500,7 @@ double FixHDNNP::QEq_f(const gsl_vector *v)
                 }
             }
         }
+        hdnnp->E_recip_global = 0.0;
     }
 
     //TODO: add communication steps for E_elec !!!

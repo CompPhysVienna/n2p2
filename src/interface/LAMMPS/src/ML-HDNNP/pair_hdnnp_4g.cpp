@@ -149,7 +149,7 @@ void PairHDNNP4G::compute(int eflag, int vflag)
       transferCharges();
 
       // Add electrostatic energy contribution to the total energy before conversion TODO:check
-      interface.addElectrostaticEnergy(E_elec);
+      interface.addElectrostaticEnergy(E_elec + (E_recip_global / nprocs));
 
       // Run second set of NNs for the short range contributions
       interface.process();
