@@ -149,7 +149,7 @@ void PairHDNNP4G::compute(int eflag, int vflag)
       transferCharges();
 
       // Add electrostatic energy contribution to the total energy before conversion TODO:check
-      interface.addElectrostaticEnergy(E_elec);
+      interface.addElectrostaticEnergy(E_elec + (E_recip_global / nprocs));
 
       // Run second set of NNs for the short range contributions
       interface.process();
@@ -1019,36 +1019,41 @@ void PairHDNNP4G::calculateElecDerivatives(double *dEelecdQ, double **f)
 
     double eta;
 
-    if (periodic) eta = 1 / kspacehdnnp->g_ewald; // LAMMPS truncation (RuNNer truncation has been removed)
+    if (periodic) eta = 1 / kspacehdnnp->g_ewald;
 
-    for (i = 0; i < nlocal; i++)
-    {
-        qi = q[i];
-        if (periodic)
-        {
-            double sqrt2eta = (sqrt(2.0) * eta);
-            double ksum = 0.0;
-            for (j = 0; j < nall; j++)
-            {
-                double Aij = 0.0;
-                qj = qall[j];
-                dx = x[i][0] - xx[j];
-                dy = x[i][1] - xy[j];
-                dz = x[i][2] - xz[j];
-                // Reciprocal part
-                for (int k = 0; k < kspacehdnnp->kcount; k++) {
-                    double kdr = (dx * kspacehdnnp->kxvecs[k] * kspacehdnnp->unitk[0] +
-                                  dy * kspacehdnnp->kyvecs[k] * kspacehdnnp->unitk[1] +
-                                  dz * kspacehdnnp->kzvecs[k] * kspacehdnnp->unitk[2]) * cflength;
-                    if (dx != 0.0) Aij += 2.0 * kspacehdnnp->kcoeff[k] * cos(kdr);
-                }
-                dEelecdQ[i] += qj * Aij;
-                //dEelecdQ[i] += qj * kcos[i][j];
+    if (periodic && kspacehdnnp->kcount > 0) {
+        int kcount = kspacehdnnp->kcount;
+        std::vector<double> Sq_real_loc(kcount, 0.0), Sq_imag_loc(kcount, 0.0);
+        std::vector<double> Sq_real(kcount, 0.0), Sq_imag(kcount, 0.0);
+
+        for (int kk = 0; kk < kcount; kk++) {
+            for (i = 0; i < nlocal; i++) {
+                Sq_real_loc[kk] += q[i] * kspacehdnnp->sfexp_rl[kk][i];
+                Sq_imag_loc[kk] += q[i] * kspacehdnnp->sfexp_im[kk][i];
             }
-            // Add remaining k-space contributions here
-            dEelecdQ[i] += qi * (kcoeff_sum - 2 / (sqrt2eta * sqrt(M_PI)));
+        }
+        
+        MPI_Allreduce(Sq_real_loc.data(), Sq_real.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
+        MPI_Allreduce(Sq_imag_loc.data(), Sq_imag.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
 
-            // Real space
+        double sqrt2eta = sqrt(2.0) * eta;
+        for (i = 0; i < nlocal; i++) {
+            double recip_sum = 0.0;
+            for (int kk = 0; kk < kcount; kk++) {
+                double cos_kri = kspacehdnnp->sfexp_rl[kk][i];
+                double sin_kri = kspacehdnnp->sfexp_im[kk][i];
+                // cos(k(ri - rj)) = cos(ri)cos(rj) + sin(ri)sin(rj)
+                recip_sum += 2.0 * kspacehdnnp->kcoeff[kk] * (cos_kri * Sq_real[kk] + sin_kri * Sq_imag[kk]);
+            }
+            // Add reciprocal evaluation and apply standard self-interaction correction
+            dEelecdQ[i] += recip_sum - q[i] * (2.0 / (sqrt2eta * sqrt(M_PI)));
+        }
+    }
+
+    for (i = 0; i < nlocal; i++) {
+        qi = q[i];
+        if (periodic) {
+            double sqrt2eta = (sqrt(2.0) * eta);
             for (int jj = 0; jj < list->numneigh[i]; ++jj) {
                 j = list->firstneigh[i][jj];
                 j &= NEIGHMASK;
@@ -1150,16 +1155,70 @@ void PairHDNNP4G::calculateElecForce(double **f)
     // lambda_i * dChidr contributions are added into the force vectors in n2p2
     interface.getForcesChi(forceLambda_all, atom->f);
 
-    for (i = 0; i < nlocal; i++) {
+    if (periodic && kspacehdnnp->kcount > 0) {
+        int kcount = kspacehdnnp->kcount;
+        std::vector<double> Sq_real_loc(kcount, 0.0), Sq_imag_loc(kcount, 0.0);
+        std::vector<double> Sl_real_loc(kcount, 0.0), Sl_imag_loc(kcount, 0.0);
+
+        // Calculate local structure factors
+        for (int kk = 0; kk < kcount; kk++) {
+            for (i = 0; i < nlocal; i++) {
+                double cos_kr = kspacehdnnp->sfexp_rl[kk][i];
+                double sin_kr = kspacehdnnp->sfexp_im[kk][i];
+                
+                Sq_real_loc[kk] += q[i] * cos_kr;
+                Sq_imag_loc[kk] += q[i] * sin_kr;
+                Sl_real_loc[kk] += forceLambda[i] * cos_kr;
+                Sl_imag_loc[kk] += forceLambda[i] * sin_kr;
+            }
+        }
+
+        std::vector<double> Sq_real(kcount, 0.0), Sq_imag(kcount, 0.0);
+        std::vector<double> Sl_real(kcount, 0.0), Sl_imag(kcount, 0.0);
+
+        // Reduce to global structure factors
+        MPI_Allreduce(Sq_real_loc.data(), Sq_real.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
+        MPI_Allreduce(Sq_imag_loc.data(), Sq_imag.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
+        MPI_Allreduce(Sl_real_loc.data(), Sl_real.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
+        MPI_Allreduce(Sl_imag_loc.data(), Sl_imag.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
+
+        double cfac = cflength / cfenergy;
+
+        // Calculate analytical reciprocal forces
+        for (i = 0; i < nlocal; i++) {
+            double fix = 0.0, fiy = 0.0, fiz = 0.0;
+            
+            for (int kk = 0; kk < kcount; kk++) {
+                double kx = kspacehdnnp->kxvecs[kk] * kspacehdnnp->unitk[0];
+                double ky = kspacehdnnp->kyvecs[kk] * kspacehdnnp->unitk[1];
+                double kz = kspacehdnnp->kzvecs[kk] * kspacehdnnp->unitk[2];
+
+                double cos_kri = kspacehdnnp->sfexp_rl[kk][i];
+                double sin_kri = kspacehdnnp->sfexp_im[kk][i];
+
+                double cos_term = forceLambda[i] * Sq_real[kk] + q[i] * (Sl_real[kk] + Sq_real[kk]);
+                double sin_term = forceLambda[i] * Sq_imag[kk] + q[i] * (Sl_imag[kk] + Sq_imag[kk]);
+
+                double sin_kdr_sum = sin_kri * cos_term - cos_kri * sin_term;
+                double force_k = 2.0 * kspacehdnnp->kcoeff[kk] * cfac * sin_kdr_sum;
+
+                fix += force_k * kx;
+                fiy += force_k * ky;
+                fiz += force_k * kz;
+            }
+            f[i][0] += fix;
+            f[i][1] += fiy;
+            f[i][2] += fiz;
+        }
+    }
+
+   for (i = 0; i < nlocal; i++) {
         qi = q[i];
         double lambdai = forceLambda[i];
+
         if (periodic) {
             double sqrt2eta = (sqrt(2.0) * eta);
-            double dAdrx = 0.0;
-            double dAdry = 0.0;
-            double dAdrz = 0.0;
-
-            // Real space
+            
             for (int jj = 0; jj < list->numneigh[i]; ++jj) {
                 k = list->firstneigh[i][jj];
                 k &= NEIGHMASK;
@@ -1174,80 +1233,23 @@ void PairHDNNP4G::calculateElecForce(double **f)
 
                 if (rij < kspacehdnnp->ewald_real_cutoff) {
                     gams2 = gammaSqrt2[type[i]- 1][type[jmap]-1];
-                    //delr = (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
-                    //                          / sqrt2eta + exp(-pow(rij / gams2, 2)) / gams2)
-                    //        - 1 / rij * (erfc(rij / sqrt2eta) - erfc(rij / gams2))) / rij2;
-                    delr = (2 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2))
-                                              / sqrt2eta + exp(-pow(rij / gams2, 2)) / gams2)
-                            - erfc_val[i][jj]) / rij2;
-                    dAdrx = dx * delr;
-                    dAdry = dy * delr;
-                    dAdrz = dz * delr;
+                    
+                    delr = (2.0 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2)) / sqrt2eta 
+                                                + exp(-pow(rij / gams2, 2)) / gams2)
+                            - 1.0 / rij * (erfc(rij / sqrt2eta) - erfc(rij / gams2))) / rij2;
+                            
+                    double dAdrx = dx * delr;
+                    double dAdry = dy * delr;
+                    double dAdrz = dz * delr;
 
-                    // Contributions to the local atom i
-                    f[i][0] -= 0.5 * (lambdai * qk + lambdak * qi) * dAdrx / cfenergy;
-                    f[i][1] -= 0.5 * (lambdai * qk + lambdak * qi) * dAdry / cfenergy;
-                    f[i][2] -= 0.5 * (lambdai * qk + lambdak * qi) * dAdrz / cfenergy;
+                    f[i][0] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrx / cfenergy;
+                    f[i][1] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdry / cfenergy;
+                    f[i][2] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrz / cfenergy;
 
-                    // Contributions to the neighbors of the local atom i
-                    f[k][0] += 0.5 * (lambdai * qk + lambdak * qi) * dAdrx / cfenergy;
-                    f[k][1] += 0.5 * (lambdai * qk + lambdak * qi) * dAdry / cfenergy;
-                    f[k][2] += 0.5 * (lambdai * qk + lambdak * qi) * dAdrz / cfenergy;
-
-                    // Contributions to the local atom i (pEelecpr)
-                    f[i][0] -= (0.5 * qk * dAdrx * qi) / cfenergy;
-                    f[i][1] -= (0.5 * qk * dAdry * qi) / cfenergy;
-                    f[i][2] -= (0.5 * qk * dAdrz * qi) / cfenergy;
-
-                    f[k][0] += (0.5 * qk * dAdrx * qi) / cfenergy;
-                    f[k][1] += (0.5 * qk * dAdry * qi) / cfenergy;
-                    f[k][2] += (0.5 * qk * dAdrz * qi) / cfenergy;
+                    f[k][0] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrx / cfenergy;
+                    f[k][1] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdry / cfenergy;
+                    f[k][2] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrz / cfenergy;
                 }
-            }
-            // Reciprocal space
-            for (j = 0; j < nall; j++){
-                qj = qall[j];
-                double lambdaj = forceLambda_all[j];
-                dx = x[i][0] - xx[j];
-                dy = x[i][1] - xy[j];
-                dz = x[i][2] - xz[j];
-                double ksx = 0;
-                double ksy = 0;
-                double ksz = 0;
-                for (int kk = 0; kk < kspacehdnnp->kcount; kk++) {
-                    double kx = kspacehdnnp->kxvecs[kk] * kspacehdnnp->unitk[0];
-                    double ky = kspacehdnnp->kyvecs[kk] * kspacehdnnp->unitk[1];
-                    double kz = kspacehdnnp->kzvecs[kk] * kspacehdnnp->unitk[2];
-                    double kdr = (dx * kx + dy * ky + dz * kz) * cflength;
-                    ksx -= 2.0 * kspacehdnnp->kcoeff[kk] * sin(kdr) * kx;
-                    ksy -= 2.0 * kspacehdnnp->kcoeff[kk] * sin(kdr) * ky;
-                    ksz -= 2.0 * kspacehdnnp->kcoeff[kk] * sin(kdr) * kz;
-                }
-                dAdrx = ksx;
-                dAdry = ksy;
-                dAdrz = ksz;
-                //dAdrx = ksinx[i][j];
-                //dAdry = ksiny[i][j];
-                //dAdrz = ksinz[i][j];
-
-                // Contributions to the local atom i
-                f[i][0] -= (lambdai * qj + lambdaj * qi) * dAdrx * (cflength/cfenergy);
-                f[i][1] -= (lambdai * qj + lambdaj * qi) * dAdry * (cflength/cfenergy);
-                f[i][2] -= (lambdai * qj + lambdaj * qi) * dAdrz * (cflength/cfenergy);
-
-                // pEelecpr
-                f[i][0] -= (qj * dAdrx * qi) * (cflength/cfenergy);
-                f[i][1] -= (qj * dAdry * qi) * (cflength/cfenergy);
-                f[i][2] -= (qj * dAdrz * qi) * (cflength/cfenergy);
-
-                // Contributions to the neighbors of the local atom i
-                /*f[k][0] += (lambdai * qj + lambdaj * qi) * dAdrx * (cflength/cfenergy);
-                f[k][1] += (lambdai * qj + lambdaj * qi) * dAdry * (cflength/cfenergy);
-                f[k][2] += (lambdai * qj + lambdaj * qi) * dAdrz * (cflength/cfenergy);*/
-
-                /*f[k][0] += (qj * dAdrx * qi) * (cflength/cfenergy);
-                f[k][1] += (qj * dAdry * qi) * (cflength/cfenergy);
-                f[k][2] += (qj * dAdrz * qi) * (cflength/cfenergy);*/
             }
         } else {
             // Over all atoms in the system
