@@ -71,6 +71,7 @@ protected:
     char* directory;
     char* emap;
     class NeighList *list;
+    double E_recip_global;
 
     nnp::InterfaceLammps interface;
 
