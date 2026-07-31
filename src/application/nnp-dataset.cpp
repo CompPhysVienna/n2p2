@@ -41,6 +41,7 @@ int main(int argc, char* argv[])
     size_t              countForces     = 0;
     map<string, double> errorEnergy;
     map<string, double> errorForces;
+    string              dataFileName    = "input.data";
     string              fileName;
     ofstream            fileEnergy;
     ofstream            fileForces;
@@ -54,13 +55,15 @@ int main(int argc, char* argv[])
     errorForces["RMSE"] = 0.0;
     errorForces["MAE"] = 0.0;
 
-    if (argc != 2)
+    if (argc < 2 || argc > 3)
     {
-        cout << "USAGE: " << argv[0] << " <shuffle>\n"
-             << "       <shuffle> ... Randomly distribute structures to MPI"
+        cout << "USAGE: " << argv[0] << " <shuffle> [<data_file>]\n"
+             << "       <shuffle> ..... Randomly distribute structures to MPI"
                 " processes (0/1 = no/yes).\n"
+             << "       <data_file> ... Optional structure file name"
+                " (default: input.data).\n"
              << "       Execute in directory with these NNP files present:\n"
-             << "       - input.data (structure file)\n"
+             << "       - input.data (structure file, or <data_file> if given)\n"
              << "       - input.nn (NNP settings)\n"
              << "       - scaling.data (symmetry function scaling data)\n"
              << "       - \"weights.%%03d.data\" (weights files)\n";
@@ -68,6 +71,7 @@ int main(int argc, char* argv[])
     }
 
     shuffle = (bool)atoi(argv[1]);
+    if (argc == 3) dataFileName = argv[2];
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
@@ -86,7 +90,7 @@ int main(int argc, char* argv[])
     dataset.setupSymmetryFunctionStatistics(false, false, true, false);
     dataset.setupNeuralNetworkWeights();
     if (shuffle) dataset.setupRandomNumberGenerator();
-    dataset.distributeStructures(shuffle);
+    dataset.distributeStructures(shuffle, false, dataFileName);
     if (normalize) dataset.toNormalizedUnits();
 
     dataset.log << "\n";
