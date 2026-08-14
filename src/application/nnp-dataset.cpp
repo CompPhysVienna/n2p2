@@ -34,17 +34,21 @@ int main(int argc, char* argv[])
 {
     bool                shuffle         = false;
     bool                useForces       = false;
+    bool                useCharges      = false;
     bool                normalize       = false;
     int                 numProcs        = 0;
     int                 myRank          = 0;
     size_t              countEnergy     = 0;
     size_t              countForces     = 0;
+    size_t              countCharge     = 0;
     map<string, double> errorEnergy;
     map<string, double> errorForces;
+    map<string, double> errorCharge;
     string              dataFileName    = "input.data";
     string              fileName;
     ofstream            fileEnergy;
     ofstream            fileForces;
+    ofstream            fileCharges;
     ofstream            fileOutputData;
     ofstream            myLog;
 
@@ -54,6 +58,8 @@ int main(int argc, char* argv[])
     errorEnergy["MAE"] = 0.0;
     errorForces["RMSE"] = 0.0;
     errorForces["MAE"] = 0.0;
+    errorCharge["RMSE"] = 0.0;
+    errorCharge["MAE"] = 0.0;
 
     if (argc < 2 || argc > 3)
     {
@@ -106,6 +112,15 @@ int main(int argc, char* argv[])
     else
     {
         dataset.log << "Only energies are predicted.\n";
+    }
+
+    // 4G-HDNNPs also solve for atomic charges (charge equilibration) as
+    // part of evaluateNNP() regardless of use_short_forces, so charge
+    // comparison is gated purely on the NNP type, not a settings keyword.
+    useCharges = (dataset.getNnpType() == Mode::NNPType::HDNNP_4G);
+    if (useCharges)
+    {
+        dataset.log << "Atomic charges are also predicted (4G-HDNNP).\n";
     }
 
     // Set up sensitivity vectors.
@@ -196,6 +211,47 @@ int main(int argc, char* argv[])
                 colInfo.push_back("NNP force (internal units).");
             }
             appendLinesToFile(fileForces,
+                              createFileHeader(title,
+                                               colSize,
+                                               colName,
+                                               colInfo));
+        }
+    }
+    if (useCharges)
+    {
+        fileName = strpr("charges.comp.%04d", myRank);
+        fileCharges.open(fileName.c_str());
+
+        // File header.
+        if (myRank == 0)
+        {
+            vector<string> title;
+            vector<string> colName;
+            vector<string> colInfo;
+            vector<size_t> colSize;
+            title.push_back("Charge comparison.");
+            colSize.push_back(10);
+            colName.push_back("index_s");
+            colInfo.push_back("Structure index.");
+            colSize.push_back(10);
+            colName.push_back("index_a");
+            colInfo.push_back("Atom index.");
+            colSize.push_back(16);
+            colName.push_back("Qref_phys");
+            colInfo.push_back("Reference atomic charge (physical units).");
+            colSize.push_back(16);
+            colName.push_back("Qnnp_phys");
+            colInfo.push_back("NNP atomic charge (physical units).");
+            if (normalize)
+            {
+                colSize.push_back(16);
+                colName.push_back("Qref_int");
+                colInfo.push_back("Reference atomic charge (internal units).");
+                colSize.push_back(16);
+                colName.push_back("Qnnp_int");
+                colInfo.push_back("NNP atomic charge (internal units).");
+            }
+            appendLinesToFile(fileCharges,
                               createFileHeader(title,
                                                colSize,
                                                colName,
@@ -305,6 +361,27 @@ int main(int argc, char* argv[])
                 }
             }
         }
+        if (useCharges)
+        {
+            it->updateError("charge", errorCharge, countCharge);
+            for (vector<Atom>::const_iterator it2 = it->atoms.begin();
+                 it2 != it->atoms.end(); ++it2)
+            {
+                fileCharges << strpr("%10zu %10zu",
+                                     it2->indexStructure,
+                                     it2->index);
+                if (normalize)
+                {
+                    fileCharges << strpr(
+                                   " %16.8E %16.8E",
+                                   dataset.physical("charge", it2->chargeRef),
+                                   dataset.physical("charge", it2->charge));
+                }
+                fileCharges << strpr(" %16.8E %16.8E\n",
+                                     it2->chargeRef,
+                                     it2->charge);
+            }
+        }
         if (normalize)
         {
             it->toPhysicalUnits(dataset.getMeanEnergy(),
@@ -318,6 +395,7 @@ int main(int argc, char* argv[])
 
     fileEnergy.close();
     if (useForces) fileForces.close();
+    if (useCharges) fileCharges.close();
     fileOutputData.close();
     MPI_Barrier(MPI_COMM_WORLD);
 
@@ -330,12 +408,18 @@ int main(int argc, char* argv[])
             fileName = "forces.comp";
             dataset.combineFiles(fileName);
         }
+        if (useCharges)
+        {
+            fileName = "charges.comp";
+            dataset.combineFiles(fileName);
+        }
         fileName = "output.data";
         dataset.combineFiles(fileName);
     }
 
     dataset.collectError("energy", errorEnergy, countEnergy);
     if (useForces) dataset.collectError("force", errorForces, countForces);
+    if (useCharges) dataset.collectError("charge", errorCharge, countCharge);
 
     if (myRank == 0)
     {
@@ -349,6 +433,11 @@ int main(int argc, char* argv[])
         {
             dataset.log << "Energy comparison in file:\n";
             dataset.log << " - energy.comp\n";
+        }
+        if (useCharges)
+        {
+            dataset.log << "Charge comparison in file:\n";
+            dataset.log << " - charges.comp\n";
         }
         dataset.log << "Predicted data set in \"output.data\"\n";
     }
@@ -398,6 +487,21 @@ int main(int argc, char* argv[])
         dataset.log << strpr(" %13s %13.5E %13s %13.5E\n", "",
                              errorForces.at("RMSE"), "",
                              errorForces.at("MAE"));
+    }
+    if (useCharges)
+    {
+        dataset.log << "CHARGE";
+        if (normalize)
+        {
+            dataset.log << strpr(
+                         " %13s %13.5E %13s %13.5E |", "",
+                         dataset.physical("charge", errorCharge.at("RMSE")),
+                         "",
+                         dataset.physical("charge", errorCharge.at("MAE")));
+        }
+        dataset.log << strpr(" %13s %13.5E %13s %13.5E\n", "",
+                             errorCharge.at("RMSE"), "",
+                             errorCharge.at("MAE"));
     }
     dataset.log << "-----------------------------------------"
                    "-----------------------------------------"
