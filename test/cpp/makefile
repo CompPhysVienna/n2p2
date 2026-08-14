@@ -37,7 +37,15 @@ DEBUG=$(PROJECT_DEBUG) $(PROJECT_TEST)
 INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain -I$(PROJECT_EIGEN) -I$(PROJECT_BOOST)/include
 
 # Extra flags for linking.
-LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a $(PROJECT_LDFLAGS_BLAS) -L$(PROJECT_BOOST)/lib -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
+# NOTE: libnnp.a and libnnptrain.a are wrapped in --start-group/--end-group
+# because some libnnptrain object files (e.g. GradientDescent.o) reference
+# symbols defined in libnnp.a (e.g. nnp::strpr, nnp::createFileHeader). GNU
+# ld only makes one pass per static archive, so if a test translation unit
+# does not itself reference any libnnp symbol directly (pulling libnnp.a in
+# early), libnnp.a is already closed by the time libnnptrain.a's undefined
+# refs surface, and linking fails. --start-group/--end-group makes ld retry
+# the archives until all symbols resolve.
+LDFLAGS=-Wl,--start-group $(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -Wl,--end-group $(PROJECT_LDFLAGS_BLAS) -L$(PROJECT_BOOST)/lib -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
 
 
 ###############################################################################
