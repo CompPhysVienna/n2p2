@@ -1981,8 +1981,13 @@ void Mode::calculateForces(Structure& structure) const
 }
 
 
-void Mode::evaluateNNP(Structure& structure, bool useForces, bool useDEdG)
+void Mode::evaluateNNP(Structure& structure, bool useForces, bool useDEdG,
+                       bool chargesOnly)
 {
+    // chargesOnly implies no forces (nothing downstream of charge
+    // equilibration -- the short-range NN, energy, forces -- runs), so
+    // every useForces-gated branch below is automatically skipped too.
+    if (chargesOnly) useForces = false;
     useDEdG = (useForces || useDEdG);
     if (nnpType == NNPType::HDNNP_4G)
     {
@@ -2022,9 +2027,12 @@ void Mode::evaluateNNP(Structure& structure, bool useForces, bool useDEdG)
     if (nnpType == NNPType::HDNNP_4G)
     {
         chargeEquilibration(structure, useForces);
-        calculateAtomicNeuralNetworks(structure, useDEdG, "short");
+        if (!chargesOnly)
+        {
+            calculateAtomicNeuralNetworks(structure, useDEdG, "short");
+        }
     }
-    calculateEnergy(structure);
+    if (!chargesOnly) calculateEnergy(structure);
     if (nnpType == NNPType::HDNNP_4G ||
         nnpType == NNPType::HDNNP_Q)
         calculateCharge(structure);

@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
     bool                shuffle         = false;
     bool                useForces       = false;
     bool                useCharges      = false;
+    bool                chargesOnly     = false;
     bool                normalize       = false;
     int                 numProcs        = 0;
     int                 myRank          = 0;
@@ -61,23 +62,34 @@ int main(int argc, char* argv[])
     errorCharge["RMSE"] = 0.0;
     errorCharge["MAE"] = 0.0;
 
-    if (argc < 2 || argc > 3)
+    if (argc < 2 || argc > 4)
     {
-        cout << "USAGE: " << argv[0] << " <shuffle> [<data_file>]\n"
-             << "       <shuffle> ..... Randomly distribute structures to MPI"
-                " processes (0/1 = no/yes).\n"
-             << "       <data_file> ... Optional structure file name"
+        cout << "USAGE: " << argv[0]
+                << " <shuffle> [<data_file>] [<charges_only>]\n"
+             << "       <shuffle> ....... Randomly distribute structures to"
+                " MPI processes (0/1 = no/yes).\n"
+             << "       <data_file> ..... Optional structure file name"
                 " (default: input.data).\n"
+             << "       <charges_only> .. Optional, 4G-HDNNP only (0/1 = no/"
+                "yes, default: no). If yes, only the electronegativity NN"
+                " weights (weightse.*.data) and atomic hardness are loaded"
+                " and only charge equilibration is evaluated -- the short-"
+                "range NN weights (weights.*.data) are not required, and"
+                " energy/forces/output.data/sensitivity analysis are"
+                " skipped. Useful for checking charge accuracy right after"
+                " stage-1-only training.\n"
              << "       Execute in directory with these NNP files present:\n"
              << "       - input.data (structure file, or <data_file> if given)\n"
              << "       - input.nn (NNP settings)\n"
              << "       - scaling.data (symmetry function scaling data)\n"
-             << "       - \"weights.%%03d.data\" (weights files)\n";
+             << "       - \"weights.%%03d.data\" (weights files, not needed"
+                " if <charges_only>)\n";
         return 1;
     }
 
     shuffle = (bool)atoi(argv[1]);
-    if (argc == 3) dataFileName = argv[2];
+    if (argc >= 3) dataFileName = argv[2];
+    if (argc == 4) chargesOnly = (bool)atoi(argv[3]);
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
@@ -94,7 +106,26 @@ int main(int argc, char* argv[])
     normalize = dataset.useNormalization();
     dataset.setupSymmetryFunctionScaling();
     dataset.setupSymmetryFunctionStatistics(false, false, true, false);
-    dataset.setupNeuralNetworkWeights();
+    // chargesOnly is only meaningful for 4G-HDNNP; ignore it otherwise
+    // (log a note so a mistaken flag isn't silently swallowed).
+    if (chargesOnly && dataset.getNnpType() != Mode::NNPType::HDNNP_4G)
+    {
+        dataset.log << "WARNING: <charges_only> requested but this is not a"
+                       " 4G-HDNNP -- ignoring.\n";
+        chargesOnly = false;
+    }
+    if (chargesOnly)
+    {
+        // Skip the short-range NN weights entirely -- only the
+        // electronegativity NN is needed to evaluate charges. Atomic
+        // hardness was already loaded unconditionally by setupGeneric()
+        // above (Mode::setupElectrostatics()), independent of NN weights.
+        dataset.log << "Charges-only mode: loading electronegativity NN"
+                       " weights only (\"weightse.*.data\"), no short-range"
+                       " NN weights (\"weights.*.data\") required.\n";
+        dataset.readNeuralNetworkWeights("elec", "weightse.%03zu.data");
+    }
+    else dataset.setupNeuralNetworkWeights();
     if (shuffle) dataset.setupRandomNumberGenerator();
     dataset.distributeStructures(shuffle, false, dataFileName);
     if (normalize) dataset.toNormalizedUnits();
@@ -104,8 +135,14 @@ int main(int argc, char* argv[])
                    "**************************************\n";
     dataset.log << "\n";
 
-    useForces = dataset.settingsKeywordExists("use_short_forces");
-    if (useForces)
+    useForces = dataset.settingsKeywordExists("use_short_forces")
+              && !chargesOnly;
+    if (chargesOnly)
+    {
+        dataset.log << "Charges-only mode: energy, forces, output.data and"
+                       " sensitivity analysis are all skipped.\n";
+    }
+    else if (useForces)
     {
         dataset.log << "Energies and forces are predicted.\n";
     }
@@ -118,12 +155,14 @@ int main(int argc, char* argv[])
     // part of evaluateNNP() regardless of use_short_forces, so charge
     // comparison is gated purely on the NNP type, not a settings keyword.
     useCharges = (dataset.getNnpType() == Mode::NNPType::HDNNP_4G);
-    if (useCharges)
+    if (useCharges && !chargesOnly)
     {
         dataset.log << "Atomic charges are also predicted (4G-HDNNP).\n";
     }
 
-    // Set up sensitivity vectors.
+    // Set up sensitivity vectors (unused in charges-only mode, but cheap
+    // to allocate regardless -- keeps the per-atom loop below branch-free
+    // for this part).
     size_t numElements = dataset.getNumElements();
     vector<size_t> numSymmetryFunctions = dataset.getNumSymmetryFunctions();
     vector<size_t> count(numElements, 0);
@@ -137,43 +176,49 @@ int main(int argc, char* argv[])
         sensMax.at(i).resize(numSymmetryFunctions.at(i), 0.0);
     }
 
-    // Set up error files for energy and forces RMSEs.
-    fileName = strpr("energy.comp.%04d", myRank);
-    fileEnergy.open(fileName.c_str());
-
-    // File header.
-    if (myRank == 0)
+    // Set up error file for energy RMSE (skipped entirely in charges-only
+    // mode -- energy is never computed there).
+    if (!chargesOnly)
     {
-        vector<string> title;
-        vector<string> colName;
-        vector<string> colInfo;
-        vector<size_t> colSize;
-        title.push_back("Energy comparison.");
-        colSize.push_back(10);
-        colName.push_back("index");
-        colInfo.push_back("Structure index.");
-        colSize.push_back(10);
-        colName.push_back("N");
-        colInfo.push_back("Number of atoms in structure.");
-        colSize.push_back(16);
-        colName.push_back("Eref_phys");
-        colInfo.push_back("Reference potential energy (physical units, "
-                          "atomic energy offsets added).");
-        colSize.push_back(16);
-        colName.push_back("Ennp_phys");
-        colInfo.push_back("NNP potential energy (physical units, "
-                          "atomic energy offsets added).");
-        if (normalize)
+        fileName = strpr("energy.comp.%04d", myRank);
+        fileEnergy.open(fileName.c_str());
+
+        // File header.
+        if (myRank == 0)
         {
+            vector<string> title;
+            vector<string> colName;
+            vector<string> colInfo;
+            vector<size_t> colSize;
+            title.push_back("Energy comparison.");
+            colSize.push_back(10);
+            colName.push_back("index");
+            colInfo.push_back("Structure index.");
+            colSize.push_back(10);
+            colName.push_back("N");
+            colInfo.push_back("Number of atoms in structure.");
             colSize.push_back(16);
-            colName.push_back("Eref_int");
-            colInfo.push_back("Reference potential energy (internal units).");
+            colName.push_back("Eref_phys");
+            colInfo.push_back("Reference potential energy (physical units, "
+                              "atomic energy offsets added).");
             colSize.push_back(16);
-            colName.push_back("Ennp_int");
-            colInfo.push_back("NNP potential energy (internal units).");
+            colName.push_back("Ennp_phys");
+            colInfo.push_back("NNP potential energy (physical units, "
+                              "atomic energy offsets added).");
+            if (normalize)
+            {
+                colSize.push_back(16);
+                colName.push_back("Eref_int");
+                colInfo.push_back("Reference potential energy (internal "
+                                  "units).");
+                colSize.push_back(16);
+                colName.push_back("Ennp_int");
+                colInfo.push_back("NNP potential energy (internal units).");
+            }
+            appendLinesToFile(fileEnergy,
+                              createFileHeader(title, colSize, colName,
+                                               colInfo));
         }
-        appendLinesToFile(fileEnergy,
-                          createFileHeader(title, colSize, colName, colInfo));
     }
     if (useForces)
     {
@@ -259,29 +304,39 @@ int main(int argc, char* argv[])
         }
     }
 
-    // Open output.data file.
-    fileName = strpr("output.data.%04d", myRank);
-    fileOutputData.open(fileName.c_str());
+    // Open output.data file (not written in charges-only mode -- energy,
+    // needed for a meaningful output.data, is never computed there).
+    if (!chargesOnly)
+    {
+        fileName = strpr("output.data.%04d", myRank);
+        fileOutputData.open(fileName.c_str());
+    }
 
     for (vector<Structure>::iterator it = dataset.structures.begin();
          it != dataset.structures.end(); ++it)
     {
         // Set derivatives argument to true in any case to fill dEdG vectors
-        // in atom storage.
-        dataset.evaluateNNP((*it), useForces, true);
+        // in atom storage (skipped in charges-only mode: the short-range
+        // NN never runs there, so there is no dEdG to compute).
+        dataset.evaluateNNP((*it), useForces, !chargesOnly, chargesOnly);
 
         // Loop over atoms, collect sensitivity data and clear memory.
         for (vector<Atom>::iterator it2 = it->atoms.begin();
              it2 != it->atoms.end(); ++it2)
         {
-            // Collect sensitivity data.
-            size_t const& e = it2->element;
-            count.at(e)++;
-            for (size_t i = 0; i < numSymmetryFunctions.at(e); ++i)
+            // Collect sensitivity data (meaningless without a trained
+            // short-range NN -- dEdG was never even sized in charges-only
+            // mode, so accessing it here would throw).
+            if (!chargesOnly)
             {
-                double const& s = it2->dEdG.at(i);
-                sensMean.at(e).at(i) += s * s;
-                sensMax.at(e).at(i) = max(sensMax.at(e).at(i), abs(s));
+                size_t const& e = it2->element;
+                count.at(e)++;
+                for (size_t i = 0; i < numSymmetryFunctions.at(e); ++i)
+                {
+                    double const& s = it2->dEdG.at(i);
+                    sensMean.at(e).at(i) += s * s;
+                    sensMax.at(e).at(i) = max(sensMax.at(e).at(i), abs(s));
+                }
             }
             // Clear unnecessary memory (neighbor list and others), energies
             // and forces are still stored. Don't use these structures after
@@ -319,23 +374,26 @@ int main(int argc, char* argv[])
         it->hasNeighborList = false;
         it->hasSymmetryFunctions = false;
         it->hasSymmetryFunctionDerivatives = false;
-        it->updateError("energy", errorEnergy, countEnergy);
-        fileEnergy << strpr("%10zu %10zu", it->index, it->numAtoms);
-        if (normalize)
+        if (!chargesOnly)
         {
-            fileEnergy << strpr(" %16.8E %16.8E %16.8E %16.8E\n",
-                                dataset.physicalEnergy(*it, true)
-                                + dataset.getEnergyOffset(*it),
-                                dataset.physicalEnergy(*it, false)
-                                + dataset.getEnergyOffset(*it),
-                                it->energyRef,
-                                it->energy);
-        }
-        else
-        {
-            fileEnergy << strpr(" %16.8E %16.8E\n",
-                                dataset.getEnergyWithOffset(*it, true),
-                                dataset.getEnergyWithOffset(*it, false));
+            it->updateError("energy", errorEnergy, countEnergy);
+            fileEnergy << strpr("%10zu %10zu", it->index, it->numAtoms);
+            if (normalize)
+            {
+                fileEnergy << strpr(" %16.8E %16.8E %16.8E %16.8E\n",
+                                    dataset.physicalEnergy(*it, true)
+                                    + dataset.getEnergyOffset(*it),
+                                    dataset.physicalEnergy(*it, false)
+                                    + dataset.getEnergyOffset(*it),
+                                    it->energyRef,
+                                    it->energy);
+            }
+            else
+            {
+                fileEnergy << strpr(" %16.8E %16.8E\n",
+                                    dataset.getEnergyWithOffset(*it, true),
+                                    dataset.getEnergyWithOffset(*it, false));
+            }
         }
         if (useForces)
         {
@@ -382,27 +440,33 @@ int main(int argc, char* argv[])
                                      it2->charge);
             }
         }
-        if (normalize)
+        if (!chargesOnly)
         {
-            it->toPhysicalUnits(dataset.getMeanEnergy(),
-                                dataset.getConvEnergy(),
-                                dataset.getConvLength(),
-                                dataset.getConvCharge());
+            if (normalize)
+            {
+                it->toPhysicalUnits(dataset.getMeanEnergy(),
+                                    dataset.getConvEnergy(),
+                                    dataset.getConvLength(),
+                                    dataset.getConvCharge());
+            }
+            dataset.addEnergyOffset(*it, false);
+            it->writeToFile(&fileOutputData, false);
         }
-        dataset.addEnergyOffset(*it, false);
-        it->writeToFile(&fileOutputData, false);
     }
 
-    fileEnergy.close();
+    if (!chargesOnly) fileEnergy.close();
     if (useForces) fileForces.close();
     if (useCharges) fileCharges.close();
-    fileOutputData.close();
+    if (!chargesOnly) fileOutputData.close();
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (myRank == 0)
     {
-        fileName = "energy.comp";
-        dataset.combineFiles(fileName);
+        if (!chargesOnly)
+        {
+            fileName = "energy.comp";
+            dataset.combineFiles(fileName);
+        }
         if (useForces)
         {
             fileName = "forces.comp";
@@ -413,33 +477,44 @@ int main(int argc, char* argv[])
             fileName = "charges.comp";
             dataset.combineFiles(fileName);
         }
-        fileName = "output.data";
-        dataset.combineFiles(fileName);
+        if (!chargesOnly)
+        {
+            fileName = "output.data";
+            dataset.combineFiles(fileName);
+        }
     }
 
-    dataset.collectError("energy", errorEnergy, countEnergy);
+    if (!chargesOnly) dataset.collectError("energy", errorEnergy, countEnergy);
     if (useForces) dataset.collectError("force", errorForces, countForces);
     if (useCharges) dataset.collectError("charge", errorCharge, countCharge);
 
     if (myRank == 0)
     {
-        if (useForces)
-        {
-            dataset.log << "Energy and force comparison in files:\n";
-            dataset.log << " - energy.comp\n";
-            dataset.log << " - forces.comp\n";
-        }
-        else
-        {
-            dataset.log << "Energy comparison in file:\n";
-            dataset.log << " - energy.comp\n";
-        }
-        if (useCharges)
+        if (chargesOnly)
         {
             dataset.log << "Charge comparison in file:\n";
             dataset.log << " - charges.comp\n";
         }
-        dataset.log << "Predicted data set in \"output.data\"\n";
+        else
+        {
+            if (useForces)
+            {
+                dataset.log << "Energy and force comparison in files:\n";
+                dataset.log << " - energy.comp\n";
+                dataset.log << " - forces.comp\n";
+            }
+            else
+            {
+                dataset.log << "Energy comparison in file:\n";
+                dataset.log << " - energy.comp\n";
+            }
+            if (useCharges)
+            {
+                dataset.log << "Charge comparison in file:\n";
+                dataset.log << " - charges.comp\n";
+            }
+            dataset.log << "Predicted data set in \"output.data\"\n";
+        }
     }
     dataset.log << "Error metrics for energies and forces:\n";
     dataset.log << "-----------------------------------------"
@@ -459,21 +534,28 @@ int main(int argc, char* argv[])
                              "RMSEpa", "RMSE", "MAEpa", "MAE");
     }
     dataset.log << "\n";
-    dataset.log << "ENERGY";
-    if (normalize)
+    if (!chargesOnly)
     {
-        dataset.log << strpr(
-                          " %13.5E %13.5E %13.5E %13.5E |",
-                          dataset.physical("energy", errorEnergy.at("RMSEpa")),
-                          dataset.physical("energy", errorEnergy.at("RMSE")),
-                          dataset.physical("energy", errorEnergy.at("MAEpa")),
-                          dataset.physical("energy", errorEnergy.at("MAE")));
+        dataset.log << "ENERGY";
+        if (normalize)
+        {
+            dataset.log << strpr(
+                              " %13.5E %13.5E %13.5E %13.5E |",
+                              dataset.physical("energy",
+                                               errorEnergy.at("RMSEpa")),
+                              dataset.physical("energy",
+                                               errorEnergy.at("RMSE")),
+                              dataset.physical("energy",
+                                               errorEnergy.at("MAEpa")),
+                              dataset.physical("energy",
+                                               errorEnergy.at("MAE")));
+        }
+        dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E\n",
+                             errorEnergy.at("RMSEpa"),
+                             errorEnergy.at("RMSE"),
+                             errorEnergy.at("MAEpa"),
+                             errorEnergy.at("MAE"));
     }
-    dataset.log << strpr(" %13.5E %13.5E %13.5E %13.5E\n",
-                         errorEnergy.at("RMSEpa"),
-                         errorEnergy.at("RMSE"),
-                         errorEnergy.at("MAEpa"),
-                         errorEnergy.at("MAE"));
     if (useForces)
     {
         dataset.log << "FORCES";
@@ -509,6 +591,12 @@ int main(int argc, char* argv[])
     dataset.log << "*****************************************"
                    "**************************************\n";
 
+    // Sensitivity analysis needs dEdG from the short-range NN, never
+    // computed in charges-only mode -- skip it entirely (all ranks agree
+    // on chargesOnly identically, so the MPI collectives below are safe
+    // to skip uniformly too).
+    if (!chargesOnly)
+    {
     dataset.log << "\n";
     dataset.log << "*** SENSITIVITY ANALYSIS ****************"
                    "**************************************\n";
@@ -613,6 +701,7 @@ int main(int argc, char* argv[])
 
     dataset.log << "*****************************************"
                    "**************************************\n";
+    }
 
     myLog.close();
 
