@@ -231,6 +231,116 @@ void checkAbsoluteValueGroup(Structure&   s,
     return;
 }
 
+void checkGroupOperatorsAndInfo(ElementMap&  em,
+                                size_t const type,
+                                string const setupLine)
+{
+    SymFnc* sf1 = setupSymmetryFunction(em, type, setupLine);
+    SymFnc* sf2 = setupSymmetryFunction(em, type, setupLine);
+    SymGrp* sfg1 = setupSymmetryFunctionGroup(em, *sf1);
+    SymGrp* sfg2 = setupSymmetryFunctionGroup(em, *sf2);
+
+    BOOST_REQUIRE(*sfg1 == *sfg2);
+    BOOST_REQUIRE(!(*sfg1 <  *sfg2));
+    BOOST_REQUIRE(!(*sfg2 <  *sfg1));
+    BOOST_REQUIRE(*sfg1 <= *sfg2);
+
+    vector<string> lines = sfg1->parameterLines();
+    BOOST_REQUIRE(!lines.empty());
+
+    delete sfg1;
+    delete sfg2;
+    delete sf1;
+    delete sf2;
+
+    return;
+}
+
+void checkGroupOperatorsDiffer(ElementMap&  em,
+                               size_t const type,
+                               string const setupLine1,
+                               string const setupLine2)
+{
+    SymFnc* sf1 = setupSymmetryFunction(em, type, setupLine1);
+    SymFnc* sf2 = setupSymmetryFunction(em, type, setupLine2);
+    SymGrp* sfg1 = setupSymmetryFunctionGroup(em, *sf1);
+    SymGrp* sfg2 = setupSymmetryFunctionGroup(em, *sf2);
+
+    BOOST_REQUIRE(!(*sfg1 == *sfg2));
+    bool const lt12 = *sfg1 < *sfg2;
+    bool const lt21 = *sfg2 < *sfg1;
+    BOOST_REQUIRE(!(lt12 && lt21));
+
+    delete sfg1;
+    delete sfg2;
+    delete sf1;
+    delete sf2;
+
+    return;
+}
+
+BOOST_AUTO_TEST_SUITE(UnitTests)
+
+BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
+                       CheckGroupOperatorsAndInfoMono,
+                       bdata::make(typesMono) ^ bdata::make(setupLinesMono),
+                       type,
+                       setupLine)
+{
+    checkGroupOperatorsAndInfo(em, type, setupLine);
+}
+
+BOOST_AUTO_TEST_CASE(GroupOperatorsDiffer_ByCutoffRadius)
+{
+    // SymGrpExpRadWeighted/SymGrpExpAngnWeighted::operator== compares
+    // ec/type/cutoffType/cutoffAlpha/rc only (member-specific values like
+    // eta/rs live on the individual SymFnc members, not the group), so
+    // groups differ when rc differs.
+    ElementMap em;
+    em.registerElements("H");
+
+    checkGroupOperatorsDiffer(em, 12, "H 12 0.001 0.0 10.0",
+                                      "H 12 0.001 0.0  8.0");
+    // Last token is rc (see SymFncExpAngnWeighted::setParameters); keep
+    // eta/rs/lambda/zeta identical and vary only that.
+    checkGroupOperatorsDiffer(em, 13, "H 13 0.001  1.0 1.0 10.0 0.0",
+                                      "H 13 0.001  1.0 1.0 10.0 2.0");
+}
+
+BOOST_AUTO_TEST_CASE(GroupOperatorsEqual_CompactTypesIgnoreMemberParameters)
+{
+    // SymGrpCompRadWeighted/CompAngnWeighted/CompAngwWeighted::operator==
+    // compares only ec/type: for these compact-core group types, rl/rc/
+    // subtype/angles distinguish members within a group, not the group
+    // itself. This documents/verifies that intentional behavior (as
+    // opposed to GroupOperatorsDiffer_ByCutoffRadius above).
+    ElementMap em;
+    em.registerElements("H");
+
+    SymFnc* sf1 = setupSymmetryFunction(em, 23, "H 23 -10.0 10.0 p2");
+    SymFnc* sf2 = setupSymmetryFunction(em, 23, "H 23   0.0  8.0 p3");
+    SymGrp* sfg1 = setupSymmetryFunctionGroup(em, *sf1);
+    SymGrp* sfg2 = setupSymmetryFunctionGroup(em, *sf2);
+    BOOST_REQUIRE(*sfg1 == *sfg2);
+    delete sfg1; delete sfg2; delete sf1; delete sf2;
+
+    sf1 = setupSymmetryFunction(em, 24, "H 24 -10.0 10.0  0.0 180.0 p2");
+    sf2 = setupSymmetryFunction(em, 24, "H 24   0.0 10.0 10.0  60.0 p3");
+    sfg1 = setupSymmetryFunctionGroup(em, *sf1);
+    sfg2 = setupSymmetryFunctionGroup(em, *sf2);
+    BOOST_REQUIRE(*sfg1 == *sfg2);
+    delete sfg1; delete sfg2; delete sf1; delete sf2;
+
+    sf1 = setupSymmetryFunction(em, 25, "H 25 -10.0 10.0  0.0 180.0 p2");
+    sf2 = setupSymmetryFunction(em, 25, "H 25   0.0 10.0 10.0  60.0 p3");
+    sfg1 = setupSymmetryFunctionGroup(em, *sf1);
+    sfg2 = setupSymmetryFunctionGroup(em, *sf2);
+    BOOST_REQUIRE(*sfg1 == *sfg2);
+    delete sfg1; delete sfg2; delete sf1; delete sf2;
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
 BOOST_AUTO_TEST_SUITE(IntegrationTests)
 
 BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
