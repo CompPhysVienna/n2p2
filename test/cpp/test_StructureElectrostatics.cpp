@@ -5,6 +5,7 @@
 #include <boost/test/data/monomorphic.hpp>
 
 #include "Atom.h"
+#include "Element.h"
 #include "ElementMap.h"
 #include "ErfcBuf.h"
 #include "EwaldSetup.h"
@@ -12,6 +13,7 @@
 #include "Structure.h"
 #include "Vec3D.h"
 #include <Eigen/Core>
+#include <Eigen/QR>
 #include <cmath>  // std::erf
 #include <limits> // std::numeric_limits
 #include <vector> // std::vector
@@ -340,6 +342,148 @@ BOOST_FIXTURE_TEST_CASE(
 
     BOOST_REQUIRE_SMALL(s.atoms.at(0).dEelecdQ - expected0, accuracyNumeric);
     BOOST_REQUIRE_SMALL(s.atoms.at(1).dEelecdQ - expected1, accuracyNumeric);
+}
+
+BOOST_FIXTURE_TEST_CASE(CalculateForceLambdaElec_MatchesDirectSolve,
+                        ElectrostaticsFixture)
+{
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+    s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps, erfcBuf);
+    s.calculateElectrostaticEnergyDerivatives(hardness, gammaSqrt2,
+                                              sigmaSqrtPi, fs, fourPiEps);
+
+    VectorXd const lambdaElec = s.calculateForceLambdaElec();
+
+    // Independent solve of the same system: A * lambdaElec = -dEelecdQ
+    // (with the Lagrange-multiplier component set to zero).
+    VectorXd dEelecdQ(3);
+    dEelecdQ(0) = s.atoms.at(0).dEelecdQ;
+    dEelecdQ(1) = s.atoms.at(1).dEelecdQ;
+    dEelecdQ(2) = 0.0;
+    VectorXd const expected = s.A.colPivHouseholderQr().solve(-dEelecdQ);
+
+    BOOST_REQUIRE_EQUAL(lambdaElec.size(), 3);
+    for (int i = 0; i < 3; ++i)
+    {
+        BOOST_REQUIRE_SMALL(lambdaElec(i) - expected(i), accuracyNumeric);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(CalculateForceLambdaTotal_MatchesDirectSolve,
+                        ElectrostaticsFixture)
+{
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+    s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps, erfcBuf);
+    s.calculateElectrostaticEnergyDerivatives(hardness, gammaSqrt2,
+                                              sigmaSqrtPi, fs, fourPiEps);
+
+    // calculateForceLambdaTotal() additionally reads each atom's dEdG.back()
+    // (the short-range/NN energy gradient w.r.t. its last symmetry
+    // function). Fabricate values directly -- no full symmetry-function/NN
+    // pipeline is needed to exercise the linear-algebra assembly under
+    // test.
+    s.atoms.at(0).dEdG = {0.0, 0.4};
+    s.atoms.at(1).dEdG = {0.0, -0.7};
+
+    VectorXd const lambdaTotal = s.calculateForceLambdaTotal();
+
+    VectorXd dEdQ(3);
+    dEdQ(0) = s.atoms.at(0).dEelecdQ + s.atoms.at(0).dEdG.back();
+    dEdQ(1) = s.atoms.at(1).dEelecdQ + s.atoms.at(1).dEdG.back();
+    dEdQ(2) = 0.0;
+    VectorXd const expected = s.A.colPivHouseholderQr().solve(-dEdQ);
+
+    BOOST_REQUIRE_EQUAL(lambdaTotal.size(), 3);
+    for (int i = 0; i < 3; ++i)
+    {
+        BOOST_REQUIRE_SMALL(lambdaTotal(i) - expected(i), accuracyNumeric);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(CalculateDQdr_MatchesFiniteDifference,
+                        ElectrostaticsFixture)
+{
+    // calculateDQdr() combines calculateDAdrQ()'s output with
+    // Atom::calculateDChidr() (already unit-tested directly in
+    // test_Atom.cpp) to assemble and solve a linear system for dQ/dr. To
+    // exercise it as a genuine, independent finite-difference check
+    // (rather than a self-consistency check reusing the same solve),
+    // fabricate a per-atom chi(r) that is an explicit *linear* function of
+    // the atom's own position via one fake "symmetry function" per
+    // Cartesian component, with dG/dr = identity and dChi/dG = k (so
+    // calculateDChidr() returns exactly k, the true gradient of
+    // chi(r) = k . r). No neighbor-based contribution is exercised
+    // (neighbor lists are left empty, so the cross term -- d(chi_j)/dr_p
+    // for j != p -- is correctly zero).
+    Vec3D const k0(0.4, -0.2, 0.1);
+    Vec3D const k1(-0.3, 0.5, -0.1);
+
+    auto setChiFromLinearModel = [&]()
+    {
+        s.atoms.at(0).chi = k0 * s.atoms.at(0).r;
+        s.atoms.at(1).chi = k1 * s.atoms.at(1).r;
+    };
+
+    for (size_t i = 0; i < 2; ++i)
+    {
+        Atom& a = s.atoms.at(i);
+        Vec3D const& k = (i == 0 ? k0 : k1);
+        a.numSymmetryFunctions = 3;
+        a.dChidG = {k[0], k[1], k[2]};
+        a.dGdr = {Vec3D(1.0, 0.0, 0.0), Vec3D(0.0, 1.0, 0.0),
+                  Vec3D(0.0, 0.0, 1.0)};
+    }
+    setChiFromLinearModel();
+
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+    s.calculateDAdrQ(ewaldSetup, gammaSqrt2, fourPiEps, erfcBuf);
+
+    vector<size_t> const atomIndices = {0, 0, 0, 1, 1, 1};
+    vector<size_t> const compIndices = {0, 1, 2, 0, 1, 2};
+    vector<Element> const elements   = {Element(0, em)};
+    double const maxCutoffRadius     = 10.0;
+
+    s.calculateDQdr(atomIndices, compIndices, maxCutoffRadius, elements);
+
+    double const h = 1.0E-6;
+    for (size_t p = 0; p < 2; ++p)
+    {
+        for (size_t c = 0; c < 3; ++c)
+        {
+            double const orig = s.atoms.at(p).r[c];
+
+            s.atoms.at(p).r[c] = orig + h;
+            setChiFromLinearModel();
+            s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                           sigmaSqrtPi, fs, fourPiEps,
+                                           erfcBuf);
+            double const Q0Hi = s.atoms.at(0).charge;
+            double const Q1Hi = s.atoms.at(1).charge;
+
+            s.atoms.at(p).r[c] = orig - h;
+            setChiFromLinearModel();
+            s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                           sigmaSqrtPi, fs, fourPiEps,
+                                           erfcBuf);
+            double const Q0Lo = s.atoms.at(0).charge;
+            double const Q1Lo = s.atoms.at(1).charge;
+
+            s.atoms.at(p).r[c] = orig;
+            setChiFromLinearModel();
+
+            double const dQ0dr = (Q0Hi - Q0Lo) / (2.0 * h);
+            double const dQ1dr = (Q1Hi - Q1Lo) / (2.0 * h);
+
+            BOOST_TEST_INFO("perturbed atom " << p << " component " << c);
+            BOOST_REQUIRE_SMALL(s.atoms.at(p).dQdr.at(0)[c] - dQ0dr,
+                                accuracyNumeric);
+            BOOST_REQUIRE_SMALL(s.atoms.at(p).dQdr.at(1)[c] - dQ1dr,
+                                accuracyNumeric);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
