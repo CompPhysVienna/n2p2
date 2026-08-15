@@ -67,12 +67,13 @@ all: $(EXE)
 
 no-interface: $(EXE_NOIF)
 
-# test_Dataset links Dataset.o directly (calls its methods in-process,
-# unlike every other test_nnp-* regression test which spawns the real
-# application binary via mpirun instead), pulling in real MPI symbol
-# references that the plain compiler cannot resolve -- use the MPI
-# compiler wrapper for this one target only.
+# test_Dataset and test_Training link Dataset.o/Training.o directly (call
+# their methods in-process, unlike every other test_nnp-* regression test
+# which spawns the real application binary via mpirun instead), pulling in
+# real MPI symbol references that the plain compiler cannot resolve -- use
+# the MPI compiler wrapper for these targets only.
 test_Dataset: CC=$(MPICC)
+test_Training: CC=$(MPICC)
 
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
