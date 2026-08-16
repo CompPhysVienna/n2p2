@@ -290,6 +290,11 @@ inline double KalmanFilter::getNu() const
     return nu;
 }
 
+inline double KalmanFilter::getGamma() const
+{
+    return gamma;
+}
+
 }
 
 #endif
