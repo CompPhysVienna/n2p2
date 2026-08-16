@@ -185,6 +185,31 @@ BOOST_FIXTURE_TEST_CASE(CalculateErrorEpochAndWriteLearningCurve_CreatesFile,
     BOOST_REQUIRE(check.is_open());
 }
 
+BOOST_FIXTURE_TEST_CASE(Loop_RunsConfiguredEpochsAndWritesLearningCurve,
+                        FixtureH2OTraining)
+{
+    // The example's input.nn sets epochs=2 -- exercises the full training
+    // loop (selection-mode/schedule bookkeeping, per-property update()
+    // dispatch, weight/hardness/learning-curve/updater-status/neuron-stats
+    // writing) end to end, the same sequence src/application/nnp-train.cpp
+    // itself runs, but in-process so it is actually captured by coverage
+    // instrumentation (test_nnp-train.cpp only spawns the bin/nnp-train
+    // subprocess, whose coverage isn't measured this way).
+    BOOST_REQUIRE_NO_THROW(training.loop());
+
+    ifstream check("learning-curve.out");
+    BOOST_REQUIRE(check.is_open());
+    string line;
+    size_t numDataLines = 0;
+    while (getline(check, line))
+    {
+        if (!line.empty() && line.at(0) != '#') numDataLines++;
+    }
+    // One line for the initial (pre-loop) error evaluation plus one per
+    // training epoch (epochs=2 in this example's input.nn).
+    BOOST_REQUIRE_EQUAL(numDataLines, 3);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 bool init_unit_test()

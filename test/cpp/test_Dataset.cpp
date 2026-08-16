@@ -23,10 +23,13 @@
 #include "Dataset.h"
 #include "Structure.h"
 #include "Vec3D.h"
+#include <cmath>     // std::sqrt
 #include <fstream>   // std::ifstream
 #include <iterator>  // std::istreambuf_iterator
 #include <limits>    // std::numeric_limits
+#include <map>       // std::map
 #include <mpi.h>
+#include <stdexcept> // std::runtime_error
 #include <string>    // std::string
 
 using namespace std;
@@ -223,6 +226,122 @@ BOOST_FIXTURE_TEST_CASE(SortNeighborLists_NoThrowWithoutNeighborData,
     // With no structures loaded yet, this is a trivial (empty) no-op --
     // exercises the method's outer loop bounds handling.
     BOOST_REQUIRE_NO_THROW(dataset.sortNeighborLists());
+}
+
+BOOST_FIXTURE_TEST_CASE(CollectError_Energy_NormalizesCorrectly,
+                        FixtureH2ODataset)
+{
+    // Single-process MPI_Allreduce is a no-op, so the "collected" sums are
+    // exactly what's passed in -- this tests the normalization formula
+    // (sqrt(sum/count) for RMSE-type metrics, sum/count for MAE-type).
+    map<string, double> error;
+    error["RMSEpa"] = 4.0;
+    error["RMSE"] = 9.0;
+    error["MAEpa"] = 2.0;
+    error["MAE"] = 6.0;
+    size_t count = 4;
+
+    dataset.collectError("energy", error, count);
+
+    BOOST_REQUIRE_SMALL(error.at("RMSEpa") - sqrt(4.0 / 4.0), accuracy);
+    BOOST_REQUIRE_SMALL(error.at("RMSE") - sqrt(9.0 / 4.0), accuracy);
+    BOOST_REQUIRE_SMALL(error.at("MAEpa") - 2.0 / 4.0, accuracy);
+    BOOST_REQUIRE_SMALL(error.at("MAE") - 6.0 / 4.0, accuracy);
+}
+
+BOOST_FIXTURE_TEST_CASE(CollectError_Force_NormalizesCorrectly,
+                        FixtureH2ODataset)
+{
+    map<string, double> error;
+    error["RMSE"] = 16.0;
+    error["MAE"] = 8.0;
+    size_t count = 4;
+
+    dataset.collectError("force", error, count);
+
+    BOOST_REQUIRE_SMALL(error.at("RMSE") - sqrt(16.0 / 4.0), accuracy);
+    BOOST_REQUIRE_SMALL(error.at("MAE") - 8.0 / 4.0, accuracy);
+}
+
+BOOST_FIXTURE_TEST_CASE(CollectError_UnknownProperty_Throws,
+                        FixtureH2ODataset)
+{
+    map<string, double> error;
+    size_t count = 1;
+    BOOST_REQUIRE_THROW(dataset.collectError("bogus", error, count),
+                        runtime_error);
+}
+
+BOOST_FIXTURE_TEST_CASE(CombineFiles_MergesPerRankFileAndRemovesIt,
+                        FixtureH2ODataset)
+{
+    // Single process -> exactly one per-rank file, suffixed ".0000".
+    ofstream perRank("combined_out.0000");
+    perRank << "line one\nline two\n";
+    perRank.close();
+
+    dataset.combineFiles("combined_out");
+
+    ifstream combined("combined_out");
+    BOOST_REQUIRE(combined.is_open());
+    string const content((istreambuf_iterator<char>(combined)),
+                         istreambuf_iterator<char>());
+    BOOST_REQUIRE_EQUAL(content, "line one\nline two\n");
+
+    ifstream perRankCheck("combined_out.0000");
+    BOOST_REQUIRE(!perRankCheck.is_open());
+}
+
+BOOST_FIXTURE_TEST_CASE(WriteNeighborHistogram_CreatesFilesAndCombinesThem,
+                        FixtureH2ODataset)
+{
+    dataset.distributeStructures(false);
+    dataset.toNormalizedUnits();
+    for (auto& s : dataset.structures)
+    {
+        s.calculateNeighborList(dataset.getMaxCutoffRadius());
+    }
+
+    size_t const maxNeighbors = dataset.writeNeighborHistogram(
+        "neighbors_out.histo", "neighbors_out.out");
+
+    BOOST_REQUIRE(maxNeighbors > 0);
+
+    ifstream histo("neighbors_out.histo");
+    BOOST_REQUIRE(histo.is_open());
+
+    // combineFiles() (called internally) should have merged the per-rank
+    // file into the plain-named one and removed the per-rank suffix file.
+    ifstream combined("neighbors_out.out");
+    BOOST_REQUIRE(combined.is_open());
+    ifstream perRank("neighbors_out.out.0000");
+    BOOST_REQUIRE(!perRank.is_open());
+}
+
+BOOST_FIXTURE_TEST_CASE(WriteSymmetryFunctionHistograms_CreatesFiles,
+                        FixtureH2ODataset)
+{
+    // setupSymmetryFunctionGroups() already ran inside setupGeneric()
+    // (fixture constructor), so groups exist but their per-group
+    // scalingFactors array is only populated once a scaling method
+    // actually runs -- without this, calculateSymmetryFunctionGroups()
+    // indexes into that still-empty array and crashes (same root cause
+    // diagnosed earlier for test_Element.cpp's group/scaling ordering).
+    dataset.setupSymmetryFunctionScalingNone();
+
+    dataset.distributeStructures(false);
+    dataset.toNormalizedUnits();
+    dataset.setupSymmetryFunctionStatistics(true, false, false, false);
+    Structure& s = dataset.structures.at(0);
+    s.calculateNeighborList(dataset.getMaxCutoffRadius());
+    dataset.calculateSymmetryFunctionGroups(s, false);
+
+    BOOST_REQUIRE_NO_THROW(dataset.writeSymmetryFunctionHistograms(
+        10, "sf_histo.%03zu.%04zu.histo"));
+
+    // First symmetry function of element H (atomic number 1).
+    ifstream check("sf_histo.001.0001.histo");
+    BOOST_REQUIRE(check.is_open());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
