@@ -74,6 +74,7 @@ no-interface: $(EXE_NOIF)
 # the MPI compiler wrapper for these targets only.
 test_Dataset: CC=$(MPICC)
 test_Training: CC=$(MPICC)
+test_Training_mpi: CC=$(MPICC)
 
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)

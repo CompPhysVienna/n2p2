@@ -70,6 +70,22 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseForcesTest  = 2.20371908E-04;
     e->accuracy        = 1E-13;
 
+    // Periodic solid-state system (Cu2S), no long-range electrostatics --
+    // complements the molecular/4G examples above with a plain short-range
+    // 2G training run on a different chemistry, widening the golden-master
+    // net this test provides.
+    // Reference values from the current code, epoch 10 of
+    // examples/nnp-train/Cu2S_PBE/input.nn (deterministic: fixed
+    // random_seed).
+    examples.push_back(Example_nnp_train("Cu2S_PBE"));
+    e = &(examples.back());
+    e->lastEpoch = 10;
+    e->rmseEnergyTrain = 1.59193717E-04;
+    e->rmseEnergyTest  = 2.64525224E-04;
+    e->rmseForcesTrain = 3.12362540E-02;
+    e->rmseForcesTest  = 4.03303534E-02;
+    e->accuracy        = 1.0E-8;
+
     return;
 }
 

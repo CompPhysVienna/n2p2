@@ -72,6 +72,61 @@ struct FixtureH2OTraining : public FixtureRepairDir
     Training training;
 };
 
+// Identical setup to FixtureH2OTraining, except the copied input.nn is
+// patched to select gradient descent (updater_type 0) instead of the
+// example's default Kalman filter (updater_type 1) -- Training::update()
+// dispatches to fundamentally different code (GradientDescent vs
+// KalmanFilter) depending on this setting, and the KF-only Loop test above
+// never exercises the GD branch of that dispatch end to end.
+struct FixtureH2OTrainingGD : public FixtureRepairDir
+{
+    FixtureH2OTrainingGD()
+    {
+        BOOST_REQUIRE(copy_directory_recursively(
+            "../../examples/nnp-train/H2O_RPBE-D3", "test"));
+        bfs::current_path("test");
+
+        BOOST_REQUIRE(replaceInFile("input.nn",
+                                    "updater_type                    1",
+                                    "updater_type                    0"));
+        // Gradient descent only supports jacobian_mode JM_SUM (0); the
+        // example's default (1, "per-task summed gradient") is only valid
+        // together with the Kalman filter updater.
+        BOOST_REQUIRE(replaceInFile("input.nn",
+                                    "jacobian_mode                   1",
+                                    "jacobian_mode                   0"));
+
+        training.log.writeToStdout = false;
+        training.setupMPI();
+        training.initialize();
+        training.loadSettingsFile();
+        training.setStage(0);
+        training.setupGeneric(
+            "", training.settingsKeywordExists("normalize_data_set"), false);
+        training.setupSymmetryFunctionScaling();
+        training.setupSymmetryFunctionStatistics(false, false, false, false);
+        training.setupRandomNumberGenerator();
+        training.distributeStructures(true);
+        training.selectSets();
+        training.initializeWeights();
+        if (training.settingsKeywordExists("normalize_data_set"))
+        {
+            training.dataSetNormalization();
+        }
+        if (training.useNormalization()) training.toNormalizedUnits();
+        training.setupTraining();
+        training.calculateNeighborLists();
+    }
+
+    ~FixtureH2OTrainingGD()
+    {
+        bfs::current_path("..");
+        bfs::remove_all("test");
+    }
+
+    Training training;
+};
+
 BOOST_AUTO_TEST_SUITE(UnitTests)
 
 BOOST_FIXTURE_TEST_CASE(SetupPipeline_PopulatesExpectedState,
@@ -207,6 +262,27 @@ BOOST_FIXTURE_TEST_CASE(Loop_RunsConfiguredEpochsAndWritesLearningCurve,
     }
     // One line for the initial (pre-loop) error evaluation plus one per
     // training epoch (epochs=2 in this example's input.nn).
+    BOOST_REQUIRE_EQUAL(numDataLines, 3);
+}
+
+BOOST_FIXTURE_TEST_CASE(
+    Loop_GradientDescent_RunsConfiguredEpochsAndWritesLearningCurve,
+    FixtureH2OTrainingGD)
+{
+    // Same end-to-end loop() check as the Kalman-filter test above, but with
+    // updater_type patched to 0 -- covers the UT_GD branch of
+    // Training::update()'s dispatch, which the example's own default
+    // (Kalman filter) never exercises.
+    BOOST_REQUIRE_NO_THROW(training.loop());
+
+    ifstream check("learning-curve.out");
+    BOOST_REQUIRE(check.is_open());
+    string line;
+    size_t numDataLines = 0;
+    while (getline(check, line))
+    {
+        if (!line.empty() && line.at(0) != '#') numDataLines++;
+    }
     BOOST_REQUIRE_EQUAL(numDataLines, 3);
 }
 
