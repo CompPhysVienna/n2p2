@@ -77,6 +77,17 @@ CLEAN_APP=$(patsubst %, clean-%, $(APP))
 
 all: $(APP_CORE) $(APP_DATASET) $(APP_TRAINING)
 
+# Each application depends on its own source file and on the libraries it is
+# linked against, so that changing either rebuilds it (previously the rules
+# had no prerequisites, and a stale binary was silently kept).
+ifeq ($(MODE), shared)
+LIB_SUFFIX=so
+else
+LIB_SUFFIX=a
+endif
+DEPS_LIBNNP=$(PROJECT_LIB)/libnnp.$(LIB_SUFFIX)
+DEPS_LIBNNPTRAIN=$(PROJECT_LIB)/libnnptrain.$(LIB_SUFFIX) $(DEPS_LIBNNP)
+
 # Applications which require only libnnp:
 $(APP_CORE): INCLUDES=-I./ -I$(PROJECT_INCLUDE)/ -I$(PROJECT_EIGEN)
 ifeq ($(MODE), shared)
@@ -84,7 +95,7 @@ $(APP_CORE): LDFLAGS=-L$(PROJECT_LIB) -lnnp
 else
 $(APP_CORE): LDFLAGS=$(PROJECT_LIB)/libnnp.a
 endif
-$(APP_CORE):
+$(APP_CORE): %: %.cpp $(DEPS_LIBNNP)
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
 	cp $@ $(PROJECT_BIN)/
@@ -97,7 +108,7 @@ $(APP_DATASET): LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLAG
 else
 $(APP_DATASET): LDFLAGS=$(PROJECT_LIB)/libnnptrain.a $(PROJECT_LIB)/libnnp.a -lgsl $(PROJECT_LDFLAGS_BLAS)
 endif
-$(APP_DATASET):
+$(APP_DATASET): %: %.cpp $(DEPS_LIBNNPTRAIN)
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
 	cp $@ $(PROJECT_BIN)/
@@ -109,7 +120,7 @@ $(APP_TRAINING): LDFLAGS=-L$(PROJECT_LIB) -lnnptrain -lnnp -lgsl $(PROJECT_LDFLA
 else
 $(APP_TRAINING): LDFLAGS=$(PROJECT_LIB)/libnnptrain.a $(PROJECT_LIB)/libnnp.a -lgsl $(PROJECT_LDFLAGS_BLAS)
 endif
-$(APP_TRAINING): nnp-train.cpp
+$(APP_TRAINING): %: %.cpp $(DEPS_LIBNNPTRAIN)
 	$(MPICC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@.o -c $@.cpp
 	$(MPICC) $(CFLAGS) $(DEBUG) $(OPTIONS) -o $@ $@.o $(LDFLAGS)
 	cp $@ $(PROJECT_BIN)/
