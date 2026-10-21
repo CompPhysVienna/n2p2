@@ -253,7 +253,7 @@ int Dataset::sendStructure(Structure const& structure, int dest) const
     unsigned char*   buf = 0;         // Send buffer.
     int              bs  = 0;         // Send buffer size.
     int              p   = 0;         // Send buffer position.
-    int              ts  = 0;         // Size for temporary stuff.
+    size_t           ts  = 0;         // Size for temporary stuff.
     Structure const& s   = structure; // Shortcut for structure.
 
     bs = calculateBufferSize(s);
@@ -465,7 +465,7 @@ int Dataset::recvStructure(Structure* const structure, int src)
     unsigned char*   buf = 0;         // Receive buffer.
     int              bs  = 0;         // Receive buffer size.
     int              p   = 0;         // Receive buffer position.
-    int              ts  = 0;         // Size for temporary stuff.
+    size_t           ts  = 0;         // Size for temporary stuff.
     Structure* const s   = structure; // Shortcut for structure.
     MPI_Status       ms;
 
