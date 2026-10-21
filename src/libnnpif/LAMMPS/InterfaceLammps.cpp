@@ -610,7 +610,7 @@ void InterfaceLammps::getdChidxyz(int ind,
 
     for (size_t j = 0; j < structure.numAtoms; ++j) {
         Atom const &aj = structure.atoms.at(j);
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         vector <vector<size_t>> const &tableFull
                 = elements.at(aj.element).getSymmetryFunctionTable();
 #endif
@@ -626,7 +626,7 @@ void InterfaceLammps::getdChidxyz(int ind,
         for (auto const &n : aj.neighbors) {
             if (n.d > maxCutoffRadius) break;
             if (n.index == ai.index) {
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
                 vector <size_t> const &table = tableFull.at(n.element);
                 for (size_t k = 0; k < n.dGdr.size(); ++k) {
                     dChi += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
@@ -693,7 +693,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const {
         // Set pointer to atom.
         a = &(structure.atoms.at(i));
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         vector <vector<size_t>> const &tableFull
                 = elements.at(a->element).getSymmetryFunctionTable();
 #endif
@@ -705,7 +705,7 @@ void InterfaceLammps::getForces(double* const* const& atomF) const {
             size_t const in = n->index;
             // Now loop over all symmetry functions and add force contributions
             // (local + ghost atoms).
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             vector <size_t> const &table = tableFull.at(n->element);
             for (size_t s = 0; s < n->dGdr.size(); ++s)
             {
@@ -853,7 +853,7 @@ void InterfaceLammps::getForcesChi(double const* const&  lambda,
         // Also save tag - 1 which is the correct position in lambda array.
         size_t const ta = a->tag - 1;
 
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
         vector <vector<size_t>> const &tableFull
                 = elements.at(a->element).getSymmetryFunctionTable();
 #endif
@@ -868,7 +868,7 @@ void InterfaceLammps::getForcesChi(double const* const&  lambda,
             //std::cout << "Chi : " << a->chi << '\t' << "nei :" << n->index << '\n';
             // Now loop over all symmetry functions and add force contributions
             // (local + ghost atoms).
-#ifndef NNP_FULL_SFD_MEMORY
+#ifndef N2P2_FULL_SFD_MEMORY
             vector <size_t> const &table = tableFull.at(n->element);
             for (size_t s = 0; s < n->dGdr.size(); ++s)
             {
