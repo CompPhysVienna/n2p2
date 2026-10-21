@@ -2298,6 +2298,18 @@ void Mode::readNeuralNetworkWeights(string const& id,
                                                      vector<size_t>(1, 0)
                                                     ).at(0);
         NeuralNetwork& nn = it->neuralNetworks.at(id);
+        // setConnections() reads exactly getNumConnections() values: a file
+        // written for a different architecture would otherwise be read past
+        // its end (garbage weights) or silently truncated.
+        if (weights.size() != (size_t)nn.getNumConnections())
+        {
+            throw runtime_error(strpr("ERROR: Weights file \"%s\" contains "
+                                      "%zu weights, but the neural network "
+                                      "architecture requires %d.\n",
+                                      fileName.c_str(),
+                                      weights.size(),
+                                      nn.getNumConnections()));
+        }
         nn.setConnections(&(weights.front()));
     }
 

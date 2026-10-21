@@ -7,6 +7,7 @@
 #include "fileHelpers.h"
 
 #include "Mode.h"
+#include "Prediction.h"
 #include "SetupAnalysis.h"
 #include <fstream>   // std::ofstream, std::ifstream
 #include <iterator>  // std::istreambuf_iterator
@@ -410,6 +411,59 @@ BOOST_FIXTURE_TEST_CASE(WriteSymmetryFunctionShape_CreatesFilesWithHeader,
     BOOST_REQUIRE(content.find("SFINFO") != string::npos);
     BOOST_REQUIRE(content.find("sf_radial") != string::npos);
     BOOST_REQUIRE(content.find("sf_angular") != string::npos);
+}
+
+// Weights files whose number of entries does not match the architecture in
+// input.nn used to be read past their end (or silently truncated); this was
+// how the Carbon_chain_4G prediction example ran for years with garbage
+// short-range weights. Mode::readNeuralNetworkWeights() must refuse them.
+struct FixtureH2OPrediction : public FixtureRepairDir
+{
+    FixtureH2OPrediction()
+    {
+        BOOST_REQUIRE(copy_directory_recursively(
+            "../../examples/nnp-predict/H2O_RPBE-D3", "test"));
+        bfs::current_path("test");
+        prediction.log.writeToStdout = false;
+    }
+
+    ~FixtureH2OPrediction()
+    {
+        bfs::current_path("..");
+        bfs::remove_all("test");
+    }
+
+    Prediction prediction;
+};
+
+BOOST_FIXTURE_TEST_CASE(SetupNeuralNetworkWeights_ExtraWeight_Throws,
+                        FixtureH2OPrediction)
+{
+    ofstream file("weights.001.data", ios::app);
+    file << "  1.0000000000000000E+00\n";
+    file.close();
+    BOOST_REQUIRE_THROW(prediction.setup(), runtime_error);
+}
+
+BOOST_FIXTURE_TEST_CASE(SetupNeuralNetworkWeights_MissingWeight_Throws,
+                        FixtureH2OPrediction)
+{
+    ifstream in("weights.008.data");
+    vector<string> lines;
+    string line;
+    while (getline(in, line)) lines.push_back(line);
+    in.close();
+    lines.pop_back();
+    ofstream out("weights.008.data", ios::trunc);
+    for (auto const& l : lines) out << l << "\n";
+    out.close();
+    BOOST_REQUIRE_THROW(prediction.setup(), runtime_error);
+}
+
+BOOST_FIXTURE_TEST_CASE(SetupNeuralNetworkWeights_MatchingFiles_NoThrow,
+                        FixtureH2OPrediction)
+{
+    BOOST_REQUIRE_NO_THROW(prediction.setup());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
