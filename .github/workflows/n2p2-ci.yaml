@@ -73,7 +73,9 @@ jobs:
       
       - name: Run C++ tests and coverage
         run: |
-          make cpp
+          # Multi-rank tests (test_Training_mpi, nnp-comp2 compare mode) may
+          # need more MPI slots than the runner reports.
+          make cpp MPIRUN="mpirun --oversubscribe"
           cd cpp
           make coverage
           rm *.gcda *.gcno

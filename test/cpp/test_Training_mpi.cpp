@@ -5,9 +5,9 @@
 // sendStructure() / recvStructure() -- exactly the code a rewrite of the
 // training pipeline is most likely to change the behaviour of (different
 // batching/placement of structures across ranks).
-// This file is meant to be run via `mpirun -np N` with N >= 2 (see
-// verify_training_mpi.sh); when run single-rank instead it still builds and
-// passes, just with a weaker check (see the size < 2 guard below).
+// `make test_Training_mpi` runs it single-rank and then on MPI_TEST_RANKS
+// ranks (default 4, see test/cpp/makefile); single-rank it still passes,
+// just with a weaker check (see the size < 2 guard below).
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_NO_MAIN
 #define BOOST_TEST_ALTERNATIVE_INIT_API

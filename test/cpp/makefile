@@ -76,6 +76,20 @@ test_Dataset: CC=$(MPICC)
 test_Training: CC=$(MPICC)
 test_Training_mpi: CC=$(MPICC)
 
+# MPI launcher for tests that need several processes: test_Training_mpi is
+# run once more on MPI_TEST_RANKS ranks after its single-rank run, and the
+# nnp-comp2 "compare" regression test reads the launcher from the exported
+# N2P2_TEST_MPIRUN. The launcher must accept "-np N". Where fewer slots than
+# ranks are available, use e.g. MPIRUN="mpirun --oversubscribe" (OpenMPI).
+MPIRUN=mpirun
+MPI_TEST_RANKS=4
+export N2P2_TEST_MPIRUN=$(MPIRUN)
+
+test_Training_mpi: test_Training_mpi.cpp
+	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
+	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+	$(MPIRUN) -np $(MPI_TEST_RANKS) ./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
 	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
