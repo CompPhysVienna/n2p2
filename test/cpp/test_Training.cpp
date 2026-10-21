@@ -217,6 +217,92 @@ BOOST_FIXTURE_TEST_CASE(
     BOOST_REQUIRE_SMALL(dEdc.at(0).at(0) - numDeriv, accuracyNumeric);
 }
 
+// Energy and force Jacobians with respect to the weights, for the first,
+// middle and last weight of every element (first hidden layer, a hidden
+// layer, output bias), against central finite differences. These are the
+// quantities Training::update() feeds to the updater, so a layout or
+// indexing error in any layer shows up here even if it cancels for
+// weight 0.
+double const hWeight = 1.0E-4;
+double const toleranceJacobianAbsolute = 1.0E-6;
+double const toleranceJacobianRelative = 1.0E-5;
+
+BOOST_FIXTURE_TEST_CASE(
+    CalculateWeightDerivatives_EnergySampledWeights_MatchFiniteDifference,
+    FixtureH2OTraining)
+{
+    training.initializeWeightsMemory(Training::US_ELEMENT);
+    Structure& s = training.structures.at(0);
+    vector<vector<double>> const dEdc =
+        training.calculateWeightDerivatives(&s);
+
+    auto energy = [&]()
+    {
+        training.calculateAtomicNeuralNetworks(s, false);
+        training.calculateEnergy(s);
+        return s.energy;
+    };
+    for (size_t e = 0; e < dEdc.size(); ++e)
+    {
+        size_t const n = dEdc.at(e).size();
+        for (size_t w : {size_t(0), n / 2, n - 1})
+        {
+            double const original = training.getSingleWeight(e, w);
+            training.setSingleWeight(e, w, original + hWeight);
+            double const eHi = energy();
+            training.setSingleWeight(e, w, original - hWeight);
+            double const eLo = energy();
+            training.setSingleWeight(e, w, original);
+            double const fd = (eHi - eLo) / (2.0 * hWeight);
+            BOOST_TEST_INFO("element " << e << ", weight " << w
+                            << ": analytic " << dEdc.at(e).at(w)
+                            << ", finite difference " << fd);
+            BOOST_REQUIRE_LE(fabs(dEdc.at(e).at(w) - fd),
+                             toleranceJacobianAbsolute
+                             + toleranceJacobianRelative * fabs(fd));
+        }
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(
+    CalculateWeightDerivatives_Force_MatchesFiniteDifference,
+    FixtureH2OTraining)
+{
+    training.initializeWeightsMemory(Training::US_ELEMENT);
+    Structure& s = training.structures.at(0);
+    size_t const atom = 0;
+    size_t const component = 1;
+    vector<vector<double>> const dFdc =
+        training.calculateWeightDerivatives(&s, atom, component);
+
+    auto force = [&]()
+    {
+        training.calculateAtomicNeuralNetworks(s, true);
+        training.calculateForces(s);
+        return s.atoms.at(atom).f[component];
+    };
+    for (size_t e = 0; e < dFdc.size(); ++e)
+    {
+        size_t const n = dFdc.at(e).size();
+        for (size_t w : {size_t(0), n / 2, n - 1})
+        {
+            double const original = training.getSingleWeight(e, w);
+            training.setSingleWeight(e, w, original + hWeight);
+            double const fHi = force();
+            training.setSingleWeight(e, w, original - hWeight);
+            double const fLo = force();
+            training.setSingleWeight(e, w, original);
+            double const fd = (fHi - fLo) / (2.0 * hWeight);
+            BOOST_TEST_INFO("element " << e << ", weight " << w
+                            << ": analytic " << dFdc.at(e).at(w)
+                            << ", finite difference " << fd);
+            BOOST_REQUIRE_LE(fabs(dFdc.at(e).at(w) - fd),
+                             toleranceJacobianAbsolute
+                             + toleranceJacobianRelative * fabs(fd));
+        }
+    }
+}
+
 BOOST_FIXTURE_TEST_CASE(WriteWeights_CreatesOneFilePerElement,
                         FixtureH2OTraining)
 {
