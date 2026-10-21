@@ -1,5 +1,5 @@
-#ifndef EXAMPLE_NNP_DIST_H
-#define EXAMPLE_NNP_DIST_H
+#ifndef EXAMPLE_NNP_NORM_H
+#define EXAMPLE_NNP_NORM_H
 
 #include "Example_nnp.h"
 #include "BoostDataContainer.h"
