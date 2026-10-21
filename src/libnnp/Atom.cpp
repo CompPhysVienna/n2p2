@@ -109,9 +109,9 @@ void Atom::toNormalizedUnits(double convEnergy,
             it->dr *= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
-                for (size_t i = 0; i < dGdr.size(); ++i)
+                for (size_t i = 0; i < it->dGdr.size(); ++i)
                 {
-                    dGdr.at(i) /= convLength;
+                    it->dGdr.at(i) /= convLength;
                 }
             }
         }
@@ -154,9 +154,9 @@ void Atom::toPhysicalUnits(double convEnergy,
             it->dr /= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
-                for (size_t i = 0; i < dGdr.size(); ++i)
+                for (size_t i = 0; i < it->dGdr.size(); ++i)
                 {
-                    dGdr.at(i) *= convLength;
+                    it->dGdr.at(i) *= convLength;
                 }
             }
         }

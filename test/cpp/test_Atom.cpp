@@ -125,6 +125,40 @@ BOOST_AUTO_TEST_CASE(ToNormalizedUnits_ScalesSymmetryFunctionDerivatives)
     BOOST_REQUIRE_SMALL(a.dGdr.at(1)[1] - 1.0 / convLength, accuracy);
 }
 
+// The neighbor loop of toNormalizedUnits()/toPhysicalUnits() used to rescale
+// the atom's own dGdr once per neighbor instead of each neighbor's dGdr. A
+// normalize/denormalize round trip cancels that error, so check one
+// direction with an actual neighbor.
+BOOST_AUTO_TEST_CASE(ToNormalizedUnits_ScalesNeighborDerivativesOnce)
+{
+    Atom a;
+    a.numSymmetryFunctions = 1;
+    a.hasSymmetryFunctionDerivatives = true;
+    a.useChargeNeuron = false;
+    a.dEdG = {1.0};
+    a.dGdr = {Vec3D(1.0, 0.0, 0.0)};
+
+    Atom::Neighbor n;
+    n.d = 2.0;
+    n.dr = Vec3D(2.0, 0.0, 0.0);
+    n.dGdr = {Vec3D(0.0, 3.0, 0.0)};
+    a.neighbors.push_back(n);
+    a.numNeighbors = 1;
+    a.hasNeighborList = true;
+
+    double const convLength = 5.0;
+
+    a.toNormalizedUnits(1.0, convLength, 1.0);
+    BOOST_REQUIRE_SMALL(a.dGdr.at(0)[0] - 1.0 / convLength, accuracy);
+    BOOST_REQUIRE_SMALL(a.neighbors.at(0).dGdr.at(0)[1] - 3.0 / convLength,
+                        accuracy);
+    BOOST_REQUIRE_SMALL(a.neighbors.at(0).d - 2.0 * convLength, accuracy);
+
+    a.toPhysicalUnits(1.0, convLength, 1.0);
+    BOOST_REQUIRE_SMALL(a.dGdr.at(0)[0] - 1.0, accuracy);
+    BOOST_REQUIRE_SMALL(a.neighbors.at(0).dGdr.at(0)[1] - 3.0, accuracy);
+}
+
 BOOST_AUTO_TEST_CASE(Allocate_ZeroSymmetryFunctions_Throws)
 {
     Atom a;
