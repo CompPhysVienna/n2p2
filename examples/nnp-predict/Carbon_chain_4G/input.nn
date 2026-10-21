@@ -33,7 +33,7 @@ ewald_prec 1.e-5 0.16
 ### NN structure of the short-range NN
 ################################################################################
 global_hidden_layers_short 2
-global_nodes_short 15 15
+global_nodes_short 10 10
 global_activation_short t t l
 
 ################################################################################
