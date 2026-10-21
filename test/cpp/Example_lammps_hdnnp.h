@@ -50,6 +50,15 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->potentialEnergy = -574.21185;
     e->totalEnergy = -573.6561;
 
+    // 4G-HDNNP (pair_style hdnnp/4g, kspace_style hdnnp, fix hdnnp charge
+    // equilibration), single point as in the shipped md.lmp (0 steps).
+    examples.push_back(Example_lammps_hdnnp("AlAuMgO_4G"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 0;
+    e->potentialEnergy = -54396.582;
+    e->totalEnergy = -54392.355;
+
     return;
 }
 
