@@ -2,6 +2,7 @@
 #define BOOST_TEST_MODULE lammps-hdnnp
 #include "Example_lammps_hdnnp.h"
 #include "nnp_test.h"
+#include "tolerance.h"
 #include "utility.h"
 
 #include <fstream> // std::ifstream
@@ -12,7 +13,8 @@
 using namespace std;
 using namespace nnp;
 
-double const accuracy = 10.0 * numeric_limits<double>::epsilon();
+Tolerance const tolerance =
+    Tolerance(10.0 * numeric_limits<double>::epsilon());
 
 BoostDataContainer<Example_lammps_hdnnp> container;
 
@@ -38,10 +40,12 @@ void nnpToolTestBody(Example_lammps_hdnnp const example)
             columns.at(0) == to_string(example.lastTimeStep))
         {
             timeStepFound = true;
-            BOOST_REQUIRE_SMALL(example.potentialEnergy - stod(columns.at(2)),
-                                accuracy);
-            BOOST_REQUIRE_SMALL(example.totalEnergy - stod(columns.at(4)),
-                                accuracy);
+            REQUIRE_CLOSE_TO_REFERENCE(example.potentialEnergy,
+                                       stod(columns.at(2)),
+                                       tolerance);
+            REQUIRE_CLOSE_TO_REFERENCE(example.totalEnergy,
+                                       stod(columns.at(4)),
+                                       tolerance);
             break;
         }
     }
