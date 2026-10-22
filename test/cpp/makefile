@@ -45,7 +45,7 @@ INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain -I$(P
 # early), libnnp.a is already closed by the time libnnptrain.a's undefined
 # refs surface, and linking fails. --start-group/--end-group makes ld retry
 # the archives until all symbols resolve.
-LDFLAGS=-Wl,--start-group $(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -Wl,--end-group $(PROJECT_LDFLAGS_BLAS) -L$(PROJECT_BOOST)/lib -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
+LDFLAGS=-Wl,--start-group $(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -Wl,--end-group $(PROJECT_LDFLAGS_BLAS) -L$(PROJECT_BOOST)/lib -lboost_unit_test_framework -lboost_filesystem -lpthread
 
 
 ###############################################################################
