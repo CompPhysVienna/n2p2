@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     # Pinned LTS image: ubuntu-latest moves to a new release without notice.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v4
       
