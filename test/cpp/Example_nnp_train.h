@@ -73,6 +73,10 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseForcesTrain = 2.46334310E-02;
     e->rmseForcesTest  = 1.22544569E-02;
     e->accuracy        = 1.0E-8;
+    // On Ubuntu 26.04 (CI) the epoch-2 force RMSE differs by 9E-7 relative
+    // (summation order, library versions); allow 1E-5 there. Epochs 0 and 1
+    // are still checked to accuracy.
+    e->accuracyLastEpochRelative = 1.0E-5;
 
     examples.push_back(Example_nnp_train("H2O_RPBE-D3_norm-force"));
     e = &(examples.back());
