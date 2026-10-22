@@ -7,9 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pinned LTS image: ubuntu-latest moves to a new release without notice.
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Install required system packages
         run: |
