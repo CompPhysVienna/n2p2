@@ -110,6 +110,11 @@ BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
     Prediction p;
     p.log.writeToStdout = false;
     p.setup();
+    // The displaced structures push some symmetry functions marginally past
+    // the range in scaling.data (computed from these same structures). That
+    // does not affect the force check; do not flood the output with
+    // extrapolation warnings (written to stderr, not to the log).
+    p.setupSymmetryFunctionStatistics(false, false, false, false);
     p.readStructureFromFile();
     p.predict();
     Structure const analytic = p.structure;
