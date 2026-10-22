@@ -71,6 +71,11 @@ protected:
     char* directory;
     char* emap;
     class NeighList *list;
+    // Neighbor list for the real-space electrostatics (owned by fix hdnnp)
+    // and its cutoff in LAMMPS length units, see init_style().
+    class NeighList *elecList;
+    double elecCutoff;
+    double E_recip_global;
 
     nnp::InterfaceLammps interface;
 
@@ -83,6 +88,8 @@ protected:
     virtual void allocate();
     void transferNeighborList();
     void isPeriodic();
+    void setElecCutoff();
+    void requestNeighborList();
 
     void transferCharges();
     void handleExtrapolationWarnings();

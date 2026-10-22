@@ -52,12 +52,15 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
 
     // 4G-HDNNP (pair_style hdnnp/4g, kspace_style hdnnp, fix hdnnp charge
     // equilibration), single point as in the shipped md.lmp (0 steps).
+    // The potential energy agrees with nnp-predict on the same structure
+    // (examples/interface-LAMMPS/AlAuMgO_4G/nnp-predict, -54395.98123 eV) to
+    // 4E-7 eV, charges to 3E-7 e and forces to 1E-7 eV/A.
     examples.push_back(Example_lammps_hdnnp("AlAuMgO_4G"));
     e = &(examples.back());
     e->args = "-in md.lmp ";
     e->lastTimeStep = 0;
-    e->potentialEnergy = -54396.582;
-    e->totalEnergy = -54392.355;
+    e->potentialEnergy = -54395.981;
+    e->totalEnergy = -54391.754;
 
     return;
 }

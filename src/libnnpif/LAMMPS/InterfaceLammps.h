@@ -256,6 +256,11 @@ public:
      * @param[in] rScreen Array that contains screening radii.
      */
     void   getScreeningInfo(double* const& rScreen) const;
+    /** Largest Gaussian charge width (fixed_gausswidth) of all elements.
+     *
+     * @return Maximum width in n2p2 length units.
+     */
+    double getMaxQsigma() const;
     /** Transfer spatial derivatives of atomic electronegativities.
      *
      * @param[in] tag Atom of interest
