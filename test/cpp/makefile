@@ -55,17 +55,28 @@ SRC=$(wildcard test_*.cpp)
 SRC_NOIF=$(filter-out test_lammps_hdnnp.cpp, $(SRC))
 EXE=$(SRC:%.cpp=%)
 EXE_NOIF=$(SRC_NOIF:%.cpp=%)
+# Groups for running the suite in parts (e.g. separate CI steps): the LAMMPS
+# interface test, the application (tool) regression tests, and all others.
+EXE_INTERFACE=$(filter test_lammps_hdnnp, $(EXE))
+EXE_TOOLS=$(filter test_nnp-%, $(EXE))
+EXE_UNIT=$(filter-out $(EXE_INTERFACE) $(EXE_TOOLS), $(EXE))
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all no-interface coverage clean clean-coverage
+.PHONY: all no-interface unit tools interface coverage clean clean-coverage
 .NOTPARALLEL:
 
 all: $(EXE)
 
 no-interface: $(EXE_NOIF)
+
+unit: $(EXE_UNIT)
+
+tools: $(EXE_TOOLS)
+
+interface: $(EXE_INTERFACE)
 
 # test_Dataset and test_Training link Dataset.o/Training.o directly (call
 # their methods in-process, unlike every other test_nnp-* regression test

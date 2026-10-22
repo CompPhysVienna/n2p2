@@ -53,6 +53,7 @@ jobs:
           pip install coverage #==7.6.1
 
       - name: Build n2p2 libraries and applications
+        id: build
         run: make MODE=test -j4
         working-directory: ./src
       
@@ -69,28 +70,52 @@ jobs:
         working-directory: ./src
       
       - name: Build LAMMPS with n2p2 support
+        id: lammps
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: make MODE=test lammps-hdnnp
         working-directory: ./src
       
-      - name: Run C++ tests and coverage
+      # The test steps run whenever what they need was built, also after a
+      # failure in an earlier step, and make -k runs all tests of a step
+      # even if one fails: one CI run reports every failing test.
+      # Multi-rank tests (test_Training_mpi, nnp-comp2 compare mode) may need
+      # more MPI slots than the runner reports, hence --oversubscribe.
+      - name: Run C++ unit tests
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: make -k unit MPIRUN="mpirun --oversubscribe"
+        working-directory: ./test/cpp
+
+      - name: Run C++ application regression tests
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: make -k tools MPIRUN="mpirun --oversubscribe"
+        working-directory: ./test/cpp
+
+      - name: Run LAMMPS interface regression test
+        if: ${{ !cancelled() && steps.lammps.outcome == 'success' }}
+        run: make -k interface
+        working-directory: ./test/cpp
+
+      - name: Collect C++ coverage
+        id: cppcoverage
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
-          # Multi-rank tests (test_Training_mpi, nnp-comp2 compare mode) may
-          # need more MPI slots than the runner reports.
-          make cpp MPIRUN="mpirun --oversubscribe"
-          cd cpp
           make coverage
-          rm *.gcda *.gcno
-        working-directory: ./test
+          rm -f *.gcda *.gcno
+        working-directory: ./test/cpp
       
       - name: Build pynnp
+        id: pynnp
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: make pynnp MODE=test
         working-directory: ./src
       
       - name: Run python tests
+        if: ${{ !cancelled() && steps.pynnp.outcome == 'success' }}
         run: make python
         working-directory: ./test
       
       - name: Upload C++ coverage to Codecov
+        if: ${{ !cancelled() && steps.cppcoverage.outcome == 'success' }}
         uses: codecov/codecov-action@v2
         with:
           files: test/cpp/tests.info
@@ -98,6 +123,7 @@ jobs:
           verbose: true
       
       - name: Upload Python coverage to Codecov
+        if: ${{ !cancelled() && steps.pynnp.outcome == 'success' }}
         uses: codecov/codecov-action@v2
         with:
           directory: test/python
