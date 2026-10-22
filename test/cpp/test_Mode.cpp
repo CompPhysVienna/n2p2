@@ -9,6 +9,8 @@
 #include "Mode.h"
 #include "Prediction.h"
 #include "SetupAnalysis.h"
+#include "Structure.h"
+#include <cmath>     // std::fabs
 #include <fstream>   // std::ofstream, std::ifstream
 #include <iterator>  // std::istreambuf_iterator
 #include <stdexcept> // std::runtime_error, std::invalid_argument
@@ -307,6 +309,67 @@ BOOST_FIXTURE_TEST_CASE(SetupGeneric_H2OExample_PopulatesElementsAndSymmetryFunc
     size_t total = 0;
     for (size_t n : numSF) total += n;
     BOOST_REQUIRE_EQUAL(total, 57); // Counted from input.nn.
+}
+
+// Unit conversion helpers, on the H2O example where normalization is active
+// (conversion factors != 1): known scaling per property, exact inverses,
+// unknown properties rejected.
+BOOST_FIXTURE_TEST_CASE(NormalizedPhysical_ScalingAndInverse,
+                        FixtureH2OSetupAnalysis)
+{
+    double const cE = mode.getConvEnergy();
+    double const cL = mode.getConvLength();
+    double const cQ = mode.getConvCharge();
+    double const v = 1.2345;
+    BOOST_REQUIRE_SMALL(mode.normalized("energy", v) - v * cE, 1.0E-12);
+    BOOST_REQUIRE_SMALL(mode.normalized("force", v) - v * cE / cL, 1.0E-12);
+    BOOST_REQUIRE_SMALL(mode.normalized("charge", v) - v * cQ, 1.0E-12);
+    BOOST_REQUIRE_SMALL(mode.normalized("hardness", v) - v * cE / (cQ * cQ),
+                        1.0E-12);
+    BOOST_REQUIRE_SMALL(mode.normalized("negativity", v) - v * cE / cQ,
+                        1.0E-12);
+    for (string p : {"energy", "force", "charge", "hardness", "negativity"})
+    {
+        BOOST_TEST_INFO("property " << p);
+        BOOST_REQUIRE_SMALL(mode.physical(p, mode.normalized(p, v)) - v,
+                            1.0E-12);
+    }
+    BOOST_REQUIRE_THROW(mode.normalized("unknown", v), runtime_error);
+    BOOST_REQUIRE_THROW(mode.physical("unknown", v), runtime_error);
+}
+
+BOOST_FIXTURE_TEST_CASE(ConvertUnits_StructureRoundTrip,
+                        FixtureH2OSetupAnalysis)
+{
+    Structure s;
+    s.setElementMap(mode.elementMap);
+    s.readFromFile("input.data");
+    s.energy = s.energyRef;
+    Structure const original = s;
+
+    double const eNormalized = mode.normalizedEnergy(s, true);
+    BOOST_REQUIRE_SMALL(eNormalized - (s.energyRef - s.numAtoms
+                                       * mode.getMeanEnergy())
+                                      * mode.getConvEnergy(), 1.0E-9);
+
+    mode.convertToNormalizedUnits(s);
+    BOOST_REQUIRE_SMALL(s.energyRef - eNormalized, 1.0E-9);
+    BOOST_REQUIRE_SMALL(s.atoms.at(0).r[0]
+                        - original.atoms.at(0).r[0] * mode.getConvLength(),
+                        1.0E-9);
+    BOOST_REQUIRE_SMALL(mode.physicalEnergy(s, true) - original.energyRef,
+                        1.0E-9 * fabs(original.energyRef));
+
+    mode.convertToPhysicalUnits(s);
+    BOOST_REQUIRE_SMALL(s.energyRef - original.energyRef,
+                        1.0E-12 * fabs(original.energyRef));
+    for (size_t i = 0; i < s.atoms.size(); ++i)
+    {
+        BOOST_REQUIRE_SMALL((s.atoms.at(i).r - original.atoms.at(i).r).norm(),
+                            1.0E-9);
+        BOOST_REQUIRE_SMALL((s.atoms.at(i).fRef - original.atoms.at(i).fRef)
+                            .norm(), 1.0E-9);
+    }
 }
 
 BOOST_FIXTURE_TEST_CASE(SetupSymmetryFunctionScalingNone_NoThrow,
