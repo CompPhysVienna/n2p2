@@ -71,10 +71,13 @@ no-interface: $(EXE_NOIF)
 # their methods in-process, unlike every other test_nnp-* regression test
 # which spawns the real application binary via mpirun instead), pulling in
 # real MPI symbol references that the plain compiler cannot resolve -- use
-# the MPI compiler wrapper for these targets only.
+# the MPI compiler wrapper for these targets only. test_KalmanFilter needs it
+# too: KalmanFilter.h includes mpi.h, which is not on the default include
+# path everywhere (e.g. Ubuntu's OpenMPI, used in CI).
 test_Dataset: CC=$(MPICC)
 test_Training: CC=$(MPICC)
 test_Training_mpi: CC=$(MPICC)
+test_KalmanFilter: CC=$(MPICC)
 
 # MPI launcher for tests that need several processes: test_Training_mpi is
 # run once more on MPI_TEST_RANKS ranks after its single-rank run, and the
