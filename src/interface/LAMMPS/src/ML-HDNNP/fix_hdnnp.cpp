@@ -748,6 +748,11 @@ void FixHDNNP::calculate_QEqCharges()
         qsum_it = 0.0;
         gradsum = 0.0;
         status = gsl_multimin_fdfminimizer_iterate(s);
+        // GSL_ENOPROG: no further improvement possible (the gradient is at
+        // the limit of double precision). Without this check, the status
+        // is overwritten by the gradient test below and the loop runs all
+        // remaining maxit iterations without changing the charges.
+        if (status) break;
         // Projection (enforcing constraints)
         // TODO: could this be done more efficiently ?
         for(i = 0; i < nsize; i++) {

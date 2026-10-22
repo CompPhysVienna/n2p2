@@ -921,6 +921,8 @@ void PairHDNNP4G::calculateForceLambda()
         iter++;
         psum_it = 0.0;
         status = gsl_multimin_fdfminimizer_iterate(s);
+        // No further improvement possible, see FixHDNNP::calculate_QEqCharges().
+        if (status) break;
 
         // Projection
         for(i = 0; i < nsize; i++) {
