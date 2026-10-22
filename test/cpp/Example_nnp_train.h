@@ -98,13 +98,16 @@ void BoostDataContainer<Example_nnp_train>::setup()
     examples.push_back(Example_nnp_train("H2O_RPBE-D3_4G"));
     e = &(examples.back());
     e->args = "2";
+    // Stage-2 values since the dChi/dr fix in Training::update(): earlier
+    // references trained 4G forces without the electronegativity term
+    // whenever memorize_symfunc_results was off (the example's default).
     e->earlyEpochs = {{0, 2.54963983E+01, 2.54883959E+01, 6.39401966E-01, 6.42712759E-01},
-                      {1, 2.46483134E-04, 2.33868144E-04, 7.59729026E-03, 7.42592511E-03}};
+                      {1, 3.05902029E-04, 2.86634082E-04, 1.65579969E-03, 2.17223928E-03}};
     e->lastEpoch = 10;
-    e->rmseEnergyTrain = 2.15640267E-05;
-    e->rmseEnergyTest  = 1.30155783E-05;
-    e->rmseForcesTrain = 2.07286126E-04;
-    e->rmseForcesTest  = 2.20371908E-04;
+    e->rmseEnergyTrain = 2.48871931E-05;
+    e->rmseEnergyTest  = 1.58447030E-05;
+    e->rmseForcesTrain = 1.97234938E-04;
+    e->rmseForcesTest  = 2.06482408E-04;
     e->accuracy        = 1E-13;
 
     // Periodic solid-state system (Cu2S), no long-range electrostatics --
