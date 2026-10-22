@@ -78,7 +78,8 @@ void nnpToolTestBody(Example_nnp_train const example)
             checkRow(columns,
                      charges,
                      last,
-                     Tolerance(example.accuracy));
+                     Tolerance(example.accuracy,
+                               example.accuracyLastEpochRelative));
         }
         for (auto const& early : example.earlyEpochs)
         {

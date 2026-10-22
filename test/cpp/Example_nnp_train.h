@@ -37,8 +37,14 @@ struct Example_nnp_train : public Example_nnp
     // visibly. Checking them localizes a regression to the evaluation
     // (epoch 0) or the first updates (epoch 1).
     std::vector<LearningCurveRow> earlyEpochs;
+    // Relative tolerance for the last epoch, in addition to accuracy. 0 for
+    // examples whose last epoch is reproducible across machines; a sanity
+    // bound for those where the amplification above is large.
+    double      accuracyLastEpochRelative;
 
-    Example_nnp_train(std::string name) : Example_nnp("nnp-train", name) {};
+    Example_nnp_train(std::string name) :
+        Example_nnp("nnp-train", name),
+        accuracyLastEpochRelative(0.0) {};
 };
 
 template<>
@@ -118,6 +124,11 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->rmseForcesTrain = 3.12362540E-02;
     e->rmseForcesTest  = 4.03303534E-02;
     e->accuracy        = 1.0E-8;
+    // Last-digit differences grow about x10 per epoch here (1E-7 at epoch 2,
+    // 34% at epoch 7), so on another machine (CPU, compiler flags, BLAS) the
+    // epoch-10 RMSEs differ visibly (e.g. +36% in CI). Epochs 0 and 1 are
+    // checked to accuracy; epoch 10 only within a factor of two.
+    e->accuracyLastEpochRelative = 1.0;
 
     return;
 }
