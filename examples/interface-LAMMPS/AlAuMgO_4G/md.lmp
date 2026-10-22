@@ -37,8 +37,8 @@ timestep ${dt}
 velocity all create 300.0 12345
 thermo 1
 
-neighbor 0.0 bin
-neigh_modify delay 10 # Seems this was the default previously (29Oct2020).
+neighbor 1.0 bin
+neigh_modify every 1 delay 0 check yes
 
 ###############################################################################
 # NN
