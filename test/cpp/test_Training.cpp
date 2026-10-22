@@ -13,6 +13,7 @@
 #include "fileHelpers.h"
 
 #include "Training.h"
+#include "utility.h"
 #include <cmath>     // std::fabs
 #include <fstream>   // std::ifstream
 #include <iterator>  // std::istreambuf_iterator
@@ -126,6 +127,73 @@ struct FixtureH2OTrainingGD : public FixtureRepairDir
 
     Training training;
 };
+
+// Runs one epoch of 4G stage-2 (energy and force) training on the
+// H2O_RPBE-D3_4G example, with or without memorize_symfunc_results, and
+// returns the stage-2 learning-curve values {energy RMSE train, test, force
+// RMSE train, test} of epochs 0 and 1. Same setup sequence as
+// src/application/nnp-train.cpp for stage 2.
+vector<double> trainStage2OneEpoch4G(bool memorize)
+{
+    if (bfs::exists("test")) bfs::remove_all("test");
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-train/H2O_RPBE-D3_4G", "test"));
+    bfs::current_path("test");
+    BOOST_REQUIRE(replaceInFile("input.nn",
+                                "epochs                          10",
+                                "epochs                          1"));
+    if (memorize)
+    {
+        BOOST_REQUIRE(replaceInFile("input.nn",
+                                    "#memorize_symfunc_results",
+                                    "memorize_symfunc_results"));
+    }
+
+    {
+        Training training;
+        training.log.writeToStdout = false;
+        training.setupMPI();
+        training.initialize();
+        training.loadSettingsFile();
+        training.setStage(2);
+        training.setupGeneric(
+            "", training.settingsKeywordExists("normalize_data_set"), false);
+        training.setupSymmetryFunctionScaling();
+        training.setupSymmetryFunctionStatistics(false, false, false, false);
+        training.setupRandomNumberGenerator();
+        training.distributeStructures(true);
+        training.selectSets();
+        training.initializeWeights();
+        if (training.settingsKeywordExists("normalize_data_set"))
+        {
+            training.dataSetNormalization();
+        }
+        if (training.useNormalization()) training.toNormalizedUnits();
+        training.setupTraining();
+        training.calculateNeighborLists();
+        training.loop();
+    }
+
+    vector<double> rows(8, 0.0);
+    ifstream file("learning-curve.out.stage-2");
+    BOOST_REQUIRE(file.is_open());
+    string line;
+    while (getline(file, line))
+    {
+        vector<string> c = split(reduce(line));
+        if (c.empty() || c.at(0).at(0) == '#') continue;
+        size_t const e = stoul(c.at(0));
+        BOOST_REQUIRE(e <= 1);
+        rows.at(4 * e + 0) = stod(c.at(1));
+        rows.at(4 * e + 1) = stod(c.at(2));
+        rows.at(4 * e + 2) = stod(c.at(9));
+        rows.at(4 * e + 3) = stod(c.at(10));
+    }
+    file.close();
+    bfs::current_path("..");
+    bfs::remove_all("test");
+    return rows;
+}
 
 BOOST_AUTO_TEST_SUITE(UnitTests)
 
@@ -370,6 +438,27 @@ BOOST_FIXTURE_TEST_CASE(
         if (!line.empty() && line.at(0) != '#') numDataLines++;
     }
     BOOST_REQUIRE_EQUAL(numDataLines, 3);
+}
+
+// Keeping symmetry function results in memory is a speed/memory trade-off
+// and must not change what is trained. Without memorize_symfunc_results the
+// per-atom derivative arrays are freed after each use; in 4G force updates
+// the charge equilibration stays cached across trials, so anything freed
+// with the atoms (dChidG) has to be recomputed, otherwise the forces and
+// dQ/dr used for the update silently miss terms.
+BOOST_FIXTURE_TEST_CASE(Stage2_4G_MemorizeSymfuncResults_DoesNotChangeTraining,
+                        FixtureRepairDir)
+{
+    vector<double> const memo = trainStage2OneEpoch4G(true);
+    vector<double> const freed = trainStage2OneEpoch4G(false);
+
+    for (size_t i = 0; i < memo.size(); ++i)
+    {
+        BOOST_TEST_INFO("learning-curve value " << i << ": memorized "
+                        << memo.at(i) << ", freed " << freed.at(i));
+        BOOST_REQUIRE(memo.at(i) > 0.0);
+        BOOST_REQUIRE_SMALL(memo.at(i) - freed.at(i), 1.0E-10 * memo.at(i));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

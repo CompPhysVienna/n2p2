@@ -2398,6 +2398,12 @@ void Training::update(string const& property)
                             calculateAtomicNeuralNetworks(s, derivatives, "elec");
                             chargeEquilibration(s, derivatives);
                         }
+                        // The charge equilibration (A matrix, charges, dAdrQ)
+                        // stays cached between force trials, but freeAtoms()
+                        // resets dChidG; without re-evaluating the (cheap)
+                        // electronegativity network the forces would miss
+                        // the dChi/dr term.
+                        else calculateAtomicNeuralNetworks(s, derivatives, "elec");
                         calculateAtomicNeuralNetworks(s, derivatives, "short");
                         calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
@@ -2614,6 +2620,10 @@ void Training::update(string const& property)
                        calculateAtomicNeuralNetworks(s, derivatives, "elec");
                        chargeEquilibration(s, derivatives);
                     }
+                    // See PART 1: dChidG was reset by freeAtoms() above while
+                    // the charge equilibration stayed cached; dQdr and the
+                    // forces below need it.
+                    else calculateAtomicNeuralNetworks(s, derivatives, "elec");
                     s.calculateDQdr(vector<size_t>{sC->a},
                                     vector<size_t>{sC->c},
                                     maxCutoffRadius,
