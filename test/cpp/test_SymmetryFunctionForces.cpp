@@ -80,30 +80,45 @@ double weightedSum(Mode& mode, Structure const& base, size_t j, size_t c,
     return sum;
 }
 
+// Cu2S_PBE cell with the all-types settings above, set up without scaling.
+struct FixtureAllTypes : public FixtureRepairDir
+{
+    FixtureAllTypes()
+    {
+        BOOST_REQUIRE(bfs::create_directory("test"));
+        bfs::copy_file("../../examples/nnp-predict/Cu2S_PBE/input.data",
+                       "test/input.data");
+        bfs::current_path("test");
+        ofstream file("input.nn");
+        file << settingsFile;
+        file.close();
+
+        mode.log.writeToStdout = false;
+        mode.initialize();
+        mode.loadSettingsFile();
+        mode.setupGeneric();
+        mode.setupSymmetryFunctionScalingNone();
+        mode.setupSymmetryFunctionStatistics(false, false, false, false);
+
+        base.setElementMap(mode.elementMap);
+        base.readFromFile("input.data");
+    }
+
+    ~FixtureAllTypes()
+    {
+        bfs::current_path("..");
+        bfs::remove_all("test");
+    }
+
+    Mode      mode;
+    Structure base;
+};
+
 BOOST_AUTO_TEST_SUITE(RegressionTests)
 
 BOOST_FIXTURE_TEST_CASE(AllTypesPeriodic_ForcesMatchFiniteDifference,
-                        FixtureRepairDir)
+                        FixtureAllTypes)
 {
-    BOOST_REQUIRE(bfs::create_directory("test"));
-    bfs::copy_file("../../examples/nnp-predict/Cu2S_PBE/input.data",
-                   "test/input.data");
-    bfs::current_path("test");
-    ofstream file("input.nn");
-    file << settingsFile;
-    file.close();
-
-    Mode mode;
-    mode.log.writeToStdout = false;
-    mode.initialize();
-    mode.loadSettingsFile();
-    mode.setupGeneric();
-    mode.setupSymmetryFunctionScalingNone();
-    mode.setupSymmetryFunctionStatistics(false, false, false, false);
-
-    Structure base;
-    base.setElementMap(mode.elementMap);
-    base.readFromFile("input.data");
 
     Structure s = base;
     s.calculateNeighborList(mode.getMaxCutoffRadius());
@@ -139,9 +154,53 @@ BOOST_FIXTURE_TEST_CASE(AllTypesPeriodic_ForcesMatchFiniteDifference,
         }
     }
     BOOST_TEST_MESSAGE("max |F_analytic - F_fd| = " << maxDeviation);
+}
 
-    bfs::current_path("..");
-    bfs::remove_all("test");
+// The grouped evaluation (calculateSymmetryFunctionGroups(), used in
+// production) must give
+// the same values and derivatives, own and neighbor-side, as evaluating
+// every function individually (calculateSymmetryFunctions()).
+BOOST_FIXTURE_TEST_CASE(AllTypesPeriodic_GroupsMatchIndividualFunctions,
+                        FixtureAllTypes)
+{
+    Structure grouped = base;
+    grouped.calculateNeighborList(mode.getMaxCutoffRadius());
+    Structure individual = grouped;
+    mode.calculateSymmetryFunctionGroups(grouped, true);
+    mode.calculateSymmetryFunctions(individual, true);
+
+    double const tolerance = 1.0E-12;
+    double maxDeviation = 0.0;
+    for (size_t i = 0; i < grouped.atoms.size(); ++i)
+    {
+        Atom const& g = grouped.atoms.at(i);
+        Atom const& d = individual.atoms.at(i);
+        BOOST_REQUIRE_EQUAL(g.G.size(), d.G.size());
+        for (size_t k = 0; k < g.G.size(); ++k)
+        {
+            double const dev = max(fabs(g.G.at(k) - d.G.at(k)),
+                                   (g.dGdr.at(k) - d.dGdr.at(k)).norm());
+            maxDeviation = max(maxDeviation, dev);
+            BOOST_TEST_INFO("atom " << i << " symmetry function " << k);
+            BOOST_REQUIRE_LE(dev, tolerance * max(1.0, fabs(d.G.at(k))));
+        }
+        BOOST_REQUIRE_EQUAL(g.neighbors.size(), d.neighbors.size());
+        for (size_t n = 0; n < g.neighbors.size(); ++n)
+        {
+            auto const& gn = g.neighbors.at(n).dGdr;
+            auto const& dn = d.neighbors.at(n).dGdr;
+            BOOST_REQUIRE_EQUAL(gn.size(), dn.size());
+            for (size_t k = 0; k < gn.size(); ++k)
+            {
+                double const dev = (gn.at(k) - dn.at(k)).norm();
+                maxDeviation = max(maxDeviation, dev);
+                BOOST_TEST_INFO("atom " << i << " neighbor " << n
+                                << " derivative " << k);
+                BOOST_REQUIRE_LE(dev, tolerance * max(1.0, dn.at(k).norm()));
+            }
+        }
+    }
+    BOOST_TEST_MESSAGE("max |grouped - individual| = " << maxDeviation);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
