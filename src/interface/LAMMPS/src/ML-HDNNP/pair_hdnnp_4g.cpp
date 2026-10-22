@@ -66,6 +66,9 @@ PairHDNNP4G::PairHDNNP4G(LAMMPS *lmp) : Pair(lmp),
     directory                      (nullptr),
     emap                           (nullptr),
     list                           (nullptr),
+    elecList                       (nullptr),
+    elecCutoff                     (0.0    ),
+    E_recip_global                 (0.0    ),
     chi                            (nullptr),
     hardness                       (nullptr),
     sigmaSqrtPi                    (nullptr),
@@ -378,10 +381,12 @@ void PairHDNNP4G::init_style()
   //neighbor->requests[irequest]->pair = 1;
   //neighbor->requests[irequest]->half = 0;
   //neighbor->requests[irequest]->full = 1;
-  neighbor->add_request(this, NeighConst::REQ_FULL);
-
   // Return immediately if NNP setup is already completed.
-  if (interface.isInitialized()) return;
+  if (interface.isInitialized()) {
+    setElecCutoff();
+    requestNeighborList();
+    return;
+  }
 
   // Activate screen and logfile output only for rank 0.
   if (comm->me == 0) {
@@ -413,6 +418,45 @@ void PairHDNNP4G::init_style()
     {
         isPeriodic(); // check for periodicity here
     }
+    setElecCutoff();
+    requestNeighborList();
+}
+
+/* ----------------------------------------------------------------------
+   neighbor list for the symmetry functions: the pair cutoff given via
+   pair_coeff, below the force cutoff reported by init_one() when the
+   electrostatics need a longer range (that list belongs to fix hdnnp)
+------------------------------------------------------------------------- */
+
+void PairHDNNP4G::requestNeighborList()
+{
+  auto req = neighbor->add_request(this, NeighConst::REQ_FULL);
+  if (elecCutoff > maxCutoffRadius) req->set_cutoff(maxCutoffRadius);
+}
+
+/* ----------------------------------------------------------------------
+   cutoff of the real-space electrostatics (periodic 4G)
+
+   The real-space Ewald kernel of Gaussian charges,
+   [erfc(r/(sqrt(2) eta)) - erfc(r/gamma_ij)] / r with
+   gamma_ij = sqrt(2 (sigma_i^2 + sigma_j^2)), has two terms. eta is chosen
+   so that the first one has decayed to the Ewald accuracy at the symmetry
+   function cutoff (KSpaceHDNNP::init()), but the second one decays with the
+   Gaussian widths and can reach much further (about 30 A instead of 8 A for
+   typical widths). Neglecting it beyond the symmetry function cutoff gives
+   wrong charges, energies and forces, so the real-space loops use a
+   separate neighbor list up to where both terms are below the accuracy:
+   erfc(x) < accuracy for x > sqrt(-ln(accuracy)).
+------------------------------------------------------------------------- */
+
+void PairHDNNP4G::setElecCutoff()
+{
+  elecCutoff = maxCutoffRadius;
+  if (!periodic || force->kspace == nullptr) return;
+  double const accuracy = force->kspace->accuracy_relative;
+  double const gammaMax = 2.0 * interface.getMaxQsigma(); // sqrt(2 (2 s^2))
+  double const rGauss = gammaMax * sqrt(-log(accuracy)) / cflength;
+  elecCutoff = MAX(maxCutoffRadius, rGauss);
 }
 
 /* ----------------------------------------------------------------------
@@ -430,8 +474,9 @@ void PairHDNNP4G::init_list(int /*id*/, NeighList *ptr)
 
 double PairHDNNP4G::init_one(int i, int j)
 {
-  // TODO: Check how this actually works for different cutoffs.
-  return maxCutoffRadius;
+  // Force cutoff: also covers the real-space electrostatics (setElecCutoff()),
+  // so that LAMMPS communicates enough ghost atoms for fix hdnnp's list.
+  return elecCutoff;
 }
 
 /* ----------------------------------------------------------------------
@@ -692,8 +737,8 @@ double PairHDNNP4G::forceLambda_f(const gsl_vector *v)
 
             // Real space
             // TODO: we loop over the full neighbor list, could this be optimized ?
-            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
-                j = list->firstneigh[i][jj];
+            for (int jj = 0; jj < elecList->numneigh[i]; ++jj) {
+                j = elecList->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 double const lambda_j = gsl_vector_get(v, tag[j]-1);
                 //jmap = atom->map(tag[j]);
@@ -797,8 +842,8 @@ void PairHDNNP4G::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
 
             // Real space
             double jsum = 0.0;
-            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
-                j = list->firstneigh[i][jj];
+            for (int jj = 0; jj < elecList->numneigh[i]; ++jj) {
+                j = elecList->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 double const lambda_j = gsl_vector_get(v, tag[j]-1);
                 //jmap = atom->map(tag[j]);
@@ -1056,8 +1101,8 @@ void PairHDNNP4G::calculateElecDerivatives(double *dEelecdQ, double **f)
         qi = q[i];
         if (periodic) {
             double sqrt2eta = (sqrt(2.0) * eta);
-            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
-                j = list->firstneigh[i][jj];
+            for (int jj = 0; jj < elecList->numneigh[i]; ++jj) {
+                j = elecList->firstneigh[i][jj];
                 j &= NEIGHMASK;
                 jmap = atom->map(tag[j]);
                 qj = qall[tag[j]-1];
@@ -1221,8 +1266,8 @@ void PairHDNNP4G::calculateElecForce(double **f)
         if (periodic) {
             double sqrt2eta = (sqrt(2.0) * eta);
             
-            for (int jj = 0; jj < list->numneigh[i]; ++jj) {
-                k = list->firstneigh[i][jj];
+            for (int jj = 0; jj < elecList->numneigh[i]; ++jj) {
+                k = elecList->firstneigh[i][jj];
                 k &= NEIGHMASK;
                 int jmap = atom->map(tag[k]);
                 qk = qall[tag[k]-1];
@@ -1233,7 +1278,7 @@ void PairHDNNP4G::calculateElecForce(double **f)
                 double rij2 = SQR(dx) + SQR(dy) + SQR(dz);
                 rij = sqrt(rij2) * cflength;
 
-                if (rij < kspacehdnnp->ewald_real_cutoff) {
+                if (rij < elecCutoff * cflength) {
                     gams2 = gammaSqrt2[type[i]- 1][type[jmap]-1];
                     
                     delr = (2.0 / sqrt(M_PI) * (-exp(-pow(rij / sqrt2eta, 2)) / sqrt2eta 

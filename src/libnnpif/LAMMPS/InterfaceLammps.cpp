@@ -23,6 +23,7 @@
 #include "Element.h"
 #include "utility.h"
 #include <Eigen/Dense>
+#include <algorithm>
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -590,6 +591,13 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
         }
     }
     qRef = structure.chargeRef;
+}
+
+double InterfaceLammps::getMaxQsigma() const
+{
+    double sigmaMax = 0.0;
+    for (auto const& e : elements) sigmaMax = max(sigmaMax, e.getQsigma());
+    return sigmaMax;
 }
 
 void InterfaceLammps::getdEdQ(double* const& dEtotdQ) const

@@ -183,9 +183,17 @@ void FixHDNNP::init()
 
     //if (periodic) neighbor->add_request(this, NeighConst::REQ_DEFAULT);
     //else neighbor->add_request(this, NeighConst::REQ_FULL);
-    neighbor->add_request(this, NeighConst::REQ_FULL |
-                                NeighConst::REQ_GHOST |
-                                NeighConst::REQ_NEWTON_OFF);
+    if (periodic) {
+        // Real-space electrostatics: full list of the local atoms up to the
+        // electrostatic cutoff, which PairHDNNP4G::init_one() reports as the
+        // force cutoff (see PairHDNNP4G::setElecCutoff()). The pair style
+        // uses this list too.
+        neighbor->add_request(this, NeighConst::REQ_FULL);
+    } else {
+        neighbor->add_request(this, NeighConst::REQ_FULL |
+                                    NeighConst::REQ_GHOST |
+                                    NeighConst::REQ_NEWTON_OFF);
+    }
 
     // TODO : do we really need a full NL in periodic cases ?
     //if (periodic) { // periodic : full neighborlist
@@ -253,6 +261,7 @@ void FixHDNNP::deallocate_QEq() {
 void FixHDNNP::init_list(int /*id*/, NeighList *ptr)
 {
     list = ptr;
+    hdnnp->elecList = ptr;
 }
 
 void FixHDNNP::setup_pre_force(int vflag)
@@ -362,6 +371,7 @@ void FixHDNNP::calculate_erfc_terms()
     
     //maxnumneigh = 100000;
     // allocate and initialize
+    memory->destroy(hdnnp->erfc_val);
     memory->create(hdnnp->erfc_val,nlocal+1,maxnumneigh+1,"fix_hdnnp:erfc_val");
 
     for (int i = 0; i < nlocal; i++){
@@ -383,6 +393,9 @@ void FixHDNNP::calculate_erfc_terms()
                 double const dy = x[i][1] - x[j][1];
                 double const dz = x[i][2] - x[j][2];
                 double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * hdnnp->cflength;
+                // Neighbors in the skin beyond the cutoff do not contribute,
+                // consistent with the force calculation.
+                if (rij >= hdnnp->elecCutoff * hdnnp->cflength) continue;
                 hdnnp->erfc_val[i][jj] = (erfc(rij/sqrt2eta) - erfc(rij/hdnnp->gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
             }
         }
