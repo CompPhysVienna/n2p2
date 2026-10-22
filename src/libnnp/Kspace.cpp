@@ -29,9 +29,9 @@ Kvector::Kvector() : k     (Vec3D()),
 {
 }
 
-Kvector::Kvector(Vec3D v) : k     (v       ),
-                            knorm2(v.norm()),
-                            coeff (0.0     )
+Kvector::Kvector(Vec3D v) : k     (v        ),
+                            knorm2(v.norm2()),
+                            coeff (0.0      )
 {
 }
 

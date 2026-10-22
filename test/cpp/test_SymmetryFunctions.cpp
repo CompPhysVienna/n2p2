@@ -189,6 +189,130 @@ void checkAbsoluteValue(Structure&   s,
     return;
 }
 
+void checkOperatorsAndInfo(ElementMap&  em,
+                           size_t const type,
+                           string const setupLine)
+{
+    SymFnc* sf1 = setupSymmetryFunction(em, type, setupLine);
+    SymFnc* sf2 = setupSymmetryFunction(em, type, setupLine);
+
+    // Identical parameters: equal, and neither strictly orders before the
+    // other.
+    BOOST_REQUIRE(*sf1 == *sf2);
+    BOOST_REQUIRE(!(*sf1 <  *sf2));
+    BOOST_REQUIRE(!(*sf2 <  *sf1));
+    BOOST_REQUIRE(*sf1 <= *sf2);
+
+    vector<string> info = sf1->parameterInfo();
+    BOOST_REQUIRE(!info.empty());
+
+    string line = sf1->parameterLine();
+    BOOST_REQUIRE(!line.empty());
+
+    string settingsLine = sf1->getSettingsLine();
+    BOOST_REQUIRE(settingsLine.find("symfunction_short") != string::npos);
+
+    // Must not crash.
+    sf1->changeLengthUnit(2.0);
+
+    delete sf1;
+    delete sf2;
+
+    return;
+}
+
+void checkOperatorsDiffer(ElementMap&  em,
+                          size_t const type,
+                          string const setupLine1,
+                          string const setupLine2)
+{
+    SymFnc* sf1 = setupSymmetryFunction(em, type, setupLine1);
+    SymFnc* sf2 = setupSymmetryFunction(em, type, setupLine2);
+
+    BOOST_REQUIRE(!(*sf1 == *sf2));
+    bool const lt12 = *sf1 < *sf2;
+    bool const lt21 = *sf2 < *sf1;
+    // A strict weak ordering cannot have both directions true.
+    BOOST_REQUIRE(!(lt12 && lt21));
+
+    delete sf1;
+    delete sf2;
+
+    return;
+}
+
+BOOST_AUTO_TEST_SUITE(UnitTests)
+
+BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,
+                       CheckOperatorsAndInfoMono,
+                       bdata::make(typesMono) ^ bdata::make(setupLinesMono),
+                       type,
+                       setupLine)
+{
+    checkOperatorsAndInfo(em, type, setupLine);
+}
+
+BOOST_AUTO_TEST_CASE(OperatorsDiffer_WeightedTypes)
+{
+    ElementMap em;
+    em.registerElements("H");
+
+    checkOperatorsDiffer(em, 12, "H 12 0.001 0.0 10.0",
+                                 "H 12 0.030 1.0 10.0");
+    checkOperatorsDiffer(em, 13, "H 13 0.001  1.0 1.0 10.0 0.0",
+                                 "H 13 0.030 -1.0 4.0 10.0 2.0");
+    checkOperatorsDiffer(em, 23, "H 23 -10.0 10.0 p2",
+                                 "H 23   0.0  8.0 p2");
+    checkOperatorsDiffer(em, 24, "H 24 -10.0 10.0  0.0 180.0 p2",
+                                 "H 24   0.0 10.0 10.0  60.0 p2");
+    checkOperatorsDiffer(em, 25, "H 25 -10.0 10.0  0.0 180.0 p2",
+                                 "H 25   0.0 10.0 10.0  60.0 p2");
+}
+
+BOOST_AUTO_TEST_CASE(CompactType_InvalidSubtype_Throws)
+{
+    ElementMap em;
+    em.registerElements("H");
+    BOOST_REQUIRE_THROW(setupSymmetryFunction(em, 23, "H 23 -10.0 10.0 xx"),
+                        runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(CompactType_InvalidPolynomNumber_Throws)
+{
+    ElementMap em;
+    em.registerElements("H");
+    BOOST_REQUIRE_THROW(setupSymmetryFunction(em, 23, "H 23 -10.0 10.0 p5"),
+                        runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(CompactType_RadialBoundaryInverted_Throws)
+{
+    ElementMap em;
+    em.registerElements("H");
+    BOOST_REQUIRE_THROW(setupSymmetryFunction(em, 23, "H 23 10.0 5.0 p2"),
+                        runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(CompactAngularType_AngleBoundaryInverted_Throws)
+{
+    ElementMap em;
+    em.registerElements("H");
+    BOOST_REQUIRE_THROW(
+        setupSymmetryFunction(em, 24, "H 24 -10.0 10.0 100.0 50.0 p2"),
+        runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(CompactAngularType_AngleOutOfBounds_Throws)
+{
+    ElementMap em;
+    em.registerElements("H");
+    BOOST_REQUIRE_THROW(
+        setupSymmetryFunction(em, 24, "H 24 -10.0 10.0 -10.0 5.0 p2"),
+        runtime_error);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
 BOOST_AUTO_TEST_SUITE(IntegrationTests)
 
 BOOST_DATA_TEST_CASE_F(FixtureThreeAtomsMono,

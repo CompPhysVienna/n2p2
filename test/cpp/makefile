@@ -37,7 +37,15 @@ DEBUG=$(PROJECT_DEBUG) $(PROJECT_TEST)
 INCLUDES=-I./ -I$(PROJECT_DIR)/src/libnnp -I$(PROJECT_DIR)/src/libnnptrain -I$(PROJECT_EIGEN) -I$(PROJECT_BOOST)/include
 
 # Extra flags for linking.
-LDFLAGS=$(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a $(PROJECT_LDFLAGS_BLAS) -L$(PROJECT_BOOST)/lib -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
+# NOTE: libnnp.a and libnnptrain.a are wrapped in --start-group/--end-group
+# because some libnnptrain object files (e.g. GradientDescent.o) reference
+# symbols defined in libnnp.a (e.g. nnp::strpr, nnp::createFileHeader). GNU
+# ld only makes one pass per static archive, so if a test translation unit
+# does not itself reference any libnnp symbol directly (pulling libnnp.a in
+# early), libnnp.a is already closed by the time libnnptrain.a's undefined
+# refs surface, and linking fails. --start-group/--end-group makes ld retry
+# the archives until all symbols resolve.
+LDFLAGS=-Wl,--start-group $(PROJECT_LIB)/libnnp.a $(PROJECT_LIB)/libnnptrain.a -Wl,--end-group $(PROJECT_LDFLAGS_BLAS) -L$(PROJECT_BOOST)/lib -lboost_system -lboost_unit_test_framework -lboost_filesystem -lpthread
 
 
 ###############################################################################
@@ -58,6 +66,32 @@ EXE_NOIF=$(SRC_NOIF:%.cpp=%)
 all: $(EXE)
 
 no-interface: $(EXE_NOIF)
+
+# test_Dataset and test_Training link Dataset.o/Training.o directly (call
+# their methods in-process, unlike every other test_nnp-* regression test
+# which spawns the real application binary via mpirun instead), pulling in
+# real MPI symbol references that the plain compiler cannot resolve -- use
+# the MPI compiler wrapper for these targets only. test_KalmanFilter needs it
+# too: KalmanFilter.h includes mpi.h, which is not on the default include
+# path everywhere (e.g. Ubuntu's OpenMPI, used in CI).
+test_Dataset: CC=$(MPICC)
+test_Training: CC=$(MPICC)
+test_Training_mpi: CC=$(MPICC)
+test_KalmanFilter: CC=$(MPICC)
+
+# MPI launcher for tests that need several processes: test_Training_mpi is
+# run once more on MPI_TEST_RANKS ranks after its single-rank run, and the
+# nnp-comp2 "compare" regression test reads the launcher from the exported
+# N2P2_TEST_MPIRUN. The launcher must accept "-np N". Where fewer slots than
+# ranks are available, use e.g. MPIRUN="mpirun --oversubscribe" (OpenMPI).
+MPIRUN=mpirun
+MPI_TEST_RANKS=4
+export N2P2_TEST_MPIRUN=$(MPIRUN)
+
+test_Training_mpi: test_Training_mpi.cpp
+	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
+	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+	$(MPIRUN) -np $(MPI_TEST_RANKS) ./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 
 %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)

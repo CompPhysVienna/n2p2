@@ -5,6 +5,7 @@
 #include <boost/test/data/monomorphic.hpp>
 #include "ExampleScreeningFunction.h"
 
+#include "CoreFunction.h"
 #include "ScreeningFunction.h"
 #include "utility.h"
 //#include <iostream>
@@ -141,6 +142,37 @@ BOOST_DATA_TEST_CASE(CalculateFunctionsAndDerivatives_CorrectResults,
     e.fs.fdf(e.rtabove, f, df);
     BOOST_REQUIRE_SMALL(f - 1.0, accuracy);
     BOOST_REQUIRE_SMALL(df, accuracy);
+}
+
+BOOST_AUTO_TEST_CASE(ChangeLengthUnits_ScalesInnerAndOuterRadii)
+{
+    ScreeningFunction fs;
+    fs.setInnerOuter(2.0, 5.0);
+
+    fs.changeLengthUnits(3.0);
+
+    BOOST_REQUIRE_SMALL(fs.getInner() - 6.0, accuracy);
+    BOOST_REQUIRE_SMALL(fs.getOuter() - 15.0, accuracy);
+}
+
+BOOST_AUTO_TEST_CASE(Info_ContainsInnerAndOuterRadiusAndCoreFunctionInfo)
+{
+    ScreeningFunction fs;
+    fs.setInnerOuter(2.0, 5.0);
+
+    vector<string> const info = fs.info();
+
+    string joined;
+    for (auto const& line : info) joined += line;
+
+    BOOST_REQUIRE(joined.find("Screening function information") !=
+                 string::npos);
+    BOOST_REQUIRE(joined.find("Inner radius") != string::npos);
+    BOOST_REQUIRE(joined.find("Outer radius") != string::npos);
+    // core.info() output (already covered elsewhere for CoreFunction
+    // itself) is appended after 6 fixed lines -- check it was appended.
+    vector<string> const coreInfo = CoreFunction().info();
+    BOOST_REQUIRE_EQUAL(info.size(), 6 + coreInfo.size());
 }
 
 }

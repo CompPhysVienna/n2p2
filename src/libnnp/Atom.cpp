@@ -109,9 +109,9 @@ void Atom::toNormalizedUnits(double convEnergy,
             it->dr *= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
-                for (size_t i = 0; i < dGdr.size(); ++i)
+                for (size_t i = 0; i < it->dGdr.size(); ++i)
                 {
-                    dGdr.at(i) /= convLength;
+                    it->dGdr.at(i) /= convLength;
                 }
             }
         }
@@ -154,9 +154,9 @@ void Atom::toPhysicalUnits(double convEnergy,
             it->dr /= convLength;
             if (hasSymmetryFunctionDerivatives)
             {
-                for (size_t i = 0; i < dGdr.size(); ++i)
+                for (size_t i = 0; i < it->dGdr.size(); ++i)
                 {
-                    dGdr.at(i) *= convLength;
+                    it->dGdr.at(i) *= convLength;
                 }
             }
         }
@@ -293,7 +293,10 @@ void Atom::clearNeighborList(size_t const numElements)
 {
     free(true);
     numNeighbors = 0;
-    numNeighborsPerElement.resize(numElements, 0);
+    // assign() (not resize()) so stale per-element counts are actually
+    // zeroed even when numElements matches the vector's current size (the
+    // common case, since resize() only fills newly-added elements).
+    numNeighborsPerElement.assign(numElements, 0);
     numNeighborsUnique = 0;
     neighborsUnique.clear();
     vector<size_t>(neighborsUnique).swap(neighborsUnique);

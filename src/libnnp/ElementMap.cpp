@@ -107,7 +107,7 @@ string ElementMap::symbolFromAtomicNumber(size_t atomicNumber)
 {
     size_t numKnownElements = sizeof(knownElements) / sizeof(*knownElements);
 
-    if (atomicNumber >= numKnownElements)
+    if (atomicNumber > numKnownElements)
     {
         throw runtime_error(strpr("ERROR: Only the first %zu elements are "
                                   "known to this library.\n",

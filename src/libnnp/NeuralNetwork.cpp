@@ -302,7 +302,10 @@ void NeuralNetwork::modifyConnections(ModificationScheme modificationScheme)
         }
         for (int i = 0; i < outputLayer->numNeurons; i++)
         {
-            outputLayer->neurons[0].weights[i] *= 0.5;
+            for (int j = 0; j < outputLayer->numNeuronsPrevLayer; j++)
+            {
+                outputLayer->neurons[i].weights[j] *= 0.5;
+            }
         }
     }
     else

@@ -6,6 +6,7 @@
 #include <boost/filesystem.hpp>
 #include "fileHelpers.h"
 #include "ExamplePrediction.h"
+#include "tolerance.h"
 
 #include "Atom.h"
 #include "Structure.h"
@@ -22,7 +23,8 @@ using namespace nnp;
 namespace bdata = boost::unit_test::data;
 namespace bfs = boost::filesystem;
 
-double const accuracy = 1000.0 * numeric_limits<double>::epsilon();
+Tolerance const tolerance =
+    Tolerance(1000.0 * numeric_limits<double>::epsilon());
 
 BoostDataContainer<ExamplePrediction> container;
 
@@ -42,17 +44,18 @@ BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
     p.readStructureFromFile();
     p.predict();
     BOOST_TEST_INFO(example.name + " Potential energy");
-    BOOST_REQUIRE_SMALL(p.structure.energy - example.energy, accuracy);
+    REQUIRE_CLOSE_TO_REFERENCE(example.energy, p.structure.energy, tolerance);
 
     for (size_t i = 0; i < p.structure.atoms.size(); ++i)
     {
-        Vec3D d = p.structure.atoms.at(i).f - example.forces.at(i);
+        Vec3D const& f = p.structure.atoms.at(i).f;
+        Vec3D const& fRef = example.forces.at(i);
         BOOST_TEST_INFO(example.name + " Atom " << i << " fx");
-        BOOST_REQUIRE_SMALL(d[0], accuracy);
+        REQUIRE_CLOSE_TO_REFERENCE(fRef[0], f[0], tolerance);
         BOOST_TEST_INFO(example.name + " Atom " << i << " fy");
-        BOOST_REQUIRE_SMALL(d[1], accuracy);
+        REQUIRE_CLOSE_TO_REFERENCE(fRef[1], f[1], tolerance);
         BOOST_TEST_INFO(example.name + " Atom " << i << " fz");
-        BOOST_REQUIRE_SMALL(d[2], accuracy);
+        REQUIRE_CLOSE_TO_REFERENCE(fRef[2], f[2], tolerance);
     }
 
     bfs::current_path("..");
