@@ -60,12 +60,19 @@ EXE_NOIF=$(SRC_NOIF:%.cpp=%)
 EXE_INTERFACE=$(filter test_lammps_hdnnp, $(EXE))
 EXE_TOOLS=$(filter test_nnp-%, $(EXE))
 EXE_UNIT=$(filter-out $(EXE_INTERFACE) $(EXE_TOOLS), $(EXE))
+# Quick suite for development: everything except the interface test and the
+# tests taking several minutes each. Run the full suite before pushing.
+EXE_SLOW=$(filter test_nnp-train test_ForcesFiniteDifference test_Training_mpi, $(EXE))
+EXE_QUICK=$(filter-out $(EXE_INTERFACE) $(EXE_SLOW), $(EXE))
 
 
 ###############################################################################
 # RULES
 ###############################################################################
-.PHONY: all no-interface unit tools interface coverage clean clean-coverage
+# Test targets are phony: each one is always rebuilt and run. Otherwise an
+# existing test binary would be considered up to date, skipping the test
+# after library changes or even after the test failed.
+.PHONY: all no-interface unit tools interface quick coverage clean clean-coverage $(EXE)
 .NOTPARALLEL:
 
 all: $(EXE)
@@ -77,6 +84,8 @@ unit: $(EXE_UNIT)
 tools: $(EXE_TOOLS)
 
 interface: $(EXE_INTERFACE)
+
+quick: $(EXE_QUICK)
 
 # test_Dataset and test_Training link Dataset.o/Training.o directly (call
 # their methods in-process, unlike every other test_nnp-* regression test
@@ -104,7 +113,8 @@ test_Training_mpi: test_Training_mpi.cpp
 	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 	$(MPIRUN) -np $(MPI_TEST_RANKS) ./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 
-%: %.cpp
+# Static pattern rule, implicit rules are not applied to phony targets.
+$(filter-out test_Training_mpi, $(EXE)): %: %.cpp
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
 	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 
