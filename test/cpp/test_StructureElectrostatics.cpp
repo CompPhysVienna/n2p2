@@ -486,4 +486,46 @@ BOOST_FIXTURE_TEST_CASE(CalculateDQdr_MatchesFiniteDifference,
     }
 }
 
+// The QR factorization of A is computed once in calculateElectrostaticEnergy()
+// and reused by the later solves: after A is rebuilt (here with another
+// hardness and geometry) they have to use the new factorization, and
+// clearElectrostatics() has to release it together with A.
+BOOST_FIXTURE_TEST_CASE(StoredFactorization_FollowsRebuiltMatrix,
+                        ElectrostaticsFixture)
+{
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+    hardness(0) = 3.0;
+    s.atoms.at(1).r = Vec3D(1.5, 0.5, 0.0);
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+
+    vector<VectorXd> dQdChi;
+    s.calculateDQdChi(dQdChi);
+    vector<VectorXd> dQdJ;
+    s.calculateDQdJ(dQdJ);
+    BOOST_REQUIRE_EQUAL(dQdChi.size(), 2);
+    BOOST_REQUIRE_EQUAL(dQdJ.size(), 1);
+    for (size_t k = 0; k < 2; ++k)
+    {
+        VectorXd b = VectorXd::Zero(3);
+        b(k) = -1.0;
+        VectorXd const expected = s.A.colPivHouseholderQr().solve(b);
+        for (size_t i = 0; i < 2; ++i)
+        {
+            BOOST_REQUIRE_SMALL(dQdChi.at(k)(i) - expected(i), 1.0E-14);
+        }
+    }
+    VectorXd b(3);
+    b << -s.atoms.at(0).charge, -s.atoms.at(1).charge, 0.0;
+    VectorXd const expected = s.A.colPivHouseholderQr().solve(b);
+    for (size_t i = 0; i < 2; ++i)
+    {
+        BOOST_REQUIRE_SMALL(dQdJ.at(0)(i) - expected(i), 1.0E-14);
+    }
+
+    s.clearElectrostatics();
+    BOOST_REQUIRE_EQUAL(s.AQr.rows(), 0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

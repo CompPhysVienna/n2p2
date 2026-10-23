@@ -26,6 +26,7 @@
 #include <map>     // std::map
 #include <random>  // std::mt19937_64
 #include <string>  // std::string
+#include <utility> // std::pair
 #include <vector>  // std::vector
 
 namespace nnp
@@ -563,6 +564,20 @@ private:
     /// Derivative of symmetry functions with respect to one specific atom
     /// coordinate.
     std::vector<double>      dGdxia;
+    /// Same as #dGdxia for all atoms of a structure, see
+    /// collectDGdxiaAllAtoms().
+    std::vector<
+    std::vector<double> >    dGdxiaAll;
+    /// Structure for which #dGdxiaOffset and #dGdxiaEntries are set up.
+    Structure const*         dGdxiaStructure = nullptr;
+    /// Index of #dGdxiaStructure.
+    std::size_t              dGdxiaStructureIndex = 0;
+    /// Neighbor entries (atom index, position in its neighbor list) of
+    /// #dGdxiaStructure, grouped by neighbor atom: the entries of neighbor
+    /// atom i are dGdxiaEntries[dGdxiaOffset[i]] to
+    /// dGdxiaEntries[dGdxiaOffset[i + 1] - 1].
+    std::vector<std::size_t> dGdxiaOffset;
+    std::vector<std::pair<std::size_t, std::size_t> > dGdxiaEntries;
 #endif
     /// Neural network weights and biases for each element. If nnpType 4G also
     ///  h = sqrt(J) included.
@@ -659,6 +674,23 @@ private:
     void collectDGdxia(Atom const& atom,
                        std::size_t indexAtom,
                        std::size_t indexComponent);
+    /** Collect derivative of symmetry functions with respect to one atom's
+     *  coordinate for all atoms of a structure.
+     *
+     * @param[in] structure The structure.
+     * @param[in] indexAtom The index @f$i@f$ of the atom requested.
+     * @param[in] indexComponent The component @f$\alpha@f$ of the atom
+     *                           requested.
+     *
+     * Same as calling collectDGdxia() for each atom (identical results),
+     * stored in #dGdxiaAll. Instead of searching each atom's neighbor list
+     * it uses an index of the neighbor entries grouped by neighbor atom,
+     * which is kept for the last structure (consecutive 4G force updates
+     * use the same structure).
+     */
+    void collectDGdxiaAllAtoms(Structure const& structure,
+                               std::size_t      indexAtom,
+                               std::size_t      indexComponent);
 #endif
     /** Randomly initialize specificy neural network weights.
      *

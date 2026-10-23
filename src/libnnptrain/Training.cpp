@@ -2301,6 +2301,10 @@ void Training::update(string const& property)
         size_t* posCandidates = NULL; // position of sub or update candidate.
         size_t indexBest = 0; // Index of best update candidate so far.
         double rmseFractionBest = 0.0; // RMSE of best update candidate so far.
+        // 4G force updates: all threshold trials of this b use the same
+        // structure and weights (only the sub candidate changes), hence the
+        // forces are computed only once.
+        bool forcesValid = false;
 
         // For SM_THRESHOLD need to loop until candidate's RMSE is above
         // threshold. Other modes don't loop here.
@@ -2394,19 +2398,29 @@ void Training::update(string const& property)
                     // Assume stage 2.
                     else if (nnpType == NNPType::HDNNP_4G)
                     {
-                        if (!s.hasAMatrix)
+                        // The forces survive freeAtoms(), PART 2 recomputes
+                        // everything else it needs.
+                        if (!forcesValid)
                         {
-                            calculateAtomicNeuralNetworks(s, derivatives, "elec");
-                            chargeEquilibration(s, derivatives);
+                            if (!s.hasAMatrix)
+                            {
+                                calculateAtomicNeuralNetworks(s, derivatives,
+                                                              "elec");
+                                chargeEquilibration(s, derivatives);
+                            }
+                            // The charge equilibration (A matrix, charges,
+                            // dAdrQ) stays cached between force trials, but
+                            // freeAtoms() resets dChidG; without
+                            // re-evaluating the (cheap) electronegativity
+                            // network the forces would miss the dChi/dr
+                            // term.
+                            else calculateAtomicNeuralNetworks(s, derivatives,
+                                                               "elec");
+                            calculateAtomicNeuralNetworks(s, derivatives,
+                                                          "short");
+                            calculateForces(s);
+                            forcesValid = true;
                         }
-                        // The charge equilibration (A matrix, charges, dAdrQ)
-                        // stays cached between force trials, but freeAtoms()
-                        // resets dChidG; without re-evaluating the (cheap)
-                        // electronegativity network the forces would miss
-                        // the dChi/dr term.
-                        else calculateAtomicNeuralNetworks(s, derivatives, "elec");
-                        calculateAtomicNeuralNetworks(s, derivatives, "short");
-                        calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
                         currentRmseFraction.at(b) =
                             fabs(a.fRef[sC->c]
@@ -2631,19 +2645,21 @@ void Training::update(string const& property)
                                     elements);
                 }
 
+#ifndef N2P2_FULL_SFD_MEMORY
+                // For force update save derivative of symmetry function with
+                // respect to coordinate.
+                collectDGdxiaAllAtoms(s, sC->a, sC->c);
+#endif
                 // Loop over atoms and calculate atomic energy contributions.
                 for (vector<Atom>::iterator it = s.atoms.begin();
                      it != s.atoms.end(); ++it)
                 {
-                    // For force update save derivative of symmetry function
-                    // with respect to coordinate.
 #ifndef N2P2_FULL_SFD_MEMORY
-                    collectDGdxia((*it), sC->a, sC->c);
-
+                    vector<double>& dGdxiaAtom = dGdxiaAll.at(it->index);
                     if (nnpType == NNPType::HDNNP_4G)
                     {
                         double dQdxia = s.atoms.at(sC->a).dQdr.at(it->index)[sC->c];
-                        dGdxia.back() = dQdxia;
+                        dGdxiaAtom.back() = dQdxia;
                     }
 #else
                     it->collectDGdxia(sC->a, sC->c, maxCutoffRadius);
@@ -2671,7 +2687,7 @@ void Training::update(string const& property)
                     // neural network connections (weights + biases).
 #ifndef N2P2_FULL_SFD_MEMORY
                     nn.calculateDFdc(&(dXdc.at(i).front()),
-                                     &(dGdxia.front()));
+                                     &(dGdxiaAtom.front()));
 #else
                     nn.calculateDFdc(&(dXdc.at(i).front()),
                                      &(it->dGdxia.front()));
@@ -2728,7 +2744,11 @@ void Training::update(string const& property)
                     }
 
                 }
-                chargeEquilibration(s, false);
+                // In threshold mode the accepted candidate's charge
+                // equilibration from PART 1 is still stored (A is cleared
+                // after every other trial and after each update), computed
+                // with the same weights: no need to repeat it.
+                if (!s.hasAMatrix) chargeEquilibration(s, false);
 
                 vector<Eigen::VectorXd> dQdChi;
                 s.calculateDQdChi(dQdChi);
@@ -2739,31 +2759,33 @@ void Training::update(string const& property)
 
                 if (QErrorNorm != 0)
                 {
-                    // Finally sum up Jacobian.
-                    for (size_t i = 0; i < s.numAtoms; ++i)
+                    // Finally sum up Jacobian. The sum over atoms i of
+                    // (Q-Qref)_i * dQ_i/dChi_k does not depend on the
+                    // weight j, hence it is computed once per atom k
+                    // (O(N^2 + N * numWeights) instead of
+                    // O(N^2 * numWeights)).
+                    // weights
+                    for (size_t k = 0; k < s.numAtoms; ++k)
                     {
-                        // weights
-                        for (size_t k = 0; k < s.numAtoms; ++k)
+                        size_t l = s.atoms.at(k).element;
+                        // 1 / QErrorNorm * (Q-Qref) * dQ/dChi
+                        double const dErrordChi = QError.dot(dQdChi.at(k))
+                                                / QErrorNorm;
+                        for (size_t j = 0; j < dChidc.at(k).size(); ++j)
                         {
-                            size_t l = s.atoms.at(k).element;
-                            for (size_t j = 0; j < dChidc.at(k).size(); ++j)
-                            {
-                                // 1 / QErrorNorm * (Q-Qref) * dQ/dChi * dChi/dc
-                                pu.jacobian.at(0).at(offset.at(l) + j) +=
-                                    1.0 / QErrorNorm * QError(i)
-                                    * dQdChi.at(k)(i) * dChidc.at(k).at(j);
-                            }
+                            pu.jacobian.at(0).at(offset.at(l) + j) +=
+                                dErrordChi * dChidc.at(k).at(j);
                         }
-                        // hardness (actually h, where J=h^2)
-                        for (size_t k = 0; k < numElements; ++k)
-                        {
-                            size_t n = elements.at(k).neuralNetworks.at(nnId)
-                                       .getNumConnections();
-                            pu.jacobian.at(0).at(offset.at(k) + n) +=
-                                        1.0 / QErrorNorm
-                                        * QError(i) * dQdJ.at(k)(i) * 2
-                                        * sqrt(elements.at(k).getHardness());
-                        }
+                    }
+                    // hardness (actually h, where J=h^2)
+                    for (size_t k = 0; k < numElements; ++k)
+                    {
+                        size_t n = elements.at(k).neuralNetworks.at(nnId)
+                                   .getNumConnections();
+                        double const dErrordJ = QError.dot(dQdJ.at(k))
+                                              / QErrorNorm;
+                        pu.jacobian.at(0).at(offset.at(k) + n) +=
+                            dErrordJ * 2 * sqrt(elements.at(k).getHardness());
                     }
                 }
             }
@@ -3618,6 +3640,77 @@ void Training::collectDGdxia(Atom const& atom,
         {
             dGdxia[i] += atom.dGdr[i][indexComponent];
         }
+    }
+
+    return;
+}
+
+void Training::collectDGdxiaAllAtoms(Structure const& structure,
+                                     size_t           indexAtom,
+                                     size_t           indexComponent)
+{
+    Structure const& s = structure;
+
+    // Index of all neighbor entries grouped by neighbor atom, in the order
+    // collectDGdxia() visits them (atom by atom, then neighbor list order).
+    if (dGdxiaStructure != &s || dGdxiaStructureIndex != s.index)
+    {
+        dGdxiaOffset.assign(s.numAtoms + 1, 0);
+        for (auto const& a : s.atoms)
+        {
+            for (size_t i = 0; i < a.numNeighbors; ++i)
+            {
+                dGdxiaOffset.at(a.neighbors[i].index + 1)++;
+            }
+        }
+        for (size_t i = 0; i < s.numAtoms; ++i)
+        {
+            dGdxiaOffset.at(i + 1) += dGdxiaOffset.at(i);
+        }
+        dGdxiaEntries.resize(dGdxiaOffset.back());
+        vector<size_t> position(dGdxiaOffset.begin(), dGdxiaOffset.end() - 1);
+        for (auto const& a : s.atoms)
+        {
+            for (size_t i = 0; i < a.numNeighbors; ++i)
+            {
+                size_t& p = position.at(a.neighbors[i].index);
+                dGdxiaEntries.at(p) = make_pair(a.index, i);
+                p++;
+            }
+        }
+        dGdxiaStructure = &s;
+        dGdxiaStructureIndex = s.index;
+    }
+
+    // Reset dGdxia arrays.
+    dGdxiaAll.resize(s.numAtoms);
+    for (auto const& a : s.atoms)
+    {
+        size_t const nsf = a.numSymmetryFunctions;
+        if (nnpType == NNPType::HDNNP_4G)
+            dGdxiaAll.at(a.index).assign(nsf + 1, 0.0);
+        else
+            dGdxiaAll.at(a.index).assign(nsf, 0.0);
+    }
+
+    for (size_t e = dGdxiaOffset.at(indexAtom);
+         e < dGdxiaOffset.at(indexAtom + 1); ++e)
+    {
+        Atom const& a = s.atoms.at(dGdxiaEntries.at(e).first);
+        Atom::Neighbor const& n = a.neighbors[dGdxiaEntries.at(e).second];
+        vector<size_t> const& table
+            = elements.at(a.element).getSymmetryFunctionTable().at(n.element);
+        vector<double>& d = dGdxiaAll.at(a.index);
+        for (size_t j = 0; j < n.dGdr.size(); ++j)
+        {
+            d[table.at(j)] += n.dGdr[j][indexComponent];
+        }
+    }
+    Atom const& a = s.atoms.at(indexAtom);
+    vector<double>& d = dGdxiaAll.at(indexAtom);
+    for (size_t i = 0; i < a.numSymmetryFunctions; ++i)
+    {
+        d[i] += a.dGdr[i][indexComponent];
     }
 
     return;
