@@ -269,6 +269,18 @@ public:
                                           std::string> fileNameFormats =
                                  std::map<std::string,
                                           std::string>());
+    /** Read in weights for a specific type of neural network only, skipping
+     *  any others -- unlike setupNeuralNetworkWeights(), which loads every
+     *  configured network kind unconditionally. Lets a caller load a
+     *  subset (e.g. a 4G-HDNNP's "elec" network alone, without requiring
+     *  "short" network weight files to exist on disk at all).
+     *
+     * @param[in] id Actual network type to initialize ("short" or "elec").
+     * @param[in] fileNameFormat Weights file name format.
+     */
+    void                     readNeuralNetworkWeights(
+                                 std::string const& id,
+                                 std::string const& fileNameFormat);
     /** Set up electrostatics related stuff (hardness, screening, ...).
      *
      * @param[in] initialHardness Use initial hardness from keyword in settings
@@ -381,10 +393,17 @@ public:
      *  @param[in] structure Input structure.
      *  @param[in] useForces If true, calculate forces too.
      *  @param[in] useDEdG If true, calculate dE/dG too.
+     *  @param[in] chargesOnly If true (4G-HDNNP only), stop after charge
+     *             equilibration: skip the short-range NN forward pass,
+     *             energy and forces entirely (implies useForces = false).
+     *             Lets callers evaluate/compare atomic charges without the
+     *             short-range NN's weights being loaded or trained at all
+     *             (e.g. right after 4G-HDNNP stage-1-only training).
      */
     void                     evaluateNNP(Structure& structure,
                                          bool useForces = true,
-                                         bool useDEdG = true);
+                                         bool useDEdG = true,
+                                         bool chargesOnly = false);
     /** Add atomic energy offsets to reference energy.
      *
      * @param[in] structure Input structure.
@@ -688,14 +707,6 @@ protected:
     std::vector<
     std::vector<double>>       cutoffs;
     ErfcBuf                    erfcBuf;
-
-    /** Read in weights for a specific type of neural network.
-     *
-     * @param[in] id Actual network type to initialize ("short" or "elec").
-     * @param[in] fileNameFormat Weights file name format.
-     */
-    void readNeuralNetworkWeights(std::string const& id,
-                                  std::string const& fileName);
 };
 
 //////////////////////////////////

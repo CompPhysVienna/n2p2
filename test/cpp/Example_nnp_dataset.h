@@ -23,6 +23,12 @@ void BoostDataContainer<Example_nnp_dataset>::setup()
     e = &(examples.back());
     e->args = "0 ";
 
+    // 4G-HDNNP: the H2O_RPBE-D3_4G model of examples/nnp-predict with the
+    // 20 structures (and reference charges) of examples/nnp-train.
+    examples.push_back(Example_nnp_dataset("H2O_RPBE-D3_4G"));
+    e = &(examples.back());
+    e->args = "0 ";
+
     return;
 }
 
