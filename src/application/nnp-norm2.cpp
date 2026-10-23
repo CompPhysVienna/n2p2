@@ -71,11 +71,13 @@ int main(int argc, char* argv[])
     training.setupSymmetryFunctionStatistics(false, false, false, false);
 
     auto nnpType = training.getNnpType();
-    if ( (nnpType == Training::NNPType::HDNNP_4G ||
-          nnpType == Training::NNPType::HDNNP_Q) && stage == 1)
+    // Not only stage 1: in stage 2 the statistics below are computed without
+    // charges.
+    if (nnpType == Training::NNPType::HDNNP_4G ||
+        nnpType == Training::NNPType::HDNNP_Q)
     {
-        throw runtime_error("ERROR: Normalization of charges not yet "
-                            "implemented\n.");
+        throw runtime_error("ERROR: Data set normalization is not yet "
+                            "implemented for NNP types with charges.\n");
     }
 
     if (training.settingsKeywordExists("mean_energy") ||
@@ -102,11 +104,6 @@ int main(int argc, char* argv[])
     training.initializeWeights();
 
     training.writeWeights("short", "weights.%03zu.norm");
-    if ( (nnpType == Training::NNPType::HDNNP_4G ||
-          nnpType == Training::NNPType::HDNNP_Q) && stage == 2)
-    {
-        training.writeWeights("charge", "weightse.%03zu.norm");
-    }
 
     training.log << "\n";
     training.log << "*** DATA SET NORMALIZATION **************"

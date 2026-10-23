@@ -527,6 +527,12 @@ pre-processing step during training with :ref:`nnp-train`. If this keyword is
 present, an additional calculation will be performed after the initialization of
 weights. The file and screen output will contain a corresponding section ``DATA
 SET NORMALIZATION`` summarizing the results of the data set normalization step.
+
+.. note::
+
+   Data set normalization is not yet implemented for 4G-HDNNPs (neither for
+   stage 1 nor stage 2).
+
 Three different modes of normalization can be selected:
 
 *  ``stats-only`` : **No or manually provided normalization, compute only statistics**
