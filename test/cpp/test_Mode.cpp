@@ -529,4 +529,79 @@ BOOST_FIXTURE_TEST_CASE(SetupNeuralNetworkWeights_MatchingFiles_NoThrow,
     BOOST_REQUIRE_NO_THROW(prediction.setup());
 }
 
+// The weight files shipped with the examples have to match their input.nn
+// (the Carbon_chain_4G prediction and training examples did not). Training
+// examples only ship the 4G stage-2 input (electronegativity weights and
+// hardness). The LAMMPS examples in TO_BE_CHECKED are not covered.
+vector<string> const examplesWithWeights = {
+    "interface-LAMMPS/AlAuMgO_4G/hdnnp-data",
+    "interface-LAMMPS/AlAuMgO_4G/nnp-predict",
+    "interface-LAMMPS/Cu2S_PBE/hdnnp-data",
+    "interface-LAMMPS/Cu2S_PBE_external/hdnnp-data",
+    "interface-LAMMPS/H2O_4G/hdnnp-data",
+    "interface-LAMMPS/H2O_4G/nnp-predict",
+    "interface-LAMMPS/H2O_RPBE-D3/hdnnp-data",
+    "interface-LAMMPS/H2O_RPBE-D3_128mol/hdnnp-data",
+    "interface-LAMMPS/H2O_RPBE-D3_128mol_develop/hdnnp-data",
+    "interface-LAMMPS/H2O_RPBE-D3_128mol_external/hdnnp-data",
+    "interface-LAMMPS/H2O_RPBE-D3_external/hdnnp-data",
+    "nnp-checkdw/H2O_RPBE-D3",
+    "nnp-checkdw/LJ",
+    "nnp-checkf/H2O_RPBE-D3",
+    "nnp-checkf/LJ",
+    "nnp-comp2/Cu2S_PBE/nnp-data-1",
+    "nnp-comp2/Cu2S_PBE/nnp-data-2",
+    "nnp-dataset/Cu2S_PBE",
+    "nnp-dataset/H2O_RPBE-D3",
+    "nnp-dataset/H2O_RPBE-D3_4G",
+    "nnp-predict/AlAuMgO_4G",
+    "nnp-predict/Anisole_SCAN",
+    "nnp-predict/Carbon_chain_4G",
+    "nnp-predict/Cu2S_PBE",
+    "nnp-predict/DMABN_SCAN",
+    "nnp-predict/Ethylbenzene_SCAN",
+    "nnp-predict/H2O_RPBE-D3",
+    "nnp-predict/H2O_RPBE-D3_4G",
+    "potentials/Anisole_SCAN",
+    "potentials/Cu2S_PBE",
+    "potentials/DMABN_SCAN",
+    "potentials/Ethylbenzene_SCAN",
+    "potentials/H2O_BLYP",
+    "potentials/H2O_BLYP-D3",
+    "potentials/H2O_RPBE",
+    "potentials/H2O_RPBE-D3",
+    "pynnp/prediction"
+};
+
+vector<string> const trainingExamplesWithWeights = {
+    "nnp-train/AlAuMgO_4G",
+    "nnp-train/Carbon_chain_4G",
+    "nnp-train/H2O_RPBE-D3_4G"
+};
+
+BOOST_DATA_TEST_CASE(Examples_WeightFilesMatchSettings,
+                     bdata::make(examplesWithWeights),
+                     example)
+{
+    string const dir = "../../examples/" + example + "/";
+    Mode mode;
+    mode.log.writeToStdout = false;
+    mode.loadSettingsFile(dir + "input.nn");
+    mode.setupGeneric(dir);
+    BOOST_REQUIRE_NO_THROW(mode.setupNeuralNetworkWeights(dir));
+}
+
+BOOST_DATA_TEST_CASE(TrainingExamples_ElectrostaticWeightFilesMatchSettings,
+                     bdata::make(trainingExamplesWithWeights),
+                     example)
+{
+    string const dir = "../../examples/" + example + "/";
+    Mode mode;
+    mode.log.writeToStdout = false;
+    mode.loadSettingsFile(dir + "input.nn");
+    mode.setupGeneric(dir);
+    BOOST_REQUIRE_NO_THROW(
+        mode.readNeuralNetworkWeights("elec", dir + "weightse.%03zu.data"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
