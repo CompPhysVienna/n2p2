@@ -25,6 +25,7 @@
 #include "ScreeningFunction.h"
 #include "Vec3D.h"
 #include <Eigen/Core> // MatrixXd, VectorXd
+#include <Eigen/QR>   // ColPivHouseholderQR
 #include <cstddef>    // std::size_t
 #include <fstream>    // std::ofstream
 #include <map>        // std::map
@@ -114,6 +115,8 @@ struct Structure
     Vec3D                    invbox[3];
     /// Global charge equilibration matrix A'.
     Eigen::MatrixXd          A;
+    /// QR factorization of #A, computed with #A and used for all solves.
+    Eigen::ColPivHouseholderQR<Eigen::MatrixXd> AQr;
     /// If A matrix of this structure is currently stored.
     bool                     hasAMatrix;
     /// Number of atoms of each element in this structure.

@@ -715,7 +715,18 @@ double Structure::calculateElectrostaticEnergy(
 #endif
     //TODO: sometimes only recalculation of A matrix is needed, because
     //      Qs are stored.
-    Q = A.colPivHouseholderQr().solve(b);
+#ifdef _OPENMP
+#pragma omp single
+    {
+#endif
+    // Factorize A once, the factorization is reused by all later solves
+    // with the same A (calculateDQdChi(), calculateDQdJ(), calculateDQdr(),
+    // calculateForceLambdaTotal(), calculateForceLambdaElec()).
+    AQr.compute(A);
+    Q = AQr.solve(b);
+#ifdef _OPENMP
+    }
+#endif
 #ifdef _OPENMP
     #pragma omp for nowait
 #endif
@@ -1008,7 +1019,7 @@ void Structure::calculateDQdChi(vector<Eigen::VectorXd> &dQdChi)
         VectorXd b(numAtoms+1);
         b.setZero();
         b(i) = -1.;
-        dQdChi.push_back(A.colPivHouseholderQr().solve(b).head(numAtoms));
+        dQdChi.push_back(AQr.solve(b).head(numAtoms));
     }
     return;
 }
@@ -1027,7 +1038,7 @@ void Structure::calculateDQdJ(vector<Eigen::VectorXd> &dQdJ)
             Atom const &aj = atoms.at(j);
             if (i == aj.element) b(j) = -aj.charge;
         }
-        dQdJ.push_back(A.colPivHouseholderQr().solve(b).head(numAtoms));
+        dQdJ.push_back(AQr.solve(b).head(numAtoms));
     }
     return;
 }
@@ -1066,7 +1077,7 @@ void Structure::calculateDQdr(  vector<size_t> const&   atomIndices,
                                        tableFull)[compIndices[i]];
             b(j) -= a.dAdrQ.at(j)[compIndices[i]];
         }
-        VectorXd dQdr = A.colPivHouseholderQr().solve(b).head(numAtoms);
+        VectorXd dQdr = AQr.solve(b).head(numAtoms);
         for (size_t j = 0; j < numAtoms; ++j)
         {
             a.dQdr.at(j)[compIndices[i]] = dQdr(j);
@@ -1190,7 +1201,7 @@ VectorXd const Structure::calculateForceLambdaTotal() const
         dEdQ(i) = ai.dEelecdQ + ai.dEdG.back();
     }
     dEdQ(numAtoms) = 0;
-    VectorXd const lambdaTotal = A.colPivHouseholderQr().solve(-dEdQ);
+    VectorXd const lambdaTotal = AQr.solve(-dEdQ);
     return lambdaTotal;
 }
 
@@ -1203,7 +1214,7 @@ VectorXd const Structure::calculateForceLambdaElec() const
         dEelecdQ(i) = ai.dEelecdQ;
     }
     dEelecdQ(numAtoms) = 0;
-    VectorXd const lambdaElec = A.colPivHouseholderQr().solve(-dEelecdQ);
+    VectorXd const lambdaElec = AQr.solve(-dEelecdQ);
     return lambdaElec;
 }
 
@@ -1368,6 +1379,7 @@ void Structure::clearNeighborList()
 void Structure::clearElectrostatics(bool clearDQdr)
 {
     A.resize(0,0);
+    AQr = Eigen::ColPivHouseholderQR<Eigen::MatrixXd>();
     hasAMatrix = false;
     for (auto& a : atoms)
     {
