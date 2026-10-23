@@ -2301,6 +2301,10 @@ void Training::update(string const& property)
         size_t* posCandidates = NULL; // position of sub or update candidate.
         size_t indexBest = 0; // Index of best update candidate so far.
         double rmseFractionBest = 0.0; // RMSE of best update candidate so far.
+        // 4G force updates: all threshold trials of this b use the same
+        // structure and weights (only the sub candidate changes), hence the
+        // forces are computed only once.
+        bool forcesValid = false;
 
         // For SM_THRESHOLD need to loop until candidate's RMSE is above
         // threshold. Other modes don't loop here.
@@ -2394,19 +2398,29 @@ void Training::update(string const& property)
                     // Assume stage 2.
                     else if (nnpType == NNPType::HDNNP_4G)
                     {
-                        if (!s.hasAMatrix)
+                        // The forces survive freeAtoms(), PART 2 recomputes
+                        // everything else it needs.
+                        if (!forcesValid)
                         {
-                            calculateAtomicNeuralNetworks(s, derivatives, "elec");
-                            chargeEquilibration(s, derivatives);
+                            if (!s.hasAMatrix)
+                            {
+                                calculateAtomicNeuralNetworks(s, derivatives,
+                                                              "elec");
+                                chargeEquilibration(s, derivatives);
+                            }
+                            // The charge equilibration (A matrix, charges,
+                            // dAdrQ) stays cached between force trials, but
+                            // freeAtoms() resets dChidG; without
+                            // re-evaluating the (cheap) electronegativity
+                            // network the forces would miss the dChi/dr
+                            // term.
+                            else calculateAtomicNeuralNetworks(s, derivatives,
+                                                               "elec");
+                            calculateAtomicNeuralNetworks(s, derivatives,
+                                                          "short");
+                            calculateForces(s);
+                            forcesValid = true;
                         }
-                        // The charge equilibration (A matrix, charges, dAdrQ)
-                        // stays cached between force trials, but freeAtoms()
-                        // resets dChidG; without re-evaluating the (cheap)
-                        // electronegativity network the forces would miss
-                        // the dChi/dr term.
-                        else calculateAtomicNeuralNetworks(s, derivatives, "elec");
-                        calculateAtomicNeuralNetworks(s, derivatives, "short");
-                        calculateForces(s);
                         Atom const& a = s.atoms.at(sC->a);
                         currentRmseFraction.at(b) =
                             fabs(a.fRef[sC->c]
@@ -2728,7 +2742,11 @@ void Training::update(string const& property)
                     }
 
                 }
-                chargeEquilibration(s, false);
+                // In threshold mode the accepted candidate's charge
+                // equilibration from PART 1 is still stored (A is cleared
+                // after every other trial and after each update), computed
+                // with the same weights: no need to repeat it.
+                if (!s.hasAMatrix) chargeEquilibration(s, false);
 
                 vector<Eigen::VectorXd> dQdChi;
                 s.calculateDQdChi(dQdChi);
