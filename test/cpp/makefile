@@ -69,11 +69,18 @@ EXE_QUICK=$(filter-out $(EXE_INTERFACE) $(EXE_SLOW), $(EXE))
 ###############################################################################
 # RULES
 ###############################################################################
-# Test targets are phony: each one is always rebuilt and run. Otherwise an
-# existing test binary would be considered up to date, skipping the test
-# after library changes or even after the test failed.
-.PHONY: all no-interface unit tools interface quick coverage clean clean-coverage $(EXE)
-.NOTPARALLEL:
+# Each test target (e.g. "make test_Atom") compiles the test into BUILD_DIR
+# and runs it in its own, freshly created directory RUN_DIR<test> next to
+# test/cpp. Relative paths used by the tests (e.g. ../../examples) stay
+# valid and their scratch files do not collide, so tests can be compiled and
+# run in parallel, e.g. "make -j 4 -O quick".
+BUILD_DIR=build
+RUN_DIR=../run-
+
+# Test and build targets are phony: each one is always rebuilt and run.
+# Otherwise an existing test binary would be considered up to date, skipping
+# the test after library changes or even after the test failed.
+.PHONY: all no-interface unit tools interface quick coverage clean clean-coverage $(EXE) $(EXE:%=$(BUILD_DIR)/%)
 
 all: $(EXE)
 
@@ -94,10 +101,10 @@ quick: $(EXE_QUICK)
 # the MPI compiler wrapper for these targets only. test_KalmanFilter needs it
 # too: KalmanFilter.h includes mpi.h, which is not on the default include
 # path everywhere (e.g. Ubuntu's OpenMPI, used in CI).
-test_Dataset: CC=$(MPICC)
-test_Training: CC=$(MPICC)
-test_Training_mpi: CC=$(MPICC)
-test_KalmanFilter: CC=$(MPICC)
+$(BUILD_DIR)/test_Dataset: CC=$(MPICC)
+$(BUILD_DIR)/test_Training: CC=$(MPICC)
+$(BUILD_DIR)/test_Training_mpi: CC=$(MPICC)
+$(BUILD_DIR)/test_KalmanFilter: CC=$(MPICC)
 
 # MPI launcher for tests that need several processes: test_Training_mpi is
 # run once more on MPI_TEST_RANKS ranks after its single-rank run, and the
@@ -108,15 +115,19 @@ MPIRUN=mpirun
 MPI_TEST_RANKS=4
 export N2P2_TEST_MPIRUN=$(MPIRUN)
 
-test_Training_mpi: test_Training_mpi.cpp
+# Static pattern rules, implicit rules are not applied to phony targets.
+$(EXE:%=$(BUILD_DIR)/%): $(BUILD_DIR)/%: %.cpp
+	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
-	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
-	$(MPIRUN) -np $(MPI_TEST_RANKS) ./$@ --color_output=yes --log_level=$(LOG_LEVEL)
 
-# Static pattern rule, implicit rules are not applied to phony targets.
-$(filter-out test_Training_mpi, $(EXE)): %: %.cpp
-	$(CC) $(CFLAGS) $(DEBUG) $(INCLUDES) $(OPTIONS) -o $@ $< $(LDFLAGS)
-	./$@ --color_output=yes --log_level=$(LOG_LEVEL)
+test_Training_mpi: $(BUILD_DIR)/test_Training_mpi
+	rm -rf $(RUN_DIR)$@ && mkdir $(RUN_DIR)$@
+	cd $(RUN_DIR)$@ && ../cpp/$< --color_output=yes --log_level=$(LOG_LEVEL)
+	cd $(RUN_DIR)$@ && $(MPIRUN) -np $(MPI_TEST_RANKS) ../cpp/$< --color_output=yes --log_level=$(LOG_LEVEL)
+
+$(filter-out test_Training_mpi, $(EXE)): %: $(BUILD_DIR)/%
+	rm -rf $(RUN_DIR)$@ && mkdir $(RUN_DIR)$@
+	cd $(RUN_DIR)$@ && ../cpp/$< --color_output=yes --log_level=$(LOG_LEVEL)
 
 coverage:
 	lcov -c -i --no-external        -d $(PROJECT_DIR)/src/libnnp -d $(PROJECT_DIR)/src/libnnptrain -d $(PROJECT_DIR)/src/libnnpif -d $(PROJECT_DIR)/src/application -o tests.base
@@ -126,13 +137,14 @@ coverage:
 
 clean: clean-coverage
 	$(RM) *.o *.gcno $(EXE)
+	$(RM) -r $(BUILD_DIR) $(RUN_DIR)*
 
 clean-coverage:
 	$(RM) $(PROJECT_DIR)/src/libnnp/*.gcda
 	$(RM) $(PROJECT_DIR)/src/libnnptrain/*.gcda
 	$(RM) $(PROJECT_DIR)/src/libnnpif/LAMMPS/*.gcda
 	$(RM) $(PROJECT_DIR)/src/application/*.gcda
-	$(RM) *.gcda *.base *.run *.info
+	$(RM) *.gcda $(BUILD_DIR)/*.gcda *.base *.run *.info
 	$(RM) -r htmlcov
 
 # Grep for "CI-CHECK" for code changes if you want to review output files from non-interactive CI run.

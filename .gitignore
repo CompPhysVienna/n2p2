@@ -4,3 +4,5 @@ compile_commands.json
 .idea/
 src/interface/stable_29Sep2021.tar.gz
 src/interface/stable_29Aug2024.tar.gz
+test/cpp/build/
+test/run-*/

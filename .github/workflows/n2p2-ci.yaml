@@ -78,16 +78,18 @@ jobs:
       # The test steps run whenever what they need was built, also after a
       # failure in an earlier step, and make -k runs all tests of a step
       # even if one fails: one CI run reports every failing test.
-      # Multi-rank tests (test_Training_mpi, nnp-comp2 compare mode) may need
-      # more MPI slots than the runner reports, hence --oversubscribe.
+      # Tests are compiled and run in parallel, -O keeps the output of each
+      # test together. Multi-rank tests (test_Training_mpi, nnp-comp2 compare
+      # mode) may need more MPI slots than the runner reports, hence
+      # --oversubscribe.
       - name: Run C++ unit tests
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: make -k unit MPIRUN="mpirun --oversubscribe"
+        run: make -k -j $(nproc) -O unit MPIRUN="mpirun --oversubscribe"
         working-directory: ./test/cpp
 
       - name: Run C++ application regression tests
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: make -k tools MPIRUN="mpirun --oversubscribe"
+        run: make -k -j $(nproc) -O tools MPIRUN="mpirun --oversubscribe"
         working-directory: ./test/cpp
 
       - name: Run LAMMPS interface regression test
