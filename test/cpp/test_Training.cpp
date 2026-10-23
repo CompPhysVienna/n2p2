@@ -531,6 +531,18 @@ BOOST_FIXTURE_TEST_CASE(Stage1_4G_FromScratch_UsesInitialHardness,
     BOOST_REQUIRE_CLOSE(h.at(1), 10.0, 1.0E-10);
 }
 
+// Without an "initial_hardness" entry the hardness of the element would stay
+// at zero and could not be trained.
+BOOST_FIXTURE_TEST_CASE(Stage1_4G_MissingInitialHardnessThrows,
+                        FixtureH2O4GStage1)
+{
+    BOOST_REQUIRE(replaceInFile("input.nn",
+                                "initial_hardness        O",
+                                "#initial_hardness        O"));
+
+    BOOST_REQUIRE_THROW(setupStage1(), runtime_error);
+}
+
 // The atomic hardness is trained in stage 1 together with the
 // electronegativity weights, a restart with "use_old_weights_charge" has to
 // continue from the hardness files, not from "initial_hardness".

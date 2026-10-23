@@ -378,6 +378,7 @@ void Mode::setupElectrostatics(bool   initialHardness,
     // Atomic hardness.
     if (initialHardness)
     {
+        vector<size_t> count(numElements, 0);
         settings::Settings::KeyRange r = settings.getValues("initial_hardness");
         for (settings::Settings::KeyMap::const_iterator it = r.first;
              it != r.second; ++it)
@@ -387,9 +388,20 @@ void Mode::setupElectrostatics(bool   initialHardness,
             double hardness = atof(args.at(1).c_str());
             if (normalize) hardness = normalized("hardness", hardness);
             elements.at(element).setHardness(hardness);
+            count.at(element)++;
         }
         for (size_t i = 0; i < numElements; ++i)
         {
+            // A missing entry would leave the hardness at zero, which can
+            // not change during training (the square root is trained).
+            if (count.at(i) != 1)
+            {
+                throw runtime_error(strpr("ERROR: Expected exactly one "
+                                          "\"initial_hardness\" entry for "
+                                          "element %s, found %zu.\n",
+                                          elements.at(i).getSymbol().c_str(),
+                                          count.at(i)));
+            }
             double hardness = elements.at(i).getHardness();
             if (normalize) hardness = physical("hardness", hardness);
             log << strpr("Initial atomic hardness for element %2s: %16.8E\n",
