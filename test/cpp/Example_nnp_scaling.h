@@ -27,6 +27,11 @@ void BoostDataContainer<Example_nnp_scaling>::setup()
     e = &(examples.back());
     e->args = "100 ";
 
+    // No hardness files, nnp-scaling runs before any 4G training.
+    examples.push_back(Example_nnp_scaling("H2O_RPBE-D3_4G"));
+    e = &(examples.back());
+    e->args = "100 ";
+
     return;
 }
 
