@@ -495,6 +495,41 @@ BOOST_FIXTURE_TEST_CASE(
     BOOST_REQUIRE_EQUAL(numDataLines, 3);
 }
 
+// Data set normalization is not implemented for 4G-HDNNPs, also not in
+// stage 2: the statistics would be computed without charges and the
+// electrostatics setup would stay in physical units.
+BOOST_FIXTURE_TEST_CASE(Stage2_4G_NormalizeDataSetThrows, FixtureRepairDir)
+{
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-train/H2O_RPBE-D3_4G", "test"));
+    bfs::current_path("test");
+    {
+        ofstream file("input.nn", ios::app);
+        file << "normalize_data_set force\n";
+    }
+
+    {
+        Training training;
+        training.log.writeToStdout = false;
+        training.setupMPI();
+        training.initialize();
+        training.loadSettingsFile();
+        training.setStage(2);
+        training.setupGeneric(
+            "", training.settingsKeywordExists("normalize_data_set"), false);
+        training.setupSymmetryFunctionScaling();
+        training.setupSymmetryFunctionStatistics(false, false, false, false);
+        training.setupRandomNumberGenerator();
+        training.distributeStructures(true);
+        training.selectSets();
+        training.initializeWeights();
+        BOOST_CHECK_THROW(training.dataSetNormalization(), runtime_error);
+    }
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
 // Keeping symmetry function results in memory is a speed/memory trade-off
 // and must not change what is trained. Without memorize_symfunc_results the
 // per-atom derivative arrays are freed after each use; in 4G force updates

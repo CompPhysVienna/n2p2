@@ -11,10 +11,14 @@ NNP_TOOL_TEST_CASE()
 
 void nnpToolTestBody(Example_nnp_norm2 const example)
 {
-    BOOST_REQUIRE(bfs::exists("nnp-norm2.log.0000"));
+    BOOST_REQUIRE(bfs::exists(example.logFile));
     for (auto f : example.createdFiles)
     {
         BOOST_REQUIRE(bfs::exists(f));
+    }
+    for (auto f : example.notCreatedFiles)
+    {
+        BOOST_REQUIRE(!bfs::exists(f));
     }
 
     return;

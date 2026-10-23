@@ -443,18 +443,15 @@ void Training::dataSetNormalization()
 
     bool useForcesLocal = settings.keywordExists("use_short_forces");
 
-    if ( (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q) &&
-          stage == 1)
+    // Not only stage 1: in stage 2 the statistics below are computed without
+    // charges and the electrostatics setup is not converted to normalized
+    // units.
+    if (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q)
     {
-        throw runtime_error("ERROR: Normalization of charges not yet "
-                            "implemented\n.");
+        throw runtime_error("ERROR: Data set normalization is not yet "
+                            "implemented for NNP types with charges.\n");
     }
     writeWeights("short", "weights.%03zu.norm");
-    if ( (nnpType == NNPType::HDNNP_4G || nnpType == NNPType::HDNNP_Q) &&
-          stage == 2)
-    {
-        writeWeights("elec", "weightse.%03zu.norm");
-    }
 
     ofstream fileEvsV;
     fileEvsV.open(strpr("evsv.dat.%04d", myRank).c_str());
