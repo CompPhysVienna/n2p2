@@ -2645,19 +2645,21 @@ void Training::update(string const& property)
                                     elements);
                 }
 
+#ifndef N2P2_FULL_SFD_MEMORY
+                // For force update save derivative of symmetry function with
+                // respect to coordinate.
+                collectDGdxiaAllAtoms(s, sC->a, sC->c);
+#endif
                 // Loop over atoms and calculate atomic energy contributions.
                 for (vector<Atom>::iterator it = s.atoms.begin();
                      it != s.atoms.end(); ++it)
                 {
-                    // For force update save derivative of symmetry function
-                    // with respect to coordinate.
 #ifndef N2P2_FULL_SFD_MEMORY
-                    collectDGdxia((*it), sC->a, sC->c);
-
+                    vector<double>& dGdxiaAtom = dGdxiaAll.at(it->index);
                     if (nnpType == NNPType::HDNNP_4G)
                     {
                         double dQdxia = s.atoms.at(sC->a).dQdr.at(it->index)[sC->c];
-                        dGdxia.back() = dQdxia;
+                        dGdxiaAtom.back() = dQdxia;
                     }
 #else
                     it->collectDGdxia(sC->a, sC->c, maxCutoffRadius);
@@ -2685,7 +2687,7 @@ void Training::update(string const& property)
                     // neural network connections (weights + biases).
 #ifndef N2P2_FULL_SFD_MEMORY
                     nn.calculateDFdc(&(dXdc.at(i).front()),
-                                     &(dGdxia.front()));
+                                     &(dGdxiaAtom.front()));
 #else
                     nn.calculateDFdc(&(dXdc.at(i).front()),
                                      &(it->dGdxia.front()));
@@ -3636,6 +3638,77 @@ void Training::collectDGdxia(Atom const& atom,
         {
             dGdxia[i] += atom.dGdr[i][indexComponent];
         }
+    }
+
+    return;
+}
+
+void Training::collectDGdxiaAllAtoms(Structure const& structure,
+                                     size_t           indexAtom,
+                                     size_t           indexComponent)
+{
+    Structure const& s = structure;
+
+    // Index of all neighbor entries grouped by neighbor atom, in the order
+    // collectDGdxia() visits them (atom by atom, then neighbor list order).
+    if (dGdxiaStructure != &s || dGdxiaStructureIndex != s.index)
+    {
+        dGdxiaOffset.assign(s.numAtoms + 1, 0);
+        for (auto const& a : s.atoms)
+        {
+            for (size_t i = 0; i < a.numNeighbors; ++i)
+            {
+                dGdxiaOffset.at(a.neighbors[i].index + 1)++;
+            }
+        }
+        for (size_t i = 0; i < s.numAtoms; ++i)
+        {
+            dGdxiaOffset.at(i + 1) += dGdxiaOffset.at(i);
+        }
+        dGdxiaEntries.resize(dGdxiaOffset.back());
+        vector<size_t> position(dGdxiaOffset.begin(), dGdxiaOffset.end() - 1);
+        for (auto const& a : s.atoms)
+        {
+            for (size_t i = 0; i < a.numNeighbors; ++i)
+            {
+                size_t& p = position.at(a.neighbors[i].index);
+                dGdxiaEntries.at(p) = make_pair(a.index, i);
+                p++;
+            }
+        }
+        dGdxiaStructure = &s;
+        dGdxiaStructureIndex = s.index;
+    }
+
+    // Reset dGdxia arrays.
+    dGdxiaAll.resize(s.numAtoms);
+    for (auto const& a : s.atoms)
+    {
+        size_t const nsf = a.numSymmetryFunctions;
+        if (nnpType == NNPType::HDNNP_4G)
+            dGdxiaAll.at(a.index).assign(nsf + 1, 0.0);
+        else
+            dGdxiaAll.at(a.index).assign(nsf, 0.0);
+    }
+
+    for (size_t e = dGdxiaOffset.at(indexAtom);
+         e < dGdxiaOffset.at(indexAtom + 1); ++e)
+    {
+        Atom const& a = s.atoms.at(dGdxiaEntries.at(e).first);
+        Atom::Neighbor const& n = a.neighbors[dGdxiaEntries.at(e).second];
+        vector<size_t> const& table
+            = elements.at(a.element).getSymmetryFunctionTable().at(n.element);
+        vector<double>& d = dGdxiaAll.at(a.index);
+        for (size_t j = 0; j < n.dGdr.size(); ++j)
+        {
+            d[table.at(j)] += n.dGdr[j][indexComponent];
+        }
+    }
+    Atom const& a = s.atoms.at(indexAtom);
+    vector<double>& d = dGdxiaAll.at(indexAtom);
+    for (size_t i = 0; i < a.numSymmetryFunctions; ++i)
+    {
+        d[i] += a.dGdr[i][indexComponent];
     }
 
     return;
