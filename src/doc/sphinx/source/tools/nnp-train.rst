@@ -25,6 +25,11 @@ Additionally for stage 2 in the 4G case:
 * ``hardness.???.data``
 * ``weightse.???.data``
 
+Stage 1 in the 4G case starts from the ``initial_hardness`` values given in
+``input.nn`` and requires no hardness files. Only when stage 1 is restarted
+with the keyword ``use_old_weights_charge`` are ``hardness.???.data`` and
+``weightse.???.data`` read in.
+
 Usage:
 -----------
 

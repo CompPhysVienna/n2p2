@@ -318,6 +318,10 @@ void Training::initializeWeights()
     {
         log << "Reading old weights from files.\n";
         readNeuralNetworkWeights(nnId, nn.weightFileFormat);
+        // In 4G stage 1 the atomic hardness is trained together with the
+        // electronegativity weights, hence it has to be restarted as well
+        // (instead of using "initial_hardness").
+        if (nnpType == NNPType::HDNNP_4G && stage == 1) readHardness();
     }
     else randomizeNeuralNetworkWeights(nnId);
 

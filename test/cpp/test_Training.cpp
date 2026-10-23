@@ -15,9 +15,10 @@
 #include "Training.h"
 #include "utility.h"
 #include <cmath>     // std::fabs
-#include <fstream>   // std::ifstream
+#include <fstream>   // std::ifstream, std::ofstream
 #include <iterator>  // std::istreambuf_iterator
 #include <mpi.h>
+#include <stdexcept> // std::runtime_error
 #include <string>    // std::string
 #include <vector>    // std::vector
 
@@ -193,6 +194,60 @@ vector<double> trainStage2OneEpoch4G(bool memorize)
     bfs::current_path("..");
     bfs::remove_all("test");
     return rows;
+}
+
+// Copy of the H2O_RPBE-D3_4G example for 4G stage-1 tests, which may modify
+// the files before running the setup.
+struct FixtureH2O4GStage1 : public FixtureRepairDir
+{
+    FixtureH2O4GStage1()
+    {
+        BOOST_REQUIRE(copy_directory_recursively(
+            "../../examples/nnp-train/H2O_RPBE-D3_4G", "test"));
+        bfs::current_path("test");
+    }
+
+    ~FixtureH2O4GStage1()
+    {
+        bfs::current_path("..");
+        bfs::remove_all("test");
+    }
+
+    // Same setup sequence as src/application/nnp-train.cpp for stage 1, up
+    // to the weight initialization.
+    void setupStage1()
+    {
+        training.log.writeToStdout = false;
+        training.setupMPI();
+        training.initialize();
+        training.loadSettingsFile();
+        training.setStage(1);
+        training.setupGeneric(
+            "", training.settingsKeywordExists("normalize_data_set"), true);
+        training.setupSymmetryFunctionScaling();
+        training.setupSymmetryFunctionStatistics(false, false, false, false);
+        training.setupRandomNumberGenerator();
+        training.distributeStructures(true);
+        training.selectSets();
+        training.initializeWeights();
+    }
+
+    // Atomic hardness of H and O (physical units) currently in the training.
+    vector<double> hardness()
+    {
+        training.writeHardness("hardness.%03zu.check");
+        return {readColumnsFromFile("hardness.001.check", {0}).at(0).at(0),
+                readColumnsFromFile("hardness.008.check", {0}).at(0).at(0)};
+    }
+
+    Training training;
+};
+
+void writeHardnessFile(string const& fileName, double hardness)
+{
+    ofstream file(fileName.c_str());
+    file << hardness << "\n";
+    file.close();
 }
 
 BOOST_AUTO_TEST_SUITE(UnitTests)
@@ -459,6 +514,51 @@ BOOST_FIXTURE_TEST_CASE(Stage2_4G_MemorizeSymfuncResults_DoesNotChangeTraining,
         BOOST_REQUIRE(memo.at(i) > 0.0);
         BOOST_REQUIRE_SMALL(memo.at(i) - freed.at(i), 1.0E-10 * memo.at(i));
     }
+}
+
+// A 4G training from scratch starts from "initial_hardness" in input.nn and
+// needs no hardness files.
+BOOST_FIXTURE_TEST_CASE(Stage1_4G_FromScratch_UsesInitialHardness,
+                        FixtureH2O4GStage1)
+{
+    bfs::remove("hardness.001.data");
+    bfs::remove("hardness.008.data");
+
+    setupStage1();
+
+    vector<double> const h = hardness();
+    BOOST_REQUIRE_CLOSE(h.at(0), 10.0, 1.0E-10);
+    BOOST_REQUIRE_CLOSE(h.at(1), 10.0, 1.0E-10);
+}
+
+// The atomic hardness is trained in stage 1 together with the
+// electronegativity weights, a restart with "use_old_weights_charge" has to
+// continue from the hardness files, not from "initial_hardness".
+BOOST_FIXTURE_TEST_CASE(Stage1_4G_UseOldWeightsCharge_ReadsHardnessFiles,
+                        FixtureH2O4GStage1)
+{
+    BOOST_REQUIRE(replaceInFile("input.nn",
+                                "#use_old_weights_charge",
+                                "use_old_weights_charge"));
+    writeHardnessFile("hardness.001.data", 7.5);
+    writeHardnessFile("hardness.008.data", 12.25);
+
+    setupStage1();
+
+    vector<double> const h = hardness();
+    BOOST_REQUIRE_CLOSE(h.at(0), 7.5, 1.0E-10);
+    BOOST_REQUIRE_CLOSE(h.at(1), 12.25, 1.0E-10);
+}
+
+BOOST_FIXTURE_TEST_CASE(Stage1_4G_UseOldWeightsCharge_MissingHardnessFileThrows,
+                        FixtureH2O4GStage1)
+{
+    BOOST_REQUIRE(replaceInFile("input.nn",
+                                "#use_old_weights_charge",
+                                "use_old_weights_charge"));
+    bfs::remove("hardness.008.data");
+
+    BOOST_REQUIRE_THROW(setupStage1(), runtime_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

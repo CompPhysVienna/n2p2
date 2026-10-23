@@ -281,6 +281,15 @@ public:
     void                     readNeuralNetworkWeights(
                                  std::string const& id,
                                  std::string const& fileNameFormat);
+    /** Read in atomic hardness of all elements from files (4G-HDNNP).
+     *
+     * @param[in] fileNameFormat Name format of file containing atomic
+     *                           hardness data.
+     *
+     * Throws if a file is missing or does not contain exactly one value.
+     */
+    void                     readHardness(std::string const& fileNameFormat =
+                                          "hardness.%03zu.data");
     /** Set up electrostatics related stuff (hardness, screening, ...).
      *
      * @param[in] initialHardness Use initial hardness from keyword in settings
