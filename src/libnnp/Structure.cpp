@@ -660,21 +660,46 @@ double Structure::calculateElectrostaticEnergy(
 
                 A(i, j) += (erfcSqrt2Eta - erfcGammaSqrt2) / (rij * fourPiEps);
             }
-            // reciprocal part
-            for (size_t j = i; j < numAtoms; ++j)
+        }
+        // reciprocal part
+        // With cos(k (ri - rj)) = cos(k ri) cos(k rj) + sin(k ri) sin(k rj)
+        // the sum over k-vectors for all atom pairs becomes two rank
+        // updates of A: O(N numK) cos/sin evaluations instead of
+        // O(N^2 numK).
+#ifdef _OPENMP
+#pragma omp single
+        {
+#endif
+        size_t const numK = grid.kvectors.size();
+        MatrixXd cosKr(numAtoms, numK);
+        MatrixXd sinKr(numAtoms, numK);
+        for (size_t k = 0; k < numK; ++k)
+        {
+            Kvector const& gv = grid.kvectors.at(k);
+            // Multiply by 2 because our grid is only a half-sphere
+            double const w = sqrt(2 * gv.coeff / fourPiEps);
+            for (size_t i = 0; i < numAtoms; ++i)
             {
-                Atom const &aj = atoms.at(j);
-                for (auto const &gv: grid.kvectors)
-                {
-                    // Multiply by 2 because our grid is only a half-sphere
-                    // Vec3D const dr = applyMinimumImageConvention(ai.r - aj.r);
-                    Vec3D const dr = ai.r - aj.r;
-                    A(i, j) += 2 * gv.coeff * cos(gv.k * dr) / fourPiEps;
-                    //A(i, j) += 2 * gv.coeff * cos(gv.k * (ai.r - aj.r));
-                }
+                double const kr = gv.k * atoms.at(i).r;
+                cosKr(i, k) = w * cos(kr);
+                sinKr(i, k) = w * sin(kr);
+            }
+        }
+        // Like the real part, update only the upper triangle, then mirror.
+        A.topLeftCorner(numAtoms, numAtoms)
+            .selfadjointView<Eigen::Upper>().rankUpdate(cosKr);
+        A.topLeftCorner(numAtoms, numAtoms)
+            .selfadjointView<Eigen::Upper>().rankUpdate(sinKr);
+        for (size_t i = 0; i < numAtoms; ++i)
+        {
+            for (size_t j = i + 1; j < numAtoms; ++j)
+            {
                 A(j, i) = A(i, j);
             }
         }
+#ifdef _OPENMP
+        }
+#endif
     }
     else
     {
