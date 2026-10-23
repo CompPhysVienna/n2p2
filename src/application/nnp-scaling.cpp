@@ -60,9 +60,9 @@ int main(int argc, char* argv[])
     dataset.setupMPI();
     dataset.initialize();
     dataset.loadSettingsFile();
-    // TODO: is there a better way than setting initial_hardness true? stage is
-    // not accessible here.
-    dataset.setupGeneric("", true);
+    // Hardness is not needed for scaling, use "initial_hardness" from the
+    // settings file so that no hardness files are required before training.
+    dataset.setupGeneric("", false, true);
     dataset.setupSymmetryFunctionScalingNone();
     dataset.setupSymmetryFunctionStatistics(true, false, false, false);
     dataset.setupRandomNumberGenerator();

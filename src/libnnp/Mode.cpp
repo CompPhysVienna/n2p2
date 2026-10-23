@@ -378,6 +378,7 @@ void Mode::setupElectrostatics(bool   initialHardness,
     // Atomic hardness.
     if (initialHardness)
     {
+        vector<size_t> count(numElements, 0);
         settings::Settings::KeyRange r = settings.getValues("initial_hardness");
         for (settings::Settings::KeyMap::const_iterator it = r.first;
              it != r.second; ++it)
@@ -387,9 +388,20 @@ void Mode::setupElectrostatics(bool   initialHardness,
             double hardness = atof(args.at(1).c_str());
             if (normalize) hardness = normalized("hardness", hardness);
             elements.at(element).setHardness(hardness);
+            count.at(element)++;
         }
         for (size_t i = 0; i < numElements; ++i)
         {
+            // A missing entry would leave the hardness at zero, which can
+            // not change during training (the square root is trained).
+            if (count.at(i) != 1)
+            {
+                throw runtime_error(strpr("ERROR: Expected exactly one "
+                                          "\"initial_hardness\" entry for "
+                                          "element %s, found %zu.\n",
+                                          elements.at(i).getSymbol().c_str(),
+                                          count.at(i)));
+            }
             double hardness = elements.at(i).getHardness();
             if (normalize) hardness = physical("hardness", hardness);
             log << strpr("Initial atomic hardness for element %2s: %16.8E\n",
@@ -397,32 +409,7 @@ void Mode::setupElectrostatics(bool   initialHardness,
                          hardness);
         }
     }
-    else
-    {
-        string actualFileNameFormat = directoryPrefix + fileNameFormat;
-        log << strpr("Atomic hardness file name format: %s\n",
-                     actualFileNameFormat.c_str());
-        for (size_t i = 0; i < numElements; ++i)
-        {
-            string fileName = strpr(actualFileNameFormat.c_str(),
-                                    elements.at(i).getAtomicNumber());
-            log << strpr("Atomic hardness for element %2s from file %s: ",
-                         elements.at(i).getSymbol().c_str(),
-                         fileName.c_str());
-            vector<double> const data = readColumnsFromFile(fileName,
-                                                            {0}).at(0);
-            if (data.size() != 1)
-            {
-                throw runtime_error("ERROR: Atomic hardness data is "
-                                    "inconsistent.\n");
-            }
-            double hardness = data.at(0);
-            if (normalize) hardness = normalized("hardness", hardness);
-            elements.at(i).setHardness(hardness);
-            if (normalize) hardness = physical("hardness", hardness);
-            log << strpr("%16.8E\n", hardness);
-        }
-    }
+    else readHardness(directoryPrefix + fileNameFormat);
     log << "\n";
 
     // Gaussian width of charges.
@@ -2319,6 +2306,41 @@ void Mode::readNeuralNetworkWeights(string const& id,
                                       nn.getNumConnections()));
         }
         nn.setConnections(&(weights.front()));
+    }
+
+    return;
+}
+
+void Mode::readHardness(string const& fileNameFormat)
+{
+    log << strpr("Atomic hardness file name format: %s\n",
+                 fileNameFormat.c_str());
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        string fileName = strpr(fileNameFormat.c_str(),
+                                elements.at(i).getAtomicNumber());
+        if (!ifstream(fileName.c_str()).good())
+        {
+            throw runtime_error(strpr("ERROR: Atomic hardness file \"%s\" "
+                                      "for element %s not found.\n",
+                                      fileName.c_str(),
+                                      elements.at(i).getSymbol().c_str()));
+        }
+        log << strpr("Atomic hardness for element %2s from file %s: ",
+                     elements.at(i).getSymbol().c_str(),
+                     fileName.c_str());
+        vector<double> const data = readColumnsFromFile(fileName,
+                                                        {0}).at(0);
+        if (data.size() != 1)
+        {
+            throw runtime_error("ERROR: Atomic hardness data is "
+                                "inconsistent.\n");
+        }
+        double hardness = data.at(0);
+        if (normalize) hardness = normalized("hardness", hardness);
+        elements.at(i).setHardness(hardness);
+        if (normalize) hardness = physical("hardness", hardness);
+        log << strpr("%16.8E\n", hardness);
     }
 
     return;
