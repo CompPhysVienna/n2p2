@@ -1869,6 +1869,23 @@ void Mode::calculateForces(Structure& structure) const
         return;
     }
 
+    // 4G-HDNNP: Lagrange multipliers and the sums over atoms j of
+    // lambda_j * dChi_j/dr_i, needed for the electrostatic part below.
+    VectorXd lambdaTotal;
+    VectorXd lambdaElec;
+    vector<Vec3D> dChidrTotal;
+    vector<Vec3D> dChidrElec;
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        lambdaTotal = structure.calculateForceLambdaTotal();
+        lambdaElec = structure.calculateForceLambdaElec();
+        calculateDChidrSums(structure,
+                            lambdaTotal,
+                            lambdaElec,
+                            dChidrTotal,
+                            dChidrElec);
+    }
+
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
     #pragma omp parallel
@@ -1929,9 +1946,6 @@ void Mode::calculateForces(Structure& structure) const
     {
         Structure &s = structure;
 
-        VectorXd lambdaTotal = s.calculateForceLambdaTotal();
-        VectorXd lambdaElec = s.calculateForceLambdaElec();
-
 #ifdef _OPENMP
         #pragma omp for
 #endif
@@ -1944,26 +1958,73 @@ void Mode::calculateForces(Structure& structure) const
 
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
-                Atom const &aj = s.atoms.at(j);
-
-#ifndef N2P2_FULL_SFD_MEMORY
-                vector<vector<size_t> > const &tableFull
-                        = elements.at(aj.element).getSymmetryFunctionTable();
-                Vec3D dChidr = aj.calculateDChidr(ai.index,
-                                                  maxCutoffRadius,
-                                                  &tableFull);
-#else
-                Vec3D dChidr = aj.calculateDChidr(ai.index,
-                                                  maxCutoffRadius);
-#endif
-                ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
-                ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
+                ai.f -= lambdaTotal(j) * ai.dAdrQ[j];
+                ai.fElec -= lambdaElec(j) * ai.dAdrQ[j];
             }
+            ai.f -= dChidrTotal.at(i);
+            ai.fElec -= dChidrElec.at(i);
         }
     }
 #ifdef _OPENMP
     }
 #endif
+    return;
+}
+
+void Mode::calculateDChidrSums(Structure const&      structure,
+                               VectorXd const&       lambdaTotal,
+                               VectorXd const&       lambdaElec,
+                               vector<Vec3D>&        sumTotal,
+                               vector<Vec3D>&        sumElec) const
+{
+    size_t const numAtoms = structure.atoms.size();
+    sumTotal.assign(numAtoms, Vec3D{});
+    sumElec.assign(numAtoms, Vec3D{});
+
+    for (size_t j = 0; j < numAtoms; ++j)
+    {
+        Atom const& aj = structure.atoms.at(j);
+
+        // Derivative with respect to the coordinates of atom j itself.
+        Vec3D dChidr{};
+        for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+        {
+            dChidr += aj.dChidG.at(k) * aj.dGdr.at(k);
+        }
+        sumTotal.at(j) += lambdaTotal(j) * dChidr;
+        sumElec.at(j) += lambdaElec(j) * dChidr;
+
+        // Derivatives with respect to the coordinates of the neighbors
+        // (as in Atom::calculateDChidr(), the neighbor tag is the index of
+        // the atom).
+#ifndef N2P2_FULL_SFD_MEMORY
+        vector<vector<size_t> > const& tableFull
+            = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+        size_t const numNeighbors =
+            aj.getStoredMinNumNeighbors(maxCutoffRadius);
+        for (size_t m = 0; m < numNeighbors; ++m)
+        {
+            Atom::Neighbor const& n = aj.neighbors.at(m);
+            dChidr = Vec3D{};
+#ifndef N2P2_FULL_SFD_MEMORY
+            vector<size_t> const& table = tableFull.at(n.element);
+            for (size_t k = 0; k < n.dGdr.size(); ++k)
+            {
+                dChidr += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
+            }
+#else
+            for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+            {
+                dChidr += aj.dChidG.at(k) * n.dGdr.at(k);
+            }
+#endif
+            size_t const i = n.tag;
+            sumTotal.at(i) += lambdaTotal(j) * dChidr;
+            sumElec.at(i) += lambdaElec(j) * dChidr;
+        }
+    }
+
     return;
 }
 
