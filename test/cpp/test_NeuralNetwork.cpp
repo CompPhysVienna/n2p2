@@ -191,6 +191,47 @@ BOOST_AUTO_TEST_CASE(CalculateDEdG_MatchesNumericDerivative_TwoHiddenLayers)
     }
 }
 
+BOOST_AUTO_TEST_CASE(CalculateDEdG_MatchesNumericDerivative_DeepNormalized)
+{
+    // Three hidden layers, different activation functions, normalized
+    // neurons: all factors of the backward pass.
+    int const numLayers = 5;
+    int const numNeuronsPerLayer[5] = {4, 6, 5, 3, 1};
+    NeuralNetwork::ActivationFunction const af[5] =
+        {NeuralNetwork::AF_IDENTITY,
+         NeuralNetwork::AF_TANH,
+         NeuralNetwork::AF_SOFTPLUS,
+         NeuralNetwork::AF_LOGISTIC,
+         NeuralNetwork::AF_TANH};
+    NeuralNetwork nn(numLayers, numNeuronsPerLayer, af);
+    nn.setNormalizeNeurons(true);
+    nn.initializeConnectionsRandomUniform(11);
+
+    vector<double> input = {0.3, -0.7, 1.2, 0.4};
+    nn.setInput(input.data());
+    nn.propagate();
+    vector<double> dEdG(4);
+    nn.calculateDEdG(dEdG.data());
+
+    double const h = 1.0E-5;
+    for (size_t k = 0; k < input.size(); ++k)
+    {
+        vector<double> in = input;
+        double eHi = 0.0;
+        double eLo = 0.0;
+        in.at(k) = input.at(k) + h;
+        nn.setInput(in.data());
+        nn.propagate();
+        nn.getOutput(&eHi);
+        in.at(k) = input.at(k) - h;
+        nn.setInput(in.data());
+        nn.propagate();
+        nn.getOutput(&eLo);
+        BOOST_TEST_INFO("input " << k);
+        BOOST_REQUIRE_SMALL(dEdG.at(k) - (eHi - eLo) / (2.0 * h), 1.0E-9);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(CalculateDEdc_MatchesNumericDerivative)
 {
     int const numLayers = 3;
@@ -288,6 +329,58 @@ BOOST_AUTO_TEST_CASE(CalculateDFdc_MatchesNumericDerivative)
     }
 
     nn.setConnections(conn.data());
+}
+
+// calculateDFdc() is linear in the derivatives of the inputs: for each unit
+// vector e_i it evaluates exactly the per-input term of the previous
+// implementation, sum_i dGdxyz[i] * calculateDFdc(e_i), so this also
+// compares the one-pass calculation against it. Deep network with
+// normalized neurons and different activation functions.
+BOOST_AUTO_TEST_CASE(CalculateDFdc_LinearInDerivativesOfInputs)
+{
+    int const numLayers = 5;
+    int const numNeuronsPerLayer[5] = {6, 7, 5, 4, 1};
+    NeuralNetwork::ActivationFunction const af[5] =
+        {NeuralNetwork::AF_IDENTITY,
+         NeuralNetwork::AF_TANH,
+         NeuralNetwork::AF_SOFTPLUS,
+         NeuralNetwork::AF_LOGISTIC,
+         NeuralNetwork::AF_IDENTITY};
+    for (bool normalize : {false, true})
+    {
+        BOOST_TEST_INFO("normalized neurons " << normalize);
+        NeuralNetwork nn(numLayers, numNeuronsPerLayer, af);
+        nn.setNormalizeNeurons(normalize);
+        nn.initializeConnectionsRandomUniform(7);
+
+        double const input[6] = {0.3, -0.7, 1.1, 0.05, -0.4, 0.9};
+        nn.setInput(input);
+        nn.propagate();
+
+        int const numConnections = nn.getNumConnections();
+        vector<double> const dGdxyz = {1.0, -0.5, 0.25, 2.0, -1.5, 0.75};
+        vector<double> dFdc(numConnections);
+        nn.calculateDFdc(dFdc.data(), dGdxyz.data());
+
+        vector<double> sum(numConnections, 0.0);
+        vector<double> unit(6, 0.0);
+        vector<double> dFdcUnit(numConnections);
+        for (size_t i = 0; i < unit.size(); ++i)
+        {
+            unit.assign(6, 0.0);
+            unit.at(i) = 1.0;
+            nn.calculateDFdc(dFdcUnit.data(), unit.data());
+            for (int j = 0; j < numConnections; ++j)
+            {
+                sum.at(j) += dGdxyz.at(i) * dFdcUnit.at(j);
+            }
+        }
+        for (int j = 0; j < numConnections; ++j)
+        {
+            BOOST_TEST_INFO("connection " << j);
+            BOOST_REQUIRE_SMALL(dFdc.at(j) - sum.at(j), accuracy);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(ModifyConnections_ZeroBias)

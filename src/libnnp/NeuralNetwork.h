@@ -441,20 +441,21 @@ private:
      */
     void   calculateDEdb(double* dEdb) const;
     /** Calculate derivative of neuron values before activation function with
-     * respect to input neuron.
+     * respect to the input neurons along a direction.
      *
-     * @param[in] index Index of input neuron the derivative will be
-     *                  calculated for.
+     * @param[in] direction Direction in the space of input neurons (one
+     *                      entry per input neuron).
      *
-     * No output, derivatives are internally saved for each neuron in
-     * Neuron::dxdG. Used internally by #calculateDFdc().
+     * No output, the derivatives sum_i direction[i] dx/dG_i are internally
+     * saved for each neuron in Neuron::dxdG. Used internally by
+     * #calculateDFdc().
      */
-    void   calculateDxdG(int index) const;
+    void   calculateDxdG(double const* direction) const;
     /** Calculate second derivative of output neuron with respect to input
      * neuron and connections.
      *
-     * @param[in] index Index of input neuron the derivative will be
-     *                  calculated for.
+     * @param[in] direction Direction in the space of input neurons, as in
+     *                      the preceding #calculateDxdG() call.
      * @param[in] dEdb Derivatives of output neuron with respect to biases. See
      *                 #calculateDEdb().
      * @param[out] d2EdGdc Array containing the derivatives (ordered as
@@ -465,7 +466,7 @@ private:
      *
      * Used internally by #calculateDFdc().
      */
-    void   calculateD2EdGdc(int                  index,
+    void   calculateD2EdGdc(double const*        direction,
                             double const* const& dEdb,
                             double*              d2EdGdc) const;
     /** Allocate a single layer.

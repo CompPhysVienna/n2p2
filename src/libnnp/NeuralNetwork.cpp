@@ -398,48 +398,27 @@ void NeuralNetwork::propagate()
 
 void NeuralNetwork::calculateDEdG(double *dEdG) const
 {
-    double** inner = new double*[numHiddenLayers];
-    double** outer = new double*[numHiddenLayers];
-
-    for (int i = 0; i < numHiddenLayers; i++)
+    // Backward pass: derivatives with respect to the biases of the first
+    // hidden layer (see calculateDEdb()), then with respect to the input
+    // neurons, instead of one pass through all layers per input neuron.
+    double* dEdb = new double[numBiases];
+    for (int i = 0; i < numBiases; i++)
     {
-        inner[i] = new double[layers[i+1].numNeurons];
-        outer[i] = new double[layers[i+2].numNeurons];
+        dEdb[i] = 0.0;
     }
+    calculateDEdb(dEdb);
 
     for (int k = 0; k < layers[0].numNeurons; k++)
     {
+        dEdG[k] = 0.0;
         for (int i = 0; i < layers[1].numNeurons; i++)
         {
-            inner[0][i] = layers[1].neurons[i].weights[k]
-                        * layers[1].neurons[i].dfdx;
-            if (normalizeNeurons) inner[0][i] /= layers[0].numNeurons;
+            dEdG[k] += layers[1].neurons[i].weights[k]
+                     * dEdb[biasOnlyOffset[0] + i];
         }
-        for (int l = 1; l < numHiddenLayers+1; l++)
-        {
-            for (int i2 = 0; i2 < layers[l+1].numNeurons; i2++)
-            {
-                outer[l-1][i2] = 0.0;
-                for (int i1 = 0; i1 < layers[l].numNeurons; i1++)
-                {
-                    outer[l-1][i2] += layers[l+1].neurons[i2].weights[i1]
-                                    * inner[l-1][i1];
-                }
-                outer[l-1][i2] *= layers[l+1].neurons[i2].dfdx;
-                if (normalizeNeurons) outer[l-1][i2] /= layers[l].numNeurons;
-                if (l < numHiddenLayers) inner[l][i2] = outer[l-1][i2];
-            }
-        }
-        dEdG[k] = outer[numHiddenLayers-1][0];
     }
 
-    for (int i = 0; i < numHiddenLayers; i++)
-    {
-        delete[] inner[i];
-        delete[] outer[i];
-    }
-    delete[] inner;
-    delete[] outer;
+    delete[] dEdb;
 
     return;
 }
@@ -494,7 +473,6 @@ void NeuralNetwork::calculateDFdc(double*              dFdc,
                                   double const* const& dGdxyz) const
 {
     double* dEdb    = new double[numBiases];
-    double* d2EdGdc = new double[numConnections];
 
     for (int i = 0; i < numBiases; i++)
     {
@@ -502,29 +480,23 @@ void NeuralNetwork::calculateDFdc(double*              dFdc,
     }
     for (int i = 0; i < numConnections; i++)
     {
-        dFdc[i]    = 0.0;
-        d2EdGdc[i] = 0.0;
+        dFdc[i] = 0.0;
     }
 
     calculateDEdb(dEdb);
-    for (int i = 0; i < layers[0].numNeurons; i++)
+    // The second derivatives are linear in the derivatives of the inputs,
+    // so sum_i dGdxyz[i] d2E/dG_idc is calculated in one pass along dGdxyz
+    // instead of one pass per input neuron.
+    calculateDxdG(dGdxyz);
+    calculateD2EdGdc(dGdxyz, dEdb, dFdc);
+    for (int j = 0; j < numConnections; j++)
     {
-        for (int j = 0; j < numConnections; j++)
-        {
-            d2EdGdc[j] = 0.0;
-        }
-        calculateDxdG(i);
-        calculateD2EdGdc(i, dEdb, d2EdGdc);
-        for (int j = 0; j < numConnections; j++)
-        {
-            // Note: F = - dE / dx !!
-            //           ^
-            dFdc[j] -= d2EdGdc[j] * dGdxyz[i];
-        }
+        // Note: F = - dE / dx !!
+        //           ^
+        dFdc[j] = -dFdc[j];
     }
 
     delete[] dEdb;
-    delete[] d2EdGdc;
 
     return;
 }
@@ -628,11 +600,16 @@ void NeuralNetwork::calculateDEdb(double* dEdb) const
     return;
 }
 
-void NeuralNetwork::calculateDxdG(int index) const
+void NeuralNetwork::calculateDxdG(double const* direction) const
 {
     for (int i = 0; i < layers[1].numNeurons; i++)
     {
-        layers[1].neurons[i].dxdG = layers[1].neurons[i].weights[index];
+        layers[1].neurons[i].dxdG = 0.0;
+        for (int k = 0; k < layers[0].numNeurons; k++)
+        {
+            layers[1].neurons[i].dxdG += layers[1].neurons[i].weights[k]
+                                       * direction[k];
+        }
         if (normalizeNeurons)
         {
             layers[1].neurons[i].dxdG /= layers[1].numNeuronsPrevLayer;
@@ -659,7 +636,7 @@ void NeuralNetwork::calculateDxdG(int index) const
     return;
 }
 
-void NeuralNetwork::calculateD2EdGdc(int                  index,
+void NeuralNetwork::calculateD2EdGdc(double const*        direction,
                                      double const* const& dEdb,
                                      double*              d2EdGdc) const
 {
@@ -686,12 +663,8 @@ void NeuralNetwork::calculateD2EdGdc(int                  index,
                 if (i == 0)
                 {
                     d2EdGdc[weightOffset[i]+count] =
-                        d2EdGdc[biasOffset[i]+k] * layers[i].neurons[j].value;
-                    if (j == index)
-                    {
-                        d2EdGdc[weightOffset[i]+count] +=
-                            dEdb[biasOnlyOffset[i]+k];
-                    }
+                        d2EdGdc[biasOffset[i]+k] * layers[i].neurons[j].value
+                      + direction[j] * dEdb[biasOnlyOffset[i]+k];
                 }
                 else
                 {
