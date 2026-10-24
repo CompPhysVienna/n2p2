@@ -11,6 +11,7 @@
 #include <algorithm> // std::max
 #include <cmath>     // std::fabs
 #include <cstddef>   // std::size_t
+#include <fstream>   // std::ofstream
 #include <map>       // std::map
 #include <string>    // std::string
 #include <utility>   // std::pair
@@ -91,22 +92,10 @@ vector<string> const examples = {"AlAuMgO_4G",
                                  "H2O_RPBE-D3",
                                  "H2O_RPBE-D3_4G"};
 
-BOOST_AUTO_TEST_SUITE(RegressionTests)
-
-BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
-                       AnalyticForces_MatchFiniteDifference,
-                       bdata::make(examples),
-                       name)
+// Compares the analytic forces of the structure in input.data (current
+// directory) with finite differences, for the first, middle and last atom.
+void requireForcesMatchFiniteDifference(string const& name)
 {
-    BOOST_REQUIRE(copy_directory_recursively("../../examples/nnp-predict/"
-                                             + name, "test"));
-    bfs::current_path("test");
-    if (ewaldPrecisionOverrides.count(name) > 0)
-    {
-        auto const& o = ewaldPrecisionOverrides.at(name);
-        BOOST_REQUIRE(replaceInFile("input.nn", o.first, o.second));
-    }
-
     Prediction p;
     p.log.writeToStdout = false;
     p.setup();
@@ -149,6 +138,62 @@ BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
     }
     BOOST_TEST_MESSAGE(name << ": max |F_analytic - F_fd| = "
                        << maxDeviation);
+
+    return;
+}
+
+BOOST_AUTO_TEST_SUITE(RegressionTests)
+
+BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
+                       AnalyticForces_MatchFiniteDifference,
+                       bdata::make(examples),
+                       name)
+{
+    BOOST_REQUIRE(copy_directory_recursively("../../examples/nnp-predict/"
+                                             + name, "test"));
+    bfs::current_path("test");
+    if (ewaldPrecisionOverrides.count(name) > 0)
+    {
+        auto const& o = ewaldPrecisionOverrides.at(name);
+        BOOST_REQUIRE(replaceInFile("input.nn", o.first, o.second));
+    }
+
+    requireForcesMatchFiniteDifference(name);
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+// A cell vector shorter than the symmetry function cutoff: each atom has
+// periodic images of itself among its neighbors, whose contributions must
+// be included in the forces. One water molecule (from the H2O_RPBE-D3
+// example) in a cubic box of 10 bohr, cutoff 12 bohr, with the 2G and 4G
+// water models.
+vector<string> const smallCellModels = {"H2O_RPBE-D3", "H2O_RPBE-D3_4G"};
+
+BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
+                       AnalyticForces_SmallCell_MatchFiniteDifference,
+                       bdata::make(smallCellModels),
+                       name)
+{
+    BOOST_REQUIRE(copy_directory_recursively("../../examples/nnp-predict/"
+                                             + name, "test"));
+    bfs::current_path("test");
+    {
+        ofstream file("input.data");
+        file << "begin\n"
+             << "lattice 10.0 0.0 0.0\n"
+             << "lattice 0.0 10.0 0.0\n"
+             << "lattice 0.0 0.0 10.0\n"
+             << "atom 5.0000000 5.0000000 5.0000000 O 0.0 0.0 0.0 0.0 0.0\n"
+             << "atom 4.0625069 5.3600306 6.5729116 H 0.0 0.0 0.0 0.0 0.0\n"
+             << "atom 6.7495085 5.0876455 5.5389499 H 0.0 0.0 0.0 0.0 0.0\n"
+             << "energy 0.0\n"
+             << "charge 0.0\n"
+             << "end\n";
+    }
+
+    requireForcesMatchFiniteDifference(name + " (small cell)");
 
     bfs::current_path("..");
     bfs::remove_all("test");
