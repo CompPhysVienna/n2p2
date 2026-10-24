@@ -1869,6 +1869,27 @@ void Mode::calculateForces(Structure& structure) const
         return;
     }
 
+    // Short-range force contributions of all neighbors of each atom.
+    vector<Vec3D> pairForces;
+    calculatePairForcesShort(structure, pairForces);
+
+    // 4G-HDNNP: Lagrange multipliers and the sums over atoms j of
+    // lambda_j * dChi_j/dr_i, needed for the electrostatic part below.
+    VectorXd lambdaTotal;
+    VectorXd lambdaElec;
+    vector<Vec3D> dChidrTotal;
+    vector<Vec3D> dChidrElec;
+    if (nnpType == NNPType::HDNNP_4G)
+    {
+        lambdaTotal = structure.calculateForceLambdaTotal();
+        lambdaElec = structure.calculateForceLambdaElec();
+        calculateDChidrSums(structure,
+                            lambdaTotal,
+                            lambdaElec,
+                            dChidrTotal,
+                            dChidrElec);
+    }
+
     // Loop over all atoms, center atom i (ai).
 #ifdef _OPENMP
     #pragma omp parallel
@@ -1886,51 +1907,14 @@ void Mode::calculateForces(Structure& structure) const
         // atomic energy E_i).
         ai.f += ai.calculateSelfForceShort();
 
-        // Now loop over all neighbor atoms j of atom i. These may hold
-        // non-zero derivatives of their symmetry functions with respect to
-        // atom i's coordinates. Some atoms may appear multiple times in the
-        // neighbor list because of periodic boundary conditions. To avoid
-        // that the same contributions are added multiple times use the
-        // "unique neighbor" list. This list contains also the central atom
-        // index as first entry and hence also adds contributions of periodic
-        // images of the central atom (happens when cutoff radii larger than
-        // cell vector lengths are used, but this is already considered in the
-        // self-interaction).
-        for (vector<size_t>::const_iterator it = ai.neighborsUnique.begin() + 1;
-             it != ai.neighborsUnique.end(); ++it)
-        {
-            // Define shortcut for atom j (aj).
-            Atom &aj = structure.atoms.at(*it);
-#ifndef N2P2_FULL_SFD_MEMORY
-            vector<vector<size_t>> const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
-#endif
-            // Loop over atom j's neighbors (n), atom i should be one of them.
-            // TODO: Could implement maxCutoffRadiusSymFunc for each element and
-            //       use this instead of maxCutoffRadius.
-            size_t const numNeighbors =
-                aj.getStoredMinNumNeighbors(maxCutoffRadius);
-            for (size_t k = 0; k < numNeighbors; ++k) {
-                Atom::Neighbor const &n = aj.neighbors[k];
-                // If atom j's neighbor is atom i add force contributions.
-                if (n.index == ai.index)
-                {
-#ifndef N2P2_FULL_SFD_MEMORY
-                    ai.f += aj.calculatePairForceShort(n, &tableFull);
-#else
-                    ai.f += aj.calculatePairForceShort(n);
-#endif
-                }
-            }
-        }
+        // Then the contributions of its neighbors j (gradients of their
+        // atomic energies E_j), see calculatePairForcesShort().
+        ai.f += pairForces.at(i);
     }
 
     if (nnpType == NNPType::HDNNP_4G)
     {
         Structure &s = structure;
-
-        VectorXd lambdaTotal = s.calculateForceLambdaTotal();
-        VectorXd lambdaElec = s.calculateForceLambdaElec();
 
 #ifdef _OPENMP
         #pragma omp for
@@ -1944,26 +1928,108 @@ void Mode::calculateForces(Structure& structure) const
 
             for (size_t j = 0; j < s.numAtoms; ++j)
             {
-                Atom const &aj = s.atoms.at(j);
-
-#ifndef N2P2_FULL_SFD_MEMORY
-                vector<vector<size_t> > const &tableFull
-                        = elements.at(aj.element).getSymmetryFunctionTable();
-                Vec3D dChidr = aj.calculateDChidr(ai.index,
-                                                  maxCutoffRadius,
-                                                  &tableFull);
-#else
-                Vec3D dChidr = aj.calculateDChidr(ai.index,
-                                                  maxCutoffRadius);
-#endif
-                ai.f -= lambdaTotal(j) * (ai.dAdrQ[j] + dChidr);
-                ai.fElec -= lambdaElec(j) * (ai.dAdrQ[j] + dChidr);
+                ai.f -= lambdaTotal(j) * ai.dAdrQ[j];
+                ai.fElec -= lambdaElec(j) * ai.dAdrQ[j];
             }
+            ai.f -= dChidrTotal.at(i);
+            ai.fElec -= dChidrElec.at(i);
         }
     }
 #ifdef _OPENMP
     }
 #endif
+    return;
+}
+
+void Mode::calculatePairForcesShort(Structure const& structure,
+                                    vector<Vec3D>&   pairForces) const
+{
+    size_t const numAtoms = structure.atoms.size();
+    pairForces.assign(numAtoms, Vec3D{});
+
+    for (size_t j = 0; j < numAtoms; ++j)
+    {
+        Atom const& aj = structure.atoms.at(j);
+#ifndef N2P2_FULL_SFD_MEMORY
+        vector<vector<size_t>> const& tableFull
+            = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+        // TODO: Could implement maxCutoffRadiusSymFunc for each element and
+        //       use this instead of maxCutoffRadius.
+        size_t const numNeighbors =
+            aj.getStoredMinNumNeighbors(maxCutoffRadius);
+        for (size_t k = 0; k < numNeighbors; ++k)
+        {
+            Atom::Neighbor const& n = aj.neighbors[k];
+            // Periodic images of atom j itself are skipped, as in the
+            // previous implementation (unique neighbors of atom i without i).
+            if (n.index == j) continue;
+#ifndef N2P2_FULL_SFD_MEMORY
+            pairForces.at(n.index) += aj.calculatePairForceShort(n,
+                                                                &tableFull);
+#else
+            pairForces.at(n.index) += aj.calculatePairForceShort(n);
+#endif
+        }
+    }
+
+    return;
+}
+
+void Mode::calculateDChidrSums(Structure const&      structure,
+                               VectorXd const&       lambdaTotal,
+                               VectorXd const&       lambdaElec,
+                               vector<Vec3D>&        sumTotal,
+                               vector<Vec3D>&        sumElec) const
+{
+    size_t const numAtoms = structure.atoms.size();
+    sumTotal.assign(numAtoms, Vec3D{});
+    sumElec.assign(numAtoms, Vec3D{});
+
+    for (size_t j = 0; j < numAtoms; ++j)
+    {
+        Atom const& aj = structure.atoms.at(j);
+
+        // Derivative with respect to the coordinates of atom j itself.
+        Vec3D dChidr{};
+        for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+        {
+            dChidr += aj.dChidG.at(k) * aj.dGdr.at(k);
+        }
+        sumTotal.at(j) += lambdaTotal(j) * dChidr;
+        sumElec.at(j) += lambdaElec(j) * dChidr;
+
+        // Derivatives with respect to the coordinates of the neighbors
+        // (as in Atom::calculateDChidr(), the neighbor tag is the index of
+        // the atom).
+#ifndef N2P2_FULL_SFD_MEMORY
+        vector<vector<size_t> > const& tableFull
+            = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+        size_t const numNeighbors =
+            aj.getStoredMinNumNeighbors(maxCutoffRadius);
+        for (size_t m = 0; m < numNeighbors; ++m)
+        {
+            Atom::Neighbor const& n = aj.neighbors.at(m);
+            dChidr = Vec3D{};
+#ifndef N2P2_FULL_SFD_MEMORY
+            vector<size_t> const& table = tableFull.at(n.element);
+            for (size_t k = 0; k < n.dGdr.size(); ++k)
+            {
+                dChidr += aj.dChidG.at(table.at(k)) * n.dGdr.at(k);
+            }
+#else
+            for (size_t k = 0; k < aj.numSymmetryFunctions; ++k)
+            {
+                dChidr += aj.dChidG.at(k) * n.dGdr.at(k);
+            }
+#endif
+            size_t const i = n.tag;
+            sumTotal.at(i) += lambdaTotal(j) * dChidr;
+            sumElec.at(i) += lambdaElec(j) * dChidr;
+        }
+    }
+
     return;
 }
 

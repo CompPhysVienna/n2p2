@@ -716,6 +716,46 @@ protected:
     std::vector<
     std::vector<double>>       cutoffs;
     ErfcBuf                    erfcBuf;
+
+private:
+    /** Short-range force contributions of the neighbors of each atom.
+     *
+     * @param[in] structure Input structure.
+     * @param[out] pairForces For each atom i the sum over its neighbors j
+     *                        (excluding periodic images of i) of
+     *                        -dE_j/dr_i.
+     *
+     * Same contributions as searching the neighbor list of every unique
+     * neighbor j of atom i for atom i, collected from the side of atom j in
+     * one pass over its neighbors within the symmetry function cutoff.
+     */
+    void                       calculatePairForcesShort(
+                                     Structure const&       structure,
+                                     std::vector<Vec3D>&    pairForces) const;
+    /** Sum over all atoms j of the derivatives of their electronegativities
+     *  with respect to the coordinates of each atom i, weighted with the
+     *  force Lagrange multipliers (4G-HDNNP forces).
+     *
+     * @param[in] structure Input structure.
+     * @param[in] lambdaTotal Lagrange multipliers for the total forces.
+     * @param[in] lambdaElec Lagrange multipliers for the electrostatic
+     *                       forces.
+     * @param[out] sumTotal For each atom i the sum over j of lambdaTotal(j)
+     *                      * dChi_j/dr_i.
+     * @param[out] sumElec Same with lambdaElec.
+     *
+     * Gives the same contributions as Atom::calculateDChidr() for every
+     * pair of atoms, collected from the side of atom j: only atom j itself
+     * and its neighbors within the symmetry function cutoff contribute, so
+     * one pass over the neighbor lists replaces a neighbor list search for
+     * each pair of atoms.
+     */
+    void                       calculateDChidrSums(
+                                     Structure const&       structure,
+                                     Eigen::VectorXd const& lambdaTotal,
+                                     Eigen::VectorXd const& lambdaElec,
+                                     std::vector<Vec3D>&    sumTotal,
+                                     std::vector<Vec3D>&    sumElec) const;
 };
 
 //////////////////////////////////
