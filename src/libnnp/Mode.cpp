@@ -1869,6 +1869,10 @@ void Mode::calculateForces(Structure& structure) const
         return;
     }
 
+    // Short-range force contributions of all neighbors of each atom.
+    vector<Vec3D> pairForces;
+    calculatePairForcesShort(structure, pairForces);
+
     // 4G-HDNNP: Lagrange multipliers and the sums over atoms j of
     // lambda_j * dChi_j/dr_i, needed for the electrostatic part below.
     VectorXd lambdaTotal;
@@ -1903,43 +1907,9 @@ void Mode::calculateForces(Structure& structure) const
         // atomic energy E_i).
         ai.f += ai.calculateSelfForceShort();
 
-        // Now loop over all neighbor atoms j of atom i. These may hold
-        // non-zero derivatives of their symmetry functions with respect to
-        // atom i's coordinates. Some atoms may appear multiple times in the
-        // neighbor list because of periodic boundary conditions. To avoid
-        // that the same contributions are added multiple times use the
-        // "unique neighbor" list. This list contains also the central atom
-        // index as first entry and hence also adds contributions of periodic
-        // images of the central atom (happens when cutoff radii larger than
-        // cell vector lengths are used, but this is already considered in the
-        // self-interaction).
-        for (vector<size_t>::const_iterator it = ai.neighborsUnique.begin() + 1;
-             it != ai.neighborsUnique.end(); ++it)
-        {
-            // Define shortcut for atom j (aj).
-            Atom &aj = structure.atoms.at(*it);
-#ifndef N2P2_FULL_SFD_MEMORY
-            vector<vector<size_t>> const& tableFull
-                = elements.at(aj.element).getSymmetryFunctionTable();
-#endif
-            // Loop over atom j's neighbors (n), atom i should be one of them.
-            // TODO: Could implement maxCutoffRadiusSymFunc for each element and
-            //       use this instead of maxCutoffRadius.
-            size_t const numNeighbors =
-                aj.getStoredMinNumNeighbors(maxCutoffRadius);
-            for (size_t k = 0; k < numNeighbors; ++k) {
-                Atom::Neighbor const &n = aj.neighbors[k];
-                // If atom j's neighbor is atom i add force contributions.
-                if (n.index == ai.index)
-                {
-#ifndef N2P2_FULL_SFD_MEMORY
-                    ai.f += aj.calculatePairForceShort(n, &tableFull);
-#else
-                    ai.f += aj.calculatePairForceShort(n);
-#endif
-                }
-            }
-        }
+        // Then the contributions of its neighbors j (gradients of their
+        // atomic energies E_j), see calculatePairForcesShort().
+        ai.f += pairForces.at(i);
     }
 
     if (nnpType == NNPType::HDNNP_4G)
@@ -1968,6 +1938,41 @@ void Mode::calculateForces(Structure& structure) const
 #ifdef _OPENMP
     }
 #endif
+    return;
+}
+
+void Mode::calculatePairForcesShort(Structure const& structure,
+                                    vector<Vec3D>&   pairForces) const
+{
+    size_t const numAtoms = structure.atoms.size();
+    pairForces.assign(numAtoms, Vec3D{});
+
+    for (size_t j = 0; j < numAtoms; ++j)
+    {
+        Atom const& aj = structure.atoms.at(j);
+#ifndef N2P2_FULL_SFD_MEMORY
+        vector<vector<size_t>> const& tableFull
+            = elements.at(aj.element).getSymmetryFunctionTable();
+#endif
+        // TODO: Could implement maxCutoffRadiusSymFunc for each element and
+        //       use this instead of maxCutoffRadius.
+        size_t const numNeighbors =
+            aj.getStoredMinNumNeighbors(maxCutoffRadius);
+        for (size_t k = 0; k < numNeighbors; ++k)
+        {
+            Atom::Neighbor const& n = aj.neighbors[k];
+            // Periodic images of atom j itself are skipped, as in the
+            // previous implementation (unique neighbors of atom i without i).
+            if (n.index == j) continue;
+#ifndef N2P2_FULL_SFD_MEMORY
+            pairForces.at(n.index) += aj.calculatePairForceShort(n,
+                                                                &tableFull);
+#else
+            pairForces.at(n.index) += aj.calculatePairForceShort(n);
+#endif
+        }
+    }
+
     return;
 }
 
