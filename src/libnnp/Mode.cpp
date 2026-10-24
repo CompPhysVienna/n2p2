@@ -1961,9 +1961,9 @@ void Mode::calculatePairForcesShort(Structure const& structure,
         for (size_t k = 0; k < numNeighbors; ++k)
         {
             Atom::Neighbor const& n = aj.neighbors[k];
-            // Periodic images of atom j itself are skipped, as in the
-            // previous implementation (unique neighbors of atom i without i).
-            if (n.index == j) continue;
+            // Includes periodic images of atom j itself (cell vectors
+            // shorter than the cutoff): moving atom j moves its images, so
+            // their derivatives belong to the force on atom j as well.
 #ifndef N2P2_FULL_SFD_MEMORY
             pairForces.at(n.index) += aj.calculatePairForceShort(n,
                                                                 &tableFull);

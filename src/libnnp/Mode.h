@@ -722,12 +722,11 @@ private:
      *
      * @param[in] structure Input structure.
      * @param[out] pairForces For each atom i the sum over its neighbors j
-     *                        (excluding periodic images of i) of
+     *                        (including periodic images of i itself) of
      *                        -dE_j/dr_i.
      *
-     * Same contributions as searching the neighbor list of every unique
-     * neighbor j of atom i for atom i, collected from the side of atom j in
-     * one pass over its neighbors within the symmetry function cutoff.
+     * Collected from the side of atom j in one pass over its neighbors
+     * within the symmetry function cutoff.
      */
     void                       calculatePairForcesShort(
                                      Structure const&       structure,
