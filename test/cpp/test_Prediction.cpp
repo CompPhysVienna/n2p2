@@ -218,4 +218,66 @@ BOOST_FIXTURE_TEST_CASE(NormalizedModel_MatchesCopyInUnitsOfData,
     bfs::remove_all("physical");
 }
 
+BOOST_FIXTURE_TEST_CASE(ModelInOtherUnits_MatchesNormalizedModel,
+                        FixtureRepairDir)
+{
+    // The same model converted to eV and Angstrom without normalization
+    // (four_pi_epsilon != 1, see
+    // examples/interface-LAMMPS/H2O_SPCFw_4G_metal), with the structure
+    // converted to Angstrom.
+    double const cflength = 1.8897261328; // Angstrom -> Bohr
+    double const cfenergy = 0.0367493254; // eV -> Hartree
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-predict/H2O_SPCFw_4G", "reference"));
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/interface-LAMMPS/H2O_SPCFw_4G_metal/hdnnp-data",
+        "metal"));
+    {
+        ifstream in("reference/input.data");
+        ofstream out("metal/input.data");
+        string line;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line));
+            if (!t.empty() && (t.at(0) == "lattice" || t.at(0) == "atom"))
+            {
+                for (size_t i = 1; i < 4; ++i)
+                {
+                    t.at(i) = strpr("%.16E", stod(t.at(i)) / cflength);
+                }
+                line = "";
+                for (auto const& w : t) line += w + " ";
+            }
+            out << line << "\n";
+        }
+    }
+
+    PredictionResult const n = predictInDirectory("reference");
+    PredictionResult const m = predictInDirectory("metal");
+
+    // Remaining differences: the Ewald sums are truncated in different
+    // units.
+    REQUIRE_CLOSE_TO_REFERENCE(n.energy / cfenergy,
+                               m.energy,
+                               Tolerance(1.0E-6 * fabs(m.energy)));
+    BOOST_REQUIRE_EQUAL(n.charges.size(), m.charges.size());
+    for (size_t i = 0; i < n.charges.size(); ++i)
+    {
+        BOOST_TEST_INFO("Atom " << i << " charge");
+        REQUIRE_CLOSE_TO_REFERENCE(n.charges.at(i),
+                                   m.charges.at(i),
+                                   Tolerance(1.0E-6));
+    }
+    for (size_t i = 0; i < n.forces.size(); ++i)
+    {
+        BOOST_TEST_INFO("Force component " << i);
+        REQUIRE_CLOSE_TO_REFERENCE(n.forces.at(i) * cflength / cfenergy,
+                                   m.forces.at(i),
+                                   Tolerance(1.0E-5));
+    }
+
+    bfs::remove_all("reference");
+    bfs::remove_all("metal");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -82,6 +82,17 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->forcesReference = "forces.nnp-predict";
     e->forcesTolerance = 1.0E-5;
 
+    // The same model and structure in eV and Angstrom without normalization
+    // (four_pi_epsilon != 1, no unit conversion in LAMMPS): same results.
+    examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G_metal"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 0;
+    e->potentialEnergy = -120.21748;
+    e->totalEnergy = -120.21748;
+    e->forcesReference = "forces.nnp-predict";
+    e->forcesTolerance = 1.0E-5;
+
     return;
 }
 

@@ -577,6 +577,7 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
         Atom const& a = structure.atoms.at(i);
         size_t const ia = a.index;
         atomChi[ia] = normalize ? physical("negativity", a.chi) : a.chi;
+        atomChi[ia] *= getFourPiEpsilon();
     }
 
     // The LAMMPS side indexes these arrays by atom type (type - 1), which
@@ -588,6 +589,7 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
         double const iSigma = getQsigmaPhysical(ti.second);
         atomJ[i] = elements.at(ti.second).getHardness();
         if (normalize) atomJ[i] = physical("hardness", atomJ[i]);
+        atomJ[i] *= getFourPiEpsilon();
         sigmaSqrtPi[i] = sqrt(M_PI) * iSigma;
         for (auto const& tj : mapTypeToElement)
         {
@@ -598,6 +600,14 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
     }
     qRef = normalize ? physical("charge", structure.chargeRef)
                      : structure.chargeRef;
+}
+
+double InterfaceLammps::getFourPiEpsilon() const
+{
+    // Mode keeps 4 pi epsilon in normalized units for normalized models.
+    if (normalize) return fourPiEps * convLength * convEnergy
+                          / (convCharge * convCharge);
+    return fourPiEps;
 }
 
 double InterfaceLammps::getQsigmaPhysical(size_t element) const
@@ -625,8 +635,8 @@ void InterfaceLammps::getdEdQ(double* const& dEtotdQ) const
         ai = &(structure.atoms.at(i));
         size_t const ia = ai->index;
         // dE/dQ has the units of an electronegativity.
-        dEtotdQ[ia] += normalize ? physical("negativity", ai->dEdG.back())
-                                 : ai->dEdG.back();
+        dEtotdQ[ia] += (normalize ? physical("negativity", ai->dEdG.back())
+                                  : ai->dEdG.back()) * getFourPiEpsilon();
     }
 }
 
@@ -706,6 +716,7 @@ void InterfaceLammps::setElecDone()
 
 void InterfaceLammps::addElectrostaticEnergy(double eElec)
 {
+    eElec /= getFourPiEpsilon();
     structure.energyElec = normalize ? normalized("energy", eElec) : eElec;
 }
 

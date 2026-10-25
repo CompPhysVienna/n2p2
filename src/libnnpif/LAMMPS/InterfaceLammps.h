@@ -158,8 +158,10 @@ public:
     double getAtomicEnergy(int index) const;
     /** Adds electrostatic energy contribution to the total structure energy
      *
-     * @param[in] electrostatic energy (calculated in LAMMPS, in the energy
-     *            units of the training data, also for normalized models).
+     * @param[in] electrostatic energy (calculated in LAMMPS with
+     *            4 pi epsilon = 1, i.e. in the energy units of the training
+     *            data times getFourPiEpsilon(), also for normalized
+     *            models).
      *
      */
     void addElectrostaticEnergy(double energy);
@@ -245,7 +247,10 @@ public:
      *
      * Like all quantities exchanged with the LAMMPS side of the 4G-HDNNP
      * (electrostatics, charge equilibration), in the units of the training
-     * data, also for normalized models.
+     * data, also for normalized models. The LAMMPS side evaluates the
+     * Coulomb interaction with 4 pi epsilon = 1, so energies exchanged with
+     * it (electronegativities, hardness, dE/dQ, electrostatic energy) are
+     * multiplied by 4 pi epsilon (see getFourPiEpsilon()).
      */
     void   getQEqParams(double* const&        atomChi,
                         double* const&        atomJ,
@@ -269,6 +274,12 @@ public:
      *         for normalized models).
      */
     double getMaxQsigma() const;
+    /** 4 pi epsilon in the units of the training data (four_pi_epsilon,
+     * also for normalized models).
+     *
+     * @return 4 pi epsilon (1 for atomic units).
+     */
+    double getFourPiEpsilon() const;
     /** Transfer spatial derivatives of atomic electronegativities.
      *
      * @param[in] tag Atom of interest
