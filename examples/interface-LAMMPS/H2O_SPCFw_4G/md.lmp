@@ -1,0 +1,39 @@
+###############################################################################
+# 4G-HDNNP with normalized units (nnp-norm), liquid water (SPC/Fw data)
+# Single point: energy, charges and forces agree with nnp-predict on the same
+# structure (examples/nnp-predict/H2O_SPCFw_4G); the forces of nnp-predict are
+# stored in forces.nnp-predict. The element mapping deliberately does not
+# follow the order of the atomic numbers (type 1: O, type 2: H).
+###############################################################################
+clear
+variable cfgFile         string "water.data"
+variable numSteps        equal  0
+variable dt              equal  0.0005
+variable hdnnpCutoff     equal  7.94
+variable hdnnpDir        string "hdnnp-data"
+variable mass_H          equal  1.00794
+variable mass_O          equal  15.9994
+# Conversion factors to the units of the training data (Bohr, Hartree).
+variable c1              equal  1.8897261328
+variable c2              equal  0.0367493254
+
+units metal
+boundary p p p
+atom_style charge
+atom_modify map yes
+read_data ${cfgFile}
+mass 1 ${mass_O}
+mass 2 ${mass_H}
+timestep ${dt}
+thermo 1
+
+neighbor 0.0 bin
+neigh_modify delay 10
+pair_style hdnnp/4g dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:O,2:H"
+pair_coeff * * ${hdnnpCutoff}
+kspace_style hdnnp ewald 1.0e-7
+fix 1 all hdnnp 1 1.0e-7 1.0e-1 1.0e-1 100 nnp nnp 1
+fix INT all nve
+dump F all custom 1 forces.dump id type fx fy fz
+dump_modify F sort id format float %20.12e
+run ${numSteps}
