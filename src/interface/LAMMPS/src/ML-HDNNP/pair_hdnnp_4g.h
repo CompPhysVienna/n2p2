@@ -67,6 +67,10 @@ protected:
     long numExtrapolationWarningsSummary;
     double cflength;
     double cfenergy;
+    // cfenergy times 4 pi epsilon in the units of the training data: energy
+    // conversion of the electrostatics, which are evaluated with
+    // 4 pi epsilon = 1 (see init_style()).
+    double cfenergyElec;
     double maxCutoffRadius;
     char* directory;
     char* emap;

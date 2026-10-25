@@ -62,6 +62,7 @@ PairHDNNP4G::PairHDNNP4G(LAMMPS *lmp) : Pair(lmp),
     numExtrapolationWarningsSummary(0      ),
     cflength                       (0.0    ),
     cfenergy                       (0.0    ),
+    cfenergyElec                   (0.0    ),
     maxCutoffRadius                (0.0    ),
     directory                      (nullptr),
     emap                           (nullptr),
@@ -385,6 +386,7 @@ void PairHDNNP4G::init_style()
   if (interface.isInitialized()) {
     setElecCutoff();
     requestNeighborList();
+    cfenergyElec = cfenergy * interface.getFourPiEpsilon();
     return;
   }
 
@@ -420,6 +422,9 @@ void PairHDNNP4G::init_style()
     }
     setElecCutoff();
     requestNeighborList();
+    // The electrostatics are evaluated with 4 pi epsilon = 1 (see
+    // InterfaceLammps::getQEqParams()): the forces get the factor here.
+    cfenergyElec = cfenergy * interface.getFourPiEpsilon();
 }
 
 /* ----------------------------------------------------------------------
@@ -1132,13 +1137,13 @@ void PairHDNNP4G::calculateElecDerivatives(double *dEelecdQ, double **f)
 
                     dEelecdQ[i] += qj * (sij); // Add sij contributions if inside screening cutoff
 
-                    f[i][0] -= 0.5 * (qi * qj * dx * tij) / cfenergy;
-                    f[i][1] -= 0.5 * (qi * qj * dy * tij) / cfenergy;
-                    f[i][2] -= 0.5 * (qi * qj * dz * tij) / cfenergy;
+                    f[i][0] -= 0.5 * (qi * qj * dx * tij) / cfenergyElec;
+                    f[i][1] -= 0.5 * (qi * qj * dy * tij) / cfenergyElec;
+                    f[i][2] -= 0.5 * (qi * qj * dz * tij) / cfenergyElec;
 
-                    f[j][0] += 0.5 * (qi * qj * dx * tij) / cfenergy;
-                    f[j][1] += 0.5 * (qi * qj * dy * tij) / cfenergy;
-                    f[j][2] += 0.5 * (qi * qj * dz * tij) / cfenergy;
+                    f[j][0] += 0.5 * (qi * qj * dx * tij) / cfenergyElec;
+                    f[j][1] += 0.5 * (qi * qj * dy * tij) / cfenergyElec;
+                    f[j][2] += 0.5 * (qi * qj * dz * tij) / cfenergyElec;
                 }
             }
         }else
@@ -1167,9 +1172,9 @@ void PairHDNNP4G::calculateElecDerivatives(double *dEelecdQ, double **f)
                            (fsrij - 1) + erfrij*dfsrij - erfrij*(fsrij-1)/rij) / rij2;
 
                     dEelecdQ[i] += qj * ((erfrij/rij) + sij);
-                    f[i][0] -= qi * qj * dx * tij;
-                    f[i][1] -= qi * qj * dy * tij;
-                    f[i][2] -= qi * qj * dz * tij;
+                    f[i][0] -= qi * qj * dx * tij / cfenergyElec;
+                    f[i][1] -= qi * qj * dy * tij / cfenergyElec;
+                    f[i][2] -= qi * qj * dz * tij / cfenergyElec;
                 }
             }
         }
@@ -1229,7 +1234,7 @@ void PairHDNNP4G::calculateElecForce(double **f)
         MPI_Allreduce(Sl_real_loc.data(), Sl_real.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
         MPI_Allreduce(Sl_imag_loc.data(), Sl_imag.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
 
-        double cfac = cflength / cfenergy;
+        double cfac = cflength / cfenergyElec;
 
         // Calculate analytical reciprocal forces
         for (i = 0; i < nlocal; i++) {
@@ -1289,13 +1294,13 @@ void PairHDNNP4G::calculateElecForce(double **f)
                     double dAdry = dy * delr;
                     double dAdrz = dz * delr;
 
-                    f[i][0] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrx / cfenergy;
-                    f[i][1] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdry / cfenergy;
-                    f[i][2] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrz / cfenergy;
+                    f[i][0] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrx / cfenergyElec;
+                    f[i][1] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdry / cfenergyElec;
+                    f[i][2] -= 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrz / cfenergyElec;
 
-                    f[k][0] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrx / cfenergy;
-                    f[k][1] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdry / cfenergy;
-                    f[k][2] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrz / cfenergy;
+                    f[k][0] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrx / cfenergyElec;
+                    f[k][1] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdry / cfenergyElec;
+                    f[k][2] += 0.5 * (lambdai * qk + lambdak * qi + qk * qi) * dAdrz / cfenergyElec;
                 }
             }
         } else {
@@ -1350,9 +1355,9 @@ void PairHDNNP4G::calculateElecForce(double **f)
                     jt1 = (dy / rij2) * delr * qi;
                     jt2 = (dz / rij2) * delr * qi;
                 }
-                f[i][0] -= (forceLambda_all[j] * (jt0) + 0.5 * qj * jt0) / cfenergy;
-                f[i][1] -= (forceLambda_all[j] * (jt1) + 0.5 * qj * jt1) / cfenergy;
-                f[i][2] -= (forceLambda_all[j] * (jt2) + 0.5 * qj * jt2) / cfenergy;
+                f[i][0] -= (forceLambda_all[j] * (jt0) + 0.5 * qj * jt0) / cfenergyElec;
+                f[i][1] -= (forceLambda_all[j] * (jt1) + 0.5 * qj * jt1) / cfenergyElec;
+                f[i][2] -= (forceLambda_all[j] * (jt2) + 0.5 * qj * jt2) / cfenergyElec;
             }
         }
     }

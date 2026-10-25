@@ -1,0 +1,40 @@
+###############################################################################
+# 4G-HDNNP in eV and Angstrom (four_pi_epsilon != 1), liquid water (SPC/Fw data)
+# Same model and structure as ../H2O_SPCFw_4G, converted to eV and Angstrom
+# without normalization. Single point: energy, charges and forces agree with
+# ../H2O_SPCFw_4G and with nnp-predict (examples/nnp-predict/H2O_SPCFw_4G,
+# forces in forces.nnp-predict). Element mapping not in the order of the
+# atomic numbers (type 1: O, type 2: H).
+###############################################################################
+clear
+variable cfgFile         string "water.data"
+variable numSteps        equal  0
+variable dt              equal  0.0005
+variable hdnnpCutoff     equal  7.94
+variable hdnnpDir        string "hdnnp-data"
+variable mass_H          equal  1.00794
+variable mass_O          equal  15.9994
+# The model is in the LAMMPS units (eV, Angstrom): no conversion.
+variable c1              equal  1.0
+variable c2              equal  1.0
+
+units metal
+boundary p p p
+atom_style charge
+atom_modify map yes
+read_data ${cfgFile}
+mass 1 ${mass_O}
+mass 2 ${mass_H}
+timestep ${dt}
+thermo 1
+
+neighbor 0.0 bin
+neigh_modify delay 10
+pair_style hdnnp/4g dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:O,2:H"
+pair_coeff * * ${hdnnpCutoff}
+kspace_style hdnnp ewald 1.0e-7
+fix 1 all hdnnp 1 1.0e-7 1.0e-1 1.0e-1 100 nnp nnp 1
+fix INT all nve
+dump F all custom 1 forces.dump id type fx fy fz
+dump_modify F sort id format float %20.12e
+run ${numSteps}

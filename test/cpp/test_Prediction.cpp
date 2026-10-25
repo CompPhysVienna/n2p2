@@ -12,7 +12,10 @@
 #include "Structure.h"
 #include "Prediction.h"
 #include "utility.h"
+#include <algorithm> // std::max
+#include <cmath>   // std::fabs
 #include <cstddef> // std::size_t
+#include <fstream> // std::ifstream, std::ofstream
 #include <limits> // std::numeric_limits
 #include <string> // std::string, std::string::find_last_of
 #include <vector> // std::vector
@@ -60,6 +63,221 @@ BOOST_DATA_TEST_CASE_F(FixtureRepairDir,
 
     bfs::current_path("..");
     bfs::remove_all("test");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+// A model trained with normalized units (nnp-norm) and its exact copy in the
+// units of the training data must give the same results. The copy drops the
+// normalization keywords, moves the mean energy per atom into the atomic
+// energy offsets and divides the output layer of the short-range networks
+// (linear activation) by conv_energy; charge widths, hardness and
+// electronegativity networks are already stored in the units of the data.
+
+// Write the copy of the model in directory "physical".
+void writePhysicalCopy()
+{
+    vector<string> settings;
+    double meanEnergy = 0.0;
+    double convEnergy = 1.0;
+    {
+        ifstream in("physical/input.nn");
+        string line;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line.substr(0, line.find('#'))));
+            if (!t.empty() && t.at(0) == "mean_energy")
+            {
+                meanEnergy = stod(t.at(1));
+                continue;
+            }
+            if (!t.empty() && t.at(0) == "conv_energy")
+            {
+                convEnergy = stod(t.at(1));
+                continue;
+            }
+            if (!t.empty() && (t.at(0) == "conv_length" ||
+                               t.at(0) == "conv_charge")) continue;
+            settings.push_back(line);
+            if (!t.empty() && t.at(0) == "elements")
+            {
+                for (size_t i = 1; i < t.size(); ++i)
+                {
+                    settings.push_back(strpr("atom_energy %s %24.16E",
+                                             t.at(i).c_str(),
+                                             meanEnergy));
+                }
+            }
+        }
+    }
+    BOOST_REQUIRE(convEnergy != 1.0);
+    {
+        ofstream out("physical/input.nn");
+        for (auto const& line : settings) out << line << "\n";
+    }
+    for (bfs::directory_iterator it("physical");
+         it != bfs::directory_iterator(); ++it)
+    {
+        string const name = it->path().filename().string();
+        if (name.find("weights.") != 0) continue;
+        vector<vector<string>> rows;
+        vector<string> lines;
+        size_t outputLayer = 0;
+        {
+            ifstream in(it->path().string());
+            string line;
+            while (getline(in, line))
+            {
+                lines.push_back(line);
+                vector<string> t = split(reduce(line));
+                if (t.size() == 7 && t.at(1) == "a")
+                {
+                    outputLayer = max(outputLayer, (size_t)stoi(t.at(5)));
+                }
+            }
+        }
+        BOOST_REQUIRE(outputLayer > 0);
+        ofstream out(it->path().string());
+        for (auto const& line : lines)
+        {
+            vector<string> t = split(reduce(line));
+            bool const output = line.find("#") != 0 && t.size() >= 4 &&
+                ((t.at(1) == "a" && t.size() == 7 &&
+                  (size_t)stoi(t.at(5)) == outputLayer) ||
+                 (t.at(1) == "b" && (size_t)stoi(t.at(3)) == outputLayer));
+            if (!output)
+            {
+                out << line << "\n";
+                continue;
+            }
+            out << strpr("%24.16E", stod(t.at(0)) / convEnergy);
+            for (size_t i = 1; i < t.size(); ++i) out << " " << t.at(i);
+            out << "\n";
+        }
+    }
+}
+
+struct PredictionResult
+{
+    double         energy;
+    vector<double> charges;
+    vector<double> forces;
+};
+
+PredictionResult predictInDirectory(string const& directory)
+{
+    bfs::current_path(directory);
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.setup();
+    p.readStructureFromFile();
+    p.predict();
+    bfs::current_path("..");
+    PredictionResult r;
+    r.energy = p.structure.energy;
+    for (auto const& a : p.structure.atoms)
+    {
+        r.charges.push_back(a.charge);
+        for (size_t c = 0; c < 3; ++c) r.forces.push_back(a.f[c]);
+    }
+    return r;
+}
+
+BOOST_AUTO_TEST_SUITE(NormalizationTests)
+
+BOOST_FIXTURE_TEST_CASE(NormalizedModel_MatchesCopyInUnitsOfData,
+                        FixtureRepairDir)
+{
+    string const example = "../../examples/nnp-predict/H2O_SPCFw_4G";
+    BOOST_REQUIRE(copy_directory_recursively(example, "normalized"));
+    BOOST_REQUIRE(copy_directory_recursively(example, "physical"));
+    writePhysicalCopy();
+
+    PredictionResult const n = predictInDirectory("normalized");
+    PredictionResult const p = predictInDirectory("physical");
+
+    Tolerance const t(1.0E-10 * fabs(p.energy));
+    REQUIRE_CLOSE_TO_REFERENCE(p.energy, n.energy, t);
+    BOOST_REQUIRE_EQUAL(p.charges.size(), n.charges.size());
+    for (size_t i = 0; i < p.charges.size(); ++i)
+    {
+        BOOST_TEST_INFO("Atom " << i << " charge");
+        REQUIRE_CLOSE_TO_REFERENCE(p.charges.at(i),
+                                   n.charges.at(i),
+                                   Tolerance(1.0E-10));
+    }
+    for (size_t i = 0; i < p.forces.size(); ++i)
+    {
+        BOOST_TEST_INFO("Force component " << i);
+        REQUIRE_CLOSE_TO_REFERENCE(p.forces.at(i),
+                                   n.forces.at(i),
+                                   Tolerance(1.0E-10));
+    }
+
+    bfs::remove_all("normalized");
+    bfs::remove_all("physical");
+}
+
+BOOST_FIXTURE_TEST_CASE(ModelInOtherUnits_MatchesNormalizedModel,
+                        FixtureRepairDir)
+{
+    // The same model converted to eV and Angstrom without normalization
+    // (four_pi_epsilon != 1, see
+    // examples/interface-LAMMPS/H2O_SPCFw_4G_metal), with the structure
+    // converted to Angstrom.
+    double const cflength = 1.8897261328; // Angstrom -> Bohr
+    double const cfenergy = 0.0367493254; // eV -> Hartree
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-predict/H2O_SPCFw_4G", "reference"));
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/interface-LAMMPS/H2O_SPCFw_4G_metal/hdnnp-data",
+        "metal"));
+    {
+        ifstream in("reference/input.data");
+        ofstream out("metal/input.data");
+        string line;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line));
+            if (!t.empty() && (t.at(0) == "lattice" || t.at(0) == "atom"))
+            {
+                for (size_t i = 1; i < 4; ++i)
+                {
+                    t.at(i) = strpr("%.16E", stod(t.at(i)) / cflength);
+                }
+                line = "";
+                for (auto const& w : t) line += w + " ";
+            }
+            out << line << "\n";
+        }
+    }
+
+    PredictionResult const n = predictInDirectory("reference");
+    PredictionResult const m = predictInDirectory("metal");
+
+    // Remaining differences: the Ewald sums are truncated in different
+    // units.
+    REQUIRE_CLOSE_TO_REFERENCE(n.energy / cfenergy,
+                               m.energy,
+                               Tolerance(1.0E-6 * fabs(m.energy)));
+    BOOST_REQUIRE_EQUAL(n.charges.size(), m.charges.size());
+    for (size_t i = 0; i < n.charges.size(); ++i)
+    {
+        BOOST_TEST_INFO("Atom " << i << " charge");
+        REQUIRE_CLOSE_TO_REFERENCE(n.charges.at(i),
+                                   m.charges.at(i),
+                                   Tolerance(1.0E-6));
+    }
+    for (size_t i = 0; i < n.forces.size(); ++i)
+    {
+        BOOST_TEST_INFO("Force component " << i);
+        REQUIRE_CLOSE_TO_REFERENCE(n.forces.at(i) * cflength / cfenergy,
+                                   m.forces.at(i),
+                                   Tolerance(1.0E-5));
+    }
+
+    bfs::remove_all("reference");
+    bfs::remove_all("metal");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

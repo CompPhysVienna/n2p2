@@ -576,27 +576,54 @@ void InterfaceLammps::getQEqParams(double* const& atomChi, double* const& atomJ,
     for (size_t i = 0; i < structure.atoms.size(); ++i) {
         Atom const& a = structure.atoms.at(i);
         size_t const ia = a.index;
-        atomChi[ia] = a.chi;
+        atomChi[ia] = normalize ? physical("negativity", a.chi) : a.chi;
+        atomChi[ia] *= getFourPiEpsilon();
     }
 
-    for (size_t i = 0; i < numElements; ++i)
+    // The LAMMPS side indexes these arrays by atom type (type - 1), which
+    // differs from the element index unless the element mapping lists the
+    // elements in the order of their atomic numbers.
+    for (auto const& ti : mapTypeToElement)
     {
-        double const iSigma = elements.at(i).getQsigma();
-        atomJ[i] = elements.at(i).getHardness();
+        size_t const i = ti.first - 1;
+        double const iSigma = getQsigmaPhysical(ti.second);
+        atomJ[i] = elements.at(ti.second).getHardness();
+        if (normalize) atomJ[i] = physical("hardness", atomJ[i]);
+        atomJ[i] *= getFourPiEpsilon();
         sigmaSqrtPi[i] = sqrt(M_PI) * iSigma;
-        for (size_t j = 0; j < numElements; j++)
+        for (auto const& tj : mapTypeToElement)
         {
-            double const jSigma = elements.at(j).getQsigma();
+            size_t const j = tj.first - 1;
+            double const jSigma = getQsigmaPhysical(tj.second);
             gammaSqrt2[i][j] = sqrt(2.0 * (iSigma * iSigma + jSigma * jSigma));
         }
     }
-    qRef = structure.chargeRef;
+    qRef = normalize ? physical("charge", structure.chargeRef)
+                     : structure.chargeRef;
+}
+
+double InterfaceLammps::getFourPiEpsilon() const
+{
+    // Mode keeps 4 pi epsilon in normalized units for normalized models.
+    if (normalize) return fourPiEps * convLength * convEnergy
+                          / (convCharge * convCharge);
+    return fourPiEps;
+}
+
+double InterfaceLammps::getQsigmaPhysical(size_t element) const
+{
+    double sigma = elements.at(element).getQsigma();
+    if (normalize) sigma /= convLength;
+    return sigma;
 }
 
 double InterfaceLammps::getMaxQsigma() const
 {
     double sigmaMax = 0.0;
-    for (auto const& e : elements) sigmaMax = max(sigmaMax, e.getQsigma());
+    for (size_t i = 0; i < numElements; ++i)
+    {
+        sigmaMax = max(sigmaMax, getQsigmaPhysical(i));
+    }
     return sigmaMax;
 }
 
@@ -607,7 +634,9 @@ void InterfaceLammps::getdEdQ(double* const& dEtotdQ) const
     {
         ai = &(structure.atoms.at(i));
         size_t const ia = ai->index;
-        dEtotdQ[ia] += ai->dEdG.back();
+        // dE/dQ has the units of an electronegativity.
+        dEtotdQ[ia] += (normalize ? physical("negativity", ai->dEdG.back())
+                                  : ai->dEdG.back()) * getFourPiEpsilon();
     }
 }
 
@@ -647,6 +676,7 @@ void InterfaceLammps::getdChidxyz(int ind,
 #endif
                 }
             }
+        if (normalize) dChi *= physical("negativity", 1.0) * convLength;
         dChidx[j] = dChi[0];
         dChidy[j] = dChi[1];
         dChidz[j] = dChi[2];
@@ -656,7 +686,7 @@ void InterfaceLammps::getdChidxyz(int ind,
 void InterfaceLammps::addCharge(int index, double Q)
 {
     Atom& a = structure.atoms.at(index);
-    a.charge = Q;
+    a.charge = normalize ? normalized("charge", Q) : Q;
     //log << strpr("Atom %5zu (%2s) q: %24.16E\n",
     //             a.tag, elementMap[a.element].c_str(), a.charge);
 }
@@ -666,6 +696,11 @@ void InterfaceLammps::getScreeningInfo(double* const& screenInfo) const
     screenInfo[0] = (double) screeningFunction.getCoreFunctionType(); //TODO: this does not work atm
     screenInfo[1] = screeningFunction.getInner();
     screenInfo[2] = screeningFunction.getOuter();
+    if (normalize)
+    {
+        screenInfo[1] /= convLength;
+        screenInfo[2] /= convLength;
+    }
     screenInfo[3] = 1.0 / (screenInfo[2] - screenInfo[1]); // scale
 }
 
@@ -681,7 +716,8 @@ void InterfaceLammps::setElecDone()
 
 void InterfaceLammps::addElectrostaticEnergy(double eElec)
 {
-    structure.energyElec = eElec;
+    eElec /= getFourPiEpsilon();
+    structure.energyElec = normalize ? normalized("energy", eElec) : eElec;
 }
 
 void InterfaceLammps::getForces(double* const* const& atomF) const {
@@ -842,7 +878,9 @@ void InterfaceLammps::getForcesChi(double const* const&  lambda,
     double const cfforce = cflength / cfenergy;
     double convForce = 1.0;
     if (normalize) {
-        convForce = convLength / convEnergy;
+        // lambda * dChi/dr: physical dChi/dr from normalized dChi/dG and
+        // dG/dr (lambda is a physical charge).
+        convForce = convLength * convCharge / convEnergy;
     }
 
     // Loop over all local atoms. Neural network and Symmetry function
@@ -919,7 +957,8 @@ void InterfaceLammps::getCharges(double* const& atomQ) const
 #endif
     for (size_t i = 0; i < s.numAtoms; ++i)
     {
-        atomQ[i] = s.atoms[i].charge;
+        atomQ[i] = normalize ? physical("charge", s.atoms[i].charge)
+                             : s.atoms[i].charge;
     }
 
     return;

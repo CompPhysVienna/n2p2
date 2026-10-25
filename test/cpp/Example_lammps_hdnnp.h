@@ -15,10 +15,16 @@ struct Example_lammps_hdnnp : public Example
     std::size_t lastTimeStep;
     double      potentialEnergy;
     double      totalEnergy;
+    /// Optional: file with reference forces (columns: id fx fy fz), compared
+    /// with the forces written by the example to "forces.dump".
+    std::string forcesReference;
+    /// Absolute tolerance for the forces.
+    double      forcesTolerance;
 
     Example_lammps_hdnnp(std::string name) :
         pathBin("../../../bin"),
-        pathData("../../examples/interface-LAMMPS/")
+        pathData("../../examples/interface-LAMMPS/"),
+        forcesTolerance(0.0)
     {
         this->name = name;
         this->tool = "lmp_mpi";
@@ -61,6 +67,31 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->lastTimeStep = 0;
     e->potentialEnergy = -54395.981;
     e->totalEnergy = -54391.754;
+
+    // 4G-HDNNP with normalized units (nnp-norm) and an element mapping not in
+    // the order of the atomic numbers. Energy, charges and forces agree with
+    // nnp-predict (examples/nnp-predict/H2O_SPCFw_4G, -120.21747016 eV): the
+    // forces of nnp-predict are in forces.nnp-predict (the remaining
+    // difference, about 2E-6 eV/A, is due to the different Ewald summations).
+    examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 0;
+    e->potentialEnergy = -120.21748;
+    e->totalEnergy = -120.21748;
+    e->forcesReference = "forces.nnp-predict";
+    e->forcesTolerance = 1.0E-5;
+
+    // The same model and structure in eV and Angstrom without normalization
+    // (four_pi_epsilon != 1, no unit conversion in LAMMPS): same results.
+    examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G_metal"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 0;
+    e->potentialEnergy = -120.21748;
+    e->totalEnergy = -120.21748;
+    e->forcesReference = "forces.nnp-predict";
+    e->forcesTolerance = 1.0E-5;
 
     return;
 }

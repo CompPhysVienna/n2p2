@@ -158,7 +158,10 @@ public:
     double getAtomicEnergy(int index) const;
     /** Adds electrostatic energy contribution to the total structure energy
      *
-     * @param[in] electrostatic energy (calculated in LAMMPS).
+     * @param[in] electrostatic energy (calculated in LAMMPS with
+     *            4 pi epsilon = 1, i.e. in the energy units of the training
+     *            data times getFourPiEpsilon(), also for normalized
+     *            models).
      *
      */
     void addElectrostaticEnergy(double energy);
@@ -231,14 +234,23 @@ public:
      */
     void   clearExtrapolationWarnings();
     /** Read atomic charges from LAMMPS into n2p2.
+     *
+     * Charges in units of e (normalized internally for normalized models).
      */
     void   addCharge(int index, double Q);
     /** Write QEq arrays from n2p2 to LAMMPS.
      *
-     * @param[in] atomChi Electronegativities.
-     * @param[in] atomJ Atomic hardness.
-     * @param[in] atomSigma Gaussian width.
+     * @param[in] atomChi Electronegativities (by LAMMPS atom index).
+     * @param[in] atomJ Atomic hardness (by LAMMPS atom type - 1).
+     * @param[in] atomSigma Gaussian width (by LAMMPS atom type - 1).
      * @param[in] qRef Reference charge of the structure.
+     *
+     * Like all quantities exchanged with the LAMMPS side of the 4G-HDNNP
+     * (electrostatics, charge equilibration), in the units of the training
+     * data, also for normalized models. The LAMMPS side evaluates the
+     * Coulomb interaction with 4 pi epsilon = 1, so energies exchanged with
+     * it (electronegativities, hardness, dE/dQ, electrostatic energy) are
+     * multiplied by 4 pi epsilon (see getFourPiEpsilon()).
      */
     void   getQEqParams(double* const&        atomChi,
                         double* const&        atomJ,
@@ -258,9 +270,16 @@ public:
     void   getScreeningInfo(double* const& rScreen) const;
     /** Largest Gaussian charge width (fixed_gausswidth) of all elements.
      *
-     * @return Maximum width in n2p2 length units.
+     * @return Maximum width in the length units of the training data (also
+     *         for normalized models).
      */
     double getMaxQsigma() const;
+    /** 4 pi epsilon in the units of the training data (four_pi_epsilon,
+     * also for normalized models).
+     *
+     * @return 4 pi epsilon (1 for atomic units).
+     */
+    double getFourPiEpsilon() const;
     /** Transfer spatial derivatives of atomic electronegativities.
      *
      * @param[in] tag Atom of interest
@@ -290,6 +309,12 @@ public:
     void   add3DVecToArray(double *const & arr, Vec3D const& v) const;
 
 protected:
+    /** Gaussian charge width of an element in the length units of the
+     * training data (also for normalized models).
+     *
+     * @param[in] element %Element index.
+     */
+    double                     getQsigmaPhysical(std::size_t element) const;
     /// Process rank.
     int                        myRank;
     /// Initialization state.
