@@ -1772,13 +1772,6 @@ void Mode::chargeEquilibration( Structure& structure,
     VectorXd hardness(numElements);
     MatrixXd gammaSqrt2(numElements, numElements);
     VectorXd sigmaSqrtPi(numElements);
-    // In case of natural units and no normalization
-    double fourPiEps = 1;
-    // In case of natural units but with normalization. Other units currently
-    // not supported.
-    if (normalize) fourPiEps = pow(convCharge, 2) / (convLength * convEnergy);
-
-    fourPiEps = 1;
 
     for (size_t i = 0; i < numElements; ++i)
     {
