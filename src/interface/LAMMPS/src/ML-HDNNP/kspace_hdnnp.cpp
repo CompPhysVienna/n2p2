@@ -12,6 +12,7 @@
 ------------------------------------------------------------------------- */
 
 #include "kspace_hdnnp.h"
+#include <vector>
 
 #include "angle.h"
 #include "atom.h"
@@ -993,23 +994,24 @@ double KSpaceHDNNP::compute_ewald_eqeq(const gsl_vector *v)
 
 
     E_recip = 0.0;
+    // Structure factors of all reciprocal vectors with one MPI_Allreduce
+    // (real and imaginary parts interleaved).
+    std::vector<double> sf_loc(2 * kcount, 0.0);
+    std::vector<double> sf(2 * kcount, 0.0);
     for (int k = 0; k < kcount; k++) // over k-space
     {
-        //fprintf(stderr, "kcoeff[%d] = %24.16E\n", k, hdnnp->kcoeff[k]);
-        double sf_real_loc = 0.0;
-        double sf_im_loc = 0.0;
-        sf_real[k] = 0.0;
-        sf_im[k] = 0.0;
-        // TODO: this loop over all atoms can be replaced by a MPIallreduce ?
         for (i = 0; i < nlocal; i++)
         {
             double const qi = gsl_vector_get(v,tag[i]-1);
-            sf_real_loc += qi * sfexp_rl[k][i];
-            sf_im_loc += qi * sfexp_im[k][i];
+            sf_loc[2 * k] += qi * sfexp_rl[k][i];
+            sf_loc[2 * k + 1] += qi * sfexp_im[k][i];
         }
-        //fprintf(stderr, "sfexp %d : %24.16E\n", k, hdnnp->kcoeff[k] * (pow(sf_real,2) + pow(sf_im,2)));
-        MPI_Allreduce(&(sf_real_loc),&(sf_real[k]),1,MPI_DOUBLE,MPI_SUM,world);
-        MPI_Allreduce(&(sf_im_loc),&(sf_im[k]),1,MPI_DOUBLE,MPI_SUM,world);
+    }
+    MPI_Allreduce(sf_loc.data(),sf.data(),2 * kcount,MPI_DOUBLE,MPI_SUM,world);
+    for (int k = 0; k < kcount; k++)
+    {
+        sf_real[k] = sf[2 * k];
+        sf_im[k] = sf[2 * k + 1];
         E_recip += kcoeff[k] * (pow(sf_real[k],2) + pow(sf_im[k],2));
     }
 

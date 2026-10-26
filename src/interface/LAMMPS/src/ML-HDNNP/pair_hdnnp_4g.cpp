@@ -757,21 +757,25 @@ double PairHDNNP4G::forceLambda_f(const gsl_vector *v)
                 E_real += real;
             }
         }
-        // Reciprocal space
-        for (int k = 0; k < kspacehdnnp->kcount; k++) // over k-space
+        // Reciprocal space: structure factors of all reciprocal vectors with
+        // one MPI_Allreduce (real and imaginary parts interleaved).
+        int const kcount = kspacehdnnp->kcount;
+        std::vector<double> sf_loc(2 * kcount, 0.0);
+        std::vector<double> sf(2 * kcount, 0.0);
+        for (int k = 0; k < kcount; k++) // over k-space
         {
-            double sf_real_loc = 0.0;
-            double sf_im_loc = 0.0;
-            kspacehdnnp->sf_real[k] = 0.0;
-            kspacehdnnp->sf_im[k] = 0.0;
-            for (i = 0; i < nlocal; i++) //TODO: check
+            for (i = 0; i < nlocal; i++)
             {
                 double const lambda_i = gsl_vector_get(v,tag[i]-1);
-                sf_real_loc += lambda_i * kspacehdnnp->sfexp_rl[k][i];
-                sf_im_loc += lambda_i * kspacehdnnp->sfexp_im[k][i];
+                sf_loc[2 * k] += lambda_i * kspacehdnnp->sfexp_rl[k][i];
+                sf_loc[2 * k + 1] += lambda_i * kspacehdnnp->sfexp_im[k][i];
             }
-            MPI_Allreduce(&(sf_real_loc),&(kspacehdnnp->sf_real[k]),1,MPI_DOUBLE,MPI_SUM,world);
-            MPI_Allreduce(&(sf_im_loc),&(kspacehdnnp->sf_im[k]),1,MPI_DOUBLE,MPI_SUM,world);
+        }
+        MPI_Allreduce(sf_loc.data(),sf.data(),2 * kcount,MPI_DOUBLE,MPI_SUM,world);
+        for (int k = 0; k < kcount; k++)
+        {
+            kspacehdnnp->sf_real[k] = sf[2 * k];
+            kspacehdnnp->sf_im[k] = sf[2 * k + 1];
             E_recip += kspacehdnnp->kcoeff[k] * (pow(kspacehdnnp->sf_real[k],2) + pow(kspacehdnnp->sf_im[k],2));
         }
         E_lambda_loc += E_real + E_self;
