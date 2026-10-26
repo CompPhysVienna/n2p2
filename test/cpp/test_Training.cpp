@@ -15,11 +15,14 @@
 #include "Training.h"
 #include "utility.h"
 #include <cmath>     // std::fabs
+#include <cstring>   // std::memset
 #include <fstream>   // std::ifstream, std::ofstream
 #include <iterator>  // std::istreambuf_iterator
 #include <mpi.h>
+#include <new>       // placement new
 #include <stdexcept> // std::runtime_error
 #include <string>    // std::string
+#include <type_traits> // std::aligned_storage
 #include <vector>    // std::vector
 
 using namespace std;
@@ -493,6 +496,66 @@ BOOST_FIXTURE_TEST_CASE(
         if (!line.empty() && line.at(0) != '#') numDataLines++;
     }
     BOOST_REQUIRE_EQUAL(numDataLines, 3);
+}
+
+// The update counter in the training log (column "count") starts at 1. It
+// used to be left uninitialized; constructing the Training object in memory
+// filled with ones makes such a member visible deterministically.
+BOOST_FIXTURE_TEST_CASE(Loop_TrainingLogCountsUpdatesFromOne,
+                        FixtureRepairDir)
+{
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-train/H2O_RPBE-D3", "test"));
+    bfs::current_path("test");
+
+    typedef aligned_storage<sizeof(Training), alignof(Training)>::type
+        Storage;
+    Storage* storage = new Storage;
+    memset(storage, 0xff, sizeof(Storage));
+    Training* t = new (storage) Training();
+    Training& training = *t;
+    training.log.writeToStdout = false;
+    training.setupMPI();
+    training.initialize();
+    training.loadSettingsFile();
+    training.setStage(0);
+    training.setupGeneric(
+        "", training.settingsKeywordExists("normalize_data_set"), false);
+    training.setupSymmetryFunctionScaling();
+    training.setupSymmetryFunctionStatistics(false, false, false, false);
+    training.setupRandomNumberGenerator();
+    training.distributeStructures(true);
+    training.selectSets();
+    training.initializeWeights();
+    if (training.useNormalization()) training.toNormalizedUnits();
+    training.setupTraining();
+    training.calculateNeighborLists();
+    BOOST_REQUIRE_NO_THROW(training.loop());
+    t->~Training();
+    delete storage;
+
+    // One line per update candidate, the count increases by one per update
+    // (several lines with the same count only for multiple streams).
+    ifstream log("train-log.out");
+    BOOST_REQUIRE(log.is_open());
+    string line;
+    size_t previous = 0;
+    size_t numLines = 0;
+    while (getline(log, line))
+    {
+        vector<string> const columns = split(reduce(line));
+        if (columns.empty() || columns.at(0).at(0) == '#') continue;
+        size_t const count = stoul(columns.at(2));
+        BOOST_TEST_INFO("training log line: " << line);
+        if (numLines == 0) BOOST_REQUIRE_EQUAL(count, 1);
+        else BOOST_REQUIRE(count == previous || count == previous + 1);
+        previous = count;
+        numLines++;
+    }
+    BOOST_REQUIRE(numLines > 0);
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
 }
 
 // Data set normalization is not implemented for 4G-HDNNPs, also not in
