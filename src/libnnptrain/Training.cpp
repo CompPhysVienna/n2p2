@@ -54,6 +54,7 @@ Training::Training() : Dataset(),
                        writeWeightsAlways         (0              ),
                        writeNeuronStatisticsEvery (0              ),
                        writeNeuronStatisticsAlways(0              ),
+                       countUpdates               (0              ),
                        numWeights                 (0              ),
                        forceWeight                (0.0            ),
                        trainingLogFileName        ("train-log.out")
@@ -2344,7 +2345,7 @@ void Training::update(string const& property)
             Structure& s = structures.at(c->s);
             // Calculate symmetry functions (if results are already stored
             // these functions will return immediately).
-#ifdef NOSFGROUPS
+#ifdef N2P2_NO_SF_GROUPS
             calculateSymmetryFunctions(s, derivatives);
 #else
             calculateSymmetryFunctionGroups(s, derivatives);
