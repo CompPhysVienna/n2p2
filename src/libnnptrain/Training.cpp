@@ -2470,8 +2470,11 @@ void Training::update(string const& property)
                     break;
                 }
                 // If loop continues, free memory and remember best candidate
-                // so far.
-                if (freeMemory)
+                // so far. Sub candidates (4G forces) all belong to the same
+                // structure: keep its symmetry functions for the next trial
+                // and for the best candidate after the loop, which would
+                // otherwise recalculate them each time.
+                if (freeMemory && !useSubCandidates)
                 {
                     s.freeAtoms(true, maxCutoffRadius);
                 }
