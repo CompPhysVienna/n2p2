@@ -221,6 +221,26 @@ void Training::selectSets()
         log << strpr("- Test     patterns : %d\n", p[k].numTestPatterns);
         log << strpr("- Test set fraction : %f\n", p[k].numTestPatterns / sum);
     }
+    // Every process provides update candidates in update(): a process
+    // without training data of a property cannot train it. All processes
+    // throw the same error.
+    for (auto k : pk)
+    {
+        int numProcsWithout = p[k].updateCandidates.empty() ? 1 : 0;
+        MPI_Allreduce(MPI_IN_PLACE, &numProcsWithout, 1, MPI_INT, MPI_SUM,
+                      comm);
+        if (numProcsWithout > 0)
+        {
+            throw runtime_error(strpr("ERROR: %d of %d MPI processes have no "
+                                      "training data for property \"%s\" "
+                                      "(%zu training patterns in total), "
+                                      "use fewer processes.\n",
+                                      numProcsWithout,
+                                      numProcs,
+                                      k.c_str(),
+                                      p[k].numTrainPatterns));
+        }
+    }
 
     log << "*****************************************"
            "**************************************\n";

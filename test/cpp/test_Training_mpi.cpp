@@ -23,7 +23,8 @@
 #include <fstream> // std::ifstream, std::ofstream
 #include <map>     // std::map
 #include <mpi.h>
-#include <sstream> // std::ostringstream
+#include <sstream>   // std::ostringstream
+#include <stdexcept> // std::runtime_error
 #include <string>  // std::string, std::to_string
 #include <vector>  // std::vector
 
@@ -213,6 +214,47 @@ BOOST_FIXTURE_TEST_CASE(DistributeStructures_CoversEveryStructureExactlyOnce,
     {
         BOOST_REQUIRE_EQUAL(globalCount.at(i), 1);
     }
+}
+
+// A process without training structures (here: the last one, whose copy of
+// input.nn puts all structures in the test set) used to crash in update()
+// with std::out_of_range. selectSets() now throws a clear error, on every
+// process, also on those with training data (no process left waiting in a
+// collective call).
+BOOST_AUTO_TEST_CASE(SelectSets_ProcessWithoutTrainingData_ThrowsOnAllProcesses)
+{
+    int rank = 0;
+    int size = 1;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    string const dirName = "test_rank" + to_string(rank);
+    if (bfs::exists(dirName)) bfs::remove_all(dirName);
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-train/H2O_RPBE-D3", dirName));
+    bfs::current_path(dirName);
+    if (rank == size - 1)
+    {
+        BOOST_REQUIRE(replaceInFile("input.nn",
+                                    "test_fraction                   0.1",
+                                    "test_fraction                   1.0"));
+    }
+    {
+        Training training;
+        training.log.writeToStdout = false;
+        training.setupMPI();
+        training.initialize();
+        training.loadSettingsFile();
+        training.setStage(0);
+        training.setupGeneric(
+            "", training.settingsKeywordExists("normalize_data_set"), false);
+        training.setupSymmetryFunctionScaling();
+        training.setupSymmetryFunctionStatistics(false, false, false, false);
+        training.setupRandomNumberGenerator();
+        training.distributeStructures(true);
+        BOOST_REQUIRE_THROW(training.selectSets(), runtime_error);
+    }
+    bfs::current_path("..");
+    bfs::remove_all(dirName);
 }
 
 BOOST_FIXTURE_TEST_CASE(SendRecvStructure_RoundTrip_PreservesContentAcrossRanks,
