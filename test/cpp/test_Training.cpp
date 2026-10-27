@@ -132,12 +132,15 @@ struct FixtureH2OTrainingGD : public FixtureRepairDir
     Training training;
 };
 
-// Runs one epoch of 4G stage-2 (energy and force) training on the
-// H2O_RPBE-D3_4G example, with or without memorize_symfunc_results, and
-// returns the stage-2 learning-curve values {energy RMSE train, test, force
-// RMSE train, test} of epochs 0 and 1. Same setup sequence as
-// src/application/nnp-train.cpp for stage 2.
-vector<double> trainStage2OneEpoch4G(bool memorize)
+// Runs the given number of epochs of 4G stage-2 (energy and force) training
+// on the H2O_RPBE-D3_4G example, with or without memorize_symfunc_results
+// and with the given short_force_fraction, and returns the stage-2
+// learning-curve values {energy RMSE train, test, force RMSE train, test} of
+// epochs 0 to epochs. Same setup sequence as src/application/nnp-train.cpp
+// for stage 2.
+vector<double> trainStage2Epochs4G(bool          memorize,
+                                   size_t        epochs,
+                                   string const& forceFraction)
 {
     if (bfs::exists("test")) bfs::remove_all("test");
     BOOST_REQUIRE(copy_directory_recursively(
@@ -145,7 +148,12 @@ vector<double> trainStage2OneEpoch4G(bool memorize)
     bfs::current_path("test");
     BOOST_REQUIRE(replaceInFile("input.nn",
                                 "epochs                          10",
-                                "epochs                          1"));
+                                "epochs                          "
+                                + to_string(epochs)));
+    BOOST_REQUIRE(replaceInFile("input.nn",
+                                "short_force_fraction            0.025",
+                                "short_force_fraction            "
+                                + forceFraction));
     if (memorize)
     {
         BOOST_REQUIRE(replaceInFile("input.nn",
@@ -178,7 +186,7 @@ vector<double> trainStage2OneEpoch4G(bool memorize)
         training.loop();
     }
 
-    vector<double> rows(8, 0.0);
+    vector<double> rows(4 * (epochs + 1), 0.0);
     ifstream file("learning-curve.out.stage-2");
     BOOST_REQUIRE(file.is_open());
     string line;
@@ -187,7 +195,7 @@ vector<double> trainStage2OneEpoch4G(bool memorize)
         vector<string> c = split(reduce(line));
         if (c.empty() || c.at(0).at(0) == '#') continue;
         size_t const e = stoul(c.at(0));
-        BOOST_REQUIRE(e <= 1);
+        BOOST_REQUIRE(e <= epochs);
         rows.at(4 * e + 0) = stod(c.at(1));
         rows.at(4 * e + 1) = stod(c.at(2));
         rows.at(4 * e + 2) = stod(c.at(9));
@@ -602,8 +610,29 @@ BOOST_FIXTURE_TEST_CASE(Stage2_4G_NormalizeDataSetThrows, FixtureRepairDir)
 BOOST_FIXTURE_TEST_CASE(Stage2_4G_MemorizeSymfuncResults_DoesNotChangeTraining,
                         FixtureRepairDir)
 {
-    vector<double> const memo = trainStage2OneEpoch4G(true);
-    vector<double> const freed = trainStage2OneEpoch4G(false);
+    vector<double> const memo = trainStage2Epochs4G(true, 1, "0.025");
+    vector<double> const freed = trainStage2Epochs4G(false, 1, "0.025");
+
+    for (size_t i = 0; i < memo.size(); ++i)
+    {
+        BOOST_TEST_INFO("learning-curve value " << i << ": memorized "
+                        << memo.at(i) << ", freed " << freed.at(i));
+        BOOST_REQUIRE(memo.at(i) > 0.0);
+        BOOST_REQUIRE_SMALL(memo.at(i) - freed.at(i), 1.0E-10 * memo.at(i));
+    }
+}
+
+// Same for the errors of the learning curve. With short_force_fraction 0.1
+// an epoch ends while the force updates of a structure are still in
+// progress: its charge equilibration is still cached when the errors are
+// calculated, but its dChidG was freed with the atoms. Two epochs, because
+// the training errors of one epoch set the update thresholds of the next.
+BOOST_FIXTURE_TEST_CASE(
+    Stage2_4G_MemorizeSymfuncResults_DoesNotChangeTrainingErrors,
+    FixtureRepairDir)
+{
+    vector<double> const memo = trainStage2Epochs4G(true, 2, "0.1");
+    vector<double> const freed = trainStage2Epochs4G(false, 2, "0.1");
 
     for (size_t i = 0; i < memo.size(); ++i)
     {
