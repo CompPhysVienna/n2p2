@@ -1462,6 +1462,14 @@ void Training::calculateError(
                                                     "elec");
                     chargeEquilibration((*it), useForces);
                 }
+                // The charge equilibration may still be cached from a force
+                // update (see update()), while freeAtoms() reset dChidG:
+                // re-evaluate the electronegativity network, otherwise the
+                // forces miss the dChi/dr term.
+                else if (useForces)
+                {
+                    calculateAtomicNeuralNetworks((*it), useForces, "elec");
+                }
                 calculateAtomicNeuralNetworks((*it), useForces, "short");
                 calculateEnergy((*it));
                 if (useForces) calculateForces((*it));
