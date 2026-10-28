@@ -81,8 +81,6 @@ PairHDNNP4G::PairHDNNP4G(LAMMPS *lmp) : Pair(lmp),
     step                           (0.0    ),
     maxit                          (0      ),
     minim_init_style               (0      ),
-    T                              (nullptr),
-    s                              (nullptr),
     E_elec                         (0.0    ),
     kcoeff_sum                     (0.0    ),
     type_all                       (nullptr),
@@ -705,111 +703,32 @@ void PairHDNNP4G::transferCharges()
     }
 }
 
-// forceLambda function
-double PairHDNNP4G::forceLambda_f(const gsl_vector *v)
+// Reciprocal-space terms of lambda used by forceLambda_df: structure factors
+// of all reciprocal vectors with one MPI_Allreduce (real and imaginary parts
+// interleaved).
+void PairHDNNP4G::forceLambda_structureFactors(const gsl_vector *v)
 {
-    int i,j,jmap;
-    int *type = atom->type;
-    int nlocal = atom->nlocal;
-    int *tag = atom->tag;
-    int nall = atom->natoms;
-
-    double **x = atom->x;
-    double E_real, E_recip, E_self;
-    double E_lambda,E_lambda_loc;
-    double iiterm,ijterm;
-
-    double eta;
-
-    if (periodic) eta = 1 / kspacehdnnp->g_ewald; // LAMMPS truncation
-
-    E_lambda = 0.0;
-    E_lambda_loc = 0.0;
-    if (periodic)
+    if (!periodic) return;
+    int const nlocal = atom->nlocal;
+    int const *tag = atom->tag;
+    int const kcount = kspacehdnnp->kcount;
+    std::vector<double> sf_loc(2 * kcount, 0.0);
+    std::vector<double> sf(2 * kcount, 0.0);
+    for (int k = 0; k < kcount; k++) // over k-space
     {
-        double sqrt2eta = (sqrt(2.0) * eta);
-        E_recip = 0.0;
-        E_real = 0.0;
-        E_self = 0.0;
-        for (i = 0; i < nlocal; i++) // over local atoms
+        for (int i = 0; i < nlocal; i++)
         {
-            double const lambda_i = gsl_vector_get(v, tag[i]-1);
-            double lambda_i2 = lambda_i * lambda_i;
-
-            // Self interactionsterm
-            E_self += lambda_i2 * (1 / (2.0 * sigmaSqrtPi[type[i]-1]) - 1 / (sqrt(2.0 * M_PI) * eta));
-            E_lambda_loc += dEdQ[i] * lambda_i + 0.5 * hardness[type[i]-1] * lambda_i2;
-
-            // Real space
-            // TODO: we loop over the full neighbor list, could this be optimized ?
-            for (int jj = 0; jj < elecList->numneigh[i]; ++jj) {
-                j = elecList->firstneigh[i][jj];
-                j &= NEIGHMASK;
-                double const lambda_j = gsl_vector_get(v, tag[j]-1);
-                //jmap = atom->map(tag[j]);
-                //double const dx = x[i][0] - x[j][0];
-                //double const dy = x[i][1] - x[j][1];
-                //double const dz = x[i][2] - x[j][2];
-                //double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * cflength;
-                //double erfcRij = (erfc(rij / sqrt2eta) - erfc(rij / gammaSqrt2[type[i]-1][type[jmap]-1])) / rij;
-                //double real = 0.5 * lambda_i * lambda_j * erfcRij;
-                double real = 0.5 * lambda_i * lambda_j * erfc_val[i][jj];
-                E_real += real;
-            }
-        }
-        // Reciprocal space: structure factors of all reciprocal vectors with
-        // one MPI_Allreduce (real and imaginary parts interleaved).
-        int const kcount = kspacehdnnp->kcount;
-        std::vector<double> sf_loc(2 * kcount, 0.0);
-        std::vector<double> sf(2 * kcount, 0.0);
-        for (int k = 0; k < kcount; k++) // over k-space
-        {
-            for (i = 0; i < nlocal; i++)
-            {
-                double const lambda_i = gsl_vector_get(v,tag[i]-1);
-                sf_loc[2 * k] += lambda_i * kspacehdnnp->sfexp_rl[k][i];
-                sf_loc[2 * k + 1] += lambda_i * kspacehdnnp->sfexp_im[k][i];
-            }
-        }
-        MPI_Allreduce(sf_loc.data(),sf.data(),2 * kcount,MPI_DOUBLE,MPI_SUM,world);
-        for (int k = 0; k < kcount; k++)
-        {
-            kspacehdnnp->sf_real[k] = sf[2 * k];
-            kspacehdnnp->sf_im[k] = sf[2 * k + 1];
-            E_recip += kspacehdnnp->kcoeff[k] * (pow(kspacehdnnp->sf_real[k],2) + pow(kspacehdnnp->sf_im[k],2));
-        }
-        E_lambda_loc += E_real + E_self;
-    }else
-    {
-        // first loop over local atoms
-        for (i = 0; i < nlocal; i++) {
-            double const lambda_i = gsl_vector_get(v,i);
-            // add i terms here
-            iiterm = lambda_i * lambda_i / (2.0 * sigmaSqrtPi[type[i]-1]);
-            E_lambda += iiterm + dEdQ[i]*lambda_i + 0.5*hardness[type[i]-1]*lambda_i*lambda_i;
-            // second loop over 'all' atoms
-            for (j = i + 1; j < nall; j++) {
-                double const lambda_j = gsl_vector_get(v, j);
-                double const dx = x[j][0] - x[i][0];
-                double const dy = x[j][1] - x[i][1];
-                double const dz = x[j][2] - x[i][2];
-                double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * cflength;
-                ijterm = lambda_i * lambda_j * (erf(rij / gammaSqrt2[type[i]-1][type[j]-1]) / rij);
-                E_lambda += ijterm;
-            }
+            double const lambda_i = gsl_vector_get(v,tag[i]-1);
+            sf_loc[2 * k] += lambda_i * kspacehdnnp->sfexp_rl[k][i];
+            sf_loc[2 * k + 1] += lambda_i * kspacehdnnp->sfexp_im[k][i];
         }
     }
-
-    MPI_Allreduce(&E_lambda_loc,&E_lambda,1,MPI_DOUBLE,MPI_SUM,world); // MPI_SUM of local QEQ contributions
-    E_lambda += E_recip; // adding already all-reduced reciprocal part
-
-    return E_lambda;
-}
-
-// forceLambda function - wrapper
-double PairHDNNP4G::forceLambda_f_wrap(const gsl_vector *v, void *params)
-{
-    return static_cast<PairHDNNP4G*>(params)->forceLambda_f(v);
+    MPI_Allreduce(sf_loc.data(),sf.data(),2 * kcount,MPI_DOUBLE,MPI_SUM,world);
+    for (int k = 0; k < kcount; k++)
+    {
+        kspacehdnnp->sf_real[k] = sf[2 * k];
+        kspacehdnnp->sf_im[k] = sf[2 * k + 1];
+    }
 }
 
 // forceLambda gradient
@@ -904,47 +823,17 @@ void PairHDNNP4G::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
 
 }
 
-// forceLambda gradient - wrapper
-void PairHDNNP4G::forceLambda_df_wrap(const gsl_vector *v, void *params, gsl_vector *df)
-{
-    static_cast<PairHDNNP4G*>(params)->forceLambda_df(v, df);
-}
-
-// forceLambda f*df
-void PairHDNNP4G::forceLambda_fdf(const gsl_vector *v, double *f, gsl_vector *df)
-{
-    *f = forceLambda_f(v);
-    forceLambda_df(v, df);
-}
-
-// forceLambda f*df - wrapper
-void PairHDNNP4G::forceLambda_fdf_wrap(const gsl_vector *v, void *params, double *f, gsl_vector *df)
-{
-    static_cast<PairHDNNP4G*>(params)->forceLambda_fdf(v, f, df);
-}
-
 // Calculate forcelambda vector $\lambda_i$ that is required for optimized force calculation
 void PairHDNNP4G::calculateForceLambda()
 {
-    size_t iter = 0;
-    int i,j;
-    int nsize,status;
+    int i;
+    int nsize;
     int nlocal;
-
-    double psum_it;
-    double gradsum;
-    double lambda_i;
 
     nsize = atom->natoms; // total number of atoms
     nlocal = atom->nlocal; // total number of atoms
 
     gsl_vector *x; // charge vector in our case
-
-    forceLambda_minimizer.n = nsize;
-    forceLambda_minimizer.f = &forceLambda_f_wrap;
-    forceLambda_minimizer.df = &forceLambda_df_wrap;
-    forceLambda_minimizer.fdf = &forceLambda_fdf_wrap;
-    forceLambda_minimizer.params = this;
 
     for (int i =0; i < atom->natoms; i++) {
         dEdLambda_all[i] = 0.0;
@@ -966,40 +855,28 @@ void PairHDNNP4G::calculateForceLambda()
         gsl_vector_set(x,i,forceLambda_all[i]);
     }
 
-    T = gsl_multimin_fdfminimizer_vector_bfgs2;
-    s = gsl_multimin_fdfminimizer_alloc(T, nsize);
-
-    gsl_multimin_fdfminimizer_set(s, &forceLambda_minimizer, x, step, min_tol); // TODO would tol = 0 be expensive ??
-    do
+    // Quadratic function of lambda with sum(lambda) = 0: conjugate gradients
+    // (see FixHDNNP::calculate_QEqCharges()).
+    double lsum = 0.0;
+    for (i = 0; i < nsize; i++) lsum += gsl_vector_get(x, i);
+    for (i = 0; i < nsize; i++)
     {
-        iter++;
-        psum_it = 0.0;
-        status = gsl_multimin_fdfminimizer_iterate(s);
-        // No further improvement possible, see FixHDNNP::calculate_QEqCharges().
-        if (status) break;
-
-        // Projection
-        for(i = 0; i < nsize; i++) {
-            psum_it = psum_it + gsl_vector_get(s->x, i);
-        }
-        for(i = 0; i < nsize; i++) {
-            lambda_i = gsl_vector_get(s->x,i);
-            gsl_vector_set(s->x,i, lambda_i - psum_it/nsize); // projection
-        }
-
-        status = gsl_multimin_test_gradient(s->gradient, grad_tol);
-
-        //if (status == GSL_SUCCESS) printf ("Minimum forceLambda is found at iteration: %zu\n",iter);
-
+        gsl_vector_set(x, i, gsl_vector_get(x, i) - lsum / nsize);
     }
-    while (status == GSL_CONTINUE && iter < maxit);
+    double norm = 0.0;
+    projectedConjugateGradient(
+        [this](const gsl_vector *v, gsl_vector *g)
+        {
+            forceLambda_structureFactors(v);
+            forceLambda_df(v, g);
+        },
+        x, grad_tol, maxit, &norm);
 
     // Read charges before deallocating x
     for (i = 0; i < nlocal; i++) {
-        forceLambda[i] = gsl_vector_get(s->x,atom->tag[i]-1);
+        forceLambda[i] = gsl_vector_get(x,atom->tag[i]-1);
     }
 
-    gsl_multimin_fdfminimizer_free(s);
     gsl_vector_free(x);
 }
 

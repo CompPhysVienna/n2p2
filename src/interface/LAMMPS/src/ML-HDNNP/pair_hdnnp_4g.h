@@ -30,9 +30,82 @@ PairStyle(hdnnp/4g,PairHDNNP4G)
 
 #include "pair.h"
 #include "InterfaceLammps.h"
-#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_vector.h>
+#include <cmath>
 
 namespace LAMMPS_NS {
+
+/* Conjugate gradient solution of the minimum of the quadratic function
+   1/2 x^T A x + b^T x (A symmetric positive definite) with the constraint
+   that the sum of x is fixed (charge equilibration, force lambda).
+   gradient(v, g) must store the gradient projected on the constraint,
+   g = P (A v + b) with P removing the mean, as a global vector on all MPI
+   processes. Since gradient(v) - gradient(0) = P A v, each iteration needs one
+   gradient evaluation. On entry x is the initial guess (its sum is kept), on
+   exit the solution. Stops when |g| < tolerance or after maxit iterations;
+   returns the number of iterations and |g| in norm. */
+template <typename Gradient>
+int projectedConjugateGradient(Gradient gradient, gsl_vector *x,
+                               double tolerance, int maxit, double *norm)
+{
+    size_t const n = x->size;
+    gsl_vector *zero = gsl_vector_calloc(n);
+    gsl_vector *b = gsl_vector_alloc(n);
+    gsl_vector *g = gsl_vector_alloc(n);
+    gsl_vector *p = gsl_vector_alloc(n);
+    gsl_vector *ap = gsl_vector_alloc(n);
+
+    gradient(zero, b); // P b
+    gradient(x, g);
+    double gg = 0.0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        double const gi = gsl_vector_get(g, i);
+        gsl_vector_set(p, i, -gi);
+        gg += gi * gi;
+    }
+    int iter = 0;
+    while (std::sqrt(gg) >= tolerance && iter < maxit)
+    {
+        iter++;
+        gradient(p, ap);
+        double pap = 0.0;
+        for (size_t i = 0; i < n; ++i)
+        {
+            double const api = gsl_vector_get(ap, i) - gsl_vector_get(b, i);
+            gsl_vector_set(ap, i, api); // P A p
+            pap += gsl_vector_get(p, i) * api;
+        }
+        if (pap <= 0.0) break; // solution reached within round-off
+        double const alpha = gg / pap;
+        double ggNew = 0.0;
+        for (size_t i = 0; i < n; ++i)
+        {
+            gsl_vector_set(x, i, gsl_vector_get(x, i)
+                                 + alpha * gsl_vector_get(p, i));
+            double const gi = gsl_vector_get(g, i)
+                            + alpha * gsl_vector_get(ap, i);
+            gsl_vector_set(g, i, gi);
+            ggNew += gi * gi;
+        }
+        double const beta = ggNew / gg;
+        gg = ggNew;
+        for (size_t i = 0; i < n; ++i)
+        {
+            gsl_vector_set(p, i, -gsl_vector_get(g, i)
+                                 + beta * gsl_vector_get(p, i));
+        }
+    }
+    *norm = std::sqrt(gg);
+
+    gsl_vector_free(zero);
+    gsl_vector_free(b);
+    gsl_vector_free(g);
+    gsl_vector_free(p);
+    gsl_vector_free(ap);
+
+    return iter;
+}
 
 class PairHDNNP4G : public Pair {
     friend class FixHDNNP;
@@ -85,7 +158,8 @@ protected:
 
     double *chi,*hardness,*sigmaSqrtPi,**gammaSqrt2; // QEq arrays
     double *dEdQ,*forceLambda;
-    double grad_tol,min_tol,step; // user-defined minimization parameters
+    double grad_tol; // convergence criterion of the charge and force lambda solvers (norm of the projected gradient)
+    double min_tol,step; // parameters of the former GSL minimizer, read by fix hdnnp, unused (deprecated, warning)
     int maxit;
     int minim_init_style; // initialization style for the minimization algorithm, 0: from zero or 1: from the final step
 
@@ -100,18 +174,10 @@ protected:
 
     void deallocateQEq();
 
-    // Minimization Setup for Force Lambda
-    const gsl_multimin_fdfminimizer_type *T;
-    gsl_multimin_fdfminimizer *s;
-
-    gsl_multimin_function_fdf forceLambda_minimizer;
-
-    double forceLambda_f(const gsl_vector*);
-    void forceLambda_df(const gsl_vector*, gsl_vector*);
-    void forceLambda_fdf(const gsl_vector*, double*, gsl_vector*);
-    static double forceLambda_f_wrap(const gsl_vector*, void*);
-    static void forceLambda_df_wrap(const gsl_vector*, void*, gsl_vector*);
-    static void forceLambda_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*);
+    // Force lambda: minimum of 1/2 lambda^T A lambda + dEdQ^T lambda with
+    // sum(lambda) = 0, solved by projectedConjugateGradient().
+    void forceLambda_structureFactors(const gsl_vector*); // reciprocal-space terms used by forceLambda_df
+    void forceLambda_df(const gsl_vector*, gsl_vector*); // projected gradient
 
     double E_elec;
     double kcoeff_sum; // used in dEdQ calculation
