@@ -1,0 +1,77 @@
+###############################################################################
+# 4G-HDNNP with normalized units (nnp-norm), liquid water (SPC/Fw data)
+# Finite-difference check of the forces (test_lammps_hdnnp): forces of the
+# structure in water.data (forces.dump), then the potential energy for
+# displacements of +h and -h (h = 1.0E-3 Angstrom) of atom 1 (O) and atom 2
+# (H) along x, y and z, in this order (thermo rows of step 0). The charges
+# start from zero at every evaluation (last fix hdnnp argument 0), so that the
+# solver has to converge; the charge equilibration and the force lambda are
+# solved to a tight tolerance (gradient norm 1.0E-11). The potential energy is
+# then consistent with the forces to about 1E-5 eV/Angstrom.
+###############################################################################
+clear
+variable cfgFile         string "water.data"
+variable numSteps        equal  0
+variable dt              equal  0.0005
+variable hdnnpCutoff     equal  7.94
+variable hdnnpDir        string "hdnnp-data"
+variable mass_H          equal  1.00794
+variable mass_O          equal  15.9994
+# Conversion factors to the units of the training data (Bohr, Hartree).
+variable c1              equal  1.8897261328
+variable c2              equal  0.0367493254
+
+units metal
+boundary p p p
+atom_style charge
+atom_modify map yes
+read_data ${cfgFile}
+mass 1 ${mass_O}
+mass 2 ${mass_H}
+timestep ${dt}
+thermo 1
+thermo_style custom step pe
+thermo_modify format float %22.14e
+
+neighbor 0.0 bin
+neigh_modify delay 10
+pair_style hdnnp/4g dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:O,2:H"
+pair_coeff * * ${hdnnpCutoff}
+kspace_style hdnnp ewald 1.0e-7
+fix 1 all hdnnp 1 1.0e-11 1.0e-1 1.0e-1 200 nnp nnp 0
+dump F all custom 1 forces.dump id type fx fy fz
+dump_modify F sort id format float %20.12e
+run 0
+undump F
+group a1 id 1
+displace_atoms a1 move 1.0e-3 0 0 units box
+run 0
+displace_atoms a1 move -2.0e-3 0 0 units box
+run 0
+displace_atoms a1 move 1.0e-3 0 0 units box
+displace_atoms a1 move 0 1.0e-3 0 units box
+run 0
+displace_atoms a1 move 0 -2.0e-3 0 units box
+run 0
+displace_atoms a1 move 0 1.0e-3 0 units box
+displace_atoms a1 move 0 0 1.0e-3 units box
+run 0
+displace_atoms a1 move 0 0 -2.0e-3 units box
+run 0
+displace_atoms a1 move 0 0 1.0e-3 units box
+group a2 id 2
+displace_atoms a2 move 1.0e-3 0 0 units box
+run 0
+displace_atoms a2 move -2.0e-3 0 0 units box
+run 0
+displace_atoms a2 move 1.0e-3 0 0 units box
+displace_atoms a2 move 0 1.0e-3 0 units box
+run 0
+displace_atoms a2 move 0 -2.0e-3 0 units box
+run 0
+displace_atoms a2 move 0 1.0e-3 0 units box
+displace_atoms a2 move 0 0 1.0e-3 units box
+run 0
+displace_atoms a2 move 0 0 -2.0e-3 units box
+run 0
+displace_atoms a2 move 0 0 1.0e-3 units box

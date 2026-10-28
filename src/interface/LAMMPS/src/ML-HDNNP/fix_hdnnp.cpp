@@ -14,7 +14,7 @@
 #include "fix_hdnnp.h"
 #include "pair_hdnnp_4g.h"
 #include <iostream>
-#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_vector.h>
 #include <mpi.h>
 #include <cmath>
 #include <cstring>
@@ -102,6 +102,13 @@ FixHDNNP::FixHDNNP(LAMMPS *lmp, int narg, char **arg) :
     hdnnp->step = utils::numeric(FLERR,arg[6],false,lmp); //initial hdnnp->step size
     hdnnp->maxit = utils::inumeric(FLERR,arg[7],false,lmp); //maximum number of iterations
     hdnnp->minim_init_style = utils::inumeric(FLERR,arg[10],false,lmp); //initialization style
+
+    // min_tol and step were parameters of the former GSL BFGS minimizer: the
+    // charges and the force lambda are now solved by conjugate gradients.
+    if (comm->me == 0)
+        error->warning(FLERR,"Fix hdnnp: the arguments min_tol and step are "
+                       "ignored (conjugate gradient solver) and will be "
+                       "removed in a future version");
 
     // TODO: check these initializations and allocations
     int natoms = atom->natoms;
@@ -527,12 +534,6 @@ double FixHDNNP::QEq_f(const gsl_vector *v)
     return E_qeq;
 }
 
-// QEq energy function - wrapper
-double FixHDNNP::QEq_f_wrap(const gsl_vector *v, void *params)
-{
-    return static_cast<FixHDNNP*>(params)->QEq_f(v);
-}
-
 // QEq energy gradient, $\partial E_{QEq} / \partial Q_i$
 void FixHDNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
 {
@@ -637,50 +638,37 @@ void FixHDNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     }
 }
 
-// QEq energy gradient - wrapper
-void FixHDNNP::QEq_df_wrap(const gsl_vector *v, void *params, gsl_vector *df)
+// Reciprocal-space terms of the charges v used by QEq_df (structure factors),
+// computed as in QEq_f
+void FixHDNNP::QEq_reciprocal(const gsl_vector *v)
 {
-    static_cast<FixHDNNP*>(params)->QEq_df(v, df);
-}
-
-// QEq f*df, $E_{QEq} * (\partial E_{QEq} / \partial Q_i)$
-void FixHDNNP::QEq_fdf(const gsl_vector *v, double *f, gsl_vector *df)
-{
-    *f = QEq_f(v);
-    QEq_df(v, df);
-}
-
-// QEq f*df - wrapper
-void FixHDNNP::QEq_fdf_wrap(const gsl_vector *v, void *params, double *E, gsl_vector *df)
-{
-    static_cast<FixHDNNP*>(params)->QEq_fdf(v, E, df);
+    if (!periodic) return;
+    if (kspacehdnnp->ewaldflag)
+    {
+        kspacehdnnp->compute_ewald_eqeq(v);
+    }
+    else if (kspacehdnnp->pppmflag)
+    {
+        kspacehdnnp->particle_map();
+        kspacehdnnp->make_rho_qeq(v);
+        kspacehdnnp->compute_pppm_eqeq();
+    }
 }
 
 // Main minimization routine
 void FixHDNNP::calculate_QEqCharges()
 {
-    size_t iter = 0;
-    int status;
-    int i,j;
+    int i;
     int nsize;
     int nlocal;
     int *tag = atom->tag;
 
     double *q = atom->q;
-    double qsum_it;
-    double gradsum;
-    double qi;
-    double df,alpha;
 
     nsize = atom->natoms; // total number of atoms
     nlocal = atom->nlocal; // total number of atoms
 
     gsl_vector *Q; // charge vector
-    QEq_minimizer.n = nsize; // it should be n_all in the future
-    QEq_minimizer.f = &QEq_f_wrap; // function pointer f(x)
-    QEq_minimizer.df = &QEq_df_wrap; // function pointer df(x)
-    QEq_minimizer.fdf = &QEq_fdf_wrap;
-    QEq_minimizer.params = this;
 
     //fprintf(stderr, "q[%d] = %24.16E\n", atom->tag[0], q[0]);
 
@@ -750,45 +738,37 @@ void FixHDNNP::calculate_QEqCharges()
     //memory->destroy(qall);
     //memory->destroy(qall_loc);
 
-    // TODO: is bfgs2 standard ?
-    T = gsl_multimin_fdfminimizer_vector_bfgs2;
-    s = gsl_multimin_fdfminimizer_alloc(T, nsize);
-    gsl_multimin_fdfminimizer_set(s, &QEq_minimizer, Q, hdnnp->step, hdnnp->min_tol); // tol = 0 might be expensive ???
-    do
+    // The QEq energy is quadratic in the charges: minimum with the total
+    // charge fixed to qRef by conjugate gradients. The previous GSL BFGS
+    // minimization stopped (GSL_ENOPROG) at a relative gradient of about the
+    // square root of the machine precision, where its line search on the
+    // energy can no longer make progress; the remaining charge error enters
+    // the 4G energy at first order (noise of about 1E-4 eV for 630 atoms).
+    double qsum = 0.0;
+    for (i = 0; i < nsize; i++) qsum += gsl_vector_get(Q, i);
+    for (i = 0; i < nsize; i++)
     {
-        //fprintf(stderr, "eqeq-iter %zu\n", iter);
-        iter++;
-        qsum_it = 0.0;
-        gradsum = 0.0;
-        status = gsl_multimin_fdfminimizer_iterate(s);
-        // GSL_ENOPROG: no further improvement possible (the gradient is at
-        // the limit of double precision). Without this check, the status
-        // is overwritten by the gradient test below and the loop runs all
-        // remaining maxit iterations without changing the charges.
-        if (status) break;
-        // Projection (enforcing constraints)
-        // TODO: could this be done more efficiently ?
-        for(i = 0; i < nsize; i++) {
-            qsum_it = qsum_it + gsl_vector_get(s->x, i); // total charge after the minimization hdnnp->step
-        }
-        for(i = 0; i < nsize; i++) {
-            qi = gsl_vector_get(s->x,i);
-            gsl_vector_set(s->x,i, qi - (qsum_it-qRef)/nsize); // charge projection
-        }
-        status = gsl_multimin_test_gradient(s->gradient, hdnnp->grad_tol); // check for convergence
-
-        // TODO: dump also iteration time ?
-        //if (status == GSL_SUCCESS) printf ("Minimum charge distribution is found at iteration : %zu\n", iter);
+        gsl_vector_set(Q, i, gsl_vector_get(Q, i) - (qsum - qRef) / nsize);
     }
-    while (status == GSL_CONTINUE && iter < hdnnp->maxit);
+    double norm = 0.0;
+    projectedConjugateGradient(
+        [this](const gsl_vector *v, gsl_vector *g)
+        {
+            QEq_reciprocal(v);
+            QEq_df(v, g);
+        },
+        Q, hdnnp->grad_tol, hdnnp->maxit, &norm);
+
+    // QEq_f stores the electrostatic energy (E_elec, E_recip_global) of the
+    // charges it is called with: evaluate it at the solution.
+    QEq_f(Q);
 
     // Read calculated atomic charges back into local arrays for further calculations
     for (int i = 0; i < atom->nlocal; i++){
-        q[i] = gsl_vector_get(s->x,tag[i]-1);
+        q[i] = gsl_vector_get(Q,tag[i]-1);
     }
 
     // Deallocation
-    gsl_multimin_fdfminimizer_free(s);
     gsl_vector_free(Q);
     //memory->destroy(dEdQ_loc);
     //memory->destroy(dEdQ_all);

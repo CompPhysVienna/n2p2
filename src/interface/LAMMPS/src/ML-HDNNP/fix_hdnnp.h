@@ -19,7 +19,7 @@ FixStyle(hdnnp,FixHDNNP)
 #ifndef LMP_FIX_HDNNP_H
 #define LMP_FIX_HDNNP_H
 
-#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_vector.h>
 #include "fix.h"
 #include "InterfaceLammps.h"
 
@@ -64,19 +64,12 @@ namespace LAMMPS_NS {
         void allocate_QEq(); // allocates QEq arrays
         void deallocate_QEq(); // deallocates QEq arrays
 
-        /// QEq energy minimization via gsl library
+        /// QEq energy minimization with fixed total charge, solved by
+        /// projectedConjugateGradient() (pair_hdnnp_4g.h)
 
-        gsl_multimin_function_fdf QEq_minimizer; // minimizer object
-        const gsl_multimin_fdfminimizer_type *T;
-        gsl_multimin_fdfminimizer *s;
-
-        double QEq_f(const gsl_vector*); // f : QEq energy as a function of atomic charges
-        void QEq_df(const gsl_vector*, gsl_vector*); // df : Gradient of QEq energy with respect to atomic charges
-        void QEq_fdf(const gsl_vector*, double*, gsl_vector*); // f * df
-
-        static double QEq_f_wrap(const gsl_vector*, void*); // wrapper of f
-        static void QEq_df_wrap(const gsl_vector*, void*, gsl_vector*); // wrapper of df
-        static void QEq_fdf_wrap(const gsl_vector*, void*, double*, gsl_vector*); // wrapper of f * df
+        double QEq_f(const gsl_vector*); // f : QEq energy as a function of atomic charges (also stores E_elec, E_recip_global)
+        void QEq_df(const gsl_vector*, gsl_vector*); // df : Gradient of QEq energy with respect to atomic charges (projected)
+        void QEq_reciprocal(const gsl_vector*); // reciprocal-space terms of the charges used by QEq_df
 
         void calculate_QEqCharges(); // main function where minimization happens
 

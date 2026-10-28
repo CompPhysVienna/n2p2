@@ -3,6 +3,9 @@
 
 #include "Example.h"
 #include "BoostDataContainer.h"
+#include <cstddef> // std::size_t
+#include <string>  // std::string
+#include <vector>  // std::vector
 
 struct Example_lammps_hdnnp : public Example
 {
@@ -20,11 +23,23 @@ struct Example_lammps_hdnnp : public Example
     std::string forcesReference;
     /// Absolute tolerance for the forces.
     double      forcesTolerance;
+    /// Optional: finite-difference check of the forces instead of the energy
+    /// comparison. The example writes the forces of the unperturbed structure
+    /// to "forces.dump" and then the potential energy (thermo_style custom
+    /// step pe) for displacements of +fdStep and -fdStep of each atom in
+    /// fdAtoms along x, y and z, in this order.
+    std::vector<std::size_t> fdAtoms;
+    /// Displacement (LAMMPS length units).
+    double      fdStep;
+    /// Absolute tolerance for the forces from finite differences.
+    double      fdTolerance;
 
     Example_lammps_hdnnp(std::string name) :
         pathBin("../../../bin"),
         pathData("../../examples/interface-LAMMPS/"),
-        forcesTolerance(0.0)
+        forcesTolerance(0.0),
+        fdStep(0.0),
+        fdTolerance(0.0)
     {
         this->name = name;
         this->tool = "lmp_mpi";
@@ -81,6 +96,20 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->totalEnergy = -120.21748;
     e->forcesReference = "forces.nnp-predict";
     e->forcesTolerance = 1.0E-5;
+
+    // Finite-difference check of the forces with the same model and structure
+    // (md-fd.lmp): the potential energy is consistent with the forces only if
+    // the charge equilibration and the force lambda are solved accurately.
+    // Conjugate gradients: largest deviation 7E-6 eV/A. The former GSL BFGS
+    // minimizations stopped at a relative gradient of about 1E-8: 1.9E-4 eV/A
+    // here, and energy errors up to 1E-3 eV in other 630-atom structures.
+    examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G"));
+    e = &(examples.back());
+    e->description += " (finite-difference check of the forces)";
+    e->args = "-in md-fd.lmp ";
+    e->fdAtoms = {1, 2};
+    e->fdStep = 1.0E-3;
+    e->fdTolerance = 3.0E-5;
 
     // The same model and structure in eV and Angstrom without normalization
     // (four_pi_epsilon != 1, no unit conversion in LAMMPS): same results.
