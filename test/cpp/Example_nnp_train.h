@@ -92,11 +92,13 @@ void BoostDataContainer<Example_nnp_train>::setup()
     examples.push_back(Example_nnp_train("H2O_RPBE-D3_4G"));
     e = &(examples.back());
     e->args = "1";
-    e->earlyEpochs = {{0, 1.53886213E-01, 1.56144377E-01, 0.0, 0.0},
-                      {1, 1.98168103E-03, 3.29080752E-03, 0.0, 0.0}};
+    // Values since every structure uses its own Ewald parameters in training
+    // (the 20 structures of this example differ slightly in volume).
+    e->earlyEpochs = {{0, 1.53886212E-01, 1.56144377E-01, 0.0, 0.0},
+                      {1, 1.98165093E-03, 3.29080674E-03, 0.0, 0.0}};
     e->lastEpoch = 10;
-    e->rmseChargesTrain = 3.60544679E-04;
-    e->rmseChargesTest  = 4.60549641E-04;
+    e->rmseChargesTrain = 3.60478602E-04;
+    e->rmseChargesTest  = 4.60539035E-04;
     e->accuracy        = 100.0 * std::numeric_limits<double>::epsilon();
 
     examples.push_back(Example_nnp_train("H2O_RPBE-D3_4G"));
@@ -104,14 +106,15 @@ void BoostDataContainer<Example_nnp_train>::setup()
     e->args = "2";
     // Stage-2 values since the dChi/dr fix in Training::update(): earlier
     // references trained 4G forces without the electronegativity term
-    // whenever memorize_symfunc_results was off (the example's default).
-    e->earlyEpochs = {{0, 2.54963983E+01, 2.54883959E+01, 6.39401966E-01, 6.42712759E-01},
-                      {1, 3.05902029E-04, 2.86634082E-04, 1.65579969E-03, 2.17223928E-03}};
+    // whenever memorize_symfunc_results was off (the example's default), and
+    // since every structure uses its own Ewald parameters in training.
+    e->earlyEpochs = {{0, 2.54963983E+01, 2.54883960E+01, 6.39401853E-01, 6.42712696E-01},
+                      {1, 3.06009677E-04, 2.86670329E-04, 1.65624423E-03, 2.17293399E-03}};
     e->lastEpoch = 10;
-    e->rmseEnergyTrain = 2.48871931E-05;
-    e->rmseEnergyTest  = 1.58447030E-05;
-    e->rmseForcesTrain = 1.97234938E-04;
-    e->rmseForcesTest  = 2.06482408E-04;
+    e->rmseEnergyTrain = 2.38543934E-05;
+    e->rmseEnergyTest  = 1.61752121E-05;
+    e->rmseForcesTrain = 1.97577883E-04;
+    e->rmseForcesTest  = 2.07562001E-04;
     e->accuracy        = 1E-13;
 
     // Periodic solid-state system (Cu2S), no long-range electrostatics --

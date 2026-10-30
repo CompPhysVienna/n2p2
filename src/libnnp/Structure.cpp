@@ -593,6 +593,11 @@ double Structure::calculateElectrostaticEnergy(
                                             double const             fourPiEps,
                                             ErfcBuf&                 erfcBuf)
 {
+    // The Ewald setup is shared by all structures of a Mode and training
+    // calculates all neighbor lists before the first charge equilibration:
+    // make sure eta, rCut and kCut are those of this structure.
+    if (isPeriodic) ewaldSetup.calculateParameters(volume, numAtoms);
+
     A.resize(numAtoms + 1, numAtoms + 1);
     A.setZero();
     VectorXd b(numAtoms + 1);
@@ -616,8 +621,6 @@ double Structure::calculateElectrostaticEnergy(
                                 "be sorted for Ewald summation!\n");
         }
 
-        // Should always happen already before neighborlist construction.
-        //ewaldSetup.calculateParameters(volume, numAtoms);
 #ifdef _OPENMP
         }
 #endif
@@ -686,10 +689,14 @@ double Structure::calculateElectrostaticEnergy(
             }
         }
         // Like the real part, update only the upper triangle, then mirror.
-        A.topLeftCorner(numAtoms, numAtoms)
-            .selfadjointView<Eigen::Upper>().rankUpdate(cosKr);
-        A.topLeftCorner(numAtoms, numAtoms)
-            .selfadjointView<Eigen::Upper>().rankUpdate(sinKr);
+        // Skip the rank updates for an empty grid (zero inner dimension).
+        if (numK > 0)
+        {
+            A.topLeftCorner(numAtoms, numAtoms)
+                .selfadjointView<Eigen::Upper>().rankUpdate(cosKr);
+            A.topLeftCorner(numAtoms, numAtoms)
+                .selfadjointView<Eigen::Upper>().rankUpdate(sinKr);
+        }
         for (size_t i = 0; i < numAtoms; ++i)
         {
             for (size_t j = i + 1; j < numAtoms; ++j)
@@ -879,6 +886,8 @@ void Structure::calculateDAdrQ(EwaldSetup&  ewaldSetup,
                                double const fourPiEps,
                                ErfcBuf&     erfcBuf)
 {
+    // Ewald parameters of this structure (see calculateElectrostaticEnergy()).
+    if (isPeriodic) ewaldSetup.calculateParameters(volume, numAtoms);
 
 #ifdef _OPENMP
     vector<Vec3D> dAdrQDiag(numAtoms);
