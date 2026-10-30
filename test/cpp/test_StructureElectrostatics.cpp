@@ -528,4 +528,81 @@ BOOST_FIXTURE_TEST_CASE(StoredFactorization_FollowsRebuiltMatrix,
     BOOST_REQUIRE_EQUAL(s.AQr.rows(), 0);
 }
 
+// Periodic water molecule in a cubic box of edge L (bohr), electronegativities
+// set so that the charge equilibration has a non-trivial solution.
+Structure periodicWater(ElementMap const& em, double const L)
+{
+    Structure s;
+    s.setElementMap(em);
+    string const l = to_string(L);
+    s.readFromLines({"begin",
+                     "lattice " + l + " 0.0 0.0",
+                     "lattice 0.0 " + l + " 0.0",
+                     "lattice 0.0 0.0 " + l,
+                     "atom 3.0 3.0 3.0 O 0.0 0.0 0.0 0.0 0.0",
+                     "atom 4.8 3.0 3.0 H 0.0 0.0 0.0 0.0 0.0",
+                     "atom 2.4 4.7 3.0 H 0.0 0.0 0.0 0.0 0.0",
+                     "energy 0.0",
+                     "charge 0.0",
+                     "end"});
+    for (auto& a : s.atoms) a.chi = (a.element == em["O"]) ? -0.6 : 0.3;
+    return s;
+}
+
+// Training calculates the neighbor lists of all structures (and with them the
+// Ewald parameters in the shared EwaldSetup) before the first charge
+// equilibration. The charges and the electrostatic energy of a structure must
+// not depend on which structure was set up last: they have to agree with a
+// solve right after the setup of the structure itself (as in prediction).
+BOOST_AUTO_TEST_CASE(
+    CalculateElectrostaticEnergy_Periodic_UsesEwaldParametersOfThisStructure)
+{
+    ElementMap em;
+    em.registerElements("H O");
+    VectorXd hardness(2);
+    hardness << 1.0, 1.2;
+    VectorXd sigmaSqrtPi(2);
+    sigmaSqrtPi << 0.5, 0.6;
+    MatrixXd gammaSqrt2(2, 2);
+    gammaSqrt2 << 0.8, 0.9, 0.9, 1.0;
+    double const fourPiEps = 1.0;
+    ScreeningFunction fs;
+    fs.setInnerOuter(0.001, 0.002);
+    // Optimized eta: eta, rCut and kCut depend on volume and number of atoms.
+    EwaldSetup ewaldSetup;
+    ewaldSetup.setTruncMethod(EWALDTruncMethod::KOLAFA_PERRAM);
+    ewaldSetup.readFromArgs({"1.0E-6", "1.0"});
+    ewaldSetup.setMaxQSigma(0.6 / sqrt(M_PI));
+    double const cutoffSF = 4.0;
+    vector<vector<double>> cutoffs = {{cutoffSF}, {cutoffSF}};
+    auto setup = [&](Structure& s)
+    {
+        s.calculateMaxCutoffRadiusOverall(ewaldSetup, fs.getOuter(), cutoffSF);
+        s.calculateNeighborList(cutoffSF, cutoffs);
+    };
+
+    Structure reference = periodicWater(em, 9.0);
+    setup(reference);
+    ErfcBuf erfcBufReference;
+    reference.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                           sigmaSqrtPi, fs, fourPiEps,
+                                           erfcBufReference);
+
+    Structure s = periodicWater(em, 9.0);
+    Structure large = periodicWater(em, 20.0);
+    setup(s);
+    setup(large);
+    ErfcBuf erfcBufS;
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBufS);
+
+    for (size_t i = 0; i < s.numAtoms; ++i)
+    {
+        BOOST_TEST_INFO("atom " << i);
+        BOOST_REQUIRE_SMALL(s.atoms.at(i).charge
+                            - reference.atoms.at(i).charge, 1.0E-12);
+    }
+    BOOST_REQUIRE_SMALL(s.energyElec - reference.energyElec, 1.0E-12);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
