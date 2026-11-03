@@ -28,8 +28,8 @@ mass 2 ${mass_H}
 timestep ${dt}
 thermo 1
 
-neighbor 0.0 bin
-neigh_modify delay 10
+neighbor 1.0 bin
+neigh_modify every 1 delay 0 check yes
 pair_style hdnnp/4g dir ${hdnnpDir} showew no showewsum 10 resetew no maxew 1000000 cflength ${c1} cfenergy ${c2} emap "1:O,2:H"
 pair_coeff * * ${hdnnpCutoff}
 kspace_style hdnnp ewald 1.0e-7

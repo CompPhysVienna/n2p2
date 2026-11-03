@@ -63,6 +63,39 @@ setup of a ``hdnnp`` pair style is done by issuing two commands: ``pair_style`` 
 <https://docs.lammps.org/pair_hdnnp.html>`__ documentation page for a detailed
 description.
 
+Energy conservation with 4G-HDNNPs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+With a 4G-HDNNP (``pair_style hdnnp/4g`` together with ``kspace_style hdnnp`` and
+``fix hdnnp``) the real-space part of the Ewald sum is truncated at the cutoff
+radius of the neural network without shifting, so the energy jumps slightly
+whenever a pair of atoms crosses the cutoff. Two settings are needed for good
+energy conservation in MD:
+
+* A nonzero neighbor skin with a check in every step, e.g. (``units metal``):
+
+  .. code-block:: none
+
+     neighbor 1.0 bin
+     neigh_modify every 1 delay 0 check yes
+
+  With ``neighbor 0.0 bin`` and a rebuild delay, pairs that move inside the
+  cutoff between two neighbor list rebuilds are missing until the next rebuild,
+  and their energy is added in a jump that no force corresponds to. In tests
+  with liquid water models (630 atoms, NVE, time step 0.5 fs) this caused
+  energy drifts of 0.003 to 0.1 meV/atom/ps, growing with the size of the atomic
+  charges. With the settings above the drift was below 1e-4 meV/atom/ps, the
+  same as for a 2G-HDNNP.
+
+* A tight relative accuracy in ``kspace_style hdnnp``, e.g. ``1.0e-5`` or
+  smaller, in particular for large atomic charges. The accuracy sets the Ewald
+  splitting parameter and with it the size of the real-space term left at the
+  cutoff.
+
+The 4G-HDNNP examples in ``examples/interface-LAMMPS`` use these settings. It is
+good practice to check the energy conservation of every new model with a short
+NVE run.
+
 Development build
 -----------------
 
