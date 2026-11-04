@@ -281,3 +281,184 @@ BOOST_FIXTURE_TEST_CASE(ModelInOtherUnits_MatchesNormalizedModel,
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+// Committee of 2G-HDNNPs (examples/nnp-predict/H2O_RPBE-D3_Committee, 8
+// members in prediction mode): compared with each member evaluated alone,
+// as an ordinary 2G-HDNNP.
+
+// Copy of the settings file with the committee keywords removed
+// (mode == "") or with committee_mode set to the given mode.
+void writeCommitteeSettings(string const& fileName, string const& mode)
+{
+    vector<string> lines;
+    {
+        ifstream in("input.nn");
+        string line;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line.substr(0, line.find('#'))));
+            if (!t.empty() && t.at(0).find("committee_") == 0)
+            {
+                if (mode == "") continue;
+                if (t.at(0) == "committee_mode")
+                {
+                    line = "committee_mode " + mode;
+                }
+            }
+            lines.push_back(line);
+        }
+    }
+    ofstream out(fileName);
+    for (auto const& line : lines) out << line << "\n";
+}
+
+struct CommitteeMemberResult
+{
+    double        energy;
+    vector<Vec3D> forces;
+};
+
+CommitteeMemberResult predictCommitteeMember(size_t const c)
+{
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.fileNameSettings = "input-single.nn";
+    if (c > 0)
+    {
+        p.formatWeightsFilesShort = strpr("nnp-data-%zu/weights.%%03zu.data",
+                                          c);
+    }
+    p.setup();
+    p.readStructureFromFile();
+    p.predict();
+    CommitteeMemberResult r;
+    r.energy = p.structure.energy;
+    for (auto const& a : p.structure.atoms) r.forces.push_back(a.f);
+    return r;
+}
+
+BOOST_AUTO_TEST_SUITE(CommitteeTests)
+
+BOOST_FIXTURE_TEST_CASE(CommitteePrediction_MatchesMembersEvaluatedAlone,
+                        FixtureRepairDir)
+{
+    string const example = "../../examples/nnp-predict/H2O_RPBE-D3_Committee";
+    BOOST_REQUIRE(copy_directory_recursively(example, "test"));
+    bfs::current_path("test");
+    writeCommitteeSettings("input-single.nn", "");
+    writeCommitteeSettings("input-validation.nn", "validation");
+
+    size_t const n = 8;
+    vector<CommitteeMemberResult> members;
+    for (size_t c = 0; c < n; ++c) members.push_back(predictCommitteeMember(c));
+
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.setup();
+    p.readStructureFromFile();
+    p.predict();
+    Structure const& s = p.structure;
+    BOOST_REQUIRE_EQUAL(s.energyCom.size(), n);
+
+    Tolerance const te(0.0, 1.0E-13);
+    Tolerance const tf(1.0E-12, 1.0E-12);
+    double energy = 0.0;
+    for (size_t c = 0; c < n; ++c)
+    {
+        BOOST_TEST_INFO("Member " << c << " energy");
+        REQUIRE_CLOSE_TO_REFERENCE(members.at(c).energy, s.energyCom.at(c), te);
+        energy += members.at(c).energy / n;
+    }
+    BOOST_TEST_INFO("Committee energy");
+    REQUIRE_CLOSE_TO_REFERENCE(energy, s.energy, te);
+    double sum = 0.0;
+    for (size_t c = 0; c < n; ++c)
+    {
+        sum += (energy - members.at(c).energy) * (energy - members.at(c).energy);
+    }
+    BOOST_TEST_INFO("Committee energy disagreement");
+    REQUIRE_CLOSE_TO_REFERENCE(sqrt(sum / n),
+                               s.committeeDisagreement,
+                               Tolerance(1.0E-10 * fabs(energy)));
+
+    for (size_t i = 0; i < s.atoms.size(); ++i)
+    {
+        Atom const& a = s.atoms.at(i);
+        BOOST_REQUIRE_EQUAL(a.fCom.size(), n);
+        for (size_t k = 0; k < 3; ++k)
+        {
+            double f = 0.0;
+            for (size_t c = 0; c < n; ++c)
+            {
+                BOOST_TEST_INFO("Atom " << i << " member " << c
+                                << " force component " << k);
+                REQUIRE_CLOSE_TO_REFERENCE(members.at(c).forces.at(i)[k],
+                                           a.fCom.at(c)[k],
+                                           tf);
+                f += members.at(c).forces.at(i)[k] / n;
+            }
+            BOOST_TEST_INFO("Atom " << i << " force component " << k);
+            REQUIRE_CLOSE_TO_REFERENCE(f, a.f[k], tf);
+            double d = 0.0;
+            for (size_t c = 0; c < n; ++c)
+            {
+                double const diff = f - members.at(c).forces.at(i)[k];
+                d += diff * diff;
+            }
+            BOOST_TEST_INFO("Atom " << i << " force disagreement " << k);
+            REQUIRE_CLOSE_TO_REFERENCE(sqrt(d / n),
+                                       a.committeeDisagreement[k],
+                                       tf);
+        }
+    }
+
+    // Validation mode: member 0 is used, the others give the disagreement.
+    Prediction v;
+    v.log.writeToStdout = false;
+    v.fileNameSettings = "input-validation.nn";
+    v.setup();
+    v.readStructureFromFile();
+    v.predict();
+    BOOST_TEST_INFO("Validation energy");
+    REQUIRE_CLOSE_TO_REFERENCE(members.at(0).energy, v.structure.energy, te);
+    for (size_t i = 0; i < v.structure.atoms.size(); ++i)
+    {
+        for (size_t k = 0; k < 3; ++k)
+        {
+            BOOST_TEST_INFO("Validation atom " << i << " force " << k);
+            REQUIRE_CLOSE_TO_REFERENCE(members.at(0).forces.at(i)[k],
+                                       v.structure.atoms.at(i).f[k],
+                                       tf);
+        }
+    }
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeSettings_MissingDataKeyword_Throws,
+                        FixtureRepairDir)
+{
+    string const example = "../../examples/nnp-predict/H2O_RPBE-D3_Committee";
+    BOOST_REQUIRE(copy_directory_recursively(example, "test"));
+    bfs::current_path("test");
+    {
+        ifstream in("input.nn");
+        ofstream out("input-nodata.nn");
+        string line;
+        while (getline(in, line))
+        {
+            if (line.find("committee_data") == 0) continue;
+            out << line << "\n";
+        }
+    }
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.fileNameSettings = "input-nodata.nn";
+    BOOST_REQUIRE_THROW(p.setup(), runtime_error);
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_AUTO_TEST_SUITE_END()
