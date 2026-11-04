@@ -124,10 +124,15 @@ public:
      */
     void                     loadSettingsFile(std::string const& fileName
                                                                  = "input.nn");
-    /** Check if committeeSize is 1. If not, throw error.
-     * Committee training is not implemented.
+    /** Switch off the committee (keywords committee_mode and
+     *  committee_data) with a warning in the log.
+     *
+     * Committee training is not implemented: training uses only the HDNNP
+     * in the main directory, each member is trained separately. Settings
+     * files that also define the committee for prediction can thus be used
+     * for training.
      */
-    void                    committeeException();
+    void                     disableCommittee();
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.

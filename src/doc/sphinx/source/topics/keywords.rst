@@ -432,8 +432,8 @@ or training sets. The disagreement of the members (the root mean square
 deviation of their energies and forces from the values used) indicates where
 the committee is uncertain. Committees are supported by :ref:`nnp-predict`
 and the LAMMPS pair style ``hdnnp`` (see :ref:`if_lammps`), for 2G-HDNNPs
-only. Each member is trained separately with :ref:`nnp-train`, without the
-keywords below.
+only. Each member is trained separately with :ref:`nnp-train`, which ignores
+the keywords below (with a warning) and trains the HDNNP of its directory.
 
 ----
 

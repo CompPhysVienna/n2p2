@@ -270,15 +270,21 @@ void Mode::loadSettingsFile(string const& fileName)
     return;
 }
 
-void Mode::committeeException()
+void Mode::disableCommittee()
 {
-    if (committeeSize != 1)
-    {
-        throw runtime_error("ERROR: Committee training is not implemented. "
-                            "Train each committee member separately without "
-                            "the keywords \"committee_mode\" and "
-                            "\"committee_data\".\n");
-    }
+    if (committeeMode == CommitteeMode::DISABLED) return;
+
+    log << "\n";
+    log << "WARNING: Committee training is not implemented, the committee "
+           "keywords are\n"
+           "         ignored and only the HDNNP in the main directory is "
+           "trained.\n"
+           "         Train each committee member separately.\n";
+    committeeMode = CommitteeMode::DISABLED;
+    committeeSize = 1;
+    committeePrefix = "";
+
+    return;
 }
 
 void Mode::setupGeneric(string const& nnpDir,
