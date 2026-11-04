@@ -36,6 +36,18 @@ void BoostDataContainer<Example_nnp_predict>::setup()
     e->createdFiles.push_back("nnforces.out");
     e->createdFiles.push_back("output.data");
 
+    // Committee of 8 2G-HDNNPs in prediction mode (energy is the committee
+    // average), same structure as H2O_RPBE-D3.
+    examples.push_back(Example_nnp_predict("H2O_RPBE-D3_Committee"));
+    e = &(examples.back());
+    e->args = "0 ";
+    e->energy = -2.7564546502671423E+04;
+    e->createdFiles.push_back("energy.out");
+    e->createdFiles.push_back("nnatoms.out");
+    e->createdFiles.push_back("nnforces.out");
+    e->createdFiles.push_back("output.data");
+    e->createdFiles.push_back("committee-members.log");
+
     examples.push_back(Example_nnp_predict("Cu2S_PBE"));
     e = &(examples.back());
     e->args = "0 ";

@@ -64,6 +64,16 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->potentialEnergy = -6000559.4;
     e->totalEnergy = -6000220.2;
 
+    // Committee of 8 2G-HDNNPs in prediction mode (energies and forces are
+    // the committee averages) with force and energy disagreement checks.
+    // Same results with 1 and 4 MPI ranks.
+    examples.push_back(Example_lammps_hdnnp("H2O_RPBE-D3_Committee"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 5;
+    e->potentialEnergy = -6000559.3;
+    e->totalEnergy = -6000219.9;
+
     examples.push_back(Example_lammps_hdnnp("Cu2S_PBE"));
     e = &(examples.back());
     e->args = "-in md.lmp ";
