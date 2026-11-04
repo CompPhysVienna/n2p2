@@ -422,6 +422,56 @@ can become quite noticeable for very small values.
     function cutoff. This choice may also decrease the memory footprint.
 
 
+Committee keywords
+------------------
+
+A committee of HDNNPs (Schran et al., J. Chem. Phys. **153**, 104105 (2020))
+consists of several 2G-HDNNPs with the same settings and symmetry function
+scaling but different weights, usually trained with different random seeds
+or training sets. The disagreement of the members (the root mean square
+deviation of their energies and forces from the values used) indicates where
+the committee is uncertain. Committees are supported by :ref:`nnp-predict`
+and the LAMMPS pair style ``hdnnp`` (see :ref:`if_lammps`), for 2G-HDNNPs
+only. Each member is trained separately with :ref:`nnp-train`, without the
+keywords below.
+
+----
+
+``committee_mode``
+^^^^^^^^^^^^^^^^^^
+
+**Usage**:
+   ``committee_mode <string>``
+
+**Examples**:
+   ``committee_mode prediction``
+
+Sets how the committee is used:
+
+* ``disabled`` (default): only the HDNNP in the main directory is used.
+* ``validation``: the first member (weights in the main directory) predicts
+  energies and forces, the others are only used for the disagreement.
+* ``prediction``: energies and forces are the averages over all members.
+
+----
+
+``committee_data``
+^^^^^^^^^^^^^^^^^^
+
+**Usage**:
+   ``committee_data <string> <integer>``
+
+**Examples**:
+   ``committee_data nnp-data 8``
+
+Directory prefix and number of members, required with ``committee_mode
+validation`` or ``prediction``. The weights of the first member are the usual
+files (``weights.???.data``) in the main directory, those of member ``c``
+(``c`` = 1, ..., number of members - 1) are read from the directory
+``<prefix>-<c>``, e.g. ``nnp-data-1/weights.???.data``. All members use the
+``input.nn`` and ``scaling.data`` of the main directory.
+
+
 Training-specific keywords
 --------------------------
 
