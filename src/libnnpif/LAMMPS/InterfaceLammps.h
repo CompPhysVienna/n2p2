@@ -143,11 +143,6 @@ public:
      * @return Return committee size.
      */
     int getComSize() const;
-    /** Get global number of atoms.
-     *
-     * @return Return global number of atoms.
-     */
-    int reduceNumAtoms() const;
     /** Calculate symmetry functions, atomic neural networks and sum of local
      * energy contributions (development version for "hdnnp/develop" pair style).
      */
@@ -157,19 +152,6 @@ public:
      * @return Sum of local energy contributions.
      */
     double getEnergy() const;
-    /** Return global energy committee disagreement.
-     *      
-     * @param[in] globalEnergyCom Reduced energy committee
-     * @param[in] globalNumAtoms Global number of atoms
-     * @param[in] wricd Threshold for writing
-     * @param[in] timestep Molecular dynamics timestep
-     *
-     * @return Return global committee energy disagreement.
-     */
-    double getComDisEnergy(std::vector<double> const& globalEnergyCom, 
-                           int const& globalNumAtoms,
-                           double const& wricd,
-                           std::size_t const& timestep);    
     /** Return energy contribution of one atom.
      *
      * @param[in] index Atom index.
@@ -179,31 +161,31 @@ public:
      * @attention These atomic contributions are not physical!
      */
     double getAtomicEnergy(int index) const;
-    /** Return global force committee disagreement per atom.
-     *      
-     * @param[in] globalForceCom Reduced force committee vector.
-     * @param[in] comSize Committee size
-     * @param[in] wricd Threshold for writing
-     * @param[in] timestep Molecular dynamics timestep
+    /** Get the energies of all committee members (local atoms).
      *
-     * @return Return global force committee disagreement.
+     * @param[out] energyCom Energy of each committee member (array of
+     *                       committee size), including the atomic energy
+     *                       offsets, in LAMMPS units.
      */
-    double getComDisForce(std::vector<double> const& globalForceCom,  
-                          std::size_t const& comSize,
-                          double const& wricd,
-                          std::size_t const& timestep);
-    /** Reduce local committee energy contributions to global committee energy.
+    void   getEnergyCom(double* const& energyCom) const;
+    /** Set the committee forces of the local atoms and calculate their
+     *  committee disagreement.
      *
-     * @return Return global committee energy.
-     */
-    std::vector<double> reduceEnergyCom();
-    /** Reduce local force contributions to global force vector.
+     * @param[in] atomFCom Forces of all committee members for each atom
+     *                     (LAMMPS index, columns 3 * c + (0, 1, 2) for member
+     *                     c), summed over all processes (see
+     *                     getForcesCom()).
+     * @param[in] wricd Write the environment of atoms with a force committee
+     *                  disagreement above this value to a file (see
+     *                  writeStructure()).
+     * @param[in] timestep LAMMPS time step.
      *
-     * @param[in] globalNumAtoms Global number of atoms.
-     * 
-     * @return Return global force vector.
+     * @return Largest component of the force committee disagreement of all
+     *         local atoms (LAMMPS units).
      */
-    std::vector<double> reduceForceCom(int const& globalNumAtoms) const;
+    double setForcesCom(double const* const* const& atomFCom,
+                        double const                wricd,
+                        long const                  timestep);
     /** Adds electrostatic energy contribution to the total structure energy
      *
      * @param[in] electrostatic energy (calculated in LAMMPS with
@@ -218,13 +200,15 @@ public:
      * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
      */
     void   getForces(double* const* const& atomF) const;
-    /** Calculate forces and add to LAMMPS atomic force arrays and local force array.
+    /** Calculate the forces of all committee members and add them to an
+     *  array.
      *
-     * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
-     * @param[in] globalNumAtoms Global number of atoms.
+     * @param[in,out] atomFCom Array with 3 * committee size columns for local
+     *                         and ghost atoms, member c in columns 3 * c +
+     *                         (0, 1, 2); same contributions as in
+     *                         getForces().
      */
-    void   getForcesCom(double* const* const& atomF, 
-                        int const& globalNumAtoms) const;
+    void   getForcesCom(double* const* const& atomFCom) const;
     /** Calculate forces and add to LAMMPS atomic force arrays (development version for
      * "hdnnp/develop" pair style).
      *
@@ -288,17 +272,25 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
-    /** Write committee energies and committee disagreement to file.
-     * @param[in] timestep Lammps molecular dynamics timestep.
-     */
-    void   writeEnergyCommittee(std::size_t const& timestep) const;
-    /** Write atom with com. dis. higher than wricd and its neighbour atoms file in xyz format.
+    /** Append the committee energy and its disagreement to the file
+     *  "committee-energy.txt".
      *
-     * @param[in] timestep Lammps molecular dynamics timestep.
-     * @param[in] i Local MPI index
-     * 
+     * @param[in] timestep LAMMPS time step.
+     * @param[in] energy Energy (LAMMPS units).
+     * @param[in] disagreement Committee energy disagreement (LAMMPS units).
+     * @param[in] numAtoms Number of atoms.
      */
-    void    writeStructure(std::size_t const& timestep, int64_t const& i) const;
+    void   writeEnergyCommittee(long const   timestep,
+                                double const energy,
+                                double const disagreement,
+                                long const   numAtoms) const;
+    /** Write an atom and its neighbors to a file in xyz format (file
+     *  "input<timestep>-<tag>.xyz").
+     *
+     * @param[in] timestep LAMMPS time step.
+     * @param[in] i Index of the local atom.
+     */
+    void   writeStructure(long const timestep, std::size_t const i) const;
     /** Read atomic charges from LAMMPS into n2p2.
      *
      * Charges in units of e (normalized internally for normalized models).
