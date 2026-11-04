@@ -14,9 +14,11 @@
 #include "Vec3D.h"
 #include <Eigen/Core>
 #include <Eigen/QR>
-#include <cmath>  // std::erf
-#include <limits> // std::numeric_limits
-#include <vector> // std::vector
+#include <cmath>   // std::erf
+#include <iomanip> // std::setprecision
+#include <limits>  // std::numeric_limits
+#include <sstream> // std::ostringstream
+#include <vector>  // std::vector
 
 using namespace std;
 using namespace nnp;
@@ -603,6 +605,180 @@ BOOST_AUTO_TEST_CASE(
                             - reference.atoms.at(i).charge, 1.0E-12);
     }
     BOOST_REQUIRE_SMALL(s.energyElec - reference.energyElec, 1.0E-12);
+}
+
+// Element parameters of the NaCl charge-equilibration reference (atomic units),
+// the same as in tools/misc/qeq-reference.py. Elements are sorted by atomic
+// number: index 0 = Na, 1 = Cl.
+struct NaClReferenceParameters
+{
+    NaClReferenceParameters() :
+        hardness(2),
+        sigmaSqrtPi(2),
+        gammaSqrt2(2, 2),
+        fourPiEps(1.0)
+    {
+        em.registerElements("Na Cl");
+        double const sigma[2] = {1.6, 2.0};
+        for (size_t i = 0; i < 2; ++i)
+        {
+            hardness(i) = 0.40;
+            sigmaSqrtPi(i) = sigma[i] * sqrt(M_PI);
+            for (size_t j = 0; j < 2; ++j)
+            {
+                gammaSqrt2(i, j) = sqrt(2.0 * (sigma[i] * sigma[i]
+                                               + sigma[j] * sigma[j]));
+            }
+        }
+        fs.setInnerOuter(0.001, 0.002); // No screening.
+    }
+
+    void setChi(Structure& s) const
+    {
+        for (auto& a : s.atoms) a.chi = (a.element == em["Na"]) ? -0.35 : 0.35;
+    }
+
+    ElementMap em;
+    VectorXd hardness;
+    VectorXd sigmaSqrtPi;
+    MatrixXd gammaSqrt2;
+    double fourPiEps;
+    ScreeningFunction fs;
+};
+
+// Na-Cl pair without periodic boundary conditions: the charge equilibration has
+// a closed-form solution. With Q_Na = -Q_Cl = q, minimizing
+// E_Qeq = q^2/2 (J_Na + J_Cl + 1/(sigma_Na sqrt(pi)) + 1/(sigma_Cl sqrt(pi))
+//         - 2 erf(r/gamma')/r) + q (chi_Na - chi_Cl)
+// gives q = (chi_Cl - chi_Na) / D with D the bracket, gamma' = sqrt(2) gamma.
+// n2p2 reports the electrostatic energy without the Gaussian self-energy
+// sum_i Q_i^2 / (2 sigma_i sqrt(pi)) of Ko et al. (2021), Eq. 3, i.e. here
+// -q^2 erf(r/gamma')/r.
+BOOST_FIXTURE_TEST_CASE(CalculateElectrostaticEnergy_NonPeriodicPair_ClosedForm,
+                        NaClReferenceParameters)
+{
+    double const r = 5.0;
+    Structure s;
+    s.setElementMap(em);
+    s.isPeriodic = false;
+    Atom a0;
+    a0.r = Vec3D(0.0, 0.0, 0.0);
+    s.addAtom(a0, "Na");
+    Atom a1;
+    a1.r = Vec3D(r, 0.0, 0.0);
+    s.addAtom(a1, "Cl");
+    s.chargeRef = 0.0;
+    setChi(s);
+
+    EwaldSetup ewaldSetup;
+    ErfcBuf erfcBuf;
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+
+    double const pair = erf(r / gammaSqrt2(0, 1)) / r;
+    double const D = hardness(0) + hardness(1) + 1.0 / sigmaSqrtPi(0)
+                   + 1.0 / sigmaSqrtPi(1) - 2.0 * pair;
+    double const q = (0.35 - (-0.35)) / D;
+    BOOST_REQUIRE_SMALL(s.atoms.at(0).charge - q, 1.0E-14);
+    BOOST_REQUIRE_SMALL(s.atoms.at(1).charge + q, 1.0E-14);
+    BOOST_REQUIRE_SMALL(s.energyElec - (-q * q * pair), 1.0E-14);
+}
+
+// Periodic disordered rock-salt NaCl (64 atoms, cubic box of 23.8 bohr):
+// charges and electrostatic energy against tools/misc/qeq-reference.py, an
+// independent implementation of the published equations with the Ewald sum
+// converged to machine precision (two splittings agree to 2E-15 e).
+BOOST_FIXTURE_TEST_CASE(CalculateElectrostaticEnergy_PeriodicNaCl_IndependentReference,
+                        NaClReferenceParameters)
+{
+    // Structure built as in qeq-reference.py: rock-salt sites of lattice
+    // constant 11.9 bohr, shifted by 0.3 sin(1.3 idx + 0.7 c + 0.1) bohr.
+    size_t const nCell = 2;
+    double const a = 11.9;
+    double const L = nCell * a;
+    vector<string> lines = {"begin"};
+    for (size_t c = 0; c < 3; ++c)
+    {
+        ostringstream l;
+        l << setprecision(17) << "lattice";
+        for (size_t d = 0; d < 3; ++d) l << " " << (c == d ? L : 0.0);
+        lines.push_back(l.str());
+    }
+    size_t const n = 2 * nCell;
+    size_t idx = 0;
+    for (size_t i = 0; i < n; ++i)
+    {
+        for (size_t j = 0; j < n; ++j)
+        {
+            for (size_t k = 0; k < n; ++k)
+            {
+                size_t const site[3] = {i, j, k};
+                ostringstream l;
+                l << setprecision(17) << "atom";
+                for (size_t d = 0; d < 3; ++d)
+                {
+                    l << " " << site[d] * a / 2
+                         + 0.3 * sin(1.3 * idx + 0.7 * d + 0.1);
+                }
+                l << ((i + j + k) % 2 == 0 ? " Na" : " Cl")
+                  << " 0.0 0.0 0.0 0.0 0.0";
+                lines.push_back(l.str());
+                idx++;
+            }
+        }
+    }
+    lines.insert(lines.end(), {"energy 0.0", "charge 0.0", "end"});
+    Structure s;
+    s.setElementMap(em);
+    s.readFromLines(lines);
+    setChi(s);
+
+    EwaldSetup ewaldSetup;
+    ewaldSetup.setTruncMethod(EWALDTruncMethod::KOLAFA_PERRAM);
+    ewaldSetup.readFromArgs({"1.0E-12", "1.0"});
+    ewaldSetup.setMaxQSigma(2.0);
+    double const cutoffSF = 4.0;
+    vector<vector<double>> cutoffs = {{cutoffSF}, {cutoffSF}};
+    s.calculateMaxCutoffRadiusOverall(ewaldSetup, fs.getOuter(), cutoffSF);
+    s.calculateNeighborList(cutoffSF, cutoffs);
+    ErfcBuf erfcBuf;
+    s.calculateElectrostaticEnergy(ewaldSetup, hardness, gammaSqrt2,
+                                   sigmaSqrtPi, fs, fourPiEps, erfcBuf);
+
+    vector<double> const QRef = {
+        7.748029004662423e-01, -8.055403050131953e-01, 8.071444391755310e-01,
+        -7.826145840182414e-01, -7.830115543769592e-01, 7.932985500440645e-01,
+        -8.041428096746129e-01, 7.906084137136117e-01, 7.865299804746939e-01,
+        -7.843568360743498e-01, 7.960735286911221e-01, -8.015625929018663e-01,
+        -8.094526943562262e-01, 7.728674857744114e-01, -7.700143709104463e-01,
+        8.099178846234159e-01, -8.083450485289324e-01, 8.027078517173110e-01,
+        -7.852692184474613e-01, 7.812690047971037e-01, 7.885032036678894e-01,
+        -7.971433742359507e-01, 7.915805709952733e-01, -7.921828783772585e-01,
+        -7.856389645976772e-01, 7.961712067254048e-01, -7.959071318336896e-01,
+        7.883798611984164e-01, 7.733290479810073e-01, -7.857945637851560e-01,
+        8.100773657203300e-01, -7.992166465160530e-01, 8.086374604665425e-01,
+        -7.763665205006746e-01, 7.805525236197565e-01, -7.956676067659284e-01,
+        -7.974754163335451e-01, 7.906661344116106e-01, -7.881339007079030e-01,
+        7.981250790197548e-01, 7.932632419928004e-01, -7.930972526576104e-01,
+        7.896065700056747e-01, -7.969869502458121e-01, -7.913898396827915e-01,
+        8.115820265636313e-01, -7.942058533505443e-01, 7.725529575630636e-01,
+        -7.729533332966243e-01, 7.841191432221931e-01, -7.959031454283758e-01,
+        8.051973887502387e-01, 8.010976812423193e-01, -7.914295028055278e-01,
+        7.892575455140064e-01, -7.825537028229593e-01, -8.029235915045421e-01,
+        7.956895570633724e-01, -7.913309433563283e-01, 7.836910109479117e-01,
+        7.957274724402520e-01, -7.895928585648652e-01, 7.869153872824787e-01,
+        -7.997384841993270e-01
+    };
+    // Ko et al. (2021), Eq. 3, minus the Gaussian self-energy (n2p2 convention).
+    double const energyElecRef = -5.535827198786720E+00;
+
+    BOOST_REQUIRE_EQUAL(s.numAtoms, QRef.size());
+    for (size_t i = 0; i < s.numAtoms; ++i)
+    {
+        BOOST_TEST_INFO("atom " << i);
+        BOOST_REQUIRE_SMALL(s.atoms.at(i).charge - QRef.at(i), 1.0E-9);
+    }
+    BOOST_REQUIRE_SMALL(s.energyElec - energyElecRef, 1.0E-9);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
