@@ -108,7 +108,6 @@ void Prediction::print()
             log << strpr("%10zu %2s %16.8E %16.8E %16.8E\n",
                             it->index + 1,
                             elementMap[it->element].c_str(),
-                            it->element,
                             it->f[0],
                             it->f[1],
                             it->f[2]);
@@ -116,7 +115,7 @@ void Prediction::print()
     }
     else
     {
-        log << strpr("Committee has %i members.\n",committeeSize);
+        log << strpr("Committee has %zu members.\n", committeeSize);
         log << "-----------------------------------------"
                   "--------------------------------------\n";
         if (committeeMode == CommitteeMode::VALIDATION) 
@@ -135,7 +134,6 @@ void Prediction::print()
             log << strpr("%10zu %2s %16.8E %16.8E %16.8E | %16.8E %16.8E %16.8E\n",
                             it->index + 1,
                             elementMap[it->element].c_str(),
-                            it->element,
                             it->f[0],
                             it->f[1],
                             it->f[2],
@@ -162,11 +160,10 @@ void Prediction::print()
         {
             for (size_t c = 0; c < it->fCom.size(); ++c)
             {
-                comMembers << strpr("%10zu %3i %2s %16.8E %16.8E %16.8E\n",
+                comMembers << strpr("%10zu %3zu %2s %16.8E %16.8E %16.8E\n",
                                     it->index + 1,
                                     c,
                                     elementMap[it->element].c_str(),
-                                    it->element,
                                     it->fCom.at(c)[0],
                                     it->fCom.at(c)[1],
                                     it->fCom.at(c)[2]);

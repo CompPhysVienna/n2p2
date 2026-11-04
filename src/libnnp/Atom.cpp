@@ -85,6 +85,13 @@ void Atom::toNormalizedUnits(double convEnergy,
     fRef *= convEnergy / convLength;
     charge *= convCharge;
     chargeRef *= convCharge;
+    for (auto& f : fCom) f *= convEnergy / convLength;
+    committeeDisagreement *= convEnergy / convLength;
+    for (auto& e : energyCom) e *= convEnergy;
+    for (auto& d : dEdGCom)
+    {
+        for (size_t i = 0; i < d.size(); ++i) d.at(i) *= convEnergy;
+    }
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
@@ -135,6 +142,11 @@ void Atom::toPhysicalUnits(double convEnergy,
         f /= convEnergy / convLength;
     }
     committeeDisagreement /= convEnergy / convLength;
+    for (auto& e : energyCom) e /= convEnergy;
+    for (auto& d : dEdGCom)
+    {
+        for (size_t i = 0; i < d.size(); ++i) d.at(i) /= convEnergy;
+    }
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)

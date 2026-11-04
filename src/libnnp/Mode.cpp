@@ -236,14 +236,33 @@ void Mode::loadSettingsFile(string const& fileName)
         if ((committeeMode == CommitteeMode::VALIDATION ||
              committeeMode == CommitteeMode::PREDICTION))
         {
-            vector<string> committeeArgs = split(settings["committee_data"]);
+            if (nnpType != NNPType::HDNNP_2G)
+            {
+                throw runtime_error("ERROR: Committees are only implemented "
+                                    "for 2G-HDNNPs.\n");
+            }
+            if (!settings.keywordExists("committee_data"))
+            {
+                throw runtime_error("ERROR: Committee mode requires keyword "
+                                    "\"committee_data\".\n");
+            }
+            vector<string> committeeArgs = split(reduce(
+                                                 settings["committee_data"]));
+            int const size = (committeeArgs.size() == 2)
+                           ? atoi(committeeArgs.at(1).c_str()) : 0;
+            if (size < 1)
+            {
+                throw runtime_error("ERROR: Keyword \"committee_data\" "
+                                    "requires a directory prefix and the "
+                                    "number of committee members.\n");
+            }
             committeePrefix = committeeArgs.at(0);
-            committeeSize = atoi(committeeArgs.at(1).c_str());
+            committeeSize = size;
             log << strpr("Committee-NNP dir prefix: %s\n",
                          committeePrefix.c_str());
             log << strpr("Committee-NNP size      : %zu\n", committeeSize);
         }
-    }    
+    }
 
     log << "*****************************************"
            "**************************************\n";
@@ -256,7 +275,9 @@ void Mode::committeeException()
     if (committeeSize != 1)
     {
         throw runtime_error("ERROR: Committee training is not implemented. "
-                            "Set committee size to 1.\n");
+                            "Train each committee member separately without "
+                            "the keywords \"committee_mode\" and "
+                            "\"committee_data\".\n");
     }
 }
 
@@ -1472,16 +1493,8 @@ void Mode::setupNeuralNetwork()
     log << "-----------------------------------------"
            "--------------------------------------\n";
 
-    if ((committeeMode == CommitteeMode::VALIDATION ||
-         committeeMode == CommitteeMode::PREDICTION))
-    {
-        vector<string> committeeArgs = split(settings["committee_data"]);
-        committeePrefix = committeeArgs.at(0);
-        committeeSize = atoi(committeeArgs.at(1).c_str());
-        log << strpr("Committee-NNP dir prefix: %s\n",
-                     committeePrefix.c_str());
-        log << strpr("Committee-NNP size      : %zu\n", committeeSize);
-    }
+    // Committee size and directory prefix are read in loadSettingsFile().
+    committeeIds.clear();
     for (size_t i = 0; i < committeeSize; ++i)
     {
         // First committee member is NN without suffix.
@@ -1491,9 +1504,13 @@ void Mode::setupNeuralNetwork()
     }
     // Set committee Ids also in each element.
     for (auto& e : elements) e.setCommitteeIds(committeeIds);
-    log << "-----------------------------------------"
-           "--------------------------------------\n";
-    
+    if (committeeMode != CommitteeMode::DISABLED)
+    {
+        log << strpr("Committee members (NNs of each element): %zu\n",
+                     committeeSize);
+        log << "-----------------------------------------"
+               "--------------------------------------\n";
+    }
 
     // Finally, allocate all neural networks.
     for (auto& k : nnk)
@@ -1735,9 +1752,24 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
 
     if (nnpType == NNPType::HDNNP_2G)
     {
+        bool const committee = (committeeMode != CommitteeMode::DISABLED);
         for (vector<Atom>::iterator it = structure.atoms.begin();
              it != structure.atoms.end(); ++it)
         {
+            if (!committee)
+            {
+                NeuralNetwork& nn = elements.at(it->element)
+                                    .neuralNetworks.at(id);
+                nn.setInput(&((it->G).front()));
+                nn.propagate();
+                if (derivatives)
+                {
+                    nn.calculateDEdG(&((it->dEdG).front()));
+                }
+                nn.getOutput(&(it->energy));
+                continue;
+            }
+
             it->dEdGCom.resize(committeeSize);
             it->energyCom.resize(committeeSize);
             for (size_t c = 0; c < committeeSize; ++c)
@@ -1752,12 +1784,38 @@ void Mode::calculateAtomicNeuralNetworks(Structure& structure,
                 {
                     it->dEdGCom.at(c).resize(it->dEdG.size());
                     nn.calculateDEdG(&((it->dEdGCom.at(c)).front()));
-                    if (c == 0) copy(it->dEdGCom.at(c).begin(),
-                                     it->dEdGCom.at(c).end(),
-                                     it->dEdG.begin());
                 }
                 nn.getOutput(&(it->energyCom.at(c)));
-                if (c == 0) it->energy = it->energyCom.at(c);
+            }
+            // Atom::energy and Atom::dEdG hold the result that is used:
+            // member 0 (validation) or the committee average (prediction).
+            // Forces calculated from Atom::dEdG (e.g. in the LAMMPS
+            // interface) are then the forces of that result.
+            if (committeeMode == CommitteeMode::PREDICTION)
+            {
+                it->energy = 0.0;
+                for (size_t c = 0; c < committeeSize; ++c)
+                {
+                    it->energy += it->energyCom.at(c);
+                }
+                it->energy /= committeeSize;
+                if (derivatives)
+                {
+                    for (size_t j = 0; j < it->dEdG.size(); ++j)
+                    {
+                        double sum = 0.0;
+                        for (size_t c = 0; c < committeeSize; ++c)
+                        {
+                            sum += it->dEdGCom.at(c).at(j);
+                        }
+                        it->dEdG.at(j) = sum / committeeSize;
+                    }
+                }
+            }
+            else
+            {
+                it->energy = it->energyCom.at(0);
+                if (derivatives) it->dEdG = it->dEdGCom.at(0);
             }
         }
     }
@@ -1902,7 +1960,10 @@ void Mode::calculateEnergy(Structure& structure) const
     // Loop over all atoms and add atomic contributions to total energy.
     structure.energy = 0.0;
     structure.energyShort = 0.0;
-    if (nnpType == NNPType::HDNNP_2G)
+    // Committee of 2G-HDNNPs: energies of all members (Atom::energyCom, see
+    // calculateAtomicNeuralNetworks()).
+    if (nnpType == NNPType::HDNNP_2G &&
+        committeeMode != CommitteeMode::DISABLED)
     {
         structure.energyCom.resize(committeeSize);
         for (size_t c = 0; c < committeeSize; ++c)
@@ -2280,6 +2341,11 @@ void Mode::removeEnergyOffset(Structure& structure, bool ref)
         {
             structure.energy -= structure.numAtomsPerElement.at(i)
                               * elements.at(i).getAtomicEnergyOffset();
+            for (size_t c = 0; c < structure.energyCom.size(); ++c)
+            {
+                structure.energyCom.at(c) -= structure.numAtomsPerElement.at(i)
+                    * elements.at(i).getAtomicEnergyOffset();
+            }
         }
     }
 

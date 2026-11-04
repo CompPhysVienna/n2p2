@@ -43,6 +43,7 @@ Structure::Structure() :
     numAtoms                      (0         ),
     numElements                   (0         ),
     numElementsPresent            (0         ),
+    committeeDisagreement         (0.0       ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
     energyShort                   (0.0       ),
@@ -1306,6 +1307,11 @@ void Structure::toNormalizedUnits(double meanEnergy,
     energy = (energy - numAtoms * meanEnergy) * convEnergy;
     chargeRef *= convCharge;
     charge *= convCharge;
+    for (auto& en : energyCom)
+    {
+        en = (en - numAtoms * meanEnergy) * convEnergy;
+    }
+    committeeDisagreement *= convEnergy;
     volume *= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
