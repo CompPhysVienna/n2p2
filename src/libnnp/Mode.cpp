@@ -302,6 +302,23 @@ bool sameEntry(string const& a, string const& b)
     return a == b || sameValue(atof(a.c_str()), atof(b.c_str()));
 }
 
+/// Values of a keyword (all occurrences, each split into words, sorted), empty
+/// if the keyword is not present.
+vector<vector<string>> keywordValues(settings::Settings const& s,
+                                     string const&             keyword)
+{
+    vector<vector<string>> values;
+    if (!s.keywordExists(keyword)) return values;
+    settings::Settings::KeyRange r = s.getValues(s.keywordCheck(keyword));
+    for (settings::Settings::KeyMap::const_iterator it = r.first;
+         it != r.second; ++it)
+    {
+        values.push_back(split(reduce(it->second.first)));
+    }
+    sort(values.begin(), values.end());
+    return values;
+}
+
 /// Rows of a file split into columns (comment lines starting with '#'
 /// skipped).
 vector<vector<string>> readRows(string const& fileName)
@@ -329,8 +346,10 @@ void Mode::checkCommitteeMembers(string const& directoryPrefix)
                                    "\"%s\") uses ",
                                    c, dir.c_str());
         string const why = " than the main settings. All members must use "
-                           "the same data set normalization, atomic energy "
-                           "offsets and symmetry function scaling.\n";
+                           "the same model definition (symmetry functions, "
+                           "neural network topology), data set "
+                           "normalization, atomic energy offsets and "
+                           "symmetry function scaling.\n";
         bool checked = false;
 
         string fileName = dir + "input.nn";
@@ -383,6 +402,38 @@ void Mode::checkCommitteeMembers(string const& directoryPrefix)
                 {
                     throw runtime_error(error + "different atomic energy "
                                         "offsets" + why);
+                }
+            }
+            // Keywords defining the model (training keywords may differ).
+            settings::Settings member;
+            member.loadFile(fileName);
+            vector<string> const modelKeywords = {
+                "nnp_type", "number_of_elements", "elements", "cutoff_type",
+                "symfunction_short", "scale_symmetry_functions",
+                "scale_symmetry_functions_sigma", "center_symmetry_functions",
+                "scale_min_short", "scale_max_short",
+                "global_hidden_layers_short", "global_nodes_short",
+                "global_activation_short", "element_hidden_layers_short",
+                "element_nodes_short", "element_activation_short",
+                "normalize_nodes"};
+            for (auto const& k : modelKeywords)
+            {
+                vector<vector<string>> const a = keywordValues(settings, k);
+                vector<vector<string>> const b = keywordValues(member, k);
+                bool same = (a.size() == b.size());
+                for (size_t i = 0; same && i < a.size(); ++i)
+                {
+                    same = (a.at(i).size() == b.at(i).size());
+                    for (size_t j = 0; same && j < a.at(i).size(); ++j)
+                    {
+                        same = sameEntry(a.at(i).at(j), b.at(i).at(j));
+                    }
+                }
+                if (!same)
+                {
+                    throw runtime_error(error + strpr("a different model "
+                                        "definition (keyword \"%s\")",
+                                        k.c_str()) + why);
                 }
             }
         }

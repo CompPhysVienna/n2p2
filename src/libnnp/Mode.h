@@ -142,11 +142,13 @@ public:
      *
      * The committee uses input.nn and scaling.data of the main directory for
      * all members. If a member directory also contains input.nn or
-     * scaling.data (e.g. from training the member), the normalization
-     * keywords (mean_energy, conv_energy, conv_length, conv_charge), the
-     * atomic energy offsets (atom_energy) and the scaling data must agree,
-     * otherwise the members would be combined in different units: throws
-     * if they differ. Called by setupNeuralNetworkWeights() with a
+     * scaling.data (e.g. from training the member), the keywords defining
+     * the model (symmetry functions, neural network topology, scaling type),
+     * the normalization keywords (mean_energy, conv_energy, conv_length,
+     * conv_charge), the atomic energy offsets (atom_energy) and the scaling
+     * data must agree, otherwise the members would be evaluated with
+     * another model definition or combined in different units: throws if
+     * they differ. Called by setupNeuralNetworkWeights() with a
      * committee.
      */
     void                     checkCommitteeMembers(

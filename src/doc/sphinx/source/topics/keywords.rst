@@ -470,11 +470,13 @@ files (``weights.???.data``) in the main directory, those of member ``c``
 (``c`` = 1, ..., number of members - 1) are read from the directory
 ``<prefix>-<c>``, e.g. ``nnp-data-1/weights.???.data``. All members use the
 ``input.nn`` and ``scaling.data`` of the main directory, so they must have been
-trained with the same data set normalization (``mean_energy``,
-``conv_energy``, ``conv_length``, ``conv_charge``), atomic energy offsets
-(``atom_energy``) and symmetry function scaling. If a member directory also
-contains ``input.nn`` or ``scaling.data`` (e.g. from training the member), these
-are compared with the main files and an error is raised if they differ.
+trained with the same model definition (elements, symmetry functions, neural
+network topology), data set normalization (``mean_energy``, ``conv_energy``,
+``conv_length``, ``conv_charge``), atomic energy offsets (``atom_energy``) and
+symmetry function scaling. If a member directory also contains ``input.nn`` or
+``scaling.data`` (e.g. from training the member), these are compared with the
+main files and an error is raised if they differ (training keywords such as
+``random_seed`` may differ).
 
 
 Training-specific keywords

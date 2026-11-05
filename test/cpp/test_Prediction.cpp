@@ -561,6 +561,48 @@ BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentScaling_Throws,
     requireCommitteeSetupThrows();
 }
 
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentSymmetryFunction_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    // Change one parameter of the first symmetry function of member 4 (same
+    // number of weights, so only the comparison of the settings notices).
+    vector<string> lines;
+    {
+        ifstream in("nnp-data-4/input.nn");
+        string line;
+        bool changed = false;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line.substr(0, line.find('#'))));
+            if (!changed && !t.empty() && t.at(0) == "symfunction_short")
+            {
+                t.at(4) = strpr("%.6f", 1.1 * stod(t.at(4)) + 0.01);
+                line = "";
+                for (auto const& c : t) line += c + " ";
+                changed = true;
+            }
+            lines.push_back(line);
+        }
+        BOOST_REQUIRE(changed);
+    }
+    {
+        ofstream out("nnp-data-4/input.nn");
+        for (auto const& line : lines) out << line << "\n";
+    }
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentTopology_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    replaceLine("nnp-data-6/input.nn",
+                "global_nodes_short",
+                "global_nodes_short 20 20");
+    requireCommitteeSetupThrows();
+}
+
 // Identical scaling data are accepted also if they contain "nan" (e.g. the
 // sigma of a symmetry function with a single value in the data set), which
 // never compares equal as a number.
