@@ -561,6 +561,50 @@ BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentScaling_Throws,
     requireCommitteeSetupThrows();
 }
 
+// Identical scaling data are accepted also if they contain "nan" (e.g. the
+// sigma of a symmetry function with a single value in the data set), which
+// never compares equal as a number.
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_IdenticalScalingWithNaN_Accepted,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    vector<string> files = {"scaling.data"};
+    for (size_t c = 1; c < 8; ++c)
+    {
+        files.push_back(strpr("nnp-data-%zu/scaling.data", c));
+    }
+    for (auto const& f : files)
+    {
+        vector<string> lines;
+        bool changed = false;
+        {
+            ifstream in(f);
+            string line;
+            while (getline(in, line))
+            {
+                vector<string> t = split(reduce(line));
+                if (!changed && !t.empty() && t.at(0).at(0) != '#')
+                {
+                    // Column 6: sigma, not used by the scaling of this model.
+                    t.at(5) = "-NAN";
+                    line = "";
+                    for (auto const& c : t) line += c + " ";
+                    changed = true;
+                }
+                lines.push_back(line);
+            }
+        }
+        BOOST_REQUIRE(changed);
+        ofstream out(f);
+        for (auto const& line : lines) out << line << "\n";
+    }
+    Prediction p;
+    p.log.writeToStdout = false;
+    BOOST_REQUIRE_NO_THROW(p.setup());
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
 BOOST_FIXTURE_TEST_CASE(CommitteeMembers_OnlyWeights_Accepted,
                         FixtureRepairDir)
 {

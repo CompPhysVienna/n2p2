@@ -295,19 +295,25 @@ bool sameValue(double const a, double const b)
     return fabs(a - b) <= 1.0E-10 * max(fabs(a), fabs(b)) + 1.0E-300;
 }
 
-/// Numerical rows of a file (comment lines starting with '#' skipped).
-vector<vector<double>> readNumericRows(string const& fileName)
+/// Same entry of two files: identical text (also for "nan", which never
+/// compares equal as a number) or the same value.
+bool sameEntry(string const& a, string const& b)
 {
-    vector<vector<double>> rows;
+    return a == b || sameValue(atof(a.c_str()), atof(b.c_str()));
+}
+
+/// Rows of a file split into columns (comment lines starting with '#'
+/// skipped).
+vector<vector<string>> readRows(string const& fileName)
+{
+    vector<vector<string>> rows;
     ifstream file(fileName.c_str());
     string line;
     while (getline(file, line))
     {
         vector<string> columns = split(reduce(line));
         if (columns.empty() || columns.at(0).at(0) == '#') continue;
-        vector<double> row;
-        for (auto const& c : columns) row.push_back(atof(c.c_str()));
-        rows.push_back(row);
+        rows.push_back(columns);
     }
     return rows;
 }
@@ -385,15 +391,15 @@ void Mode::checkCommitteeMembers(string const& directoryPrefix)
         if (scalingFileName != "" && ifstream(fileName.c_str()).good())
         {
             checked = true;
-            vector<vector<double>> const a = readNumericRows(scalingFileName);
-            vector<vector<double>> const b = readNumericRows(fileName);
+            vector<vector<string>> const a = readRows(scalingFileName);
+            vector<vector<string>> const b = readRows(fileName);
             bool same = (a.size() == b.size());
             for (size_t i = 0; same && i < a.size(); ++i)
             {
                 same = (a.at(i).size() == b.at(i).size());
                 for (size_t j = 0; same && j < a.at(i).size(); ++j)
                 {
-                    same = sameValue(a.at(i).at(j), b.at(i).at(j));
+                    same = sameEntry(a.at(i).at(j), b.at(i).at(j));
                 }
             }
             if (!same)

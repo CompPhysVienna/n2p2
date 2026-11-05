@@ -80,6 +80,14 @@ Training::~Training()
     if (trainingLog.is_open()) trainingLog.close();
 }
 
+void Training::loadSettingsFile(string const& fileName)
+{
+    Mode::loadSettingsFile(fileName);
+    disableCommittee();
+
+    return;
+}
+
 void Training::selectSets()
 {
     log << "\n";
