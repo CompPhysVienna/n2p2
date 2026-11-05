@@ -287,6 +287,138 @@ void Mode::disableCommittee()
     return;
 }
 
+namespace
+{
+/// Same value within round-off of the decimal representation in a file.
+bool sameValue(double const a, double const b)
+{
+    return fabs(a - b) <= 1.0E-10 * max(fabs(a), fabs(b)) + 1.0E-300;
+}
+
+/// Numerical rows of a file (comment lines starting with '#' skipped).
+vector<vector<double>> readNumericRows(string const& fileName)
+{
+    vector<vector<double>> rows;
+    ifstream file(fileName.c_str());
+    string line;
+    while (getline(file, line))
+    {
+        vector<string> columns = split(reduce(line));
+        if (columns.empty() || columns.at(0).at(0) == '#') continue;
+        vector<double> row;
+        for (auto const& c : columns) row.push_back(atof(c.c_str()));
+        rows.push_back(row);
+    }
+    return rows;
+}
+}
+
+void Mode::checkCommitteeMembers(string const& directoryPrefix)
+{
+    for (size_t c = 1; c < committeeSize; ++c)
+    {
+        string const dir = directoryPrefix + committeePrefix
+                         + strpr("-%zu/", c);
+        string const error = strpr("ERROR: Committee member %zu (directory "
+                                   "\"%s\") uses ",
+                                   c, dir.c_str());
+        string const why = " than the main settings. All members must use "
+                           "the same data set normalization, atomic energy "
+                           "offsets and symmetry function scaling.\n";
+        bool checked = false;
+
+        string fileName = dir + "input.nn";
+        if (ifstream(fileName.c_str()).good())
+        {
+            checked = true;
+            map<string, double> norm;
+            map<string, double> offsets;
+            ifstream file(fileName.c_str());
+            string line;
+            while (getline(file, line))
+            {
+                vector<string> t = split(reduce(line.substr(0,
+                                                line.find('#'))));
+                if (t.empty()) continue;
+                if (t.at(0) == "mean_energy" || t.at(0) == "conv_energy" ||
+                    t.at(0) == "conv_length" || t.at(0) == "conv_charge")
+                {
+                    norm[t.at(0)] = atof(t.at(1).c_str());
+                }
+                else if (t.at(0) == "atom_energy" && t.size() > 2)
+                {
+                    offsets[t.at(1)] = atof(t.at(2).c_str());
+                }
+            }
+            bool const memberNormalize = norm.count("mean_energy") &&
+                                         norm.count("conv_energy") &&
+                                         norm.count("conv_length");
+            bool same = (memberNormalize == normalize);
+            if (same && normalize)
+            {
+                same = sameValue(norm.at("mean_energy"), meanEnergy) &&
+                       sameValue(norm.at("conv_energy"), convEnergy) &&
+                       sameValue(norm.at("conv_length"), convLength) &&
+                       (norm.count("conv_charge")
+                        == settings.keywordExists("conv_charge")) &&
+                       (!norm.count("conv_charge") ||
+                        sameValue(norm.at("conv_charge"), convCharge));
+            }
+            if (!same)
+            {
+                throw runtime_error(error + "a different data set "
+                                    "normalization" + why);
+            }
+            for (auto const& e : elements)
+            {
+                double const offset = offsets.count(e.getSymbol())
+                                    ? offsets.at(e.getSymbol()) : 0.0;
+                if (!sameValue(offset, e.getAtomicEnergyOffset()))
+                {
+                    throw runtime_error(error + "different atomic energy "
+                                        "offsets" + why);
+                }
+            }
+        }
+
+        fileName = dir + "scaling.data";
+        if (scalingFileName != "" && ifstream(fileName.c_str()).good())
+        {
+            checked = true;
+            vector<vector<double>> const a = readNumericRows(scalingFileName);
+            vector<vector<double>> const b = readNumericRows(fileName);
+            bool same = (a.size() == b.size());
+            for (size_t i = 0; same && i < a.size(); ++i)
+            {
+                same = (a.at(i).size() == b.at(i).size());
+                for (size_t j = 0; same && j < a.at(i).size(); ++j)
+                {
+                    same = sameValue(a.at(i).at(j), b.at(i).at(j));
+                }
+            }
+            if (!same)
+            {
+                throw runtime_error(error + "a different symmetry function "
+                                    "scaling (scaling.data)" + why);
+            }
+        }
+
+        if (checked)
+        {
+            log << strpr("Committee member %zu: normalization and scaling "
+                         "consistent with main settings.\n", c);
+        }
+        else
+        {
+            log << strpr("Committee member %zu: no input.nn or scaling.data "
+                         "in \"%s\", consistency not checked.\n",
+                         c, dir.c_str());
+        }
+    }
+
+    return;
+}
+
 void Mode::setupGeneric(string const& nnpDir,
                         bool skipNormalize,
                         bool initialHardness)
@@ -799,6 +931,7 @@ void Mode::setupSymmetryFunctionScalingNone()
 
 void Mode::setupSymmetryFunctionScaling(string const& fileName)
 {
+    scalingFileName = fileName;
     log << "\n";
     log << "*** SETUP: SYMMETRY FUNCTION SCALING ****"
            "**************************************\n";
@@ -1580,6 +1713,10 @@ void Mode::setupNeuralNetworkWeights(string              directoryPrefix,
                      cap(nns.at(k).name).c_str(),
                      (directoryPrefix + actualFileNameFormat).c_str());
         readNeuralNetworkWeights(k, actualFileNameFormat, directoryPrefix);
+    }
+    if (committeeMode != CommitteeMode::DISABLED)
+    {
+        checkCommitteeMembers(directoryPrefix);
     }
 
     log << "*****************************************"

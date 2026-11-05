@@ -133,6 +133,24 @@ public:
      * for training.
      */
     void                     disableCommittee();
+    /** Check that all committee members use the data set normalization,
+     *  atomic energy offsets and symmetry function scaling of the main
+     *  settings.
+     *
+     * @param[in] directoryPrefix Directory of the weight files (the member
+     *                            directories are in it).
+     *
+     * The committee uses input.nn and scaling.data of the main directory for
+     * all members. If a member directory also contains input.nn or
+     * scaling.data (e.g. from training the member), the normalization
+     * keywords (mean_energy, conv_energy, conv_length, conv_charge), the
+     * atomic energy offsets (atom_energy) and the scaling data must agree,
+     * otherwise the members would be combined in different units: throws
+     * if they differ. Called by setupNeuralNetworkWeights() with a
+     * committee.
+     */
+    void                     checkCommitteeMembers(
+                                 std::string const& directoryPrefix);
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.
@@ -721,6 +739,8 @@ protected:
     std::size_t                numElements;
     std::size_t                committeeSize;
     std::string                committeePrefix;
+    /// Symmetry function scaling file (see setupSymmetryFunctionScaling()).
+    std::string                scalingFileName;
     std::vector<std::size_t>   minNeighbors;
     std::vector<std::string>   committeeIds;
     std::vector<double>        minCutoffRadius;

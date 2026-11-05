@@ -461,4 +461,120 @@ BOOST_FIXTURE_TEST_CASE(CommitteeSettings_MissingDataKeyword_Throws,
     bfs::remove_all("test");
 }
 
+// Members with their own input.nn or scaling.data must agree with the main
+// settings in normalization, atomic energy offsets and scaling.
+
+// Copy of the committee example in "test" (current directory afterwards).
+void enterCommitteeCopy()
+{
+    string const example = "../../examples/nnp-predict/H2O_RPBE-D3_Committee";
+    BOOST_REQUIRE(copy_directory_recursively(example, "test"));
+    bfs::current_path("test");
+}
+
+// Replace the first line of a file starting with the given keyword (or
+// append the line if keyword is not found and append is true).
+void replaceLine(string const& fileName,
+                 string const& keyword,
+                 string const& newLine,
+                 bool const    append = false)
+{
+    vector<string> lines;
+    bool found = false;
+    {
+        ifstream in(fileName);
+        string line;
+        while (getline(in, line))
+        {
+            if (!found && line.find(keyword) == 0)
+            {
+                line = newLine;
+                found = true;
+            }
+            lines.push_back(line);
+        }
+    }
+    if (!found && append) lines.push_back(newLine);
+    BOOST_REQUIRE(found || append);
+    ofstream out(fileName);
+    for (auto const& line : lines) out << line << "\n";
+}
+
+void requireCommitteeSetupThrows()
+{
+    Prediction p;
+    p.log.writeToStdout = false;
+    BOOST_REQUIRE_THROW(p.setup(), runtime_error);
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentNormalization_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    replaceLine("nnp-data-3/input.nn",
+                "conv_energy",
+                "conv_energy   2.5E+02");
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentEnergyOffsets_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    replaceLine("nnp-data-5/input.nn",
+                "atom_energy",
+                "atom_energy H -0.45890771",
+                true);
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentScaling_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    // Change the maximum of the first symmetry function of member 2.
+    vector<string> lines;
+    {
+        ifstream in("nnp-data-2/scaling.data");
+        string line;
+        bool changed = false;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line));
+            if (!changed && !t.empty() && t.at(0).at(0) != '#')
+            {
+                t.at(3) = strpr("%24.16E", 1.01 * stod(t.at(3)) + 1.0E-3);
+                line = "";
+                for (auto const& c : t) line += c + " ";
+                changed = true;
+            }
+            lines.push_back(line);
+        }
+        BOOST_REQUIRE(changed);
+    }
+    {
+        ofstream out("nnp-data-2/scaling.data");
+        for (auto const& line : lines) out << line << "\n";
+    }
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_OnlyWeights_Accepted,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    for (size_t c = 1; c < 8; ++c)
+    {
+        bfs::remove(strpr("nnp-data-%zu/input.nn", c));
+        bfs::remove(strpr("nnp-data-%zu/scaling.data", c));
+    }
+    Prediction p;
+    p.log.writeToStdout = false;
+    BOOST_REQUIRE_NO_THROW(p.setup());
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
