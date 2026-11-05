@@ -178,6 +178,8 @@ int main(int argc, char* argv[])
 
     // Set up error file for energy RMSE (skipped entirely in charges-only
     // mode -- energy is never computed there).
+    bool const committee = (dataset.getCommitteeMode()
+                            != Mode::CommitteeMode::DISABLED);
     if (!chargesOnly)
     {
         fileName = strpr("energy.comp.%04d", myRank);
@@ -214,6 +216,20 @@ int main(int argc, char* argv[])
                 colSize.push_back(16);
                 colName.push_back("Ennp_int");
                 colInfo.push_back("NNP potential energy (internal units).");
+            }
+            if (committee)
+            {
+                colSize.push_back(16);
+                colName.push_back("Ecomm_phys");
+                colInfo.push_back("Committee energy disagreement (physical "
+                                  "units).");
+                if (normalize)
+                {
+                    colSize.push_back(16);
+                    colName.push_back("Ecomm_int");
+                    colInfo.push_back("Committee energy disagreement "
+                                      "(internal units).");
+                }
             }
             appendLinesToFile(fileEnergy,
                               createFileHeader(title, colSize, colName,
@@ -254,6 +270,20 @@ int main(int argc, char* argv[])
                 colSize.push_back(16);
                 colName.push_back("Fnnp_int");
                 colInfo.push_back("NNP force (internal units).");
+            }
+            if (committee)
+            {
+                colSize.push_back(16);
+                colName.push_back("Fcomm_phys");
+                colInfo.push_back("Committee force disagreement (physical "
+                                  "units).");
+                if (normalize)
+                {
+                    colSize.push_back(16);
+                    colName.push_back("Fcomm_int");
+                    colInfo.push_back("Committee force disagreement "
+                                      "(internal units).");
+                }
             }
             appendLinesToFile(fileForces,
                               createFileHeader(title,
@@ -380,7 +410,7 @@ int main(int argc, char* argv[])
             fileEnergy << strpr("%10zu %10zu", it->index, it->numAtoms);
             if (normalize)
             {
-                fileEnergy << strpr(" %16.8E %16.8E %16.8E %16.8E\n",
+                fileEnergy << strpr(" %16.8E %16.8E %16.8E %16.8E",
                                     dataset.physicalEnergy(*it, true)
                                     + dataset.getEnergyOffset(*it),
                                     dataset.physicalEnergy(*it, false)
@@ -390,10 +420,22 @@ int main(int argc, char* argv[])
             }
             else
             {
-                fileEnergy << strpr(" %16.8E %16.8E\n",
+                fileEnergy << strpr(" %16.8E %16.8E",
                                     dataset.getEnergyWithOffset(*it, true),
                                     dataset.getEnergyWithOffset(*it, false));
             }
+            if (committee)
+            {
+                double const d = it->committeeDisagreement;
+                if (normalize)
+                {
+                    fileEnergy << strpr(" %16.8E %16.8E",
+                                        dataset.physical("energy", d),
+                                        d);
+                }
+                else fileEnergy << strpr(" %16.8E", d);
+            }
+            fileEnergy << "\n";
         }
         if (useForces)
         {
@@ -413,9 +455,21 @@ int main(int argc, char* argv[])
                                        dataset.physical("force", it2->fRef[i]),
                                        dataset.physical("force", it2->f[i]));
                     }
-                    fileForces << strpr(" %16.8E %16.8E\n",
+                    fileForces << strpr(" %16.8E %16.8E",
                                         it2->fRef[i],
                                         it2->f[i]);
+                    if (committee)
+                    {
+                        double const d = it2->committeeDisagreement[i];
+                        if (normalize)
+                        {
+                            fileForces << strpr(" %16.8E %16.8E",
+                                                dataset.physical("force", d),
+                                                d);
+                        }
+                        else fileForces << strpr(" %16.8E", d);
+                    }
+                    fileForces << "\n";
                 }
             }
         }

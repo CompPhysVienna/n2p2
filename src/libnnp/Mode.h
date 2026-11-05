@@ -561,6 +561,11 @@ public:
      * @return HDNNP type (2G, 4G,..) that was set up.
      */
     NNPType                  getNnpType() const;
+    /** Getter for Mode::committeeMode.
+     *
+     * @return Committee mode.
+     */
+    CommitteeMode            getCommitteeMode() const;
     /** Getter for Mode::meanEnergy.
      *
      * @return Mean energy per atom.
@@ -818,6 +823,11 @@ private:
 inline Mode::NNPType Mode::getNnpType() const
 {
     return nnpType;
+}
+
+inline Mode::CommitteeMode Mode::getCommitteeMode() const
+{
+    return committeeMode;
 }
 
 inline double Mode::getMeanEnergy() const
