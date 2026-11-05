@@ -34,7 +34,7 @@ dump 4a all custom 5 dump.myforce.* id type fx fy fz
 ###############################################################################
 # NN
 ###############################################################################
-pair_style hdnnp ${nnpCutoff} dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 calcd 1 wricde 1.6 maxcde 3.0 wricdf 0.04 maxcdf 0.10 cflength 1.8897261328 cfenergy 0.0367493254
+pair_style hdnnp ${nnpCutoff} dir ${nnpDir} showew no showewsum 10 resetew no maxew 100 calcd 1 wricde 0.000185 maxcde 0.000347 wricdf 0.04 maxcdf 0.10 cflength 1.8897261328 cfenergy 0.0367493254
 pair_coeff * * H O
 
 ###############################################################################

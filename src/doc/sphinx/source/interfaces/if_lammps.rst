@@ -80,12 +80,12 @@ of n2p2, i.e. with the development build described below):
 * ``wricdf <float>``: write the atoms whose force disagreement exceeds this
   value, together with their neighbors, to files
   ``input<timestep>-<atom ID>.xyz`` (default 1.0).
-* ``maxcde <float>``: stop the run if the disagreement of the total energy
+* ``maxcde <float>``: stop the run if the energy disagreement per atom
   exceeds this value (LAMMPS energy units). The energy disagreement is only
   calculated if this value is positive (default 0).
 * ``wricde <float>``: append time step, energy, energy disagreement and
   disagreement per atom to the file ``committee-energy.txt`` if the energy
-  disagreement exceeds this value (default 1.0).
+  disagreement per atom exceeds this value (default 1.0).
 
 The forces of all members are communicated like the forces, so the check costs
 about as much as the force calculation of the members. An example is

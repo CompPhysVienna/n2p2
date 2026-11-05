@@ -450,11 +450,13 @@ void PairHDNNP::handleCommittee()
     double const energy = global[comSize];
     double sum = 0.0;
     for (int c = 0; c < comSize; ++c) sum += (energy - global[c]) * (energy - global[c]);
-    maxEnergyCom = sqrt(sum / comSize);
+    double const disagreement = sqrt(sum / comSize);
+    // Thresholds refer to the disagreement per atom.
+    maxEnergyCom = disagreement / atom->natoms;
     if (comm->me == 0 && maxEnergyCom > wricde)
-      interface->writeEnergyCommittee(step, energy, maxEnergyCom, atom->natoms);
+      interface->writeEnergyCommittee(step, energy, disagreement, atom->natoms);
     if (maxEnergyCom > maxcde)
-      error->all(FLERR, "Energy committee disagreement exceeded set threshold (check maxcde)");
+      error->all(FLERR, "Energy committee disagreement per atom exceeded set threshold (check maxcde)");
   }
 }
 
