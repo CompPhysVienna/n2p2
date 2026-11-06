@@ -566,6 +566,30 @@ BOOST_FIXTURE_TEST_CASE(Loop_TrainingLogCountsUpdatesFromOne,
     bfs::remove_all("test");
 }
 
+// Training works on a single HDNNP: committee keywords in the settings file
+// (here those of the committee example) are switched off with a warning.
+BOOST_FIXTURE_TEST_CASE(CommitteeKeywords_SwitchedOff, FixtureRepairDir)
+{
+    BOOST_REQUIRE(copy_directory_recursively(
+        "../../examples/nnp-predict/H2O_RPBE-D3_Committee", "test"));
+    bfs::current_path("test");
+
+    {
+        Training training;
+        training.log.writeToStdout = false;
+        training.setupMPI();
+        training.initialize();
+        training.loadSettingsFile();
+        BOOST_REQUIRE(training.getCommitteeMode()
+                      == Mode::CommitteeMode::DISABLED);
+        training.setStage(1);
+        BOOST_REQUIRE_NO_THROW(training.setupGeneric());
+    }
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
 // Data set normalization is not implemented for 4G-HDNNPs, also not in
 // stage 2: the statistics would be computed without charges and the
 // electrostatics setup would stay in physical units.

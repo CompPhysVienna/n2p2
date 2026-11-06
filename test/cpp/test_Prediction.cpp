@@ -281,3 +281,386 @@ BOOST_FIXTURE_TEST_CASE(ModelInOtherUnits_MatchesNormalizedModel,
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+// Committee of 2G-HDNNPs (examples/nnp-predict/H2O_RPBE-D3_Committee, 8
+// members in prediction mode): compared with each member evaluated alone,
+// as an ordinary 2G-HDNNP.
+
+// Copy of the settings file with the committee keywords removed
+// (mode == "") or with committee_mode set to the given mode.
+void writeCommitteeSettings(string const& fileName, string const& mode)
+{
+    vector<string> lines;
+    {
+        ifstream in("input.nn");
+        string line;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line.substr(0, line.find('#'))));
+            if (!t.empty() && t.at(0).find("committee_") == 0)
+            {
+                if (mode == "") continue;
+                if (t.at(0) == "committee_mode")
+                {
+                    line = "committee_mode " + mode;
+                }
+            }
+            lines.push_back(line);
+        }
+    }
+    ofstream out(fileName);
+    for (auto const& line : lines) out << line << "\n";
+}
+
+struct CommitteeMemberResult
+{
+    double        energy;
+    vector<Vec3D> forces;
+};
+
+CommitteeMemberResult predictCommitteeMember(size_t const c)
+{
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.fileNameSettings = "input-single.nn";
+    if (c > 0)
+    {
+        p.formatWeightsFilesShort = strpr("nnp-data-%zu/weights.%%03zu.data",
+                                          c);
+    }
+    p.setup();
+    p.readStructureFromFile();
+    p.predict();
+    CommitteeMemberResult r;
+    r.energy = p.structure.energy;
+    for (auto const& a : p.structure.atoms) r.forces.push_back(a.f);
+    return r;
+}
+
+BOOST_AUTO_TEST_SUITE(CommitteeTests)
+
+BOOST_FIXTURE_TEST_CASE(CommitteePrediction_MatchesMembersEvaluatedAlone,
+                        FixtureRepairDir)
+{
+    string const example = "../../examples/nnp-predict/H2O_RPBE-D3_Committee";
+    BOOST_REQUIRE(copy_directory_recursively(example, "test"));
+    bfs::current_path("test");
+    writeCommitteeSettings("input-single.nn", "");
+    writeCommitteeSettings("input-validation.nn", "validation");
+
+    size_t const n = 8;
+    vector<CommitteeMemberResult> members;
+    for (size_t c = 0; c < n; ++c) members.push_back(predictCommitteeMember(c));
+
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.setup();
+    p.readStructureFromFile();
+    p.predict();
+    Structure const& s = p.structure;
+    BOOST_REQUIRE_EQUAL(s.energyCom.size(), n);
+
+    Tolerance const te(0.0, 1.0E-13);
+    Tolerance const tf(1.0E-12, 1.0E-12);
+    double energy = 0.0;
+    for (size_t c = 0; c < n; ++c)
+    {
+        BOOST_TEST_INFO("Member " << c << " energy");
+        REQUIRE_CLOSE_TO_REFERENCE(members.at(c).energy, s.energyCom.at(c), te);
+        energy += members.at(c).energy / n;
+    }
+    BOOST_TEST_INFO("Committee energy");
+    REQUIRE_CLOSE_TO_REFERENCE(energy, s.energy, te);
+    double sum = 0.0;
+    for (size_t c = 0; c < n; ++c)
+    {
+        sum += (energy - members.at(c).energy) * (energy - members.at(c).energy);
+    }
+    BOOST_TEST_INFO("Committee energy disagreement");
+    REQUIRE_CLOSE_TO_REFERENCE(sqrt(sum / n),
+                               s.committeeDisagreement,
+                               Tolerance(1.0E-10 * fabs(energy)));
+
+    for (size_t i = 0; i < s.atoms.size(); ++i)
+    {
+        Atom const& a = s.atoms.at(i);
+        BOOST_REQUIRE_EQUAL(a.fCom.size(), n);
+        for (size_t k = 0; k < 3; ++k)
+        {
+            double f = 0.0;
+            for (size_t c = 0; c < n; ++c)
+            {
+                BOOST_TEST_INFO("Atom " << i << " member " << c
+                                << " force component " << k);
+                REQUIRE_CLOSE_TO_REFERENCE(members.at(c).forces.at(i)[k],
+                                           a.fCom.at(c)[k],
+                                           tf);
+                f += members.at(c).forces.at(i)[k] / n;
+            }
+            BOOST_TEST_INFO("Atom " << i << " force component " << k);
+            REQUIRE_CLOSE_TO_REFERENCE(f, a.f[k], tf);
+            double d = 0.0;
+            for (size_t c = 0; c < n; ++c)
+            {
+                double const diff = f - members.at(c).forces.at(i)[k];
+                d += diff * diff;
+            }
+            BOOST_TEST_INFO("Atom " << i << " force disagreement " << k);
+            REQUIRE_CLOSE_TO_REFERENCE(sqrt(d / n),
+                                       a.committeeDisagreement[k],
+                                       tf);
+        }
+    }
+
+    // Validation mode: member 0 is used, the others give the disagreement.
+    Prediction v;
+    v.log.writeToStdout = false;
+    v.fileNameSettings = "input-validation.nn";
+    v.setup();
+    v.readStructureFromFile();
+    v.predict();
+    BOOST_TEST_INFO("Validation energy");
+    REQUIRE_CLOSE_TO_REFERENCE(members.at(0).energy, v.structure.energy, te);
+    for (size_t i = 0; i < v.structure.atoms.size(); ++i)
+    {
+        for (size_t k = 0; k < 3; ++k)
+        {
+            BOOST_TEST_INFO("Validation atom " << i << " force " << k);
+            REQUIRE_CLOSE_TO_REFERENCE(members.at(0).forces.at(i)[k],
+                                       v.structure.atoms.at(i).f[k],
+                                       tf);
+        }
+    }
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeSettings_MissingDataKeyword_Throws,
+                        FixtureRepairDir)
+{
+    string const example = "../../examples/nnp-predict/H2O_RPBE-D3_Committee";
+    BOOST_REQUIRE(copy_directory_recursively(example, "test"));
+    bfs::current_path("test");
+    {
+        ifstream in("input.nn");
+        ofstream out("input-nodata.nn");
+        string line;
+        while (getline(in, line))
+        {
+            if (line.find("committee_data") == 0) continue;
+            out << line << "\n";
+        }
+    }
+    Prediction p;
+    p.log.writeToStdout = false;
+    p.fileNameSettings = "input-nodata.nn";
+    BOOST_REQUIRE_THROW(p.setup(), runtime_error);
+
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+// Members with their own input.nn or scaling.data must agree with the main
+// settings in normalization, atomic energy offsets and scaling.
+
+// Copy of the committee example in "test" (current directory afterwards).
+void enterCommitteeCopy()
+{
+    string const example = "../../examples/nnp-predict/H2O_RPBE-D3_Committee";
+    BOOST_REQUIRE(copy_directory_recursively(example, "test"));
+    bfs::current_path("test");
+}
+
+// Replace the first line of a file starting with the given keyword (or
+// append the line if keyword is not found and append is true).
+void replaceLine(string const& fileName,
+                 string const& keyword,
+                 string const& newLine,
+                 bool const    append = false)
+{
+    vector<string> lines;
+    bool found = false;
+    {
+        ifstream in(fileName);
+        string line;
+        while (getline(in, line))
+        {
+            if (!found && line.find(keyword) == 0)
+            {
+                line = newLine;
+                found = true;
+            }
+            lines.push_back(line);
+        }
+    }
+    if (!found && append) lines.push_back(newLine);
+    BOOST_REQUIRE(found || append);
+    ofstream out(fileName);
+    for (auto const& line : lines) out << line << "\n";
+}
+
+void requireCommitteeSetupThrows()
+{
+    Prediction p;
+    p.log.writeToStdout = false;
+    BOOST_REQUIRE_THROW(p.setup(), runtime_error);
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentNormalization_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    replaceLine("nnp-data-3/input.nn",
+                "conv_energy",
+                "conv_energy   2.5E+02");
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentEnergyOffsets_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    replaceLine("nnp-data-5/input.nn",
+                "atom_energy",
+                "atom_energy H -0.45890771",
+                true);
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentScaling_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    // Change the maximum of the first symmetry function of member 2.
+    vector<string> lines;
+    {
+        ifstream in("nnp-data-2/scaling.data");
+        string line;
+        bool changed = false;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line));
+            if (!changed && !t.empty() && t.at(0).at(0) != '#')
+            {
+                t.at(3) = strpr("%24.16E", 1.01 * stod(t.at(3)) + 1.0E-3);
+                line = "";
+                for (auto const& c : t) line += c + " ";
+                changed = true;
+            }
+            lines.push_back(line);
+        }
+        BOOST_REQUIRE(changed);
+    }
+    {
+        ofstream out("nnp-data-2/scaling.data");
+        for (auto const& line : lines) out << line << "\n";
+    }
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentSymmetryFunction_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    // Change one parameter of the first symmetry function of member 4 (same
+    // number of weights, so only the comparison of the settings notices).
+    vector<string> lines;
+    {
+        ifstream in("nnp-data-4/input.nn");
+        string line;
+        bool changed = false;
+        while (getline(in, line))
+        {
+            vector<string> t = split(reduce(line.substr(0, line.find('#'))));
+            if (!changed && !t.empty() && t.at(0) == "symfunction_short")
+            {
+                t.at(4) = strpr("%.6f", 1.1 * stod(t.at(4)) + 0.01);
+                line = "";
+                for (auto const& c : t) line += c + " ";
+                changed = true;
+            }
+            lines.push_back(line);
+        }
+        BOOST_REQUIRE(changed);
+    }
+    {
+        ofstream out("nnp-data-4/input.nn");
+        for (auto const& line : lines) out << line << "\n";
+    }
+    requireCommitteeSetupThrows();
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_DifferentTopology_Throws,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    replaceLine("nnp-data-6/input.nn",
+                "global_nodes_short",
+                "global_nodes_short 20 20");
+    requireCommitteeSetupThrows();
+}
+
+// Identical scaling data are accepted also if they contain "nan" (e.g. the
+// sigma of a symmetry function with a single value in the data set), which
+// never compares equal as a number.
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_IdenticalScalingWithNaN_Accepted,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    vector<string> files = {"scaling.data"};
+    for (size_t c = 1; c < 8; ++c)
+    {
+        files.push_back(strpr("nnp-data-%zu/scaling.data", c));
+    }
+    for (auto const& f : files)
+    {
+        vector<string> lines;
+        bool changed = false;
+        {
+            ifstream in(f);
+            string line;
+            while (getline(in, line))
+            {
+                vector<string> t = split(reduce(line));
+                if (!changed && !t.empty() && t.at(0).at(0) != '#')
+                {
+                    // Column 6: sigma, not used by the scaling of this model.
+                    t.at(5) = "-NAN";
+                    line = "";
+                    for (auto const& c : t) line += c + " ";
+                    changed = true;
+                }
+                lines.push_back(line);
+            }
+        }
+        BOOST_REQUIRE(changed);
+        ofstream out(f);
+        for (auto const& line : lines) out << line << "\n";
+    }
+    Prediction p;
+    p.log.writeToStdout = false;
+    BOOST_REQUIRE_NO_THROW(p.setup());
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_FIXTURE_TEST_CASE(CommitteeMembers_OnlyWeights_Accepted,
+                        FixtureRepairDir)
+{
+    enterCommitteeCopy();
+    for (size_t c = 1; c < 8; ++c)
+    {
+        bfs::remove(strpr("nnp-data-%zu/input.nn", c));
+        bfs::remove(strpr("nnp-data-%zu/scaling.data", c));
+    }
+    Prediction p;
+    p.log.writeToStdout = false;
+    BOOST_REQUIRE_NO_THROW(p.setup());
+    bfs::current_path("..");
+    bfs::remove_all("test");
+}
+
+BOOST_AUTO_TEST_SUITE_END()

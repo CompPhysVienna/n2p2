@@ -85,6 +85,13 @@ void Atom::toNormalizedUnits(double convEnergy,
     fRef *= convEnergy / convLength;
     charge *= convCharge;
     chargeRef *= convCharge;
+    for (auto& f : fCom) f *= convEnergy / convLength;
+    committeeDisagreement *= convEnergy / convLength;
+    for (auto& e : energyCom) e *= convEnergy;
+    for (auto& d : dEdGCom)
+    {
+        for (size_t i = 0; i < d.size(); ++i) d.at(i) *= convEnergy;
+    }
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
@@ -130,6 +137,16 @@ void Atom::toPhysicalUnits(double convEnergy,
     fRef /= convEnergy / convLength;
     charge /= convCharge;
     chargeRef /= convCharge;
+    for (auto& f : fCom)
+    {
+        f /= convEnergy / convLength;
+    }
+    committeeDisagreement /= convEnergy / convLength;
+    for (auto& e : energyCom) e /= convEnergy;
+    for (auto& d : dEdGCom)
+    {
+        for (size_t i = 0; i < d.size(); ++i) d.at(i) /= convEnergy;
+    }
     if (hasSymmetryFunctionDerivatives)
     {
         for (size_t i = 0; i < numSymmetryFunctions; ++i)
@@ -373,15 +390,28 @@ void Atom::updateError(string const&        property,
 
 Vec3D Atom::calculateSelfForceShort() const
 {
+    return calculateSelfForceShort(dEdG);
+}
+
+Vec3D Atom::calculateSelfForceShort(vector<double> const& dEdGIn) const
+{
     Vec3D selfForce{};
     for (size_t i = 0; i < numSymmetryFunctions; ++i)
     {
-        selfForce -= dEdG.at(i) * dGdr.at(i);
+        selfForce -= dEdGIn.at(i) * dGdr.at(i);
     }
     return selfForce;
 }
 
 Vec3D Atom::calculatePairForceShort(Neighbor const&             neighbor,
+                                    vector<vector<size_t> >
+                                    const *const                tableFull) const
+{
+    return calculatePairForceShort(neighbor, dEdG, tableFull);
+}
+
+Vec3D Atom::calculatePairForceShort(Neighbor const&             neighbor,
+                                    vector<double> const&       dEdGIn,
                                     vector<vector<size_t> >
                                     const *const                tableFull) const
 {
@@ -392,12 +422,12 @@ Vec3D Atom::calculatePairForceShort(Neighbor const&             neighbor,
     vector<size_t> const& table = tableFull->at(neighbor.element);
     for (size_t i = 0; i < neighbor.dGdr.size(); ++i)
     {
-        pairForce -= dEdG.at(table.at(i)) * neighbor.dGdr.at(i);
+        pairForce -= dEdGIn.at(table.at(i)) * neighbor.dGdr.at(i);
     }
 #else
     for (size_t i = 0; i < numSymmetryFunctions; ++i)
     {
-        pairForce -= dEdG.at(i) * neighbor.dGdr.at(i);
+        pairForce -= dEdGIn.at(i) * neighbor.dGdr.at(i);
     }
 #endif
     return pairForce;
@@ -646,3 +676,37 @@ vector<string> Atom::Neighbor::info() const
 
     return v;
 }
+
+Vec3D Atom::averageForce() const
+{    
+    Vec3D forceSum = {0.0, 0.0, 0.0};
+    for (size_t c = 0; c < fCom.size(); ++c)
+    { 
+        for (size_t i = 0; i < 3; ++i)
+        {
+            forceSum[i] += fCom.at(c)[i];
+        }
+    }
+
+    return forceSum/fCom.size();
+}
+
+Vec3D Atom::calcDisagreement() const
+{   
+    Vec3D forceSum = {0.0, 0.0, 0.0};
+    size_t comSize = fCom.size();
+    for (size_t c = 0; c < comSize; ++c)
+    { 
+        for (size_t i = 0; i < 3; ++i)
+        {
+            double const diff = f[i] - fCom.at(c)[i];
+            forceSum[i] += diff * diff;
+        }
+    }
+    for (size_t i = 0; i < 3; ++i)
+    {
+        forceSum[i] = sqrt(forceSum[i] / comSize);
+    }
+
+    return forceSum;
+} 

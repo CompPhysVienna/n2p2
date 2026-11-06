@@ -80,6 +80,8 @@ struct Structure
     std::size_t              numElementsPresent;
     /// Number of PBC images necessary in each direction for max cut-off.
     int                      pbc[3];
+    /// Committee energy disagreement
+    double                   committeeDisagreement;
     /// Potential energy determined by neural network.
     double                   energy;
     /// Reference potential energy.
@@ -119,6 +121,8 @@ struct Structure
     Eigen::ColPivHouseholderQR<Eigen::MatrixXd> AQr;
     /// If A matrix of this structure is currently stored.
     bool                     hasAMatrix;
+    /// Same as #energy but for all committee members
+    std::vector<double>      energyCom;
     /// Number of atoms of each element in this structure.
     std::vector<std::size_t> numAtomsPerElement;
     /// Vector of all atoms in this structure.
@@ -531,6 +535,15 @@ struct Structure
      * @return Lines with structure information.
      */
     std::vector<std::string> info() const;
+    /** Calculate committee average energy.
+     *
+     * @return Return committee energy.
+     */
+    double                  averageEnergy() const;
+    /** Calculate committee disagreement for energy.
+     * @return Return committee disagreement for energy.
+     */
+    double                  calcDisagreement() const;
 };
 
 }

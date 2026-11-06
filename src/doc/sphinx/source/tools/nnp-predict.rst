@@ -86,6 +86,19 @@ File output:
 * ``output.data``: Contains the configuration just like in the ``input.data``
   file but with NNP energy and force predictions inserted.
 
+Committees:
+-----------
+
+With the keywords ``committee_mode`` and ``committee_data`` (see
+:ref:`keywords`) the tool predicts with a committee of 2G-HDNNPs. The screen
+output then lists the energy and the forces used (member 0 in validation mode,
+the averages in prediction mode) together with the committee disagreement,
+``energy.out`` contains the energy disagreement in an additional column
+``Ecomm`` and ``nnforces.out`` the force disagreement in the additional columns
+``fxComm``, ``fyComm`` and ``fzComm``. The energies and forces of all members are
+written to ``committee-members.log``. An example is
+``examples/nnp-predict/H2O_RPBE-D3_Committee``.
+
 Examples:
 ---------
 

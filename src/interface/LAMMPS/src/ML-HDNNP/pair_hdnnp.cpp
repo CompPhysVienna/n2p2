@@ -29,7 +29,9 @@
 #include "neighbor.h"
 #include "update.h"
 
+#include <cmath>
 #include <cstring>
+#include <vector>
 
 #include "InterfaceLammps.h"    // n2p2 interface header
 
@@ -65,6 +67,10 @@ PairHDNNP::PairHDNNP(LAMMPS *lmp) : Pair(lmp)
   reinitflag = 0;    // 1 if compatible with fix adapt and alike
 
   interface = new nnp::InterfaceLammps();
+
+  comSize = 1;
+  nmaxCom = 0;
+  fCom = nullptr;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -72,6 +78,7 @@ PairHDNNP::PairHDNNP(LAMMPS *lmp) : Pair(lmp)
 PairHDNNP::~PairHDNNP()
 {
   delete interface;
+  memory->destroy(fCom);
   memory->destroy(setflag);
   memory->destroy(cutsq);
 }
@@ -105,6 +112,9 @@ void PairHDNNP::compute(int eflag, int vflag)
   if (eflag_global)
     ev_tally(0, 0, atom->nlocal, 1, interface->getEnergy(), 0.0, 0.0, 0.0, 0.0, 0.0);
 
+  // Committee disagreement of forces and energy (every calcd steps).
+  if (comSize > 1 && calcd > 0 && update->ntimestep % calcd == 0) handleCommittee();
+
   // Add atomic energy if requested (CAUTION: no physical meaning!).
   if (eflag_atom)
     for (int i = 0; i < atom->nlocal; ++i) eatom[i] = interface->getAtomicEnergy(i);
@@ -131,6 +141,13 @@ void PairHDNNP::settings(int narg, char **arg)
   showew = true;
   showewsum = 0;
   maxew = 0;
+  calcd = 1;
+  wricdf = 1.0;
+  wricde = 1.0;
+  maxcdf = 0.0;
+  maxcde = 0.0;
+  maxForceCom = 0.0;
+  maxEnergyCom = 0.0;
   resetew = false;
   cflength = 1.0;
   cfenergy = 1.0;
@@ -173,6 +190,31 @@ void PairHDNNP::settings(int narg, char **arg)
     } else if (strcmp(arg[iarg], "cfenergy") == 0) {
       if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
       cfenergy = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
+      iarg += 2;
+      // calculate committee disagreement for each calcd step
+    } else if (strcmp(arg[iarg], "calcd") == 0) {
+      if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
+      calcd = utils::inumeric(FLERR, arg[iarg + 1], false, lmp);
+      iarg += 2;
+      // write to file force committee disagreement if wricd is exceeded
+    } else if (strcmp(arg[iarg], "wricdf") == 0) {
+      if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
+      wricdf = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
+      iarg += 2;
+      // write to file energy committee disagreement if wricd is exceeded
+    } else if (strcmp(arg[iarg], "wricde") == 0) {
+      if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
+      wricde = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
+      iarg += 2;
+      // force committee disagreement threshold for stopping calculation
+    } else if (strcmp(arg[iarg], "maxcdf") == 0) {
+      if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
+      maxcdf = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
+      iarg += 2;
+      // energy committee disagreement threshold for stopping calculation
+    } else if (strcmp(arg[iarg], "maxcde") == 0) {
+      if (iarg + 2 > narg) error->all(FLERR, "Illegal pair_style command");
+      maxcde = utils::numeric(FLERR, arg[iarg + 1], false, lmp);
       iarg += 2;
     } else
       error->all(FLERR, "Illegal pair_style command");
@@ -239,6 +281,11 @@ void PairHDNNP::init_style()
   // Initialize interface on all processors.
   interface->initialize(directory, emap.c_str(), showew, resetew, showewsum, maxew, cflength,
                         cfenergy, maxCutoffRadius, atom->ntypes, comm->me);
+
+  // Committee: forces of all members are communicated like the forces
+  // (reverse communication, see handleCommittee()).
+  comSize = interface->getComSize();
+  comm_reverse = (comSize > 1) ? 3 * comSize : 0;
 
   // LAMMPS cutoff radius (given via pair_coeff) should not be smaller than
   // maximum symmetry function cutoff radius.
@@ -362,4 +409,75 @@ void PairHDNNP::handleExtrapolationWarnings()
 
   // Reset internal extrapolation warnings counters.
   interface->clearExtrapolationWarnings();
+}
+
+/* ----------------------------------------------------------------------
+   committee disagreement of forces and energy
+------------------------------------------------------------------------- */
+
+void PairHDNNP::handleCommittee()
+{
+  bigint const step = update->ntimestep;
+
+  // Forces of all committee members for local and ghost atoms; the
+  // contributions to ghost atoms are added to their owners by reverse
+  // communication, as for the forces.
+  if (maxcdf > 0.0) {
+    int const nall = atom->nlocal + atom->nghost;
+    if (atom->nmax > nmaxCom) {
+      memory->destroy(fCom);
+      nmaxCom = atom->nmax;
+      memory->create(fCom, nmaxCom, 3 * comSize, "pair:fCom");
+    }
+    for (int i = 0; i < nall; ++i)
+      for (int k = 0; k < 3 * comSize; ++k) fCom[i][k] = 0.0;
+    interface->getForcesCom(fCom);
+    comm->reverse_comm(this);
+    double const maxLocal = interface->setForcesCom(fCom, wricdf, step);
+    MPI_Allreduce(&maxLocal, &maxForceCom, 1, MPI_DOUBLE, MPI_MAX, world);
+    if (maxForceCom > maxcdf)
+      error->all(FLERR, "Force committee disagreement exceeded set threshold (check maxcdf)");
+  }
+
+  // Energies of all committee members and the energy used (member 0 or
+  // average), summed over all processes.
+  if (maxcde > 0.0) {
+    std::vector<double> local(comSize + 1, 0.0);
+    std::vector<double> global(comSize + 1, 0.0);
+    interface->getEnergyCom(local.data());
+    local[comSize] = interface->getEnergy();
+    MPI_Allreduce(local.data(), global.data(), comSize + 1, MPI_DOUBLE, MPI_SUM, world);
+    double const energy = global[comSize];
+    double sum = 0.0;
+    for (int c = 0; c < comSize; ++c) sum += (energy - global[c]) * (energy - global[c]);
+    double const disagreement = sqrt(sum / comSize);
+    // Thresholds refer to the disagreement per atom.
+    maxEnergyCom = disagreement / atom->natoms;
+    if (comm->me == 0 && maxEnergyCom > wricde)
+      interface->writeEnergyCommittee(step, energy, disagreement, atom->natoms);
+    if (maxEnergyCom > maxcde)
+      error->all(FLERR, "Energy committee disagreement per atom exceeded set threshold (check maxcde)");
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+
+int PairHDNNP::pack_reverse_comm(int n, int first, double *buf)
+{
+  int m = 0;
+  int const last = first + n;
+  for (int i = first; i < last; ++i)
+    for (int k = 0; k < 3 * comSize; ++k) buf[m++] = fCom[i][k];
+  return m;
+}
+
+/* ---------------------------------------------------------------------- */
+
+void PairHDNNP::unpack_reverse_comm(int n, int *list, double *buf)
+{
+  int m = 0;
+  for (int i = 0; i < n; ++i) {
+    int const j = list[i];
+    for (int k = 0; k < 3 * comSize; ++k) fCom[j][k] += buf[m++];
+  }
 }

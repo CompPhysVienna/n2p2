@@ -116,6 +116,16 @@ public:
     Training();
     /// Destructor, updater vector needs to be cleaned.
     ~Training();
+    /** Load settings file, see Mode::loadSettingsFile().
+     *
+     * @param[in] fileName Settings file name.
+     *
+     * Training works on a single HDNNP: a committee defined in the settings
+     * file (committee_mode, committee_data) is switched off with a warning
+     * (Mode::disableCommittee()), each member is trained separately.
+     */
+    void                  loadSettingsFile(std::string const& fileName
+                                                            = "input.nn");
     /** Randomly select training and test set structures.
      *
      * Also fills training candidates lists.

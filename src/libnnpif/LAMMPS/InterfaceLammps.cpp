@@ -475,6 +475,11 @@ void InterfaceLammps::process() //TODO : add comments
         if (normalize)
         {
             structure.energy = physicalEnergy(structure, false);
+            // Committee member energies (empty without a committee).
+            for (auto& e : structure.energyCom)
+            {
+                e = e / convEnergy + structure.numAtoms * meanEnergy;
+            }
         }
         addEnergyOffset(structure, false);
     }
@@ -498,6 +503,11 @@ void InterfaceLammps::process() //TODO : add comments
     }
 
     return;
+}
+
+int InterfaceLammps::getComSize() const
+{
+    return committeeSize;
 }
 
 void InterfaceLammps::processDevelop()
@@ -551,6 +561,44 @@ double InterfaceLammps::getMaxCutoffRadiusOverall()
 double InterfaceLammps::getEnergy() const
 {
     return structure.energy / cfenergy;
+}
+
+void InterfaceLammps::getEnergyCom(double* const& energyCom) const
+{
+    for (size_t c = 0; c < structure.energyCom.size(); ++c)
+    {
+        energyCom[c] = structure.energyCom.at(c) / cfenergy;
+    }
+
+    return;
+}
+
+double InterfaceLammps::setForcesCom(double const* const* const& atomFCom,
+                                     double const                wricd,
+                                     long const                  timestep)
+{
+    double maxCommittee = 0.0;
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
+        Atom& a = structure.atoms.at(i);
+        double const* const fc = atomFCom[a.index];
+        a.fCom.resize(committeeSize);
+        for (size_t c = 0; c < committeeSize; ++c)
+        {
+            for (size_t k = 0; k < 3; ++k) a.fCom.at(c)[k] = fc[3 * c + k];
+        }
+        // Force used: member 0 (validation) or average (prediction).
+        if (committeeMode == CommitteeMode::PREDICTION) a.f = a.averageForce();
+        else a.f = a.fCom.at(0);
+        a.committeeDisagreement = a.calcDisagreement();
+        double const maxAtom = max(a.committeeDisagreement[0],
+                                   max(a.committeeDisagreement[1],
+                                       a.committeeDisagreement[2]));
+        if (maxAtom > wricd) writeStructure(timestep, i);
+        maxCommittee = max(maxCommittee, maxAtom);
+    }
+
+    return maxCommittee;
 }
 
 double InterfaceLammps::getAtomicEnergy(int index) const
@@ -777,6 +825,68 @@ void InterfaceLammps::getForces(double* const* const& atomF) const {
             atomF[ia][0] -= dEdG * dGdr[0];
             atomF[ia][1] -= dEdG * dGdr[1];
             atomF[ia][2] -= dEdG * dGdr[2];
+        }
+    }
+
+    return;
+}
+
+void InterfaceLammps::getForcesCom(double* const* const& atomFCom) const
+{
+    double const cfforce = cflength / cfenergy;
+    double convForce = 1.0;
+    if (normalize)
+    {
+        convForce = convLength / convEnergy;
+    }
+
+    // Same as getForces(), but with the derivatives of each committee member
+    // (Atom::dEdGCom), added to the columns 3 * c + (0, 1, 2) of atomFCom.
+    for (size_t i = 0; i < structure.atoms.size(); ++i)
+    {
+        Atom const& a = structure.atoms.at(i);
+#ifndef N2P2_FULL_SFD_MEMORY
+        vector<vector<size_t> > const& tableFull
+            = elements.at(a.element).getSymmetryFunctionTable();
+#endif
+        // Loop over all neighbor atoms. Some are local, some are ghost atoms.
+        for (vector<Atom::Neighbor>::const_iterator n = a.neighbors.begin();
+             n != a.neighbors.end(); ++n)
+        {
+            double* const f = atomFCom[n->index];
+#ifndef N2P2_FULL_SFD_MEMORY
+            vector<size_t> const& table = tableFull.at(n->element);
+            for (size_t s = 0; s < n->dGdr.size(); ++s)
+            {
+                size_t const is = table.at(s);
+#else
+            for (size_t s = 0; s < a.numSymmetryFunctions; ++s)
+            {
+                size_t const is = s;
+#endif
+                double const* const dGdr = n->dGdr[s].r;
+                for (size_t c = 0; c < committeeSize; ++c)
+                {
+                    double const dEdG = a.dEdGCom.at(c)[is]
+                                      * cfforce * convForce;
+                    f[3 * c + 0] -= dEdG * dGdr[0];
+                    f[3 * c + 1] -= dEdG * dGdr[1];
+                    f[3 * c + 2] -= dEdG * dGdr[2];
+                }
+            }
+        }
+        // Contributions of the atom itself.
+        double* const f = atomFCom[a.index];
+        for (size_t s = 0; s < a.numSymmetryFunctions; ++s)
+        {
+            double const* const dGdr = a.dGdr[s].r;
+            for (size_t c = 0; c < committeeSize; ++c)
+            {
+                double const dEdG = a.dEdGCom.at(c)[s] * cfforce * convForce;
+                f[3 * c + 0] -= dEdG * dGdr[0];
+                f[3 * c + 1] -= dEdG * dGdr[1];
+                f[3 * c + 2] -= dEdG * dGdr[2];
+            }
         }
     }
 
@@ -1117,4 +1227,51 @@ void InterfaceLammps::add3DVecToArray(double *const & arr, Vec3D const& v) const
     arr[0] += v[0];
     arr[1] += v[1];
     arr[2] += v[2];
+}
+
+void InterfaceLammps::writeEnergyCommittee(long const   timestep,
+                                           double const energy,
+                                           double const disagreement,
+                                           long const   numAtoms) const
+{
+    ofstream outfile;
+    outfile.open("committee-energy.txt", std::ios_base::app);
+    outfile << strpr("%ld %16.12E\t%16.6E\t%16.6E\n",
+                     timestep,
+                     energy,
+                     disagreement,
+                     disagreement / numAtoms);
+    outfile.close();
+
+    return;
+}
+
+void InterfaceLammps::writeStructure(long const timestep, size_t const i) const
+{
+    Atom const* ai = &(structure.atoms.at(i));
+    long const tag = ai->tag;
+    ofstream input;
+    std::string file_name = "input" + std::to_string(timestep) + "-" + std::to_string(tag) + ".xyz";
+    input.open(file_name.c_str());
+    input << strpr("%zu    # index %ld, comm. dis. %4.5f %4.5f %4.5f\n",
+                    ai->numNeighbors+1,
+                    tag,
+                    ai->committeeDisagreement[0], 
+                    ai->committeeDisagreement[1], 
+                    ai->committeeDisagreement[2]);
+    input << strpr("%2s %16.8f %16.8f %16.8f \n",
+                    elementMap[ai->element].c_str(),
+                    0.0,
+                    0.0,
+                    0.0);
+    for (vector<Atom::Neighbor>::const_iterator n = ai->neighbors.begin();
+             n != ai->neighbors.end(); ++n)
+    {
+        input << strpr("%2s %16.8f %16.8f %16.8f \n",
+                        elementMap[n->element].c_str(),
+                        n->dr[0]/cflength/convLength,
+                        n->dr[1]/cflength/convLength,
+                        n->dr[2]/cflength/convLength);
+    }
+    input.close();  
 }

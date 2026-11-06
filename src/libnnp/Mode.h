@@ -103,6 +103,17 @@ public:
         HDNNP_Q = 10
     };
 
+    /// Describes how multiple NNs in a committee should be used.
+    enum class CommitteeMode
+    {
+        /// No committee functionality used, only single NN prediction.
+        DISABLED,
+        /// Only a single NN predicts, all toghether are used for validation.
+        VALIDATION,
+        /// All committee NNs are averaged for predicition.
+        PREDICTION
+    };
+
     Mode();
     /** Write welcome message with version information.
      */
@@ -113,6 +124,35 @@ public:
      */
     void                     loadSettingsFile(std::string const& fileName
                                                                  = "input.nn");
+    /** Switch off the committee (keywords committee_mode and
+     *  committee_data) with a warning in the log.
+     *
+     * Committee training is not implemented: training uses only the HDNNP
+     * in the main directory, each member is trained separately. Settings
+     * files that also define the committee for prediction can thus be used
+     * for training.
+     */
+    void                     disableCommittee();
+    /** Check that all committee members use the data set normalization,
+     *  atomic energy offsets and symmetry function scaling of the main
+     *  settings.
+     *
+     * @param[in] directoryPrefix Directory of the weight files (the member
+     *                            directories are in it).
+     *
+     * The committee uses input.nn and scaling.data of the main directory for
+     * all members. If a member directory also contains input.nn or
+     * scaling.data (e.g. from training the member), the keywords defining
+     * the model (symmetry functions, neural network topology, scaling type),
+     * the normalization keywords (mean_energy, conv_energy, conv_length,
+     * conv_charge), the atomic energy offsets (atom_energy) and the scaling
+     * data must agree, otherwise the members would be evaluated with
+     * another model definition or combined in different units: throws if
+     * they differ. Called by setupNeuralNetworkWeights() with a
+     * committee.
+     */
+    void                     checkCommitteeMembers(
+                                 std::string const& directoryPrefix);
     /** Combine multiple setup routines and provide a basic NNP setup.
      *
      * @param[in] nnpDir Optional directory where NNP files reside.
@@ -277,10 +317,15 @@ public:
      *
      * @param[in] id Actual network type to initialize ("short" or "elec").
      * @param[in] fileNameFormat Weights file name format.
+     * @param[in] fileDir Directory of the weight files (prefix of
+     *                    fileNameFormat); the weights of committee member c
+     *                    > 0 are read from fileDir + committee prefix + "-c/"
+     *                    + fileNameFormat.
      */
     void                     readNeuralNetworkWeights(
                                  std::string const& id,
-                                 std::string const& fileNameFormat);
+                                 std::string const& fileNameFormat,
+                                 std::string const& fileDir = "");
     /** Read in atomic hardness of all elements from files (4G-HDNNP).
      *
      * @param[in] fileNameFormat Name format of file containing atomic
@@ -518,6 +563,11 @@ public:
      * @return HDNNP type (2G, 4G,..) that was set up.
      */
     NNPType                  getNnpType() const;
+    /** Getter for Mode::committeeMode.
+     *
+     * @return Committee mode.
+     */
+    CommitteeMode            getCommitteeMode() const;
     /** Getter for Mode::meanEnergy.
      *
      * @return Mean energy per atom.
@@ -690,10 +740,16 @@ protected:
 
 
     NNPType                    nnpType;
+    CommitteeMode              committeeMode;
     bool                       normalize;
     bool                       checkExtrapolationWarnings;
     std::size_t                numElements;
+    std::size_t                committeeSize;
+    std::string                committeePrefix;
+    /// Symmetry function scaling file (see setupSymmetryFunctionScaling()).
+    std::string                scalingFileName;
     std::vector<std::size_t>   minNeighbors;
+    std::vector<std::string>   committeeIds;
     std::vector<double>        minCutoffRadius;
     double                     maxCutoffRadius;
     double                     cutoffAlpha;
@@ -724,13 +780,18 @@ private:
      * @param[out] pairForces For each atom i the sum over its neighbors j
      *                        (including periodic images of i itself) of
      *                        -dE_j/dr_i.
+     * @param[in] committeeMember Use the derivatives Atom::dEdGCom of this
+     *                            committee member instead of Atom::dEdG
+     *                            (default -1: Atom::dEdG).
      *
      * Collected from the side of atom j in one pass over its neighbors
      * within the symmetry function cutoff.
      */
     void                       calculatePairForcesShort(
                                      Structure const&       structure,
-                                     std::vector<Vec3D>&    pairForces) const;
+                                     std::vector<Vec3D>&    pairForces,
+                                     int const              committeeMember
+                                                                = -1) const;
     /** Sum over all atoms j of the derivatives of their electronegativities
      *  with respect to the coordinates of each atom i, weighted with the
      *  force Lagrange multipliers (4G-HDNNP forces).
@@ -764,6 +825,11 @@ private:
 inline Mode::NNPType Mode::getNnpType() const
 {
     return nnpType;
+}
+
+inline Mode::CommitteeMode Mode::getCommitteeMode() const
+{
+    return committeeMode;
 }
 
 inline double Mode::getMeanEnergy() const

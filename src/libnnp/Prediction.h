@@ -31,9 +31,11 @@ public:
     void readStructureFromFile(std::string const& fileName = "input.data");
     void setup();
     void predict();
+    void print();
 
     std::string fileNameSettings;
     std::string fileNameScaling;
+    std::string formatWeightsDir;
     std::string formatWeightsFilesShort;
     std::string formatWeightsFilesCharge;
     Structure   structure;

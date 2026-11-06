@@ -45,21 +45,34 @@ class PairHDNNP : public Pair {
   void coeff(int, char **) override;
   void init_style() override;
   double init_one(int, int) override;
+  int pack_reverse_comm(int, int, double *) override;
+  void unpack_reverse_comm(int, int *, double *) override;
 
  protected:
   virtual void allocate();
   void transferNeighborList();
   void handleExtrapolationWarnings();
+  void handleCommittee();
 
   bool showew;
   bool resetew;
   int showewsum;
   int maxew;
+  int comSize;
+  int calcd;
+  int nmaxCom;
   long numExtrapolationWarningsTotal;
   long numExtrapolationWarningsSummary;
   double cflength;
   double cfenergy;
   double maxCutoffRadius;
+  double wricdf;
+  double wricde;
+  double maxcdf;
+  double maxcde;
+  double maxForceCom;
+  double maxEnergyCom;
+  double **fCom;
   char *directory;
   std::string emap;
   nnp::InterfaceLammps *interface;

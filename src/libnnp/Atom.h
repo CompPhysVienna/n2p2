@@ -132,6 +132,8 @@ struct Atom
     /// Partial derivative of electrostatic energy with respect to this atom's
     /// coordinates.
     Vec3D                    pEelecpr;
+    /// Committee force disagreement
+    Vec3D                    committeeDisagreement;
     /// List of unique neighbor indices (don't count multiple PBC images).
     std::vector<std::size_t> neighborsUnique;
     /// Number of neighbors per element.
@@ -142,11 +144,16 @@ struct Atom
     /// Cache size for each element.
     std::vector<std::size_t> cacheSizePerElement;
 #endif
+    /// Same as #energy but for all committee members.
+    std::vector<double>      energyCom;
     /// Symmetry function values
     std::vector<double>      G;
     /// Derivative of atomic energy with respect to symmetry functions. Also
     /// contains dEdQ in the last element if HDNNP-4G is used.
     std::vector<double>      dEdG;
+    /// Same as dEdG, but for the whole committee.
+    std::vector<
+    std::vector<double>>     dEdGCom;
     /// Derivative of atomic charge with respect to symmetry functions.
     std::vector<double>      dQdG;
     /// Derivative of electronegativity with respect to symmetry functions.
@@ -156,6 +163,8 @@ struct Atom
     /// coordinate.
     std::vector<double>      dGdxia;
 #endif
+    /// Same as #f but for the whole committee.
+    std::vector<Vec3D>       fCom;
     /// Derivative of symmetry functions with respect to this atom's
     /// coordinates.
     std::vector<Vec3D>       dGdr;
@@ -292,6 +301,15 @@ struct Atom
      *  @return calculated force vector.
      */
     Vec3D                    calculateSelfForceShort() const;
+    /** Same as calculateSelfForceShort(), with the given derivatives of the
+     *  atomic energy with respect to the symmetry functions instead of #dEdG
+     *  (e.g. those of a committee member, see #dEdGCom).
+     *
+     * @param[in] dEdGIn Derivatives of the atomic energy.
+     * @return calculated force vector.
+     */
+    Vec3D                    calculateSelfForceShort(
+                                    std::vector<double> const& dEdGIn) const;
      /** Calculate force resulting from gradient of this atom's (short-ranged)
      *  energy contribution with respect to neighbor's coordinate.
      *
@@ -301,6 +319,20 @@ struct Atom
      */
     Vec3D                    calculatePairForceShort(
                                     Neighbor const&  neighbor,
+                                    std::vector<std::vector <std::size_t> >
+                                    const *const     tableFull = nullptr) const;
+    /** Same as calculatePairForceShort(), with the given derivatives of the
+     *  atomic energy with respect to the symmetry functions instead of #dEdG
+     *  (e.g. those of a committee member, see #dEdGCom).
+     *
+     * @param[in] neighbor Neighbor of which the gradient is considered.
+     * @param[in] dEdGIn Derivatives of the atomic energy.
+     * @param[in] tableFull Pointer to symmetry function table if it is used.
+     * @return calculated force vector.
+     */
+    Vec3D                    calculatePairForceShort(
+                                    Neighbor const&            neighbor,
+                                    std::vector<double> const& dEdGIn,
                                     std::vector<std::vector <std::size_t> >
                                     const *const     tableFull = nullptr) const;
     /** Calculate dChi/dr of this atom's Chi with respect to the coordinates
@@ -332,6 +364,15 @@ struct Atom
      * @return Lines with atom information.
      */
     std::vector<std::string> info() const;
+    /** Calculate committee average force.
+     *
+     * @return Return committee force.
+     */
+    Vec3D                  averageForce() const;
+    /** Calculate committee disagreement for force.
+     * @return Return commitee disagreement for force.
+     */
+    Vec3D                  calcDisagreement() const;
 };
 
 inline bool Atom::Neighbor::operator!=(Atom::Neighbor const& rhs) const

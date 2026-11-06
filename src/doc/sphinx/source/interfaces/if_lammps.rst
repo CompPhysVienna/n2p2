@@ -63,6 +63,34 @@ setup of a ``hdnnp`` pair style is done by issuing two commands: ``pair_style`` 
 <https://docs.lammps.org/pair_hdnnp.html>`__ documentation page for a detailed
 description.
 
+Committees
+^^^^^^^^^^
+
+A committee of 2G-HDNNPs (keywords ``committee_mode`` and ``committee_data`` in
+``input.nn``, see :ref:`keywords`) is used by ``pair_style hdnnp`` like a single
+HDNNP: energies and forces are those of member 0 (validation mode) or the
+committee averages (prediction mode). The committee disagreement is checked with
+these additional ``pair_style hdnnp`` keywords (in the ``hdnnp`` pair style files
+of n2p2, i.e. with the development build described below):
+
+* ``calcd <integer>``: check every this many time steps (default 1).
+* ``maxcdf <float>``: stop the run if the largest component of the force
+  disagreement of any atom exceeds this value (LAMMPS force units). The force
+  disagreement is only calculated if this value is positive (default 0).
+* ``wricdf <float>``: write the atoms whose force disagreement exceeds this
+  value, together with their neighbors, to files
+  ``input<timestep>-<atom ID>.xyz`` (default 1.0).
+* ``maxcde <float>``: stop the run if the energy disagreement per atom
+  exceeds this value (LAMMPS energy units). The energy disagreement is only
+  calculated if this value is positive (default 0).
+* ``wricde <float>``: append time step, energy, energy disagreement and
+  disagreement per atom to the file ``committee-energy.txt`` if the energy
+  disagreement per atom exceeds this value (default 1.0).
+
+The forces of all members are communicated like the forces, so the check costs
+about as much as the force calculation of the members. An example is
+``examples/interface-LAMMPS/H2O_RPBE-D3_Committee``.
+
 Energy conservation with 4G-HDNNPs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

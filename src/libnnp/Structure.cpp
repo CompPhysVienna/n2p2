@@ -43,6 +43,7 @@ Structure::Structure() :
     numAtoms                      (0         ),
     numElements                   (0         ),
     numElementsPresent            (0         ),
+    committeeDisagreement         (0.0       ),
     energy                        (0.0       ),
     energyRef                     (0.0       ),
     energyShort                   (0.0       ),
@@ -1306,6 +1307,11 @@ void Structure::toNormalizedUnits(double meanEnergy,
     energy = (energy - numAtoms * meanEnergy) * convEnergy;
     chargeRef *= convCharge;
     charge *= convCharge;
+    for (auto& en : energyCom)
+    {
+        en = (en - numAtoms * meanEnergy) * convEnergy;
+    }
+    committeeDisagreement *= convEnergy;
     volume *= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
@@ -1335,6 +1341,11 @@ void Structure::toPhysicalUnits(double meanEnergy,
     energy = energy / convEnergy + numAtoms * meanEnergy;
     chargeRef /= convCharge;
     charge /= convCharge;
+    for (auto& en : energyCom)
+    {
+        en = en / convEnergy + numAtoms * meanEnergy;
+    }
+    committeeDisagreement = committeeDisagreement / convEnergy;
     volume /= convLength * convLength * convLength;
 
     for (vector<Atom>::iterator it = atoms.begin(); it != atoms.end(); ++it)
@@ -1734,3 +1745,22 @@ vector<string> Structure::info() const
 
     return v;
 }
+
+double Structure::averageEnergy() const
+{    
+    double energySum = 0.0;
+    for (auto const& en : energyCom) energySum += en;
+
+    return energySum / energyCom.size();
+}
+
+double Structure::calcDisagreement() const
+{    
+    double energySum = 0.0;
+    for (auto const& en : energyCom)
+    {
+        energySum += (energy - en) * (energy - en);
+    }
+        
+    return sqrt(energySum / energyCom.size());
+} 

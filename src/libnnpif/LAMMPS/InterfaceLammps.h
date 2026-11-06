@@ -138,6 +138,11 @@ public:
      * energy contributions.
      */
     void   process();
+    /** Return committee size.
+     *
+     * @return Return committee size.
+     */
+    int getComSize() const;
     /** Calculate symmetry functions, atomic neural networks and sum of local
      * energy contributions (development version for "hdnnp/develop" pair style).
      */
@@ -156,6 +161,31 @@ public:
      * @attention These atomic contributions are not physical!
      */
     double getAtomicEnergy(int index) const;
+    /** Get the energies of all committee members (local atoms).
+     *
+     * @param[out] energyCom Energy of each committee member (array of
+     *                       committee size), including the atomic energy
+     *                       offsets, in LAMMPS units.
+     */
+    void   getEnergyCom(double* const& energyCom) const;
+    /** Set the committee forces of the local atoms and calculate their
+     *  committee disagreement.
+     *
+     * @param[in] atomFCom Forces of all committee members for each atom
+     *                     (LAMMPS index, columns 3 * c + (0, 1, 2) for member
+     *                     c), summed over all processes (see
+     *                     getForcesCom()).
+     * @param[in] wricd Write the environment of atoms with a force committee
+     *                  disagreement above this value to a file (see
+     *                  writeStructure()).
+     * @param[in] timestep LAMMPS time step.
+     *
+     * @return Largest component of the force committee disagreement of all
+     *         local atoms (LAMMPS units).
+     */
+    double setForcesCom(double const* const* const& atomFCom,
+                        double const                wricd,
+                        long const                  timestep);
     /** Adds electrostatic energy contribution to the total structure energy
      *
      * @param[in] electrostatic energy (calculated in LAMMPS with
@@ -170,6 +200,15 @@ public:
      * @param[in,out] atomF LAMMPS force array for local and ghost atoms.
      */
     void   getForces(double* const* const& atomF) const;
+    /** Calculate the forces of all committee members and add them to an
+     *  array.
+     *
+     * @param[in,out] atomFCom Array with 3 * committee size columns for local
+     *                         and ghost atoms, member c in columns 3 * c +
+     *                         (0, 1, 2); same contributions as in
+     *                         getForces().
+     */
+    void   getForcesCom(double* const* const& atomFCom) const;
     /** Calculate forces and add to LAMMPS atomic force arrays (development version for
      * "hdnnp/develop" pair style).
      *
@@ -233,6 +272,25 @@ public:
     /** Clear extrapolation warnings storage.
      */
     void   clearExtrapolationWarnings();
+    /** Append the committee energy and its disagreement to the file
+     *  "committee-energy.txt".
+     *
+     * @param[in] timestep LAMMPS time step.
+     * @param[in] energy Energy (LAMMPS units).
+     * @param[in] disagreement Committee energy disagreement (LAMMPS units).
+     * @param[in] numAtoms Number of atoms.
+     */
+    void   writeEnergyCommittee(long const   timestep,
+                                double const energy,
+                                double const disagreement,
+                                long const   numAtoms) const;
+    /** Write an atom and its neighbors to a file in xyz format (file
+     *  "input<timestep>-<tag>.xyz").
+     *
+     * @param[in] timestep LAMMPS time step.
+     * @param[in] i Index of the local atom.
+     */
+    void   writeStructure(long const timestep, std::size_t const i) const;
     /** Read atomic charges from LAMMPS into n2p2.
      *
      * Charges in units of e (normalized internally for normalized models).

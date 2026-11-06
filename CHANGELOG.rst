@@ -11,6 +11,8 @@ New features
 
 * 4G-HDNNPs training/prediction in n2p2 (Philipp Misof).
 * 4G-HDNNPs prediction in LAMMPS+n2p2 (Emir Kocer).
+* Committees of 2G-HDNNPs in ``nnp-predict`` and the LAMMPS pair style ``hdnnp``
+  (Lukáš Kývala, Andreas Singraber).
 
 Version 2.3.0 - 2024-11-23
 --------------------------
