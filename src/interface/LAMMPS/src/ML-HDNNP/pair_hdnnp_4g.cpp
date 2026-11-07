@@ -714,13 +714,16 @@ void PairHDNNP4G::forceLambda_structureFactors(const gsl_vector *v)
     int const kcount = kspacehdnnp->kcount;
     std::vector<double> sf_loc(2 * kcount, 0.0);
     std::vector<double> sf(2 * kcount, 0.0);
+    std::vector<double> lambda(nlocal);
+    for (int i = 0; i < nlocal; i++) lambda[i] = gsl_vector_get(v,tag[i]-1);
     for (int k = 0; k < kcount; k++) // over k-space
     {
+        double const *rl = kspacehdnnp->sfexp_rl[k];
+        double const *im = kspacehdnnp->sfexp_im[k];
         for (int i = 0; i < nlocal; i++)
         {
-            double const lambda_i = gsl_vector_get(v,tag[i]-1);
-            sf_loc[2 * k] += lambda_i * kspacehdnnp->sfexp_rl[k][i];
-            sf_loc[2 * k + 1] += lambda_i * kspacehdnnp->sfexp_im[k][i];
+            sf_loc[2 * k] += lambda[i] * rl[i];
+            sf_loc[2 * k + 1] += lambda[i] * im[i];
         }
     }
     MPI_Allreduce(sf_loc.data(),sf.data(),2 * kcount,MPI_DOUBLE,MPI_SUM,world);
@@ -755,18 +758,28 @@ void PairHDNNP4G::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
     if (periodic)
     {
         double sqrt2eta = (sqrt(2.0) * eta);
+        // Reciprocal space of all local atoms, reciprocal vectors in the outer
+        // loop (contiguous rows of the tables, same order of the terms of
+        // each atom's sum as one loop per atom).
+        std::vector<double> recip(nlocal, 0.0);
+        for (int k = 0; k < kspacehdnnp->kcount; k++) // over k-space
+        {
+            double const c = 2.0 * kspacehdnnp->kcoeff[k];
+            double const sr = kspacehdnnp->sf_real[k];
+            double const si = kspacehdnnp->sf_im[k];
+            double const *rl = kspacehdnnp->sfexp_rl[k];
+            double const *im = kspacehdnnp->sfexp_im[k];
+            for (i = 0; i < nlocal; i++)
+            {
+                recip[i] += c * (sr * rl[i] + si * im[i]);
+            }
+        }
         for (i = 0; i < nlocal; i++) // over local atoms
         {
             double const lambda_i = gsl_vector_get(v,tag[i]-1);
 
             // Reciprocal space
-            double ksum = 0.0;
-            for (int k = 0; k < kspacehdnnp->kcount; k++) // over k-space
-            {
-                ksum += 2.0 * kspacehdnnp->kcoeff[k] *
-                        (kspacehdnnp->sf_real[k] * kspacehdnnp->sfexp_rl[k][i] +
-                         kspacehdnnp->sf_im[k] * kspacehdnnp->sfexp_im[k][i]);
-            }
+            double ksum = recip[i];
 
             // Real space
             double jsum = 0.0;
@@ -970,16 +983,21 @@ void PairHDNNP4G::calculateElecDerivatives(double *dEelecdQ, double **f)
         MPI_Allreduce(Sq_imag_loc.data(), Sq_imag.data(), kcount, MPI_DOUBLE, MPI_SUM, world);
 
         double sqrt2eta = sqrt(2.0) * eta;
-        for (i = 0; i < nlocal; i++) {
-            double recip_sum = 0.0;
-            for (int kk = 0; kk < kcount; kk++) {
-                double cos_kri = kspacehdnnp->sfexp_rl[kk][i];
-                double sin_kri = kspacehdnnp->sfexp_im[kk][i];
+        // Reciprocal vectors in the outer loop (contiguous rows of the
+        // tables, same order of the terms of each atom's sum).
+        std::vector<double> recip_sum(nlocal, 0.0);
+        for (int kk = 0; kk < kcount; kk++) {
+            double const c = 2.0 * kspacehdnnp->kcoeff[kk];
+            double const *rl = kspacehdnnp->sfexp_rl[kk];
+            double const *im = kspacehdnnp->sfexp_im[kk];
+            for (i = 0; i < nlocal; i++) {
                 // cos(k(ri - rj)) = cos(ri)cos(rj) + sin(ri)sin(rj)
-                recip_sum += 2.0 * kspacehdnnp->kcoeff[kk] * (cos_kri * Sq_real[kk] + sin_kri * Sq_imag[kk]);
+                recip_sum[i] += c * (rl[i] * Sq_real[kk] + im[i] * Sq_imag[kk]);
             }
+        }
+        for (i = 0; i < nlocal; i++) {
             // Add reciprocal evaluation and apply standard self-interaction correction
-            dEelecdQ[i] += recip_sum - q[i] * (2.0 / (sqrt2eta * sqrt(M_PI)));
+            dEelecdQ[i] += recip_sum[i] - q[i] * (2.0 / (sqrt2eta * sqrt(M_PI)));
         }
     }
 
@@ -1117,31 +1135,36 @@ void PairHDNNP4G::calculateElecForce(double **f)
 
         double cfac = cflength / cfenergyElec;
 
-        // Calculate analytical reciprocal forces
-        for (i = 0; i < nlocal; i++) {
-            double fix = 0.0, fiy = 0.0, fiz = 0.0;
-            
-            for (int kk = 0; kk < kcount; kk++) {
-                double kx = kspacehdnnp->kxvecs[kk] * kspacehdnnp->unitk[0];
-                double ky = kspacehdnnp->kyvecs[kk] * kspacehdnnp->unitk[1];
-                double kz = kspacehdnnp->kzvecs[kk] * kspacehdnnp->unitk[2];
-
-                double cos_kri = kspacehdnnp->sfexp_rl[kk][i];
-                double sin_kri = kspacehdnnp->sfexp_im[kk][i];
+        // Calculate analytical reciprocal forces, reciprocal vectors in the
+        // outer loop (contiguous rows of the tables, same order of the terms
+        // of each atom's sums).
+        std::vector<double> fr(3 * nlocal, 0.0);
+        for (int kk = 0; kk < kcount; kk++) {
+            double const kx = kspacehdnnp->kxvecs[kk] * kspacehdnnp->unitk[0];
+            double const ky = kspacehdnnp->kyvecs[kk] * kspacehdnnp->unitk[1];
+            double const kz = kspacehdnnp->kzvecs[kk] * kspacehdnnp->unitk[2];
+            double const c = 2.0 * kspacehdnnp->kcoeff[kk] * cfac;
+            double const *rl = kspacehdnnp->sfexp_rl[kk];
+            double const *im = kspacehdnnp->sfexp_im[kk];
+            for (i = 0; i < nlocal; i++) {
+                double cos_kri = rl[i];
+                double sin_kri = im[i];
 
                 double cos_term = forceLambda[i] * Sq_real[kk] + q[i] * (Sl_real[kk] + Sq_real[kk]);
                 double sin_term = forceLambda[i] * Sq_imag[kk] + q[i] * (Sl_imag[kk] + Sq_imag[kk]);
 
                 double sin_kdr_sum = sin_kri * cos_term - cos_kri * sin_term;
-                double force_k = 2.0 * kspacehdnnp->kcoeff[kk] * cfac * sin_kdr_sum;
+                double force_k = c * sin_kdr_sum;
 
-                fix += force_k * kx;
-                fiy += force_k * ky;
-                fiz += force_k * kz;
+                fr[3 * i + 0] += force_k * kx;
+                fr[3 * i + 1] += force_k * ky;
+                fr[3 * i + 2] += force_k * kz;
             }
-            f[i][0] += fix;
-            f[i][1] += fiy;
-            f[i][2] += fiz;
+        }
+        for (i = 0; i < nlocal; i++) {
+            f[i][0] += fr[3 * i + 0];
+            f[i][1] += fr[3 * i + 1];
+            f[i][2] += fr[3 * i + 2];
         }
     }
 
