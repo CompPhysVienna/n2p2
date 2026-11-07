@@ -121,6 +121,17 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->fdStep = 1.0E-3;
     e->fdTolerance = 3.0E-5;
 
+    // The same model with the structure replicated 3 x 2 x 1 (3780 atoms,
+    // md-large.lmp, Ewald accuracy 1E-5): charge equilibration and force
+    // lambda of a larger system, single point.
+    examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G"));
+    e = &(examples.back());
+    e->description += " (3780 atoms)";
+    e->args = "-in md-large.lmp ";
+    e->lastTimeStep = 0;
+    e->potentialEnergy = -721.31672;
+    e->totalEnergy = -721.31672;
+
     // The same model and structure in eV and Angstrom without normalization
     // (four_pi_epsilon != 1, no unit conversion in LAMMPS): same results.
     examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G_metal"));
