@@ -18,6 +18,7 @@
 #include <mpi.h>
 #include <cmath>
 #include <cstring>
+#include <vector>
 #include "pair_hdnnp.h"
 #include "kspace_hdnnp.h"
 #include "atom.h"
@@ -564,19 +565,33 @@ void FixHDNNP::QEq_df(const gsl_vector *v, gsl_vector *dEdQ)
     if (periodic)
     {
         double sqrt2eta = (sqrt(2.0) * eta);
+        // Reciprocal contributions of all local atoms, reciprocal vectors in
+        // the outer loop: the tables sfexp_rl/sfexp_im are read row by row
+        // (contiguous), each atom's sum keeps the order of the vectors.
+        std::vector<double> recip;
+        if (kspacehdnnp->ewaldflag)
+        {
+            recip.assign(nlocal, 0.0);
+            for (int k = 0; k < kspacehdnnp->kcount; k++) // over k-space
+            {
+                double const c = 2.0 * kspacehdnnp->kcoeff[k];
+                double const sr = kspacehdnnp->sf_real[k];
+                double const si = kspacehdnnp->sf_im[k];
+                double const *rl = kspacehdnnp->sfexp_rl[k];
+                double const *im = kspacehdnnp->sfexp_im[k];
+                for (i = 0; i < nlocal; i++)
+                {
+                    recip[i] += c * (sr * rl[i] + si * im[i]);
+                }
+            }
+        }
         for (i = 0; i < nlocal; i++) // over local atoms
         {
             double const qi = gsl_vector_get(v,tag[i]-1);
             // Reciprocal contribution
             if (kspacehdnnp->ewaldflag)
             {
-                grad_recip = 0.0;
-                for (int k = 0; k < kspacehdnnp->kcount; k++) // over k-space
-                {
-                    grad_recip += 2.0 * kspacehdnnp->kcoeff[k] *
-                            (kspacehdnnp->sf_real[k] * kspacehdnnp->sfexp_rl[k][i] +
-                             kspacehdnnp->sf_im[k] *   kspacehdnnp->sfexp_im[k][i]);
-                }
+                grad_recip = recip[i];
             }
             else if (kspacehdnnp->pppmflag)
             {

@@ -998,13 +998,16 @@ double KSpaceHDNNP::compute_ewald_eqeq(const gsl_vector *v)
     // (real and imaginary parts interleaved).
     std::vector<double> sf_loc(2 * kcount, 0.0);
     std::vector<double> sf(2 * kcount, 0.0);
+    std::vector<double> q(nlocal);
+    for (i = 0; i < nlocal; i++) q[i] = gsl_vector_get(v,tag[i]-1);
     for (int k = 0; k < kcount; k++) // over k-space
     {
+        double const *rl = sfexp_rl[k];
+        double const *im = sfexp_im[k];
         for (i = 0; i < nlocal; i++)
         {
-            double const qi = gsl_vector_get(v,tag[i]-1);
-            sf_loc[2 * k] += qi * sfexp_rl[k][i];
-            sf_loc[2 * k + 1] += qi * sfexp_im[k][i];
+            sf_loc[2 * k] += q[i] * rl[i];
+            sf_loc[2 * k + 1] += q[i] * im[i];
         }
     }
     MPI_Allreduce(sf_loc.data(),sf.data(),2 * kcount,MPI_DOUBLE,MPI_SUM,world);
