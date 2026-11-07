@@ -498,11 +498,14 @@ double FixHDNNP::QEq_f(const gsl_vector *v)
         for (i = 0; i < nlocal; i++) {
             double const qi = gsl_vector_get(v,tag[i]-1);
             double qi2 = qi * qi;
-            // add i terms
-            iiterm = qi2 * (1 / (2.0 * hdnnp->sigmaSqrtPi[type[i]-1]) + (0.5 * hdnnp->hardness[type[i]-1]));
+            // add i terms: Gaussian self energy (electrostatic energy) and
+            // hardness (QEq energy only), as Structure::
+            // calculateElectrostaticEnergy() and calculateScreeningEnergy()
+            double const self = qi2 / (2.0 * hdnnp->sigmaSqrtPi[type[i]-1]);
+            iiterm = self + qi2 * 0.5 * hdnnp->hardness[type[i]-1];
             E_qeq_loc += iiterm + hdnnp->chi[i] * qi;
-            hdnnp->E_elec += iiterm;
-            E_scr -= iiterm; //TODO parallel ?
+            hdnnp->E_elec += self;
+            E_scr -= self;
             // Looping over all atoms (parallelization of necessary arrays has been done beforehand)
             for (j = 0; j < nall; j++) {
                 double const qj = gsl_vector_get(v, j);
@@ -514,9 +517,9 @@ double FixHDNNP::QEq_f(const gsl_vector *v)
                 {
                     ijterm = (erf(rij / hdnnp->gammaSqrt2[type[i]-1][type_all[j]-1]) / rij);
                     E_qeq_loc += 0.5 * ijterm * qi * qj;
-                    hdnnp->E_elec += ijterm;
+                    hdnnp->E_elec += 0.5 * ijterm * qi * qj;
                     if(rij <= hdnnp->screening_info[2]) {
-                        E_scr += ijterm * (hdnnp->screening_f(rij) - 1);
+                        E_scr += 0.5 * ijterm * qi * qj * (hdnnp->screening_f(rij) - 1);
                     }
                 }
             }
@@ -730,7 +733,7 @@ void FixHDNNP::calculate_QEqCharges()
         MPI_Allreduce(xx_loc,xx,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
         MPI_Allreduce(xy_loc,xy,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
         MPI_Allreduce(xz_loc,xz,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
-        MPI_Allreduce(type_loc,type_all,atom->natoms,MPI_DOUBLE,MPI_SUM,world);
+        MPI_Allreduce(type_loc,type_all,atom->natoms,MPI_INT,MPI_SUM,world);
     }
 
 

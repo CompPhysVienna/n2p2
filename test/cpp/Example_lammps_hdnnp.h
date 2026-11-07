@@ -132,6 +132,19 @@ void BoostDataContainer<Example_lammps_hdnnp>::setup()
     e->potentialEnergy = -721.31672;
     e->totalEnergy = -721.31672;
 
+    // 4G-HDNNP of a non-periodic structure (carbon chain C10H2 in vacuum,
+    // model and structure of examples/nnp-predict/Carbon_chain_4G), single
+    // point: energy (-10384.1576131543 eV) and forces (forces.nnp-predict)
+    // agree with nnp-predict.
+    examples.push_back(Example_lammps_hdnnp("Carbon_chain_4G"));
+    e = &(examples.back());
+    e->args = "-in md.lmp ";
+    e->lastTimeStep = 0;
+    e->potentialEnergy = -10384.158;
+    e->totalEnergy = -10384.158;
+    e->forcesReference = "forces.nnp-predict";
+    e->forcesTolerance = 1.0E-6;
+
     // The same model and structure in eV and Angstrom without normalization
     // (four_pi_epsilon != 1, no unit conversion in LAMMPS): same results.
     examples.push_back(Example_lammps_hdnnp("H2O_SPCFw_4G_metal"));

@@ -803,25 +803,27 @@ void PairHDNNP4G::forceLambda_df(const gsl_vector *v, gsl_vector *dEdLambda)
         }
     }else
     {
-        // first loop over local atoms
-        for (i = 0; i < nlocal; i++) { // TODO: indices
-            double const lambda_i = gsl_vector_get(v,i);
+        // Local atoms i (vectors indexed by tag - 1) and all atoms j of the
+        // structure (global positions xx, xy, xz and types type_all, see
+        // compute()), as in FixHDNNP::QEq_df().
+        for (i = 0; i < nlocal; i++) {
+            int const ti = tag[i] - 1;
+            double const lambda_i = gsl_vector_get(v, ti);
             local_sum = 0.0;
-            // second loop over 'all' atoms
             for (j = 0; j < nall; j++) {
-                if (j != i) {
+                if (j != ti) {
                     double const lambda_j = gsl_vector_get(v, j);
-                    double const dx = x[j][0] - x[i][0];
-                    double const dy = x[j][1] - x[i][1];
-                    double const dz = x[j][2] - x[i][2];
+                    double const dx = xx[j] - x[i][0];
+                    double const dy = xy[j] - x[i][1];
+                    double const dz = xz[j] - x[i][2];
                     double const rij = sqrt(SQR(dx) + SQR(dy) + SQR(dz)) * cflength;
-                    local_sum += lambda_j * erf(rij / gammaSqrt2[type[i]-1][type[j]-1]) / rij;
+                    local_sum += lambda_j * erf(rij / gammaSqrt2[type[i]-1][type_all[j]-1]) / rij;
                 }
             }
             val = dEdQ[i] + hardness[type[i]-1]*lambda_i +
                   lambda_i/(sigmaSqrtPi[type[i]-1]) + local_sum;
-            grad_sum = grad_sum + val;
-            gsl_vector_set(dEdLambda,i,val);
+            grad_sum_loc += val;
+            dEdLambda_loc[ti] = val;
         }
     }
 
@@ -902,6 +904,9 @@ void PairHDNNP4G::calculate_kspace_terms()
     double **x = atom->x;
     double dx,dy,dz;
     double kdum_cos,kdum_sinx,kdum_siny,kdum_sinz;
+
+    // No reciprocal space (and no KSpaceHDNNP) for non-periodic systems.
+    if (!periodic) return;
 
     // This term is used in dEdQ calculation and can be calculated beforehand
     for (k = 0; k < kspacehdnnp->kcount; k++)
@@ -1215,7 +1220,7 @@ void PairHDNNP4G::calculateElecForce(double **f)
                 double jt2 = 0;
                 //qj = q[j];
                 qj = qall[j];
-                if (i == j) {
+                if (tag[i] - 1 == j) {
                     // We have to loop over all atoms once again to calculate dAdrQ terms
                     for (k = 0; k < nall; k++) {
                         //qk = q[k];
