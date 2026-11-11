@@ -133,11 +133,10 @@ FixHDNNP::~FixHDNNP()
     if (copymode) return;
 
     delete[] pertype_option;
-    
-    memory->destroy(hdnnp->chi);
-    memory->destroy(hdnnp->hardness);
-    memory->destroy(hdnnp->sigmaSqrtPi);
-    memory->destroy(hdnnp->gammaSqrt2);
+
+    // The QEq arrays of the pair style (hdnnp->chi, ...) are freed by the
+    // pair style: it is deleted before the fixes, so hdnnp may no longer
+    // be valid here.
 
     memory->destroy(qall);
     memory->destroy(qall_loc);
@@ -224,6 +223,9 @@ void FixHDNNP::pertype_parameters(char *arg)
 // Allocate QEq arrays
 void FixHDNNP::allocate_QEq()
 {
+    // init() runs before every run: free the arrays of a previous run.
+    deallocate_QEq();
+
     int ne = atom->ntypes;
     memory->create(hdnnp->chi,atom->natoms,"qeq:hdnnp->chi");
     memory->create(hdnnp->hardness,ne,"qeq:hdnnp->hardness");

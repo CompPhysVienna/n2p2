@@ -115,6 +115,14 @@ PairHDNNP4G::PairHDNNP4G(LAMMPS *lmp) : Pair(lmp),
 
 PairHDNNP4G::~PairHDNNP4G()
 {
+    // The QEq arrays are allocated by fix hdnnp (FixHDNNP::allocate_QEq())
+    // but belong to this pair style: LAMMPS deletes the pair style before
+    // the fixes, so they are freed here and not in the fix destructor.
+    memory->destroy(chi);
+    memory->destroy(hardness);
+    memory->destroy(sigmaSqrtPi);
+    memory->destroy(gammaSqrt2);
+    memory->destroy(screening_info);
 }
 
 void PairHDNNP4G::compute(int eflag, int vflag)
