@@ -174,6 +174,8 @@ list of keywords is provided :ref:`here <keywords>`.
    topics/cfg_file
    topics/training
    topics/units
+   topics/changes_4g
+   topics/validation
 
 .. toctree::
    :hidden:
